@@ -38,8 +38,10 @@ body {
   background-color: var(--bg-primary);
   color: var(--text-primary);
   font-family: 'Quicksand', system-ui, sans-serif;
-  background-image: radial-gradient(var(--warning) 1px, transparent 1px);
-  background-size: 24px 24px;
+  /* Fondo repetido infinito (la imagen tiene transparencia). */
+  background-image: url('../assets/images/fondo2.png');
+  background-repeat: repeat;
+  background-size: auto;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -63,7 +65,7 @@ a {
   background: white;
   border: 3px solid var(--border);
   border-radius: 24px;
-  padding: 1.5rem;
+  padding: 0.5rem;
   box-shadow: 6px 6px 0px var(--border);
 }
 
@@ -259,6 +261,7 @@ a {
   line-height: 1.35;
   display: -webkit-box;
   -webkit-line-clamp: 4;
+  line-clamp: 4; /* compatibilidad (estándar) */
   -webkit-box-orient: vertical;
   overflow: hidden;
 }

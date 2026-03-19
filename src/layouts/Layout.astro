@@ -13,6 +13,10 @@ interface Props {
 const { title, description = "Aprende a programar gratis con cursos paso a paso", courseSlug } = Astro.props;
 const currentCourse = courseSlug ? courses.find((c) => c.slug === courseSlug) : null;
 const currentPath = Astro.url.pathname;
+
+const KO_FI_URL = 'https://ko-fi.com/cafeycodigo';
+// Logo genérico provisto por Ko-fi (si no cargara, el link igual funciona).
+const KO_FI_LOGO_URL = 'https://storage.ko-fi.com/cdn/kofi3.png?v=3';
 ---
 
 <!DOCTYPE html>
@@ -46,33 +50,38 @@ const currentPath = Astro.url.pathname;
               height="42"
               decoding="async"
             />
-            <span class="logo-text">cafeycodigo</span>
+            <span class="logo-text">café y código</span>
           </a>
         </div>
 
-        {!currentCourse?.lessons?.length && (
-          <div class="nav-center">
-            <ul class="nav-links">
-              <li><a href="/">Inicio</a></li>
-              <li>
-                <a href="/pseint/" class="nav-pseint">
-                  <img
-                    class="nav-pseint-icon"
-                    src={logoPseint.src}
-                    alt=""
-                    width="26"
-                    height="26"
-                    decoding="async"
-                  />
-                  PSeInt
-                </a>
-              </li>
-              <li><a href="/ejercicios/">Ejercicios</a></li>
-              <li><a href="/python/">Python</a></li>
-              <li><a href="/java/">Java</a></li>
-            </ul>
-          </div>
-        )}
+        <div class="nav-center">
+          {!currentCourse?.lessons?.length ? (
+            <div class="nav-aprende-row">
+              <button
+                type="button"
+                class="nav-aprende-btn"
+                data-open-modal="langs"
+                aria-haspopup="dialog"
+                aria-controls="langsModal"
+              >
+                Aprende
+              </button>
+              <a href="/ejercicios/" class="nav-ejercicios-link">Ejercicios</a>
+            </div>
+          ) : currentCourse?.slug === 'pseint' ? (
+            <span class="course-badge-header">
+              <img
+                class="course-badge-pseint"
+                src={logoPseint.src}
+                alt=""
+                width="22"
+                height="22"
+                decoding="async"
+              />
+              PSeInt
+            </span>
+          ) : null}
+        </div>
 
         <div class="nav-right">
           <button class="theme-toggle" type="button" aria-label="Cambiar tema" title="Cambiar tema">
@@ -81,21 +90,13 @@ const currentPath = Astro.url.pathname;
 
           {currentCourse && (
             <div class="nav-course-actions">
-              <span class="course-badge-header">
-                {currentCourse.slug === 'pseint' && (
-                  <img
-                    class="course-badge-pseint"
-                    src={logoPseint.src}
-                    alt=""
-                    width="22"
-                    height="22"
-                    decoding="async"
-                  />
-                )}
-                {currentCourse.name}
-              </span>
               {currentCourse.slug === 'pseint' && (
                 <a href="/pseint/simulador/" class="btn-simulator-top">▶ Simulador</a>
+              )}
+              {currentCourse.slug !== 'pseint' && (
+                <span class="course-badge-header">
+                  {currentCourse.name}
+                </span>
               )}
             </div>
           )}
@@ -108,6 +109,46 @@ const currentPath = Astro.url.pathname;
         </div>
       </nav>
     </header>
+
+    {!currentCourse?.lessons?.length && (
+      <div
+        id="langsModal"
+        class="langs-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-hidden="true"
+      >
+        <div class="langs-modal__overlay" data-close-modal="langs"></div>
+        <div class="langs-modal__content">
+          <div class="langs-modal__header">
+            <h3 class="langs-modal__title">Elegí un lenguaje</h3>
+            <button type="button" class="langs-modal__close" data-close-modal="langs" aria-label="Cerrar modal">
+              ✕
+            </button>
+          </div>
+
+          <div class="langs-modal__grid">
+            <a class="langs-modal__link" href="/pseint/">
+              <img
+                class="langs-modal__icon"
+                src={logoPseint.src}
+                alt=""
+                width="22"
+                height="22"
+                decoding="async"
+              />
+              PSeInt
+            </a>
+            <a class="langs-modal__link" href="/python/">
+              Python
+            </a>
+            <a class="langs-modal__link" href="/java/">
+              Java
+            </a>
+          </div>
+        </div>
+      </div>
+    )}
 
     <div class="page-wrapper">
       <!-- SIDEBAR LATERAL -->
@@ -150,6 +191,22 @@ const currentPath = Astro.url.pathname;
       </main>
     </div>
 
+    <section class="donations-section" aria-label="Donaciones">
+      <div class="donations-card">
+        <div class="donations-left">
+          <img class="donations-logo" src={KO_FI_LOGO_URL} alt="Ko-fi" loading="lazy" decoding="async" />
+          <div>
+            <div class="donations-title">Donaciones</div>
+            <div class="donations-subtitle">Apoyá cafeycodigo con un café en Ko-fi.</div>
+          </div>
+        </div>
+
+        <a class="donations-btn" href={KO_FI_URL} target="_blank" rel="noreferrer noopener">
+          Ir a Ko-fi →
+        </a>
+      </div>
+    </section>
+
     <script is:inline>
       // Toggle de tema (claro/oscuro), persiste preferencia.
       (function () {
@@ -169,6 +226,38 @@ const currentPath = Astro.url.pathname;
           try {
             localStorage.setItem('theme', next);
           } catch {}
+        });
+      })();
+    </script>
+
+    <script is:inline>
+      // Modal de selección de lenguajes (solo en la home).
+      (function () {
+        const modal = document.getElementById('langsModal');
+        if (!modal) return;
+
+        const openBtn = document.querySelector('[data-open-modal="langs"]');
+        const closeBtns = modal.querySelectorAll('[data-close-modal="langs"]');
+        const overlay = modal.querySelector('.langs-modal__overlay');
+
+        const open = () => {
+          modal.setAttribute('aria-hidden', 'false');
+          modal.classList.add('is-open');
+          document.documentElement.style.overflow = 'hidden';
+        };
+
+        const close = () => {
+          modal.setAttribute('aria-hidden', 'true');
+          modal.classList.remove('is-open');
+          document.documentElement.style.overflow = '';
+        };
+
+        if (openBtn) openBtn.addEventListener('click', open);
+        closeBtns.forEach((b) => b.addEventListener('click', close));
+        if (overlay) overlay.addEventListener('click', close);
+
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape') close();
         });
       })();
     </script>
@@ -378,6 +467,142 @@ const currentPath = Astro.url.pathname;
   .nav-links a:hover,
   .nav-links a.active { color: var(--info); transform: translateY(-2px); }
 
+  .nav-aprende-row {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+  }
+
+  .nav-aprende-btn {
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(30, 18, 16, 0.12);
+    border-radius: 999px;
+    padding: 0.55rem 1.05rem;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    color: var(--text-primary);
+    cursor: pointer;
+    box-shadow: 0 14px 34px rgba(30, 18, 16, 0.08);
+    transition: transform 0.1s, background 0.1s;
+  }
+
+  .nav-aprende-btn:hover {
+    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.95);
+  }
+
+  .nav-ejercicios-link {
+    color: var(--text-primary);
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 800;
+    padding: 0.55rem 1.05rem;
+    border-radius: 999px;
+    border: 1px solid rgba(30, 18, 16, 0.12);
+    background: rgba(255, 255, 255, 0.7);
+    box-shadow: 0 14px 34px rgba(30, 18, 16, 0.08);
+    transition: transform 0.1s, background 0.1s;
+  }
+
+  .nav-ejercicios-link:hover {
+    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.95);
+  }
+
+  /* Modal de lenguajes (solo home) */
+  .langs-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: none;
+  }
+
+  .langs-modal.is-open {
+    display: block;
+  }
+
+  .langs-modal__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+  }
+
+  .langs-modal__content {
+    position: relative;
+    max-width: 520px;
+    margin: 10vh auto 0;
+    background: white;
+    border: 3px solid var(--border);
+    border-radius: 22px;
+    box-shadow: 0 28px 80px rgba(30, 18, 16, 0.25);
+    padding: 1.25rem;
+  }
+
+  .langs-modal__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .langs-modal__title {
+    margin: 0;
+    font-size: 1.35rem;
+    color: var(--info);
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+  }
+
+  .langs-modal__close {
+    width: 42px;
+    height: 42px;
+    border-radius: 999px;
+    border: 2px solid var(--border);
+    background: rgba(255, 255, 255, 0.9);
+    cursor: pointer;
+    font-size: 1.05rem;
+    font-weight: 900;
+  }
+
+  .langs-modal__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.8rem;
+  }
+
+  .langs-modal__link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    padding: 0.85rem 1rem;
+    border-radius: 16px;
+    border: 3px solid var(--border);
+    background: var(--bg-tertiary);
+    text-decoration: none;
+    color: var(--text-primary);
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    box-shadow: 4px 4px 0px var(--border);
+    transition: transform 0.1s;
+  }
+
+  .langs-modal__link:hover {
+    transform: translateY(-2px);
+  }
+
+  .langs-modal__icon {
+    border-radius: 6px;
+  }
+
+  @media (max-width: 600px) {
+    .langs-modal__content {
+      margin-top: 6vh;
+      width: calc(100% - 1.5rem);
+    }
+  }
+
   /* --- Estructura con Sidebar --- */
   .page-wrapper {
     max-width: 1400px;
@@ -495,5 +720,83 @@ const currentPath = Astro.url.pathname;
     color: var(--text-primary);
     font-size: 1.1rem;
     font-weight: 700;
+  }
+
+  /* --- Donaciones (Ko-fi) --- */
+  .donations-section {
+    max-width: 1400px;
+    margin: 2.5rem auto 2.2rem;
+    padding: 0 1rem;
+  }
+
+  .donations-card {
+    background: rgba(255, 255, 255, 0.78);
+    border: 3px solid var(--border);
+    border-radius: 22px;
+    box-shadow: 8px 8px 0px var(--border);
+    padding: 1.15rem 1.25rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .donations-left {
+    display: flex;
+    align-items: center;
+    gap: 0.95rem;
+    min-width: 0;
+  }
+
+  .donations-logo {
+    width: 54px;
+    height: 54px;
+    object-fit: contain;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.7);
+    border: 2px solid rgba(30, 18, 16, 0.12);
+  }
+
+  .donations-title {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    color: var(--info);
+    font-size: 1.25rem;
+    margin-bottom: 0.1rem;
+  }
+
+  .donations-subtitle {
+    color: var(--text-secondary);
+    font-weight: 700;
+    line-height: 1.4;
+  }
+
+  .donations-btn {
+    text-decoration: none;
+    border: 3px solid var(--border);
+    background: var(--warning);
+    color: var(--text-primary);
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    padding: 0.75rem 1.15rem;
+    border-radius: 16px;
+    box-shadow: 4px 4px 0px var(--border);
+    transition: transform 0.1s;
+    white-space: nowrap;
+  }
+
+  .donations-btn:hover {
+    transform: translateY(-2px);
+  }
+
+  @media (max-width: 700px) {
+    .donations-card {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .donations-btn {
+      width: 100%;
+      text-align: center;
+    }
   }
 </style>

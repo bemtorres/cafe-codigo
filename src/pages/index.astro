@@ -2,6 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import { courses } from '../data/courses';
 import logoPseint from '../assets/images/pseint.png';
+import imagen1 from '../assets/images/imagen1.png';
 ---
 
 <Layout
@@ -29,107 +30,47 @@ import logoPseint from '../assets/images/pseint.png';
         <div class="hero-pills">
           <span class="pill"><span class="pi">⚡</span> Para principiantes</span>
           <span class="pill"><span class="pi">🧩</span> Proyectos guiados</span>
-          <span class="pill"><span class="pi">🏅</span> Certificados</span>
+          <!-- <span class="pill"><span class="pi">🏅</span> Certificados</span> -->
         </div>
       </div>
 
       <div class="hero-right">
-        <div class="hero-card">
           <div class="hero-visual">
-            <svg viewBox="0 0 640 420" role="img" aria-label="Café y código" class="hero-svg">
-              <defs>
-                <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0" stop-color="#ffffff" stop-opacity="0.92" />
-                  <stop offset="1" stop-color="#f6f0ff" stop-opacity="0.85" />
-                </linearGradient>
-                <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
-                  <feDropShadow dx="0" dy="14" stdDeviation="18" flood-color="#1E1210" flood-opacity="0.10" />
-                </filter>
-              </defs>
-
-              <rect x="18" y="18" width="604" height="384" rx="26" fill="url(#g1)" stroke="rgba(30,18,16,0.08)" />
-
-              <!-- taza -->
-              <g filter="url(#shadow)">
-                <path
-                  d="M210 272c0 64 52 116 116 116h36c64 0 116-52 116-116v-92H210v92z"
-                  fill="#fff"
-                  stroke="rgba(30,18,16,0.12)"
-                  stroke-width="6"
-                />
-                <path
-                  d="M468 200h28c34 0 62 28 62 62s-28 62-62 62h-28"
-                  fill="none"
-                  stroke="rgba(30,18,16,0.16)"
-                  stroke-width="16"
-                  stroke-linecap="round"
-                />
-                <rect x="206" y="164" width="276" height="34" rx="17" fill="#fff" stroke="rgba(30,18,16,0.10)" stroke-width="6" />
-                <path d="M252 160c12-22 36-34 66-34h54c30 0 54 12 66 34" fill="none" stroke="#EF476F" stroke-width="10" stroke-linecap="round"/>
-                <path d="M286 112c-12-18-6-40 14-54" fill="none" stroke="#45B3E0" stroke-width="10" stroke-linecap="round"/>
-                <path d="M344 108c-10-18-6-38 12-52" fill="none" stroke="#06D6A0" stroke-width="10" stroke-linecap="round"/>
-                <path d="M402 112c-12-18-6-40 14-54" fill="none" stroke="#FFD166" stroke-width="10" stroke-linecap="round"/>
-              </g>
-
-              <!-- editor -->
-              <g filter="url(#shadow)">
-                <rect x="360" y="90" width="238" height="180" rx="20" fill="#151515" />
-                <rect x="360" y="90" width="238" height="44" rx="20" fill="#1f1f1f" />
-                <rect x="402" y="102" width="64" height="22" rx="11" fill="#ffffff" opacity="0.9" />
-                <rect x="470" y="102" width="92" height="22" rx="11" fill="#ffffff" opacity="0.55" />
-                <text x="420" y="118" fill="#111" font-size="12" font-family="Nunito, sans-serif" font-weight="800">Python</text>
-                <text x="490" y="118" fill="#111" font-size="12" font-family="Nunito, sans-serif" font-weight="800" opacity="0.65">JavaScript</text>
-                <text x="392" y="164" fill="#A1A1A1" font-size="14" font-family="JetBrains Mono, monospace"># Tu primer código</text>
-                <text x="392" y="194" fill="#A1A1A1" font-size="14" font-family="JetBrains Mono, monospace">Escribir "Hola, mundo";</text>
-                <text x="392" y="224" fill="#A1A1A1" font-size="14" font-family="JetBrains Mono, monospace">Leer nombre;</text>
-              </g>
-
-              <!-- listo -->
-              <g filter="url(#shadow)">
-                <rect x="380" y="290" width="220" height="84" rx="22" fill="#fff" stroke="rgba(30,18,16,0.08)" />
-                <circle cx="408" cy="322" r="12" fill="#06D6A0" />
-                <text x="428" y="328" fill="#2D2321" font-size="14" font-family="Nunito, sans-serif" font-weight="800">¡Listo para ejecutar!</text>
-                <rect x="404" y="344" width="172" height="10" rx="5" fill="rgba(30,18,16,0.08)" />
-                <rect x="404" y="344" width="138" height="10" rx="5" fill="url(#gradBar)" />
-              </g>
-
-              <defs>
-                <linearGradient id="gradBar" x1="0" y1="0" x2="1" y2="0">
-                  <stop offset="0" stop-color="#06D6A0" />
-                  <stop offset="0.55" stop-color="#45B3E0" />
-                  <stop offset="1" stop-color="#EF476F" />
-                </linearGradient>
-              </defs>
-            </svg>
-          </div>
+            <img
+              src={imagen1.src}
+              alt="Café y código"
+              class="hero-image"
+              loading="eager"
+              decoding="async"
+            />
         </div>
       </div>
     </section>
 
     <section class="features">
-      <div class="f-card">
+      <!-- <div class="f-card">
         <div class="f-ic peach">▶</div>
         <div>
           <h3>Aprendé haciendo</h3>
           <p>Ejercicios prácticos desde el primer día.</p>
         </div>
-      </div>
-      <div class="f-card">
+      </div> -->
+      <!-- <div class="f-card">
         <div class="f-ic blue">👥</div>
         <div>
           <h3>Comunidad activa</h3>
           <p>Compartí avances y resolvé dudas.</p>
         </div>
-      </div>
-      <div class="f-card">
+      </div> -->
+      <!-- <div class="f-card">
         <div class="f-ic pink">🏅</div>
         <div>
           <h3>Certificados</h3>
           <p>Validá tus habilidades con proyectos.</p>
         </div>
-      </div>
+      </div> -->
 
-      <div class="progress">
+      <!-- <div class="progress">
         <div class="p-top">
           <strong>Tu progreso esta semana</strong>
           <a href="/pseint/">Ver todo</a>
@@ -143,7 +84,7 @@ import logoPseint from '../assets/images/pseint.png';
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
     </section>
   </div>
 
@@ -151,37 +92,57 @@ import logoPseint from '../assets/images/pseint.png';
     <h2 class="section-title">Cursos disponibles</h2>
     <div class="cards-grid">
       {courses.map((course, i) => (
-        <a href={`/${course.slug}/`} style="text-decoration: none; color: inherit;">
+        <a
+          href={course.status === 'coming' ? '#' : `/${course.slug}/`}
+          style="text-decoration: none; color: inherit;"
+          data-coming={course.status === 'coming' ? 'true' : 'false'}
+          data-course-name={course.name}
+        >
           <div class="card-fun" style={`background-color: ${i % 2 === 0 ? 'var(--bg-tertiary)' : 'var(--bg-secondary)'};`}>
             {course.status === 'coming' && <div class="tag-fun">Próximamente</div>}
             
-            {course.slug === 'pseint' && (
-              <img
-                class="card-course-logo"
-                src={logoPseint.src}
-                alt=""
-                width="64"
-                height="64"
-                loading="lazy"
-                decoding="async"
-              />
-            )}
-            {course.slug === 'python' && <div class="card-emoji">🐍</div>}
-            {course.slug === 'java' && <div class="card-emoji">☕</div>}
-            {course.slug === 'ejercicios' && <div class="card-emoji">✅</div>}
+              {/* {course.slug === 'pseint' && (
+                <img
+                  class="card-course-logo"
+                  src={logoPseint.src}
+                  alt=""
+                  width="64"
+                  height="64"
+                  loading="lazy"
+                  decoding="async"
+                />
+              )} */}
+            {/* {course.slug === 'python' && <div class="card-emoji">🐍</div>} */}
+            {/* {course.slug === 'java' && <div class="card-emoji">☕</div>} */}
+            {/* {course.slug === 'ejercicios' && <div class="card-emoji">✅</div>} */}
             
             <h3>{course.name}</h3>
             <p>{course.description}</p>
             
-            {course.lessons && (
+            {/* {course.lessons && (
               <div class="lessons-badge">🎯 {course.lessons.length} Niveles</div>
-            )}
+            )} */}
           </div>
         </a>
       ))}
     </div>
   </div>
 
+  <div id="comingCoursesModal" class="coming-courses-modal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="coming-courses-modal__overlay" data-close-coming-modal="1"></div>
+    <div class="coming-courses-modal__content">
+      <div class="coming-courses-modal__header">
+        <h3 id="comingCoursesTitle" class="coming-courses-modal__title">Próximamente</h3>
+        <button type="button" class="coming-courses-modal__close" data-close-coming-modal="1" aria-label="Cerrar modal">
+          ✕
+        </button>
+      </div>
+      <p id="comingCoursesText" class="coming-courses-modal__text">
+        Este curso estará disponible pronto.
+      </p>
+    </div>
+  </div>
+<!-- 
   <section class="cta">
     <div class="cta-inner">
       <div class="cta-left">
@@ -193,7 +154,7 @@ import logoPseint from '../assets/images/pseint.png';
         <a class="cta-btn" href="/pseint/">Comenzar ahora</a>
       </form>
     </div>
-  </section>
+  </section> -->
 </Layout>
 
 <style>
@@ -212,14 +173,43 @@ import logoPseint from '../assets/images/pseint.png';
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 2.25rem;
-    align-items: center;
+    align-items: stretch;
     padding: 1.25rem 0 1.8rem;
   }
   @media (max-width: 980px) {
     .hero {
       grid-template-columns: 1fr;
       gap: 1.4rem;
+      align-items: center;
     }
+  }
+
+  /* Ajusta para que izquierda/derecha mantengan proporciones visuales parecidas */
+  .hero-left {
+    display: flex;
+    flex-direction: column;
+  }
+  .hero-right {
+    display: flex;
+    align-items: stretch;
+  }
+  .hero-card {
+    width: 100%;
+    flex: 1;
+    display: flex;
+  }
+  .hero-visual {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .hero-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    border-radius: 18px;
   }
 
   h1 {
@@ -319,7 +309,7 @@ import logoPseint from '../assets/images/pseint.png';
     border-radius: 22px;
     padding: 0.7rem;
   }
-  .hero-svg { width: 100%; height: auto; display: block; }
+  .hero-image { width: 100%; height: auto; display: block; border-radius: 18px; }
 
   .features {
     display: grid;
@@ -506,4 +496,115 @@ import logoPseint from '../assets/images/pseint.png';
     text-decoration: none;
     box-shadow: 0 14px 28px rgba(30, 18, 16, 0.18);
   }
+
+  /* Modal para cursos "coming" */
+  .coming-courses-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1100;
+    display: none;
+  }
+
+  .coming-courses-modal.is-open {
+    display: block;
+  }
+
+  .coming-courses-modal__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+  }
+
+  .coming-courses-modal__content {
+    position: relative;
+    max-width: 520px;
+    margin: 10vh auto 0;
+    background: white;
+    border: 3px solid var(--border);
+    border-radius: 22px;
+    box-shadow: 0 28px 80px rgba(30, 18, 16, 0.25);
+    padding: 1.25rem;
+  }
+
+  .coming-courses-modal__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .coming-courses-modal__title {
+    margin: 0;
+    font-size: 1.35rem;
+    color: var(--info);
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+  }
+
+  .coming-courses-modal__close {
+    width: 42px;
+    height: 42px;
+    border-radius: 999px;
+    border: 2px solid var(--border);
+    background: rgba(255, 255, 255, 0.9);
+    cursor: pointer;
+    font-size: 1.05rem;
+    font-weight: 900;
+  }
+
+  .coming-courses-modal__text {
+    margin: 0;
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    font-weight: 700;
+  }
+
+  @media (max-width: 600px) {
+    .coming-courses-modal__content {
+      margin-top: 6vh;
+      width: calc(100% - 1.5rem);
+    }
+  }
 </style>
+
+<script is:inline>
+  (function () {
+    const modal = document.getElementById('comingCoursesModal');
+    if (!modal) return;
+
+    const titleEl = document.getElementById('comingCoursesTitle');
+    const textEl = document.getElementById('comingCoursesText');
+
+    const close = () => {
+      modal.classList.remove('is-open');
+      modal.setAttribute('aria-hidden', 'true');
+      document.documentElement.style.overflow = '';
+    };
+
+    const open = (courseName) => {
+      const name = courseName ? String(courseName) : '';
+      titleEl.textContent = 'Próximamente';
+      textEl.textContent = name ? `El curso "${name}" estará disponible pronto.` : 'Este curso estará disponible pronto.';
+      modal.classList.add('is-open');
+      modal.setAttribute('aria-hidden', 'false');
+      document.documentElement.style.overflow = 'hidden';
+    };
+
+    document.querySelectorAll('[data-coming="true"]').forEach((a) => {
+      a.addEventListener('click', (e) => {
+        e.preventDefault();
+        open(a.getAttribute('data-course-name') || '');
+      });
+    });
+
+    modal.querySelectorAll('[data-close-coming-modal="1"]').forEach((el) => {
+      el.addEventListener('click', close);
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') close();
+    });
+  })();
+</script>

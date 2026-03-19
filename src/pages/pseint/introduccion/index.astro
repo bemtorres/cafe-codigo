@@ -1,6 +1,7 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
 import CodeBlock from '../../../components/CodeBlock.astro';
+import PseintQuizModal from '../../../components/PseintQuizModal.astro';
 ---
 
 <Layout title="Introducción" description="Introducción a PSeInt y configuración flexible" courseSlug="pseint">
@@ -107,6 +108,8 @@ FinAlgoritmo`}
         <li>¿Cómo debe terminar cada instrucción en PSeInt?</li>
       </ol>
     </section>
+
+    <PseintQuizModal quizKey="introduccion" />
 
     <nav class="nav-bottom">
       <a href="/pseint/" class="prev">← Curso PSeInt</a>

@@ -2,6 +2,7 @@
 import Layout from '../../../layouts/Layout.astro';
 import CodeBlock from '../../../components/CodeBlock.astro';
 import Ejercicio from '../../../components/Ejercicio.astro';
+import PseintQuizModal from '../../../components/PseintQuizModal.astro';
 ---
 
 <Layout title="Leer" description="Entrada de datos con Leer y ejercicios prácticos" courseSlug="pseint">
@@ -123,6 +124,8 @@ FinAlgoritmo`}
         pregunta="Reflexiona sobre la validación de datos de entrada."
       />
     </section>
+
+    <PseintQuizModal quizKey="leer" />
 
     <nav class="nav-bottom">
       <a href="/pseint/variables/" class="prev">← Variables</a>

@@ -2,6 +2,7 @@
 import Layout from '../../../layouts/Layout.astro';
 import CodeBlock from '../../../components/CodeBlock.astro';
 import Ejercicio from '../../../components/Ejercicio.astro';
+import PseintQuizModal from '../../../components/PseintQuizModal.astro';
 ---
 
 <Layout title="Variables" description="Definición de variables, escribir con concatenaciones y ejercicios" courseSlug="pseint">
@@ -124,6 +125,8 @@ FinAlgoritmo`}
         pregunta="Explica la importancia de la declaración de variables."
       />
     </section>
+
+    <PseintQuizModal quizKey="variables" />
 
     <nav class="nav-bottom">
       <a href="/pseint/introduccion/" class="prev">← Introducción</a>

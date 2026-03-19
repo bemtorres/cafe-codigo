@@ -2,6 +2,7 @@
 import Layout from '../../../layouts/Layout.astro';
 import CodeBlock from '../../../components/CodeBlock.astro';
 import Ejercicio from '../../../components/Ejercicio.astro';
+import PseintQuizModal from '../../../components/PseintQuizModal.astro';
 ---
 
 <Layout title="Matemáticas" description="Operaciones aritméticas y ejercicios matemáticos en PSeInt" courseSlug="pseint">
@@ -156,6 +157,8 @@ FinAlgoritmo`}
         pregunta="Piensa en los posibles valores que puede tener el área."
       />
     </section>
+
+    <PseintQuizModal quizKey="matematicas" />
 
     <nav class="nav-bottom">
       <a href="/pseint/leer/" class="prev">← Leer</a>
