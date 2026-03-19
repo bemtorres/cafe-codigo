@@ -3,6 +3,7 @@ import '../styles/global.css';
 import { courses } from '../data/courses';
 import logoCafeycodigo from '../assets/images/cafeycodigo.png';
 import logoPseint from '../assets/images/pseint.png';
+import ogLogo from '../assets/images/logo-cafecodigo.png';
 
 interface Props {
   title: string;
@@ -27,6 +28,14 @@ const KO_FI_LOGO_URL = 'https://storage.ko-fi.com/cdn/kofi3.png?v=3';
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width" />
     <meta name="description" content={description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content={ogLogo.src} />
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:title" content={title} />
+    <meta property="twitter:description" content={description} />
+    <meta property="twitter:image" content={ogLogo.src} />
     <meta name="generator" content={Astro.generator} />
     <title>{title} | cafeycodigo</title>
     <script is:inline>
