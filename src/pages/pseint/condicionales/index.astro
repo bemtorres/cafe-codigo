@@ -1,0 +1,203 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import CodeBlock from '../../../components/CodeBlock.astro';
+import Ejercicio from '../../../components/Ejercicio.astro';
+---
+
+<Layout title="Condicionales" description="Estructuras condicionales con Si y ejercicios" courseSlug="pseint">
+  <article class="content-section">
+    <h1>Si - Estructuras condicionales</h1>
+
+    <section class="mb-10">
+      <h2>¿Qué es una condición?</h2>
+      <p>
+        Las estructuras condicionales permiten que el programa tome decisiones. Según si una condición es 
+        verdadera o falsa, se ejecuta un bloque de código u otro.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Operadores de comparación</h2>
+      <table class="content-table">
+        <thead>
+          <tr>
+            <th>Operador</th>
+            <th>Significado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="mono">=</td>
+            <td>Igual a</td>
+          </tr>
+          <tr>
+            <td class="mono">&lt;&gt;</td>
+            <td>Diferente de</td>
+          </tr>
+          <tr>
+            <td class="mono">&gt;</td>
+            <td>Mayor que</td>
+          </tr>
+          <tr>
+            <td class="mono">&lt;</td>
+            <td>Menor que</td>
+          </tr>
+          <tr>
+            <td class="mono">&gt;=</td>
+            <td>Mayor o igual que</td>
+          </tr>
+          <tr>
+            <td class="mono">&lt;=</td>
+            <td>Menor o igual que</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="mb-10">
+      <h2>Sintaxis: Si - Entonces - FinSi</h2>
+      <CodeBlock
+        code={`Si condicion Entonces
+  // Código si la condición es verdadera
+  Escribir "La condición se cumple";
+FinSi`}
+        title="Estructura básica"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Si - Sino - FinSi</h2>
+      <CodeBlock
+        code={`Si edad >= 18 Entonces
+  Escribir "Eres mayor de edad";
+Sino
+  Escribir "Eres menor de edad";
+FinSi`}
+        title="Con alternativa (Sino)"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Ejemplo completo</h2>
+      <CodeBlock
+        code={`Algoritmo MayorDeEdad
+  Definir edad Como Entero;
+  Escribir "¿Cuántos años tienes?";
+  Leer edad;
+  Si edad >= 18 Entonces
+    Escribir "Puedes votar";
+  Sino
+    Escribir "Aún no puedes votar";
+  FinSi
+FinAlgoritmo`}
+        title="Ejemplo práctico"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Ejercicios con Si</h2>
+
+      <Ejercicio
+        titulo="Ejercicio 1: Número positivo o negativo"
+        enunciado="Pide un número al usuario. Si es positivo, escribe 'Es positivo'. Si es negativo, escribe 'Es negativo'. Si es cero, escribe 'Es cero'."
+        solucion={`Algoritmo PositivoNegativo
+  Definir num Como Entero;
+  Escribir "Ingresa un número:";
+  Leer num;
+  Si num > 0 Entonces
+    Escribir "Es positivo";
+  Sino
+    Si num < 0 Entonces
+      Escribir "Es negativo";
+    Sino
+      Escribir "Es cero";
+    FinSi
+  FinSi
+FinAlgoritmo`}
+      />
+
+      <Ejercicio
+        titulo="Ejercicio 2: Aprobado o reprobado"
+        enunciado="Pide una nota (0-10). Si la nota es mayor o igual a 5, escribe 'Aprobado'. Sino, escribe 'Reprobado'."
+        solucion={`Algoritmo AprobadoReprobado
+  Definir nota Como Real;
+  Escribir "Ingresa tu nota:";
+  Leer nota;
+  Si nota >= 5 Entonces
+    Escribir "Aprobado";
+  Sino
+    Escribir "Reprobado";
+  FinSi
+FinAlgoritmo`}
+      />
+
+      <Ejercicio
+        titulo="Ejercicio 3: Mayor de dos números"
+        enunciado="Pide dos números y muestra cuál es el mayor. Si son iguales, indica que son iguales."
+        solucion={`Algoritmo MayorDeDos
+  Definir num1 Como Entero;
+  Definir num2 Como Entero;
+  Escribir "Primer número:";
+  Leer num1;
+  Escribir "Segundo número:";
+  Leer num2;
+  Si num1 > num2 Entonces
+    Escribir "El mayor es: ", num1;
+  Sino
+    Si num2 > num1 Entonces
+      Escribir "El mayor es: ", num2;
+    Sino
+      Escribir "Son iguales";
+    FinSi
+  FinSi
+FinAlgoritmo`}
+      />
+
+      <Ejercicio
+        titulo="Ejercicio 4: Descuento por edad"
+        enunciado="Pide la edad del cliente. Si tiene más de 65 años, aplica 20% de descuento. Pide también el precio del producto y muestra el precio final."
+        solucion={`Algoritmo DescuentoEdad
+  Definir edad Como Entero;
+  Definir precio Como Real;
+  Definir precioFinal Como Real;
+  Escribir "Edad del cliente:";
+  Leer edad;
+  Escribir "Precio del producto:";
+  Leer precio;
+  Si edad > 65 Entonces
+    precioFinal = precio * 0.8;
+    Escribir "Descuento aplicado. Precio final: ", precioFinal;
+  Sino
+    Escribir "Precio: ", precio;
+  FinSi
+FinAlgoritmo`}
+      />
+
+      <Ejercicio
+        titulo="Ejercicio 5: Par o impar"
+        enunciado="Pide un número entero y determina si es par o impar. (Un número es par si el resto de dividirlo entre 2 es 0. En PSeInt: num MOD 2 = 0)"
+        solucion={`Algoritmo ParImpar
+  Definir num Como Entero;
+  Escribir "Ingresa un número:";
+  Leer num;
+  Si num MOD 2 = 0 Entonces
+    Escribir "El número es par";
+  Sino
+    Escribir "El número es impar";
+  FinSi
+FinAlgoritmo`}
+      />
+
+      <Ejercicio
+        titulo="Ejercicio 6: Pregunta"
+        enunciado="¿Cuál es la diferencia entre usar varios Si anidados y usar Si-SinoSi-Sino?"
+        pregunta="Investiga la estructura Si-SinoSi en PSeInt."
+      />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/pseint/matematicas/" class="prev">← Matemáticas</a>
+      <a href="/" class="next">Todos los cursos →</a>
+    </nav>
+  </article>
+</Layout>

@@ -1,0 +1,31 @@
+---
+import CodeBlock from './CodeBlock.astro';
+interface Props {
+  titulo: string;
+  enunciado: string;
+  solucion?: string;
+  pregunta?: string;
+}
+
+const { titulo, enunciado, solucion, pregunta } = Astro.props;
+---
+
+<article class="ejercicio">
+  <h3>{titulo}</h3>
+  <p class="enunciado">{enunciado}</p>
+  {pregunta && (
+    <div class="pregunta-box">
+      <p class="pregunta-label">Pregunta:</p>
+      <p>{pregunta}</p>
+    </div>
+  )}
+  {solucion && (
+    <details>
+      <summary>Ver solución</summary>
+      <div style="margin-top: 1rem;">
+        <CodeBlock code={solucion} />
+      </div>
+    </details>
+  )}
+</article>
+

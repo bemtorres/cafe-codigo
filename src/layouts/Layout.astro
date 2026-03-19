@@ -1,0 +1,330 @@
+---
+import '../styles/global.css';
+import { courses } from '../data/courses';
+
+interface Props {
+  title: string;
+  description?: string;
+  courseSlug?: string;
+}
+
+const { title, description = "Aprende a programar gratis con cursos paso a paso", courseSlug } = Astro.props;
+const currentCourse = courseSlug ? courses.find((c) => c.slug === courseSlug) : null;
+const currentPath = Astro.url.pathname;
+---
+
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title} | cafeycodigo</title>
+  </head>
+  <body>
+    <header class="site-header">
+      <nav class="site-nav">
+        <!-- Barra Superior: Logo y (si hay curso) Nombre del Curso -->
+        <div class="nav-top">
+          <a href="/" class="logo">☕ cafeycodigo</a>
+          {currentCourse && (
+            <div class="nav-top-actions">
+              <span class="course-badge-header">{currentCourse.name}</span>
+              {currentCourse.slug === 'pseint' && (
+                <a href="/pseint/simulador/" class="btn-simulator-top">▶ Simulador</a>
+              )}
+            </div>
+          )}
+          {!currentCourse && (
+            <div class="nav-top-actions">
+              <a class="btn-github-top" href="https://github.com/bemtorres/cafe-codigo" target="_blank" rel="noreferrer">
+                GitHub
+              </a>
+            </div>
+          )}
+        </div>
+
+        {!currentCourse?.lessons?.length && (
+          <ul class="nav-links">
+            <li><a href="/">Cursos</a></li>
+            <li><a href="/pseint/" class={currentCourse?.slug === 'pseint' ? 'active' : ''}>PSeInt</a></li>
+            <li><a href="/python/">Python</a></li>
+            <li><a href="/java/">Java</a></li>
+          </ul>
+        )}
+      </nav>
+    </header>
+
+    <div class="page-wrapper">
+      <!-- SIDEBAR LATERAL -->
+      {currentCourse?.lessons?.length && (
+        <aside class="course-sidebar">
+          <div class="sidebar-inner">
+            <h3 class="sidebar-title">🎯 Contenido</h3>
+            <ul class="sidebar-lessons">
+              {currentCourse.lessons.filter(lesson => !lesson.href.includes('simulador')).map((lesson) => (
+                <li>
+                  <a href={lesson.href} class={`sidebar-link ${currentPath === lesson.href ? 'active' : ''}`}>
+                    {lesson.title}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </aside>
+      )}
+
+      <!-- CONTENIDO PRINCIPAL -->
+      <main class="site-main">
+        <slot />
+      </main>
+    </div>
+
+    <!-- <footer class="site-footer">
+      <div class="footer-content">
+        ✏️ Serie de cursos: PSeInt → Python → Java — ¡Aprender es divertido!
+      </div>
+      <div style="font-size: 3rem; text-align: center; margin-top: 1rem;">🚀🎮</div>
+    </footer> -->
+  </body>
+</html>
+
+<style is:global>
+  .site-header {
+    position: sticky;
+    top: 0.5rem;
+    z-index: 50;
+    margin: 0 1rem;
+  }
+  .site-nav {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0.75rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    border: 3px solid var(--border);
+    border-radius: 16px;
+    box-shadow: 4px 4px 0px var(--border);
+  }
+  
+  @media (max-width: 600px) {
+    .site-nav {
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+  }
+
+  .nav-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+  }
+  .btn-github-top {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    background: white;
+    border: 3px solid var(--border);
+    border-radius: 12px;
+    padding: 0.5rem 0.85rem;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    color: var(--text-primary);
+    box-shadow: 4px 4px 0px var(--border);
+    transition: transform 0.1s, background 0.1s;
+  }
+  .btn-github-top:hover {
+    background: var(--bg-secondary);
+    transform: translateY(-1px);
+  }
+  .btn-github-top:active {
+    transform: translate(4px, 4px);
+    box-shadow: 0px 0px 0px var(--border);
+  }
+  
+  .nav-top-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  /* Botón especial del simulador en cabecera */
+  .btn-simulator-top {
+    background: var(--warning);
+    color: var(--text-primary);
+    padding: 0.35rem 0.8rem;
+    border-radius: 999px;
+    font-weight: 800;
+    text-decoration: none;
+    border: 2px solid var(--border);
+    box-shadow: 2px 2px 0px var(--border);
+    font-size: 0.85rem;
+    font-family: 'Nunito', sans-serif;
+    transition: all 0.1s;
+  }
+  .btn-simulator-top:hover {
+    transform: translateY(-2px);
+    background: #ffdb4d;
+  }
+  .btn-simulator-top:active {
+    transform: translate(2px, 2px);
+    box-shadow: 0px 0px 0px var(--border);
+  }
+
+  .logo {
+    font-size: 1.5rem;
+    color: var(--accent);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+  }
+  .logo:hover { transform: translateY(-2px); }
+
+  .course-badge-header {
+    background: var(--bg-tertiary);
+    color: var(--info);
+    border: 2px solid var(--info);
+    padding: 0.2rem 0.8rem;
+    border-radius: 999px;
+    font-size: 0.9rem;
+    font-weight: 800;
+    font-family: 'Nunito', sans-serif;
+  }
+  
+  .nav-links {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .nav-links a {
+    color: var(--text-primary);
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 700;
+    transition: transform 0.1s;
+  }
+  .nav-links a:hover,
+  .nav-links a.active { color: var(--info); transform: translateY(-2px); }
+
+  /* --- Estructura con Sidebar --- */
+  .page-wrapper {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    align-items: flex-start;
+    gap: 2rem;
+    padding: 2rem 1rem;
+  }
+
+  .course-sidebar {
+    width: 250px;
+    flex-shrink: 0;
+  }
+
+  .sidebar-inner {
+    position: sticky;
+    top: 6.5rem; /* Justo debajo del navbar pegajoso */
+    background: white;
+    border: 3px solid var(--border);
+    border-radius: 20px;
+    padding: 1.5rem;
+    box-shadow: 4px 4px 0px var(--border);
+  }
+
+  .sidebar-title {
+    font-size: 1.2rem;
+    color: var(--info);
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px dashed var(--border);
+  }
+
+  .sidebar-lessons {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .sidebar-link {
+    display: block;
+    padding: 0.6rem 1rem;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.95rem;
+    border-radius: 12px;
+    border: 2px solid var(--border);
+    transition: all 0.1s;
+  }
+  .sidebar-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 2px 2px 0px var(--border);
+    background: var(--bg-secondary);
+  }
+  .sidebar-link:active {
+    transform: translate(2px, 2px);
+    box-shadow: 0px 0px 0px var(--border);
+  }
+  /* Estilo cuando la lección es la actual */
+  .sidebar-link.active {
+    background: var(--success);
+    color: white;
+  }
+
+  .site-main {
+    flex: 1;
+    min-width: 0;
+  }
+
+  /* Responsive para Mobile: Sidebar pasa arriba de todo como cajita */
+  @media (max-width: 900px) {
+    .page-wrapper {
+      flex-direction: column;
+      padding: 1rem;
+      gap: 1.5rem;
+    }
+    .course-sidebar {
+      width: 100%;
+    }
+    .sidebar-inner {
+      position: relative;
+      top: 0;
+    }
+    .sidebar-lessons {
+      flex-direction: row;
+      flex-wrap: wrap;
+    }
+  }
+  
+  .site-footer {
+    border-top: 3px dashed var(--border);
+    margin-top: 3rem;
+    padding: 3rem 1.5rem;
+    background: var(--bg-tertiary);
+  }
+  .footer-content {
+    max-width: 1100px;
+    margin: 0 auto;
+    text-align: center;
+    color: var(--text-primary);
+    font-size: 1.1rem;
+    font-weight: 700;
+  }
+</style>

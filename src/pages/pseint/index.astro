@@ -1,0 +1,62 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { courses } from '../../data/courses';
+---
+
+<Layout title="Curso PSeInt" description="Guía completa de PSeInt" courseSlug="pseint">
+  <div class="content-section" style="background: var(--bg-tertiary);">
+    <h1 class="course-big-title">💻 Curso de PSeInt</h1>
+    <p class="course-subtitle">
+      Aprende los fundamentos de la programación con pseudocódigo en español: variables, entrada de datos, operaciones matemáticas y estructuras condicionales.
+    </p>
+  </div>
+
+  <section class="cards-grid" style="margin-top: 4rem;">
+    <a href="/pseint/introduccion/" class="card-fun" style="background: white;">
+      <h2>1. Introducción 🚀</h2>
+      <p>¿Qué es PSeInt? Configuración flexible y reglas básicas del pseudocódigo.</p>
+    </a>
+    <a href="/pseint/variables/" class="card-fun" style="background: var(--bg-secondary);">
+      <h2>2. Variables 📦</h2>
+      <p>Definición de variables, escribir con concatenaciones y ejercicios básicos.</p>
+    </a>
+    <a href="/pseint/leer/" class="card-fun" style="background: #FFE0E9;">
+      <h2>3. Leer 🎤</h2>
+      <p>Entrada de datos con Leer para interactuar con el usuario y ejercicios prácticos.</p>
+    </a>
+    <a href="/pseint/matematicas/" class="card-fun" style="background: #E8F5E9;">
+      <h2>4. Matemáticas 🧮</h2>
+      <p>Operaciones aritméticas, suma, resta, porcentajes y problemas matemáticos.</p>
+    </a>
+    <a href="/pseint/condicionales/" class="card-fun" style="background: #FFF3E0;">
+      <h2>5. Si (Condicionales) 🔀</h2>
+      <p>Estructuras de decisión. ¡Enseña a la computadora a tomar rutas distintas!</p>
+    </a>
+    <a href="/pseint/simulador/" class="card-fun" style="background: var(--info); color: white; border-color: var(--border);">
+      <h2 style="color: white; text-shadow: 2px 2px 0px var(--border);">6. Simulador 🕹️</h2>
+      <p style="color: rgba(255,255,255,0.9);">Ejecuta pseudocódigo directamente en el navegador sin instalar nada.</p>
+    </a>
+    <a href="/pseint/ayuda/" class="card-fun" style="background: var(--border); color: white;">
+      <h2 style="color: var(--warning);">7. Ayuda / Guía 🆘</h2>
+      <p style="color: #ccc;">Referencia rápida de comandos, tipos de datos y operadores.</p>
+    </a>
+  </section>
+
+  <nav class="nav-bottom">
+    <a href="/" class="prev">← Menu Principal</a>
+    <a href="/pseint/introduccion/" class="next">¡Empezar Introducción! 👾</a>
+  </nav>
+</Layout>
+
+<style>
+  .course-big-title {
+    font-size: 3.5rem;
+  }
+  .course-subtitle {
+    font-size: 1.4rem;
+  }
+  @media (max-width: 600px) {
+    .course-big-title { font-size: 2.2rem; margin-bottom: 1rem; }
+    .course-subtitle { font-size: 1.15rem; line-height: 1.5; }
+  }
+</style>

@@ -1,0 +1,335 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@600;800&family=Quicksand:wght@500;700&family=JetBrains+Mono:wght@500;700&display=swap');
+
+:root {
+  /* Tema Alegre (App 3 / Dulce) */
+  --bg-primary: #FFFDF7; /* Crema */
+  --bg-secondary: #FFF9C4; /* Base amarilla suave */
+  --bg-tertiary: #E0F7FA;  /* Celeste clarito */
+  --border: #1E1210;
+  
+  --text-primary: #2D2321;
+  --text-secondary: #4A3A37;
+  --text-muted: #6B5B58;
+  
+  --accent: #EF476F; /* Rosa fuerte */
+  --accent-hover: #D81B60;
+  --warning: #FFD166; /* Amarillo fuerte */
+  --success: #06D6A0; /* Verde brillante */
+  --info: #45B3E0;    /* Azul tech alegre */
+
+  --surface-1: #FFFFFF;
+  --surface-2: #FFF9C4;
+  --surface-3: #E0F7FA;
+
+  /* Estilos código Neo-brutalist oscuros */
+  --code-bg: #1A1A1A;
+  --code-border: #1E1210;
+  --code-text: #F2F2F2;
+  --code-muted: #A1A1A1;
+  --code-accent: #06D6A0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'Quicksand', system-ui, sans-serif;
+  background-image: radial-gradient(var(--warning) 1px, transparent 1px);
+  background-size: 24px 24px;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, strong {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800;
+}
+
+code, pre {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 500;
+}
+
+a {
+  transition: transform 0.2s, color 0.2s;
+}
+
+/* -- Content Section Wrapper -- */
+.content-section {
+  margin-bottom: 3rem;
+  background: white;
+  border: 3px solid var(--border);
+  border-radius: 24px;
+  padding: 2.5rem;
+  box-shadow: 6px 6px 0px var(--border);
+}
+
+.content-section h1 { font-size: 2.5rem; margin-bottom: 1.5rem; color: var(--info); text-shadow: 2px 2px 0px var(--border); }
+.content-section h2 { font-size: 1.8rem; color: var(--text-primary); margin-bottom: 1.2rem; }
+.content-section h3 { font-size: 1.4rem; color: var(--accent); margin-bottom: 1rem; }
+.content-section p { font-size: 1.15rem; color: var(--text-secondary); margin-bottom: 1.25rem; line-height: 1.7; font-weight: 500; }
+.content-section ul { font-size: 1.15rem; color: var(--text-secondary); margin-bottom: 1.5rem; padding-left: 2rem; }
+.content-section li { margin-bottom: 0.75rem; font-weight: 500;}
+
+/* Code Inline (Sólo inline, excluye bloques) */
+.content-section p code, 
+.content-section li code, 
+.ejercicio p code, 
+.ejercicio li code,
+.ejercicio span code {
+  color: white;
+  background: var(--text-primary);
+  padding: 0.25rem 0.5rem;
+  border-radius: 8px;
+  border: 2px solid var(--border);
+}
+
+/* Code Editor Blocks Genéricos */
+.content-section pre,
+.ejercicio pre {
+  background: var(--code-bg);
+  border: 3px solid var(--border);
+  border-radius: 16px;
+  padding: 1.5rem;
+  overflow-x: auto;
+  box-shadow: 4px 4px 0px var(--border);
+  font-size: 0.95rem;
+  margin: 1.5rem 0;
+}
+
+.content-section pre code,
+.ejercicio pre code {
+  color: var(--code-text);
+  background: none;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+}
+
+/* Code Block */
+.code-block {
+  margin: 2rem 0;
+  border: 3px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 4px 4px 0px var(--border);
+}
+.code-block-title {
+  font-size: 1rem;
+  color: #111;
+  background: var(--warning);
+  padding: 0.6rem 1rem;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800;
+  border-bottom: 3px solid var(--border);
+}
+.code-block pre {
+  background: var(--code-bg);
+  padding: 1.5rem;
+  overflow-x: auto;
+  font-size: 0.95rem;
+  margin: 0;
+}
+.code-block pre code {
+  color: var(--code-text);
+  background: none;
+  padding: 0;
+  border: none;
+}
+
+/* Ejercicio component */
+.ejercicio {
+  border: 3px solid var(--border);
+  border-radius: 20px;
+  padding: 2rem;
+  margin: 2.5rem 0;
+  background: #E8F5E9; /* Un verde pastel bonito */
+  box-shadow: 5px 5px 0px var(--border);
+}
+.ejercicio h3 { color: var(--success); text-shadow: 1px 1px 0px var(--border); font-size: 1.8rem; margin-bottom: 1rem; }
+.ejercicio .enunciado { font-size: 1.2rem; color: var(--text-primary); font-weight: 700; margin-bottom: 1.5rem; }
+.ejercicio .pregunta-box {
+  background: white;
+  border: 2px dashed var(--border);
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+.ejercicio .pregunta-label { font-size: 1.2rem; color: var(--info); }
+.ejercicio details {
+  margin-top: 1.5rem;
+  background: white;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem;
+}
+.ejercicio summary {
+  cursor: pointer;
+  color: var(--text-primary);
+  font-size: 1.1rem;
+  font-weight: 800;
+  font-family: 'Nunito', sans-serif;
+}
+.ejercicio details pre { margin-top: 1rem; }
+/* Table */
+.content-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 3px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden; /* For border radius */
+  margin: 2rem 0;
+  box-shadow: 5px 5px 0px var(--border);
+  background: white;
+}
+.content-table th, .content-table td {
+  border-bottom: 2px solid var(--border);
+  border-right: 2px solid var(--border);
+  padding: 1rem 1.25rem;
+  text-align: left;
+  font-weight: 500;
+  font-size: 1.1rem;
+}
+.content-table th {
+  background: var(--info);
+  color: white;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800;
+  text-shadow: 1px 1px 0px var(--border);
+}
+.content-table tr:last-child td { border-bottom: none; }
+.content-table th:last-child, .content-table td:last-child { border-right: none; }
+.content-table .mono { font-family: 'JetBrains Mono', monospace; font-weight: 700; color: var(--accent); background: none; border: none;}
+
+/* Botones universales Nav Bottom */
+.nav-bottom {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 4rem;
+  justify-content: space-between;
+}
+.nav-bottom a {
+  padding: 0.8rem 1.5rem;
+  border: 3px solid var(--border);
+  border-radius: 16px;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800;
+  font-size: 1.1rem;
+  text-decoration: none;
+  background: white;
+  color: var(--text-primary);
+  box-shadow: 4px 4px 0px var(--border);
+}
+.nav-bottom a:hover { transform: translateY(-3px); }
+.nav-bottom a:active { transform: translate(3px, 3px); box-shadow: 0 0 0 var(--border); }
+.nav-bottom .next { background: var(--success); color: white; }
+
+/* Grid Cards Generales */
+.cards-grid { display: grid; gap: 1rem; }
+@media (min-width: 640px) { .cards-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1024px) { .cards-grid { grid-template-columns: repeat(4, 1fr); } }
+
+/* Cards Alegres */
+.card-fun {
+  background: white;
+  border: 3px solid var(--border);
+  border-radius: 24px;
+  padding: 1.35rem;
+  box-shadow: 6px 6px 0px var(--border);
+  transition: transform 0.2s;
+  cursor: pointer;
+  position: relative;
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+.card-fun:hover { transform: translateY(-5px); }
+.card-fun h2, .card-fun h3 { font-size: 1.2rem; margin-bottom: 0.5rem; color: var(--text-primary); }
+.card-fun p {
+  font-size: 0.95rem;
+  font-weight: 650;
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.tag-fun {
+  position: absolute;
+  top: -15px;
+  right: 20px;
+  background: var(--border);
+  color: white;
+  border: 3px solid var(--border);
+  border-radius: 12px;
+  padding: 0.35rem 0.75rem;
+  font-weight: 800;
+  font-family: 'Nunito', sans-serif;
+  box-shadow: 2px 2px 0px var(--text-secondary);
+}
+
+.lessons-badge {
+  display: inline-block;
+  margin-top: 1.5rem;
+  font-weight: 800;
+  color: var(--info);
+  background: white;
+  border: 2px solid var(--info);
+  padding: 0.4rem 0.8rem;
+  border-radius: 12px;
+}
+
+/* Utilidades Layout Admin (si las necesitas mantener no molestar) */
+.admin-shell { display: none; }
+
+/* 📱 Responsive Mobile General */
+@media (max-width: 600px) {
+  .content-section {
+    padding: 1.5rem;
+    border-radius: 16px;
+    margin-bottom: 2rem;
+  }
+  .content-section h1 { font-size: 2rem; }
+  .content-section h2 { font-size: 1.6rem; }
+  .content-section p, .content-section ul { font-size: 1rem; line-height: 1.5; }
+  
+  .ejercicio {
+    padding: 1.5rem;
+    border-radius: 16px;
+  }
+  .ejercicio h3 { font-size: 1.5rem; }
+  .ejercicio .pregunta-box { font-size: 1rem; padding: 1rem; }
+  
+  .code-block pre { padding: 1rem; }
+  
+  .card-fun {
+    padding: 1.5rem;
+    border-radius: 16px;
+  }
+  .card-fun h2, .card-fun h3 { font-size: 1.5rem; }
+  .card-fun p { font-size: 1rem; }
+  
+  .cards-grid { gap: 1.25rem; }
+  
+  .nav-bottom {
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+  .nav-bottom a {
+    text-align: center;
+    width: 100%;
+  }
+  
+  .content-table { font-size: 0.95rem; }
+  .content-table th, .content-table td { padding: 0.75rem; }
+}

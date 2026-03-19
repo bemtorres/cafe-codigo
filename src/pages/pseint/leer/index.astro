@@ -1,0 +1,132 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import CodeBlock from '../../../components/CodeBlock.astro';
+import Ejercicio from '../../../components/Ejercicio.astro';
+---
+
+<Layout title="Leer" description="Entrada de datos con Leer y ejercicios prácticos" courseSlug="pseint">
+  <article class="content-section">
+    <h1>Leer - Entrada de datos</h1>
+
+    <section class="mb-10">
+      <h2>¿Qué hace Leer?</h2>
+      <p>
+        La instrucción <code>Leer</code> permite que el usuario ingrese datos desde el teclado 
+        mientras el programa se ejecuta. El valor introducido se guarda en la variable indicada.
+      </p>
+      <CodeBlock
+        code={`Definir nombre Como Caracter;
+Escribir "¿Cuál es tu nombre?";
+Leer nombre;
+Escribir "Hola, ", nombre;`}
+        title="Ejemplo básico de Leer"
+        isPSeIntCode={true}
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Reglas importantes</h2>
+      <ul class="mb-4">
+        <li>La variable debe estar definida antes de usarla en Leer.</li>
+        <li>Leer espera a que el usuario escriba y presione Enter.</li>
+        <li>Para números, el usuario debe ingresar un número válido.</li>
+        <li>Toda instrucción termina con <code>;</code></li>
+      </ul>
+    </section>
+
+    <section class="mb-10">
+      <h2>Leer diferentes tipos</h2>
+      <CodeBlock
+        code={`Algoritmo TiposDeDatos
+  Definir nombre Como Caracter;
+  Definir edad Como Entero;
+  Definir altura Como Real;
+  
+  Escribir "Nombre:";
+  Leer nombre;
+  Escribir "Edad:";
+  Leer edad;
+  Escribir "Altura en metros:";
+  Leer altura;
+  
+  Escribir nombre, " tiene ", edad, " años y mide ", altura, " m";
+FinAlgoritmo`}
+        title="Leer varios tipos de datos"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Ejercicios con Leer</h2>
+
+      <Ejercicio
+        titulo="Ejercicio 1: Nombre y apellido"
+        enunciado="Pide al usuario su nombre y apellido por separado. Luego muestra un mensaje de bienvenida con el nombre completo."
+        solucion={`Algoritmo NombreCompleto
+  Definir nombre Como Caracter;
+  Definir apellido Como Caracter;
+  Escribir "Escribe tu nombre:";
+  Leer nombre;
+  Escribir "Escribe tu apellido:";
+  Leer apellido;
+  Escribir "Bienvenido, ", nombre, " ", apellido;
+FinAlgoritmo`}
+      />
+
+      <Ejercicio
+        titulo="Ejercicio 2: Edad"
+        enunciado="Pide la edad del usuario y muestra un mensaje que diga 'Tienes X años'."
+        solucion={`Algoritmo EdadUsuario
+  Definir edad Como Entero;
+  Escribir "¿Cuántos años tienes?";
+  Leer edad;
+  Escribir "Tienes ", edad, " años";
+FinAlgoritmo`}
+      />
+
+      <Ejercicio
+        titulo="Ejercicio 3: Ciudad favorita"
+        enunciado="Pide al usuario su ciudad favorita y su comida favorita. Escribe una frase que combine ambos."
+        solucion={`Algoritmo Preferencias
+  Definir ciudad Como Caracter;
+  Definir comida Como Caracter;
+  Escribir "¿Cuál es tu ciudad favorita?";
+  Leer ciudad;
+  Escribir "¿Cuál es tu comida favorita?";
+  Leer comida;
+  Escribir "Te encanta ", ciudad, " y te gusta comer ", comida;
+FinAlgoritmo`}
+      />
+
+      <Ejercicio
+        titulo="Ejercicio 4: Datos personales"
+        enunciado="Crea un formulario que pida: nombre, edad, ciudad y profesión. Al final muestra un resumen con todos los datos."
+        solucion={`Algoritmo DatosPersonales
+  Definir nombre Como Caracter;
+  Definir edad Como Entero;
+  Definir ciudad Como Caracter;
+  Definir profesion Como Caracter;
+  Escribir "Nombre:";
+  Leer nombre;
+  Escribir "Edad:";
+  Leer edad;
+  Escribir "Ciudad:";
+  Leer ciudad;
+  Escribir "Profesión:";
+  Leer profesion;
+  Escribir "Resumen: ", nombre, ", ", edad, " años, de ", ciudad, ", ", profesion;
+FinAlgoritmo`}
+      />
+
+      <Ejercicio
+        titulo="Ejercicio 5: Pregunta"
+        enunciado="¿Qué sucede si el usuario ingresa texto cuando el programa espera un número entero?"
+        pregunta="Reflexiona sobre la validación de datos de entrada."
+      />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/pseint/variables/" class="prev">← Variables</a>
+      <a href="/pseint/matematicas/" class="next">Matemáticas →</a>
+    </nav>
+  </article>
+</Layout>

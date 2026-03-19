@@ -1,0 +1,162 @@
+---
+interface Props {
+  code: string;
+  title?: string;
+  isPSeIntCode?: boolean;
+}
+
+const { code, title, isPSeIntCode = true } = Astro.props;
+
+function isPSeInt(src: string) {
+  const s = String(src ?? '');
+  return /\bAlgoritmo\b/i.test(s) && /\bFinAlgoritmo\b/i.test(s);
+}
+
+const pseint = isPSeIntCode ? true : isPSeInt(code);
+const encodedCode = pseint ? encodeURIComponent(code) : '';
+
+let hash = 0;
+for (let i = 0; i < code.length; i++) {
+  hash = (hash * 31 + code.charCodeAt(i)) | 0;
+}
+const blockId = `pseint_${Math.abs(hash)}`;
+const lines = String(code).replace(/\r\n/g, '\n').split('\n');
+
+function highlightPSeInt(line: string) {
+  let text = line.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  text = text.replace(/(&quot;.*?&quot;|".*?")/g, '<span class="pseint-str">$1</span>');
+  text = text.replace(/\b(Algoritmo|FinAlgoritmo|Definir|Como|Escribir|Leer|Si|Entonces|Sino|FinSi|Mientras|Hacer|FinMientras|Para|Hasta|Con Paso|FinPara|Segun|De Otro Modo|FinSegun|Funcion|FinFuncion|Verdadero|Falso)\b/gi, '<span class="pseint-kw">$&</span>');
+  text = text.replace(/\b(Entero|Real|Caracter|Logico|Cadena)\b/gi, '<span class="pseint-type">$&</span>');
+  text = text.replace(/(\/\/.*)/g, '<span class="pseint-comment">$1</span>');
+  return text;
+}
+---
+
+<div class="code-block">
+  {title && <p class="code-block-title">{title}</p>}
+  {pseint ? (
+    <>
+      <div class="pseint-editor" aria-label="Editor PSeInt (solo lectura)">
+        {lines.map((line, idx) => (
+          <div class="pseint-line">
+            <span class="pseint-ln">{idx + 1}</span>
+            <span class="pseint-txt" set:html={highlightPSeInt(line === '' ? ' ' : line)}></span>
+          </div>
+        ))}
+      </div>
+      {/* <div class="code-actions">
+        <button class="btn-fun-small" type="button" data-pseint-run={blockId} data-pseint-code={encodedCode}>
+          Ejecutar código ▶
+        </button>
+        <button class="btn-fun-small" type="button" data-pseint-copy={blockId} data-pseint-code={encodedCode}>
+          Copiar 📄
+        </button>
+      </div> */}
+    </>
+  ) : (
+    <pre>
+      <code>{code}</code>
+    </pre>
+  )}
+</div>
+
+{pseint && (
+  <script>
+    // @ts-nocheck
+    const root = document.currentScript?.previousElementSibling;
+    const runBtn = root?.querySelector('[data-pseint-run]');
+    const copyBtn = root?.querySelector('[data-pseint-copy]');
+
+    const getCode = (btn) => {
+      const raw = btn?.getAttribute('data-pseint-code') ?? '';
+      try {
+        return decodeURIComponent(raw);
+      } catch {
+        return raw;
+      }
+    };
+
+    if (runBtn) {
+      runBtn.addEventListener('click', () => {
+        try {
+          localStorage.setItem('pseint.code', getCode(runBtn));
+          localStorage.setItem('pseint.autorun', '1');
+        } catch {}
+        window.location.href = '/pseint/simulador/';
+      });
+    }
+
+    if (copyBtn) {
+      copyBtn.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(getCode(copyBtn));
+          copyBtn.textContent = '¡Copiado! ✅';
+          setTimeout(() => (copyBtn.textContent = 'Copiar 📄'), 1400);
+        } catch {
+          const ta = document.createElement('textarea');
+          ta.value = getCode(copyBtn);
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          ta.remove();
+          copyBtn.textContent = '¡Copiado! ✅';
+          setTimeout(() => (copyBtn.textContent = 'Copiar 📄'), 1400);
+        }
+      });
+    }
+  </script>
+)}
+
+<style>
+  .code-block {
+    margin: 1.5rem 0;
+  }
+  .code-block pre {
+    margin: 0;
+  }
+  
+  /* ESTILO CONSOLA / IDE BLANCO PARA PSEINT */
+  .pseint-editor {
+    border-radius: 16px;
+    border: 3px solid var(--border);
+    background: #FFFFFF;
+    box-shadow: 4px 4px 0px var(--border);
+    overflow: auto;
+    padding: 1rem 0;
+    margin: 0;
+    width: 100%;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .pseint-line {
+    display: flex;
+    padding: 0 1rem;
+    line-height: 1.6;
+    font-size: 0.95rem;
+  }
+  .pseint-ln {
+    color: #2B91AF; /* Azul típico de los números de línea ide viejo */
+    text-align: right;
+    user-select: none;
+    min-width: 2rem;
+    border-right: 2px solid rgba(0,0,0,0.1);
+    padding-right: 0.75rem;
+    margin-right: 0.75rem;
+  }
+  .pseint-txt {
+    color: #000000;
+    white-space: pre-wrap;
+  }
+  
+  /* Syntaxis Highlighting inyectada via span */
+  :global(.pseint-str) { color: #A31515; }     /* Rojo/Cafe Strings */
+  :global(.pseint-kw) { color: #0000FF; }      /* Azul Keywords */
+  :global(.pseint-type) { color: #008080; }    /* Teal Tipos */
+  :global(.pseint-comment) { color: #008000; font-style: italic; } /* Verde Comentarios */
+
+  .code-actions {
+    display: flex;
+    gap: 0.8rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+  }
+</style>
