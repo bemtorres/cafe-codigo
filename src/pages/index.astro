@@ -7,121 +7,144 @@ import { courses } from '../data/courses';
   title="Inicio"
   description="cafeycodigo: aprende a programar gratis con cursos paso a paso, ejercicios y simulador."
 >
-  <section class="hero">
-    <div class="hero-left">
-      <div class="hero-badge">☕ 100% gratis · En español · Paso a paso</div>
-      <h1>
-        Aprendé a <span class="highlight-blue">programar</span>,<br />
-        creá tu futuro
-      </h1>
-      <p class="hero-lead">
-        Aprende programación desde cero con ejercicios prácticos y sin complicaciones, en un entorno moderno y accesible.
-      </p>
-      <div class="hero-actions">
-        <a href="/pseint/" class="btn-primary">Empezar a aprender</a>
-        <a href="/pseint/" class="btn-secondary">Ver cursos</a>
-      </div>
-      <div class="hero-pills">
-        <div class="pill">✨ Para principiantes</div>
-        <div class="pill">🧩 Ejercicios guiados</div>
-        <div class="pill">▶ Simulador</div>
-      </div>
-    </div>
+  <div class="home">
+    <section class="hero">
+      <div class="hero-left">
+        <h1>
+          Aprendé a programar,<br />
+          <span class="muted">creá tu futuro</span>
+        </h1>
+        <p class="hero-sub">
+          Cursos prácticos, ejercicios y un simulador para practicar desde cero 🚀
+        </p>
 
-    <div class="hero-right">
-      <div class="hero-card">
-        <div class="hero-visual">
-          <svg viewBox="0 0 640 420" role="img" aria-label="Café y código" class="hero-svg">
-            <defs>
-              <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0" stop-color="#fff" stop-opacity="0.9" />
-                <stop offset="1" stop-color="#E0F7FA" stop-opacity="0.7" />
-              </linearGradient>
-              <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
-                <feDropShadow dx="0" dy="14" stdDeviation="18" flood-color="#1E1210" flood-opacity="0.12" />
-              </filter>
-            </defs>
-
-            <rect x="18" y="18" width="604" height="384" rx="26" fill="url(#g1)" stroke="rgba(30,18,16,0.10)" />
-
-            <!-- taza -->
-            <g filter="url(#shadow)">
-              <path
-                d="M210 272c0 64 52 116 116 116h36c64 0 116-52 116-116v-92H210v92z"
-                fill="#fff"
-                stroke="rgba(30,18,16,0.14)"
-                stroke-width="6"
-              />
-              <path
-                d="M468 200h28c34 0 62 28 62 62s-28 62-62 62h-28"
-                fill="none"
-                stroke="rgba(30,18,16,0.18)"
-                stroke-width="16"
-                stroke-linecap="round"
-              />
-              <rect x="206" y="164" width="276" height="34" rx="17" fill="#fff" stroke="rgba(30,18,16,0.12)" stroke-width="6" />
-              <path d="M252 160c12-22 36-34 66-34h54c30 0 54 12 66 34" fill="none" stroke="#EF476F" stroke-width="10" stroke-linecap="round"/>
-              <path d="M286 112c-12-18-6-40 14-54" fill="none" stroke="#45B3E0" stroke-width="10" stroke-linecap="round"/>
-              <path d="M344 108c-10-18-6-38 12-52" fill="none" stroke="#06D6A0" stroke-width="10" stroke-linecap="round"/>
-              <path d="M402 112c-12-18-6-40 14-54" fill="none" stroke="#FFD166" stroke-width="10" stroke-linecap="round"/>
-            </g>
-
-            <!-- editor -->
-            <g filter="url(#shadow)">
-              <rect x="360" y="90" width="238" height="180" rx="20" fill="#111" />
-              <rect x="360" y="90" width="238" height="44" rx="20" fill="#1c1c1c" />
-              <text x="392" y="120" fill="#F2F2F2" font-size="16" font-family="JetBrains Mono, monospace" opacity="0.9">PSeInt</text>
-              <text x="432" y="162" fill="#A1A1A1" font-size="14" font-family="JetBrains Mono, monospace">Escribir "Hola mundo";</text>
-              <text x="392" y="192" fill="#A1A1A1" font-size="14" font-family="JetBrains Mono, monospace">Leer nombre;</text>
-              <text x="392" y="222" fill="#A1A1A1" font-size="14" font-family="JetBrains Mono, monospace">Escribir "Hola, ", nombre;</text>
-              <rect x="392" y="248" width="168" height="10" rx="5" fill="#06D6A0" opacity="0.9" />
-            </g>
-          </svg>
+        <div class="hero-actions">
+          <a href="/pseint/" class="btn-primary">
+            Empezar a aprender <span class="arrow">→</span>
+          </a>
+          <a href="/pseint/" class="btn-secondary">Ver cursos</a>
         </div>
 
-        <div class="hero-mini">
-          <div class="mini-ok">✅ Listo para ejecutar</div>
-          <div class="mini-bar">
-            <span></span>
-          </div>
-          <div class="mini-note">Probá el simulador con <strong>Paso</strong> y <strong>Continuar</strong>.</div>
+        <div class="hero-pills">
+          <span class="pill"><span class="pi">⚡</span> Para principiantes</span>
+          <span class="pill"><span class="pi">🧩</span> Proyectos guiados</span>
+          <span class="pill"><span class="pi">🏅</span> Certificados</span>
         </div>
       </div>
-    </div>
-  </section>
 
-  <section class="quick-cards">
-    <div class="quick-card">
-      <div class="qc-icon">🎬</div>
-      <h3>Aprendé haciendo</h3>
-      <p>Ejemplos ejecutables y ejercicios prácticos desde la primera lección.</p>
-    </div>
-    <div class="quick-card">
-      <div class="qc-icon">🧠</div>
-      <h3>Metodología EPS</h3>
-      <p>Entrada–Proceso–Salida para resolver problemas de forma ordenada.</p>
-    </div>
-    <div class="quick-card">
-      <div class="qc-icon">⚡</div>
-      <h3>Sin complicaciones</h3>
-      <p>Lecciones cortas, claras y progresivas, pensadas para principiantes.</p>
-    </div>
-    <div class="quick-progress">
-      <div class="qp-top">
-        <strong>Tu progreso esta semana</strong>
-        <a class="qp-link" href="/pseint/">Ver todo</a>
-      </div>
-      <div class="qp-row">
-        <div class="qp-ring"><span>75%</span></div>
-        <div class="qp-info">
-          <div class="qp-title">4/5 desafíos completados</div>
-          <div class="qp-dots">
-            <span class="ok"></span><span class="ok"></span><span class="ok"></span><span class="ok"></span><span></span>
+      <div class="hero-right">
+        <div class="hero-card">
+          <div class="hero-visual">
+            <svg viewBox="0 0 640 420" role="img" aria-label="Café y código" class="hero-svg">
+              <defs>
+                <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0" stop-color="#ffffff" stop-opacity="0.92" />
+                  <stop offset="1" stop-color="#f6f0ff" stop-opacity="0.85" />
+                </linearGradient>
+                <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+                  <feDropShadow dx="0" dy="14" stdDeviation="18" flood-color="#1E1210" flood-opacity="0.10" />
+                </filter>
+              </defs>
+
+              <rect x="18" y="18" width="604" height="384" rx="26" fill="url(#g1)" stroke="rgba(30,18,16,0.08)" />
+
+              <!-- taza -->
+              <g filter="url(#shadow)">
+                <path
+                  d="M210 272c0 64 52 116 116 116h36c64 0 116-52 116-116v-92H210v92z"
+                  fill="#fff"
+                  stroke="rgba(30,18,16,0.12)"
+                  stroke-width="6"
+                />
+                <path
+                  d="M468 200h28c34 0 62 28 62 62s-28 62-62 62h-28"
+                  fill="none"
+                  stroke="rgba(30,18,16,0.16)"
+                  stroke-width="16"
+                  stroke-linecap="round"
+                />
+                <rect x="206" y="164" width="276" height="34" rx="17" fill="#fff" stroke="rgba(30,18,16,0.10)" stroke-width="6" />
+                <path d="M252 160c12-22 36-34 66-34h54c30 0 54 12 66 34" fill="none" stroke="#EF476F" stroke-width="10" stroke-linecap="round"/>
+                <path d="M286 112c-12-18-6-40 14-54" fill="none" stroke="#45B3E0" stroke-width="10" stroke-linecap="round"/>
+                <path d="M344 108c-10-18-6-38 12-52" fill="none" stroke="#06D6A0" stroke-width="10" stroke-linecap="round"/>
+                <path d="M402 112c-12-18-6-40 14-54" fill="none" stroke="#FFD166" stroke-width="10" stroke-linecap="round"/>
+              </g>
+
+              <!-- editor -->
+              <g filter="url(#shadow)">
+                <rect x="360" y="90" width="238" height="180" rx="20" fill="#151515" />
+                <rect x="360" y="90" width="238" height="44" rx="20" fill="#1f1f1f" />
+                <rect x="402" y="102" width="64" height="22" rx="11" fill="#ffffff" opacity="0.9" />
+                <rect x="470" y="102" width="92" height="22" rx="11" fill="#ffffff" opacity="0.55" />
+                <text x="420" y="118" fill="#111" font-size="12" font-family="Nunito, sans-serif" font-weight="800">Python</text>
+                <text x="490" y="118" fill="#111" font-size="12" font-family="Nunito, sans-serif" font-weight="800" opacity="0.65">JavaScript</text>
+                <text x="392" y="164" fill="#A1A1A1" font-size="14" font-family="JetBrains Mono, monospace"># Tu primer código</text>
+                <text x="392" y="194" fill="#A1A1A1" font-size="14" font-family="JetBrains Mono, monospace">Escribir "Hola, mundo";</text>
+                <text x="392" y="224" fill="#A1A1A1" font-size="14" font-family="JetBrains Mono, monospace">Leer nombre;</text>
+              </g>
+
+              <!-- listo -->
+              <g filter="url(#shadow)">
+                <rect x="380" y="290" width="220" height="84" rx="22" fill="#fff" stroke="rgba(30,18,16,0.08)" />
+                <circle cx="408" cy="322" r="12" fill="#06D6A0" />
+                <text x="428" y="328" fill="#2D2321" font-size="14" font-family="Nunito, sans-serif" font-weight="800">¡Listo para ejecutar!</text>
+                <rect x="404" y="344" width="172" height="10" rx="5" fill="rgba(30,18,16,0.08)" />
+                <rect x="404" y="344" width="138" height="10" rx="5" fill="url(#gradBar)" />
+              </g>
+
+              <defs>
+                <linearGradient id="gradBar" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0" stop-color="#06D6A0" />
+                  <stop offset="0.55" stop-color="#45B3E0" />
+                  <stop offset="1" stop-color="#EF476F" />
+                </linearGradient>
+              </defs>
+            </svg>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
+
+    <section class="features">
+      <div class="f-card">
+        <div class="f-ic peach">▶</div>
+        <div>
+          <h3>Aprendé haciendo</h3>
+          <p>Ejercicios prácticos desde el primer día.</p>
+        </div>
+      </div>
+      <div class="f-card">
+        <div class="f-ic blue">👥</div>
+        <div>
+          <h3>Comunidad activa</h3>
+          <p>Compartí avances y resolvé dudas.</p>
+        </div>
+      </div>
+      <div class="f-card">
+        <div class="f-ic pink">🏅</div>
+        <div>
+          <h3>Certificados</h3>
+          <p>Validá tus habilidades con proyectos.</p>
+        </div>
+      </div>
+
+      <div class="progress">
+        <div class="p-top">
+          <strong>Tu progreso esta semana</strong>
+          <a href="/pseint/">Ver todo</a>
+        </div>
+        <div class="p-row">
+          <div class="p-ring"><span>75%</span></div>
+          <div class="p-info">
+            <div class="p-title">4/5 desafíos completados</div>
+            <div class="p-dots">
+              <span class="ok"></span><span class="ok"></span><span class="ok"></span><span class="ok"></span><span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
 
   <div class="courses-grid-fun">
     <h2 class="section-title">Cursos disponibles</h2>
@@ -151,7 +174,7 @@ import { courses } from '../data/courses';
     <div class="cta-inner">
       <div class="cta-left">
         <h2>¿Listo para empezar tu viaje en el mundo del código?</h2>
-        <p>Unite a cafeycodigo y empezá hoy con PSeInt: lógica, ejercicios y simulador.</p>
+        <p>Unite a miles de personas que ya están aprendiendo a programar.</p>
       </div>
       <form class="cta-form" onsubmit="return false;">
         <input type="email" placeholder="Tu email (opcional)" aria-label="Tu email" />
@@ -162,243 +185,200 @@ import { courses } from '../data/courses';
 </Layout>
 
 <style>
+  :global(body) {
+    background-image: radial-gradient(rgba(255, 209, 102, 0.35) 1px, transparent 1px);
+    background-size: 28px 28px;
+  }
+
+  .home {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2.25rem 1rem 0;
+  }
+
   .hero {
     display: grid;
-    grid-template-columns: 1.1fr 0.9fr;
-    gap: 2.2rem;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.25rem;
     align-items: center;
-    padding: 3.25rem 0 2.25rem;
+    padding: 1.25rem 0 1.8rem;
   }
   @media (max-width: 980px) {
     .hero {
       grid-template-columns: 1fr;
-      padding: 2rem 0 1.25rem;
+      gap: 1.4rem;
     }
   }
-  .hero-left {
-    padding: 0.5rem 0.5rem 0.5rem 0;
-  }
-  .hero-badge {
-    display: inline-block;
-    background: white;
-    border: 2px solid rgba(30, 18, 16, 0.18);
-    border-radius: 999px;
-    padding: 0.45rem 0.9rem;
-    box-shadow: 0 10px 24px rgba(30, 18, 16, 0.08);
-    font-family: 'Nunito', sans-serif;
-    font-weight: 800;
-    margin-bottom: 1.4rem;
-    color: var(--text-primary);
-  }
+
   h1 {
-    font-size: 3.6rem;
-    margin: 0 0 1rem;
-    letter-spacing: -0.02em;
+    font-size: 3.3rem;
+    margin: 0 0 0.85rem;
+    line-height: 1.02;
+    letter-spacing: -0.03em;
+    color: #2b1d1b;
   }
-  @media(max-width: 600px) {
-    h1 { font-size: 2.25rem; }
-    .section-title { font-size: 2rem; }
-    .cards-grid { gap: 1.25rem; }
+  .muted {
+    color: #b06d63;
   }
-  .highlight-blue {
-    color: var(--info);
-    text-shadow: 3px 3px 0px var(--border);
-  }
-  .hero-lead {
-    font-size: 1.25rem;
-    font-weight: 700;
-    line-height: 1.65;
-    margin: 0 0 1.35rem;
-    color: var(--text-secondary);
-  }
-  .hero-actions {
-    display: flex;
-    justify-content: flex-start;
-    gap: 1rem;
-    flex-wrap: wrap;
-    margin-bottom: 1.25rem;
-  }
-  .hero-pills {
-    display: flex;
-    gap: 0.75rem;
-    flex-wrap: wrap;
-    margin-top: 0.6rem;
-  }
-  .pill {
-    background: rgba(255, 255, 255, 0.8);
-    border: 1px solid rgba(30, 18, 16, 0.16);
-    border-radius: 999px;
-    padding: 0.45rem 0.7rem;
-    font-weight: 800;
-    font-family: 'Nunito', sans-serif;
-    color: var(--text-primary);
+  .hero-sub {
+    margin: 0 0 1.25rem;
+    font-size: 1.08rem;
+    line-height: 1.6;
+    color: rgba(45, 35, 33, 0.82);
+    font-weight: 650;
+    max-width: 38rem;
   }
 
+  .hero-actions {
+    display: flex;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.1rem;
+  }
   .btn-primary {
     background: #2b1d1b;
     color: white;
-    padding: 0.95rem 1.35rem;
+    padding: 0.95rem 1.25rem;
     border-radius: 999px;
-    font-weight: 800;
-    font-family: 'Nunito', sans-serif;
-    font-size: 1.1rem;
-    text-decoration: none;
-    border: 1px solid rgba(30, 18, 16, 0.28);
-    box-shadow: 0 14px 28px rgba(30, 18, 16, 0.18);
-    display: inline-block;
-  }
-  .btn-primary:hover {
-    transform: translateY(-1px);
-    background: #231715;
-  }
-  .btn-secondary {
-    background: rgba(255, 255, 255, 0.85);
-    color: var(--text-primary);
-    padding: 0.95rem 1.15rem;
-    border-radius: 999px;
-    font-weight: 800;
-    font-family: 'Nunito', sans-serif;
-    font-size: 1.1rem;
-    text-decoration: none;
-    border: 1px solid rgba(30, 18, 16, 0.18);
-    box-shadow: 0 10px 24px rgba(30, 18, 16, 0.10);
-    display: inline-block;
-  }
-  .btn-secondary:hover {
-    transform: translateY(-1px);
-    background: white;
-  }
-
-  .hero-right {
-    display: flex;
-    justify-content: center;
-  }
-  .hero-card {
-    width: 100%;
-    max-width: 520px;
-    background: rgba(255, 255, 255, 0.65);
-    border: 1px solid rgba(30, 18, 16, 0.12);
-    border-radius: 28px;
-    box-shadow: 0 24px 60px rgba(30, 18, 16, 0.12);
-    padding: 1.1rem;
-    overflow: hidden;
-    backdrop-filter: blur(10px);
-  }
-  .hero-visual {
-    background: radial-gradient(1200px 500px at 20% 20%, rgba(239, 71, 111, 0.18), transparent 55%),
-      radial-gradient(900px 380px at 95% 10%, rgba(69, 179, 224, 0.22), transparent 60%),
-      radial-gradient(900px 380px at 60% 95%, rgba(6, 214, 160, 0.16), transparent 60%),
-      rgba(255, 255, 255, 0.7);
-    border: 1px solid rgba(30, 18, 16, 0.10);
-    border-radius: 22px;
-    padding: 0.6rem;
-  }
-  .hero-svg {
-    width: 100%;
-    height: auto;
-    display: block;
-  }
-  .hero-mini {
-    margin-top: 0.9rem;
-    background: rgba(255, 255, 255, 0.75);
-    border: 1px solid rgba(30, 18, 16, 0.10);
-    border-radius: 18px;
-    padding: 0.85rem 0.95rem;
-  }
-  .mini-ok {
     font-weight: 900;
     font-family: 'Nunito', sans-serif;
-    margin-bottom: 0.55rem;
+    text-decoration: none;
+    box-shadow: 0 18px 40px rgba(43, 29, 27, 0.22);
+    border: 1px solid rgba(30, 18, 16, 0.16);
   }
-  .mini-bar {
-    height: 10px;
+  .btn-primary .arrow {
+    margin-left: 0.35rem;
+    display: inline-block;
+  }
+  .btn-secondary {
+    background: rgba(255, 255, 255, 0.8);
+    color: #2b1d1b;
+    padding: 0.95rem 1.15rem;
     border-radius: 999px;
-    background: rgba(30, 18, 16, 0.08);
-    overflow: hidden;
-    margin-bottom: 0.55rem;
-  }
-  .mini-bar span {
-    display: block;
-    height: 100%;
-    width: 78%;
-    background: linear-gradient(90deg, #06D6A0, #45B3E0, #EF476F);
-    border-radius: 999px;
-  }
-  .mini-note {
-    color: var(--text-secondary);
-    font-weight: 650;
-    line-height: 1.5;
-    font-size: 0.95rem;
+    font-weight: 900;
+    font-family: 'Nunito', sans-serif;
+    text-decoration: none;
+    border: 1px solid rgba(30, 18, 16, 0.10);
+    box-shadow: 0 16px 34px rgba(30, 18, 16, 0.08);
   }
 
-  .quick-cards {
+  .hero-pills {
+    display: flex;
+    gap: 0.7rem;
+    flex-wrap: wrap;
+    margin-top: 0.4rem;
+  }
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(30, 18, 16, 0.10);
+    border-radius: 999px;
+    padding: 0.55rem 0.85rem;
+    color: rgba(45, 35, 33, 0.85);
+    font-weight: 800;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.95rem;
+    box-shadow: 0 12px 26px rgba(30, 18, 16, 0.06);
+  }
+  .pi {
+    width: 22px;
+    height: 22px;
+    display: grid;
+    place-items: center;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.7);
+  }
+
+  .hero-card {
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(30, 18, 16, 0.10);
+    border-radius: 28px;
+    box-shadow: 0 28px 70px rgba(30, 18, 16, 0.10);
+    padding: 1.15rem;
+  }
+  .hero-visual {
+    background: radial-gradient(900px 360px at 20% 25%, rgba(239, 71, 111, 0.18), transparent 60%),
+      radial-gradient(900px 360px at 95% 10%, rgba(69, 179, 224, 0.22), transparent 60%),
+      radial-gradient(900px 360px at 70% 95%, rgba(6, 214, 160, 0.14), transparent 60%),
+      rgba(255, 255, 255, 0.72);
+    border: 1px solid rgba(30, 18, 16, 0.08);
+    border-radius: 22px;
+    padding: 0.7rem;
+  }
+  .hero-svg { width: 100%; height: auto; display: block; }
+
+  .features {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 1rem;
-    margin: 1.25rem 0 2.25rem;
+    margin: 1.35rem 0 2.1rem;
   }
   @media (max-width: 980px) {
-    .quick-cards {
+    .features {
       grid-template-columns: 1fr;
     }
   }
-  .quick-card,
-  .quick-progress {
+  .f-card,
+  .progress {
     background: rgba(255, 255, 255, 0.78);
-    border: 1px solid rgba(30, 18, 16, 0.12);
+    border: 1px solid rgba(30, 18, 16, 0.10);
     border-radius: 22px;
     padding: 1.1rem 1.1rem;
-    box-shadow: 0 14px 34px rgba(30, 18, 16, 0.10);
+    box-shadow: 0 18px 44px rgba(30, 18, 16, 0.08);
+    display: flex;
+    gap: 0.95rem;
+    align-items: flex-start;
   }
-  .qc-icon {
-    width: 44px;
-    height: 44px;
-    border-radius: 14px;
-    background: rgba(224, 247, 250, 0.9);
+  .f-ic {
+    width: 48px;
+    height: 48px;
+    border-radius: 16px;
     display: grid;
     place-items: center;
-    margin-bottom: 0.75rem;
+    font-weight: 900;
     border: 1px solid rgba(30, 18, 16, 0.08);
   }
-  .quick-card h3 {
-    margin: 0 0 0.35rem;
-    font-size: 1.2rem;
+  .f-ic.peach { background: rgba(255, 220, 190, 0.65); }
+  .f-ic.blue { background: rgba(200, 224, 255, 0.65); }
+  .f-ic.pink { background: rgba(255, 210, 225, 0.65); }
+  .f-card h3 { margin: 0 0 0.25rem; font-size: 1.15rem; }
+  .f-card p { margin: 0; color: rgba(45, 35, 33, 0.78); font-weight: 650; line-height: 1.5; }
+
+  .progress {
+    flex-direction: column;
+    gap: 0.85rem;
   }
-  .quick-card p {
-    margin: 0;
-    color: var(--text-secondary);
-    font-weight: 650;
-    line-height: 1.55;
-  }
-  .qp-top {
+  .p-top {
+    width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: baseline;
     gap: 1rem;
-    margin-bottom: 0.9rem;
   }
-  .qp-link {
-    color: var(--text-muted);
+  .p-top a {
     text-decoration: none;
+    color: rgba(45, 35, 33, 0.65);
     font-weight: 800;
     font-family: 'Nunito', sans-serif;
   }
-  .qp-row {
+  .p-row {
     display: flex;
     gap: 1rem;
     align-items: center;
   }
-  .qp-ring {
-    width: 64px;
-    height: 64px;
+  .p-ring {
+    width: 68px;
+    height: 68px;
     border-radius: 50%;
     background: conic-gradient(#45B3E0 0 270deg, rgba(30, 18, 16, 0.08) 270deg 360deg);
     display: grid;
     place-items: center;
   }
-  .qp-ring span {
-    width: 52px;
-    height: 52px;
+  .p-ring span {
+    width: 56px;
+    height: 56px;
     border-radius: 50%;
     background: white;
     display: grid;
@@ -406,24 +386,19 @@ import { courses } from '../data/courses';
     font-weight: 900;
     font-family: 'Nunito', sans-serif;
   }
-  .qp-title {
+  .p-title {
     font-weight: 900;
     font-family: 'Nunito', sans-serif;
     margin-bottom: 0.45rem;
   }
-  .qp-dots {
-    display: flex;
-    gap: 0.45rem;
-  }
-  .qp-dots span {
+  .p-dots { display: flex; gap: 0.5rem; }
+  .p-dots span {
     width: 18px;
     height: 18px;
     border-radius: 7px;
     background: rgba(30, 18, 16, 0.12);
   }
-  .qp-dots span.ok {
-    background: rgba(6, 214, 160, 0.85);
-  }
+  .p-dots span.ok { background: rgba(6, 214, 160, 0.85); }
 
   .courses-grid-fun {
     margin-top: 4rem;
@@ -452,7 +427,7 @@ import { courses } from '../data/courses';
     margin-top: 2.5rem;
     background: rgba(255, 255, 255, 0.75);
     border: 1px solid rgba(30, 18, 16, 0.12);
-    border-radius: 26px;
+    border-radius: 999px;
     box-shadow: 0 18px 44px rgba(30, 18, 16, 0.12);
     overflow: hidden;
   }
@@ -461,7 +436,7 @@ import { courses } from '../data/courses';
     justify-content: space-between;
     gap: 1rem;
     align-items: center;
-    padding: 1.4rem 1.5rem;
+    padding: 1.1rem 1.25rem;
     background:
       radial-gradient(900px 260px at 15% 50%, rgba(255, 209, 102, 0.28), transparent 60%),
       radial-gradient(900px 260px at 95% 10%, rgba(239, 71, 111, 0.16), transparent 60%),
@@ -475,7 +450,7 @@ import { courses } from '../data/courses';
   }
   .cta-left h2 {
     margin: 0 0 0.3rem;
-    font-size: 1.6rem;
+    font-size: 1.35rem;
   }
   .cta-left p {
     margin: 0;
