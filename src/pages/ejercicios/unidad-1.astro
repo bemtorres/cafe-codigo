@@ -1,0 +1,274 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout
+  title="Unidad 1 (EPS)"
+  description="Ejercicios de la Unidad 1: Entrada–Proceso–Salida (sin decisiones)."
+  courseSlug="ejercicios"
+>
+  <article class="content-section">
+    <h1>Unidad 1 (EPS)</h1>
+    <p>
+      En esta unidad trabajás ejercicios sin `Si`: la idea es dominar el flujo **Entrada → Proceso → Salida**
+      con `Definir`, `Leer` y `Escribir`.
+    </p>
+
+    <section class="mb-10">
+      <h2>🎯 Cierre de la Parte 1</h2>
+      <p class="muted">
+        Antes de pasar a la Unidad 2, asegurate de que podés hacer sin mirar mucho:
+        declarar variables, leer datos, calcular y mostrar el resultado.
+      </p>
+      <ul>
+        <li>Podés implementar un mensaje + resultado entendible.</li>
+        <li>Tu salida tiene el formato del enunciado.</li>
+        <li>Usás `Leer` antes de calcular.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Ejercicios</h2>
+      <div id="exerciseList" class="exercise-list">
+        <!-- Ejercicio template: cada checkbox guarda en localStorage -->
+
+        <article class="ex-card" data-ex-id="u1-1">
+          <h3>1. Suma básica con mensaje</h3>
+          <p class="ex-statement">Pedir dos números enteros y mostrar la suma con un mensaje.</p>
+          <div class="ex-checks">
+            <span class="ex-progress" data-progress-for="u1-1"></span>
+            <label class="chk"><input type="checkbox" data-check-id="enunciado" /> Comprendí el enunciado</label>
+            <label class="chk"><input type="checkbox" data-check-id="definir" /> Definí variables con `Definir`</label>
+            <label class="chk"><input type="checkbox" data-check-id="leer" /> Leí datos con `Leer`</label>
+            <label class="chk"><input type="checkbox" data-check-id="proceso" /> Calculé en el proceso</label>
+            <label class="chk"><input type="checkbox" data-check-id="escribir" /> Mostré el resultado con `Escribir`</label>
+          </div>
+        </article>
+
+        <article class="ex-card" data-ex-id="u1-2">
+          <h3>2. Promedio de tres números</h3>
+          <p class="ex-statement">Ingresar tres números y mostrar el promedio con mensaje.</p>
+          <div class="ex-checks">
+            <span class="ex-progress" data-progress-for="u1-2"></span>
+            <label class="chk"><input type="checkbox" data-check-id="enunciado" /> Comprendí el enunciado</label>
+            <label class="chk"><input type="checkbox" data-check-id="definir" /> Definí variables con `Definir`</label>
+            <label class="chk"><input type="checkbox" data-check-id="leer" /> Leí datos con `Leer`</label>
+            <label class="chk"><input type="checkbox" data-check-id="proceso" /> Calculé en el proceso</label>
+            <label class="chk"><input type="checkbox" data-check-id="escribir" /> Mostré el resultado con `Escribir`</label>
+          </div>
+        </article>
+
+        <article class="ex-card" data-ex-id="u1-3">
+          <h3>3. Área de un rectángulo</h3>
+          <p class="ex-statement">Leer base y altura; calcular el área y mostrarlo.</p>
+          <div class="ex-checks">
+            <span class="ex-progress" data-progress-for="u1-3"></span>
+            <label class="chk"><input type="checkbox" data-check-id="enunciado" /> Comprendí el enunciado</label>
+            <label class="chk"><input type="checkbox" data-check-id="definir" /> Definí variables con `Definir`</label>
+            <label class="chk"><input type="checkbox" data-check-id="leer" /> Leí datos con `Leer`</label>
+            <label class="chk"><input type="checkbox" data-check-id="proceso" /> Calculé en el proceso</label>
+            <label class="chk"><input type="checkbox" data-check-id="escribir" /> Mostré el resultado con `Escribir`</label>
+          </div>
+        </article>
+
+        <article class="ex-card" data-ex-id="u1-4">
+          <h3>4. Número al cuadrado y al cubo</h3>
+          <p class="ex-statement">Pedir un número y mostrar N2 y N3 en el mensaje.</p>
+          <div class="ex-checks">
+            <span class="ex-progress" data-progress-for="u1-4"></span>
+            <label class="chk"><input type="checkbox" data-check-id="enunciado" /> Comprendí el enunciado</label>
+            <label class="chk"><input type="checkbox" data-check-id="definir" /> Definí variables con `Definir`</label>
+            <label class="chk"><input type="checkbox" data-check-id="leer" /> Leí datos con `Leer`</label>
+            <label class="chk"><input type="checkbox" data-check-id="proceso" /> Calculé en el proceso</label>
+            <label class="chk"><input type="checkbox" data-check-id="escribir" /> Mostré el resultado con `Escribir`</label>
+          </div>
+        </article>
+
+        <article class="ex-card" data-ex-id="u1-5">
+          <h3>5. Conversión de temperatura</h3>
+          <p class="ex-statement">Ingresar Celsius y mostrar su equivalente a Fahrenheit.</p>
+          <div class="ex-checks">
+            <span class="ex-progress" data-progress-for="u1-5"></span>
+            <label class="chk"><input type="checkbox" data-check-id="enunciado" /> Comprendí el enunciado</label>
+            <label class="chk"><input type="checkbox" data-check-id="definir" /> Definí variables con `Definir`</label>
+            <label class="chk"><input type="checkbox" data-check-id="leer" /> Leí datos con `Leer`</label>
+            <label class="chk"><input type="checkbox" data-check-id="proceso" /> Calculé en el proceso</label>
+            <label class="chk"><input type="checkbox" data-check-id="escribir" /> Mostré el resultado con `Escribir`</label>
+          </div>
+        </article>
+
+        <article class="ex-card" data-ex-id="u1-6">
+          <h3>6. Edad futura</h3>
+          <p class="ex-statement">Pedir nombre y edad; mostrar la edad en 10 años.</p>
+          <div class="ex-checks">
+            <span class="ex-progress" data-progress-for="u1-6"></span>
+            <label class="chk"><input type="checkbox" data-check-id="enunciado" /> Comprendí el enunciado</label>
+            <label class="chk"><input type="checkbox" data-check-id="definir" /> Definí variables con `Definir`</label>
+            <label class="chk"><input type="checkbox" data-check-id="leer" /> Leí datos con `Leer`</label>
+            <label class="chk"><input type="checkbox" data-check-id="proceso" /> Calculé en el proceso</label>
+            <label class="chk"><input type="checkbox" data-check-id="escribir" /> Mostré el resultado con `Escribir`</label>
+          </div>
+        </article>
+
+        <article class="ex-card" data-ex-id="u1-7">
+          <h3>7. Perímetro de un círculo</h3>
+          <p class="ex-statement">Leer radio y mostrar el perímetro del círculo.</p>
+          <div class="ex-checks">
+            <span class="ex-progress" data-progress-for="u1-7"></span>
+            <label class="chk"><input type="checkbox" data-check-id="enunciado" /> Comprendí el enunciado</label>
+            <label class="chk"><input type="checkbox" data-check-id="definir" /> Definí variables con `Definir`</label>
+            <label class="chk"><input type="checkbox" data-check-id="leer" /> Leí datos con `Leer`</label>
+            <label class="chk"><input type="checkbox" data-check-id="proceso" /> Calculé en el proceso</label>
+            <label class="chk"><input type="checkbox" data-check-id="escribir" /> Mostré el resultado con `Escribir`</label>
+          </div>
+        </article>
+
+        <article class="ex-card" data-ex-id="u1-8">
+          <h3>8. Producto de dos números</h3>
+          <p class="ex-statement">Ingresar dos números y mostrar el producto con mensaje.</p>
+          <div class="ex-checks">
+            <span class="ex-progress" data-progress-for="u1-8"></span>
+            <label class="chk"><input type="checkbox" data-check-id="enunciado" /> Comprendí el enunciado</label>
+            <label class="chk"><input type="checkbox" data-check-id="definir" /> Definí variables con `Definir`</label>
+            <label class="chk"><input type="checkbox" data-check-id="leer" /> Leí datos con `Leer`</label>
+            <label class="chk"><input type="checkbox" data-check-id="proceso" /> Calculé en el proceso</label>
+            <label class="chk"><input type="checkbox" data-check-id="escribir" /> Mostré el resultado con `Escribir`</label>
+          </div>
+        </article>
+
+        <article class="ex-card" data-ex-id="u1-9">
+          <h3>9. Descuento en compra</h3>
+          <p class="ex-statement">Ingresar precio y porcentaje; mostrar precio original y final.</p>
+          <div class="ex-checks">
+            <span class="ex-progress" data-progress-for="u1-9"></span>
+            <label class="chk"><input type="checkbox" data-check-id="enunciado" /> Comprendí el enunciado</label>
+            <label class="chk"><input type="checkbox" data-check-id="definir" /> Definí variables con `Definir`</label>
+            <label class="chk"><input type="checkbox" data-check-id="leer" /> Leí datos con `Leer`</label>
+            <label class="chk"><input type="checkbox" data-check-id="proceso" /> Calculé en el proceso</label>
+            <label class="chk"><input type="checkbox" data-check-id="escribir" /> Mostré el resultado con `Escribir`</label>
+          </div>
+        </article>
+
+        <article class="ex-card" data-ex-id="u1-10">
+          <h3>10. Tiempo en segundos</h3>
+          <p class="ex-statement">Ingresar horas y convertir a segundos con un mensaje.</p>
+          <div class="ex-checks">
+            <span class="ex-progress" data-progress-for="u1-10"></span>
+            <label class="chk"><input type="checkbox" data-check-id="enunciado" /> Comprendí el enunciado</label>
+            <label class="chk"><input type="checkbox" data-check-id="definir" /> Definí variables con `Definir`</label>
+            <label class="chk"><input type="checkbox" data-check-id="leer" /> Leí datos con `Leer`</label>
+            <label class="chk"><input type="checkbox" data-check-id="proceso" /> Calculé en el proceso</label>
+            <label class="chk"><input type="checkbox" data-check-id="escribir" /> Mostré el resultado con `Escribir`</label>
+          </div>
+        </article>
+      </div>
+    </section>
+  </article>
+
+  <script is:inline>
+    // Checklist con progreso guardado localmente.
+    const STORAGE_KEY = 'cafeycodigo.exerciseChecks.v1';
+
+    function readStore() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+      } catch {
+        return {};
+      }
+    }
+
+    function writeStore(store) {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(store));
+      } catch {}
+    }
+
+    function updateProgressFor(exId) {
+      const card = document.querySelector(`.ex-card[data-ex-id="${exId}"]`);
+      if (!card) return;
+      const checks = Array.from(card.querySelectorAll('input[type="checkbox"][data-check-id]'));
+      const done = checks.filter((c) => c.checked).length;
+      const total = checks.length;
+      const el = card.querySelector('[data-progress-for]');
+      if (el) el.textContent = `Progreso: ${done}/${total}`;
+    }
+
+    (function initChecklist() {
+      const store = readStore();
+
+      const allCards = Array.from(document.querySelectorAll('.ex-card[data-ex-id]'));
+      allCards.forEach((card) => {
+        const exId = card.getAttribute('data-ex-id');
+        const perEx = store[exId] || {};
+
+        card.querySelectorAll('input[type="checkbox"][data-check-id]').forEach((input) => {
+          const checkId = input.getAttribute('data-check-id');
+          input.checked = Boolean(perEx[checkId]);
+          input.addEventListener('change', () => {
+            const s = readStore();
+            if (!s[exId]) s[exId] = {};
+            s[exId][checkId] = input.checked;
+            writeStore(s);
+            updateProgressFor(exId);
+          });
+        });
+
+        updateProgressFor(exId);
+      });
+    })();
+  </script>
+
+  <style>
+    .muted {
+      color: var(--text-muted);
+      font-weight: 650;
+      line-height: 1.6;
+    }
+    .exercise-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .ex-card {
+      border: 3px solid var(--border);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.78);
+      padding: 1rem 1rem;
+      box-shadow: 0 16px 34px rgba(30, 18, 16, 0.08);
+    }
+    .ex-card h3 {
+      margin: 0 0 0.35rem;
+      color: var(--info);
+      font-size: 1.2rem;
+    }
+    .ex-statement {
+      margin: 0 0 0.65rem;
+      color: var(--text-secondary);
+      font-weight: 650;
+      line-height: 1.55;
+    }
+    .ex-checks {
+      display: grid;
+      gap: 0.35rem;
+    }
+    .ex-progress {
+      font-weight: 900;
+      font-family: 'Nunito', sans-serif;
+      color: var(--text-primary);
+      margin-bottom: 0.25rem;
+    }
+    .chk {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      color: var(--text-secondary);
+      font-weight: 650;
+    }
+    .chk input {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--success);
+    }
+  </style>
+</Layout>
+

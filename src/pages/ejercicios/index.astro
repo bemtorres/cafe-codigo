@@ -1,0 +1,92 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout
+  title="Ejercicios para programar"
+  description="Ejercicios por unidades para practicar lógica y decisiones en diferentes lenguajes."
+  courseSlug="ejercicios"
+>
+  <article class="content-section">
+    <h1>✅ Ejercicios para programar</h1>
+    <p>
+      Practicá lógica y decisiones resolviendo ejercicios por unidades. Cada ejercicio tiene un checklist:
+      marcás lo que hiciste y <strong>se guarda localmente</strong> en tu navegador para ver tu progreso.
+    </p>
+
+    <section class="mb-10">
+      <h2>Unidades</h2>
+      <div class="units-grid">
+        <a class="unit-card" href="/ejercicios/unidad-1/">
+          <h3>Unidad 1 (EPS)</h3>
+          <p>Entrada–Proceso–Salida, variables y operaciones sin complicarte.</p>
+        </a>
+        <a class="unit-card" href="/ejercicios/unidad-2/">
+          <h3>Unidad 2 (Si)</h3>
+          <p>Decisiones con `Si / Entonces / Sino` y condiciones.</p>
+        </a>
+        <a class="unit-card" href="/ejercicios/unidad-3/">
+          <h3>Unidad 3 (Avanzados)</h3>
+          <p>Lógica más completa con decisiones combinadas.</p>
+        </a>
+      </div>
+    </section>
+
+    <section class="tip">
+      <h2>Cómo usar el checklist</h2>
+      <ul>
+        <li>Marcá casillas mientras implementás el ejercicio.</li>
+        <li>Al recargar la página, tu progreso vuelve.</li>
+        <li>Si te trabás, mirá el simulador para practicar `Leer` y `Escribir`.</li>
+      </ul>
+    </section>
+  </article>
+
+  <style>
+    .units-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .unit-card {
+      text-decoration: none;
+      color: inherit;
+      background: rgba(255, 255, 255, 0.78);
+      border: 1px solid rgba(30, 18, 16, 0.12);
+      border-radius: 18px;
+      padding: 1.1rem 1.1rem;
+      box-shadow: 0 18px 44px rgba(30, 18, 16, 0.08);
+      transition: transform 0.12s, background 0.12s;
+      display: block;
+    }
+    .unit-card:hover {
+      transform: translateY(-2px);
+      background: rgba(255, 255, 255, 0.92);
+    }
+    .unit-card h3 {
+      margin: 0 0 0.35rem;
+      font-size: 1.2rem;
+    }
+    .unit-card p {
+      margin: 0;
+      color: var(--text-secondary);
+      font-weight: 650;
+      line-height: 1.5;
+    }
+    .tip {
+      margin-top: 1.25rem;
+      background: rgba(224, 247, 250, 0.45);
+      border: 1px dashed rgba(30, 18, 16, 0.22);
+      border-radius: 18px;
+      padding: 1rem 1.1rem;
+    }
+    .tip ul {
+      margin: 0.75rem 0 0;
+      padding-left: 1.1rem;
+      color: var(--text-secondary);
+      font-weight: 650;
+    }
+  </style>
+</Layout>
+

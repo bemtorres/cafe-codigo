@@ -1,0 +1,586 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout
+  title="Unidad 2 (Si)"
+  description="Ejercicios de la Unidad 2: decisiones con Si / Entonces / Sino."
+  courseSlug="ejercicios"
+>
+  <article class="content-section">
+    <h1>Unidad 2 (Si)</h1>
+    <p>
+      Aquí practicás decisiones con <code>Si</code>. Cada ejercicio es para que lo resuelvas con lógica clara y
+      con un checklist que te ayuda a revisar tu proceso.
+    </p>
+
+    <section class="mb-10">
+      <h2>Checklist de esta unidad</h2>
+      <ul>
+        <li>Entrada: <code>Leer</code></li>
+        <li>Proceso: operaciones + condicionales</li>
+        <li>Salida: <code>Escribir</code> según cada caso</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Ejercicios</h2>
+      <div id="exerciseList" class="exercise-list">
+        <article class="ex-card" data-ex-id="u2-1">
+          <h3>1. Número positivo o negativo</h3>
+          <p class="ex-statement">Pedir un número y mostrar si es positivo, negativo o cero.</p>
+          <div class="ex-checks">
+            <span class="ex-progress" data-progress-for="u2-1"></span>
+            <label class="chk"><input type="checkbox" data-check-id="enunciado" /> Comprendí el enunciado</label>
+            <label class="chk"><input type="checkbox" data-check-id="definir" /> Definí variables con `Definir`</label>
+            <label class="chk"><input type="checkbox" data-check-id="leer" /> Leí datos con `Leer`</label>
+            <label class="chk"><input type="checkbox" data-check-id="condicional" /> Usé `Si / Entonces / Sino`</label>
+            <label class="chk"><input type="checkbox" data-check-id="casos" /> Probé al menos 2 casos (frontera)</label>
+            <label class="chk"><input type="checkbox" data-check-id="proceso" /> Ejecuté la lógica correcta</label>
+            <label class="chk"><input type="checkbox" data-check-id="escribir" /> Mostré el resultado con `Escribir`</label>
+          </div>
+        </article>
+
+        <article class="ex-card" data-ex-id="u2-2">
+          <h3>2. Número par o impar</h3>
+          <p class="ex-statement">Ingresar un entero e indicar si es par o impar.</p>
+          <div class="ex-checks">
+            <span class="ex-progress" data-progress-for="u2-2"></span>
+            <label class="chk"><input type="checkbox" data-check-id="enunciado" /> Comprendí el enunciado</label>
+            <label class="chk"><input type="checkbox" data-check-id="definir" /> Definí variables con `Definir`</label>
+            <label class="chk"><input type="checkbox" data-check-id="leer" /> Leí datos con `Leer`</label>
+            <label class="chk"><input type="checkbox" data-check-id="condicional" /> Usé `Si / Entonces / Sino`</label>
+            <label class="chk"><input type="checkbox" data-check-id="casos" /> Probé al menos 2 casos (frontera)</label>
+            <label class="chk"><input type="checkbox" data-check-id="proceso" /> Ejecuté la lógica correcta</label>
+            <label class="chk"><input type="checkbox" data-check-id="escribir" /> Mostré el resultado con `Escribir`</label>
+          </div>
+        </article>
+
+        <article class="ex-card" data-ex-id="u2-3">
+          <h3>3. Mayor de dos números</h3>
+          <p class="ex-statement">Leer dos números y mostrar cuál es mayor o si son iguales.</p>
+          <div class="ex-checks">
+            <span class="ex-progress" data-progress-for="u2-3"></span>
+            <label class="chk"><input type="checkbox" data-check-id="enunciado" /> Comprendí el enunciado</label>
+            <label class="chk"><input type="checkbox" data-check-id="definir" /> Definí variables con `Definir`</label>
+            <label class="chk"><input type="checkbox" data-check-id="leer" /> Leí datos con `Leer`</label>
+            <label class="chk"><input type="checkbox" data-check-id="condicional" /> Usé `Si / Entonces / Sino`</label>
+            <label class="chk"><input type="checkbox" data-check-id="casos" /> Probé al menos 2 casos (frontera)</label>
+            <label class="chk"><input type="checkbox" data-check-id="proceso" /> Ejecuté la lógica correcta</label>
+            <label class="chk"><input type="checkbox" data-check-id="escribir" /> Mostré el resultado con `Escribir`</label>
+          </div>
+        </article>
+
+        <article class="ex-card" data-ex-id="u2-4">
+          <h3>4. Mayor de tres números</h3>
+          <p class="ex-statement">Ingresar tres números y determinar el mayor.</p>
+          <div class="ex-checks">
+            <span class="ex-progress" data-progress-for="u2-4"></span>
+            <label class="chk"><input type="checkbox" data-check-id="enunciado" /> Comprendí el enunciado</label>
+            <label class="chk"><input type="checkbox" data-check-id="definir" /> Definí variables con `Definir`</label>
+            <label class="chk"><input type="checkbox" data-check-id="leer" /> Leí datos con `Leer`</label>
+            <label class="chk"><input type="checkbox" data-check-id="condicional" /> Usé `Si / Entonces / Sino`</label>
+            <label class="chk"><input type="checkbox" data-check-id="casos" /> Probé al menos 2 casos (frontera)</label>
+            <label class="chk"><input type="checkbox" data-check-id="proceso" /> Ejecuté la lógica correcta</label>
+            <label class="chk"><input type="checkbox" data-check-id="escribir" /> Mostré el resultado con `Escribir`</label>
+          </div>
+        </article>
+
+        <article class="ex-card" data-ex-id="u2-5">
+          <h3>5. Aprobado o reprobado</h3>
+          <p class="ex-statement">Pedir una nota (0–100) y mostrar si aprueba (≥60) o reprueba.</p>
+          <div class="ex-checks">
+            <span class="ex-progress" data-progress-for="u2-5"></span>
+            <label class="chk"><input type="checkbox" data-check-id="enunciado" /> Comprendí el enunciado</label>
+            <label class="chk"><input type="checkbox" data-check-id="definir" /> Definí variables con `Definir`</label>
+            <label class="chk"><input type="checkbox" data-check-id="leer" /> Leí datos con `Leer`</label>
+            <label class="chk"><input type="checkbox" data-check-id="condicional" /> Usé `Si / Entonces / Sino`</label>
+            <label class="chk"><input type="checkbox" data-check-id="casos" /> Probé al menos 2 casos (frontera)</label>
+            <label class="chk"><input type="checkbox" data-check-id="proceso" /> Ejecuté la lógica correcta</label>
+            <label class="chk"><input type="checkbox" data-check-id="escribir" /> Mostré el resultado con `Escribir`</label>
+          </div>
+        </article>
+
+        <article class="ex-card" data-ex-id="u2-6">
+          <h3>6. Descuento por compra</h3>
+          <p class="ex-statement">Si la compra supera 10000 aplica 10%; si no, 0% descuento.</p>
+          <div class="ex-checks">
+            <span class="ex-progress" data-progress-for="u2-6"></span>
+            <label class="chk"><input type="checkbox" data-check-id="enunciado" /> Comprendí el enunciado</label>
+            <label class="chk"><input type="checkbox" data-check-id="definir" /> Definí variables con `Definir`</label>
+            <label class="chk"><input type="checkbox" data-check-id="leer" /> Leí datos con `Leer`</label>
+            <label class="chk"><input type="checkbox" data-check-id="condicional" /> Usé `Si / Entonces / Sino`</label>
+            <label class="chk"><input type="checkbox" data-check-id="casos" /> Probé al menos 2 casos (frontera)</label>
+            <label class="chk"><input type="checkbox" data-check-id="proceso" /> Ejecuté la lógica correcta</label>
+            <label class="chk"><input type="checkbox" data-check-id="escribir" /> Mostré el resultado con `Escribir`</label>
+          </div>
+        </article>
+
+        <article class="ex-card" data-ex-id="u2-7">
+          <h3>7. Número múltiplo de 5</h3>
+          <p class="ex-statement">Ingresar un número y verificar si es múltiplo de 5.</p>
+          <div class="ex-checks">
+            <span class="ex-progress" data-progress-for="u2-7"></span>
+            <label class="chk"><input type="checkbox" data-check-id="enunciado" /> Comprendí el enunciado</label>
+            <label class="chk"><input type="checkbox" data-check-id="definir" /> Definí variables con `Definir`</label>
+            <label class="chk"><input type="checkbox" data-check-id="leer" /> Leí datos con `Leer`</label>
+            <label class="chk"><input type="checkbox" data-check-id="condicional" /> Usé `Si / Entonces / Sino`</label>
+            <label class="chk"><input type="checkbox" data-check-id="casos" /> Probé al menos 2 casos (frontera)</label>
+            <label class="chk"><input type="checkbox" data-check-id="proceso" /> Ejecuté la lógica correcta</label>
+            <label class="chk"><input type="checkbox" data-check-id="escribir" /> Mostré el resultado con `Escribir`</label>
+          </div>
+        </article>
+
+        <article class="ex-card" data-ex-id="u2-8">
+          <h3>8. Edad y mayoría de edad</h3>
+          <p class="ex-statement">Pedir edad y decir si es mayor o menor de edad (≥18).</p>
+          <div class="ex-checks">
+            <span class="ex-progress" data-progress-for="u2-8"></span>
+            <label class="chk"><input type="checkbox" data-check-id="enunciado" /> Comprendí el enunciado</label>
+            <label class="chk"><input type="checkbox" data-check-id="definir" /> Definí variables con `Definir`</label>
+            <label class="chk"><input type="checkbox" data-check-id="leer" /> Leí datos con `Leer`</label>
+            <label class="chk"><input type="checkbox" data-check-id="condicional" /> Usé `Si / Entonces / Sino`</label>
+            <label class="chk"><input type="checkbox" data-check-id="casos" /> Probé al menos 2 casos (frontera)</label>
+            <label class="chk"><input type="checkbox" data-check-id="proceso" /> Ejecuté la lógica correcta</label>
+            <label class="chk"><input type="checkbox" data-check-id="escribir" /> Mostré el resultado con `Escribir`</label>
+          </div>
+        </article>
+
+        <article class="ex-card" data-ex-id="u2-9">
+          <h3>9. Número divisible entre 2 y 3</h3>
+          <p class="ex-statement">Ingresar un número y determinar si es divisible entre ambos.</p>
+          <div class="ex-checks">
+            <span class="ex-progress" data-progress-for="u2-9"></span>
+            <label class="chk"><input type="checkbox" data-check-id="enunciado" /> Comprendí el enunciado</label>
+            <label class="chk"><input type="checkbox" data-check-id="definir" /> Definí variables con `Definir`</label>
+            <label class="chk"><input type="checkbox" data-check-id="leer" /> Leí datos con `Leer`</label>
+            <label class="chk"><input type="checkbox" data-check-id="condicional" /> Usé `Si / Entonces / Sino`</label>
+            <label class="chk"><input type="checkbox" data-check-id="casos" /> Probé al menos 2 casos (frontera)</label>
+            <label class="chk"><input type="checkbox" data-check-id="proceso" /> Ejecuté la lógica correcta</label>
+            <label class="chk"><input type="checkbox" data-check-id="escribir" /> Mostré el resultado con `Escribir`</label>
+          </div>
+        </article>
+
+        <article class="ex-card" data-ex-id="u2-10">
+          <h3>10. Clasificación de triángulo</h3>
+          <p class="ex-statement">Ingresar tres lados y clasificar: equilátero, isósceles o escaleno.</p>
+          <div class="ex-checks">
+            <span class="ex-progress" data-progress-for="u2-10"></span>
+            <label class="chk"><input type="checkbox" data-check-id="enunciado" /> Comprendí el enunciado</label>
+            <label class="chk"><input type="checkbox" data-check-id="definir" /> Definí variables con `Definir`</label>
+            <label class="chk"><input type="checkbox" data-check-id="leer" /> Leí datos con `Leer`</label>
+            <label class="chk"><input type="checkbox" data-check-id="condicional" /> Usé `Si / Entonces / Sino`</label>
+            <label class="chk"><input type="checkbox" data-check-id="casos" /> Probé al menos 2 casos (frontera)</label>
+            <label class="chk"><input type="checkbox" data-check-id="proceso" /> Ejecuté la lógica correcta</label>
+            <label class="chk"><input type="checkbox" data-check-id="escribir" /> Mostré el resultado con `Escribir`</label>
+          </div>
+        </article>
+
+        <article class="ex-card" data-ex-id="u2-11">
+          <h3>11. Año bisiesto</h3>
+          <p class="ex-statement">Ingresar un año y determinar si es bisiesto.</p>
+          <div class="ex-checks">
+            <span class="ex-progress" data-progress-for="u2-11"></span>
+            <label class="chk"><input type="checkbox" data-check-id="enunciado" /> Comprendí el enunciado</label>
+            <label class="chk"><input type="checkbox" data-check-id="definir" /> Definí variables con `Definir`</label>
+            <label class="chk"><input type="checkbox" data-check-id="leer" /> Leí datos con `Leer`</label>
+            <label class="chk"><input type="checkbox" data-check-id="condicional" /> Usé `Si / Entonces / Sino`</label>
+            <label class="chk"><input type="checkbox" data-check-id="casos" /> Probé al menos 2 casos (frontera)</label>
+            <label class="chk"><input type="checkbox" data-check-id="proceso" /> Ejecuté la lógica correcta</label>
+            <label class="chk"><input type="checkbox" data-check-id="escribir" /> Mostré el resultado con `Escribir`</label>
+          </div>
+        </article>
+
+        <article class="ex-card" data-ex-id="u2-12">
+          <h3>12. Número dentro de un rango</h3>
+          <p class="ex-statement">Pedir un número y verificar si está entre 10 y 50.</p>
+          <div class="ex-checks">
+            <span class="ex-progress" data-progress-for="u2-12"></span>
+            <label class="chk"><input type="checkbox" data-check-id="enunciado" /> Comprendí el enunciado</label>
+            <label class="chk"><input type="checkbox" data-check-id="definir" /> Definí variables con `Definir`</label>
+            <label class="chk"><input type="checkbox" data-check-id="leer" /> Leí datos con `Leer`</label>
+            <label class="chk"><input type="checkbox" data-check-id="condicional" /> Usé `Si / Entonces / Sino`</label>
+            <label class="chk"><input type="checkbox" data-check-id="casos" /> Probé al menos 2 casos (frontera)</label>
+            <label class="chk"><input type="checkbox" data-check-id="proceso" /> Ejecuté la lógica correcta</label>
+            <label class="chk"><input type="checkbox" data-check-id="escribir" /> Mostré el resultado con `Escribir`</label>
+          </div>
+        </article>
+
+        <article class="ex-card" data-ex-id="u2-13">
+          <h3>13. Comparar dos edades</h3>
+          <p class="ex-statement">Leer dos edades y decir cuál es mayor o si son iguales.</p>
+          <div class="ex-checks">
+            <span class="ex-progress" data-progress-for="u2-13"></span>
+            <label class="chk"><input type="checkbox" data-check-id="enunciado" /> Comprendí el enunciado</label>
+            <label class="chk"><input type="checkbox" data-check-id="definir" /> Definí variables con `Definir`</label>
+            <label class="chk"><input type="checkbox" data-check-id="leer" /> Leí datos con `Leer`</label>
+            <label class="chk"><input type="checkbox" data-check-id="condicional" /> Usé `Si / Entonces / Sino`</label>
+            <label class="chk"><input type="checkbox" data-check-id="casos" /> Probé al menos 2 casos (frontera)</label>
+            <label class="chk"><input type="checkbox" data-check-id="proceso" /> Ejecuté la lógica correcta</label>
+            <label class="chk"><input type="checkbox" data-check-id="escribir" /> Mostré el resultado con `Escribir`</label>
+          </div>
+        </article>
+
+        <article class="ex-card" data-ex-id="u2-14">
+          <h3>14. Precio con impuesto</h3>
+          <p class="ex-statement">Si precio &gt; 5000 aplicar 19%, si no 10%.</p>
+          <div class="ex-checks">
+            <span class="ex-progress" data-progress-for="u2-14"></span>
+            <label class="chk"><input type="checkbox" data-check-id="enunciado" /> Comprendí el enunciado</label>
+            <label class="chk"><input type="checkbox" data-check-id="definir" /> Definí variables con `Definir`</label>
+            <label class="chk"><input type="checkbox" data-check-id="leer" /> Leí datos con `Leer`</label>
+            <label class="chk"><input type="checkbox" data-check-id="condicional" /> Usé `Si / Entonces / Sino`</label>
+            <label class="chk"><input type="checkbox" data-check-id="casos" /> Probé al menos 2 casos (frontera)</label>
+            <label class="chk"><input type="checkbox" data-check-id="proceso" /> Ejecuté la lógica correcta</label>
+            <label class="chk"><input type="checkbox" data-check-id="escribir" /> Mostré el resultado con `Escribir`</label>
+          </div>
+        </article>
+
+        <article class="ex-card" data-ex-id="u2-15">
+          <h3>15. Clasificación de temperatura</h3>
+          <p class="ex-statement">Menos de 10°C: Frío. De 10 a 25: Templado. 25: Caluroso.</p>
+          <div class="ex-checks">
+            <span class="ex-progress" data-progress-for="u2-15"></span>
+            <label class="chk"><input type="checkbox" data-check-id="enunciado" /> Comprendí el enunciado</label>
+            <label class="chk"><input type="checkbox" data-check-id="definir" /> Definí variables con `Definir`</label>
+            <label class="chk"><input type="checkbox" data-check-id="leer" /> Leí datos con `Leer`</label>
+            <label class="chk"><input type="checkbox" data-check-id="condicional" /> Usé `Si / Entonces / Sino`</label>
+            <label class="chk"><input type="checkbox" data-check-id="casos" /> Probé al menos 2 casos (frontera)</label>
+            <label class="chk"><input type="checkbox" data-check-id="proceso" /> Ejecuté la lógica correcta</label>
+            <label class="chk"><input type="checkbox" data-check-id="escribir" /> Mostré el resultado con `Escribir`</label>
+          </div>
+        </article>
+
+        <article class="ex-card" data-ex-id="u2-16">
+          <h3>16. Número mayor a 100</h3>
+          <p class="ex-statement">Ingresar un número e indicar si es mayor, menor o igual a 100.</p>
+          <div class="ex-checks">
+            <span class="ex-progress" data-progress-for="u2-16"></span>
+            <label class="chk"><input type="checkbox" data-check-id="enunciado" /> Comprendí el enunciado</label>
+            <label class="chk"><input type="checkbox" data-check-id="definir" /> Definí variables con `Definir`</label>
+            <label class="chk"><input type="checkbox" data-check-id="leer" /> Leí datos con `Leer`</label>
+            <label class="chk"><input type="checkbox" data-check-id="condicional" /> Usé `Si / Entonces / Sino`</label>
+            <label class="chk"><input type="checkbox" data-check-id="casos" /> Probé al menos 2 casos (frontera)</label>
+            <label class="chk"><input type="checkbox" data-check-id="proceso" /> Ejecuté la lógica correcta</label>
+            <label class="chk"><input type="checkbox" data-check-id="escribir" /> Mostré el resultado con `Escribir`</label>
+          </div>
+        </article>
+
+        <article class="ex-card" data-ex-id="u2-17">
+          <h3>17. Día de la semana</h3>
+          <p class="ex-statement">Ingresar 1..7 y mostrar el día correspondiente usando múltiples `Si`.</p>
+          <div class="ex-checks">
+            <span class="ex-progress" data-progress-for="u2-17"></span>
+            <label class="chk"><input type="checkbox" data-check-id="enunciado" /> Comprendí el enunciado</label>
+            <label class="chk"><input type="checkbox" data-check-id="definir" /> Definí variables con `Definir`</label>
+            <label class="chk"><input type="checkbox" data-check-id="leer" /> Leí datos con `Leer`</label>
+            <label class="chk"><input type="checkbox" data-check-id="condicional" /> Usé `Si / Entonces / Sino`</label>
+            <label class="chk"><input type="checkbox" data-check-id="casos" /> Probé al menos 2 casos (frontera)</label>
+            <label class="chk"><input type="checkbox" data-check-id="proceso" /> Ejecuté la lógica correcta</label>
+            <label class="chk"><input type="checkbox" data-check-id="escribir" /> Mostré el resultado con `Escribir`</label>
+          </div>
+        </article>
+
+        <article class="ex-card" data-ex-id="u2-18">
+          <h3>18. Validación de contraseña simple</h3>
+          <p class="ex-statement">Pedir una contraseña y verificar si es igual a <code>"1234"</code>.</p>
+          <div class="ex-checks">
+            <span class="ex-progress" data-progress-for="u2-18"></span>
+            <label class="chk"><input type="checkbox" data-check-id="enunciado" /> Comprendí el enunciado</label>
+            <label class="chk"><input type="checkbox" data-check-id="definir" /> Definí variables con `Definir`</label>
+            <label class="chk"><input type="checkbox" data-check-id="leer" /> Leí datos con `Leer`</label>
+            <label class="chk"><input type="checkbox" data-check-id="condicional" /> Usé `Si / Entonces / Sino`</label>
+            <label class="chk"><input type="checkbox" data-check-id="casos" /> Probé al menos 2 casos (frontera)</label>
+            <label class="chk"><input type="checkbox" data-check-id="proceso" /> Ejecuté la lógica correcta</label>
+            <label class="chk"><input type="checkbox" data-check-id="escribir" /> Mostré el resultado con `Escribir`</label>
+          </div>
+        </article>
+
+        <article class="ex-card" data-ex-id="u2-19">
+          <h3>19. Salario con bono</h3>
+          <p class="ex-statement">Si salario &lt; 500000 bono 10%; si no, 5%.</p>
+          <div class="ex-checks">
+            <span class="ex-progress" data-progress-for="u2-19"></span>
+            <label class="chk"><input type="checkbox" data-check-id="enunciado" /> Comprendí el enunciado</label>
+            <label class="chk"><input type="checkbox" data-check-id="definir" /> Definí variables con `Definir`</label>
+            <label class="chk"><input type="checkbox" data-check-id="leer" /> Leí datos con `Leer`</label>
+            <label class="chk"><input type="checkbox" data-check-id="condicional" /> Usé `Si / Entonces / Sino`</label>
+            <label class="chk"><input type="checkbox" data-check-id="casos" /> Probé al menos 2 casos (frontera)</label>
+            <label class="chk"><input type="checkbox" data-check-id="proceso" /> Ejecuté la lógica correcta</label>
+            <label class="chk"><input type="checkbox" data-check-id="escribir" /> Mostré el resultado con `Escribir`</label>
+          </div>
+        </article>
+
+        <article class="ex-card" data-ex-id="u2-20">
+          <h3>20. Número de dos cifras</h3>
+          <p class="ex-statement">Ingresar un número y verificar si tiene exactamente dos cifras.</p>
+          <div class="ex-checks">
+            <span class="ex-progress" data-progress-for="u2-20"></span>
+            <label class="chk"><input type="checkbox" data-check-id="enunciado" /> Comprendí el enunciado</label>
+            <label class="chk"><input type="checkbox" data-check-id="definir" /> Definí variables con `Definir`</label>
+            <label class="chk"><input type="checkbox" data-check-id="leer" /> Leí datos con `Leer`</label>
+            <label class="chk"><input type="checkbox" data-check-id="condicional" /> Usé `Si / Entonces / Sino`</label>
+            <label class="chk"><input type="checkbox" data-check-id="casos" /> Probé al menos 2 casos (frontera)</label>
+            <label class="chk"><input type="checkbox" data-check-id="proceso" /> Ejecuté la lógica correcta</label>
+            <label class="chk"><input type="checkbox" data-check-id="escribir" /> Mostré el resultado con `Escribir`</label>
+          </div>
+        </article>
+
+        <article class="ex-card" data-ex-id="u2-21">
+          <h3>21. Compra en tienda con descuento progresivo</h3>
+          <p class="ex-statement">Descuento: 20% si supera 50.000; 10% si supera 30.000; si no, 0%.</p>
+          <div class="ex-checks">
+            <span class="ex-progress" data-progress-for="u2-21"></span>
+            <label class="chk"><input type="checkbox" data-check-id="enunciado" /> Comprendí el enunciado</label>
+            <label class="chk"><input type="checkbox" data-check-id="definir" /> Definí variables con `Definir`</label>
+            <label class="chk"><input type="checkbox" data-check-id="leer" /> Leí datos con `Leer`</label>
+            <label class="chk"><input type="checkbox" data-check-id="condicional" /> Usé `Si / Entonces / Sino`</label>
+            <label class="chk"><input type="checkbox" data-check-id="casos" /> Probé al menos 2 casos (frontera)</label>
+            <label class="chk"><input type="checkbox" data-check-id="proceso" /> Ejecuté la lógica correcta</label>
+            <label class="chk"><input type="checkbox" data-check-id="escribir" /> Mostré el resultado con `Escribir`</label>
+          </div>
+        </article>
+
+        <article class="ex-card" data-ex-id="u2-22">
+          <h3>22. Viaje en bus según edad</h3>
+          <p class="ex-statement">Adultos (≥18) pagan completo; menores pagan 50%; mayores (≥65) pagan 30%.</p>
+          <div class="ex-checks">
+            <span class="ex-progress" data-progress-for="u2-22"></span>
+            <label class="chk"><input type="checkbox" data-check-id="enunciado" /> Comprendí el enunciado</label>
+            <label class="chk"><input type="checkbox" data-check-id="definir" /> Definí variables con `Definir`</label>
+            <label class="chk"><input type="checkbox" data-check-id="leer" /> Leí datos con `Leer`</label>
+            <label class="chk"><input type="checkbox" data-check-id="condicional" /> Usé `Si / Entonces / Sino`</label>
+            <label class="chk"><input type="checkbox" data-check-id="casos" /> Probé al menos 2 casos (frontera)</label>
+            <label class="chk"><input type="checkbox" data-check-id="proceso" /> Ejecuté la lógica correcta</label>
+            <label class="chk"><input type="checkbox" data-check-id="escribir" /> Mostré el resultado con `Escribir`</label>
+          </div>
+        </article>
+
+        <article class="ex-card" data-ex-id="u2-23">
+          <h3>23. Clasificación de notas escolares</h3>
+          <p class="ex-statement">Menor a 4.0 → Reprobado. Entre 4.0 y 5.9 → Aprobado. 6.0 o más → Sobresaliente.</p>
+          <div class="ex-checks">
+            <span class="ex-progress" data-progress-for="u2-23"></span>
+            <label class="chk"><input type="checkbox" data-check-id="enunciado" /> Comprendí el enunciado</label>
+            <label class="chk"><input type="checkbox" data-check-id="definir" /> Definí variables con `Definir`</label>
+            <label class="chk"><input type="checkbox" data-check-id="leer" /> Leí datos con `Leer`</label>
+            <label class="chk"><input type="checkbox" data-check-id="condicional" /> Usé `Si / Entonces / Sino`</label>
+            <label class="chk"><input type="checkbox" data-check-id="casos" /> Probé al menos 2 casos (frontera)</label>
+            <label class="chk"><input type="checkbox" data-check-id="proceso" /> Ejecuté la lógica correcta</label>
+            <label class="chk"><input type="checkbox" data-check-id="escribir" /> Mostré el resultado con `Escribir`</label>
+          </div>
+        </article>
+
+        <article class="ex-card" data-ex-id="u2-24">
+          <h3>24. Tarifa de estacionamiento</h3>
+          <p class="ex-statement">Hasta 2 horas: $1.000/h. Más de 2 horas: $800/h. Si supera $5.000 aplica -$500.</p>
+          <div class="ex-checks">
+            <span class="ex-progress" data-progress-for="u2-24"></span>
+            <label class="chk"><input type="checkbox" data-check-id="enunciado" /> Comprendí el enunciado</label>
+            <label class="chk"><input type="checkbox" data-check-id="definir" /> Definí variables con `Definir`</label>
+            <label class="chk"><input type="checkbox" data-check-id="leer" /> Leí datos con `Leer`</label>
+            <label class="chk"><input type="checkbox" data-check-id="condicional" /> Usé `Si / Entonces / Sino`</label>
+            <label class="chk"><input type="checkbox" data-check-id="casos" /> Probé al menos 2 casos (frontera)</label>
+            <label class="chk"><input type="checkbox" data-check-id="proceso" /> Ejecuté la lógica correcta</label>
+            <label class="chk"><input type="checkbox" data-check-id="escribir" /> Mostré el resultado con `Escribir`</label>
+          </div>
+        </article>
+
+        <article class="ex-card" data-ex-id="u2-25">
+          <h3>25. Compra internacional con impuesto</h3>
+          <p class="ex-statement">Si supera 30.000 → impuesto 25%. Si no, no paga impuesto. Mostrar total final.</p>
+          <div class="ex-checks">
+            <span class="ex-progress" data-progress-for="u2-25"></span>
+            <label class="chk"><input type="checkbox" data-check-id="enunciado" /> Comprendí el enunciado</label>
+            <label class="chk"><input type="checkbox" data-check-id="definir" /> Definí variables con `Definir`</label>
+            <label class="chk"><input type="checkbox" data-check-id="leer" /> Leí datos con `Leer`</label>
+            <label class="chk"><input type="checkbox" data-check-id="condicional" /> Usé `Si / Entonces / Sino`</label>
+            <label class="chk"><input type="checkbox" data-check-id="casos" /> Probé al menos 2 casos (frontera)</label>
+            <label class="chk"><input type="checkbox" data-check-id="proceso" /> Ejecuté la lógica correcta</label>
+            <label class="chk"><input type="checkbox" data-check-id="escribir" /> Mostré el resultado con `Escribir`</label>
+          </div>
+        </article>
+
+        <article class="ex-card" data-ex-id="u2-26">
+          <h3>26. Evaluación de temperatura para viaje</h3>
+          <p class="ex-statement">Menos de 10°C → Llevar abrigo. 10–25 → Clima ideal. Más de 25°C → Llevar ropa ligera.</p>
+          <div class="ex-checks">
+            <span class="ex-progress" data-progress-for="u2-26"></span>
+            <label class="chk"><input type="checkbox" data-check-id="enunciado" /> Comprendí el enunciado</label>
+            <label class="chk"><input type="checkbox" data-check-id="definir" /> Definí variables con `Definir`</label>
+            <label class="chk"><input type="checkbox" data-check-id="leer" /> Leí datos con `Leer`</label>
+            <label class="chk"><input type="checkbox" data-check-id="condicional" /> Usé `Si / Entonces / Sino`</label>
+            <label class="chk"><input type="checkbox" data-check-id="casos" /> Probé al menos 2 casos (frontera)</label>
+            <label class="chk"><input type="checkbox" data-check-id="proceso" /> Ejecuté la lógica correcta</label>
+            <label class="chk"><input type="checkbox" data-check-id="escribir" /> Mostré el resultado con `Escribir`</label>
+          </div>
+        </article>
+
+        <article class="ex-card" data-ex-id="u2-27">
+          <h3>27. Cajero automático con límite</h3>
+          <p class="ex-statement">Retira si: monto ≤ saldo disponible y monto ≤ 200.000 por operación.</p>
+          <div class="ex-checks">
+            <span class="ex-progress" data-progress-for="u2-27"></span>
+            <label class="chk"><input type="checkbox" data-check-id="enunciado" /> Comprendí el enunciado</label>
+            <label class="chk"><input type="checkbox" data-check-id="definir" /> Definí variables con `Definir`</label>
+            <label class="chk"><input type="checkbox" data-check-id="leer" /> Leí datos con `Leer`</label>
+            <label class="chk"><input type="checkbox" data-check-id="condicional" /> Usé `Si / Entonces / Sino`</label>
+            <label class="chk"><input type="checkbox" data-check-id="casos" /> Probé al menos 2 casos (frontera)</label>
+            <label class="chk"><input type="checkbox" data-check-id="proceso" /> Ejecuté la lógica correcta</label>
+            <label class="chk"><input type="checkbox" data-check-id="escribir" /> Mostré el resultado con `Escribir`</label>
+          </div>
+        </article>
+
+        <article class="ex-card" data-ex-id="u2-28">
+          <h3>28. Cálculo de envío según peso</h3>
+          <p class="ex-statement">Hasta 1 kg: $3.000. 1–5 kg: $5.000. Más de 5 kg: $8.000.</p>
+          <div class="ex-checks">
+            <span class="ex-progress" data-progress-for="u2-28"></span>
+            <label class="chk"><input type="checkbox" data-check-id="enunciado" /> Comprendí el enunciado</label>
+            <label class="chk"><input type="checkbox" data-check-id="definir" /> Definí variables con `Definir`</label>
+            <label class="chk"><input type="checkbox" data-check-id="leer" /> Leí datos con `Leer`</label>
+            <label class="chk"><input type="checkbox" data-check-id="condicional" /> Usé `Si / Entonces / Sino`</label>
+            <label class="chk"><input type="checkbox" data-check-id="casos" /> Probé al menos 2 casos (frontera)</label>
+            <label class="chk"><input type="checkbox" data-check-id="proceso" /> Ejecuté la lógica correcta</label>
+            <label class="chk"><input type="checkbox" data-check-id="escribir" /> Mostré el resultado con `Escribir`</label>
+          </div>
+        </article>
+
+        <article class="ex-card" data-ex-id="u2-29">
+          <h3>29. Validación de acceso a evento</h3>
+          <p class="ex-statement">Puede ingresar si es mayor de 18 y tiene entrada válida (1 = sí, 0 = no).</p>
+          <div class="ex-checks">
+            <span class="ex-progress" data-progress-for="u2-29"></span>
+            <label class="chk"><input type="checkbox" data-check-id="enunciado" /> Comprendí el enunciado</label>
+            <label class="chk"><input type="checkbox" data-check-id="definir" /> Definí variables con `Definir`</label>
+            <label class="chk"><input type="checkbox" data-check-id="leer" /> Leí datos con `Leer`</label>
+            <label class="chk"><input type="checkbox" data-check-id="condicional" /> Usé `Si / Entonces / Sino`</label>
+            <label class="chk"><input type="checkbox" data-check-id="casos" /> Probé al menos 2 casos (frontera)</label>
+            <label class="chk"><input type="checkbox" data-check-id="proceso" /> Ejecuté la lógica correcta</label>
+            <label class="chk"><input type="checkbox" data-check-id="escribir" /> Mostré el resultado con `Escribir`</label>
+          </div>
+        </article>
+
+        <article class="ex-card" data-ex-id="u2-30">
+          <h3>30. Plan de telefonía móvil</h3>
+          <p class="ex-statement">Consumo: menos de 10 GB → $5.000. 10–30 GB → $10.000. Más de 30 GB → $15.000.</p>
+          <div class="ex-checks">
+            <span class="ex-progress" data-progress-for="u2-30"></span>
+            <label class="chk"><input type="checkbox" data-check-id="enunciado" /> Comprendí el enunciado</label>
+            <label class="chk"><input type="checkbox" data-check-id="definir" /> Definí variables con `Definir`</label>
+            <label class="chk"><input type="checkbox" data-check-id="leer" /> Leí datos con `Leer`</label>
+            <label class="chk"><input type="checkbox" data-check-id="condicional" /> Usé `Si / Entonces / Sino`</label>
+            <label class="chk"><input type="checkbox" data-check-id="casos" /> Probé al menos 2 casos (frontera)</label>
+            <label class="chk"><input type="checkbox" data-check-id="proceso" /> Ejecuté la lógica correcta</label>
+            <label class="chk"><input type="checkbox" data-check-id="escribir" /> Mostré el resultado con `Escribir`</label>
+          </div>
+        </article>
+      </div>
+    </section>
+  </article>
+
+  <script is:inline>
+    const STORAGE_KEY = 'cafeycodigo.exerciseChecks.v1';
+
+    function readStore() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+      } catch {
+        return {};
+      }
+    }
+
+    function writeStore(store) {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(store));
+      } catch {}
+    }
+
+    function updateProgressFor(exId) {
+      const card = document.querySelector(`.ex-card[data-ex-id="${exId}"]`);
+      if (!card) return;
+      const checks = Array.from(card.querySelectorAll('input[type="checkbox"][data-check-id]'));
+      const done = checks.filter((c) => c.checked).length;
+      const total = checks.length;
+      const el = card.querySelector('[data-progress-for]');
+      if (el) el.textContent = `Progreso: ${done}/${total}`;
+    }
+
+    (function initChecklist() {
+      const store = readStore();
+      const allCards = Array.from(document.querySelectorAll('.ex-card[data-ex-id]'));
+      allCards.forEach((card) => {
+        const exId = card.getAttribute('data-ex-id');
+        const perEx = store[exId] || {};
+
+        card.querySelectorAll('input[type="checkbox"][data-check-id]').forEach((input) => {
+          const checkId = input.getAttribute('data-check-id');
+          input.checked = Boolean(perEx[checkId]);
+          input.addEventListener('change', () => {
+            const s = readStore();
+            if (!s[exId]) s[exId] = {};
+            s[exId][checkId] = input.checked;
+            writeStore(s);
+            updateProgressFor(exId);
+          });
+        });
+
+        updateProgressFor(exId);
+      });
+    })();
+  </script>
+
+  <style>
+    .muted {
+      color: var(--text-muted);
+      font-weight: 650;
+      line-height: 1.6;
+    }
+    .exercise-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .ex-card {
+      border: 3px solid var(--border);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.78);
+      padding: 1rem 1rem;
+      box-shadow: 0 16px 34px rgba(30, 18, 16, 0.08);
+    }
+    .ex-card h3 {
+      margin: 0 0 0.35rem;
+      color: var(--info);
+      font-size: 1.2rem;
+    }
+    .ex-statement {
+      margin: 0 0 0.65rem;
+      color: var(--text-secondary);
+      font-weight: 650;
+      line-height: 1.55;
+    }
+    .ex-checks {
+      display: grid;
+      gap: 0.35rem;
+    }
+    .ex-progress {
+      font-weight: 900;
+      font-family: 'Nunito', sans-serif;
+      color: var(--text-primary);
+      margin-bottom: 0.25rem;
+    }
+    .chk {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      color: var(--text-secondary);
+      font-weight: 650;
+    }
+    .chk input {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--success);
+    }
+  </style>
+</Layout>
+

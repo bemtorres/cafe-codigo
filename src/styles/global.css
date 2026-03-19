@@ -82,7 +82,7 @@ a {
 .ejercicio span code {
   color: white;
   background: var(--text-primary);
-  padding: 0.25rem 0.5rem;
+  padding: 0.25rem 0.25rem;
   border-radius: 8px;
   border: 2px solid var(--border);
 }

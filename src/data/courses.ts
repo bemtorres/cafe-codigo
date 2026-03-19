@@ -28,6 +28,18 @@ export const courses: Course[] = [
     ],
   },
   {
+    slug: 'ejercicios',
+    name: 'Ejercicios para programar',
+    description: 'Colección de ejercicios por unidades para practicar lógica y decisiones (con checklist de progreso local).',
+    status: 'available',
+    color: '#EF476F',
+    lessons: [
+      { slug: 'unidad-1', title: 'Unidad 1 (EPS)', href: '/ejercicios/unidad-1/' },
+      { slug: 'unidad-2', title: 'Unidad 2 (Si)', href: '/ejercicios/unidad-2/' },
+      { slug: 'unidad-3', title: 'Unidad 3 (Avanzados)', href: '/ejercicios/unidad-3/' },
+    ],
+  },
+  {
     slug: 'python',
     name: 'Python',
     description: 'Lenguaje moderno, versátil y perfecto para empezar en programación real.',
