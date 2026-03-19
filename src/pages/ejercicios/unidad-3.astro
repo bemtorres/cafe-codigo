@@ -10,16 +10,19 @@ import Layout from '../../layouts/Layout.astro';
   <article class="content-section">
     <h1>Unidad 3 (Avanzados)</h1>
     <p>
-      En esta unidad resolvés ejercicios con criterios múltiples. La idea es combinar decisiones y mantener clara
-      la lógica.
+      Acá los problemas ya no tienen <strong>una sola</strong> condición: tenés que encadenar varios <code>Si</code>,
+      leer <strong>varios datos</strong> y decidir el mensaje final. Leé el enunciado entero antes de escribir código:
+      primero anotá en papel las reglas, después traducilas a pseudocódigo.
     </p>
 
     <section class="mb-10">
       <h2>Checklist recomendado</h2>
       <ul>
-        <li>Entrada con <code>Leer</code></li>
-        <li>Proceso con decisiones (múltiples ramas)</li>
-        <li>Salida con <code>Escribir</code> acorde al caso</li>
+        <li>Listar qué variables vas a <code>Leer</code> y de qué tipo son (entero / real / lógico)</li>
+        <li>Ordenar las reglas: ¿qué conviene preguntar primero para no repetir código?</li>
+        <li>Usar varios <code>Si</code> / <code>Sino</code> (o <code>Sino Si</code> si tu configuración lo permite)</li>
+        <li>Probar al menos un ejemplo por cada resultado posible</li>
+        <li><code>Escribir</code> un mensaje claro para el usuario (no solo “sí” o “no”)</li>
       </ul>
     </section>
 
@@ -28,7 +31,32 @@ import Layout from '../../layouts/Layout.astro';
       <div id="exerciseList" class="exercise-list">
         <article class="ex-card" data-ex-id="u3-1">
           <h3>1. Beca universitaria con múltiples criterios</h3>
-          <p class="ex-statement">Beca según promedio y condiciones de ingreso + evaluación adicional.</p>
+          <div class="ex-statement">
+            <p>
+              Una universidad otorga becas según el <strong>rendimiento</strong> del alumno y su <strong>situación económica</strong>
+              (o un buen examen de ingreso puede compensar).
+            </p>
+            <p><strong>Tu programa debe pedir (con <code>Leer</code>):</strong></p>
+            <ul>
+              <li><strong>Promedio</strong> general de la secundaria (número con decimales, por ejemplo de 0 a 10)</li>
+              <li><strong>Ingreso familiar</strong> mensual total, en pesos (solo un número)</li>
+              <li><strong>Puntaje</strong> del examen de ingreso a la universidad (de 0 a 100)</li>
+            </ul>
+            <p><strong>Reglas (en este orden lógico):</strong></p>
+            <ul>
+              <li>
+                <strong>Beca completa (100%)</strong> si el promedio es <strong>mayor o igual a 8</strong> <em>y además</em> se cumple
+                al menos una de estas: el ingreso familiar es <strong>menor o igual a $200.000</strong>, <strong>o</strong> el puntaje del
+                examen es <strong>mayor o igual a 85</strong>.
+              </li>
+              <li>
+                Si <strong>no</strong> califica para beca completa, pero el promedio es <strong>mayor o igual a 6</strong> →
+                <strong>Beca parcial (50%)</strong>.
+              </li>
+              <li>En cualquier otro caso → <strong>Sin beca</strong> (mostrar que no corresponde ayuda económica).</li>
+            </ul>
+            <p><strong>Salida:</strong> un solo mensaje indicando si obtuvo beca completa, parcial o ninguna.</p>
+          </div>
           <div class="ex-checks">
             <span class="ex-progress" data-progress-for="u3-1"></span>
             <label class="chk"><input type="checkbox" data-check-id="enunciado" /> Comprendí el enunciado</label>
@@ -43,7 +71,34 @@ import Layout from '../../layouts/Layout.astro';
 
         <article class="ex-card" data-ex-id="u3-2">
           <h3>2. Compra de auto con financiamiento</h3>
-          <p class="ex-statement">Ingreso mínimo, historial crediticio y aprobación según ahorro inicial.</p>
+          <div class="ex-statement">
+            <p>
+              Un banco evalúa si puede financiar un auto. No alcanza con ganar bien: también miran si la persona
+              <strong>paga sus deudas a tiempo</strong> y si juntó <strong>suficiente entrada</strong> en relación al auto.
+            </p>
+            <p><strong>Datos fijos del problema:</strong> el auto cuesta <strong>$5.000.000</strong> (no hace falta leerlo).</p>
+            <p><strong>Tu programa debe pedir:</strong></p>
+            <ul>
+              <li><strong>Ingreso mensual</strong> de la persona (en pesos)</li>
+              <li>Si tiene <strong>buen historial crediticio</strong>: <strong>1</strong> = sí, <strong>0</strong> = no</li>
+              <li>
+                <strong>Dinero de entrada</strong> que puede poner ahora (en pesos). La entrada debe ser al menos el
+                <strong>20% del precio del auto</strong> (20% de 5.000.000 = $1.000.000).
+              </li>
+            </ul>
+            <p><strong>Reglas de aprobación del préstamo:</strong></p>
+            <ul>
+              <li>Se aprueba el financiamiento solo si <strong>las tres</strong> condiciones se cumplen a la vez:</li>
+              <li>el ingreso mensual es <strong>mayor o igual a $800.000</strong>;</li>
+              <li>el historial crediticio es <strong>1</strong> (bueno);</li>
+              <li>la entrada es <strong>mayor o igual a $1.000.000</strong>.</li>
+            </ul>
+            <p>
+              <strong>Salida:</strong> mensaje de <strong>“Préstamo aprobado”</strong> o <strong>“Préstamo rechazado”</strong>.
+              Opcional: si rechaza, podés indicar <em>una</em> razón (por ejemplo ingreso bajo, mal historial o entrada insuficiente)
+              usando más <code>Si</code>.
+            </p>
+          </div>
           <div class="ex-checks">
             <span class="ex-progress" data-progress-for="u3-2"></span>
             <label class="chk"><input type="checkbox" data-check-id="enunciado" /> Comprendí el enunciado</label>
@@ -57,8 +112,30 @@ import Layout from '../../layouts/Layout.astro';
         </article>
 
         <article class="ex-card" data-ex-id="u3-3">
-          <h3>3. Evaluación médica básica</h3>
-          <p class="ex-statement">Fiebre y tos, y luego evaluar dolor corporal u observación.</p>
+          <h3>3. Evaluación médica básica (síntomas)</h3>
+          <div class="ex-statement">
+            <p>
+              Un sistema <em>muy simplificado</em> orienta a la persona según síntomas. <strong>No es un diagnóstico real</strong>;
+              sirve solo para practicar decisiones anidadas.
+            </p>
+            <p><strong>Tu programa debe pedir:</strong></p>
+            <ul>
+              <li>¿Tiene <strong>fiebre</strong>? <strong>1</strong> = sí, <strong>0</strong> = no</li>
+              <li>¿Tiene <strong>tos</strong>? <strong>1</strong> = sí, <strong>0</strong> = no</li>
+              <li>
+                <strong>Nivel de dolor general</strong> del 0 al 10 (0 = ningún dolor, 10 = mucho). Solo tiene sentido usarlo en
+                ciertos casos, según las reglas de abajo.
+              </li>
+            </ul>
+            <p><strong>Reglas de recomendación:</strong></p>
+            <ul>
+              <li>Si tiene <strong>fiebre y tos a la vez</strong> → mensaje: ir a <strong>guardia o consulta urgente</strong>.</li>
+              <li>Si tiene <strong>solo fiebre</strong> (tos = 0) → <strong>reposo, hidratación y control de temperatura</strong>.</li>
+              <li>Si tiene <strong>solo tos</strong> (fiebre = 0): si el dolor es <strong>7 o más</strong> → <strong>consultar médico</strong>; si el dolor es menor a 7 → <strong>observar y cuidados en casa</strong>.</li>
+              <li>Si <strong>no</strong> tiene fiebre ni tos → <strong>no hay síntomas que evaluar en este formulario</strong>.</li>
+            </ul>
+            <p><strong>Salida:</strong> un mensaje claro con la recomendación que corresponda (solo una rama por corrida).</p>
+          </div>
           <div class="ex-checks">
             <span class="ex-progress" data-progress-for="u3-3"></span>
             <label class="chk"><input type="checkbox" data-check-id="enunciado" /> Comprendí el enunciado</label>
@@ -73,7 +150,25 @@ import Layout from '../../layouts/Layout.astro';
 
         <article class="ex-card" data-ex-id="u3-4">
           <h3>4. Acceso a plataforma de videojuegos</h3>
-          <p class="ex-statement">Cuenta, edad y permiso parental: acceso restringido o bloqueado.</p>
+          <div class="ex-statement">
+            <p>Una plataforma de juegos online decide qué tipo de acceso dar según la <strong>edad</strong>, si ya tiene <strong>cuenta</strong> y el <strong>permiso de los padres</strong> cuando la ley lo exige.</p>
+            <p><strong>Tu programa debe pedir:</strong></p>
+            <ul>
+              <li><strong>Edad</strong> en años (número entero)</li>
+              <li>¿Ya tiene <strong>cuenta registrada</strong>? <strong>1</strong> = sí, <strong>0</strong> = no</li>
+              <li>
+                ¿Tiene <strong>permiso de padres/tutores</strong> para usar la plataforma? <strong>1</strong> = sí, <strong>0</strong> = no.
+                (Si la persona tiene 18 años o más, este dato no debería cambiar el resultado: podés igual pedirlo o asumir permiso = 1.)
+              </li>
+            </ul>
+            <p><strong>Reglas de acceso:</strong></p>
+            <ul>
+              <li>Menor de <strong>13 años</strong>: si permiso = <strong>0</strong> → <strong>acceso bloqueado</strong>; si permiso = <strong>1</strong> → <strong>modo infantil</strong> (contenido filtrado).</li>
+              <li>Entre <strong>13 y 17 años</strong> (inclusive): si tiene cuenta = <strong>1</strong> → <strong>acceso estándar</strong>; si cuenta = <strong>0</strong> → debe <strong>crear cuenta</strong> antes de jugar.</li>
+              <li><strong>18 años o más</strong>: si tiene cuenta = <strong>1</strong> → <strong>acceso completo</strong>; si cuenta = <strong>0</strong> → <strong>debe registrarse</strong> (flujo de registro obligatorio).</li>
+            </ul>
+            <p><strong>Salida:</strong> un mensaje que diga qué le pasa al usuario: bloqueado, modo infantil, acceso estándar, crear cuenta, acceso completo o registrarse.</p>
+          </div>
           <div class="ex-checks">
             <span class="ex-progress" data-progress-for="u3-4"></span>
             <label class="chk"><input type="checkbox" data-check-id="enunciado" /> Comprendí el enunciado</label>
@@ -88,7 +183,26 @@ import Layout from '../../layouts/Layout.astro';
 
         <article class="ex-card" data-ex-id="u3-5">
           <h3>5. Sistema de envío internacional</h3>
-          <p class="ex-statement">Peso, destino, revisión por valor y posible seguro según condiciones.</p>
+          <div class="ex-statement">
+            <p>Un correo calcula el <strong>costo de envío</strong> y avisa si el paquete entra en <strong>revisión</strong> o necesita <strong>seguro</strong>, según peso, zona y valor declarado.</p>
+            <p><strong>Tu programa debe pedir:</strong></p>
+            <ul>
+              <li><strong>Peso</strong> del paquete en <strong>kilogramos</strong> (número real)</li>
+              <li>
+                <strong>Zona</strong> de destino: <strong>1</strong> = mismo país, <strong>2</strong> = país limítrofe, <strong>3</strong> = resto del mundo
+              </li>
+              <li><strong>Valor declarado</strong> del contenido en pesos (cuánto declara que valen las cosas adentro)</li>
+            </ul>
+            <p><strong>Cálculo del costo base del envío:</strong> costo = peso × precio por kg según zona:</p>
+            <ul>
+              <li>Zona <strong>1</strong> → <strong>$3.000</strong> por kg</li>
+              <li>Zona <strong>2</strong> → <strong>$8.000</strong> por kg</li>
+              <li>Zona <strong>3</strong> → <strong>$15.000</strong> por kg</li>
+            </ul>
+            <p><strong>Recargo por revisión:</strong> si el valor declarado es <strong>mayor a $50.000</strong>, se suma un fijo de <strong>$10.000</strong> (trámite / revisión).</p>
+            <p><strong>Seguro obligatorio:</strong> si el peso es <strong>mayor a 20 kg</strong> <em>o</em> el valor declarado es <strong>mayor a $200.000</strong>, el envío debe ir <strong>con seguro obligatorio</strong> (avisarlo en el mensaje; el monto del seguro lo podés dejar como texto fijo o sumar un porcentaje simple si querés practicar más).</p>
+            <p><strong>Salida:</strong> mostrar el <strong>costo total</strong> (costo por peso + recargo si corresponde) y mensajes claros si hubo recargo por revisión y si corresponde seguro obligatorio.</p>
+          </div>
           <div class="ex-checks">
             <span class="ex-progress" data-progress-for="u3-5"></span>
             <label class="chk"><input type="checkbox" data-check-id="enunciado" /> Comprendí el enunciado</label>
@@ -183,6 +297,19 @@ import Layout from '../../layouts/Layout.astro';
       color: var(--text-secondary);
       font-weight: 650;
       line-height: 1.55;
+    }
+    .ex-statement p {
+      margin: 0 0 0.5rem;
+    }
+    .ex-statement p:last-child {
+      margin-bottom: 0;
+    }
+    .ex-statement ul {
+      margin: 0.25rem 0 0.6rem 1.15rem;
+      padding: 0;
+    }
+    .ex-statement li {
+      margin-bottom: 0.35rem;
     }
     .ex-checks {
       display: grid;

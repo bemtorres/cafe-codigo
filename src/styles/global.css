@@ -59,11 +59,11 @@ a {
 
 /* -- Content Section Wrapper -- */
 .content-section {
-  margin-bottom: 3rem;
+  margin-bottom: 0.2rem;
   background: white;
   border: 3px solid var(--border);
   border-radius: 24px;
-  padding: 2.5rem;
+  padding: 1.5rem;
   box-shadow: 6px 6px 0px var(--border);
 }
 

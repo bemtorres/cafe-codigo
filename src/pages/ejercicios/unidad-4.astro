@@ -1,0 +1,456 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout
+  title="Unidad 4 (Guía)"
+  description="Siete problemas de presupuesto, promociones, notas, consumo eléctrico, torneo, transporte y compras."
+  courseSlug="ejercicios"
+>
+  <article class="content-section">
+    <h1>Unidad 4 (Guía)</h1>
+    <p>
+      Estos son los <strong>siete ejercicios</strong>: se combinan cálculos con estructuras <code>Si</code> para clasificar resultados
+      (viaje, cupón, situación académica, descuento en la boleta, inscripción al torneo, transporte y compras con descuentos).
+    </p>
+
+    <section class="mb-10">
+      <h2>Checklist recomendado</h2>
+      <ul>
+        <li>Releer las tablas y reglas antes de codificar</li>
+        <li>Entrada con <code>Leer</code>, variables con <code>Definir</code></li>
+        <li>Proceso: primero el cálculo base, después los <code>Si</code> para mensajes o casos especiales</li>
+        <li>Salida con <code>Escribir</code> clara; probá límites (ej. justo $250.000, 5 y 10 productos, 100 y 101 kWh)</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Ejercicios</h2>
+      <div id="exerciseList" class="exercise-list">
+        <article class="ex-card" data-ex-id="u4-1">
+          <h3>1. Viaje familiar con presupuesto</h3>
+          <div class="ex-statement">
+            <p>
+              Una familia quiere <strong>planificar un viaje</strong>, pero tiene un <strong>presupuesto máximo de $300.000</strong>.
+              Debés crear un programa que <strong>calcule el costo total</strong> del viaje y determine <strong>si es posible realizarlo</strong>.
+            </p>
+
+            <p class="ex-subhead">📌 Datos importantes</p>
+            <ul>
+              <li>El <strong>pasaje</strong> cuesta <strong>$25.000</strong> por persona.</li>
+              <li>El <strong>alojamiento</strong> cuesta <strong>$40.000</strong> por noche.</li>
+            </ul>
+
+            <p class="ex-subhead">🧮 ¿Qué debe hacer el programa?</p>
+            <ul class="ex-steps">
+              <li>Leer la <strong>cantidad de personas</strong> que viajarán.</li>
+              <li>Leer la <strong>cantidad de noches</strong> que se alojarán.</li>
+              <li>Calcular el <strong>costo total</strong> del viaje usando la información anterior.</li>
+              <li>Mostrar el <strong>total a pagar</strong>.</li>
+              <li>
+                Evaluar el presupuesto según estas condiciones:
+                <ul>
+                  <li>Si el total <strong>supera $300.000</strong> → ❌ No pueden viajar</li>
+                  <li>Si el total está <strong>entre $250.000 y $300.000</strong> → ⚠️ Viaje ajustado</li>
+                  <li>Si el total es <strong>menor a $250.000</strong> → ✅ Viaje cómodo</li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+          <div class="ex-checks">
+            <span class="ex-progress" data-progress-for="u4-1"></span>
+            <label class="chk"><input type="checkbox" data-check-id="enunciado" /> Comprendí el enunciado</label>
+            <label class="chk"><input type="checkbox" data-check-id="definir" /> Definí variables con `Definir`</label>
+            <label class="chk"><input type="checkbox" data-check-id="leer" /> Leí datos con `Leer`</label>
+            <label class="chk"><input type="checkbox" data-check-id="condicionales" /> Usé `Si` para el estado del viaje</label>
+            <label class="chk"><input type="checkbox" data-check-id="casos" /> Probé casos distintos (límites del presupuesto)</label>
+            <label class="chk"><input type="checkbox" data-check-id="proceso" /> Calculé el total antes de decidir</label>
+            <label class="chk"><input type="checkbox" data-check-id="escribir" /> Mostré el resultado con `Escribir`</label>
+          </div>
+        </article>
+
+        <article class="ex-card" data-ex-id="u4-2">
+          <h3>2. Cálculo de compra con descuentos y cupón</h3>
+          <div class="ex-statement">
+            <p>
+              Una <strong>tienda</strong> vende productos a un <strong>precio fijo de $2.000</strong> cada uno. Se desea crear un programa que
+              <strong>calcule el costo total</strong> de una compra, <strong>aplique descuentos</strong> según la cantidad de productos y
+              determine si el cliente <strong>obtiene un cupón</strong>.
+            </p>
+
+            <p class="ex-subhead">📌 Reglas del problema</p>
+
+            <p class="ex-minihead">💰 Precio</p>
+            <ul>
+              <li>Cada producto cuesta <strong>$2.000</strong>.</li>
+            </ul>
+
+            <p class="ex-minihead">🎯 Descuentos según cantidad</p>
+            <ul>
+              <li><strong>Más de 10</strong> productos → <strong>15%</strong> de descuento</li>
+              <li><strong>Entre 5 y 10</strong> productos (inclusive) → <strong>10%</strong> de descuento</li>
+              <li><strong>Menos de 5</strong> productos → sin descuento</li>
+            </ul>
+
+            <p class="ex-minihead">🎟️ Cupón</p>
+            <p>
+              Si el <strong>total final</strong> (después del descuento) es <strong>mayor a $20.000</strong>, el cliente
+              <strong>recibe un cupón</strong>.
+            </p>
+
+            <p class="ex-subhead">🧮 ¿Qué debe hacer el programa?</p>
+            <ul class="ex-steps">
+              <li>Leer la <strong>cantidad de productos</strong> que compra el cliente.</li>
+              <li>Calcular el <strong>subtotal</strong> (sin descuento).</li>
+              <li>Determinar el <strong>porcentaje de descuento</strong> según la cantidad.</li>
+              <li>Calcular el <strong>monto del descuento</strong>.</li>
+              <li>Calcular el <strong>total final</strong> a pagar.</li>
+              <li>Indicar si el cliente <strong>obtiene o no</strong> un cupón.</li>
+              <li>Mostrar <strong>todos los resultados</strong> de forma clara.</li>
+            </ul>
+
+            <p class="ex-subhead">🧠 Pasos sugeridos para resolverlo</p>
+            <ul class="ex-hints">
+              <li>Definí variables: cantidad, subtotal, porcentaje o monto de descuento, total final.</li>
+              <li>Leé los datos con una instrucción de entrada (<code>Leer</code>).</li>
+              <li>Calculá primero el <strong>subtotal</strong>.</li>
+              <li>Aplicá una estructura condicional (<code>Si</code>) para definir el descuento.</li>
+              <li>Calculá el total final restando el descuento al subtotal.</li>
+              <li>Usá otra condición para verificar si obtiene el cupón.</li>
+              <li>Mostrá toda la información ordenadamente con <code>Escribir</code>.</li>
+            </ul>
+          </div>
+          <p class="ex-checklist-intro">✔️ Lista de verificación de tu progreso — marcá cada paso cuando lo completes:</p>
+          <div class="ex-checks">
+            <span class="ex-progress" data-progress-for="u4-2"></span>
+            <label class="chk"><input type="checkbox" data-check-id="enunciado" /> Comprendí el enunciado</label>
+            <label class="chk"><input type="checkbox" data-check-id="definir" /> Definí variables con `Definir`</label>
+            <label class="chk"><input type="checkbox" data-check-id="leer" /> Leí datos con `Leer`</label>
+            <label class="chk"><input type="checkbox" data-check-id="proceso" /> Ordené bien: subtotal → descuento → total final</label>
+            <label class="chk"><input type="checkbox" data-check-id="condicionales" /> Usé `Si` para el descuento y el cupón</label>
+            <label class="chk"><input type="checkbox" data-check-id="casos" /> Probé casos clave (4, 5, 10, 11 productos y totales cercanos a $20.000)</label>
+            <label class="chk"><input type="checkbox" data-check-id="escribir" /> Mostré el resultado con `Escribir`</label>
+          </div>
+        </article>
+
+        <article class="ex-card" data-ex-id="u4-3">
+          <h3>3. Evaluación académica completa</h3>
+          <div class="ex-statement">
+            <p>Tres notas: <strong>tarea 30%</strong>, <strong>prueba 40%</strong>, <strong>examen 30%</strong>.</p>
+            <p><strong>Situación:</strong></p>
+            <ul>
+              <li>Promedio ≥ 6,0 → aprobado con excelencia</li>
+              <li>Promedio ≥ 4,0 y menor que 6,0 → aprobado</li>
+              <li>Promedio menor a 4,0 → reprueba; si además examen ≥ 5,0 → opción a recuperación</li>
+            </ul>
+            <p><strong>Programa:</strong> leer las tres notas; calcular promedio ponderado; mostrar promedio y situación final.</p>
+          </div>
+          <div class="ex-checks">
+            <span class="ex-progress" data-progress-for="u4-3"></span>
+            <label class="chk"><input type="checkbox" data-check-id="enunciado" /> Comprendí el enunciado</label>
+            <label class="chk"><input type="checkbox" data-check-id="definir" /> Definí variables con `Definir`</label>
+            <label class="chk"><input type="checkbox" data-check-id="leer" /> Leí datos con `Leer`</label>
+            <label class="chk"><input type="checkbox" data-check-id="condicionales" /> Usé `Si` / ramas para la situación</label>
+            <label class="chk"><input type="checkbox" data-check-id="casos" /> Probé aprobado, excelencia y recuperación</label>
+            <label class="chk"><input type="checkbox" data-check-id="proceso" /> Calculé el promedio ponderado correcto</label>
+            <label class="chk"><input type="checkbox" data-check-id="escribir" /> Mostré el resultado con `Escribir`</label>
+          </div>
+        </article>
+
+        <article class="ex-card" data-ex-id="u4-4">
+          <h3>4. Consumo eléctrico del hogar</h3>
+          <div class="ex-statement">
+            <p>
+              Una compañía eléctrica necesita un sistema que permita calcular el monto que debe pagar un cliente según su
+              consumo mensual de energía. El problema es que el precio por kWh no es fijo, sino que depende del nivel de
+              consumo alcanzado, lo que hace necesario aplicar distintas tarifas según tramos.
+            </p>
+
+            <p>
+              Además, como incentivo al ahorro o beneficio para ciertos clientes, la empresa ha definido que si el monto
+              total de la cuenta supera los <strong>$50.000</strong>, se debe aplicar automáticamente un descuento del
+              <strong>5%</strong> sobre el total.
+            </p>
+
+            <p>
+              Debido a estas condiciones, se requiere desarrollar un programa que reciba el consumo de energía de un
+              cliente (en kWh), determine correctamente el precio por kWh según el tramo correspondiente, calcule el costo
+              total del servicio y, si corresponde, aplique el descuento definido.
+            </p>
+
+            <p>
+              Finalmente, el sistema debe informar de manera clara el monto total a pagar por el cliente, considerando todas
+              las reglas anteriores.
+            </p>
+          </div>
+        </article>
+
+        <article class="ex-card" data-ex-id="u4-5">
+          <h3>5. Inscripción a actividad recreativa</h3>
+          <div class="ex-statement">
+            <p>
+              Una organización está gestionando la inscripción a una actividad recreativa, pero necesita automatizar el proceso de
+              validación y cálculo de costos para los participantes.
+            </p>
+
+            <p>
+              Para inscribirse, las personas deben cumplir con una <strong>edad mínima de 15 años</strong>.
+              Si un postulante no cumple con este requisito, <strong>no puede participar</strong> en la actividad.
+            </p>
+
+            <p>
+              El costo base de la inscripción es de <strong>$5.000</strong>, pero existen beneficios que permiten reducir este valor:
+            </p>
+            <ul>
+              <li>
+                Si la persona es <strong>estudiante</strong>, obtiene un <strong>20%</strong> de descuento.
+              </li>
+              <li>
+                Si además pertenece a un <strong>club</strong>, recibe un <strong>10%</strong> de descuento adicional sobre el costo.
+              </li>
+            </ul>
+
+            <p>
+              La organización necesita un programa que permita ingresar la <strong>edad</strong> del postulante y verificar si cumple con los
+              requisitos de inscripción. En caso de ser aceptado, el sistema debe determinar si corresponde aplicar descuentos según su condición
+              de estudiante y pertenencia a un club, calcular el <strong>costo final</strong> y mostrar el resultado.
+            </p>
+
+            <p>
+              Si la persona no cumple con la edad mínima, el sistema debe informar que no puede inscribirse.
+            </p>
+          </div>
+        </article>
+
+        <article class="ex-card" data-ex-id="u4-6">
+          <h3>6. Cálculo de transporte con descuento por volumen</h3>
+          <div class="ex-statement">
+            <p>
+              Una compañía de transporte cobra el servicio según la distancia recorrida, aplicando diferentes tarifas
+              según tramos de kilómetros:
+            </p>
+            <ul>
+              <li>
+                Hasta <strong>10 km</strong> → <strong>$1.000</strong> por km
+              </li>
+              <li>
+                De <strong>11 a 50 km</strong> → <strong>$800</strong> por km
+              </li>
+              <li>
+                Más de <strong>50 km</strong> → <strong>$500</strong> por km
+              </li>
+            </ul>
+
+            <p>
+              Además, la empresa ofrece un <strong>descuento del 5%</strong> si el costo total del viaje supera
+              <strong>$30.000</strong>.
+            </p>
+            <p>
+              Desarrollá un programa que lea la <strong>distancia</strong> recorrida (en km), calcule el <strong>costo total</strong>
+              con las tarifas correspondientes y aplique el descuento cuando corresponda. Al final, mostr&aacute el <strong>precio final</strong>.
+            </p>
+          </div>
+        </article>
+
+        <article class="ex-card" data-ex-id="u4-7">
+          <h3>7. Compra de manzanas con descuentos por cantidad</h3>
+          <div class="ex-statement">
+            <p>
+              Una frutería vende <strong>manzanas</strong> a <strong>$1.500</strong> cada una. Para incentivar
+              compras grandes, se aplican descuentos según la cantidad adquirida:
+            </p>
+            <ul>
+              <li>
+                <strong>Más de 20</strong> manzanas → <strong>20%</strong> de descuento sobre el subtotal
+              </li>
+              <li>
+                <strong>Entre 10 y 20</strong> manzanas (inclusive) → <strong>10%</strong> de descuento
+              </li>
+              <li>
+                <strong>Menos de 10</strong> manzanas → sin descuento
+              </li>
+            </ul>
+
+            <p>
+              Además, si el <strong>total final</strong> después del descuento supera <strong>$25.000</strong>, el cliente
+              recibe un <strong>vale de regalo</strong> para su próxima compra.
+            </p>
+
+            <p>
+              Desarrollá un programa que lea la <strong>cantidad de manzanas</strong> que el cliente desea comprar,
+              calcule el <strong>subtotal</strong>, aplique el <strong>descuento</strong> correspondiente y determine si recibe
+              el <strong>vale</strong> según el total final.
+            </p>
+          </div>
+        </article>
+      </div>
+    </section>
+  </article>
+
+  <script is:inline>
+    const STORAGE_KEY = 'cafeycodigo.exerciseChecks.v1';
+
+    function readStore() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+      } catch {
+        return {};
+      }
+    }
+
+    function writeStore(store) {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(store));
+      } catch {}
+    }
+
+    function updateProgressFor(exId) {
+      const card = document.querySelector(`.ex-card[data-ex-id="${exId}"]`);
+      if (!card) return;
+      const checks = Array.from(card.querySelectorAll('input[type="checkbox"][data-check-id]'));
+      const done = checks.filter((c) => c.checked).length;
+      const total = checks.length;
+      const el = card.querySelector('[data-progress-for]');
+      if (el) el.textContent = `Progreso: ${done}/${total}`;
+    }
+
+    (function initChecklist() {
+      const store = readStore();
+      const allCards = Array.from(document.querySelectorAll('.ex-card[data-ex-id]'));
+      allCards.forEach((card) => {
+        const exId = card.getAttribute('data-ex-id');
+        const perEx = store[exId] || {};
+
+        card.querySelectorAll('input[type="checkbox"][data-check-id]').forEach((input) => {
+          const checkId = input.getAttribute('data-check-id');
+          input.checked = Boolean(perEx[checkId]);
+          input.addEventListener('change', () => {
+            const s = readStore();
+            if (!s[exId]) s[exId] = {};
+            s[exId][checkId] = input.checked;
+            writeStore(s);
+            updateProgressFor(exId);
+          });
+        });
+
+        updateProgressFor(exId);
+      });
+    })();
+  </script>
+
+  <style>
+    .muted {
+      color: var(--text-muted);
+      font-weight: 650;
+      line-height: 1.6;
+    }
+    .exercise-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .ex-card {
+      border: 3px solid var(--border);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.78);
+      padding: 1rem 1rem;
+      box-shadow: 0 16px 34px rgba(30, 18, 16, 0.08);
+    }
+    .ex-card h3 {
+      margin: 0 0 0.35rem;
+      color: var(--info);
+      font-size: 1.2rem;
+    }
+    .ex-statement {
+      margin: 0 0 0.85rem;
+      padding: 0.9rem 1rem;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.62);
+      border: 2px solid rgba(30, 18, 16, 0.12);
+      color: var(--text-secondary);
+      font-weight: 650;
+      line-height: 1.6;
+    }
+    .ex-statement p {
+      margin: 0 0 0.5rem;
+    }
+    .ex-statement p:last-child {
+      margin-bottom: 0;
+    }
+    .ex-statement code {
+      background: rgba(30, 18, 16, 0.08);
+      border: 1px solid rgba(30, 18, 16, 0.14);
+      padding: 0.08rem 0.35rem;
+      border-radius: 10px;
+      font-weight: 800;
+      color: var(--text-primary);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 0.95em;
+    }
+    .ex-statement ul {
+      margin: 0.25rem 0 0.6rem 1.15rem;
+      padding: 0;
+    }
+    .ex-statement ul ul {
+      margin-top: 0.35rem;
+      margin-bottom: 0.25rem;
+    }
+    .ex-statement li {
+      margin-bottom: 0.35rem;
+    }
+    .ex-subhead {
+      margin: 0.85rem 0 0.35rem;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+    .ex-steps > li {
+      margin-bottom: 0.45rem;
+    }
+    .ex-steps ul {
+      margin-top: 0.35rem;
+      margin-bottom: 0;
+    }
+    .ex-minihead {
+      margin: 0.45rem 0 0.2rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      font-size: 0.98rem;
+    }
+    .ex-hints {
+      margin: 0.25rem 0 0.6rem 1.15rem;
+      padding: 0;
+      list-style: disc;
+    }
+    .ex-hints li {
+      margin-bottom: 0.3rem;
+    }
+    .ex-checklist-intro {
+      margin: 0.75rem 0 0.35rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      font-size: 0.95rem;
+    }
+    .ex-checks {
+      display: grid;
+      gap: 0.35rem;
+    }
+    .ex-progress {
+      font-weight: 900;
+      font-family: 'Nunito', sans-serif;
+      color: var(--text-primary);
+      margin-bottom: 0.25rem;
+    }
+    .chk {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      color: var(--text-secondary);
+      font-weight: 650;
+    }
+    .chk input {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--success);
+    }
+  </style>
+</Layout>

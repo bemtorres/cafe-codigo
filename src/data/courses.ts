@@ -18,7 +18,7 @@ export const courses: Course[] = [
     color: '#34d399',
     lessons: [
       { slug: 'introduccion', title: 'Introducción', href: '/pseint/introduccion/' },
-      { slug: 'metodologia', title: 'Metodología (EPS + Pólya)', href: '/pseint/metodologia/' },
+      { slug: 'metodologia', title: 'Metodología', href: '/pseint/metodologia/' },
       { slug: 'variables', title: 'Variables', href: '/pseint/variables/' },
       { slug: 'leer', title: 'Leer', href: '/pseint/leer/' },
       { slug: 'matematicas', title: 'Matemáticas', href: '/pseint/matematicas/' },
@@ -37,6 +37,7 @@ export const courses: Course[] = [
       { slug: 'unidad-1', title: 'Unidad 1 (EPS)', href: '/ejercicios/unidad-1/' },
       { slug: 'unidad-2', title: 'Unidad 2 (Si)', href: '/ejercicios/unidad-2/' },
       { slug: 'unidad-3', title: 'Unidad 3 (Avanzados)', href: '/ejercicios/unidad-3/' },
+      { slug: 'unidad-4', title: 'Unidad 4 (Guía)', href: '/ejercicios/unidad-4/' },
     ],
   },
   {

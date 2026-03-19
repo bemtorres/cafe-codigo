@@ -12,7 +12,7 @@ const { titulo, enunciado, solucion, pregunta } = Astro.props;
 
 <article class="ejercicio">
   <h3>{titulo}</h3>
-  <p class="enunciado">{enunciado}</p>
+  <p class="enunciado" set:html={enunciado}></p>
   {pregunta && (
     <div class="pregunta-box">
       <p class="pregunta-label">Pregunta:</p>

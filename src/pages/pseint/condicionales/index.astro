@@ -193,6 +193,79 @@ FinAlgoritmo`}
         enunciado="¿Cuál es la diferencia entre usar varios Si anidados y usar Si-SinoSi-Sino?"
         pregunta="Investiga la estructura Si-SinoSi en PSeInt."
       />
+
+      <Ejercicio
+        titulo="Ejercicio 7: Venta de entradas"
+        enunciado="
+        Una sala de conciertos vende entradas en tres zonas diferentes, cada una con su precio:
+
+        <ul>
+          <li>VIP → $120.000</li>
+          <li>Platea → $80.000</li>
+          <li>Galería → $50.000</li>
+        </ul>
+Además, existen descuentos especiales:
+<ul>
+  <li>Menores de 18 años → 50% de descuento sobre el precio de la entrada.</li>
+  <li>Estudiantes → 20% de descuento sobre el precio de la entrada.</li>
+</ul>
+<p>Si se cumplen ambas condiciones (menor de 18 y estudiante), los descuentos se aplican de forma acumulativa, primero el 50% y luego el 20% sobre el precio resultante.</p>
+        "
+        solucion={`Algoritmo VentaEntradas
+  Definir edad Como Entero;
+  Definir estudiante Como Entero;
+  Definir zona Como Cadena;
+  Definir precioBase Como Real;
+  Definir precioFinal Como Real;
+
+  Escribir "Edad:";
+  Leer edad;
+
+  Escribir "Estudiante (1=si, 0=no):";
+  Leer estudiante;
+
+  Escribir "Zona (VIP, Platea, Galería):";
+  Leer zona;
+
+  precioBase = 0;
+
+  Si zona = "VIP" Entonces
+    precioBase = 120000;
+  Sino
+    Si zona = "Platea" Entonces
+      precioBase = 80000;
+    Sino
+      Si zona = "Galería" Entonces
+        precioBase = 50000;
+      Sino
+        Si zona = "Galeria" Entonces
+          precioBase = 50000;
+        Sino
+          Si zona = "Galleria" Entonces
+            precioBase = 50000;
+          Sino
+            Escribir "Zona inválida";
+          FinSi
+        FinSi
+      FinSi
+    FinSi
+  FinSi
+
+  Si precioBase > 0 Entonces
+    precioFinal = precioBase;
+
+    Si edad < 18 Entonces
+      precioFinal = precioFinal * 0.5;
+    FinSi
+
+    Si estudiante = 1 Entonces
+      precioFinal = precioFinal * 0.8;
+    FinSi
+
+    Escribir "Precio final: $", precioFinal;
+  FinSi
+FinAlgoritmo`}
+      />
     </section>
 
     <nav class="nav-bottom">

@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { courses } from '../data/courses';
+import logoPseint from '../assets/images/pseint.png';
 ---
 
 <Layout
@@ -154,7 +155,17 @@ import { courses } from '../data/courses';
           <div class="card-fun" style={`background-color: ${i % 2 === 0 ? 'var(--bg-tertiary)' : 'var(--bg-secondary)'};`}>
             {course.status === 'coming' && <div class="tag-fun">Próximamente</div>}
             
-            {course.slug === 'pseint' && <div class="card-emoji">💻</div>}
+            {course.slug === 'pseint' && (
+              <img
+                class="card-course-logo"
+                src={logoPseint.src}
+                alt=""
+                width="64"
+                height="64"
+                loading="lazy"
+                decoding="async"
+              />
+            )}
             {course.slug === 'python' && <div class="card-emoji">🐍</div>}
             {course.slug === 'java' && <div class="card-emoji">☕</div>}
             {course.slug === 'ejercicios' && <div class="card-emoji">✅</div>}
@@ -422,6 +433,15 @@ import { courses } from '../data/courses';
     font-size: 4.5rem; 
     margin-bottom: 1rem; 
     display: inline-block; 
+  }
+
+  .card-course-logo {
+    display: block;
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+    margin-bottom: 1rem;
+    border-radius: 14px;
   }
 
   .cta {

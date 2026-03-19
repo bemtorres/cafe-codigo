@@ -1,11 +1,21 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { courses } from '../../data/courses';
+import logoPseint from '../../assets/images/pseint.png';
 ---
 
 <Layout title="Curso PSeInt" description="Guía completa de PSeInt" courseSlug="pseint">
   <div class="content-section" style="background: var(--bg-tertiary);">
-    <h1 class="course-big-title">💻 Curso de PSeInt</h1>
+    <h1 class="course-big-title course-big-title--brand">
+      <img
+        class="course-hero-pseint"
+        src={logoPseint.src}
+        alt=""
+        width="72"
+        height="72"
+        decoding="async"
+      />
+      <span>Curso de PSeInt</span>
+    </h1>
     <p class="course-subtitle">
       Aprende los fundamentos de la programación con pseudocódigo en español: variables, entrada de datos, operaciones matemáticas y estructuras condicionales.
     </p>
@@ -51,6 +61,19 @@ import { courses } from '../../data/courses';
 <style>
   .course-big-title {
     font-size: 3.5rem;
+  }
+  .course-big-title--brand {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.75rem 1rem;
+  }
+  .course-hero-pseint {
+    flex-shrink: 0;
+    width: 72px;
+    height: 72px;
+    object-fit: contain;
+    border-radius: 14px;
   }
   .course-subtitle {
     font-size: 1.4rem;
