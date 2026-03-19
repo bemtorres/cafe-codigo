@@ -18,6 +18,7 @@ export const courses: Course[] = [
     color: '#34d399',
     lessons: [
       { slug: 'introduccion', title: 'Introducción', href: '/pseint/introduccion/' },
+      { slug: 'metodologia', title: 'Metodología (EPS + Pólya)', href: '/pseint/metodologia/' },
       { slug: 'variables', title: 'Variables', href: '/pseint/variables/' },
       { slug: 'leer', title: 'Leer', href: '/pseint/leer/' },
       { slug: 'matematicas', title: 'Matemáticas', href: '/pseint/matematicas/' },
