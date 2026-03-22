@@ -14,17 +14,17 @@ import PythonQuizModal from '../../../components/PythonQuizModal.astro';
       <CodeBlock
         code={`# Repetir 5 veces (del 0 al 4)
 for i in range(5):
-    print(f"Vuelta: {i}")
+    print(f"Vuelta: \${i}")
 
 # Recorrer una lista
 frutas = ["Manzana", "Banana", "Cereza"]
 for f in frutas:
-    print(f"Comiendo {f}...")
+    print(f"Comiendo \${f}...")
 
 # Recorrer un diccionario
 precios = {"pan": 1, "leche": 2}
 for producto, precio in precios.items():
-    print(f"El {producto} cuesta ${precio}")`}
+    print(f"El \${producto} cuesta $\${precio}")`}
         title="vueltas.py"
       />
     </section>
