@@ -1,0 +1,336 @@
+---
+import { javascriptQuizBank } from '../data/javascriptQuizBank';
+
+type Props = {
+  quizKey: string;
+};
+
+const { quizKey } = Astro.props as Props;
+const quiz = javascriptQuizBank[quizKey];
+
+if (!quiz) {
+  throw new Error(`JavaScriptQuizModal: no existe quizKey "${quizKey}" en javascriptQuizBank.`);
+}
+
+const modalId = `js-quiz-modal-${quizKey}`;
+const openBtnId = `js-quiz-open-${quizKey}`;
+const closeBtnId = `js-quiz-close-${quizKey}`;
+const resultId = `js-quiz-result-${quizKey}`;
+const radiosNamePrefix = `js_quiz_${quizKey}_q_`;
+---
+
+<div class="js-quiz">
+  <button id={openBtnId} type="button" class="js-quiz__start" data-js-quiz-open>
+    <span class="js-logo">JS</span> Comenzar Quiz JS
+  </button>
+
+  <div id={modalId} class="js-quiz__modal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="js-quiz__overlay" data-js-quiz-close></div>
+
+    <div class="js-quiz__panel">
+      <div class="js-quiz__header">
+        <div class="js-quiz__title">
+          <span class="js-quiz__title-badge">JS Quiz</span>
+          <span>{quiz.title}</span>
+        </div>
+
+        <button
+          id={closeBtnId}
+          type="button"
+          class="js-quiz__close"
+          data-js-quiz-close
+          aria-label="Cerrar"
+        >
+          ✕
+        </button>
+      </div>
+
+      <div class="js-quiz__body">
+        <p class="js-quiz__intro">
+          Son <strong>{quiz.questions.length}</strong> preguntas interactivas. ¡Domina JavaScript!
+        </p>
+
+        <form class="js-quiz__form" onsubmit="return false;">
+          {quiz.questions.map((q, i) => (
+            <section
+              class="js-quiz__q"
+              data-js-quiz-q={i}
+              data-correct-index={q.correctIndex}
+            >
+              <h4 class="js-quiz__q-title">
+                <span class="js-quiz__q-num">{i + 1}</span>. {q.prompt}
+              </h4>
+
+              <div class="js-quiz__options">
+                {q.options.map((opt, idx) => {
+                  const name = `${radiosNamePrefix}${i}`;
+                  const value = String(idx);
+                  const id = `${radiosNamePrefix}${i}_${idx}`;
+                  return (
+                    <label class="js-quiz__opt" for={id}>
+                      <input
+                        id={id}
+                        type="radio"
+                        name={name}
+                        value={value}
+                        data-js-quiz-answer={i}
+                      />
+                      <span>{opt}</span>
+                    </label>
+                  );
+                })}
+              </div>
+
+              <div
+                class="js-quiz__feedback"
+                data-js-quiz-feedback={i}
+                aria-live="polite"
+              ></div>
+            </section>
+          ))}
+        </form>
+      </div>
+
+      <div class="js-quiz__footer">
+        <div id={resultId} class="js-quiz__result" aria-live="polite"></div>
+        <div class="js-quiz__actions">
+          <button type="button" class="js-quiz__submit" data-js-quiz-submit>
+            Chequear →
+          </button>
+          <button type="button" class="js-quiz__restart" data-js-quiz-restart>
+            ↻ Reintentar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+  (function () {
+    const WKEY = '__javascriptQuizModalDelegated__';
+    if (window[WKEY]) return;
+    window[WKEY] = true;
+
+    function closeModal(modal) {
+      if (!modal) return;
+      modal.setAttribute('aria-hidden', 'true');
+      modal.classList.remove('is-open');
+      document.documentElement.style.overflow = '';
+    }
+
+    function openModal(modal) {
+      if (!modal) return;
+      const resultEl = modal.querySelector('.js-quiz__result');
+      if (resultEl) resultEl.textContent = '';
+      modal.querySelectorAll('[data-js-quiz-feedback]').forEach((el) => {
+        el.textContent = '';
+      });
+      modal.setAttribute('aria-hidden', 'false');
+      modal.classList.add('is-open');
+      document.documentElement.style.overflow = 'hidden';
+    }
+
+    function gradeModal(modal) {
+      const resultEl = modal.querySelector('.js-quiz__result');
+      if (!resultEl) return;
+
+      const qEls = modal.querySelectorAll('[data-js-quiz-q]');
+      let score = 0;
+
+      qEls.forEach((qEl) => {
+        const correct = Number(qEl.getAttribute('data-correct-index'));
+        const feedbackEl = qEl.querySelector('[data-js-quiz-feedback]');
+        const selected = qEl.querySelector('input[type="radio"]:checked');
+        const idx = selected ? Number(selected.value) : null;
+
+        const correctInput = qEl.querySelector(`input[type="radio"][value="${correct}"]`);
+        const correctText = correctInput?.parentElement?.querySelector('span')?.textContent ?? '';
+
+        const isCorrect = idx === correct;
+        if (isCorrect) score++;
+
+        if (feedbackEl) {
+          if (isCorrect) {
+            feedbackEl.innerHTML = '<span style="color:#2ecc71;">✓ Correcto</span>';
+          } else {
+            feedbackEl.innerHTML = `<span style="color:#e67e22;">✗ Incorrecto. Respuesta: ${correctText}</span>`;
+          }
+        }
+      });
+
+      const total = qEls.length;
+      resultEl.innerHTML = `Puntaje Final: ${score}/${total}.`;
+    }
+
+    document.addEventListener('click', (e) => {
+      const target = e.target;
+      const startBtn = target.closest('.js-quiz__start');
+      if (startBtn) {
+        const root = startBtn.closest('.js-quiz');
+        const modal = root?.querySelector('.js-quiz__modal');
+        openModal(modal);
+        return;
+      }
+
+      const closeBtn = target.closest('[data-js-quiz-close]');
+      if (closeBtn) {
+        const root = closeBtn.closest('.js-quiz');
+        const modal = root?.querySelector('.js-quiz__modal');
+        closeModal(modal);
+        return;
+      }
+
+      const submitBtn = target.closest('[data-js-quiz-submit]');
+      if (submitBtn) {
+        const root = submitBtn.closest('.js-quiz');
+        const modal = root?.querySelector('.js-quiz__modal');
+        if (modal) gradeModal(modal);
+        return;
+      }
+
+      const restartBtn = target.closest('[data-js-quiz-restart]');
+      if (restartBtn) {
+        const root = restartBtn.closest('.js-quiz');
+        const modal = root?.querySelector('.js-quiz__modal');
+        if (!modal) return;
+        modal.querySelectorAll('input[type="radio"]').forEach((r) => r.checked = false);
+        modal.querySelectorAll('[data-js-quiz-feedback]').forEach((el) => el.textContent = '');
+        modal.querySelector('.js-quiz__result').textContent = '';
+        return;
+      }
+    });
+  })();
+</script>
+
+<style>
+  .js-quiz { margin: 2rem 0; }
+
+  .js-quiz__start {
+    width: 100%;
+    max-width: 400px;
+    padding: 1rem;
+    border-radius: 12px;
+    border: 3px solid var(--border);
+    background: #f1c40f; 
+    color: #1a1a1b;
+    font-weight: 900;
+    font-size: 1.1rem;
+    cursor: pointer;
+    box-shadow: 4px 4px 0px var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    margin: 0 auto;
+    transition: transform 0.1s;
+  }
+  .js-quiz__start:hover { transform: translateY(-2px); box-shadow: 6px 6px 0px var(--border); }
+
+  .js-quiz__modal {
+    position: fixed;
+    inset: 0;
+    z-index: 3000;
+    display: none;
+  }
+  .js-quiz__modal.is-open { display: block; }
+
+  .js-quiz__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(5px);
+  }
+
+  .js-quiz__panel {
+    position: relative;
+    max-width: 700px;
+    margin: 5vh auto;
+    background: white;
+    border: 3px solid var(--border);
+    border-radius: 24px;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+    overflow: hidden;
+    color: #1a1a1b;
+  }
+
+  .js-quiz__header {
+    background: #f1c40f;
+    color: #1a1a1b;
+    padding: 1.25rem;
+    border-bottom: 3px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .js-quiz__title-badge {
+    background: #1a1a1b;
+    color: #f1c40f;
+    padding: 0.2rem 0.6rem;
+    border-radius: 8px;
+    font-weight: 900;
+    margin-right: 0.75rem;
+  }
+
+  .js-quiz__close {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 1.5rem;
+    font-weight: 900;
+  }
+
+  .js-quiz__body {
+    padding: 1.5rem;
+    max-height: 60vh;
+    overflow-y: auto;
+  }
+
+  .js-quiz__q {
+    background: #fffdf0;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .js-quiz__opt {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    margin: 0.5rem 0;
+    cursor: pointer;
+    font-weight: 700;
+  }
+
+  .js-quiz__footer {
+    padding: 1.25rem;
+    background: #fdfdfd;
+    border-top: 3px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .js-quiz__actions { display: flex; gap: 0.75rem; }
+
+  .js-quiz__submit {
+    background: #f1c40f;
+    color: #1a1a1b;
+    border: 2px solid var(--border);
+    padding: 0.5rem 1rem;
+    border-radius: 10px;
+    font-weight: 900;
+    cursor: pointer;
+    box-shadow: 3px 3px 0px var(--border);
+  }
+  .js-quiz__restart {
+    background: transparent;
+    border: 2px solid #ccc;
+    padding: 0.5rem 1rem;
+    border-radius: 10px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+</style>

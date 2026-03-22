@@ -1,0 +1,75 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import CodeBlock from '../../../components/CodeBlock.astro';
+import JavaUnitQuizModal from '../../../components/JavaUnitQuizModal.astro';
+---
+
+<Layout title="Testing Excepciones en JUnit 5" description="Aprende a capturar y validar errores y excepciones en tus pruebas unitarias con assertThrows." courseSlug="javaunit">
+  <article class="content-section">
+    <h1>5. Pruebas de Excepciones: ¡Que falle!</h1>
+
+    <section class="mb-10">
+      <h2>Caminos Negativos</h2>
+      <p>
+        Un buen programador no solo prueba que su código funcione (Caminos Positivos), sino que también verifica que <strong>se rompa adecuadamente</strong> cuando recibe basura. 
+      </p>
+      <p>
+        Para esto usamos <code>assertThrows</code>, el cual captura una excepción y nos permite asegurar que nuestro sistema sabe protegerse.
+      </p>
+      <CodeBlock
+        code={`@Test
+void testDivisionEntreCero() {
+    Calculadora calc = new Calculadora();
+
+    // Verificamos que al dividir entre 0, se lance la ArithmeticException
+    assertThrows(ArithmeticException.class, () -> {
+        calc.dividir(10, 0);
+    });
+}`}
+        title="Validando un error crítico"
+      />
+    </section>
+
+    <div class="ejercicio" style="background: #E0F2F1;">
+      <h3>👨‍💻 Ejercicio Práctico 1</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> El valor inexistente
+      </div>
+      <p class="enunciado">Usa <code>assertThrows</code> para verificar que <code>Integer.parseInt("HOLA")</code> lanza una <code>NumberFormatException</code>.</p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock code={`assertThrows(NumberFormatException.class, () -> {
+    Integer.parseInt("HOLA");
+});`} />
+      </details>
+    </div>
+
+    <div class="ejercicio" style="background: #E0F2F1;">
+      <h3>👨‍💻 Ejercicio Práctico 2</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> Mensaje de Error
+      </div>
+      <p class="enunciado">Captura la excepción lanzada anteriormente y verifica con <code>assertEquals</code> que el objeto Exception no es nulo.</p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock code={`Exception ex = assertThrows(NumberFormatException.class, () -> {
+    Integer.parseInt("ABC");
+});
+assertNotNull(ex);`} />
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>Asegúrate de que tus errores informen correctamente.</p>
+      <JavaUnitQuizModal quizKey="excepciones-test" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/javaunit/encapsulamiento-test/" class="prev">← Encapsulamiento</a>
+      <a href="/javaunit/logica-negocio-test/" class="next">Negocio Test →</a>
+    </nav>
+  </article>
+</Layout>

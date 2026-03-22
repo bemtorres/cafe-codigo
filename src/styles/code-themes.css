@@ -1,0 +1,140 @@
+/* Shiki CSS Variables Themes - REFACTORIZADO */
+
+:root {
+  /* Default: Retro Dark */
+  --shiki-color-text: #abb2bf;
+  --shiki-color-background: #282c34;
+  --shiki-token-constant: #d19a66;
+  --shiki-token-string: #98c379;
+  --shiki-token-comment: #5c6370;
+  --shiki-token-keyword: #c678dd;
+  --shiki-token-parameter: #e06c75;
+  --shiki-token-function: #61afef;
+  --shiki-token-string-expression: #98c379;
+  --shiki-token-punctuation: #abb2bf;
+  --shiki-token-link: #61afef;
+  /* Fallbacks */
+  --shiki-token-type: #e5c07b;
+  --shiki-token-variable: #e06c75;
+  --shiki-token-property: #d19a66;
+  --shiki-token-operator: #c678dd;
+
+  /* PSeInt */
+  --pseint-bg: #282c34;
+  --pseint-txt: #abb2bf;
+  --pseint-kw: #c678dd;
+  --pseint-type: #d19a66;
+  --pseint-str: #98c379;
+  --pseint-comment: #5c6370;
+}
+
+/* 🌙 TEMAS OSCUROS */
+
+[data-code-theme="monokai"] {
+  --shiki-color-text: #f8f8f2;
+  --shiki-color-background: #272822;
+  --shiki-token-constant: #ae81ff;
+  --shiki-token-string: #e6db74;
+  --shiki-token-comment: #75715e;
+  --shiki-token-keyword: #f92672;
+  --shiki-token-parameter: #fd971f;
+  --shiki-token-function: #a6e22e;
+  --shiki-token-punctuation: #f8f8f2;
+  --shiki-token-type: #66d9ef;
+  --shiki-token-variable: #f8f8f2;
+  --shiki-token-property: #a6e22e;
+  --shiki-token-operator: #f92672;
+}
+
+[data-code-theme="dracula"] {
+  --shiki-color-text: #f8f8f2;
+  --shiki-color-background: #282a36;
+  --shiki-token-constant: #bd93f9;
+  --shiki-token-string: #f1fa8c;
+  --shiki-token-comment: #6272a4;
+  --shiki-token-keyword: #ff79c6;
+  --shiki-token-parameter: #ffb86c;
+  --shiki-token-function: #50fa7b;
+  --shiki-token-punctuation: #f8f8f2;
+  --shiki-token-type: #8be9fd;
+  --shiki-token-variable: #f8f8f2;
+  --shiki-token-property: #50fa7b;
+  --shiki-token-operator: #ff79c6;
+}
+
+[data-code-theme="one-dark"] {
+  --shiki-color-text: #abb2bf;
+  --shiki-color-background: #282c34;
+  --shiki-token-keyword: #c678dd;
+  --shiki-token-function: #61afef;
+  --shiki-token-string: #98c379;
+}
+
+[data-code-theme="tokyo-night"] {
+  --shiki-color-text: #a9b1d6;
+  --shiki-color-background: #1a1b26;
+  --shiki-token-constant: #ff9e64;
+  --shiki-token-string: #9ece6a;
+  --shiki-token-comment: #565f89;
+  --shiki-token-keyword: #bb9af7;
+  --shiki-token-parameter: #e0afaf;
+  --shiki-token-function: #7aa2f7;
+  --shiki-token-type: #2ac3de;
+}
+
+/* ☀️ TEMAS CLAROS */
+
+[data-code-theme="github-light"] {
+  --shiki-color-text: #24292e;
+  --shiki-color-background: #ffffff;
+  --shiki-token-constant: #005cc5;
+  --shiki-token-string: #032f62;
+  --shiki-token-comment: #6a737d;
+  --shiki-token-keyword: #d73a49;
+  --shiki-token-parameter: #e36209;
+  --shiki-token-function: #6f42c1;
+  --shiki-token-type: #005cc5;
+  --shiki-token-variable: #e36209;
+  --shiki-token-property: #005cc5;
+  --shiki-token-operator: #d73a49;
+  --shiki-token-punctuation: #24292e;
+
+  --pseint-bg: #ffffff;
+  --pseint-txt: #24292e;
+  --pseint-kw: #d73a49;
+  --pseint-type: #005cc5;
+  --pseint-str: #032f62;
+  --pseint-comment: #6a737d;
+}
+
+[data-code-theme="one-light"] {
+  --shiki-color-text: #383a42;
+  --shiki-color-background: #fafafa;
+  --shiki-token-constant: #986801;
+  --shiki-token-string: #50a14f;
+  --shiki-token-comment: #a0a1a7;
+  --shiki-token-keyword: #a626a4;
+  --shiki-token-parameter: #e45649;
+  --shiki-token-function: #4078f2;
+}
+
+/* 🤖 MODO IDE ( DINÁMICO ) - SE ADAPTA AL FONDO ACTUAL */
+
+[data-code-theme="ide"] {
+  /* Si el usuario elige modo IDE, usamos los colores calculados por el componente */
+  --shiki-color-background: var(--ide-bg);
+  --shiki-color-text: var(--ide-txt);
+  --shiki-token-keyword: var(--ide-kw);
+  --shiki-token-string: var(--ide-str);
+  --shiki-token-function: var(--ide-func);
+  --shiki-token-constant: var(--ide-type);
+  --shiki-token-type: var(--ide-type);
+  --shiki-token-parameter: var(--ide-txt);
+  --shiki-token-operator: var(--ide-kw);
+  --shiki-token-variable: var(--ide-txt);
+
+  --pseint-bg: var(--ide-bg);
+  --pseint-txt: var(--ide-txt);
+  --pseint-kw: var(--ide-kw);
+  --pseint-str: var(--ide-str);
+}

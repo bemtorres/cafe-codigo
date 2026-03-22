@@ -1,0 +1,64 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import CodeBlock from '../../../components/CodeBlock.astro';
+import TerminalQuizModal from '../../../components/TerminalQuizModal.astro';
+---
+
+<Layout title="Navegación en Linux/Unix" description="Aprende los comandos esenciales (ls, cd, pwd) para moverte por las carpetas del sistema." courseSlug="terminal">
+  <article class="content-section">
+    <h1>2. Navegación: Moviéndote por el sistema</h1>
+
+    <section class="mb-10">
+      <h2>Explorar es la clave</h2>
+      <p>
+        En la terminal, tú eres el puntero del mouse. Estás siempre <strong>dentro</strong> de una carpeta. Para moverte y ver qué hay alrededor, necesitas estos tres comandos:
+      </p>
+      <ul class="mb-4">
+        <li><strong><code>ls</code> (List):</strong> Muestra los archivos y carpetas del lugar donde estás.</li>
+        <li><strong><code>pwd</code> (Print Working Directory):</strong> Te dice exactamente en qué ruta estás en este momento.</li>
+        <li><strong><code>cd</code> (Change Directory):</strong> Te permite "entrar" en una carpeta diferente.</li>
+      </ul>
+      <CodeBlock
+        code={`pwd
+# /home/usuario/documentos
+
+ls
+# carpeta_1  foto.png  proyecto.txt
+
+cd carpeta_1
+# Ahora estamos dentro de carpeta_1!`}
+        title="bash"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Trucos rápidos</h2>
+      <ul class="mb-4">
+        <li><strong><code>cd ..</code></strong>: Sube un nivel (vuelve a la carpeta de arriba).</li>
+        <li><strong><code>cd ~</code></strong>: Vuelve a tu carpeta personal (Home).</li>
+        <li><strong><code>ls -a</code></strong>: Muestra archivos ocultos (los que empiezan por punto).</li>
+      </ul>
+    </section>
+
+    <div class="ejercicio" style="background: #f1f1f1; border-left: 5px solid #1a1a1b; padding: 1rem; border-radius: 8px;">
+      <h3>💻 Misión: El Navegante</h3>
+      <p class="enunciado">Si estás en <code>/home/usuario</code> y quieres ir a <code>/home</code>, ¿qué comando usarías?</p>
+      
+      <details>
+        <summary>👁️ Ver comando</summary>
+        <CodeBlock code={`cd ..`} title="Terminal" />
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>No te pierdas en las carpetas.</p>
+      <TerminalQuizModal quizKey="navegacion" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/terminal/intro-terminal/" class="prev">← La Terminal</a>
+      <a href="/terminal/manipulacion/" class="next">Manipulación →</a>
+    </nav>
+  </article>
+</Layout>

@@ -1,0 +1,54 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import ArchQuizModal from '../../../components/ArchQuizModal.astro';
+---
+
+<Layout title="El Modelo de Vistas 4+1" description="Introducción al modelo de Philippe Kruchten para describir arquitecturas de software." courseSlug="arch">
+  <article class="content-section">
+    <h1>1. El Modelo 4+1: ¿Por qué tantas vistas?</h1>
+
+    <section class="mb-10">
+      <h2>El caos de la arquitectura plana</h2>
+      <p>
+        Cuando intentamos explicar un sistema complejo con un solo diagrama, fallamos. Los programadores quieren ver clases; los jefes quieren ver casos de uso; y los de sistemas quieren ver servidores.
+      </p>
+      <p>
+        <strong>Philippe Kruchten</strong> propuso en 1995 el <strong>Modelo de Vistas 4+1</strong> para separar estas preocupaciones en 5 dimensiones distintas.
+      </p>
+      <div class="note-box" style="background: #F1F5F9; border-left: 5px solid #475569;">
+        <strong>Dato clave:</strong> El modelo se llama "4+1" porque hay 4 vistas principales que se unifican mediante una quinta (+1) llamada escenarios.
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2>Las 5 Vistas en un vistazo</h2>
+      <ul>
+        <li><strong>Lógica:</strong> ¿Qué hace el sistema? (Clases, objetos).</li>
+        <li><strong>Desarrollo:</strong> ¿Cómo se organiza el código? (Módulos, paquetes).</li>
+        <li><strong>Proceso:</strong> ¿Cómo rinde y escala? (Hilos, flujos).</li>
+        <li><strong>Física:</strong> ¿Dónde corre? (Servidores, redes).</li>
+        <li><strong>Escenarios (+1):</strong> ¿Cómo funciona todo junto? (Casos de uso).</li>
+      </ul>
+    </section>
+
+    <div class="ejercicio" style="background: #F8FAFC; border: 2px solid #E2E8F0;">
+      <h3>🤔 Reflexión de Arquitecto</h3>
+      <p class="enunciado">Si un cliente te pregunta "A qué servidor se conecta mi app", ¿en qué vista deberías buscar la respuesta?</p>
+      
+      <details>
+        <summary>👁️ Ver respuesta</summary>
+        <p>En la <strong>Vista Física (o de Despliegue)</strong>, ya que ahí es donde se mapean los componentes de software sobre el hardware real.</p>
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <ArchQuizModal quizKey="intro-4-1" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/arch/" class="prev">← Curso Arquitectura</a>
+      <a href="/arch/escenarios/" class="next">Escenarios (+1) →</a>
+    </nav>
+  </article>
+</Layout>

@@ -62,9 +62,42 @@ function highlightPSeInt(line: string) {
 
 // Convertir csharp a cs para Shiki, o python a py
 const shikiLang = finalLang === 'csharp' ? 'cs' : finalLang === 'cmd' ? 'bash' : finalLang;
+
+// --- Lógica de Colores Estilo IDE ---
+const idePalettes: Record<string, any> = {
+  java: {
+    bg: '#2b2b2b', txt: '#a9b7c6', kw: '#cc7832', str: '#6a8759', func: '#ffc66d', type: '#a9b7c6', op: '#a9b7c6'
+  },
+  csharp: {
+    bg: '#1e1e1e', txt: '#d4d4d4', kw: '#569cd6', str: '#d69d85', func: '#dcdcaa', type: '#4ec9b0', op: '#b4b4b4'
+  },
+  python: {
+    bg: '#282c34', txt: '#abb2bf', kw: '#c678dd', str: '#98c379', func: '#61afef', type: '#e5c07b', op: '#c678dd'
+  },
+  javascript: {
+    bg: '#1e1e1e', txt: '#9cdcfe', kw: '#569cd6', str: '#ce9178', func: '#dcdcaa', type: '#4ec9b0', op: '#d4d4d4'
+  },
+  typescript: {
+    bg: '#1e1e1e', txt: '#9cdcfe', kw: '#569cd6', str: '#ce9178', func: '#dcdcaa', type: '#4ec9b0', op: '#d4d4d4'
+  },
+  pseint: {
+    bg: '#ffffff', txt: '#000000', kw: '#0000FF', str: '#A31515', func: '#000000', type: '#008080', op: '#000000'
+  }
+};
+
+const ide = idePalettes[finalLang.toLowerCase()] || idePalettes.python;
+const ideStyles = `
+  --ide-bg: ${ide.bg};
+  --ide-txt: ${ide.txt};
+  --ide-kw: ${ide.kw};
+  --ide-str: ${ide.str};
+  --ide-func: ${ide.func};
+  --ide-type: ${ide.type};
+  --ide-op: ${ide.op};
+`;
 ---
 
-<div class="code-block" style={`border-color: ${badgeColor}; box-shadow: 4px 4px 0px ${badgeColor};`}>
+<div class="code-block" style={`border-color: ${badgeColor}; box-shadow: 4px 4px 0px ${badgeColor}; ${ideStyles}`}>
   <div class="code-header" style={`border-bottom: 3px solid ${badgeColor};`}>
     <span class="code-block-title" style={title ? '' : 'visibility: hidden;'}>
       {title || 'Código'}
@@ -83,7 +116,7 @@ const shikiLang = finalLang === 'csharp' ? 'cs' : finalLang === 'cmd' ? 'bash' :
     </div>
   ) : (
     <div class="standard-editor">
-      <Code code={code} lang={shikiLang as any} theme="github-dark" />
+      <Code code={code} lang={shikiLang as any} theme="css-variables" />
     </div>
   )}
 </div>
@@ -140,7 +173,8 @@ const shikiLang = finalLang === 'csharp' ? 'cs' : finalLang === 'cmd' ? 'bash' :
     margin: 2rem 0;
     border: 3px solid var(--border);
     border-radius: 16px;
-    background: #1A1A1A; /* Base oscura para código estándar */
+    background: var(--shiki-color-background, #1A1A1A);
+    transition: background-color 0.3s ease;
     overflow: hidden;
     /* Sombras y bordes del contenedor se re-estilizan inline según el lenguaje */
   }
@@ -172,14 +206,15 @@ const shikiLang = finalLang === 'csharp' ? 'cs' : finalLang === 'cmd' ? 'bash' :
     box-shadow: inset 0px -2px 0px rgba(0,0,0,0.15);
   }
 
-  /* ESTILO CONSOLA / IDE BLANCO PARA PSEINT */
+  /* ESTILO CONSOLA / IDE ADAPTABLE PARA PSEINT */
   .pseint-editor {
-    background: #FFFFFF;
+    background: var(--pseint-bg, #FFFFFF);
     overflow: auto;
     padding: 1rem 0;
     margin: 0;
     width: 100%;
     font-family: 'JetBrains Mono', monospace;
+    transition: background-color 0.3s ease;
   }
   .pseint-line {
     display: flex;
@@ -188,7 +223,7 @@ const shikiLang = finalLang === 'csharp' ? 'cs' : finalLang === 'cmd' ? 'bash' :
     font-size: 0.95rem;
   }
   .pseint-ln {
-    color: #2B91AF;
+    color: var(--code-muted);
     text-align: right;
     user-select: none;
     min-width: 2rem;
@@ -197,14 +232,14 @@ const shikiLang = finalLang === 'csharp' ? 'cs' : finalLang === 'cmd' ? 'bash' :
     margin-right: 0.75rem;
   }
   .pseint-txt {
-    color: #000000;
+    color: var(--pseint-txt, #000000);
     white-space: pre-wrap;
   }
   
-  :global(.pseint-str) { color: #A31515; }
-  :global(.pseint-kw) { color: #0000FF; }
-  :global(.pseint-type) { color: #008080; }
-  :global(.pseint-comment) { color: #008000; font-style: italic; }
+  :global(.pseint-str) { color: var(--pseint-str, #A31515); }
+  :global(.pseint-kw) { color: var(--pseint-kw, #0000FF); font-weight: 800; }
+  :global(.pseint-type) { color: var(--pseint-type, #008080); }
+  :global(.pseint-comment) { color: var(--pseint-comment, #008000); font-style: italic; }
 
   /* Contenedor estándar Astro Code (Shiki) */
   .standard-editor {

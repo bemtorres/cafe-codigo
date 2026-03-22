@@ -1,0 +1,62 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import CodeBlock from '../../../components/CodeBlock.astro';
+import JavaScriptQuizModal from '../../../components/JavaScriptQuizModal.astro';
+---
+
+<Layout title="Variables escalables (let y const)" description="Aprende a guardar datos correctamente en JavaScript moderno." courseSlug="javascript">
+  <article class="content-section">
+    <h1>2. Variables: Guardando tus ideas</h1>
+
+    <section class="mb-10">
+      <h2>Variables Modernas: Let y Const</h2>
+      <p>A diferencia de lenguajes antiguos, en JavaScript moderno evitamos usar <code>var</code>. En su lugar, usamos estas dos palabras mágicas:</p>
+      <ul>
+        <li><strong>let:</strong> Para valores que <strong>pueden cambiar</strong> (como un contador o el nombre del usuario).</li>
+        <li><strong>const:</strong> Para valores que <strong>NUNCA cambian</strong> (como el nombre de tu empresa o la gravedad).</li>
+      </ul>
+      <CodeBlock
+        code={`let puntos = 100;
+puntos = 150; // ¡Puedo cambiarlo!
+
+const nombre = "JavaScript";
+// nombre = "Perl"; // ERROR: No puedes cambiar una constante`}
+        title="declaraciones.js"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Tipado Dinámico e Inspección</h2>
+      <p>Al igual que Python, JavaScript no te obliga a decir el tipo de dato. Pero si quieres saber qué hay dentro de una variable en cualquier momento, usa <code>typeof</code>.</p>
+      <CodeBlock
+        code={`let algo = "Hola";
+console.log(typeof algo); // Imprime "string"
+
+algo = 42; 
+console.log(typeof algo); // Imprime "number"`}
+        title="deteccion-tipos.js"
+      />
+    </section>
+
+    <div class="ejercicio" style="background: #E0F7FA;">
+      <h3>💻 Misión: Declara tu propia constante</h3>
+      <p class="enunciado">Crea una constante para guardar el nombre de tu videojuego favorito y una variable (let) para guardar el nivel en el que estás actuellement.</p>
+      
+      <details>
+        <summary>👁️ Ver solución sugerida</summary>
+        <CodeBlock code={`const juegoFav = "Zelda: Tears of the Kingdom";
+let nivelActual = 42;`} title="JS" />
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Prueba sobre Variables JS</h2>
+      <JavaScriptQuizModal quizKey="variables" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/javascript/introduccion/" class="prev">← Hola Mundo JS</a>
+      <a href="/javascript/operadores/" class="next">Operadores →</a>
+    </nav>
+  </article>
+</Layout>

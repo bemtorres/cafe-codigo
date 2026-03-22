@@ -69,11 +69,11 @@ a {
   box-shadow: 6px 6px 0px var(--border);
 }
 
-.content-section h1 { font-size: 2.5rem; margin-bottom: 1.5rem; color: var(--info); text-shadow: 2px 2px 0px var(--border); }
-.content-section h2 { font-size: 1.8rem; color: var(--text-primary); margin-bottom: 1.2rem; }
-.content-section h3 { font-size: 1.4rem; color: var(--accent); margin-bottom: 1rem; }
-.content-section p { font-size: 1.15rem; color: var(--text-secondary); margin-bottom: 1.25rem; line-height: 1.7; font-weight: 500; }
-.content-section ul { font-size: 1.15rem; color: var(--text-secondary); margin-bottom: 1.5rem; padding-left: 2rem; }
+.content-section h1 { font-size: 2.25rem; margin-bottom: 1.5rem; color: var(--info); text-shadow: 2px 2px 0px var(--border); }
+.content-section h2 { font-size: 1.6rem; color: var(--text-primary); margin-bottom: 1.2rem; }
+.content-section h3 { font-size: 1.3rem; color: var(--accent); margin-bottom: 1rem; }
+.content-section p { font-size: 1.05rem; color: var(--text-secondary); margin-bottom: 1.25rem; line-height: 1.7; font-weight: 500; }
+.content-section ul { font-size: 1.05rem; color: var(--text-secondary); margin-bottom: 1.5rem; padding-left: 2rem; }
 .content-section li { margin-bottom: 0.75rem; font-weight: 500;}
 
 /* Code Inline (Sólo inline, excluye bloques) */
@@ -92,7 +92,8 @@ a {
 /* Code Editor Blocks Genéricos */
 .content-section pre,
 .ejercicio pre {
-  background: var(--code-bg);
+  background: var(--shiki-color-background, var(--code-bg));
+  color: var(--shiki-color-text, var(--code-text));
   border: 3px solid var(--border);
   border-radius: 16px;
   padding: 1.5rem;
@@ -100,6 +101,7 @@ a {
   box-shadow: 4px 4px 0px var(--border);
   font-size: 0.95rem;
   margin: 1.5rem 0;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .content-section pre code,
@@ -129,14 +131,15 @@ a {
   border-bottom: 3px solid var(--border);
 }
 .code-block pre {
-  background: var(--code-bg);
+  background: var(--shiki-color-background, var(--code-bg));
   padding: 1.5rem;
   overflow-x: auto;
   font-size: 0.95rem;
   margin: 0;
+  transition: background-color 0.3s ease;
 }
 .code-block pre code {
-  color: var(--code-text);
+  color: var(--shiki-color-text, var(--code-text));
   background: none;
   padding: 0;
   border: none;
@@ -151,18 +154,18 @@ a {
   background: #E8F5E9; /* Un verde pastel bonito */
   box-shadow: 5px 5px 0px var(--border);
 }
-.ejercicio h3 { color: var(--success); text-shadow: 1px 1px 0px var(--border); font-size: 1.8rem; margin-bottom: 1rem; }
-.ejercicio .enunciado { font-size: 1.2rem; color: var(--text-primary); font-weight: 700; margin-bottom: 1.5rem; }
+.ejercicio h3 { color: var(--success); text-shadow: 1px 1px 0px var(--border); font-size: 1.6rem; margin-bottom: 1rem; }
+.ejercicio .enunciado { font-size: 1.1rem; color: var(--text-primary); font-weight: 700; margin-bottom: 1.5rem; }
 .ejercicio .pregunta-box {
   background: white;
   border: 2px dashed var(--border);
   border-radius: 16px;
   padding: 1.5rem;
   margin-bottom: 1.5rem;
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   font-weight: 700;
 }
-.ejercicio .pregunta-label { font-size: 1.2rem; color: var(--info); }
+.ejercicio .pregunta-label { font-size: 1.1rem; color: var(--info); }
 .ejercicio details {
   margin-top: 1.5rem;
   background: white;
@@ -173,7 +176,7 @@ a {
 .ejercicio summary {
   cursor: pointer;
   color: var(--text-primary);
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   font-weight: 800;
   font-family: 'Nunito', sans-serif;
 }
@@ -196,7 +199,7 @@ a {
   padding: 1rem 1.25rem;
   text-align: left;
   font-weight: 500;
-  font-size: 1.1rem;
+  font-size: 1.0rem;
 }
 .content-table th {
   background: var(--info);
@@ -336,3 +339,82 @@ a {
   .content-table { font-size: 0.95rem; }
   .content-table th, .content-table td { padding: 0.75rem; }
 }
+
+/* --- ESTILO EGIPCIO (Curso Ark 4+1) --- */
+body[data-course="arch"] {
+  --bg-primary: #F4EBD0; /* Papyrus */
+  --bg-secondary: #E9D5A2;
+  --bg-tertiary: #C5A059;
+  --text-primary: #1E1210;
+  --text-secondary: #3D2B1F;
+  --accent: #B8860B; /* Gold */
+  --info: #008B8B; /* Dark Cyan/Turquoise */
+  --border: #4A3B22;
+
+  background-image: 
+    radial-gradient(circle at 10% 20%, rgba(212, 175, 55, 0.05) 0%, transparent 20%),
+    radial-gradient(circle at 90% 80%, rgba(212, 175, 55, 0.05) 0%, transparent 20%);
+}
+
+body[data-course="arch"] .course-big-title,
+body[data-course="arch"] h1,
+body[data-course="arch"] h2,
+body[data-course="arch"] h3,
+body[data-course="arch"] .logo-text,
+body[data-course="arch"] .sidebar-title {
+  font-family: 'Cinzel', serif;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+body[data-course="arch"] .content-section h1 {
+  background: linear-gradient(to right, transparent, rgba(184, 134, 11, 0.2), transparent);
+  padding: 1rem;
+  border-top: 2px solid var(--accent);
+  border-bottom: 2px solid var(--accent);
+}
+
+body[data-course="arch"] .lesson-card,
+body[data-course="arch"] .sidebar-inner,
+body[data-course="arch"] .content-section {
+  border: 4px double var(--border);
+  box-shadow: 6px 6px 0px var(--accent);
+  background: #FDF5E6; /* Old Lace */
+}
+
+body[data-course="arch"] .sidebar-link {
+    border: 1px solid var(--accent);
+    background: #F4EBD0;
+    font-family: 'Cinzel', serif;
+    font-size: 0.85rem;
+}
+
+body[data-course="arch"] .sidebar-link:hover {
+    background: var(--bg-tertiary);
+    color: white;
+}
+
+body[data-course="arch"] .lesson-card:hover {
+  background: #F4EBD0;
+  transform: translate(-4px, -4px) rotate(0.5deg);
+}
+
+/* Decoraciones jeroglíficas */
+body[data-course="arch"] .lesson-card__number::after {
+  content: ' 𓊝';
+  opacity: 0.5;
+}
+
+body[data-course="arch"] .course-index-header::before {
+  content: '𓁑 𓃠 𓊝 𓋹 𓁑';
+  display: block;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  opacity: 0.3;
+  letter-spacing: 1.5rem;
+  text-align: center;
+}
+
+/* Scrollbar estilo papiro */
+body[data-course="arch"] ::-webkit-scrollbar-track { background: #E9D5A2; }
+body[data-course="arch"] ::-webkit-scrollbar-thumb { background: #C5A059; border: 2px solid #F4EBD0; }

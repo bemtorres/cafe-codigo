@@ -1,0 +1,62 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import CodeBlock from '../../../components/CodeBlock.astro';
+import CssQuizModal from '../../../components/CssQuizModal.astro';
+---
+
+<Layout title="Bootstrap: El Framework Más Famoso" description="Crea una web profesional en minutos usando el sistema de 12 columnas de Bootstrap y sus componentes listos para usar." courseSlug="css">
+  <article class="content-section">
+    <h1>4. Bootstrap: Maquetación rápida</h1>
+
+    <section class="mb-10">
+      <h2>Baterías Incluidas</h2>
+      <p>
+        <strong>Bootstrap</strong> nació en las oficinas de Twitter. Es una librería CSS que ya tiene diseñados los botones, menús, sombras y espacios para que tú solo tengas que poner los nombres de las clases en tu HTML.
+      </p>
+      <CodeBlock
+        code={`<button class="btn btn-primary">Botón Azul</button>
+<div class="alert alert-success">¡Todo salió bien!</div>`}
+        title="index.html"
+      />
+    </section>
+
+    <div class="card my-8" style="background: white; border: 3px solid #7952b3; border-radius: 20px; padding: 1.5rem;">
+      <h3 style="color: #7952b3;">📐 Sistema de 12 Columnas</h3>
+      <p>La clave de Bootstrap es que divide tu pantalla en <strong>12 partes iguales</strong> invisibles. Tú eliges cuántas ocupa cada caja:</p>
+      <CodeBlock
+        code={`<div class="row">
+  <div class="col-md-8">Columna grande (8 partes)</div>
+  <div class="col-md-4">Columna pequeña (4 partes)</div>
+</div>`}
+        title="html"
+      />
+      <ul class="list-disc pl-5 mt-4">
+        <li><strong>container:</strong> Centra tu web con márgenes bonitos a los lados.</li>
+        <li><strong>col-12:</strong> Ocupa toda la fila (típico en móviles).</li>
+        <li><strong>col-md-6:</strong> Ocupa la mitad en tablets/PCs.</li>
+      </ul>
+    </div>
+
+    <section class="mb-10">
+      <h2>Utilidades: El "Código Ninja"</h2>
+      <p>
+        Bootstrap también tiene clases para dar espacio sin escribir una sola línea de CSS propio:
+      </p>
+      <ul class="list-disc pl-5 mt-4">
+        <li><strong>mt-3:</strong> Margin Topnivel 3.</li>
+        <li><strong>p-5:</strong> Padding nivel 5 en todos los lados.</li>
+        <li><strong>text-center:</strong> Centra el texto.</li>
+      </ul>
+    </section>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <CssQuizModal quizKey="bootstrap" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/css/responsive/" class="prev">← Diseño Responsive</a>
+      <a href="/css/tailwind/" class="next">Tailwind CSS Utility →</a>
+    </nav>
+  </article>
+</Layout>

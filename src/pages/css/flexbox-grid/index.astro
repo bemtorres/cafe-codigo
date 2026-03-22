@@ -1,0 +1,57 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import CodeBlock from '../../../components/CodeBlock.astro';
+import CssQuizModal from '../../../components/CssQuizModal.astro';
+---
+
+<Layout title="Flexbox y CSS Grid: Domina el diseño real" description="Aprende cómo alinear automáticamente tus elementos con el poder de Flexbox y a crear layouts de 2 dimensiones con Grid." courseSlug="css">
+  <article class="content-section">
+    <h1>2. Flexbox y CSS Grid: Alinear es fácil</h1>
+
+    <section class="mb-10">
+      <h2>Flexbox: La caja que se estira</h2>
+      <p>
+        <strong>Flexbox</strong> es un modelo de diseño que hace que los ítems dentro de un contenedor se alineen automáticamente para caber perfectamente. Es ideal para una sola dirección (o fila o columna).
+      </p>
+      <CodeBlock
+        code={`.contenedor {
+  display: flex;
+  justify-content: center; /* Centra horizontalmente */
+  align-items: center;    /* Centra verticalmente */
+}`}
+        title="css-flexbox"
+      />
+      <ul class="list-disc pl-5 mt-4">
+        <li><strong>flex-direction:</strong> Decide si pones los ítems uno al lado del otro (row) o uno debajo de otro (column).</li>
+        <li><strong>gap:</strong> La forma moderna de dar separación entre hijos sin usar márgenes.</li>
+      </ul>
+    </section>
+
+    <div class="card my-8" style="background: white; border: 3px solid #000; border-radius: 20px; padding: 1.5rem;">
+      <h3 style="color: #264de4;">🗺️ CSS Grid: El Layout Maestro</h3>
+      <p>A diferencia de Flexbox, Grid es para <strong>dos dimensiones</strong> (filas Y columnas a la vez). Es ideal para crear la estructura entera de una página.</p>
+      <CodeBlock
+        code={`.grid-web {
+  display: grid;
+  grid-template-columns: 200px 1fr 200px; /* Tres columnas */
+  gap: 20px;
+}`}
+        title="css-grid"
+      />
+      <ul class="list-disc pl-5 mt-4">
+        <li><strong>fr:</strong> Significa "fraction" (fracción). 1fr significa "usa todo el espacio que sobre de forma equitativa".</li>
+        <li><strong>repeat(3, 1fr):</strong> Crea 3 columnas iguales rápidamente.</li>
+      </ul>
+    </div>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <CssQuizModal quizKey="flexbox-grid" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/css/intro-css/" class="prev">← Selectores y Box Model</a>
+      <a href="/css/responsive/" class="next">Diseño Responsive →</a>
+    </nav>
+  </article>
+</Layout>

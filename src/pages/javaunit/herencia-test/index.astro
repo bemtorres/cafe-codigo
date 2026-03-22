@@ -1,0 +1,80 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import CodeBlock from '../../../components/CodeBlock.astro';
+import JavaUnitQuizModal from '../../../components/JavaUnitQuizModal.astro';
+---
+
+<Layout title="Testing de Herencia en Java" description="Valores heredados y polimorfismo probados con JUnit 5." courseSlug="javaunit">
+  <article class="content-section">
+    <h1>7. Herencia: El Hijo bajo la Lupa</h1>
+
+    <section class="mb-10">
+      <h2>Validando el Polimorfismo</h2>
+      <p>
+        Cuando una clase hija hereda de un padre (<code>Guerrero extends Personaje</code>), debe seguir cumpliendo las reglas del padre pero comportarse a su manera en los métodos sobrescritos (<code>@Override</code>). Un test unitario nos permite asegurar que el hijo <strong>realmente es</strong> un padre y que sus ataques especiales funcionan.
+      </p>
+      <CodeBlock
+        code={`@Test
+void testGuerreroEsUnPersonaje() {
+    Personaje p = new Guerrero("Hercules");
+    // Assert 1: ¿De verdad es un Personaje?
+    assertTrue(p instanceof Personaje);
+}
+
+@Test
+void testAtaqueGuerrero() {
+    Guerrero g = new Guerrero("Kratos");
+    int danio = g.atacar();
+    // Suponemos que el padre ataca 10, pero el guerrero ataca 25
+    assertEquals(25, danio, "El ataque del guerrero debería ser mayor");
+}`}
+        title="Validando comportamientos heredados"
+      />
+    </section>
+
+    <div class="ejercicio" style="background: #E0F2F1;">
+      <h3>👨‍💻 Ejercicio Práctico 1</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> El objeto familiar
+      </div>
+      <p class="enunciado">Crea un objeto de tipo <code>Ave p = new Pinguino()</code> en tu test. Usa <code>assertTrue</code> con el operador <code>instanceof</code> para verificar su herencia.</p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock code={`@Test
+void testEsAve() {
+    Ave p = new Pinguino();
+    assertTrue(p instanceof Ave);
+}`} />
+      </details>
+    </div>
+
+    <div class="ejercicio" style="background: #E0F2F1;">
+      <h3>👨‍💻 Ejercicio Práctico 2</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> Super Constructor
+      </div>
+      <p class="enunciado">Si el padre <code>Vehiculo</code> asigna un ID automático, verifica que <code>new Coche().getId()</code> no sea nulo usando <code>assertNotNull</code>.</p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock code={`@Test
+void testIdHeredado() {
+    Coche c = new Coche();
+    assertNotNull(c.getId());
+}`} />
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>¿Tus clases hijas son dignas sucesoras?</p>
+      <JavaUnitQuizModal quizKey="herencia-test" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/javaunit/logica-negocio-test/" class="prev">← Negocio Test</a>
+      <a href="/javaunit/interfaces-test/" class="next">Interfaces Test →</a>
+    </nav>
+  </article>
+</Layout>

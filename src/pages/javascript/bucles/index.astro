@@ -1,0 +1,59 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import CodeBlock from '../../../components/CodeBlock.astro';
+import JavaScriptQuizModal from '../../../components/JavaScriptQuizModal.astro';
+---
+
+<Layout title="Bucles: For / While" description="Repite tareas tediosas automáticamente con JavaScript." courseSlug="javascript">
+  <article class="content-section">
+    <h1>5. Bucles: Automatizando tareas 🔁</h1>
+
+    <section class="mb-10">
+      <h2>El Clásico: Bucle For</h2>
+      <p>Es el más potente. Se usa cuando sabes <strong>exactamente cuántas veces</strong> quieres repetir algo.</p>
+      <CodeBlock
+        code={`for (let i = 1; i <= 5; i++) {
+  console.log("Vuelta número: " + i);
+}`}
+        title="vueltas.js"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Bucle While: Mientras...</h2>
+      <p>Se ejecuta <strong>mientras la condición sea verdadera</strong>. ¡Ten cuidado de no crear uno infinito!</p>
+      <CodeBlock
+        code={`let energia = 100;
+
+while (energia > 0) {
+  console.log("Entrenando... Energía actual: " + energia);
+  energia -= 20; // ¡Restamos energía cada vez!
+}
+console.log("¡Cansado! A descansar.");`}
+        title="entrenamiento.js"
+      />
+    </section>
+
+    <div class="ejercicio" style="background: #E8F5E9;">
+      <h3>💻 Misión: La tabla del 2</h3>
+      <p class="enunciado">Usa un bucle for que empiece en 2 y cuente hasta 20 de 2 en 2 (ej: 2, 4, 6, 8...).</p>
+      
+      <details>
+        <summary>👁️ Ver solución sugerida</summary>
+        <CodeBlock code={`for (let i = 2; i <= 20; i += 2) {
+  console.log(i);
+}`} title="JS" />
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Quiz de Bucles</h2>
+      <JavaScriptQuizModal quizKey="bucles" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/javascript/condicionales/" class="prev">← Condicionales</a>
+      <a href="/javascript/funciones/" class="next">Funciones →</a>
+    </nav>
+  </article>
+</Layout>

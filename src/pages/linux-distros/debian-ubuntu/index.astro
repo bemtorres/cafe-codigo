@@ -1,0 +1,49 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import LinuxDistrosQuizModal from '../../../components/LinuxDistrosQuizModal.astro';
+---
+
+<Layout title="Familia Debian y Ubuntu: Las Populares" description="Conoce el mundo de las distribuciones Debian y cómo Ubuntu cambió el escritorio con su sencillez y comandos APT." courseSlug="linux-distros">
+  <article class="content-section">
+    <h1>2. Debian y Ubuntu: El rey del escritorio</h1>
+
+    <section class="mb-10">
+      <h2>Debian: El Pilar de Todo</h2>
+      <p>
+        <strong>Debian</strong> es una organización sin ánimo de lucro que creó una distro enfocada a ser la más estable posible. No es la más fácil de instalar, pero es la base de casi todo hoy.
+      </p>
+      <p>
+        <strong>Canonical</strong>, una empresa liderada por Mark Shuttleworth, tomó a Debian y creó <strong>Ubuntu</strong> en 2004, con un solo objetivo: una distro que fuera <strong>fácil de usar para seres humanos</strong>.
+      </p>
+    </section>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 my-10">
+      <div style="background: rgba(245, 158, 11, 0.05); border: 2px dashed #f59e0b; padding: 1.5rem; border-radius: 20px;">
+        <h3 style="color: #b45309;">⚙️ Herramientas clave</h3>
+        <ul class="list-disc pl-5">
+          <li><strong>Formato (.deb):</strong> Como el .exe de Windows, los programas aquí vienen empaquetados así.</li>
+          <li><strong>Comando <code>apt</code>:</strong> Para instalar software desde la nube de Debian/Ubuntu.</li>
+        </ul>
+      </div>
+
+      <div style="background: #fff; border: 2px solid #ddd; padding: 1.5rem; border-radius: 20px;">
+        <h3 style="color: #b45309;">🚀 Variantes famosas</h3>
+        <ol class="list-decimal pl-5">
+          <li><strong>Ubuntu:</strong> La más usada en la historia.</li>
+          <li><strong>Linux Mint:</strong> La favorita para gente que viene de Windows por su menú y estilo clásico.</li>
+          <li><strong>Pop!_OS:</strong> Enfocada en programadores y hardware de System76.</li>
+        </ol>
+      </div>
+    </div>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <LinuxDistrosQuizModal quizKey="debian-ubuntu" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/linux-distros/que-es-linux/" class="prev">← El Núcleo Linux</a>
+      <a href="/linux-distros/redhat-fedora/" class="next">Red Hat y Fedora →</a>
+    </nav>
+  </article>
+</Layout>

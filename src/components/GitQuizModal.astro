@@ -1,0 +1,457 @@
+---
+import { gitQuizBank } from '../data/gitQuizBank';
+
+type Props = {
+  quizKey: string;
+};
+
+const { quizKey } = Astro.props as Props;
+const quiz = gitQuizBank[quizKey];
+
+if (!quiz) {
+  throw new Error(`GitQuizModal: no existe quizKey "${quizKey}" en gitQuizBank.`);
+}
+
+const modalId = `git-quiz-modal-${quizKey}`;
+const openBtnId = `git-quiz-open-${quizKey}`;
+const closeBtnId = `git-quiz-close-${quizKey}`;
+const resultId = `git-quiz-result-${quizKey}`;
+const radiosNamePrefix = `git_quiz_${quizKey}_q_`;
+---
+
+<div class="git-quiz">
+  <button id={openBtnId} type="button" class="git-quiz__start" data-git-quiz-open>
+    Tomar examen de Git
+  </button>
+
+  <div id={modalId} class="git-quiz__modal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="git-quiz__overlay" data-git-quiz-close></div>
+
+    <div class="git-quiz__panel">
+      <div class="git-quiz__header">
+        <div class="git-quiz__title">
+          <span class="git-quiz__title-badge">Git & VSC Quiz</span>
+          <span>{quiz.title}</span>
+        </div>
+
+        <button
+          id={closeBtnId}
+          type="button"
+          class="git-quiz__close"
+          data-git-quiz-close
+          aria-label="Cerrar"
+        >
+          ✕
+        </button>
+      </div>
+
+      <div class="git-quiz__body">
+        <p class="git-quiz__intro">
+          Repasa los comandos y el flujo de trabajo de Git. Son <strong>{quiz.questions.length}</strong> preguntas.
+        </p>
+
+        <form class="git-quiz__form" onsubmit="return false;">
+          {quiz.questions.map((q, i) => (
+            <section
+              class="git-quiz__q"
+              data-git-quiz-q={i}
+              data-correct-index={q.correctIndex}
+            >
+              <h4 class="git-quiz__q-title">
+                <span class="git-quiz__q-num">{i + 1}</span>. {q.prompt}
+              </h4>
+
+              <div class="git-quiz__options">
+                {q.options.map((opt, idx) => {
+                  const name = `${radiosNamePrefix}${i}`;
+                  const value = String(idx);
+                  const id = `${radiosNamePrefix}${i}_${idx}`;
+                  return (
+                    <label class="git-quiz__opt" for={id}>
+                      <input
+                        id={id}
+                        type="radio"
+                        name={name}
+                        value={value}
+                        data-git-quiz-answer={i}
+                      />
+                      <span>{opt}</span>
+                    </label>
+                  );
+                })}
+              </div>
+
+              <div
+                class="git-quiz__feedback"
+                data-git-quiz-feedback={i}
+                aria-live="polite"
+              ></div>
+            </section>
+          ))}
+        </form>
+      </div>
+
+      <div class="git-quiz__footer">
+        <div id={resultId} class="git-quiz__result" aria-live="polite"></div>
+        <div class="git-quiz__actions">
+          <button type="button" class="git-quiz__submit" data-git-quiz-submit>
+            Finalizar Commit
+          </button>
+          <button type="button" class="git-quiz__restart" data-git-quiz-restart>
+            Revertir (Reset)
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+  (function () {
+    const WKEY = '__gitQuizModalDelegated__';
+    if (window[WKEY]) return;
+    window[WKEY] = true;
+
+    function closeModal(modal) {
+      if (!modal) return;
+      modal.setAttribute('aria-hidden', 'true');
+      modal.classList.remove('is-open');
+      document.documentElement.style.overflow = '';
+    }
+
+    function openModal(modal) {
+      if (!modal) return;
+      const resultEl = modal.querySelector('.git-quiz__result');
+      if (resultEl) resultEl.textContent = '';
+      modal.querySelectorAll('[data-git-quiz-feedback]').forEach((el) => {
+        el.textContent = '';
+      });
+      modal.setAttribute('aria-hidden', 'false');
+      modal.classList.add('is-open');
+      document.documentElement.style.overflow = 'hidden';
+    }
+
+    function shuffleQuestions(modal) {
+      const form = modal.querySelector('.git-quiz__form');
+      const qEls = Array.from(modal.querySelectorAll('[data-git-quiz-q]'));
+      if (!form || qEls.length < 2) return;
+
+      for (let i = qEls.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        const tmp = qEls[i];
+        qEls[i] = qEls[j];
+        qEls[j] = tmp;
+      }
+
+      qEls.forEach((el) => {
+        form.appendChild(el);
+      });
+
+      qEls.forEach((qEl, idx) => {
+        const numEl = qEl.querySelector('.git-quiz__q-num');
+        if (numEl) numEl.textContent = String(idx + 1);
+      });
+    }
+
+    function gradeModal(modal) {
+      const resultEl = modal.querySelector('.git-quiz__result');
+      if (!resultEl) return;
+
+      const qEls = modal.querySelectorAll('[data-git-quiz-q]');
+      let score = 0;
+
+      qEls.forEach((qEl) => {
+        const correct = Number(qEl.getAttribute('data-correct-index'));
+        const feedbackEl = qEl.querySelector('[data-git-quiz-feedback]');
+        const selected = qEl.querySelector('input[type="radio"]:checked');
+        const idx = selected ? Number(selected.value) : null;
+
+        const isCorrect = idx === correct;
+        if (isCorrect) score++;
+
+        if (feedbackEl) {
+          if (isCorrect) {
+            feedbackEl.innerHTML = '<span style="color:#0ea5e9;">Cerrado sin conflictos ✅</span>';
+          } else {
+            feedbackEl.innerHTML = '<span style="color:#f05032;">Error en rama ❌. Reintenta.</span>';
+          }
+        }
+      });
+
+      const total = qEls.length;
+      if (score === total) resultEl.innerHTML = `🌟 ¡Puntuación perfecta! ${score}/${total}. ¡Maestro de Git!`;
+      else if (score > total / 2) resultEl.innerHTML = `👍 Bien hecho: ${score}/${total} aciertos. Casi listo para el Pull Request.`;
+      else resultEl.innerHTML = `📚 Conflictos detectados: ${score}/${total}. Te recomendamos repasar.`;
+    }
+
+    document.addEventListener('click', (e) => {
+      const target = e.target;
+
+      const startBtn = target instanceof Element ? target.closest('.git-quiz__start') : null;
+      if (startBtn) {
+        e.preventDefault();
+        const root = startBtn.closest('.git-quiz');
+        const modal = root?.querySelector('.git-quiz__modal') || null;
+        openModal(modal);
+        if (modal) shuffleQuestions(modal);
+        return;
+      }
+
+      const closeBtn = target instanceof Element ? target.closest('[data-git-quiz-close]') : null;
+      if (closeBtn) {
+        const root = closeBtn.closest('.git-quiz');
+        const modal = root?.querySelector('.git-quiz__modal') || null;
+        closeModal(modal);
+        return;
+      }
+
+      const submitBtn = target instanceof Element ? target.closest('[data-git-quiz-submit]') : null;
+      if (submitBtn) {
+        const root = submitBtn.closest('.git-quiz');
+        const modal = root?.querySelector('.git-quiz__modal') || null;
+        if (modal) gradeModal(modal);
+        return;
+      }
+
+      const restartBtn = target instanceof Element ? target.closest('[data-git-quiz-restart]') : null;
+      if (restartBtn) {
+        const root = restartBtn.closest('.git-quiz');
+        const modal = root?.querySelector('.git-quiz__modal') || null;
+        if (!modal) return;
+        const resultEl = modal.querySelector('.git-quiz__result');
+        if (resultEl) resultEl.textContent = '';
+        modal.querySelectorAll('input[type="radio"]').forEach((r) => {
+          r.checked = false;
+        });
+        modal.querySelectorAll('[data-git-quiz-feedback]').forEach((el) => {
+          el.textContent = '';
+        });
+        return;
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape') return;
+      document.querySelectorAll('.git-quiz__modal.is-open').forEach((m) => closeModal(m));
+    });
+  })();
+</script>
+
+<style>
+  .git-quiz {
+    margin: 2.5rem 0 2rem;
+  }
+
+  /* Color Rojo Git (#f05032) */
+  .git-quiz__start {
+    width: 100%;
+    max-width: 420px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    padding: 0.9rem 1.1rem;
+    border-radius: 12px;
+    border: 3px solid var(--border);
+    background: #f05032; 
+    color: white;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    cursor: pointer;
+    box-shadow: 5px 5px 0px var(--border);
+    transition: transform 0.1s, box-shadow 0.1s;
+    margin: 0 auto;
+  }
+
+  .git-quiz__start:hover {
+    transform: translateY(-2px);
+    box-shadow: 7px 7px 0px var(--border);
+  }
+  
+  .git-quiz__start:active {
+    transform: translateY(2px);
+    box-shadow: 3px 3px 0px var(--border);
+  }
+
+  .git-quiz__modal {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    display: none;
+  }
+
+  .git-quiz__modal.is-open {
+    display: block;
+  }
+
+  .git-quiz__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+  }
+
+  .git-quiz__panel {
+    position: relative;
+    max-width: 860px;
+    margin: 6vh auto 0;
+    background: #fff;
+    border: 3px solid var(--border);
+    border-radius: 20px;
+    box-shadow: 0 28px 90px rgba(240, 80, 50, 0.2);
+    overflow: hidden;
+  }
+
+  .git-quiz__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.75rem;
+    border-bottom: 3px solid var(--border);
+    background: #fff5f2; 
+  }
+
+  .git-quiz__title {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    font-size: 1.15rem;
+    color: #f05032;
+  }
+
+  .git-quiz__title-badge {
+    background: #f05032;
+    color: white;
+    border: 2px solid var(--border);
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+  }
+
+  .git-quiz__close {
+    width: 38px;
+    height: 38px;
+    border-radius: 999px;
+    border: 2px solid var(--border);
+    background: white;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 900;
+  }
+
+  .git-quiz__body {
+    padding: 1.5rem 1.75rem;
+    max-height: 68vh;
+    overflow: auto;
+  }
+
+  .git-quiz__intro {
+    margin: 0 0 1.5rem;
+    color: var(--text-secondary);
+    font-weight: 800;
+    line-height: 1.5;
+  }
+
+  .git-quiz__q {
+    padding: 1.25rem;
+    border: 2px solid #eee;
+    border-radius: 16px;
+    background: #fdfdfd;
+    margin-bottom: 1.5rem;
+  }
+
+  .git-quiz__q-title {
+    margin: 0 0 1rem;
+    font-weight: 900;
+    color: var(--text-primary);
+  }
+
+  .git-quiz__q-num { color: #f05032; }
+
+  .git-quiz__options {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.7rem;
+  }
+
+  .git-quiz__opt {
+    display: flex;
+    gap: 0.8rem;
+    align-items: flex-start;
+    cursor: pointer;
+    font-weight: 750;
+    color: var(--text-secondary);
+    line-height: 1.4;
+    padding: 0.4rem;
+    border-radius: 10px;
+  }
+
+  .git-quiz__opt:hover {
+    background: #fff5f2;
+  }
+
+  .git-quiz__opt input {
+    margin-top: 4px;
+    accent-color: #f05032;
+  }
+
+  .git-quiz__footer {
+    padding: 1.25rem 1.75rem;
+    border-top: 3px solid var(--border);
+    background: #fff5f2;
+  }
+
+  .git-quiz__result {
+    min-height: 1.25rem;
+    margin-bottom: 0.75rem;
+    font-weight: 900;
+    color: #f05032;
+    font-family: 'Nunito', sans-serif;
+  }
+
+  .git-quiz__feedback {
+    margin-top: 0.75rem;
+    font-weight: 900;
+    font-size: 0.95rem;
+  }
+
+  .git-quiz__actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+  }
+
+  .git-quiz__submit {
+    border: 3px solid var(--border);
+    background: #f05032;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 14px;
+    font-weight: 900;
+    font-family: 'Nunito', sans-serif;
+    cursor: pointer;
+    box-shadow: 4px 4px 0px var(--border);
+  }
+
+  .git-quiz__restart {
+    border: 3px solid var(--border);
+    background: white;
+    color: #f05032;
+    padding: 0.75rem 1.5rem;
+    border-radius: 14px;
+    font-weight: 900;
+    font-family: 'Nunito', sans-serif;
+    cursor: pointer;
+    box-shadow: 4px 4px 0px var(--border);
+  }
+
+  @media (max-width: 650px) {
+    .git-quiz__panel {
+      margin-top: 4vh;
+      width: calc(100% - 1.5rem);
+    }
+  }
+</style>

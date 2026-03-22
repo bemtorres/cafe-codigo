@@ -1,0 +1,59 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import EcosystemsQuizModal from '../../../components/EcosystemsQuizModal.astro';
+---
+
+<Layout title="Python: El preferido de la IA" description="Aprende por qué Python domina el mundo de los datos y cómo se usa para crear inteligencia artificial." courseSlug="ecosistemas">
+  <article class="content-section">
+    <h1>4. Python: El Lenguaje del Futuro</h1>
+
+    <section class="mb-10">
+      <h2>Sencillez y gran poder</h2>
+      <p>
+        Python se lee casi como si fuera inglés. Esto lo hace ideal para gente de fuera de la programación (matemáticos, biólogos, economistas) para automatizar cosas pesadas. Pero hoy, Python es la meca de la <strong>Inteligencia Artificial</strong>.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>¿Para qué lo usarás?</h2>
+      <div class="space-y-6">
+        <div style="background: #3776ab; color: white; border-radius: 12px; padding: 1.5rem;">
+          <h3 class="font-black text-white">Ciencia de Datos e IA 🤖</h3>
+          <p>Es el rey de las estadísticas y los algoritmos.</p>
+          <ul class="list-disc pl-5">
+            <li><strong>Pandas / NumPy:</strong> Para mover millones de filas de Excel como si no pesaran.</li>
+            <li><strong>TensorFlow / PyTorch:</strong> El corazón de los cerebros digitales: Redes Neuronales y machine learning.</li>
+          </ul>
+        </div>
+        <div style="background: #092e20; color: #449574; border-radius: 12px; padding: 1.5rem;">
+          <h3 class="font-black text-white">Desarrollo Web (Backend) 🌐</h3>
+          <p>Cuando quieres un servidor robusto y fácil de leer.</p>
+          <ul class="list-disc pl-5">
+            <li><strong>Django:</strong> El framework "con baterías incluidas" que usa Instagram para su backend.</li>
+            <li><strong>Flask / FastAPI:</strong> Para crear pequeñas conexiones de datos muy veloces.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <div class="ejercicio" style="background: #fff5f7; border-left: 5px solid #ef476f; padding: 1rem; border-radius: 12px; margin: 2rem 0;">
+      <h3>🤖 Cerebro Digital</h3>
+      <p class="enunciado">¿Qué librería usarías para que tu programa reconozca caras en una foto usando IA?</p>
+      
+      <details>
+        <summary>👁️ Ver respuesta</summary>
+        <p><strong>OpenCV</strong> o <strong>PyTorch/TensorFlow</strong>. Python tiene las mejores librerías para procesar imágenes con modelos inteligentes.</p>
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <EcosystemsQuizModal quizKey="python-ia" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/ecosistemas/web-javascript/" class="prev">← JavaScript y la Web</a>
+      <a href="/ecosistemas/mobile-nativos/" class="next">Mobile y Nativos →</a>
+    </nav>
+  </article>
+</Layout>

@@ -1,0 +1,59 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import CodeBlock from '../../../components/CodeBlock.astro';
+import HtmlQuizModal from '../../../components/HtmlQuizModal.astro';
+---
+
+<Layout title="Multimedia: Imágenes y Videos modernos" description="Muestra contenido visual impactante con img, video y el uso correcto de alt para que todo el mundo pueda navegar." courseSlug="html">
+  <article class="content-section">
+    <h1>5. Imágenes y Multimedia: Lo Visual</h1>
+
+    <section class="mb-10">
+      <h2>Una imagen vale más que mil palabras</h2>
+      <p>
+        Para que tu web deje de ser solo texto, usamos la etiqueta <code>&lt;img&gt;</code>. Pero ojo: si no pones el atributo <code>alt</code>, Google y la gente que no puede ver bien, no sabrán de qué trata la imagen.
+      </p>
+      <CodeBlock
+        code={`<img src="foto-de-perfil.jpg" alt="Retrato de Juan Perez sonriendo" width="200">`}
+        title="html"
+      />
+      <ul class="list-disc pl-5 mt-4">
+        <li><strong>src:</strong> La ruta de la imagen (donde vive el archivo).</li>
+        <li><strong>alt:</strong> Descripción del contenido para que siempre haya algo que cargar.</li>
+      </ul>
+    </section>
+
+    <div class="card my-8" style="background: white; border: 3px solid #ff4d00; border-radius: 20px; padding: 1.5rem;">
+      <h3 style="color: #ff4d00;">🖥️ Video y Audio</h3>
+      <p>Hoy en día HTML5 nos deja insertar videos directamente sin reproductores externos flahs o raros.</p>
+      <CodeBlock
+        code={`<video controls width="100%">
+  <source src="demo.mp4" type="video/mp4">
+  Tu navegador no soporta video.
+</video>`}
+        title="html"
+      />
+      <ul class="list-disc pl-5 mt-4">
+        <li><strong>controls:</strong> Es vital para que el usuario pueda darle al Play o pausar.</li>
+        <li><strong>autoplay:</strong> Para que el video empiece solo (pero a veces es molesto).</li>
+      </ul>
+    </div>
+
+    <section class="mb-10">
+      <h2>El poder del Iframe</h2>
+      <p>
+        <strong>Iframe</strong> sirve para meter una web dentro de otra. Se usa para mapas de Google Maps, videos de YouTube o widgets de redes sociales. Es una ventana a otra dirección web.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <HtmlQuizModal quizKey="multimedia" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/html/formularios/" class="prev">← Formularios e Inputs</a>
+      <a href="/html/semauntica/" class="next">HTML Semántico Pro →</a>
+    </nav>
+  </article>
+</Layout>

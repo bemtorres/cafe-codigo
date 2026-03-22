@@ -88,43 +88,105 @@ import imagen1 from '../assets/images/imagen1.png';
     </section>
   </div>
 
-  <div class="courses-grid-fun">
-    <h2 class="section-title">Cursos disponibles</h2>
-    <div class="cards-grid">
-      {courses.map((course, i) => (
-        <a
-          href={course.status === 'coming' ? '#' : `/${course.slug}/`}
-          style="text-decoration: none; color: inherit;"
-          data-coming={course.status === 'coming' ? 'true' : 'false'}
-          data-course-name={course.name}
-        >
-          <div class="card-fun" style={`background-color: ${i % 2 === 0 ? 'var(--bg-tertiary)' : 'var(--bg-secondary)'};`}>
-            {course.status === 'coming' && <div class="tag-fun">Próximamente</div>}
-            
-              {/* {course.slug === 'pseint' && (
-                <img
-                  class="card-course-logo"
-                  src={logoPseint.src}
-                  alt=""
-                  width="64"
-                  height="64"
-                  loading="lazy"
-                  decoding="async"
-                />
-              )} */}
-            {/* {course.slug === 'python' && <div class="card-emoji">🐍</div>} */}
-            {/* {course.slug === 'java' && <div class="card-emoji">☕</div>} */}
-            {/* {course.slug === 'ejercicios' && <div class="card-emoji">✅</div>} */}
-            
-            <h3>{course.name}</h3>
-            <p>{course.description}</p>
-            
-            {/* {course.lessons && (
-              <div class="lessons-badge">🎯 {course.lessons.length} Niveles</div>
-            )} */}
-          </div>
-        </a>
-      ))}
+  <div class="courses-sections">
+    <div class="courses-grid-fun">
+      <h2 class="section-title">Conceptos Base (Nivel 0)</h2>
+      <div class="cards-grid">
+        {courses.filter(c => c.category === 'foundations').map((course, i) => (
+          <a
+            href={course.status === 'coming' ? '#' : `/${course.slug}/`}
+            style="text-decoration: none; color: inherit;"
+            data-coming={course.status === 'coming' ? 'true' : 'false'}
+            data-course-name={course.name}
+          >
+            <div class="card-fun" style={`background-color: ${i % 2 === 0 ? 'var(--bg-tertiary)' : 'var(--bg-secondary)'};`}>
+              {course.status === 'coming' && <div class="tag-fun">Próximamente</div>}
+              <h3>{course.name}</h3>
+              <p>{course.description}</p>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+
+    <div class="courses-grid-fun" style="margin-top: 5rem;">
+      <h2 class="section-title">Lenguajes de Programación</h2>
+      <div class="cards-grid">
+        {courses.filter(c => c.category === 'language').map((course, i) => (
+          <a
+            href={course.status === 'coming' ? '#' : `/${course.slug}/`}
+            style="text-decoration: none; color: inherit;"
+            data-coming={course.status === 'coming' ? 'true' : 'false'}
+            data-course-name={course.name}
+          >
+            <div class="card-fun" style={`background-color: ${i % 2 === 0 ? 'var(--bg-tertiary)' : 'var(--bg-secondary)'};`}>
+              {course.status === 'coming' && <div class="tag-fun">Próximamente</div>}
+              <h3>{course.name}</h3>
+              <p>{course.description}</p>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+
+    <div class="courses-grid-fun" style="margin-top: 5rem;">
+      <h2 class="section-title">Desarrollo Frontend (Web)</h2>
+      <div class="cards-grid">
+        {courses.filter(c => c.category === 'frontend').map((course, i) => (
+          <a
+            href={course.status === 'coming' ? '#' : `/${course.slug}/`}
+            style="text-decoration: none; color: inherit;"
+            data-coming={course.status === 'coming' ? 'true' : 'false'}
+            data-course-name={course.name}
+          >
+            <div class="card-fun" style={`background-color: ${i % 2 === 0 ? 'var(--bg-tertiary)' : 'var(--bg-secondary)'};`}>
+              {course.status === 'coming' && <div class="tag-fun">Próximamente</div>}
+              <h3>{course.name}</h3>
+              <p>{course.description}</p>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+
+    <div class="courses-grid-fun" style="margin-top: 5rem;">
+      <h2 class="section-title">Ingeniería y Calidad</h2>
+      <div class="cards-grid">
+        {courses.filter(c => c.category === 'engineering').map((course, i) => (
+          <a
+            href={course.status === 'coming' ? '#' : `/${course.slug}/`}
+            style="text-decoration: none; color: inherit;"
+            data-coming={course.status === 'coming' ? 'true' : 'false'}
+            data-course-name={course.name}
+          >
+            <div class="card-fun" style={`background-color: ${i % 2 === 0 ? 'var(--bg-tertiary)' : 'var(--bg-secondary)'};`}>
+              {course.status === 'coming' && <div class="tag-fun">Próximamente</div>}
+              <h3>{course.name}</h3>
+              <p>{course.description}</p>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+
+    <div class="courses-grid-fun" style="margin-top: 5rem;">
+      <h2 class="section-title">Herramientas</h2>
+      <div class="cards-grid">
+        {courses.filter(c => c.category === 'tools').map((course, i) => (
+          <a
+            href={course.status === 'coming' ? '#' : `/${course.slug}/`}
+            style="text-decoration: none; color: inherit;"
+            data-coming={course.status === 'coming' ? 'true' : 'false'}
+            data-course-name={course.name}
+          >
+            <div class="card-fun" style={`background-color: ${i % 2 === 0 ? 'var(--bg-tertiary)' : 'var(--bg-secondary)'};`}>
+              {course.status === 'coming' && <div class="tag-fun">Próximamente</div>}
+              <h3>{course.name}</h3>
+              <p>{course.description}</p>
+            </div>
+          </a>
+        ))}
+      </div>
     </div>
   </div>
 

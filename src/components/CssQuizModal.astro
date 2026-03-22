@@ -1,0 +1,431 @@
+---
+import { cssQuizBank } from '../data/cssQuizBank';
+
+type Props = {
+  quizKey: string;
+};
+
+const { quizKey } = Astro.props as Props;
+const quiz = cssQuizBank[quizKey];
+
+if (!quiz) {
+  throw new Error(`CssQuizModal: no existe quizKey "${quizKey}" en cssQuizBank.`);
+}
+
+const modalId = `css-quiz-modal-${quizKey}`;
+const openBtnId = `css-quiz-open-${quizKey}`;
+const closeBtnId = `css-quiz-close-${quizKey}`;
+const resultId = `css-quiz-result-${quizKey}`;
+const radiosNamePrefix = `css_quiz_${quizKey}_q_`;
+---
+
+<div class="css-quiz">
+  <button id={openBtnId} type="button" class="css-quiz__start" data-css-quiz-open>
+    Testear estilo CSS
+  </button>
+
+  <div id={modalId} class="css-quiz__modal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="css-quiz__overlay" data-css-quiz-close></div>
+
+    <div class="css-quiz__panel">
+      <div class="css-quiz__header">
+        <div class="css-quiz__title">
+          <span class="css-quiz__title-badge">CSS3 Quiz</span>
+          <span>{quiz.title}</span>
+        </div>
+
+        <button
+          id={closeBtnId}
+          type="button"
+          class="css-quiz__close"
+          data-css-quiz-close
+          aria-label="Cerrar"
+        >
+          ✕
+        </button>
+      </div>
+
+      <div class="css-quiz__body">
+        <p class="css-quiz__intro">
+          Domina las reglas de diseño y los frameworks modernos. Son <strong>{quiz.questions.length}</strong> preguntas.
+        </p>
+
+        <form class="css-quiz__form" onsubmit="return false;">
+          {quiz.questions.map((q, i) => (
+            <section
+              class="css-quiz__q"
+              data-css-quiz-q={i}
+              data-correct-index={q.correctIndex}
+            >
+              <h4 class="css-quiz__q-title">
+                <span class="css-quiz__q-num">{i + 1}</span>. {q.prompt}
+              </h4>
+
+              <div class="css-quiz__options">
+                {q.options.map((opt, idx) => {
+                  const name = `${radiosNamePrefix}${i}`;
+                  const value = String(idx);
+                  const id = `${radiosNamePrefix}${i}_${idx}`;
+                  return (
+                    <label class="css-quiz__opt" for={id}>
+                      <input
+                        id={id}
+                        type="radio"
+                        name={name}
+                        value={value}
+                        data-css-quiz-answer={i}
+                      />
+                      <span>{opt}</span>
+                    </label>
+                  );
+                })}
+              </div>
+
+              <div
+                class="css-quiz__feedback"
+                data-css-quiz-feedback={i}
+                aria-live="polite"
+              ></div>
+            </section>
+          ))}
+        </form>
+      </div>
+
+      <div class="css-quiz__footer">
+        <div id={resultId} class="css-quiz__result" aria-live="polite"></div>
+        <div class="css-quiz__actions">
+          <button type="button" class="css-quiz__submit" data-css-quiz-submit>
+            Aplicar Estilos
+          </button>
+          <button type="button" class="css-quiz__restart" data-css-quiz-restart>
+            Reset cascada
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+  (function () {
+    const WKEY = '__cssQuizModalDelegated__';
+    if (window[WKEY]) return;
+    window[WKEY] = true;
+
+    function closeModal(modal) {
+      if (!modal) return;
+      modal.setAttribute('aria-hidden', 'true');
+      modal.classList.remove('is-open');
+      document.documentElement.style.overflow = '';
+    }
+
+    function openModal(modal) {
+      if (!modal) return;
+      const resultEl = modal.querySelector('.css-quiz__result');
+      if (resultEl) resultEl.textContent = '';
+      modal.querySelectorAll('[data-css-quiz-feedback]').forEach((el) => {
+        el.textContent = '';
+      });
+      modal.setAttribute('aria-hidden', 'false');
+      modal.classList.add('is-open');
+      document.documentElement.style.overflow = 'hidden';
+    }
+
+    function shuffleQuestions(modal) {
+      const form = modal.querySelector('.css-quiz__form');
+      const qEls = Array.from(modal.querySelectorAll('[data-css-quiz-q]'));
+      if (!form || qEls.length < 2) return;
+
+      for (let i = qEls.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        const tmp = qEls[i];
+        qEls[i] = qEls[j];
+        qEls[j] = tmp;
+      }
+
+      qEls.forEach((el) => {
+        form.appendChild(el);
+      });
+
+      qEls.forEach((qEl, idx) => {
+        const numEl = qEl.querySelector('.css-quiz__q-num');
+        if (numEl) numEl.textContent = String(idx + 1);
+      });
+    }
+
+    function gradeModal(modal) {
+      const resultEl = modal.querySelector('.css-quiz__result');
+      if (!resultEl) return;
+
+      const qEls = modal.querySelectorAll('[data-css-quiz-q]');
+      let score = 0;
+
+      qEls.forEach((qEl) => {
+        const correct = Number(qEl.getAttribute('data-correct-index'));
+        const feedbackEl = qEl.querySelector('[data-css-quiz-feedback]');
+        const selected = qEl.querySelector('input[type="radio"]:checked');
+        const idx = selected ? Number(selected.value) : null;
+
+        const isCorrect = idx === correct;
+        if (isCorrect) score++;
+
+        if (feedbackEl) {
+          if (isCorrect) {
+            feedbackEl.innerHTML = '<span style="color:#2563eb;">Estilo ACEPTADO ✨</span>';
+          } else {
+            feedbackEl.innerHTML = '<span style="color:#ef4444;">Error de cascada ❌. Reintenta.</span>';
+          }
+        }
+      });
+
+      const total = qEls.length;
+      if (score === total) resultEl.innerHTML = `🌟 Puntuación Perfecta: ${score}/${total}. ¡Pixel Perfect!`;
+      else if (score > total / 2) resultEl.innerHTML = `👍 Bien hecho: ${score}/${total} aciertos. Casi eres diseñador.`;
+      else resultEl.innerHTML = `📚 Box model confundido: ${score}/${total}. Te recomendamos repasar.`;
+    }
+
+    document.addEventListener('click', (e) => {
+      const target = e.target;
+
+      const startBtn = target instanceof Element ? target.closest('.css-quiz__start') : null;
+      if (startBtn) {
+        e.preventDefault();
+        const root = startBtn.closest('.css-quiz');
+        const modal = root?.querySelector('.css-quiz__modal') || null;
+        openModal(modal);
+        if (modal) shuffleQuestions(modal);
+        return;
+      }
+
+      const closeBtn = target instanceof Element ? target.closest('[data-css-quiz-close]') : null;
+      if (closeBtn) {
+        const root = closeBtn.closest('.css-quiz');
+        const modal = root?.querySelector('.css-quiz__modal') || null;
+        closeModal(modal);
+        return;
+      }
+
+      const submitBtn = target instanceof Element ? target.closest('[data-css-quiz-submit]') : null;
+      if (submitBtn) {
+        const root = submitBtn.closest('.css-quiz');
+        const modal = root?.querySelector('.css-quiz__modal') || null;
+        if (modal) gradeModal(modal);
+        return;
+      }
+
+      const restartBtn = target instanceof Element ? target.closest('[data-css-quiz-restart]') : null;
+      if (restartBtn) {
+        const root = restartBtn.closest('.css-quiz');
+        const modal = root?.querySelector('.css-quiz__modal') || null;
+        if (!modal) return;
+        const resultEl = modal.querySelector('.css-quiz__result');
+        if (resultEl) resultEl.textContent = '';
+        modal.querySelectorAll('input[type="radio"]').forEach((r) => {
+          r.checked = false;
+        });
+        modal.querySelectorAll('[data-css-quiz-feedback]').forEach((el) => {
+          el.textContent = '';
+        });
+        return;
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape') return;
+      document.querySelectorAll('.css-quiz__modal.is-open').forEach((m) => closeModal(m));
+    });
+  })();
+</script>
+
+<style>
+  .css-quiz {
+    margin: 2.5rem 0 2rem;
+  }
+
+  /* Color Azul CSS (#264de4) */
+  .css-quiz__start {
+    width: 100%;
+    max-width: 420px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.9rem 1.1rem;
+    border-radius: 12px;
+    border: 3px solid var(--border);
+    background: #264de4; 
+    color: white;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    cursor: pointer;
+    box-shadow: 5px 5px 0px var(--border);
+    transition: transform 0.1s, box-shadow 0.1s;
+    margin: 0 auto;
+  }
+
+  .css-quiz__start:hover {
+    transform: translateY(-2px);
+    box-shadow: 7px 7px 0px var(--border);
+  }
+
+  .css-quiz__modal {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    display: none;
+  }
+
+  .css-quiz__modal.is-open {
+    display: block;
+  }
+
+  .css-quiz__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(38, 77, 228, 0.1);
+    backdrop-filter: blur(4px);
+  }
+
+  .css-quiz__panel {
+    position: relative;
+    max-width: 860px;
+    margin: 6vh auto 0;
+    background: #fff;
+    border: 3px solid var(--border);
+    border-radius: 20px;
+    box-shadow: 0 28px 90px rgba(38, 77, 228, 0.2);
+    overflow: hidden;
+  }
+
+  .css-quiz__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.75rem;
+    border-bottom: 3px solid var(--border);
+    background: #f0f4ff; 
+  }
+
+  .css-quiz__title {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    font-size: 1.15rem;
+    color: #1e3a8a;
+  }
+
+  .css-quiz__title-badge {
+    background: #264de4;
+    color: white;
+    border: 2px solid var(--border);
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+  }
+
+  .css-quiz__close {
+    width: 38px;
+    height: 38px;
+    border-radius: 999px;
+    border: 2px solid var(--border);
+    background: white;
+    font-weight: 900;
+  }
+
+  .css-quiz__body {
+    padding: 1.5rem 1.75rem;
+    max-height: 68vh;
+    overflow: auto;
+  }
+
+  .css-quiz__intro {
+    margin: 0 0 1.5rem;
+    color: var(--text-secondary);
+    font-weight: 800;
+  }
+
+  .css-quiz__q {
+    padding: 1.25rem;
+    border: 2px solid #eee;
+    border-radius: 16px;
+    background: #fdfdfd;
+    margin-bottom: 1.5rem;
+  }
+
+  .css-quiz__q-title {
+    margin: 0 0 1rem;
+    font-weight: 900;
+    color: var(--text-primary);
+  }
+
+  .css-quiz__q-num { color: #264de4; }
+
+  .css-quiz__options {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.7rem;
+  }
+
+  .css-quiz__opt {
+    display: flex;
+    gap: 0.8rem;
+    align-items: flex-start;
+    cursor: pointer;
+    font-weight: 750;
+    color: var(--text-secondary);
+    line-height: 1.4;
+    padding: 0.4rem;
+    border-radius: 10px;
+  }
+
+  .css-quiz__opt:hover {
+    background: #f0f4ff;
+  }
+
+  .css-quiz__opt input {
+    margin-top: 4px;
+    accent-color: #264de4;
+  }
+
+  .css-quiz__footer {
+    padding: 1.25rem 1.75rem;
+    border-top: 3px solid var(--border);
+    background: #f0f4ff;
+  }
+
+  .css-quiz__result {
+    min-height: 1.25rem;
+    margin-bottom: 0.75rem;
+    font-weight: 900;
+    color: #1e3a8a;
+  }
+
+  .css-quiz__actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+  }
+
+  .css-quiz__submit {
+    border: 3px solid var(--border);
+    background: #264de4;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 14px;
+    font-weight: 900;
+    cursor: pointer;
+    box-shadow: 4px 4px 0px var(--border);
+  }
+
+  .css-quiz__restart {
+    border: 3px solid var(--border);
+    background: white;
+    color: #264de4;
+    padding: 0.75rem 1.5rem;
+    border-radius: 14px;
+    font-weight: 900;
+    cursor: pointer;
+    box-shadow: 4px 4px 0px var(--border);
+  }
+</style>

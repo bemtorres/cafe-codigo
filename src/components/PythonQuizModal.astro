@@ -1,0 +1,338 @@
+---
+import { pythonQuizBank } from '../data/pythonQuizBank';
+
+type Props = {
+  quizKey: string;
+};
+
+const { quizKey } = Astro.props as Props;
+const quiz = pythonQuizBank[quizKey];
+
+if (!quiz) {
+  throw new Error(`PythonQuizModal: no existe quizKey "${quizKey}" en pythonQuizBank.`);
+}
+
+const modalId = `python-quiz-modal-${quizKey}`;
+const openBtnId = `python-quiz-open-${quizKey}`;
+const closeBtnId = `python-quiz-close-${quizKey}`;
+const resultId = `python-quiz-result-${quizKey}`;
+const radiosNamePrefix = `python_quiz_${quizKey}_q_`;
+---
+
+<div class="python-quiz">
+  <button id={openBtnId} type="button" class="python-quiz__start" data-python-quiz-open>
+    <span class="python-logo">🐍</span> Comenzar Quiz Python
+  </button>
+
+  <div id={modalId} class="python-quiz__modal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="python-quiz__overlay" data-python-quiz-close></div>
+
+    <div class="python-quiz__panel">
+      <div class="python-quiz__header">
+        <div class="python-quiz__title">
+          <span class="python-quiz__title-badge">Python Quiz</span>
+          <span>{quiz.title}</span>
+        </div>
+
+        <button
+          id={closeBtnId}
+          type="button"
+          class="python-quiz__close"
+          data-python-quiz-close
+          aria-label="Cerrar"
+        >
+          ✕
+        </button>
+      </div>
+
+      <div class="python-quiz__body">
+        <p class="python-quiz__intro">
+          Son <strong>{quiz.questions.length}</strong> preguntas interactivas. ¡Evalúa tu lógica Python!
+        </p>
+
+        <form class="python-quiz__form" onsubmit="return false;">
+          {quiz.questions.map((q, i) => (
+            <section
+              class="python-quiz__q"
+              data-python-quiz-q={i}
+              data-correct-index={q.correctIndex}
+            >
+              <h4 class="python-quiz__q-title">
+                <span class="python-quiz__q-num">{i + 1}</span>. {q.prompt}
+              </h4>
+
+              <div class="python-quiz__options">
+                {q.options.map((opt, idx) => {
+                  const name = `${radiosNamePrefix}${i}`;
+                  const value = String(idx);
+                  const id = `${radiosNamePrefix}${i}_${idx}`;
+                  return (
+                    <label class="python-quiz__opt" for={id}>
+                      <input
+                        id={id}
+                        type="radio"
+                        name={name}
+                        value={value}
+                        data-python-quiz-answer={i}
+                      />
+                      <span>{opt}</span>
+                    </label>
+                  );
+                })}
+              </div>
+
+              <div
+                class="python-quiz__feedback"
+                data-python-quiz-feedback={i}
+                aria-live="polite"
+              ></div>
+            </section>
+          ))}
+        </form>
+      </div>
+
+      <div class="python-quiz__footer">
+        <div id={resultId} class="python-quiz__result" aria-live="polite"></div>
+        <div class="python-quiz__actions">
+          <button type="button" class="python-quiz__submit" data-python-quiz-submit>
+            Finalizar y Revisar
+          </button>
+          <button type="button" class="python-quiz__restart" data-python-quiz-restart>
+            Reintentar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+  (function () {
+    const WKEY = '__pythonQuizModalDelegated__';
+    if (window[WKEY]) return;
+    window[WKEY] = true;
+
+    function closeModal(modal) {
+      if (!modal) return;
+      modal.setAttribute('aria-hidden', 'true');
+      modal.classList.remove('is-open');
+      document.documentElement.style.overflow = '';
+    }
+
+    function openModal(modal) {
+      if (!modal) return;
+      const resultEl = modal.querySelector('.python-quiz__result');
+      if (resultEl) resultEl.textContent = '';
+      modal.querySelectorAll('[data-python-quiz-feedback]').forEach((el) => {
+        el.textContent = '';
+      });
+      modal.setAttribute('aria-hidden', 'false');
+      modal.classList.add('is-open');
+      document.documentElement.style.overflow = 'hidden';
+    }
+
+    function gradeModal(modal) {
+      const resultEl = modal.querySelector('.python-quiz__result');
+      if (!resultEl) return;
+
+      const qEls = modal.querySelectorAll('[data-python-quiz-q]');
+      let score = 0;
+
+      qEls.forEach((qEl) => {
+        const correct = Number(qEl.getAttribute('data-correct-index'));
+        const feedbackEl = qEl.querySelector('[data-python-quiz-feedback]');
+        const selected = qEl.querySelector('input[type="radio"]:checked');
+        const idx = selected ? Number(selected.value) : null;
+
+        const correctInput = qEl.querySelector(`input[type="radio"][value="${correct}"]`);
+        const correctText = correctInput?.parentElement?.querySelector('span')?.textContent ?? '';
+
+        const isCorrect = idx === correct;
+        if (isCorrect) score++;
+
+        if (feedbackEl) {
+          if (isCorrect) {
+            feedbackEl.innerHTML = '<span style="color:#2ecc71;">✓ Correcto</span>';
+          } else {
+            feedbackEl.innerHTML = `<span style="color:#e67e22;">✗ Incorrecto. Respuesta: ${correctText}</span>`;
+          }
+        }
+      });
+
+      const total = qEls.length;
+      resultEl.innerHTML = `Puntaje Final: ${score}/${total}.`;
+    }
+
+    document.addEventListener('click', (e) => {
+      const target = e.target;
+      const startBtn = target.closest('.python-quiz__start');
+      if (startBtn) {
+        const root = startBtn.closest('.python-quiz');
+        const modal = root?.querySelector('.python-quiz__modal');
+        openModal(modal);
+        return;
+      }
+
+      const closeBtn = target.closest('[data-python-quiz-close]');
+      if (closeBtn) {
+        const root = closeBtn.closest('.python-quiz');
+        const modal = root?.querySelector('.python-quiz__modal');
+        closeModal(modal);
+        return;
+      }
+
+      const submitBtn = target.closest('[data-python-quiz-submit]');
+      if (submitBtn) {
+        const root = submitBtn.closest('.python-quiz');
+        const modal = root?.querySelector('.python-quiz__modal');
+        if (modal) gradeModal(modal);
+        return;
+      }
+
+      const restartBtn = target.closest('[data-python-quiz-restart]');
+      if (restartBtn) {
+        const root = restartBtn.closest('.python-quiz');
+        const modal = root?.querySelector('.python-quiz__modal');
+        if (!modal) return;
+        modal.querySelectorAll('input[type="radio"]').forEach((r) => r.checked = false);
+        modal.querySelectorAll('[data-python-quiz-feedback]').forEach((el) => el.textContent = '');
+        modal.querySelector('.python-quiz__result').textContent = '';
+        return;
+      }
+    });
+  })();
+</script>
+
+<style>
+  .python-quiz { margin: 2rem 0; }
+
+  .python-quiz__start {
+    width: 100%;
+    max-width: 400px;
+    padding: 1rem;
+    border-radius: 12px;
+    border: 3px solid var(--border);
+    background: #3776ab; /* Python Blue */
+    color: white;
+    font-weight: 900;
+    font-size: 1.1rem;
+    cursor: pointer;
+    box-shadow: 4px 4px 0px var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    margin: 0 auto;
+    transition: transform 0.1s;
+  }
+  .python-quiz__start:hover { transform: translateY(-2px); box-shadow: 6px 6px 0px var(--border); }
+  .python-quiz__start:active { transform: translateY(2px); box-shadow: 2px 2px 0px var(--border); }
+
+  .python-quiz__modal {
+    position: fixed;
+    inset: 0;
+    z-index: 3000;
+    display: none;
+  }
+  .python-quiz__modal.is-open { display: block; }
+
+  .python-quiz__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(5px);
+  }
+
+  .python-quiz__panel {
+    position: relative;
+    max-width: 800px;
+    margin: 4vh auto;
+    background: #FFD43B; /* Python Yellow */
+    border: 4px solid var(--border);
+    border-radius: 20px;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+    overflow: hidden;
+    color: #1a1a1b;
+  }
+
+  .python-quiz__header {
+    background: #3776ab;
+    color: white;
+    padding: 1.25rem;
+    border-bottom: 4px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .python-quiz__title-badge {
+    background: #FFD43B;
+    color: #3776ab;
+    padding: 0.2rem 0.6rem;
+    border-radius: 8px;
+    font-weight: 900;
+    border: 2px solid var(--border);
+    margin-right: 0.75rem;
+  }
+
+  .python-quiz__close {
+    background: white;
+    border: 2px solid var(--border);
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-weight: 900;
+    color: #3776ab;
+  }
+
+  .python-quiz__body {
+    padding: 1.5rem;
+    max-height: 70vh;
+    overflow-y: auto;
+  }
+
+  .python-quiz__q {
+    background: white;
+    border: 3px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 4px 4px 0px rgba(0,0,0,0.1);
+  }
+
+  .python-quiz__opt {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    margin: 0.5rem 0;
+    cursor: pointer;
+    font-weight: 700;
+  }
+
+  .python-quiz__footer {
+    padding: 1.25rem;
+    background: #3776ab;
+    border-top: 4px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+  }
+
+  .python-quiz__actions { display: flex; gap: 1rem; }
+
+  .python-quiz__submit {
+    background: #FFD43B;
+    color: #1a1a1b;
+    border: 3px solid var(--border);
+    padding: 0.6rem 1rem;
+    border-radius: 10px;
+    font-weight: 900;
+    cursor: pointer;
+    box-shadow: 3px 3px 0px rgba(0,0,0,0.3);
+  }
+</style>

@@ -1,0 +1,54 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import ArchQuizModal from '../../../components/ArchQuizModal.astro';
+---
+
+<Layout title="Vista de Desarrollo: Organización" description="Cómo se estructuran los módulos de software en un entorno de desarrollo real." courseSlug="arch">
+  <article class="content-section">
+    <h1>4. Vista de Desarrollo: Organización del Código</h1>
+
+    <section class="mb-10">
+      <h2>Implementación y Módulos</h2>
+      <p>
+        También llamada <strong>Vista de Implementación</strong>. Ya no hablamos de clases estéticas, sino de carpetas, librerías, dependencias de compilación y la jerarquía real del sistema.
+      </p>
+      <p>
+        <strong>¿Qué describe?:</strong> Organización de los módulos de software en capas, paquetes, subsistemas y dependencias (ej: JARs, DLLs, npm).
+      </p>
+    </section>
+
+    <div class="note-box" style="background: #F1F5F9; border-left: 5px solid #475569;">
+      <strong>UML Estrella:</strong> Diagramas de Componentes, Diagramas de Paquetes.
+    </div>
+
+    <section class="mb-10">
+      <h2>Interesados (Stakeholders)</h2>
+      <p>A esta vista le interesa a:</p>
+      <ul>
+        <li><strong>Programadores:</strong> Para saber dónde poner su código.</li>
+        <li><strong>Gestores de Configuración:</strong> Para administrar el control de versiones (Git).</li>
+        <li><strong>Arquitectos de Software:</strong> Para establecer límites de subsistemas.</li>
+      </ul>
+    </section>
+
+    <div class="ejercicio" style="background: #F8FAFC; border: 2px solid #E2E8F0;">
+      <h3>🤔 Reflexión de Arquitecto</h3>
+      <p class="enunciado">Si estoy decidiendo si mi proyecto usará 10 microservicios o 1 monolito, ¿qué vista estoy definiendo?</p>
+      
+      <details>
+        <summary>👁️ Ver respuesta</summary>
+        <p>En la <strong>Vista de Desarrollo</strong>. El cómo se particiona el software en módulos independientes es clave aquí.</p>
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <ArchQuizModal quizKey="vista-desarrollo" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/arch/vista-logica/" class="prev">← Vista Lógica</a>
+      <a href="/arch/vista-proceso/" class="next">Vista de Proceso →</a>
+    </nav>
+  </article>
+</Layout>

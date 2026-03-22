@@ -1,0 +1,51 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import LinuxDistrosQuizModal from '../../../components/LinuxDistrosQuizModal.astro';
+---
+
+<Layout title="Red Hat y Fedora: El Poder Corporativo" description="Descubre por qué las empresas confían en los sistemas de Red Hat y cómo Fedora es el laboratorio de innovación de IBM." courseSlug="linux-distros">
+  <article class="content-section">
+    <h1>3. Red Hat y Fedora: Linux en la Empresa</h1>
+
+    <section class="mb-10">
+      <h2>El enfoque comercial de IBM</h2>
+      <p>
+        <strong>Red Hat Enterprise Linux (RHEL)</strong> es un sistema que no pagas por el software (es libre), sino por el <strong>soporte técnico especializado</strong> a empresas de mil millones de dólares.
+      </p>
+      <p>
+        <strong>Fedora</strong> es el experimento tecnológico. Lo que ves hoy en Fedora será lo que Red Hat use mañana. Es muy innovador y moderno.
+      </p>
+    </section>
+
+    <div class="card my-10 overflow-hidden" style="border: 3px solid #cc0000; border-radius: 20px;">
+      <div style="background: #cc0000; color: white; padding: 1.25rem;">
+        <h3 class="font-black text-white m-0">🛠️ Diferencias técnicas</h3>
+      </div>
+      <div style="padding: 1.5rem; background: #fff;">
+        <p>A diferencia de Debian/Ubuntu, aquí se usa:</p>
+        <ul class="list-disc pl-5">
+          <li><strong>Formato (.rpm):</strong> La extensión de paquete de Red Hat.</li>
+          <li><strong>Comando <code>dnf</code>:</strong> El moderno gestor de paquetes que sustituyó al viejo <code>yum</code>.</li>
+        </ul>
+      </div>
+    </div>
+
+    <section class="mb-10">
+      <h2>La muerte de CentOS y el nacimiento de Rocky</h2>
+      <p>
+        Durante años, <strong>CentOS</strong> fue la forma gratis de tener Red Hat en servidores. Cuando IBM cambió su enfoque, nacieron comunidades como <strong>Rocky Linux</strong> y <strong>AlmaLinux</strong> para llenar ese hueco gratuito y profesional.
+      </p>
+      <p><strong>Dato Curioso:</strong> Amazon tiene su propio Linux llamado <strong>Amazon Linux 2023</strong> (AWS), que desciende de esta rama Fedora/RedHat.</p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <LinuxDistrosQuizModal quizKey="redhat-fedora" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/linux-distros/debian-ubuntu/" class="prev">← Debian y Ubuntu</a>
+      <a href="/linux-distros/arch-linux/" class="next">Arch y Personalización →</a>
+    </nav>
+  </article>
+</Layout>

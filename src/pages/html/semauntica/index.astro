@@ -1,0 +1,57 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import CodeBlock from '../../../components/CodeBlock.astro';
+import HtmlQuizModal from '../../../components/HtmlQuizModal.astro';
+---
+
+<Layout title="HTML Semántico: Habla el idioma de Google" description="Aprende a estructurar tus sitios web para que los buscadores y lectores de pantalla entiendan de qué trata tu contenido." courseSlug="html">
+  <article class="content-section">
+    <h1>6. HTML Semántico: El Nivel Pro</h1>
+
+    <section class="mb-10">
+      <h2>Basta de la "Div-itis"</h2>
+      <p>
+        Mucha gente usa la etiqueta <code>&lt;div&gt;</code> para todo. Un <code>div</code> no significa NADA para Google. Es solo una caja invisible.
+      </p>
+      <p>
+        El <strong>HTML Semántico</strong> usa etiquetas con significado real: <code>&lt;nav&gt;</code> significa navegación, <code>&lt;footer&gt;</code> significa pie de página.
+      </p>
+    </section>
+
+    <div class="card my-8" style="background: white; border: 3px solid #ff4d00; border-radius: 20px; padding: 1.5rem;">
+      <h3 style="color: #ff4d00;">🏗️ La Ciudadela Semántica</h3>
+      <p>Aprende a usar estas etiquetas en lugar de simples cajas:</p>
+      <ul class="list-disc pl-5">
+        <li><strong>&lt;header&gt;:</strong> La cabecera de la web o de una sección separada.</li>
+        <li><strong>&lt;nav&gt;:</strong> Exclusivo para los menús de navegación.</li>
+        <li><strong>&lt;main&gt;:</strong> El contenido central y UNICO de la página (solo un main por página).</li>
+        <li><strong>&lt;section&gt;:</strong> Un grupo de contenido relacionado (el "Capítulo").</li>
+        <li><strong>&lt;article&gt;:</strong> Contenido que se puede leer solo y tiene sentido entero (un post de blog, una noticia).</li>
+        <li><strong>&lt;aside&gt;:</strong> Información lateral (anuncios, recomendados, barras laterales).</li>
+        <li><strong>&lt;footer&gt;:</strong> Información de copyright, enlaces legales, redes sociales abajo.</li>
+      </ul>
+    </div>
+
+    <section class="mb-10">
+      <h2>Beneficios: SEO y Accesibilidad</h2>
+      <p>
+        Si usas semántica:
+      </p>
+      <ol class="list-decimal pl-5">
+        <li><strong>Google te ama:</strong> Posicionas mejor porque el buscador sabe exactamente qué es cada parte de tu web.</li>
+        <li><strong>Accesibilidad:</strong> Las personas invidentes usan lectores que les dicen: "Estás en la navegación" o "Estás en el pie de página". ¡Crea para todos!</li>
+      </ol>
+    </section>
+
+    <div class="ejercicio" style="background: #fffaf0; border-left: 5px solid #ff4d00; padding: 1rem; border-radius: 12px; margin: 2rem 0;">
+      <h3>🏆 Examen Final HTML5</h3>
+      <p class="enunciado">Has aprendido a construir el esqueleto de internet. ¿Estás listo para dar el salto al diseño con CSS?</p>
+      <HtmlQuizModal quizKey="semauntica" />
+    </div>
+
+    <nav class="nav-bottom">
+      <a href="/html/multimedia/" class="prev">← Multimedia y Visuales</a>
+      <a href="/html/" class="next">Ir al Inicio →</a>
+    </nav>
+  </article>
+</Layout>

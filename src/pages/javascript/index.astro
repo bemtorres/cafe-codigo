@@ -1,0 +1,134 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { courses } from '../../data/courses';
+
+const jsCourse = courses.find(c => c.slug === 'javascript');
+if (!jsCourse) {
+  throw new Error("No se encontró el curso 'javascript' en el archivo de datos.");
+}
+---
+
+<Layout title="Curso JavaScript Pro: El Lenguaje de la Web" description="Aprende a crear sitios interactivos y domina el desarrollo frontend moderno con JS." courseSlug="javascript">
+  <div class="course-container">
+    <header class="course-index-header">
+      <div class="js-logo-box">
+        <span class="js-badge">JS</span>
+      </div>
+      <h1 class="course-big-title">
+        {jsCourse.name}
+      </h1>
+      <p class="course-description">
+        {jsCourse.description}
+      </p>
+    </header>
+
+    <div class="cards-grid">
+      {jsCourse.lessons?.map((lesson, index) => (
+        <a href={lesson.href} class="lesson-card">
+          <div class="lesson-card__number">{index + 1}</div>
+          <div class="lesson-card__content">
+            <h3 class="lesson-card__title">{lesson.title}</h3>
+            <span class="lesson-card__cta">Ejecutar script →</span>
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .course-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2.5rem 1.25rem;
+  }
+
+  .course-index-header {
+    text-align: center;
+    margin-bottom: 4rem;
+  }
+
+  .js-logo-box {
+    margin-bottom: 1.5rem;
+  }
+
+  .js-badge {
+    display: inline-block;
+    background: #f1c40f;
+    color: #1a1a1b;
+    padding: 0.5rem 1.25rem;
+    border-radius: 12px;
+    font-size: 2.5rem;
+    font-weight: 950;
+    border: 3px solid var(--border);
+    box-shadow: 4px 4px 0px var(--border);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .course-big-title {
+    font-size: clamp(2.2rem, 7vw, 3.8rem);
+    font-weight: 950;
+    color: #f1c40f;
+    margin-bottom: 1rem;
+    line-height: 1;
+    font-family: 'Nunito', sans-serif;
+    text-shadow: 3px 3px 0px var(--border);
+  }
+
+  .course-description {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    max-width: 650px;
+    margin: 0 auto;
+    font-weight: 700;
+  }
+
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .lesson-card {
+    display: flex;
+    gap: 1.25rem;
+    background: white;
+    border: 3px solid var(--border);
+    border-radius: 20px;
+    padding: 1.5rem;
+    text-decoration: none;
+    color: var(--text-primary);
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 5px 5px 0px var(--border);
+    align-items: center;
+  }
+
+  .lesson-card:hover {
+    transform: translate(-5px, -5px);
+    box-shadow: 10px 10px 0px var(--border);
+    border-color: #f1c40f;
+  }
+
+  .lesson-card__number {
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--border);
+    opacity: 0.15;
+    line-height: 1;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .lesson-card__title {
+    font-size: 1.15rem;
+    font-weight: 950;
+    margin: 0 0 0.35rem;
+    color: #1a1a1b;
+  }
+
+  .lesson-card__cta {
+    font-size: 0.9rem;
+    font-weight: 900;
+    color: #f39c12;
+    font-family: 'JetBrains Mono', monospace;
+  }
+</style>

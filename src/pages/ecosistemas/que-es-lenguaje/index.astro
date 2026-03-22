@@ -1,0 +1,56 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import EcosystemsQuizModal from '../../../components/EcosystemsQuizModal.astro';
+---
+
+<Layout title="¿Qué es un Lenguaje de Programación?" description="Entiende la base: cómo un lenguaje traduce tus ideas a instrucciones para la computadora." courseSlug="ecosistemas">
+  <article class="content-section">
+    <h1>1. El Idioma de las Máquinas</h1>
+
+    <section class="mb-10">
+      <h2>¿Para qué sirve un lenguaje?</h2>
+      <p>
+        Las computadoras solo entienden electricidad: encendido (1) y apagado (0). Escribir programas así sería una pesadilla para los humanos.
+      </p>
+      <p>
+        Un <strong>lenguaje de programación</strong> es un estándar que nos permite escribir instrucciones en algo parecido al inglés, para que luego un traductor lo convierta a binario.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Los dos tipos de traductores</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="card" style="border: 3px solid #ef476f; padding: 1.25rem; border-radius: 20px;">
+          <h3>Compiladores 📦</h3>
+          <p>Traducen TODO el código de una vez y generan un archivo ejecutable (.exe, .app). Son muy rápidos.</p>
+          <p><strong>Ejemplos:</strong> C++, Go, Rust.</p>
+        </div>
+        <div class="card" style="border: 3px solid #ef476f; padding: 1.25rem; border-radius: 20px;">
+          <h3>Interpretados ⚡</h3>
+          <p>Hay un programa (intérprete) que lee el código línea a línea y lo ejecuta al momento.</p>
+          <p><strong>Ejemplos:</strong> Python, JavaScript, Ruby.</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="ejercicio" style="background: #fff5f7; border-left: 5px solid #ef476f; padding: 1rem; border-radius: 12px; margin: 2rem 0;">
+      <h3>🤔 Reflexión</h3>
+      <p class="enunciado">Si quieres crear un archivo que puedas enviarle a un amigo para que lo abra sin instalar nada especial, ¿qué tipo de lenguaje usarías?</p>
+      
+      <details>
+        <summary>👁️ Ver respuesta</summary>
+        <p>Uno <strong>Compilado</strong>, ya que genera un paquete independiente que la computadora puede entender sin ayuda extra.</p>
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <EcosystemsQuizModal quizKey="que-es-lenguaje" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/ecosistemas/" class="prev">← Ecosistemas Tech</a>
+      <a href="/ecosistemas/compilados-java-csharp/" class="next">Java y C# →</a>
+    </nav>
+  </article>
+</Layout>

@@ -1,0 +1,60 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import CodeBlock from '../../../components/CodeBlock.astro';
+import JavaScriptQuizModal from '../../../components/JavaScriptQuizModal.astro';
+---
+
+<Layout title="Operadores en JS" description="Sumas, comparaciones y el famoso triple igual (===)." courseSlug="javascript">
+  <article class="content-section">
+    <h1>3. Operadores: Manipulando la materia</h1>
+
+    <section class="mb-10">
+      <h2>Matemáticas Básicas</h2>
+      <p>JavaScript tiene todos los operadores que esperarías: <code>+</code>, <code>-</code>, <code>*</code>, <code>/</code> y el módulo <code>%</code> (resto de una división).</p>
+      <CodeBlock
+        code={`let a = 10;
+let b = 3;
+console.log(a + b); // 13
+console.log(a % b); // 1 (¿Cuántas veces cabe el 3 en el 10? Tres veces, y sobra 1)`}
+        title="aritmetica.js"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>La Gran diferencia: == vs ===</h2>
+      <p>En JavaScript, existe una regla de oro: <strong>Usa siempre el triple igual (===)</strong>. </p>
+      <ul>
+        <li><strong>== (Igualdad débil):</strong> Compara solo el valor. Intenta convertir el tipo (ej: "10" lo toma como 10).</li>
+        <li><strong>=== (Igualdad estricta):</strong> Compara valor <strong>Y TIPO</strong>. Si uno es texto y otro es número, son distintos.</li>
+      </ul>
+      <CodeBlock
+        code={`console.log(10 == "10");  // true (¡Cuidado!)
+console.log(10 === "10"); // false (Es lo correcto)`}
+        title="comparacion.js"
+      />
+    </section>
+
+    <div class="ejercicio" style="background: #E3F2FD;">
+      <h3>💻 Misión: El resto de la fiesta</h3>
+      <p class="enunciado">Tienes 21 cervezas y somos 4 amigos en la fiesta. Escribe un script que use el operador de módulo % para saber cuántas sobran después de repartirlas equitativamente.</p>
+      
+      <details>
+        <summary>👁️ Ver solución sugerida</summary>
+        <CodeBlock code={`let cervezas = 21;
+let amigos = 4;
+let sobrantes = cervezas % amigos;
+console.log("Sobran: " + sobrantes);`} title="JS" />
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Quiz de Operadores</h2>
+      <JavaScriptQuizModal quizKey="operadores" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/javascript/variables/" class="prev">← Variables</a>
+      <a href="/javascript/condicionales/" class="next">Condicionales →</a>
+    </nav>
+  </article>
+</Layout>

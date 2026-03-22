@@ -4,22 +4,28 @@ import logoPseint from '../../assets/images/pseint.png';
 ---
 
 <Layout title="Curso PSeInt" description="Guía completa de PSeInt" courseSlug="pseint">
-  <div class="content-section" style="background: var(--bg-tertiary);">
-    <h1 class="course-big-title course-big-title--brand">
+  <header class="pseint-header-minimal">
+    <h1 class="course-big-title-centered">
       <img
         class="course-hero-pseint"
         src={logoPseint.src}
         alt=""
-        width="72"
-        height="72"
+        width="60"
+        height="60"
         decoding="async"
       />
       <span>Curso de PSeInt</span>
     </h1>
-    <p class="course-subtitle">
+    <p class="course-subtitle-centered">
       Aprende los fundamentos de la programación con pseudocódigo en español: variables, entrada de datos, operaciones matemáticas y estructuras condicionales.
     </p>
-  </div>
+
+    <div class="course-actions-pseint">
+      <a href="https://pseint.sourceforge.net/" target="_blank" rel="noopener noreferrer" class="btn-download-pseint">
+        📥 Descargar PSeInt (Oficial)
+      </a>
+    </div>
+  </header>
 
   <section class="cards-grid" style="margin-top: 4rem;">
     <a href="/pseint/introduccion/" class="card-fun" style="background: white;">
@@ -59,24 +65,88 @@ import logoPseint from '../../assets/images/pseint.png';
 </Layout>
 
 <style>
-  .course-big-title {
-    font-size: 3.5rem;
+  .pseint-header-minimal {
+    text-align: center;
+    padding: 3rem 1rem 1rem;
+    max-width: 800px;
+    margin: 0 auto;
   }
-  .course-big-title--brand {
+
+  .course-big-title-centered {
+    font-size: clamp(2.2rem, 6vw, 3.8rem);
     display: flex;
     align-items: center;
-    flex-wrap: wrap;
-    gap: 0.75rem 1rem;
+    justify-content: center;
+    gap: 1rem;
+    color: #34d399; /* PSeInt Green */
+    font-weight: 900;
+    margin-bottom: 1.5rem;
+    text-shadow: 2px 2px 0px rgba(0,0,0,0.05);
   }
+
   .course-hero-pseint {
-    flex-shrink: 0;
-    width: 72px;
-    height: 72px;
-    object-fit: contain;
-    border-radius: 14px;
+    width: 60px;
+    height: 60px;
   }
-  .course-subtitle {
-    font-size: 1.4rem;
+
+  .course-subtitle-centered {
+    font-size: 1.25rem;
+    line-height: 1.6;
+    color: var(--text-secondary);
+    font-weight: 700;
+    margin-bottom: 2rem;
+  }
+
+  .course-actions-pseint {
+    display: flex;
+    justify-content: center;
+  }
+
+  .btn-download-pseint {
+    display: inline-block;
+    background: #e6fffa;
+    color: #2c7a7b;
+    padding: 0.6rem 1.2rem;
+    border-radius: 999px;
+    text-decoration: none;
+    font-weight: 850;
+    border: 2px solid #34d399;
+    font-size: 0.95rem;
+    transition: all 0.2s;
+  }
+
+  .btn-download-pseint:hover {
+    background: #34d399;
+    color: white;
+    transform: translateY(-2px);
+  }
+
+  .course-actions-pseint {
+    margin-top: 1.5rem;
+  }
+
+  .btn-download-pseint {
+    display: inline-block;
+    background: #2ecc71;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 850;
+    border: 3px solid var(--border);
+    box-shadow: 4px 4px 0px var(--border);
+    transition: transform 0.1s, box-shadow 0.1s;
+  }
+
+  .btn-download-pseint:hover {
+    transform: translateY(-2px);
+    box-shadow: 6px 6px 0px var(--border);
+    background: #27ae60;
+  }
+
+  .btn-download-pseint:active {
+    transform: translateY(2px);
+    box-shadow: 2px 2px 0px var(--border);
   }
   @media (max-width: 600px) {
     .course-big-title { font-size: 2.2rem; margin-bottom: 1rem; }

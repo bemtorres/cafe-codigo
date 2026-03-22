@@ -1,0 +1,175 @@
+---
+const themes = [
+  { id: 'ide', name: 'Estilo IDE 💻', group: 'dark' },
+  { id: 'monokai', name: 'Monokai 🍎', group: 'dark' },
+  { id: 'dracula', name: 'Dracula 🧛', group: 'dark' },
+  { id: 'one-dark', name: 'One Dark 🌑', group: 'dark' },
+  { id: 'gruvbox-dark', name: 'Gruvbox 🪵', group: 'dark' },
+  { id: 'nord', name: 'Nord 🧊', group: 'dark' },
+  { id: 'tokyo-night', name: 'Tokyo Night 🏮', group: 'dark' },
+  { id: 'one-light', name: 'One Light ☀️', group: 'light' },
+  { id: 'solarized-light', name: 'Solarized 🏜️', group: 'light' },
+  { id: 'github-light', name: 'GitHub Light 🐙', group: 'light' },
+];
+---
+
+<div class="theme-selector-wrapper">
+  <button id="theme-menu-toggle" class="theme-menu-btn" title="Cambiar tema de código">
+    🎨 Tema de Código
+  </button>
+
+  <div id="theme-dropdown" class="theme-dropdown shadow-neo">
+    <div class="theme-group">
+      <h4>🌙 Oscuros (Populares)</h4>
+      <div class="theme-grid">
+        {themes.filter(t => t.group === 'dark').map(theme => (
+          <button class="theme-option" data-theme-id={theme.id}>
+            {theme.name} <span class="theme-check" style="display:none">✅</span>
+          </button>
+        ))}
+      </div>
+    </div>
+
+    <div class="theme-group">
+      <h4>☀️ Claros (Menos usados)</h4>
+      <div class="theme-grid">
+        {themes.filter(t => t.group === 'light').map(theme => (
+          <button class="theme-option theme-option--light" data-theme-id={theme.id}>
+            {theme.name} <span class="theme-check" style="display:none">✅</span>
+          </button>
+        ))}
+      </div>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+  (function() {
+    const toggle = document.getElementById('theme-menu-toggle');
+    const dropdown = document.getElementById('theme-dropdown');
+    const options = document.querySelectorAll('.theme-option');
+
+    // Cargar preferencia
+    const savedTheme = localStorage.getItem('code-theme') || 'one-dark';
+    document.documentElement.setAttribute('data-code-theme', savedTheme);
+    setActive(savedTheme);
+
+    toggle?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      dropdown?.classList.toggle('is-visible');
+    });
+
+    options.forEach(opt => {
+      opt.addEventListener('click', () => {
+        const id = opt.getAttribute('data-theme-id');
+        document.documentElement.setAttribute('data-code-theme', id);
+        localStorage.setItem('code-theme', id);
+        setActive(id);
+        dropdown?.classList.remove('is-visible');
+      });
+    });
+
+    function setActive(id) {
+      options.forEach(opt => {
+        const span = opt.querySelector('.theme-check');
+        if (opt.getAttribute('data-theme-id') === id) {
+          opt.classList.add('is-active');
+          if (span) span.style.display = 'inline';
+        } else {
+          opt.classList.remove('is-active');
+          if (span) span.style.display = 'none';
+        }
+      });
+    }
+
+    // Cerrar al clickar fuera
+    document.addEventListener('click', () => {
+      dropdown?.classList.remove('is-visible');
+    });
+    dropdown?.addEventListener('click', (e) => e.stopPropagation());
+  })();
+</script>
+
+<style>
+  .theme-selector-wrapper {
+    position: relative;
+    display: inline-block;
+  }
+
+  .theme-menu-btn {
+    background: white;
+    border: 2px solid var(--border);
+    padding: 0.5rem 1rem;
+    border-radius: 12px;
+    font-weight: 800;
+    font-family: 'Nunito', sans-serif;
+    cursor: pointer;
+    box-shadow: 3px 3px 0px var(--border);
+    transition: transform 0.1s;
+  }
+  .theme-menu-btn:hover { transform: translateY(-2px); }
+
+  .theme-dropdown {
+    position: absolute;
+    top: 110%;
+    right: 0;
+    background: white;
+    border: 3px solid var(--border);
+    border-radius: 16px;
+    padding: 1rem;
+    width: 280px;
+    z-index: 1000;
+    display: none;
+  }
+  .theme-dropdown.is-visible { display: block; }
+
+  .theme-group h4 {
+    font-size: 0.85rem;
+    margin: 0.75rem 0 0.5rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .theme-group:first-child h4 { margin-top: 0; }
+
+  .theme-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+  }
+
+  .theme-option {
+    background: #f8f8f8;
+    border: 2px solid #eee;
+    padding: 0.4rem;
+    font-size: 0.8rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700;
+    text-align: left;
+    transition: all 0.1s;
+  }
+  .theme-option:hover {
+    border-color: var(--info);
+    background: var(--bg-tertiary);
+  }
+  .theme-option.is-active {
+    background: var(--info);
+    color: white;
+    border-color: var(--border);
+  }
+
+  .theme-option--light {
+    border: 2px solid #ddd;
+    background: #fff;
+  }
+  .theme-option--light:hover {
+    background: #f0f0f0;
+    border-color: var(--info);
+  }
+
+  .shadow-neo {
+    box-shadow: 8px 8px 0px var(--border);
+  }
+</style>

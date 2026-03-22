@@ -1,0 +1,58 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import CodeBlock from '../../../components/CodeBlock.astro';
+import TerminalQuizModal from '../../../components/TerminalQuizModal.astro';
+---
+
+<Layout title="Pipes y Redirecciones en Bash" description="Encadena comandos como legos: pipes, salidas de archivos, sobrescritura y anexo." courseSlug="terminal">
+  <article class="content-section">
+    <h1>6. Pipes y Redirección: Legos de software</h1>
+
+    <section class="mb-10">
+      <h2>Conectando herramientas independientes</h2>
+      <p>
+        La filosofía Unix es: <strong>"Haz una sola cosa y hazla bien"</strong>. Para hacer cosas complejas, unimos estas utilidades con el símbolo <strong><code>|</code> (Pipe/Tubería)</strong>.
+      </p>
+      <ul class="mb-4">
+        <li><strong><code>ls | grep "txt"</code></strong>: Muestra solo los archivos acabados en .txt.</li>
+        <li><strong><code>cat arch.txt | sort</code></strong>: Ordena alfabéticamente el contenido.</li>
+        <li><strong><code>cat arch.txt | wc -l</code></strong>: Cuenta líneas mandándole el texto al contador.</li>
+      </ul>
+    </section>
+
+    <section class="mb-10">
+      <h2>Guardando en archivos</h2>
+      <p>Para no mostrar en pantalla sino guardar la salida del comando en un archivo:</p>
+      <ul class="mb-4">
+        <li><strong><code>ls > lista.txt</code></strong>: Crea (sobrescribe) <code>lista.txt</code> con lo que diga <code>ls</code>.</li>
+        <li><strong><code>ls >> lista.txt</code></strong>: Añade (append) sin borrar lo de antes al final de <code>lista.txt</code>.</li>
+      </ul>
+      <CodeBlock
+        code={`grep "error" server.log > errores_detectados.txt
+# Solo los errores se guardarán en el nuevo archivo.`}
+        title="bash"
+      />
+    </section>
+
+    <div class="ejercicio" style="background: #f1f1f1; border-left: 5px solid #1a1a1b; padding: 1rem; border-radius: 8px;">
+      <h3>💻 Misión: Constructor de Tuberías</h3>
+      <p class="enunciado">Si quieres añadir la palabra "Terminado" al final de un archivo <code>progreso.txt</code>, ¿qué comando usarías?</p>
+      
+      <details>
+        <summary>👁️ Ver comando</summary>
+        <CodeBlock code={`echo "Terminado" >> progreso.txt`} title="Terminal" />
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>Domina el flujo de datos.</p>
+      <TerminalQuizModal quizKey="redireccion" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/terminal/filtros-grep/" class="prev">← Filtros (Grep)</a>
+      <a href="/terminal/procesos/" class="next">Procesos →</a>
+    </nav>
+  </article>
+</Layout>

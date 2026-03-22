@@ -1,5 +1,7 @@
 ---
 import '../styles/global.css';
+import '../styles/code-themes.css';
+import CodeThemeSelector from '../components/CodeThemeSelector.astro';
 import { courses } from '../data/courses';
 import logoCafeycodigo from '../assets/images/cafeycodigo.png';
 import logoPseint from '../assets/images/pseint.png';
@@ -28,6 +30,12 @@ const KO_FI_LOGO_URL = 'https://storage.ko-fi.com/cdn/kofi3.png?v=3';
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width" />
     <meta name="description" content={description} />
+
+    <!-- Google Fonts para Estilo Egipcio -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Eagle+Lake&display=swap" rel="stylesheet">
+
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
@@ -46,7 +54,7 @@ const KO_FI_LOGO_URL = 'https://storage.ko-fi.com/cdn/kofi3.png?v=3';
       } catch {}
     </script>
   </head>
-  <body>
+  <body data-course={courseSlug}>
     <header class="site-header">
       <nav class="site-nav">
         <div class="nav-left">
@@ -97,24 +105,27 @@ const KO_FI_LOGO_URL = 'https://storage.ko-fi.com/cdn/kofi3.png?v=3';
             ☾
           </button>
 
-          {currentCourse && (
-            <div class="nav-course-actions">
-              {currentCourse.slug === 'pseint' && (
-                <a href="/pseint/simulador/" class="btn-simulator-top">▶ Simulador</a>
-              )}
-              {currentCourse.slug !== 'pseint' && (
-                <span class="course-badge-header">
-                  {currentCourse.name}
-                </span>
-              )}
-            </div>
-          )}
+          <div class="nav-actions">
+            <CodeThemeSelector />
+            {currentCourse && (
+              <div class="nav-course-actions">
+                {currentCourse.slug === 'pseint' && (
+                  <a href="/pseint/simulador/" class="btn-simulator-top">▶ Simulador</a>
+                )}
+                {currentCourse.slug !== 'pseint' && (
+                  <span class="course-badge-header">
+                    {currentCourse.name}
+                  </span>
+                )}
+              </div>
+            )}
 
-          {!currentCourse && (
-            <a class="btn-github-top" href="https://github.com/bemtorres/cafe-codigo" target="_blank" rel="noreferrer">
-              GitHub
-            </a>
-          )}
+            {!currentCourse && (
+              <a class="btn-github-top" href="https://github.com/bemtorres/cafe-codigo" target="_blank" rel="noreferrer">
+                GitHub
+              </a>
+            )}
+          </div>
         </div>
       </nav>
     </header>
@@ -136,30 +147,58 @@ const KO_FI_LOGO_URL = 'https://storage.ko-fi.com/cdn/kofi3.png?v=3';
             </button>
           </div>
 
-          <div class="langs-modal__grid">
-            <a class="langs-modal__link" href="/pseint/">
-              <img
-                class="langs-modal__icon"
-                src={logoPseint.src}
-                alt=""
-                width="22"
-                height="22"
-                decoding="async"
-              />
-              PSeInt
-            </a>
-            <a class="langs-modal__link" href="/csharp/">
-              C#
-            </a>
-            <a class="langs-modal__link" href="/java/">
-              Java
-            </a>
-            <a class="langs-modal__link" href="/python/">
-              Python
-            </a>
-            <a class="langs-modal__link" href="/java/">
-              Java
-            </a>
+          <div class="langs-modal__section">
+            <h4 class="langs-modal__section-title">Nivel 0: Conceptos</h4>
+            <div class="langs-modal__grid">
+              <a class="langs-modal__link" href="/ecosistemas/" style="color: #ef476f;">Ecosistemas Pro</a>
+            </div>
+          </div>
+
+          <div class="langs-modal__section" style="margin-top: 1.5rem;">
+            <h4 class="langs-modal__section-title">Lenguajes</h4>
+            <div class="langs-modal__grid">
+              <a class="langs-modal__link" href="/pseint/">
+                <img class="langs-modal__icon" src={logoPseint.src} alt="" width="20" height="20" />
+                PSeInt
+              </a>
+              <a class="langs-modal__link" href="/csharp/">C#</a>
+              <a class="langs-modal__link" href="/java/">Java</a>
+              <a class="langs-modal__link" href="/python/">Python</a>
+            </div>
+          </div>
+
+          <div class="langs-modal__section" style="margin-top: 1.5rem;">
+            <h4 class="langs-modal__section-title">Frontend</h4>
+            <div class="langs-modal__grid">
+              <a class="langs-modal__link" href="/html/" style="color: #ff4d00;">HTML5</a>
+              <a class="langs-modal__link" href="/css/" style="color: #264de4;">CSS3</a>
+            </div>
+          </div>
+
+          <div class="langs-modal__section" style="margin-top: 1.5rem;">
+            <h4 class="langs-modal__section-title">Ingeniería y Calidad</h4>
+            <div class="langs-modal__grid">
+              <a class="langs-modal__link" href="/javaunit/" style="color: #0891b2;">JavaUnit</a>
+              <a class="langs-modal__link" href="/arch/" style="color: #475569;">Ark (4+1)</a>
+            </div>
+          </div>
+
+          <div class="langs-modal__section" style="margin-top: 1.5rem;">
+            <h4 class="langs-modal__section-title">Base de Datos</h4>
+            <div class="langs-modal__grid">
+              <a class="langs-modal__link" href="/modelamiento-db/" style="color: #16a085;">Modelamiento</a>
+              <a class="langs-modal__link" href="/consultas-sql/" style="color: #2980b9;">Consultas SQL</a>
+              <a class="langs-modal__link" href="/programacion-db/" style="color: #e67e22;">PL/SQL</a>
+            </div>
+          </div>
+
+          <div class="langs-modal__section" style="margin-top: 1.5rem;">
+            <h4 class="langs-modal__section-title">Herramientas</h4>
+            <div class="langs-modal__grid">
+              <a class="langs-modal__link" href="/terminal/" style="color: #1a1a1b;">Terminal</a>
+              <a class="langs-modal__link" href="/linux-distros/" style="color: #f59e0b;">Sistemas Linux</a>
+              <a class="langs-modal__link" href="/git/" style="color: #f05032;">Git / GitHub</a>
+            </div>
           </div>
         </div>
       </div>
@@ -329,7 +368,12 @@ const KO_FI_LOGO_URL = 'https://storage.ko-fi.com/cdn/kofi3.png?v=3';
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    gap: 0.75rem;
+    gap: 1rem;
+  }
+  .nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
   }
   @media (max-width: 600px) {
     .nav-center {
@@ -582,8 +626,18 @@ const KO_FI_LOGO_URL = 'https://storage.ko-fi.com/cdn/kofi3.png?v=3';
 
   .langs-modal__grid {
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
     gap: 0.8rem;
+  }
+
+  .langs-modal__section-title {
+    font-size: 0.85rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+    margin: 0 0 0.6rem 0.2rem;
+    font-family: 'Nunito', sans-serif;
   }
 
   .langs-modal__link {
