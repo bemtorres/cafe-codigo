@@ -1,25 +1,54 @@
 ---
+import { Code } from 'astro:components';
+
 interface Props {
   code: string;
   title?: string;
+  lang?: string;
   isPSeIntCode?: boolean;
 }
 
-const { code, title, isPSeIntCode = true } = Astro.props;
+const { code, title, lang, isPSeIntCode = false } = Astro.props;
 
-function isPSeInt(src: string) {
+// Inferir lenguaje si no se provee
+function detectLang(src: string) {
   const s = String(src ?? '');
-  return /\bAlgoritmo\b/i.test(s) && /\bFinAlgoritmo\b/i.test(s);
+  if (/\bAlgoritmo\b/i.test(s) && /\bFinAlgoritmo\b/i.test(s)) return 'pseint';
+  if (/\bConsole\.WriteLine\b/.test(s) || /\busing System\b/.test(s) || /\bnamespace\b/.test(s)) return 'csharp';
+  if (/\bfun main\b/.test(s) || /\bprintln\b/.test(s) && !/\bSystem\.out\b/.test(s)) return 'kotlin';
+  if (/\bpublic class\b/.test(s) && /\bSystem\.out\.println\b/.test(s)) return 'java';
+  if (/\bdef\b/.test(s) || /\bprint\(/i.test(s)) return 'python';
+  return 'cmd'; // fallback
 }
 
-const pseint = isPSeIntCode ? true : isPSeInt(code);
-const encodedCode = pseint ? encodeURIComponent(code) : '';
+const finalLang = lang || (isPSeIntCode ? 'pseint' : detectLang(code));
+const isPseintFinal = finalLang === 'pseint';
+
+// Paleta de colores neo-brutalist por lenguaje
+const langColors: Record<string, string> = {
+  pseint: '#45B3E0',   // var(--info)
+  csharp: '#9B4F96',   // Morado C#
+  kotlin: '#F18E33',   // Naranja Kotlin
+  java: '#f59e0b',     // Amarillo oscuro Java
+  python: '#3572A5',   // Azul Python
+  cmd: '#888888',      // Gris
+  javascript: '#F7DF1E',
+  typescript: '#3178C6',
+  html: '#E34F26',
+  css: '#1572B6',
+  bash: '#4EAA25'
+};
+
+const badgeColor = langColors[finalLang.toLowerCase()] || '#1E1210';
+const langName = finalLang.toUpperCase();
+
+const encodedCode = isPseintFinal ? encodeURIComponent(code) : '';
 
 let hash = 0;
 for (let i = 0; i < code.length; i++) {
   hash = (hash * 31 + code.charCodeAt(i)) | 0;
 }
-const blockId = `pseint_${Math.abs(hash)}`;
+const blockId = `block_${Math.abs(hash)}`;
 const lines = String(code).replace(/\r\n/g, '\n').split('\n');
 
 function highlightPSeInt(line: string) {
@@ -30,37 +59,36 @@ function highlightPSeInt(line: string) {
   text = text.replace(/(\/\/.*)/g, '<span class="pseint-comment">$1</span>');
   return text;
 }
+
+// Convertir csharp a cs para Shiki, o python a py
+const shikiLang = finalLang === 'csharp' ? 'cs' : finalLang === 'cmd' ? 'bash' : finalLang;
 ---
 
-<div class="code-block">
-  {title && <p class="code-block-title">{title}</p>}
-  {pseint ? (
-    <>
-      <div class="pseint-editor" aria-label="Editor PSeInt (solo lectura)">
-        {lines.map((line, idx) => (
-          <div class="pseint-line">
-            <span class="pseint-ln">{idx + 1}</span>
-            <span class="pseint-txt" set:html={highlightPSeInt(line === '' ? ' ' : line)}></span>
-          </div>
-        ))}
-      </div>
-      {/* <div class="code-actions">
-        <button class="btn-fun-small" type="button" data-pseint-run={blockId} data-pseint-code={encodedCode}>
-          Ejecutar código ▶
-        </button>
-        <button class="btn-fun-small" type="button" data-pseint-copy={blockId} data-pseint-code={encodedCode}>
-          Copiar 📄
-        </button>
-      </div> */}
-    </>
+<div class="code-block" style={`border-color: ${badgeColor}; box-shadow: 4px 4px 0px ${badgeColor};`}>
+  <div class="code-header" style={`border-bottom: 3px solid ${badgeColor};`}>
+    <span class="code-block-title" style={title ? '' : 'visibility: hidden;'}>
+      {title || 'Código'}
+    </span>
+    <span class="lang-badge" style={`background-color: ${badgeColor};`}>{langName}</span>
+  </div>
+
+  {isPseintFinal ? (
+    <div class="pseint-editor" aria-label={`Editor ${langName} (solo lectura)`}>
+      {lines.map((line, idx) => (
+        <div class="pseint-line">
+          <span class="pseint-ln">{idx + 1}</span>
+          <span class="pseint-txt" set:html={highlightPSeInt(line === '' ? ' ' : line)}></span>
+        </div>
+      ))}
+    </div>
   ) : (
-    <pre>
-      <code>{code}</code>
-    </pre>
+    <div class="standard-editor">
+      <Code code={code} lang={shikiLang as any} theme="github-dark" />
+    </div>
   )}
 </div>
 
-{pseint && (
+{isPseintFinal && (
   <script>
     // @ts-nocheck
     const root = document.currentScript?.previousElementSibling;
@@ -109,18 +137,44 @@ function highlightPSeInt(line: string) {
 
 <style>
   .code-block {
-    margin: 1.5rem 0;
-  }
-  .code-block pre {
-    margin: 0;
+    margin: 2rem 0;
+    border: 3px solid var(--border);
+    border-radius: 16px;
+    background: #1A1A1A; /* Base oscura para código estándar */
+    overflow: hidden;
+    /* Sombras y bordes del contenedor se re-estilizan inline según el lenguaje */
   }
   
+  .code-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #FAFAFA;
+    padding: 0;
+  }
+  
+  .code-block-title {
+    font-size: 0.95rem;
+    color: #111;
+    padding: 0.6rem 1rem;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+  }
+  
+  .lang-badge {
+    font-size: 0.8rem;
+    color: white;
+    padding: 0.4rem 0.9rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 800;
+    border-bottom-left-radius: 12px;
+    border-left: 3px solid rgba(0,0,0,0.1);
+    box-shadow: inset 0px -2px 0px rgba(0,0,0,0.15);
+  }
+
   /* ESTILO CONSOLA / IDE BLANCO PARA PSEINT */
   .pseint-editor {
-    border-radius: 16px;
-    border: 3px solid var(--border);
     background: #FFFFFF;
-    box-shadow: 4px 4px 0px var(--border);
     overflow: auto;
     padding: 1rem 0;
     margin: 0;
@@ -134,7 +188,7 @@ function highlightPSeInt(line: string) {
     font-size: 0.95rem;
   }
   .pseint-ln {
-    color: #2B91AF; /* Azul típico de los números de línea ide viejo */
+    color: #2B91AF;
     text-align: right;
     user-select: none;
     min-width: 2rem;
@@ -147,16 +201,27 @@ function highlightPSeInt(line: string) {
     white-space: pre-wrap;
   }
   
-  /* Syntaxis Highlighting inyectada via span */
-  :global(.pseint-str) { color: #A31515; }     /* Rojo/Cafe Strings */
-  :global(.pseint-kw) { color: #0000FF; }      /* Azul Keywords */
-  :global(.pseint-type) { color: #008080; }    /* Teal Tipos */
-  :global(.pseint-comment) { color: #008000; font-style: italic; } /* Verde Comentarios */
+  :global(.pseint-str) { color: #A31515; }
+  :global(.pseint-kw) { color: #0000FF; }
+  :global(.pseint-type) { color: #008080; }
+  :global(.pseint-comment) { color: #008000; font-style: italic; }
 
-  .code-actions {
-    display: flex;
-    gap: 0.8rem;
-    margin-top: 1rem;
-    flex-wrap: wrap;
+  /* Contenedor estándar Astro Code (Shiki) */
+  .standard-editor {
+    padding: 0;
+    margin: 0;
+  }
+  /* Quitamos paddings/márgenes forzados de global.css para pre */
+  :global(.standard-editor pre) {
+    margin: 0 !important;
+    padding: 1.25rem 1rem !important;
+    border: none !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    font-size: 0.95rem;
+    box-shadow: none !important;
+  }
+  :global(.standard-editor code) {
+    font-family: 'JetBrains Mono', monospace;
   }
 </style>

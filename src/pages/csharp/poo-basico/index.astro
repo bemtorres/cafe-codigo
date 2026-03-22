@@ -1,0 +1,239 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import CodeBlock from '../../../components/CodeBlock.astro';
+import CsharpQuizModal from '../../../components/CsharpQuizModal.astro';
+---
+
+<Layout title="POO Básica en C#" description="El salto a la arquitectura: Clases y Objetos" courseSlug="csharp">
+  <article class="content-section">
+    <h1>9. POO Básico (Clases y Objetos)</h1>
+
+    <section class="mb-10">
+      <h2>El paradigma de Programación Orientada a Objetos</h2>
+      <p>
+        Hasta ahora, hemos escrito código que se ejecuta de arriba a abajo, guardando variables aisladas en funciones. 
+        En POO, cambiamos de mentalidad: <strong>Agrupamos los datos y comportamientos relacionados en un solo bloque estructurado</strong>. Piensa en crear un molde (Clase) del cual puedes sacar galletas individuales (Objetos).
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Clases y Objetos (`new`)</h2>
+      <p>
+        Una <strong>Clase</strong> es el plano o receta. Define qué propiedades tendrá algo.
+        Un <strong>Objeto</strong> (o <em>instancia</em>) es aquello concreto que creaste usando la palabra <code>new</code>.
+      </p>
+      <CodeBlock
+        code={`// Definición de una clase (el molde del Perro)
+class Perro 
+{
+    // Sus propiedades (datos)
+    public string nombre;
+    public string raza;
+
+    // Su comportamiento (métodos)
+    public void Ladrar()
+    {
+        Console.WriteLine($"Soy {nombre} y hago: ¡Guau!");
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        // Creamos un nuevo objeto Perro desde el molde
+        Perro miPerro = new Perro();
+
+        miPerro.nombre = "Rex";
+        miPerro.raza = "Golden";
+
+        // Y lo usamos
+        miPerro.Ladrar();
+    }
+}`}
+        title="Creando Clases e instanciando con 'new'"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Constructores</h2>
+      <p>
+        En el ejemplo anterior creamos un Perro y *después* le asignamos nombre. ¿Qué pasa si quiero que nazca con un nombre obligatorio? Usamos un <strong>Constructor</strong> (un método especial que tiene el mismo nombre que la clase).
+      </p>
+      <CodeBlock
+        code={`class Perro 
+{
+    public string nombre;
+
+    // Nuestro Constructor: Se ejecuta mágicamente al hacer 'new'
+    public Perro(string nombreInicial)
+    {
+        nombre = nombreInicial;
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        // Ya nace con nombre desde el inicio
+        Perro miPerro = new Perro("Firulais");
+        Console.WriteLine(miPerro.nombre); // Firulais
+    }
+}`}
+        title="Uso de Constructores"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Propiedades Automáticas {`{ get; set; }`} y Encapsulamiento</h2>
+      <p>
+        A diferencia de los campos públicos simples (<code>public string nombre;</code>), las <strong>Propiedades</strong> nos permiten proteger los datos (Encapsulamiento). En C#, este concepto se ha vuelto tremendamente elegante con los <em>Auto-Implemented Properties</em>.
+      </p>
+      <CodeBlock
+        code={`class Personaje 
+{
+    // Propiedad con 'get' (solo lectura desde afuera)
+    // y 'set' (asigna el dato desde adentro)
+    public int Vida { get; private set; }
+
+    public Personaje() 
+    {
+        Vida = 100; // Inicia con vida plena
+    }
+
+    public void RecibirDano(int cantidad) 
+    {
+        Vida -= cantidad;
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        Personaje hero = new Personaje();
+        Console.WriteLine(hero.Vida); // Todo bien, lee 100
+
+        // Error: No puedes hacer esto porque tiene "private set"
+        // hero.Vida = 999999; 
+
+        // Correcto: Deberás usar el método para dañarlo
+        hero.RecibirDano(20);
+        Console.WriteLine(hero.Vida); // Ahora es 80
+    }
+}`}
+        title="Protegiendo nuestras Clases"
+      />
+    </section>
+
+    
+    
+    <div class="ejercicio">
+      <h3>👨‍💻 Ejercicio Práctico</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> Constructores en Acción
+      </div>
+      <p class="enunciado" set:html={'Crea una clase <code>Mascota</code> con propiedades `Nombre` y `Edad`. Añádele un <strong>Constructor</strong> que asigne esos valores al nacer, y hazle un `new` desde el Main.'}></p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock code={`class Mascota 
+{
+    public string Nombre { get; set; }
+    public int Edad { get; set; }
+
+    // Constructor
+    public Mascota(string nombreInicial, int edadInicial)
+    {
+        Nombre = nombreInicial;
+        Edad = edadInicial;
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        Mascota miGato = new Mascota("Michi", 3);
+        Console.WriteLine($"Mi mascota es {miGato.Nombre} y tiene {miGato.Edad} años.");
+    }
+}`} />
+      </details>
+    </div>
+
+    
+    <div class="ejercicio" style="background: #F4E8F4;">
+      <h3>👨‍💻 Ejercicio Práctico 2</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> Diseñando tu Libro
+      </div>
+      <p class="enunciado" set:html={'Declara una clase <code>Libro</code> con propiedades <code>Titulo</code> y <code>Autor</code> (usando gets y sets automáticos). Instánciala y asígnale datos.'}></p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock code={`class Libro 
+{
+    public string Titulo { get; set; }
+    public string Autor { get; set; }
+}
+
+// En Main...
+Libro m = new Libro();
+m.Titulo = "El Hobbit";
+m.Autor = "Tolkien";`} />
+      </details>
+    </div>
+
+    <div class="ejercicio" style="background: #F4E8F4;">
+      <h3>👨‍💻 Ejercicio Práctico 3</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> La Bóveda del Banco
+      </div>
+      <p class="enunciado" set:html={'Crea la clase <code>Cuenta</code>. Su saldo debe tener un <code>private set</code> para que nadie le cambie el valor desde afuera excepto su propio método <code>Depositar(int cantidad)</code>.'}></p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock code={`class Cuenta 
+{
+    public int Saldo { get; private set; }
+    public void Depositar(int cr)
+    {
+         Saldo += cr;
+    }
+}`} />
+      </details>
+    </div>
+
+    <div class="ejercicio" style="background: #F4E8F4;">
+      <h3>👨‍💻 Ejercicio Práctico 4</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> Gemelos independientes
+      </div>
+      <p class="enunciado" set:html={'Genera dos objetos distintos (`c1` y `c2`) de la clase <code>Coche</code>. Demuestra que si a uno le asignas marca "Ford" y al otro "Mazda", no se mezclan.'}></p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock code={`class Coche { public string Marca { get; set;} }
+
+// En Main
+Coche c1 = new Coche();
+c1.Marca = "Ford";
+Coche c2 = new Coche();
+c2.Marca = "Mazda";
+// Son independientes.`} />
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>Comprueba tus conocimientos sobre este tema realizando nuestro pequeño test.</p>
+      <CsharpQuizModal quizKey="poo-basico" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/csharp/funciones/" class="prev">← Funciones</a>
+      <a href="/csharp/poo-pilares/" class="next">Pilares de la POO →</a>
+    </nav>
+  </article>
+</Layout>

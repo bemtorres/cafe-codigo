@@ -1,0 +1,116 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import CodeBlock from '../../../components/CodeBlock.astro';
+import JavaQuizModal from '../../../components/JavaQuizModal.astro';
+---
+
+<Layout title="Introducción a Java" description="Conceptos clave: JVM, JRE, JDK y tu primer programa en Java" courseSlug="java">
+  <article class="content-section">
+    <h1>1. Introducción a Java</h1>
+
+    <section class="mb-10">
+      <h2>¿Por qué Java? JVM, JRE y JDK</h2>
+      <p>
+        <strong>Java</strong> es uno de los lenguajes de programación más utilizados a nivel mundial. Es fuertemente tipado, orientado a objetos, y 
+        conocido por su filosofía <strong>WORA</strong> (<em>"Write Once, Run Anywhere" / "Escribe una vez, ejecuta donde sea"</em>).
+      </p>
+      <ul class="mb-4">
+        <li><strong>JDK (Java Development Kit):</strong> Contiene el compilador para que puedas programar en Java.</li>
+        <li><strong>JRE (Java Runtime Environment):</strong> El entorno que provee las clases base para que tu programa funcione.</li>
+        <li><strong>JVM (Java Virtual Machine):</strong> La máquina virtual responsable de ejecutar el código compilado (bytecode) en cualquier sistema operativo. Es la magia detrás de WORA.</li>
+      </ul>
+    </section>
+
+    <section class="mb-10">
+      <h2>Estructura de un Programa en Java</h2>
+      <p>
+        A diferencia de otros lenguajes más informales, Java te exige que <strong>todo</strong> esté dentro de una clase. Además, el nombre de esa clase pública debe coincidir exactamente con el nombre de tu archivo físico (ej: <code>Main.java</code>).
+      </p>
+      <CodeBlock
+        code={`public class Main {
+    // El método main es la puerta de entrada de tu aplicación
+    public static void main(String[] args) {
+        // Equivale a 'Escribir' en pseudocódigo
+        System.out.println("¡Hola, Mundo desde Java!");
+    }
+}`}
+        title="Main.java"
+      />
+      <p class="mt-4">
+        Cada línea de código que haga una acción o declaración debe cerrarse obligatoriamente con un <strong>punto y coma (<code>;</code>)</strong>.
+      </p>
+    </section>
+
+    <div class="ejercicio">
+      <h3>👨‍💻 Ejercicio Práctico 1</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> Tu primer despliegue
+      </div>
+      <p class="enunciado">Escribe la estructura base de Java en la clase <code>App</code> con el método <code>main</code> e imprime en consola el mensaje: <strong>"¡Java será mi mejor amigo!"</strong>.</p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock code={`public class App {
+    public static void main(String[] args) {
+        System.out.println("¡Java será mi mejor amigo!");
+    }
+}`} />
+      </details>
+    </div>
+
+    <div class="ejercicio" style="background: #FFF3E0;">
+      <h3>👨‍💻 Ejercicio Práctico 2</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> Múltiples líneas
+      </div>
+      <p class="enunciado">Imprime tu nombre en la primera línea y tu ciudad en la segunda utilizando dos <code>System.out.println()</code> distintos.</p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock code={`System.out.println("Benjamín");
+System.out.println("Madrid");`} />
+      </details>
+    </div>
+
+    <div class="ejercicio" style="background: #FFF3E0;">
+      <h3>👨‍💻 Ejercicio Práctico 3</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> Escribiendo en la misma línea
+      </div>
+      <p class="enunciado">Utiliza <code>System.out.print()</code> (sin el 'ln') para imprimir "Hola " y "Mundo" en comandos separados, pero que aparezcan juntos en la pantalla final.</p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock code={`System.out.print("Hola ");
+System.out.print("Mundo");`} />
+      </details>
+    </div>
+
+    <div class="ejercicio" style="background: #FFF3E0;">
+      <h3>👨‍💻 Ejercicio Práctico 4</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> Documentando tu código
+      </div>
+      <p class="enunciado">Añade un comentario de una línea que diga "Autor: Yo" y un comentario multilínea que diga "Mi primer acercamiento a la JVM".</p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock code={`// Autor: Yo
+/* Mi primer acercamiento
+   a la JVM */
+System.out.println("Código documentado");`} />
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>Comprueba tus conocimientos sobre JVM, JRE y clases base realizando nuestro test interactivo.</p>
+      <JavaQuizModal quizKey="introduccion" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/java/" class="prev">← Curso de Java</a>
+      <a href="/java/variables/" class="next">Variables →</a>
+    </nav>
+  </article>
+</Layout>

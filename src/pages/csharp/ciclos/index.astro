@@ -1,0 +1,162 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import CodeBlock from '../../../components/CodeBlock.astro';
+import CsharpQuizModal from '../../../components/CsharpQuizModal.astro';
+---
+
+<Layout title="Ciclos en C#" description="Automatiza la repetición usando while, do-while y for" courseSlug="csharp">
+  <article class="content-section">
+    <h1>6. Ciclos (Repetición)</h1>
+
+    <section class="mb-10">
+      <h2>Ciclo While (Mientras)</h2>
+      <p>
+        El <code>while</code> repite un bloque de código <strong>mientras</strong> su condición sea <code>true</code>. Si la condición es falsa desde el principio, el código nunca se ejecuta.
+      </p>
+      <CodeBlock
+        code={`int contador = 1;
+
+while (contador <= 5) 
+{
+    Console.WriteLine($"El contador va en: {contador}");
+    contador++; // ¡No olvides incrementar o será un ciclo infinito!
+}`}
+        title="Bucle While"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Ciclo Do-While (Hacer - Mientras)</h2>
+      <p>
+        A diferencia del <code>while</code>, el <code>do-while</code> <strong>siempre ejecuta el código al menos una vez</strong> antes de verificar la condición al final.
+        Es perfecto para menús o validaciones de entrada.
+      </p>
+      <CodeBlock
+        code={`int eleccion;
+
+do 
+{
+    Console.WriteLine("1. Jugar");
+    Console.WriteLine("2. Salir");
+    Console.Write("Opcion: ");
+    eleccion = int.Parse(Console.ReadLine());
+
+} while (eleccion != 2);
+
+Console.WriteLine("¡Adiós!");`}
+        title="Bucle Do-While para Menús"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Ciclo For (Para)</h2>
+      <p>
+        El <code>for</code> es el rey de los bucles cuando <strong>sabes exactamente cuántas veces quieres repetir algo</strong>. Agrupa la declaración de la variable, la condición y el incremento en una sola línea ordenada.
+      </p>
+      <CodeBlock
+        code={`// Sintaxis: for(inicialización; condición; incremento)
+for (int i = 1; i <= 10; i++)
+{
+    Console.WriteLine($"Esta es la repetición número {i}");
+}`}
+        title="Bucle For Clásico"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Break y Continue</h2>
+      <ul class="mb-4">
+        <li><strong>break:</strong> Corta y destruye el ciclo instantáneamente, saliendo de él.</li>
+        <li><strong>continue:</strong> Corta la repetición actual y salta directamente a la siguiente iteración.</li>
+      </ul>
+    </section>
+
+    
+    
+    <div class="ejercicio">
+      <h3>👨‍💻 Ejercicio Práctico</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> Saltando Obstáculos
+      </div>
+      <p class="enunciado" set:html={'Crea un bucle <code>for</code> que cuente del 1 al 10. Imprime los números, pero <strong>salta</strong> el número 5 usando la palabra reservada <code>continue</code>.'}></p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock code={`for (int i = 1; i <= 10; i++)
+{
+    if (i == 5)
+    {
+        // Al ejecutar continue, ignora lo que sigue y pasa al número 6
+        continue;
+    }
+    Console.WriteLine($"Número: {i}");
+}`} />
+      </details>
+    </div>
+
+    
+    <div class="ejercicio" style="background: #F4E8F4;">
+      <h3>👨‍💻 Ejercicio Práctico 2</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> Cuenta regresiva / Despegue
+      </div>
+      <p class="enunciado" set:html={'Haz un ciclo <code>while</code> que inicie en 5 y baje hasta 1. Al terminar imprime "¡Despegue!".'}></p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock code={`int cuenta = 5;
+while(cuenta > 0)
+{
+    Console.WriteLine(cuenta);
+    cuenta--;
+}
+Console.WriteLine("¡Despegue!");`} />
+      </details>
+    </div>
+
+    <div class="ejercicio" style="background: #F4E8F4;">
+      <h3>👨‍💻 Ejercicio Práctico 3</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> Solo los pares
+      </div>
+      <p class="enunciado" set:html={'Con un ciclo <code>for</code> del 2 al 20, aumenta tu contador i += 2 para imprimir únicamente números pares rapidísimo.'}></p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock code={`for (int i = 2; i <= 20; i += 2)
+{
+    Console.WriteLine(i);
+}`} />
+      </details>
+    </div>
+
+    <div class="ejercicio" style="background: #F4E8F4;">
+      <h3>👨‍💻 Ejercicio Práctico 4</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> Menú Do-While
+      </div>
+      <p class="enunciado" set:html={'Crea una variable <code>int op = 0;</code> y haz un <code>do-while</code> que se repita mientras op sea distinto de 1.'}></p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock code={`int op = 0;
+do 
+{
+    Console.WriteLine("Ejecutando iteración...");
+    op = 1; // Puesto a 1 para asegurar salida en consola
+} while(op != 1);`} />
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>Comprueba tus conocimientos sobre este tema realizando nuestro pequeño test.</p>
+      <CsharpQuizModal quizKey="ciclos" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/csharp/condicionales/" class="prev">← Condicionales</a>
+      <a href="/csharp/colecciones/" class="next">Arreglos y Listas →</a>
+    </nav>
+  </article>
+</Layout>

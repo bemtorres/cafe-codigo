@@ -1,0 +1,175 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import CodeBlock from '../../../components/CodeBlock.astro';
+import CsharpQuizModal from '../../../components/CsharpQuizModal.astro';
+---
+
+<Layout title="Condicionales en C#" description="Toma de decisiones usando if, else y switch" courseSlug="csharp">
+  <article class="content-section">
+    <h1>5. Condicionales (Toma de Decisiones)</h1>
+
+    <section class="mb-10">
+      <h2>La estructura If / Else</h2>
+      <p>
+        El condicional <code>if</code> (Si) evalúa una expresión lógica (que devuelve `true` o `false`). Si es verdadera, ejecuta el bloque de código dentro de las llaves <code>{}</code>. Si es falsa, ejecuta el bloque <code>else</code> (Sino).
+      </p>
+      <CodeBlock
+        code={`int edad = 18;
+
+if (edad >= 18) 
+{
+    Console.WriteLine("Eres mayor de edad, puedes entrar.");
+} 
+else 
+{
+    Console.WriteLine("Lo siento, eres menor de edad.");
+}`}
+        title="If / Else básico"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>If / Else If / Else</h2>
+      <p>
+        Cuando tienes más de dos caminos posibles, puedes encadenar las condiciones usando <code>else if</code>. C# evaluará una por una desde arriba hacia abajo y ejecutará solo la primera que sea verdadera.
+      </p>
+      <CodeBlock
+        code={`double nota = 8.5;
+
+if (nota >= 9.0) 
+{
+    Console.WriteLine("¡Excelente!");
+}
+else if (nota >= 6.0) 
+{
+    Console.WriteLine("Aprobado.");
+}
+else 
+{
+    Console.WriteLine("Debes estudiar más.");
+}`}
+        title="Condiciones encadenadas"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>El Condicional Switch</h2>
+      <p>
+        El <code>switch</code> es ideal cuando quieres evaluar una <strong>sola variable contra muchos valores exactos</strong> (como un menú de opciones). Es más limpio y rápido que hacer muchos `if-else`.
+      </p>
+      <CodeBlock
+        code={`int diaSemana = 3;
+
+switch (diaSemana)
+{
+    case 1:
+        Console.WriteLine("Es Lunes.");
+        break; // break es obligatorio para salir del switch
+    case 2:
+        Console.WriteLine("Es Martes.");
+        break;
+    case 3:
+        Console.WriteLine("Es Miércoles.");
+        break;
+    default:
+        Console.WriteLine("No es inicio de semana.");
+        break;
+}`}
+        title="Estructura Switch"
+      />
+    </section>
+
+    
+    
+    <div class="ejercicio">
+      <h3>👨‍💻 Ejercicio Práctico</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> Revisor de números
+      </div>
+      <p class="enunciado" set:html={'Usa una estructura <code>if-else if-else</code> para evaluar un número. Si es mayor a 0 imprime "Positivo", si es menor a 0 "Negativo", si es 0 "Cero".'}></p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock code={`int num = -5;
+
+if (num > 0) 
+{
+    Console.WriteLine("Positivo");
+}
+else if (num < 0) 
+{
+    Console.WriteLine("Negativo");
+}
+else 
+{
+    Console.WriteLine("Cero");
+}`} />
+      </details>
+    </div>
+
+    
+    <div class="ejercicio" style="background: #F4E8F4;">
+      <h3>👨‍💻 Ejercicio Práctico 2</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> Validador de Contraseñas
+      </div>
+      <p class="enunciado" set:html={'Define una variable string con "1234". Usa un <code>if</code> para ver si es igual a "1234". Si es cierto imprime "Acceso concedido", Sino imprime "Bloqueado".'}></p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock code={`string pass = "1234";
+if (pass == "1234") {
+    Console.WriteLine("Acceso concedido");
+} else {
+    Console.WriteLine("Bloqueado");
+}`} />
+      </details>
+    </div>
+
+    <div class="ejercicio" style="background: #F4E8F4;">
+      <h3>👨‍💻 Ejercicio Práctico 3</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> El Día de la Semana
+      </div>
+      <p class="enunciado" set:html={'Usa una estructura <code>switch</code>. Si el valor es 1 imprime "Lunes", si es 2 "Martes", y con un <code>default</code> imprime "Fin de semana".'}></p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock code={`int dia = 2;
+switch(dia) 
+{
+    case 1: Console.WriteLine("Lunes"); break;
+    case 2: Console.WriteLine("Martes"); break;
+    default: Console.WriteLine("Fin de semana"); break;
+}`} />
+      </details>
+    </div>
+
+    <div class="ejercicio" style="background: #F4E8F4;">
+      <h3>👨‍💻 Ejercicio Práctico 4</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> If Múltiple (Else If)
+      </div>
+      <p class="enunciado" set:html={'Usando <code>else if</code>, comprueba si un alumno sacó más de > 90 (A), > 80 (B), o sino (C).'}></p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock code={`int nota = 85;
+if (nota >= 90) Console.WriteLine("A");
+else if (nota >= 80) Console.WriteLine("B");
+else Console.WriteLine("C");`} />
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>Comprueba tus conocimientos sobre este tema realizando nuestro pequeño test.</p>
+      <CsharpQuizModal quizKey="condicionales" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/csharp/operadores/" class="prev">← Operadores</a>
+      <a href="/csharp/ciclos/" class="next">Ciclos →</a>
+    </nav>
+  </article>
+</Layout>

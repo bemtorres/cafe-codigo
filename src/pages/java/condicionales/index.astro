@@ -1,0 +1,155 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import CodeBlock from '../../../components/CodeBlock.astro';
+import JavaQuizModal from '../../../components/JavaQuizModal.astro';
+---
+
+<Layout title="Condicionales en Java" description="Caminos y toma de decisiones usando if y switch" courseSlug="java">
+  <article class="content-section">
+    <h1>5. Condicionales: Tomando Decisiones</h1>
+
+    <section class="mb-10">
+      <h2>La estructura If / Else</h2>
+      <p>
+        El flujo de tu programa puede partirse en múltiples direcciones dependiendo de ciertas condiciones usando la clásica estructura <code>if</code> y <code>else</code>, anidando bloques con llaves <code>{}</code>.
+      </p>
+      <CodeBlock
+        code={`int bateria = 15;
+
+if (bateria > 50) {
+    System.out.println("Dispositivo seguro.");
+} 
+else if (bateria > 20) {
+    System.out.println("Precaución: uso moderado.");
+} 
+else {
+    // Si ninguna de las dos de arriba se cumplieron, caeremos aquí ineludiblemente.
+    System.out.println("Batería Crítica. Conectar cargador.");
+}`}
+        title="If / Else condicional"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>El poder del Switch</h2>
+      <p>
+        Si tienes un menú con opciones exactas (como 1, 2, 3), escribir múltiples <code>else if</code> se vuelve visualmente sucio. En ese caso se utiliza el <code>switch</code>.
+      </p>
+      <CodeBlock
+        code={`int opcion = 2;
+
+switch(opcion) {
+    case 1:
+        System.out.println("Iniciando Nueva Partida...");
+        break; // Obligatorio para cancelar saltos extras
+    case 2:
+        System.out.println("Abriendo configuraciones...");
+        break;
+    default:
+        // Equivalente al "De Otro Modo" en PseInt, o el Else final.
+        System.out.println("Saliendo del juego...");
+        break;
+}`}
+        title="Validación por Switch"
+      />
+    </section>
+
+    <div class="ejercicio">
+      <h3>👨‍💻 Ejercicio Práctico 1</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> Revisor de números
+      </div>
+      <p class="enunciado">Usa un `if-else if-else` para evaluar una variable <code>int num = -5;</code>. Dependiendo de él imprime "Positivo", "Negativo" o "Cero".</p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock code={`int num = -5;
+
+if (num > 0) {
+    System.out.println("Positivo");
+} else if (num < 0) {
+    System.out.println("Negativo");
+} else {
+    System.out.println("Cero");
+}`} />
+      </details>
+    </div>
+
+    <div class="ejercicio" style="background: #FFF3E0;">
+      <h3>👨‍💻 Ejercicio Práctico 2</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> Validador de Contraseñas
+      </div>
+      <p class="enunciado">Define un <code>String pass = "1234";</code>. Usa un condicional para verificar si es igual usando <code>.equals("1234")</code>. Si es cierto imprime "Acceso", si no "Bloqueado".</p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock code={`String pass = "1234";
+
+// NUNCA uses == con Strings en Java. Usa .equals()
+if (pass.equals("1234")) {
+    System.out.println("Acceso concedido");
+} else {
+    System.out.println("Bloqueado");
+}`} />
+      </details>
+    </div>
+
+    <div class="ejercicio" style="background: #FFF3E0;">
+      <h3>👨‍💻 Ejercicio Práctico 3</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> El Día de la Semana
+      </div>
+      <p class="enunciado">Diseña un <code>switch(dia)</code>. Si el valor es 1 imprime "Lunes", si es 2 "Martes", y cierra con el <code>default</code> imprimiendo "Fin de semana".</p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock code={`int dia = 2;
+
+switch(dia) {
+    case 1: 
+        System.out.println("Lunes"); 
+        break;
+    case 2: 
+        System.out.println("Martes"); 
+        break;
+    default: 
+        System.out.println("Fin de semana"); 
+        break;
+}`} />
+      </details>
+    </div>
+
+    <div class="ejercicio" style="background: #FFF3E0;">
+      <h3>👨‍💻 Ejercicio Práctico 4</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> If Múltiple
+      </div>
+      <p class="enunciado">Comprueba si un alumno de nivel 85 aprueba con Excelencia (> 90), Bien (> 80), o Regular (Sino).</p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock code={`int nota = 85;
+
+if (nota >= 90) {
+    System.out.println("Excelencia");
+} else if (nota >= 80) {
+    System.out.println("Bien");
+} else {
+    System.out.println("Regular");
+}`} />
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>Es momento de poner a prueba cómo tomas decisiones en Java.</p>
+      <JavaQuizModal quizKey="condicionales" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/java/operadores/" class="prev">← Operadores</a>
+      <a href="/java/ciclos/" class="next">Ciclos →</a>
+    </nav>
+  </article>
+</Layout>
