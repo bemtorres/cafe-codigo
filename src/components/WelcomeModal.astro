@@ -1,0 +1,114 @@
+---
+// WelcomeModal.astro - Se muestra la primera vez que el usuario visita el sitio
+---
+
+<div
+  id="welcomeModal"
+  class="fixed inset-0 z-[2000] flex items-center justify-center hidden"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="welcomeTitle"
+>
+  <!-- Overlay con blur -->
+  <div class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
+
+  <!-- Tarjeta principal -->
+  <div class="relative z-10 w-full max-w-md mx-4 bg-white border-4 border-[#1E1210] rounded-3xl shadow-[8px_8px_0px_#1E1210] overflow-hidden">
+
+    <!-- Encabezado colorido -->
+    <div class="bg-[#45B3E0] border-b-4 border-[#1E1210] px-6 py-5 flex items-center gap-3">
+      <span class="text-4xl">☕</span>
+      <div>
+        <h2 id="welcomeTitle" class="text-2xl font-nunito font-black text-white m-0 drop-shadow-[1px_1px_0px_rgba(0,0,0,0.25)]">
+          ¡Bienvenido/a!
+        </h2>
+        <p class="text-white/90 font-bold text-sm m-0">café y código</p>
+      </div>
+    </div>
+
+    <!-- Cuerpo del modal -->
+    <div class="px-6 py-6">
+      <p class="text-[1.05rem] text-[#4A3A37] font-[650] leading-relaxed mb-6">
+        Para personalizar tu experiencia de aprendizaje, ¿cómo te llamas? 
+        <br/>
+        <span class="text-[0.9rem] text-[#6B5B58]">(Esto se guarda solo en tu dispositivo)</span>
+      </p>
+
+      <form id="welcomeForm" class="flex flex-col gap-4" autocomplete="off">
+        <div class="relative">
+          <span class="absolute left-4 top-1/2 -translate-y-1/2 text-xl pointer-events-none">👤</span>
+          <input
+            id="userNameInput"
+            type="text"
+            maxlength="40"
+            placeholder="Escribe tu nombre aquí..."
+            class="w-full pl-11 pr-4 py-3 border-3 border-[#1E1210] rounded-2xl font-nunito font-bold text-[1.1rem] text-[#2D2321] bg-[#FFFDF7] outline-none shadow-[3px_3px_0px_#1E1210] focus:shadow-[4px_4px_0px_#45B3E0] focus:border-[#45B3E0] transition-all"
+            style="border-width: 3px;"
+          />
+        </div>
+
+        <button
+          id="welcomeSubmit"
+          type="submit"
+          class="w-full py-3 px-6 bg-[#06D6A0] text-[#1E1210] font-nunito font-black text-[1.15rem] border-4 border-[#1E1210] rounded-2xl shadow-[4px_4px_0px_#1E1210] hover:-translate-y-1 hover:shadow-[5px_5px_0px_#1E1210] active:translate-y-0.5 active:shadow-[2px_2px_0px_#1E1210] transition-all cursor-pointer"
+        >
+          ¡Empezar a aprender! →
+        </button>
+
+        <button
+          id="welcomeSkip"
+          type="button"
+          class="w-full py-2 text-[#6B5B58] font-bold text-sm hover:text-[#2D2321] transition-colors cursor-pointer underline underline-offset-2 bg-transparent border-none"
+        >
+          Continuar sin nombre
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+  (function () {
+    const modal = document.getElementById('welcomeModal');
+    const form = document.getElementById('welcomeForm');
+    const input = document.getElementById('userNameInput');
+    const skipBtn = document.getElementById('welcomeSkip');
+
+    if (!modal) return;
+
+    // Mostrar modal solo si no se ha configurado el nombre
+    const storedName = localStorage.getItem('user.name');
+    if (!storedName) {
+      modal.classList.remove('hidden');
+      setTimeout(() => input && input.focus(), 120);
+    }
+
+    function saveName(name) {
+      try {
+        localStorage.setItem('user.name', name || '');
+        localStorage.setItem('user.welcomed', '1');
+      } catch {}
+      modal.classList.add('hidden');
+
+      // Despachar evento global para que otros componentes lo escuchen
+      document.dispatchEvent(new CustomEvent('user:named', { detail: { name: name || '' } }));
+    }
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = input.value.trim();
+      saveName(name);
+    });
+
+    skipBtn.addEventListener('click', () => {
+      saveName('');
+    });
+
+    // Cerrar con Escape (solo si hay nombre guardado)
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && localStorage.getItem('user.welcomed')) {
+        modal.classList.add('hidden');
+      }
+    });
+  })();
+</script>

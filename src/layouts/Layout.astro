@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import '../styles/code-themes.css';
 import CodeThemeSelector from '../components/CodeThemeSelector.astro';
+import WelcomeModal from '../components/WelcomeModal.astro';
 import { courses } from '../data/courses';
 import logoCafeycodigo from '../assets/images/cafeycodigo.png';
 import logoPseint from '../assets/images/pseint.png';
@@ -59,6 +60,9 @@ const KO_FI_LOGO_URL = 'https://storage.ko-fi.com/cdn/kofi3.png?v=3';
     }
   >
     
+    <!-- Modal de bienvenida (nombre de usuario) -->
+    <WelcomeModal />
+    
     <header class="sticky top-2 z-50 mx-4">
       <nav class="max-w-7xl mx-auto px-4 py-3 bg-white/85 border border-black/15 rounded-full shadow-[0_16px_40px_rgba(30,18,16,0.1)] backdrop-blur-md grid grid-cols-[1fr_auto] sm:grid-cols-[auto_1fr_auto] gap-4 items-center">
         
@@ -115,58 +119,73 @@ const KO_FI_LOGO_URL = 'https://storage.ko-fi.com/cdn/kofi3.png?v=3';
     </header>
 
     {!currentCourse?.lessons?.length && (
-      <div id="langsModal" class="fixed inset-0 z-[1000] hidden [&.is-open]:block" role="dialog" aria-modal="true" aria-hidden="true">
+      <div id="langsModal" class="fixed inset-0 z-[1000] hidden [&.is-open]:flex items-start justify-center pt-[6vh]" role="dialog" aria-modal="true" aria-hidden="true">
         <div class="absolute inset-0 bg-black/35 backdrop-blur-sm" data-close-modal="langs"></div>
-        <div class="relative max-w-lg mx-auto mt-[10vh] max-md:mt-[6vh] max-md:w-[90%] bg-white border-4 border-border rounded-3xl p-5 shadow-[0_28px_80px_rgba(30,18,16,0.25)]">
-          <div class="flex justify-between items-center mb-4">
+        <div class="relative w-[92%] max-w-2xl bg-white border-4 border-border rounded-3xl shadow-[0_28px_80px_rgba(30,18,16,0.25)] flex flex-col max-h-[88vh]">
+          <!-- Header fijo -->
+          <div class="flex justify-between items-center px-6 py-4 border-b-2 border-border shrink-0">
             <h3 class="text-xl text-info font-nunito font-black m-0">Elegí un lenguaje</h3>
             <button type="button" class="w-10 h-10 rounded-full border-2 border-border bg-white text-lg font-black cursor-pointer hover:bg-gray-100" data-close-modal="langs" aria-label="Cerrar modal">✕</button>
           </div>
 
-          <div class="mb-6">
-            <h4 class="text-xs font-extrabold uppercase tracking-widest text-textSecondary mb-2 font-nunito ml-1">Nivel 0: Conceptos</h4>
-            <div class="grid grid-cols-2 gap-3">
-              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#ef476f] shadow-neo hover:-translate-y-0.5 transition-transform" href="/ecosistemas/">Ecosistemas Pro</a>
-            </div>
-          </div>
+          <!-- Contenido scrolleable -->
+          <div class="overflow-y-auto px-6 py-5 flex flex-col gap-6">
 
-          <div class="mb-6">
-            <h4 class="text-xs font-extrabold uppercase tracking-widest text-textSecondary mb-2 font-nunito ml-1">Lenguajes</h4>
-            <div class="grid grid-cols-2 gap-3">
-              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-textPrimary shadow-neo hover:-translate-y-0.5 transition-transform" href="/pseint/">
-                <img class="w-5 h-5 rounded" src={logoPseint.src} alt="" />PSeInt
-              </a>
-              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-textPrimary shadow-neo hover:-translate-y-0.5 transition-transform" href="/csharp/">C#</a>
-              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-textPrimary shadow-neo hover:-translate-y-0.5 transition-transform" href="/java/">Java</a>
-              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-textPrimary shadow-neo hover:-translate-y-0.5 transition-transform" href="/python/">Python</a>
+            <div>
+              <h4 class="text-xs font-extrabold uppercase tracking-widest text-textSecondary mb-3 font-nunito ml-1">Nivel 0: Conceptos</h4>
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#ef476f] shadow-neo hover:-translate-y-0.5 transition-transform" href="/ecosistemas/">Ecosistemas Pro</a>
+              </div>
             </div>
-          </div>
 
-          <div class="mb-6">
-            <h4 class="text-xs font-extrabold uppercase tracking-widest text-textSecondary mb-2 font-nunito ml-1">Frontend</h4>
-            <div class="grid grid-cols-2 gap-3">
-              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#ff4d00] shadow-neo hover:-translate-y-0.5 transition-transform" href="/html/">HTML5</a>
-              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#264de4] shadow-neo hover:-translate-y-0.5 transition-transform" href="/css/">CSS3</a>
+            <div>
+              <h4 class="text-xs font-extrabold uppercase tracking-widest text-textSecondary mb-3 font-nunito ml-1">Lenguajes</h4>
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-textPrimary shadow-neo hover:-translate-y-0.5 transition-transform" href="/pseint/">
+                  <img class="w-5 h-5 rounded" src={logoPseint.src} alt="" />PSeInt
+                </a>
+                <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-textPrimary shadow-neo hover:-translate-y-0.5 transition-transform" href="/csharp/">C#</a>
+                <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-textPrimary shadow-neo hover:-translate-y-0.5 transition-transform" href="/java/">Java</a>
+                <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-textPrimary shadow-neo hover:-translate-y-0.5 transition-transform" href="/python/">Python</a>
+              </div>
             </div>
-          </div>
 
-          <div class="mb-6">
-            <h4 class="text-xs font-extrabold uppercase tracking-widest text-textSecondary mb-2 font-nunito ml-1">Base de Datos</h4>
-            <div class="grid grid-cols-2 gap-3">
-              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#16a085] shadow-neo hover:-translate-y-0.5 transition-transform" href="/modelamiento-db/">Modelamiento</a>
-              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#2980b9] shadow-neo hover:-translate-y-0.5 transition-transform" href="/consultas-sql/">Consultas SQL</a>
-              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#e67e22] shadow-neo hover:-translate-y-0.5 transition-transform" href="/programacion-db/">PL/SQL</a>
+            <div>
+              <h4 class="text-xs font-extrabold uppercase tracking-widest text-textSecondary mb-3 font-nunito ml-1">Frontend</h4>
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#ff4d00] shadow-neo hover:-translate-y-0.5 transition-transform" href="/html/">HTML5</a>
+                <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#264de4] shadow-neo hover:-translate-y-0.5 transition-transform" href="/css/">CSS3</a>
+                <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#F7DF1E] shadow-neo hover:-translate-y-0.5 transition-transform" href="/javascript/">JavaScript</a>
+              </div>
             </div>
-          </div>
 
-          <div class="mb-2">
-            <h4 class="text-xs font-extrabold uppercase tracking-widest text-textSecondary mb-2 font-nunito ml-1">Herramientas</h4>
-            <div class="grid grid-cols-2 gap-3">
-              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-textPrimary shadow-neo hover:-translate-y-0.5 transition-transform" href="/terminal/">Terminal</a>
-              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#f59e0b] shadow-neo hover:-translate-y-0.5 transition-transform" href="/linux-distros/">Linux</a>
+            <div>
+              <h4 class="text-xs font-extrabold uppercase tracking-widest text-textSecondary mb-3 font-nunito ml-1">Ingeniería y Calidad</h4>
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#0891b2] shadow-neo hover:-translate-y-0.5 transition-transform" href="/javaunit/">JUnit</a>
+                <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#475569] shadow-neo hover:-translate-y-0.5 transition-transform" href="/arch/">Ark (4+1)</a>
+              </div>
             </div>
-          </div>
 
+            <div>
+              <h4 class="text-xs font-extrabold uppercase tracking-widest text-textSecondary mb-3 font-nunito ml-1">Base de Datos</h4>
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#16a085] shadow-neo hover:-translate-y-0.5 transition-transform" href="/modelamiento-db/">Modelamiento</a>
+                <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#2980b9] shadow-neo hover:-translate-y-0.5 transition-transform" href="/consultas-sql/">Consultas SQL</a>
+                <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#e67e22] shadow-neo hover:-translate-y-0.5 transition-transform" href="/programacion-db/">PL/SQL</a>
+              </div>
+            </div>
+
+            <div class="pb-2">
+              <h4 class="text-xs font-extrabold uppercase tracking-widest text-textSecondary mb-3 font-nunito ml-1">Herramientas</h4>
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-textPrimary shadow-neo hover:-translate-y-0.5 transition-transform" href="/terminal/">Terminal</a>
+                <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#f59e0b] shadow-neo hover:-translate-y-0.5 transition-transform" href="/linux-distros/">Linux</a>
+                <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#f05032] shadow-neo hover:-translate-y-0.5 transition-transform" href="/git/">Git / GitHub</a>
+              </div>
+            </div>
+
+          </div>
         </div>
       </div>
     )}

@@ -13,12 +13,51 @@ const { code, title, lang, isPSeIntCode = false } = Astro.props;
 // Inferir lenguaje si no se provee
 function detectLang(src: string) {
   const s = String(src ?? '');
+
+  // PSeInt
   if (/\bAlgoritmo\b/i.test(s) && /\bFinAlgoritmo\b/i.test(s)) return 'pseint';
-  if (/\bConsole\.WriteLine\b/.test(s) || /\busing System\b/.test(s) || /\bnamespace\b/.test(s)) return 'csharp';
-  if (/\bfun main\b/.test(s) || /\bprintln\b/.test(s) && !/\bSystem\.out\b/.test(s)) return 'kotlin';
-  if (/\bpublic class\b/.test(s) && /\bSystem\.out\.println\b/.test(s)) return 'java';
-  if (/\bdef\b/.test(s) || /\bprint\(/i.test(s)) return 'python';
-  return 'cmd'; // fallback
+
+  // C#
+  if (/\bConsole\.Write(Line)?\b/.test(s) || /\busing System\b/.test(s) || /\bnamespace\b/.test(s)) return 'csharp';
+
+  // Kotlin
+  if (/\bfun main\b/.test(s) || (/\bprintln\b/.test(s) && !/\bSystem\.out\b/.test(s))) return 'kotlin';
+
+  // Java / JUnit — detectar anotaciones JUnit ANTES de la detección Java genérica
+  if (
+    /@Test\b/.test(s) ||
+    /@BeforeEach\b/.test(s) ||
+    /@AfterEach\b/.test(s) ||
+    /@BeforeAll\b/.test(s) ||
+    /@AfterAll\b/.test(s) ||
+    /\bassertEquals\b/.test(s) ||
+    /\bassertThrows\b/.test(s) ||
+    /\bassertTrue\b/.test(s) ||
+    /\bassertFalse\b/.test(s) ||
+    /\bassertNotNull\b/.test(s) ||
+    /import org\.junit/.test(s) ||
+    /import static org\.junit/.test(s)
+  ) return 'java';
+
+  // Java genérico
+  if (/\bpublic class\b/.test(s) || /\bSystem\.out\.print/.test(s) || /\bimport java\./.test(s)) return 'java';
+
+  // Python
+  if (/\bdef \w+\(/.test(s) || /\bimport \w/.test(s) && /\bprint\(/.test(s)) return 'python';
+
+  // SQL
+  if (/\b(SELECT|INSERT|UPDATE|DELETE|CREATE|ALTER|DROP|FROM|WHERE|JOIN)\b/i.test(s)) return 'sql';
+
+  // HTML
+  if (/<\/?[a-z][a-z0-9]*[\s>]/i.test(s) && /<!DOCTYPE|<html|<div|<p |<h[1-6]|<span/i.test(s)) return 'html';
+
+  // CSS
+  if (/\{[\s\S]*?:[\s\S]*?\}/.test(s) && /[.#]?\w+\s*\{/.test(s) && !/{/.test(s.replace(/\/\*[\s\S]*?\*\//g, ''))) return 'css';
+
+  // JavaScript / TypeScript
+  if (/\b(const|let|var|function|=>|document\.|console\.log|async|await)\b/.test(s)) return 'javascript';
+
+  return 'java'; // fallback inteligente — la mayoría del contenido del curso es Java
 }
 
 const finalLang = lang || (isPSeIntCode ? 'pseint' : detectLang(code));
