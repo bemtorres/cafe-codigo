@@ -30,11 +30,28 @@ print(mi_variable)`}
       <h2>Interactuar: La función input()</h2>
       <p>Python te permite hablar con el usuario muy fácil. Pero ojo: <strong>input() siempre nos devuelve un texto</strong>. Si quieres hacer matemáticas, debes convertirlo.</p>
       <CodeBlock
-        code={`edad_txt = input("¿Cuántos años tienes? ")
+        code={`# Pedimos la edad
+edad_txt = input("¿Cuántos años tienes? ")
+
 # Convertimos el texto a número entero
 edad = int(edad_txt)
-print(f"El próximo año tendrás {edad + 1} años")`}
+print(f"El próximo año tendrás {edad + 1} años")
+
+# También podemos convertir a decimal (float)
+precio = float(input("¿Precio del producto? "))
+print(f"Con el 10% de descuento: {precio * 0.9}")`}
         title="entrada.py"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>El poder de los f-strings</h2>
+      <p>Usar la letra <code>f</code> antes de las comillas te permite inyectar variables directamente dentro de un texto de forma limpia y moderna.</p>
+      <CodeBlock
+        code={`perfil = "Guerrero"
+nivel = 42
+print(f"Estado Actual: {perfil} (Nvl. {nivel})")`}
+        title="formateo.py"
       />
     </section>
 

@@ -9,627 +9,240 @@ import imagen1 from '../assets/images/imagen1.png';
   title="Inicio"
   description="cafeycodigo: aprende a programar gratis con cursos paso a paso, ejercicios y simulador."
 >
-  <div class="home">
-    <section class="hero">
-      <div class="hero-left">
-        <h1>
+  <div class="max-w-7xl mx-auto px-4 pt-10">
+    <!-- Hero Section -->
+    <section class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center py-6">
+      
+      <!-- Text Side -->
+      <div class="flex flex-col">
+        <h1 class="text-[3.3rem] leading-[1.02] -tracking-[0.03em] font-nunito font-black text-textPrimary mb-3">
           Aprendé a programar,<br />
-          <span class="muted">creá tu futuro</span>
+          <span class="text-[#b06d63]">creá tu futuro</span>
         </h1>
-        <p class="hero-sub">
+        <p class="text-[1.08rem] leading-relaxed text-textPrimary/80 font-[650] max-w-2xl mb-5">
           Cursos prácticos, ejercicios y un simulador para practicar desde cero 🚀
         </p>
 
-        <div class="hero-actions">
-          <a href="/pseint/" class="btn-primary">
-            Empezar a aprender <span class="arrow">→</span>
+        <div class="flex flex-wrap gap-3 mb-4">
+          <a href="/pseint/" class="bg-[#2b1d1b] text-white py-3 px-6 rounded-full font-black font-nunito border border-black/10 shadow-soft hover:-translate-y-1 transition-transform">
+            Empezar a aprender <span class="ml-1 inline-block">→</span>
           </a>
-          <a href="/pseint/" class="btn-secondary">Ver cursos</a>
+          <a href="/pseint/" class="bg-white/80 text-[#2b1d1b] py-3 px-6 rounded-full font-black font-nunito border border-black/10 shadow-sm hover:-translate-y-1 transition-transform">
+            Ver cursos
+          </a>
         </div>
 
-        <div class="hero-pills">
-          <span class="pill"><span class="pi">⚡</span> Para principiantes</span>
-          <span class="pill"><span class="pi">🧩</span> Proyectos guiados</span>
-          <!-- <span class="pill"><span class="pi">🏅</span> Certificados</span> -->
+        <div class="flex flex-wrap gap-3 mt-2">
+          <span class="inline-flex items-center gap-2 bg-white/70 border border-black/10 rounded-full py-2 px-4 text-textPrimary/85 font-extrabold font-nunito text-[0.95rem] shadow-sm">
+            <span class="w-6 h-6 grid place-items-center rounded bg-white/70">⚡</span> Para principiantes
+          </span>
+          <span class="inline-flex items-center gap-2 bg-white/70 border border-black/10 rounded-full py-2 px-4 text-textPrimary/85 font-extrabold font-nunito text-[0.95rem] shadow-sm">
+            <span class="w-6 h-6 grid place-items-center rounded bg-white/70">🧩</span> Proyectos guiados
+          </span>
         </div>
       </div>
 
-      <div class="hero-right">
-          <div class="hero-visual">
-            <img
-              src={imagen1.src}
-              alt="Café y código"
-              class="hero-image"
-              loading="eager"
-              decoding="async"
-            />
+      <!-- Image Side -->
+      <div class="flex items-stretch w-full">
+        <!-- Background decoration div imitating radial gradient mesh -->
+        <div class="flex-1 flex items-center justify-center bg-white/70 border border-black/10 rounded-[22px] p-3 w-full" 
+             style="background-image: radial-gradient(900px 360px at 20% 25%, rgba(239, 71, 111, 0.18), transparent 60%), radial-gradient(900px 360px at 95% 10%, rgba(69, 179, 224, 0.22), transparent 60%), radial-gradient(900px 360px at 70% 95%, rgba(6, 214, 160, 0.14), transparent 60%);">
+          <img
+            src={imagen1.src}
+            alt="Café y código"
+            class="w-full h-auto object-contain rounded-[18px]"
+            loading="eager"
+            decoding="async"
+          />
         </div>
       </div>
     </section>
 
-    <section class="features">
-      <!-- <div class="f-card">
-        <div class="f-ic peach">▶</div>
-        <div>
-          <h3>Aprendé haciendo</h3>
-          <p>Ejercicios prácticos desde el primer día.</p>
+    <!-- Courses Sections -->
+    <div class="mt-10">
+      
+      <!-- Conceptos Base -->
+      <div class="mt-20">
+        <h2 class="text-4xl font-nunito font-extrabold text-textPrimary mb-8">Conceptos Base (Nivel 0)</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {courses.filter(c => c.category === 'foundations').map((course, i) => (
+            <a
+              href={course.status === 'coming' ? '#' : `/${course.slug}/`}
+              class="block group outline-none"
+              data-coming={course.status === 'coming' ? 'true' : 'false'}
+              data-course-name={course.name}
+            >
+              <div class={`relative border-[3px] border-border rounded-3xl p-6 shadow-neo-lg transition-transform group-hover:-translate-y-1 bg-${i % 2 === 0 ? 'tertiary' : 'secondary'}`}>
+                {course.status === 'coming' && (
+                  <div class="absolute -top-4 right-5 bg-border text-white border-[3px] border-border rounded-xl py-1 px-3 font-extrabold font-nunito shadow-[2px_2px_0px_var(--text-secondary)]">
+                    Próximamente
+                  </div>
+                )}
+                <h3 class="text-xl font-nunito font-extrabold text-textPrimary mb-2">{course.name}</h3>
+                <p class="text-[0.95rem] font-[650] text-textSecondary line-clamp-4 leading-relaxed m-0">
+                  {course.description}
+                </p>
+              </div>
+            </a>
+          ))}
         </div>
-      </div> -->
-      <!-- <div class="f-card">
-        <div class="f-ic blue">👥</div>
-        <div>
-          <h3>Comunidad activa</h3>
-          <p>Compartí avances y resolvé dudas.</p>
-        </div>
-      </div> -->
-      <!-- <div class="f-card">
-        <div class="f-ic pink">🏅</div>
-        <div>
-          <h3>Certificados</h3>
-          <p>Validá tus habilidades con proyectos.</p>
-        </div>
-      </div> -->
+      </div>
 
-      <!-- <div class="progress">
-        <div class="p-top">
-          <strong>Tu progreso esta semana</strong>
-          <a href="/pseint/">Ver todo</a>
+      <!-- Lenguajes de Programación -->
+      <div class="mt-20">
+        <h2 class="text-4xl font-nunito font-extrabold text-textPrimary mb-8">Lenguajes de Programación</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {courses.filter(c => c.category === 'language').map((course, i) => (
+            <a
+              href={course.status === 'coming' ? '#' : `/${course.slug}/`}
+              class="block group outline-none"
+              data-coming={course.status === 'coming' ? 'true' : 'false'}
+              data-course-name={course.name}
+            >
+              <div class={`relative border-[3px] border-border rounded-3xl p-6 shadow-neo-lg transition-transform group-hover:-translate-y-1 bg-${i % 2 === 0 ? 'tertiary' : 'secondary'}`}>
+                {course.status === 'coming' && (
+                  <div class="absolute -top-4 right-5 bg-border text-white border-[3px] border-border rounded-xl py-1 px-3 font-extrabold font-nunito shadow-[2px_2px_0px_var(--text-secondary)]">
+                    Próximamente
+                  </div>
+                )}
+                <h3 class="text-xl font-nunito font-extrabold text-textPrimary mb-2">{course.name}</h3>
+                <p class="text-[0.95rem] font-[650] text-textSecondary line-clamp-4 leading-relaxed m-0">
+                  {course.description}
+                </p>
+              </div>
+            </a>
+          ))}
         </div>
-        <div class="p-row">
-          <div class="p-ring"><span>75%</span></div>
-          <div class="p-info">
-            <div class="p-title">4/5 desafíos completados</div>
-            <div class="p-dots">
-              <span class="ok"></span><span class="ok"></span><span class="ok"></span><span class="ok"></span><span></span>
-            </div>
-          </div>
+      </div>
+
+      <!-- Desarrollo Frontend -->
+      <div class="mt-20">
+        <h2 class="text-4xl font-nunito font-extrabold text-textPrimary mb-8">Desarrollo Frontend (Web)</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {courses.filter(c => c.category === 'frontend').map((course, i) => (
+            <a
+              href={course.status === 'coming' ? '#' : `/${course.slug}/`}
+              class="block group outline-none"
+              data-coming={course.status === 'coming' ? 'true' : 'false'}
+              data-course-name={course.name}
+            >
+              <div class={`relative border-[3px] border-border rounded-3xl p-6 shadow-neo-lg transition-transform group-hover:-translate-y-1 bg-${i % 2 === 0 ? 'tertiary' : 'secondary'}`}>
+                {course.status === 'coming' && (
+                  <div class="absolute -top-4 right-5 bg-border text-white border-[3px] border-border rounded-xl py-1 px-3 font-extrabold font-nunito shadow-[2px_2px_0px_var(--text-secondary)]">
+                    Próximamente
+                  </div>
+                )}
+                <h3 class="text-xl font-nunito font-extrabold text-textPrimary mb-2">{course.name}</h3>
+                <p class="text-[0.95rem] font-[650] text-textSecondary line-clamp-4 leading-relaxed m-0">
+                  {course.description}
+                </p>
+              </div>
+            </a>
+          ))}
         </div>
-      </div> -->
-    </section>
+      </div>
+
+      <!-- Ingeniería y Calidad -->
+      <div class="mt-20">
+        <h2 class="text-4xl font-nunito font-extrabold text-textPrimary mb-8">Ingeniería y Calidad</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {courses.filter(c => c.category === 'engineering').map((course, i) => (
+            <a
+              href={course.status === 'coming' ? '#' : `/${course.slug}/`}
+              class="block group outline-none"
+              data-coming={course.status === 'coming' ? 'true' : 'false'}
+              data-course-name={course.name}
+            >
+              <div class={`relative border-[3px] border-border rounded-3xl p-6 shadow-neo-lg transition-transform group-hover:-translate-y-1 bg-${i % 2 === 0 ? 'tertiary' : 'secondary'}`}>
+                {course.status === 'coming' && (
+                  <div class="absolute -top-4 right-5 bg-border text-white border-[3px] border-border rounded-xl py-1 px-3 font-extrabold font-nunito shadow-[2px_2px_0px_var(--text-secondary)]">
+                    Próximamente
+                  </div>
+                )}
+                <h3 class="text-xl font-nunito font-extrabold text-textPrimary mb-2">{course.name}</h3>
+                <p class="text-[0.95rem] font-[650] text-textSecondary line-clamp-4 leading-relaxed m-0">
+                  {course.description}
+                </p>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+
+      <!-- Bases de Datos -->
+      <div class="mt-20">
+        <h2 class="text-4xl font-nunito font-extrabold text-textPrimary mb-8">Bases de Datos</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {courses.filter(c => c.category === 'database').map((course, i) => (
+            <a
+              href={course.status === 'coming' ? '#' : `/${course.slug}/`}
+              class="block group outline-none"
+              data-coming={course.status === 'coming' ? 'true' : 'false'}
+              data-course-name={course.name}
+            >
+              <div class={`relative border-[3px] border-border rounded-3xl p-6 shadow-neo-lg transition-transform group-hover:-translate-y-1 bg-${i % 2 === 0 ? 'tertiary' : 'secondary'}`}>
+                {course.status === 'coming' && (
+                  <div class="absolute -top-4 right-5 bg-border text-white border-[3px] border-border rounded-xl py-1 px-3 font-extrabold font-nunito shadow-[2px_2px_0px_var(--text-secondary)]">
+                    Próximamente
+                  </div>
+                )}
+                <h3 class="text-xl font-nunito font-extrabold text-textPrimary mb-2">{course.name}</h3>
+                <p class="text-[0.95rem] font-[650] text-textSecondary line-clamp-4 leading-relaxed m-0">
+                  {course.description}
+                </p>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+
+      <!-- Herramientas -->
+      <div class="mt-20 mb-20">
+        <h2 class="text-4xl font-nunito font-extrabold text-textPrimary mb-8">Herramientas</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {courses.filter(c => c.category === 'tools').map((course, i) => (
+            <a
+              href={course.status === 'coming' ? '#' : `/${course.slug}/`}
+              class="block group outline-none"
+              data-coming={course.status === 'coming' ? 'true' : 'false'}
+              data-course-name={course.name}
+            >
+              <div class={`relative border-[3px] border-border rounded-3xl p-6 shadow-neo-lg transition-transform group-hover:-translate-y-1 bg-${i % 2 === 0 ? 'tertiary' : 'secondary'}`}>
+                {course.status === 'coming' && (
+                  <div class="absolute -top-4 right-5 bg-border text-white border-[3px] border-border rounded-xl py-1 px-3 font-extrabold font-nunito shadow-[2px_2px_0px_var(--text-secondary)]">
+                    Próximamente
+                  </div>
+                )}
+                <h3 class="text-xl font-nunito font-extrabold text-textPrimary mb-2">{course.name}</h3>
+                <p class="text-[0.95rem] font-[650] text-textSecondary line-clamp-4 leading-relaxed m-0">
+                  {course.description}
+                </p>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+
+    </div>
   </div>
 
-  <div class="courses-sections">
-    <div class="courses-grid-fun">
-      <h2 class="section-title">Conceptos Base (Nivel 0)</h2>
-      <div class="cards-grid">
-        {courses.filter(c => c.category === 'foundations').map((course, i) => (
-          <a
-            href={course.status === 'coming' ? '#' : `/${course.slug}/`}
-            style="text-decoration: none; color: inherit;"
-            data-coming={course.status === 'coming' ? 'true' : 'false'}
-            data-course-name={course.name}
-          >
-            <div class="card-fun" style={`background-color: ${i % 2 === 0 ? 'var(--bg-tertiary)' : 'var(--bg-secondary)'};`}>
-              {course.status === 'coming' && <div class="tag-fun">Próximamente</div>}
-              <h3>{course.name}</h3>
-              <p>{course.description}</p>
-            </div>
-          </a>
-        ))}
-      </div>
-    </div>
-
-    <div class="courses-grid-fun" style="margin-top: 5rem;">
-      <h2 class="section-title">Lenguajes de Programación</h2>
-      <div class="cards-grid">
-        {courses.filter(c => c.category === 'language').map((course, i) => (
-          <a
-            href={course.status === 'coming' ? '#' : `/${course.slug}/`}
-            style="text-decoration: none; color: inherit;"
-            data-coming={course.status === 'coming' ? 'true' : 'false'}
-            data-course-name={course.name}
-          >
-            <div class="card-fun" style={`background-color: ${i % 2 === 0 ? 'var(--bg-tertiary)' : 'var(--bg-secondary)'};`}>
-              {course.status === 'coming' && <div class="tag-fun">Próximamente</div>}
-              <h3>{course.name}</h3>
-              <p>{course.description}</p>
-            </div>
-          </a>
-        ))}
-      </div>
-    </div>
-
-    <div class="courses-grid-fun" style="margin-top: 5rem;">
-      <h2 class="section-title">Desarrollo Frontend (Web)</h2>
-      <div class="cards-grid">
-        {courses.filter(c => c.category === 'frontend').map((course, i) => (
-          <a
-            href={course.status === 'coming' ? '#' : `/${course.slug}/`}
-            style="text-decoration: none; color: inherit;"
-            data-coming={course.status === 'coming' ? 'true' : 'false'}
-            data-course-name={course.name}
-          >
-            <div class="card-fun" style={`background-color: ${i % 2 === 0 ? 'var(--bg-tertiary)' : 'var(--bg-secondary)'};`}>
-              {course.status === 'coming' && <div class="tag-fun">Próximamente</div>}
-              <h3>{course.name}</h3>
-              <p>{course.description}</p>
-            </div>
-          </a>
-        ))}
-      </div>
-    </div>
-
-    <div class="courses-grid-fun" style="margin-top: 5rem;">
-      <h2 class="section-title">Ingeniería y Calidad</h2>
-      <div class="cards-grid">
-        {courses.filter(c => c.category === 'engineering').map((course, i) => (
-          <a
-            href={course.status === 'coming' ? '#' : `/${course.slug}/`}
-            style="text-decoration: none; color: inherit;"
-            data-coming={course.status === 'coming' ? 'true' : 'false'}
-            data-course-name={course.name}
-          >
-            <div class="card-fun" style={`background-color: ${i % 2 === 0 ? 'var(--bg-tertiary)' : 'var(--bg-secondary)'};`}>
-              {course.status === 'coming' && <div class="tag-fun">Próximamente</div>}
-              <h3>{course.name}</h3>
-              <p>{course.description}</p>
-            </div>
-          </a>
-        ))}
-      </div>
-    </div>
-
-    <div class="courses-grid-fun" style="margin-top: 5rem;">
-      <h2 class="section-title">Herramientas</h2>
-      <div class="cards-grid">
-        {courses.filter(c => c.category === 'tools').map((course, i) => (
-          <a
-            href={course.status === 'coming' ? '#' : `/${course.slug}/`}
-            style="text-decoration: none; color: inherit;"
-            data-coming={course.status === 'coming' ? 'true' : 'false'}
-            data-course-name={course.name}
-          >
-            <div class="card-fun" style={`background-color: ${i % 2 === 0 ? 'var(--bg-tertiary)' : 'var(--bg-secondary)'};`}>
-              {course.status === 'coming' && <div class="tag-fun">Próximamente</div>}
-              <h3>{course.name}</h3>
-              <p>{course.description}</p>
-            </div>
-          </a>
-        ))}
-      </div>
-    </div>
-  </div>
-
-  <div id="comingCoursesModal" class="coming-courses-modal" role="dialog" aria-modal="true" aria-hidden="true">
-    <div class="coming-courses-modal__overlay" data-close-coming-modal="1"></div>
-    <div class="coming-courses-modal__content">
-      <div class="coming-courses-modal__header">
-        <h3 id="comingCoursesTitle" class="coming-courses-modal__title">Próximamente</h3>
-        <button type="button" class="coming-courses-modal__close" data-close-coming-modal="1" aria-label="Cerrar modal">
+  <!-- Modal Próximamente -->
+  <div id="comingCoursesModal" class="fixed inset-0 z-[1100] hidden [&.is-open]:block" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="absolute inset-0 bg-black/35 backdrop-blur-sm" data-close-coming-modal="1"></div>
+    <div class="relative max-w-lg mx-auto mt-[10vh] bg-white border-4 border-border rounded-3xl shadow-2xl p-6 md:mt-[20vh] max-md:w-[90%] max-md:mt-[6vh]">
+      <div class="flex justify-between items-center mb-4">
+        <h3 id="comingCoursesTitle" class="text-2xl text-info font-nunito font-black m-0">Próximamente</h3>
+        <button type="button" class="w-10 h-10 rounded-full border-2 border-border bg-white text-lg font-black cursor-pointer hover:bg-gray-100" data-close-coming-modal="1" aria-label="Cerrar modal">
           ✕
         </button>
       </div>
-      <p id="comingCoursesText" class="coming-courses-modal__text">
+      <p id="comingCoursesText" class="text-lg text-textSecondary font-bold leading-relaxed m-0">
         Este curso estará disponible pronto.
       </p>
     </div>
   </div>
-<!-- 
-  <section class="cta">
-    <div class="cta-inner">
-      <div class="cta-left">
-        <h2>¿Listo para empezar tu viaje en el mundo del código?</h2>
-        <p>Unite a miles de personas que ya están aprendiendo a programar.</p>
-      </div>
-      <form class="cta-form" onsubmit="return false;">
-        <input type="email" placeholder="Tu email (opcional)" aria-label="Tu email" />
-        <a class="cta-btn" href="/pseint/">Comenzar ahora</a>
-      </form>
-    </div>
-  </section> -->
+
 </Layout>
-
-<style>
-  :global(body) {
-    background-image: radial-gradient(rgba(255, 209, 102, 0.35) 1px, transparent 1px);
-    background-size: 28px 28px;
-  }
-
-  .home {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2.25rem 1rem 0;
-  }
-
-  .hero {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2.25rem;
-    align-items: stretch;
-    padding: 1.25rem 0 1.8rem;
-  }
-  @media (max-width: 980px) {
-    .hero {
-      grid-template-columns: 1fr;
-      gap: 1.4rem;
-      align-items: center;
-    }
-  }
-
-  /* Ajusta para que izquierda/derecha mantengan proporciones visuales parecidas */
-  .hero-left {
-    display: flex;
-    flex-direction: column;
-  }
-  .hero-right {
-    display: flex;
-    align-items: stretch;
-  }
-  .hero-card {
-    width: 100%;
-    flex: 1;
-    display: flex;
-  }
-  .hero-visual {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .hero-image {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    display: block;
-    border-radius: 18px;
-  }
-
-  h1 {
-    font-size: 3.3rem;
-    margin: 0 0 0.85rem;
-    line-height: 1.02;
-    letter-spacing: -0.03em;
-    color: #2b1d1b;
-  }
-  .muted {
-    color: #b06d63;
-  }
-  .hero-sub {
-    margin: 0 0 1.25rem;
-    font-size: 1.08rem;
-    line-height: 1.6;
-    color: rgba(45, 35, 33, 0.82);
-    font-weight: 650;
-    max-width: 38rem;
-  }
-
-  .hero-actions {
-    display: flex;
-    gap: 0.8rem;
-    flex-wrap: wrap;
-    margin-bottom: 1.1rem;
-  }
-  .btn-primary {
-    background: #2b1d1b;
-    color: white;
-    padding: 0.95rem 1.25rem;
-    border-radius: 999px;
-    font-weight: 900;
-    font-family: 'Nunito', sans-serif;
-    text-decoration: none;
-    box-shadow: 0 18px 40px rgba(43, 29, 27, 0.22);
-    border: 1px solid rgba(30, 18, 16, 0.16);
-  }
-  .btn-primary .arrow {
-    margin-left: 0.35rem;
-    display: inline-block;
-  }
-  .btn-secondary {
-    background: rgba(255, 255, 255, 0.8);
-    color: #2b1d1b;
-    padding: 0.95rem 1.15rem;
-    border-radius: 999px;
-    font-weight: 900;
-    font-family: 'Nunito', sans-serif;
-    text-decoration: none;
-    border: 1px solid rgba(30, 18, 16, 0.10);
-    box-shadow: 0 16px 34px rgba(30, 18, 16, 0.08);
-  }
-
-  .hero-pills {
-    display: flex;
-    gap: 0.7rem;
-    flex-wrap: wrap;
-    margin-top: 0.4rem;
-  }
-  .pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    background: rgba(255, 255, 255, 0.7);
-    border: 1px solid rgba(30, 18, 16, 0.10);
-    border-radius: 999px;
-    padding: 0.55rem 0.85rem;
-    color: rgba(45, 35, 33, 0.85);
-    font-weight: 800;
-    font-family: 'Nunito', sans-serif;
-    font-size: 0.95rem;
-    box-shadow: 0 12px 26px rgba(30, 18, 16, 0.06);
-  }
-  .pi {
-    width: 22px;
-    height: 22px;
-    display: grid;
-    place-items: center;
-    border-radius: 8px;
-    background: rgba(255, 255, 255, 0.7);
-  }
-
-  .hero-card {
-    background: rgba(255, 255, 255, 0.7);
-    border: 1px solid rgba(30, 18, 16, 0.10);
-    border-radius: 28px;
-    box-shadow: 0 28px 70px rgba(30, 18, 16, 0.10);
-    padding: 1.15rem;
-  }
-  .hero-visual {
-    background: radial-gradient(900px 360px at 20% 25%, rgba(239, 71, 111, 0.18), transparent 60%),
-      radial-gradient(900px 360px at 95% 10%, rgba(69, 179, 224, 0.22), transparent 60%),
-      radial-gradient(900px 360px at 70% 95%, rgba(6, 214, 160, 0.14), transparent 60%),
-      rgba(255, 255, 255, 0.72);
-    border: 1px solid rgba(30, 18, 16, 0.08);
-    border-radius: 22px;
-    padding: 0.7rem;
-  }
-  .hero-image { width: 100%; height: auto; display: block; border-radius: 18px; }
-
-  .features {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1rem;
-    margin: 1.35rem 0 2.1rem;
-  }
-  @media (max-width: 980px) {
-    .features {
-      grid-template-columns: 1fr;
-    }
-  }
-  .f-card,
-  .progress {
-    background: rgba(255, 255, 255, 0.78);
-    border: 1px solid rgba(30, 18, 16, 0.10);
-    border-radius: 22px;
-    padding: 1.1rem 1.1rem;
-    box-shadow: 0 18px 44px rgba(30, 18, 16, 0.08);
-    display: flex;
-    gap: 0.95rem;
-    align-items: flex-start;
-  }
-  .f-ic {
-    width: 48px;
-    height: 48px;
-    border-radius: 16px;
-    display: grid;
-    place-items: center;
-    font-weight: 900;
-    border: 1px solid rgba(30, 18, 16, 0.08);
-  }
-  .f-ic.peach { background: rgba(255, 220, 190, 0.65); }
-  .f-ic.blue { background: rgba(200, 224, 255, 0.65); }
-  .f-ic.pink { background: rgba(255, 210, 225, 0.65); }
-  .f-card h3 { margin: 0 0 0.25rem; font-size: 1.15rem; }
-  .f-card p { margin: 0; color: rgba(45, 35, 33, 0.78); font-weight: 650; line-height: 1.5; }
-
-  .progress {
-    flex-direction: column;
-    gap: 0.85rem;
-  }
-  .p-top {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 1rem;
-  }
-  .p-top a {
-    text-decoration: none;
-    color: rgba(45, 35, 33, 0.65);
-    font-weight: 800;
-    font-family: 'Nunito', sans-serif;
-  }
-  .p-row {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-  }
-  .p-ring {
-    width: 68px;
-    height: 68px;
-    border-radius: 50%;
-    background: conic-gradient(#45B3E0 0 270deg, rgba(30, 18, 16, 0.08) 270deg 360deg);
-    display: grid;
-    place-items: center;
-  }
-  .p-ring span {
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    background: white;
-    display: grid;
-    place-items: center;
-    font-weight: 900;
-    font-family: 'Nunito', sans-serif;
-  }
-  .p-title {
-    font-weight: 900;
-    font-family: 'Nunito', sans-serif;
-    margin-bottom: 0.45rem;
-  }
-  .p-dots { display: flex; gap: 0.5rem; }
-  .p-dots span {
-    width: 18px;
-    height: 18px;
-    border-radius: 7px;
-    background: rgba(30, 18, 16, 0.12);
-  }
-  .p-dots span.ok { background: rgba(6, 214, 160, 0.85); }
-
-  .courses-grid-fun {
-    margin-top: 4rem;
-  }
-  .section-title { 
-    font-size: 2.5rem; 
-    margin-bottom: 2rem; 
-    color: var(--text-primary); 
-    font-family: 'Nunito', sans-serif;
-    font-weight: 800;
-  }
-
-  .cards-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2.5rem;
-  }
-
-  .card-emoji { 
-    font-size: 4.5rem; 
-    margin-bottom: 1rem; 
-    display: inline-block; 
-  }
-
-  .card-course-logo {
-    display: block;
-    width: 64px;
-    height: 64px;
-    object-fit: contain;
-    margin-bottom: 1rem;
-    border-radius: 14px;
-  }
-
-  .cta {
-    margin-top: 2.5rem;
-    background: rgba(255, 255, 255, 0.75);
-    border: 1px solid rgba(30, 18, 16, 0.12);
-    border-radius: 999px;
-    box-shadow: 0 18px 44px rgba(30, 18, 16, 0.12);
-    overflow: hidden;
-  }
-  .cta-inner {
-    display: flex;
-    justify-content: space-between;
-    gap: 1rem;
-    align-items: center;
-    padding: 1.1rem 1.25rem;
-    background:
-      radial-gradient(900px 260px at 15% 50%, rgba(255, 209, 102, 0.28), transparent 60%),
-      radial-gradient(900px 260px at 95% 10%, rgba(239, 71, 111, 0.16), transparent 60%),
-      rgba(255, 255, 255, 0.65);
-  }
-  @media (max-width: 900px) {
-    .cta-inner {
-      flex-direction: column;
-      align-items: stretch;
-    }
-  }
-  .cta-left h2 {
-    margin: 0 0 0.3rem;
-    font-size: 1.35rem;
-  }
-  .cta-left p {
-    margin: 0;
-    color: var(--text-secondary);
-    font-weight: 700;
-    line-height: 1.5;
-  }
-  .cta-form {
-    display: flex;
-    gap: 0.8rem;
-    align-items: center;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-  }
-  .cta-form input {
-    width: min(340px, 100%);
-    background: rgba(255, 255, 255, 0.85);
-    border: 1px solid rgba(30, 18, 16, 0.16);
-    border-radius: 999px;
-    padding: 0.95rem 1rem;
-    font-weight: 750;
-    color: var(--text-primary);
-    outline: none;
-  }
-  .cta-btn {
-    background: #2b1d1b;
-    color: white;
-    padding: 0.95rem 1.25rem;
-    border-radius: 999px;
-    font-weight: 900;
-    font-family: 'Nunito', sans-serif;
-    text-decoration: none;
-    box-shadow: 0 14px 28px rgba(30, 18, 16, 0.18);
-  }
-
-  /* Modal para cursos "coming" */
-  .coming-courses-modal {
-    position: fixed;
-    inset: 0;
-    z-index: 1100;
-    display: none;
-  }
-
-  .coming-courses-modal.is-open {
-    display: block;
-  }
-
-  .coming-courses-modal__overlay {
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.35);
-  }
-
-  .coming-courses-modal__content {
-    position: relative;
-    max-width: 520px;
-    margin: 10vh auto 0;
-    background: white;
-    border: 3px solid var(--border);
-    border-radius: 22px;
-    box-shadow: 0 28px 80px rgba(30, 18, 16, 0.25);
-    padding: 1.25rem;
-  }
-
-  .coming-courses-modal__header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 0.75rem;
-  }
-
-  .coming-courses-modal__title {
-    margin: 0;
-    font-size: 1.35rem;
-    color: var(--info);
-    font-family: 'Nunito', sans-serif;
-    font-weight: 900;
-  }
-
-  .coming-courses-modal__close {
-    width: 42px;
-    height: 42px;
-    border-radius: 999px;
-    border: 2px solid var(--border);
-    background: rgba(255, 255, 255, 0.9);
-    cursor: pointer;
-    font-size: 1.05rem;
-    font-weight: 900;
-  }
-
-  .coming-courses-modal__text {
-    margin: 0;
-    font-size: 1.05rem;
-    color: var(--text-secondary);
-    line-height: 1.6;
-    font-weight: 700;
-  }
-
-  @media (max-width: 600px) {
-    .coming-courses-modal__content {
-      margin-top: 6vh;
-      width: calc(100% - 1.5rem);
-    }
-  }
-</style>
 
 <script is:inline>
   (function () {

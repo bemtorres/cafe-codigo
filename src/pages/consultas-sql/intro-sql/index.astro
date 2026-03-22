@@ -1,0 +1,56 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import SqlQuizModal from '../../../components/SqlQuizModal.astro';
+---
+
+<Layout title="Intro a SQL: El Mundo de las Tablas" description="Una introducción al lenguaje SQL y a las bases de datos relacionales." courseSlug="consultas-sql">
+  <article class="content-section">
+    <h1>1. El Mundo de las Tablas y SQL 🗃️</h1>
+
+    <section class="mb-10">
+      <h2>¿Qué es SQL?</h2>
+      <p>
+        <strong>SQL</strong> (Structured Query Language) es el lenguaje estándar utilizado para comunicarse con las bases de datos relacionales. No es un lenguaje de programación tradicional (como Java o Python) con bucles `for` e `if` convencionales; es un <strong>lenguaje declarativo</strong>.
+      </p>
+      <div class="note-box" style="background: #E8F5E9; border-left: 5px solid #2980b9;">
+        <strong>Declarativo significa:</strong> Tú le dices a la base de datos <em>LO QUÉ</em> quieres (ej: "Dame todos los clientes de México") y su motor interno decide <em>CÓMO</em> buscarlo de la manera más eficiente.
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2>El Acrónimo CRUD</h2>
+      <p>
+        Casi todo lo que harás en cualquier lenguaje con una base de datos se resume en 4 acciones principales agrupadas en el acrónimo <strong>CRUD</strong>:
+      </p>
+      <ul style="list-style-type: none; padding-left: 0;">
+        <li>🟢 <strong>C</strong>reate (Crear): Agregar nuevos registros (<code>INSERT</code>).</li>
+        <li>📘 <strong>R</strong>ead (Leer): Buscar y consultar datos (<code>SELECT</code>).</li>
+        <li>🟡 <strong>U</strong>pdate (Actualizar): Modificar registros existentes (<code>UPDATE</code>).</li>
+        <li>🔴 <strong>D</strong>elete (Eliminar): Borrar registros (<code>DELETE</code>).</li>
+      </ul>
+      <p>
+        En este curso, nos enfocaremos al 100% en la <strong>"R" (Read)</strong>, ya que aprender a extraer y cruzar información eficientemente (con <code>SELECT</code>) es la habilidad más preciada por los reclutadores y analistas de datos.
+      </p>
+    </section>
+
+    <div class="ejercicio" style="background: #F4F6F6; border: 2px solid #BDC3C7;">
+      <h3>🤔 Reflexión Rápida</h3>
+      <p class="enunciado">Imagina que entras a la app de Netflix y ves tu lista de películas favoritas. ¿Qué operación CRUD acaba de realizar Netflix internamente?</p>
+      
+      <details>
+        <summary>👁️ Ver respuesta correcta</summary>
+        <p>Una operación de lectura (<strong>R</strong>ead), específicamente utilizando la sentencia <strong>SELECT</strong> para buscar tus películas guardadas en sus tablas.</p>
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <SqlQuizModal quizKey="intro-sql" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/consultas-sql/" class="prev">← Curso SQL</a>
+      <a href="/consultas-sql/select-basico/" class="next">Sentencia SELECT →</a>
+    </nav>
+  </article>
+</Layout>

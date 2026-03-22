@@ -6,6 +6,7 @@ import { courses } from '../data/courses';
 import logoCafeycodigo from '../assets/images/cafeycodigo.png';
 import logoPseint from '../assets/images/pseint.png';
 import ogLogo from '../assets/images/logo-cafecodigo.png';
+import arkBg from '../assets/images/modelo_4_1/1_modelo.png';
 
 interface Props {
   title: string;
@@ -18,7 +19,6 @@ const currentCourse = courseSlug ? courses.find((c) => c.slug === courseSlug) : 
 const currentPath = Astro.url.pathname;
 
 const KO_FI_URL = 'https://ko-fi.com/cafeycodigo';
-// Logo genérico provisto por Ko-fi (si no cargara, el link igual funciona).
 const KO_FI_LOGO_URL = 'https://storage.ko-fi.com/cdn/kofi3.png?v=3';
 ---
 
@@ -30,12 +30,9 @@ const KO_FI_LOGO_URL = 'https://storage.ko-fi.com/cdn/kofi3.png?v=3';
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width" />
     <meta name="description" content={description} />
-
-    <!-- Google Fonts para Estilo Egipcio -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Eagle+Lake&display=swap" rel="stylesheet">
-
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
@@ -47,81 +44,68 @@ const KO_FI_LOGO_URL = 'https://storage.ko-fi.com/cdn/kofi3.png?v=3';
     <meta name="generator" content={Astro.generator} />
     <title>{title} | cafeycodigo</title>
     <script is:inline>
-      // Aplica el tema lo antes posible (evita flash).
       try {
         const t = localStorage.getItem('theme');
         if (t) document.documentElement.dataset.theme = t;
       } catch {}
     </script>
   </head>
-  <body data-course={courseSlug}>
-    <header class="site-header">
-      <nav class="site-nav">
-        <div class="nav-left">
-          <a href="/" class="logo">
-            <img
-              class="logo-mark"
-              src={logoCafeycodigo.src}
-              alt=""
-              width="42"
-              height="42"
-              decoding="async"
-            />
-            <span class="logo-text">café y código</span>
+  <body
+    class="min-h-screen text-textPrimary font-quicksand antialiased"
+    data-course={courseSlug}
+    style={courseSlug === 'arch'
+      ? `background-color: #F4EBD0; --arch-bg: url('${arkBg.src}');`
+      : `background-color: var(--bg-primary); background-image: url('/images/fondo2.png'); background-repeat: repeat;`
+    }
+  >
+    
+    <header class="sticky top-2 z-50 mx-4">
+      <nav class="max-w-7xl mx-auto px-4 py-3 bg-white/85 border border-black/15 rounded-full shadow-[0_16px_40px_rgba(30,18,16,0.1)] backdrop-blur-md grid grid-cols-[1fr_auto] sm:grid-cols-[auto_1fr_auto] gap-4 items-center">
+        
+        <div class="flex items-center gap-4">
+          <a href="/" class="flex items-center gap-2 text-accent font-nunito font-extrabold text-[1.5rem] no-underline hover:-translate-y-0.5 transition-transform">
+            <img class="shrink-0 w-10 h-10 object-contain rounded-xl" src={logoCafeycodigo.src} alt="" width="42" height="42" decoding="async" />
+            <span class="leading-none">café y código</span>
           </a>
         </div>
 
-        <div class="nav-center">
+        <div class="col-span-full sm:col-span-1 flex justify-start sm:justify-center min-w-0 mt-1 sm:mt-0">
           {!currentCourse?.lessons?.length ? (
-            <div class="nav-aprende-row">
-              <button
-                type="button"
-                class="nav-aprende-btn"
-                data-open-modal="langs"
-                aria-haspopup="dialog"
-                aria-controls="langsModal"
-              >
+            <div class="flex items-center gap-5">
+              <button type="button" class="bg-white/70 border border-black/10 rounded-full px-4 py-2 font-nunito font-extrabold text-textPrimary shadow-[0_14px_34px_rgba(30,18,16,0.08)] hover:-translate-y-0.5 hover:bg-white/95 transition-all outline-none" data-open-modal="langs" aria-haspopup="dialog" aria-controls="langsModal">
                 Aprende
               </button>
-              <a href="/ejercicios/" class="nav-ejercicios-link">Ejercicios</a>
+              <a href="/ejercicios/" class="bg-white/70 border border-black/10 rounded-full px-4 py-2 font-nunito font-extrabold text-textPrimary shadow-[0_14px_34px_rgba(30,18,16,0.08)] hover:-translate-y-0.5 hover:bg-white/95 transition-all no-underline">Ejercicios</a>
             </div>
           ) : currentCourse?.slug === 'pseint' ? (
-            <span class="course-badge-header">
-              <img
-                class="course-badge-pseint"
-                src={logoPseint.src}
-                alt=""
-                width="22"
-                height="22"
-                decoding="async"
-              />
+            <span class="inline-flex items-center gap-1.5 bg-tertiary text-info border-2 border-info px-3 py-1 rounded-full text-sm font-extrabold font-nunito">
+              <img class="shrink-0 w-5 h-5 object-contain rounded" src={logoPseint.src} alt="" width="22" height="22" decoding="async" />
               PSeInt
             </span>
           ) : null}
         </div>
 
-        <div class="nav-right">
-          <button class="theme-toggle" type="button" aria-label="Cambiar tema" title="Cambiar tema">
+        <div class="flex items-center justify-end gap-4 row-start-1 sm:row-auto col-start-2 sm:col-auto">
+          <button class="w-10 h-10 rounded-full border border-black/15 bg-white/90 shadow-[0_10px_24px_rgba(30,18,16,0.1)] font-black font-nunito leading-none hover:-translate-y-0.5 transition-transform" type="button" aria-label="Cambiar tema">
             ☾
           </button>
 
-          <div class="nav-actions">
+          <div class="flex items-center gap-4">
             <CodeThemeSelector />
             {currentCourse && (
-              <div class="nav-course-actions">
+              <div class="flex items-center">
                 {currentCourse.slug === 'pseint' && (
-                  <a href="/pseint/simulador/" class="btn-simulator-top">▶ Simulador</a>
+                  <a href="/pseint/simulador/" class="bg-warning text-textPrimary px-3 py-1.5 rounded-full font-extrabold text-sm font-nunito border-2 border-border shadow-[2px_2px_0px_#1E1210] hover:-translate-y-0.5 hover:bg-[#ffdb4d] active:translate-y-0.5 active:translate-x-0.5 active:shadow-[0px_0px_0px_#1E1210] transition-all no-underline">▶ Simulador</a>
                 )}
                 {currentCourse.slug !== 'pseint' && (
-                  <span class="course-badge-header">
+                  <span class="inline-flex items-center gap-1.5 bg-tertiary text-info border-2 border-info px-3 py-1 rounded-full text-sm font-extrabold font-nunito hidden md:inline-flex">
                     {currentCourse.name}
                   </span>
                 )}
               </div>
             )}
-
             {!currentCourse && (
-              <a class="btn-github-top" href="https://github.com/bemtorres/cafe-codigo" target="_blank" rel="noreferrer">
+              <a class="inline-flex items-center gap-2 bg-white/90 border border-black/15 rounded-full px-3 py-1.5 font-nunito font-extrabold text-textPrimary shadow-[0_10px_24px_rgba(30,18,16,0.1)] hover:bg-white hover:-translate-y-0.5 active:translate-y-0 transition-all outline-none" href="https://github.com/bemtorres/cafe-codigo" target="_blank" rel="noreferrer">
                 GitHub
               </a>
             )}
@@ -131,105 +115,81 @@ const KO_FI_LOGO_URL = 'https://storage.ko-fi.com/cdn/kofi3.png?v=3';
     </header>
 
     {!currentCourse?.lessons?.length && (
-      <div
-        id="langsModal"
-        class="langs-modal"
-        role="dialog"
-        aria-modal="true"
-        aria-hidden="true"
-      >
-        <div class="langs-modal__overlay" data-close-modal="langs"></div>
-        <div class="langs-modal__content">
-          <div class="langs-modal__header">
-            <h3 class="langs-modal__title">Elegí un lenguaje</h3>
-            <button type="button" class="langs-modal__close" data-close-modal="langs" aria-label="Cerrar modal">
-              ✕
-            </button>
+      <div id="langsModal" class="fixed inset-0 z-[1000] hidden [&.is-open]:block" role="dialog" aria-modal="true" aria-hidden="true">
+        <div class="absolute inset-0 bg-black/35 backdrop-blur-sm" data-close-modal="langs"></div>
+        <div class="relative max-w-lg mx-auto mt-[10vh] max-md:mt-[6vh] max-md:w-[90%] bg-white border-4 border-border rounded-3xl p-5 shadow-[0_28px_80px_rgba(30,18,16,0.25)]">
+          <div class="flex justify-between items-center mb-4">
+            <h3 class="text-xl text-info font-nunito font-black m-0">Elegí un lenguaje</h3>
+            <button type="button" class="w-10 h-10 rounded-full border-2 border-border bg-white text-lg font-black cursor-pointer hover:bg-gray-100" data-close-modal="langs" aria-label="Cerrar modal">✕</button>
           </div>
 
-          <div class="langs-modal__section">
-            <h4 class="langs-modal__section-title">Nivel 0: Conceptos</h4>
-            <div class="langs-modal__grid">
-              <a class="langs-modal__link" href="/ecosistemas/" style="color: #ef476f;">Ecosistemas Pro</a>
+          <div class="mb-6">
+            <h4 class="text-xs font-extrabold uppercase tracking-widest text-textSecondary mb-2 font-nunito ml-1">Nivel 0: Conceptos</h4>
+            <div class="grid grid-cols-2 gap-3">
+              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#ef476f] shadow-neo hover:-translate-y-0.5 transition-transform" href="/ecosistemas/">Ecosistemas Pro</a>
             </div>
           </div>
 
-          <div class="langs-modal__section" style="margin-top: 1.5rem;">
-            <h4 class="langs-modal__section-title">Lenguajes</h4>
-            <div class="langs-modal__grid">
-              <a class="langs-modal__link" href="/pseint/">
-                <img class="langs-modal__icon" src={logoPseint.src} alt="" width="20" height="20" />
-                PSeInt
+          <div class="mb-6">
+            <h4 class="text-xs font-extrabold uppercase tracking-widest text-textSecondary mb-2 font-nunito ml-1">Lenguajes</h4>
+            <div class="grid grid-cols-2 gap-3">
+              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-textPrimary shadow-neo hover:-translate-y-0.5 transition-transform" href="/pseint/">
+                <img class="w-5 h-5 rounded" src={logoPseint.src} alt="" />PSeInt
               </a>
-              <a class="langs-modal__link" href="/csharp/">C#</a>
-              <a class="langs-modal__link" href="/java/">Java</a>
-              <a class="langs-modal__link" href="/python/">Python</a>
+              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-textPrimary shadow-neo hover:-translate-y-0.5 transition-transform" href="/csharp/">C#</a>
+              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-textPrimary shadow-neo hover:-translate-y-0.5 transition-transform" href="/java/">Java</a>
+              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-textPrimary shadow-neo hover:-translate-y-0.5 transition-transform" href="/python/">Python</a>
             </div>
           </div>
 
-          <div class="langs-modal__section" style="margin-top: 1.5rem;">
-            <h4 class="langs-modal__section-title">Frontend</h4>
-            <div class="langs-modal__grid">
-              <a class="langs-modal__link" href="/html/" style="color: #ff4d00;">HTML5</a>
-              <a class="langs-modal__link" href="/css/" style="color: #264de4;">CSS3</a>
+          <div class="mb-6">
+            <h4 class="text-xs font-extrabold uppercase tracking-widest text-textSecondary mb-2 font-nunito ml-1">Frontend</h4>
+            <div class="grid grid-cols-2 gap-3">
+              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#ff4d00] shadow-neo hover:-translate-y-0.5 transition-transform" href="/html/">HTML5</a>
+              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#264de4] shadow-neo hover:-translate-y-0.5 transition-transform" href="/css/">CSS3</a>
             </div>
           </div>
 
-          <div class="langs-modal__section" style="margin-top: 1.5rem;">
-            <h4 class="langs-modal__section-title">Ingeniería y Calidad</h4>
-            <div class="langs-modal__grid">
-              <a class="langs-modal__link" href="/javaunit/" style="color: #0891b2;">JavaUnit</a>
-              <a class="langs-modal__link" href="/arch/" style="color: #475569;">Ark (4+1)</a>
+          <div class="mb-6">
+            <h4 class="text-xs font-extrabold uppercase tracking-widest text-textSecondary mb-2 font-nunito ml-1">Base de Datos</h4>
+            <div class="grid grid-cols-2 gap-3">
+              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#16a085] shadow-neo hover:-translate-y-0.5 transition-transform" href="/modelamiento-db/">Modelamiento</a>
+              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#2980b9] shadow-neo hover:-translate-y-0.5 transition-transform" href="/consultas-sql/">Consultas SQL</a>
+              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#e67e22] shadow-neo hover:-translate-y-0.5 transition-transform" href="/programacion-db/">PL/SQL</a>
             </div>
           </div>
 
-          <div class="langs-modal__section" style="margin-top: 1.5rem;">
-            <h4 class="langs-modal__section-title">Base de Datos</h4>
-            <div class="langs-modal__grid">
-              <a class="langs-modal__link" href="/modelamiento-db/" style="color: #16a085;">Modelamiento</a>
-              <a class="langs-modal__link" href="/consultas-sql/" style="color: #2980b9;">Consultas SQL</a>
-              <a class="langs-modal__link" href="/programacion-db/" style="color: #e67e22;">PL/SQL</a>
+          <div class="mb-2">
+            <h4 class="text-xs font-extrabold uppercase tracking-widest text-textSecondary mb-2 font-nunito ml-1">Herramientas</h4>
+            <div class="grid grid-cols-2 gap-3">
+              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-textPrimary shadow-neo hover:-translate-y-0.5 transition-transform" href="/terminal/">Terminal</a>
+              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#f59e0b] shadow-neo hover:-translate-y-0.5 transition-transform" href="/linux-distros/">Linux</a>
             </div>
           </div>
 
-          <div class="langs-modal__section" style="margin-top: 1.5rem;">
-            <h4 class="langs-modal__section-title">Herramientas</h4>
-            <div class="langs-modal__grid">
-              <a class="langs-modal__link" href="/terminal/" style="color: #1a1a1b;">Terminal</a>
-              <a class="langs-modal__link" href="/linux-distros/" style="color: #f59e0b;">Sistemas Linux</a>
-              <a class="langs-modal__link" href="/git/" style="color: #f05032;">Git / GitHub</a>
-            </div>
-          </div>
         </div>
       </div>
     )}
 
-    <div class="page-wrapper">
+    <div class="max-w-[1400px] mx-auto flex flex-col lg:flex-row gap-8 py-8 px-4 items-start">
       <!-- SIDEBAR LATERAL -->
       {currentCourse?.lessons?.length && (
-        <aside class="course-sidebar">
-          <div class="sidebar-inner">
-            <h3 class="sidebar-title">
+        <aside class="w-full lg:w-[250px] flex-shrink-0">
+          <div class="sticky top-[6.5rem] bg-white border-[3px] border-border rounded-xl p-6 shadow-neo">
+            <h3 class="flex items-center gap-2 text-[1.2rem] text-info font-nunito font-black mb-4 pb-2 border-b-2 border-dashed border-border">
               {currentCourse.slug === 'pseint' ? (
                 <>
-                  <img
-                    class="sidebar-pseint-logo"
-                    src={logoPseint.src}
-                    alt=""
-                    width="32"
-                    height="32"
-                    decoding="async"
-                  />
+                  <img class="shrink-0 w-8 h-8 object-contain rounded-lg" src={logoPseint.src} alt="" width="32" height="32" />
                   <span>Contenido</span>
                 </>
               ) : (
                 <>🎯 Contenido</>
               )}
             </h3>
-            <ul class="sidebar-lessons">
+            <ul class="flex flex-row lg:flex-col flex-wrap gap-2.5 m-0 p-0 overflow-hidden">
               {currentCourse.lessons.filter(lesson => !lesson.href.includes('simulador')).map((lesson) => (
-                <li>
-                  <a href={lesson.href} class={`sidebar-link ${currentPath === lesson.href ? 'active' : ''}`}>
+                <li class="w-auto lg:w-full">
+                  <a href={lesson.href} class={`block px-4 py-2 bg-primary text-textPrimary no-underline font-bold text-[0.95rem] rounded-xl border-2 border-border hover:-translate-y-0.5 hover:shadow-[2px_2px_0px_#1E1210] hover:bg-secondary active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all ${currentPath === lesson.href ? 'bg-success text-white' : ''}`}>
                     {lesson.title}
                   </a>
                 </li>
@@ -240,632 +200,88 @@ const KO_FI_LOGO_URL = 'https://storage.ko-fi.com/cdn/kofi3.png?v=3';
       )}
 
       <!-- CONTENIDO PRINCIPAL -->
-      <main class="site-main">
+      <main class="flex-1 min-w-0 w-full">
         <slot />
       </main>
     </div>
 
-    <section class="donations-section" aria-label="Donaciones">
-      <div class="donations-card">
-        <div class="donations-left">
-          <img class="donations-logo" src={KO_FI_LOGO_URL} alt="Ko-fi" loading="lazy" decoding="async" />
+    <section class="max-w-[1400px] mx-auto mt-10 mb-8 px-4" aria-label="Donaciones">
+      <div class="bg-white/80 border border-black/10 rounded-3xl p-6 shadow-[0_18px_44px_rgba(30,18,16,0.08)] flex flex-col md:flex-row gap-4 items-center justify-between">
+        <div class="flex items-center gap-4">
+          <img class="w-12 h-12 object-contain rounded-xl border border-black/10 bg-white" src={KO_FI_LOGO_URL} alt="Ko-fi" loading="lazy" decoding="async" />
           <div>
-            <div class="donations-title">Donaciones</div>
-            <div class="donations-subtitle">Apoyá cafeycodigo con un café en Ko-fi.</div>
+            <div class="font-extrabold font-nunito text-[1.15rem]">Donaciones</div>
+            <div class="text-textSecondary font-[650] leading-relaxed">Apoyá cafeycodigo con un café en Ko-fi.</div>
           </div>
         </div>
 
-        <a class="donations-btn" href={KO_FI_URL} target="_blank" rel="noreferrer noopener">
+        <a class="bg-[#2b1d1b] text-white py-3 px-5 rounded-full font-black font-nunito border border-black/10 shadow-soft hover:-translate-y-0.5 transition-transform" href={KO_FI_URL} target="_blank" rel="noreferrer noopener">
           Ir a Ko-fi →
         </a>
       </div>
     </section>
 
     <script is:inline>
-      // Toggle de tema (claro/oscuro), persiste preferencia.
       (function () {
         const btn = document.querySelector('.theme-toggle');
         if (!btn) return;
         const apply = (t) => {
-          if (!t) {
-            document.documentElement.removeAttribute('data-theme');
-            return;
-          }
+          if (!t) { document.documentElement.removeAttribute('data-theme'); return; }
           document.documentElement.dataset.theme = t;
         };
         btn.addEventListener('click', () => {
           const cur = document.documentElement.dataset.theme;
           const next = cur === 'dark' ? 'light' : 'dark';
           apply(next);
-          try {
-            localStorage.setItem('theme', next);
-          } catch {}
+          try { localStorage.setItem('theme', next); } catch {}
         });
       })();
-    </script>
 
-    <script is:inline>
-      // Modal de selección de lenguajes (solo en la home).
       (function () {
         const modal = document.getElementById('langsModal');
         if (!modal) return;
-
         const openBtn = document.querySelector('[data-open-modal="langs"]');
         const closeBtns = modal.querySelectorAll('[data-close-modal="langs"]');
-        const overlay = modal.querySelector('.langs-modal__overlay');
-
-        const open = () => {
-          modal.setAttribute('aria-hidden', 'false');
-          modal.classList.add('is-open');
-          document.documentElement.style.overflow = 'hidden';
-        };
-
-        const close = () => {
-          modal.setAttribute('aria-hidden', 'true');
-          modal.classList.remove('is-open');
-          document.documentElement.style.overflow = '';
-        };
-
+        const open = () => { modal.setAttribute('aria-hidden', 'false'); modal.classList.add('is-open'); document.documentElement.style.overflow = 'hidden'; };
+        const close = () => { modal.setAttribute('aria-hidden', 'true'); modal.classList.remove('is-open'); document.documentElement.style.overflow = ''; };
         if (openBtn) openBtn.addEventListener('click', open);
         closeBtns.forEach((b) => b.addEventListener('click', close));
-        if (overlay) overlay.addEventListener('click', close);
-
-        document.addEventListener('keydown', (e) => {
-          if (e.key === 'Escape') close();
-        });
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
       })();
     </script>
+    
+    <style is:global>
+      /* --- ESTILO EGIPCIO (Curso Ark 4+1) mantenido --- */
+      body[data-course="arch"] {
+        --bg-primary: #F4EBD0; 
+        --bg-secondary: #E9D5A2;
+        --bg-tertiary: #C5A059;
+        --text-primary: #1E1210;
+        --text-secondary: #3D2B1F;
+        --accent: #B8860B; 
+        --info: #008B8B; 
+        --border: #4A3B22;
 
-    <!-- <footer class="site-footer">
-      <div class="footer-content">
-        ✏️ Serie de cursos: PSeInt → Python → Java — ¡Aprender es divertido!
-      </div>
-      <div style="font-size: 3rem; text-align: center; margin-top: 1rem;">🚀🎮</div>
-    </footer> -->
+        background-image: 
+          radial-gradient(circle at 10% 20%, rgba(212, 175, 55, 0.05) 0%, transparent 20%),
+          radial-gradient(circle at 90% 80%, rgba(212, 175, 55, 0.05) 0%, transparent 20%);
+      }
+
+      body[data-course="arch"] h1,
+      body[data-course="arch"] h2,
+      body[data-course="arch"] h3 {
+        font-family: 'Cinzel', serif;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+      }
+
+      body[data-course="arch"] .content-section {
+        border: 4px double var(--border);
+        box-shadow: 6px 6px 0px var(--accent);
+        background: #FDF5E6;
+      }
+      body[data-course="arch"] ::-webkit-scrollbar-track { background: #E9D5A2; }
+      body[data-course="arch"] ::-webkit-scrollbar-thumb { background: #C5A059; border: 2px solid #F4EBD0; }
+    </style>
   </body>
 </html>
-
-<style is:global>
-  .site-header {
-    position: sticky;
-    top: 0.5rem;
-    z-index: 50;
-    margin: 0 1rem;
-  }
-  .site-nav {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 0.75rem 1rem;
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    gap: 1rem;
-    align-items: center;
-    background: rgba(255, 255, 255, 0.85);
-    border: 1px solid rgba(30, 18, 16, 0.14);
-    border-radius: 999px;
-    box-shadow: 0 16px 40px rgba(30, 18, 16, 0.10);
-    backdrop-filter: blur(10px);
-  }
-  
-  @media (max-width: 600px) {
-    .site-nav {
-      grid-template-columns: 1fr auto;
-      border-radius: 22px;
-    }
-  }
-
-  .nav-left {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-  }
-  .nav-center {
-    display: flex;
-    justify-content: center;
-    min-width: 0;
-  }
-  .nav-right {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 1rem;
-  }
-  .nav-actions {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-  }
-  @media (max-width: 600px) {
-    .nav-center {
-      grid-column: 1 / -1;
-      justify-content: flex-start;
-      margin-top: 0.3rem;
-    }
-  }
-
-  .theme-toggle {
-    width: 42px;
-    height: 42px;
-    border-radius: 999px;
-    border: 1px solid rgba(30, 18, 16, 0.16);
-    background: rgba(255, 255, 255, 0.9);
-    box-shadow: 0 10px 24px rgba(30, 18, 16, 0.10);
-    font-weight: 900;
-    font-family: 'Nunito', sans-serif;
-    cursor: pointer;
-    line-height: 1;
-  }
-  .theme-toggle:hover {
-    transform: translateY(-1px);
-  }
-
-  .btn-github-top {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    text-decoration: none;
-    background: rgba(255, 255, 255, 0.9);
-    border: 1px solid rgba(30, 18, 16, 0.16);
-    border-radius: 999px;
-    padding: 0.6rem 0.9rem;
-    font-family: 'Nunito', sans-serif;
-    font-weight: 800;
-    color: var(--text-primary);
-    box-shadow: 0 10px 24px rgba(30, 18, 16, 0.10);
-    transition: transform 0.1s, background 0.1s;
-  }
-  .btn-github-top:hover {
-    background: white;
-    transform: translateY(-1px);
-  }
-  .btn-github-top:active {
-    transform: translateY(0px);
-    box-shadow: 0 8px 18px rgba(30, 18, 16, 0.10);
-  }
-  
-  .nav-top-actions {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-  }
-
-  /* Botón especial del simulador en cabecera */
-  .btn-simulator-top {
-    background: var(--warning);
-    color: var(--text-primary);
-    padding: 0.35rem 0.8rem;
-    border-radius: 999px;
-    font-weight: 800;
-    text-decoration: none;
-    border: 2px solid var(--border);
-    box-shadow: 2px 2px 0px var(--border);
-    font-size: 0.85rem;
-    font-family: 'Nunito', sans-serif;
-    transition: all 0.1s;
-  }
-  .btn-simulator-top:hover {
-    transform: translateY(-2px);
-    background: #ffdb4d;
-  }
-  .btn-simulator-top:active {
-    transform: translate(2px, 2px);
-    box-shadow: 0px 0px 0px var(--border);
-  }
-
-  .logo {
-    font-size: 1.5rem;
-    color: var(--accent);
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-family: 'Nunito', sans-serif;
-    font-weight: 800;
-  }
-  .logo:hover { transform: translateY(-2px); }
-  .logo-mark {
-    flex-shrink: 0;
-    width: 42px;
-    height: 42px;
-    object-fit: contain;
-    border-radius: 12px;
-  }
-  .logo-text {
-    line-height: 1;
-  }
-
-  .nav-pseint {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-  }
-  .nav-pseint-icon {
-    flex-shrink: 0;
-    width: 26px;
-    height: 26px;
-    object-fit: contain;
-    border-radius: 6px;
-  }
-
-  .course-badge-header {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    background: var(--bg-tertiary);
-    color: var(--info);
-    border: 2px solid var(--info);
-    padding: 0.2rem 0.8rem;
-    border-radius: 999px;
-    font-size: 0.9rem;
-    font-weight: 800;
-    font-family: 'Nunito', sans-serif;
-  }
-  .course-badge-pseint {
-    flex-shrink: 0;
-    width: 22px;
-    height: 22px;
-    object-fit: contain;
-    border-radius: 5px;
-  }
-  
-  .nav-links {
-    display: flex;
-    gap: 1.5rem;
-    flex-wrap: wrap;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  .nav-links a {
-    color: var(--text-primary);
-    text-decoration: none;
-    font-size: 1rem;
-    font-weight: 700;
-    transition: transform 0.1s;
-  }
-  .nav-links a:hover,
-  .nav-links a.active { color: var(--info); transform: translateY(-2px); }
-
-  .nav-aprende-row {
-    display: flex;
-    align-items: center;
-    gap: 1.25rem;
-  }
-
-  .nav-aprende-btn {
-    background: rgba(255, 255, 255, 0.7);
-    border: 1px solid rgba(30, 18, 16, 0.12);
-    border-radius: 999px;
-    padding: 0.55rem 1.05rem;
-    font-family: 'Nunito', sans-serif;
-    font-weight: 800;
-    color: var(--text-primary);
-    cursor: pointer;
-    box-shadow: 0 14px 34px rgba(30, 18, 16, 0.08);
-    transition: transform 0.1s, background 0.1s;
-  }
-
-  .nav-aprende-btn:hover {
-    transform: translateY(-2px);
-    background: rgba(255, 255, 255, 0.95);
-  }
-
-  .nav-ejercicios-link {
-    color: var(--text-primary);
-    text-decoration: none;
-    font-size: 1rem;
-    font-weight: 800;
-    padding: 0.55rem 1.05rem;
-    border-radius: 999px;
-    border: 1px solid rgba(30, 18, 16, 0.12);
-    background: rgba(255, 255, 255, 0.7);
-    box-shadow: 0 14px 34px rgba(30, 18, 16, 0.08);
-    transition: transform 0.1s, background 0.1s;
-  }
-
-  .nav-ejercicios-link:hover {
-    transform: translateY(-2px);
-    background: rgba(255, 255, 255, 0.95);
-  }
-
-  /* Modal de lenguajes (solo home) */
-  .langs-modal {
-    position: fixed;
-    inset: 0;
-    z-index: 1000;
-    display: none;
-  }
-
-  .langs-modal.is-open {
-    display: block;
-  }
-
-  .langs-modal__overlay {
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.35);
-  }
-
-  .langs-modal__content {
-    position: relative;
-    max-width: 520px;
-    margin: 10vh auto 0;
-    background: white;
-    border: 3px solid var(--border);
-    border-radius: 22px;
-    box-shadow: 0 28px 80px rgba(30, 18, 16, 0.25);
-    padding: 1.25rem;
-  }
-
-  .langs-modal__header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 1rem;
-  }
-
-  .langs-modal__title {
-    margin: 0;
-    font-size: 1.35rem;
-    color: var(--info);
-    font-family: 'Nunito', sans-serif;
-    font-weight: 900;
-  }
-
-  .langs-modal__close {
-    width: 42px;
-    height: 42px;
-    border-radius: 999px;
-    border: 2px solid var(--border);
-    background: rgba(255, 255, 255, 0.9);
-    cursor: pointer;
-    font-size: 1.05rem;
-    font-weight: 900;
-  }
-
-  .langs-modal__grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.8rem;
-  }
-
-  .langs-modal__section-title {
-    font-size: 0.85rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--text-secondary);
-    margin: 0 0 0.6rem 0.2rem;
-    font-family: 'Nunito', sans-serif;
-  }
-
-  .langs-modal__link {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.55rem;
-    padding: 0.85rem 1rem;
-    border-radius: 16px;
-    border: 3px solid var(--border);
-    background: var(--bg-tertiary);
-    text-decoration: none;
-    color: var(--text-primary);
-    font-family: 'Nunito', sans-serif;
-    font-weight: 900;
-    box-shadow: 4px 4px 0px var(--border);
-    transition: transform 0.1s;
-  }
-
-  .langs-modal__link:hover {
-    transform: translateY(-2px);
-  }
-
-  .langs-modal__icon {
-    border-radius: 6px;
-  }
-
-  @media (max-width: 600px) {
-    .langs-modal__content {
-      margin-top: 6vh;
-      width: calc(100% - 1.5rem);
-    }
-  }
-
-  /* --- Estructura con Sidebar --- */
-  .page-wrapper {
-    max-width: 1400px;
-    margin: 0 auto;
-    display: flex;
-    align-items: flex-start;
-    gap: 2rem;
-    padding: 2rem 1rem;
-  }
-
-  .course-sidebar {
-    width: 250px;
-    flex-shrink: 0;
-  }
-
-  .sidebar-inner {
-    position: sticky;
-    top: 6.5rem; /* Justo debajo del navbar pegajoso */
-    background: white;
-    border: 3px solid var(--border);
-    border-radius: 20px;
-    padding: 1.5rem;
-    box-shadow: 4px 4px 0px var(--border);
-  }
-
-  .sidebar-title {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 1.2rem;
-    color: var(--info);
-    margin-bottom: 1rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 2px dashed var(--border);
-  }
-  .sidebar-pseint-logo {
-    flex-shrink: 0;
-    width: 32px;
-    height: 32px;
-    object-fit: contain;
-    border-radius: 8px;
-  }
-
-  .sidebar-lessons {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.6rem;
-  }
-
-  .sidebar-link {
-    display: block;
-    padding: 0.6rem 1rem;
-    background: var(--bg-primary);
-    color: var(--text-primary);
-    text-decoration: none;
-    font-weight: 700;
-    font-size: 0.95rem;
-    border-radius: 12px;
-    border: 2px solid var(--border);
-    transition: all 0.1s;
-  }
-  .sidebar-link:hover {
-    transform: translateY(-2px);
-    box-shadow: 2px 2px 0px var(--border);
-    background: var(--bg-secondary);
-  }
-  .sidebar-link:active {
-    transform: translate(2px, 2px);
-    box-shadow: 0px 0px 0px var(--border);
-  }
-  /* Estilo cuando la lección es la actual */
-  .sidebar-link.active {
-    background: var(--success);
-    color: white;
-  }
-
-  .site-main {
-    flex: 1;
-    min-width: 0;
-  }
-
-  /* Responsive para Mobile: Sidebar pasa arriba de todo como cajita */
-  @media (max-width: 900px) {
-    .page-wrapper {
-      flex-direction: column;
-      padding: 1rem;
-      gap: 1.5rem;
-    }
-    .course-sidebar {
-      width: 100%;
-    }
-    .sidebar-inner {
-      position: relative;
-      top: 0;
-    }
-    .sidebar-lessons {
-      flex-direction: row;
-      flex-wrap: wrap;
-    }
-  }
-  
-  .site-footer {
-    border-top: 3px dashed var(--border);
-    margin-top: 3rem;
-    padding: 3rem 1.5rem;
-    background: var(--bg-tertiary);
-  }
-  .footer-content {
-    max-width: 1100px;
-    margin: 0 auto;
-    text-align: center;
-    color: var(--text-primary);
-    font-size: 1.1rem;
-    font-weight: 700;
-  }
-
-  /* --- Donaciones (Ko-fi) --- */
-  .donations-section {
-    max-width: 1400px;
-    margin: 2.5rem auto 2.2rem;
-    padding: 0 1rem;
-  }
-
-  .donations-card {
-    background: rgba(255, 255, 255, 0.78);
-    border: 3px solid var(--border);
-    border-radius: 22px;
-    box-shadow: 8px 8px 0px var(--border);
-    padding: 1.15rem 1.25rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1rem;
-  }
-
-  .donations-left {
-    display: flex;
-    align-items: center;
-    gap: 0.95rem;
-    min-width: 0;
-  }
-
-  .donations-logo {
-    width: 54px;
-    height: 54px;
-    object-fit: contain;
-    border-radius: 16px;
-    background: rgba(255, 255, 255, 0.7);
-    border: 2px solid rgba(30, 18, 16, 0.12);
-  }
-
-  .donations-title {
-    font-family: 'Nunito', sans-serif;
-    font-weight: 900;
-    color: var(--info);
-    font-size: 1.25rem;
-    margin-bottom: 0.1rem;
-  }
-
-  .donations-subtitle {
-    color: var(--text-secondary);
-    font-weight: 700;
-    line-height: 1.4;
-  }
-
-  .donations-btn {
-    text-decoration: none;
-    border: 3px solid var(--border);
-    background: var(--warning);
-    color: var(--text-primary);
-    font-family: 'Nunito', sans-serif;
-    font-weight: 900;
-    padding: 0.75rem 1.15rem;
-    border-radius: 16px;
-    box-shadow: 4px 4px 0px var(--border);
-    transition: transform 0.1s;
-    white-space: nowrap;
-  }
-
-  .donations-btn:hover {
-    transform: translateY(-2px);
-  }
-
-  @media (max-width: 700px) {
-    .donations-card {
-      flex-direction: column;
-      align-items: stretch;
-    }
-    .donations-btn {
-      width: 100%;
-      text-align: center;
-    }
-  }
-</style>

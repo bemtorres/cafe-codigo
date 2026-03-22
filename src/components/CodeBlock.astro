@@ -36,7 +36,8 @@ const langColors: Record<string, string> = {
   typescript: '#3178C6',
   html: '#E34F26',
   css: '#1572B6',
-  bash: '#4EAA25'
+  bash: '#4EAA25',
+  sql: '#2980b9'
 };
 
 const badgeColor = langColors[finalLang.toLowerCase()] || '#1E1210';
@@ -45,18 +46,19 @@ const langName = finalLang.toUpperCase();
 const encodedCode = isPseintFinal ? encodeURIComponent(code) : '';
 
 let hash = 0;
-for (let i = 0; i < code.length; i++) {
-  hash = (hash * 31 + code.charCodeAt(i)) | 0;
+const safeCode = code || '';
+for (let i = 0; i < safeCode.length; i++) {
+  hash = (hash * 31 + safeCode.charCodeAt(i)) | 0;
 }
 const blockId = `block_${Math.abs(hash)}`;
-const lines = String(code).replace(/\r\n/g, '\n').split('\n');
+const lines = String(safeCode).replace(/\r\n/g, '\n').split('\n');
 
 function highlightPSeInt(line: string) {
   let text = line.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-  text = text.replace(/(&quot;.*?&quot;|".*?")/g, '<span class="pseint-str">$1</span>');
-  text = text.replace(/\b(Algoritmo|FinAlgoritmo|Definir|Como|Escribir|Leer|Si|Entonces|Sino|FinSi|Mientras|Hacer|FinMientras|Para|Hasta|Con Paso|FinPara|Segun|De Otro Modo|FinSegun|Funcion|FinFuncion|Verdadero|Falso)\b/gi, '<span class="pseint-kw">$&</span>');
-  text = text.replace(/\b(Entero|Real|Caracter|Logico|Cadena)\b/gi, '<span class="pseint-type">$&</span>');
-  text = text.replace(/(\/\/.*)/g, '<span class="pseint-comment">$1</span>');
+  text = text.replace(/(&quot;.*?&quot;|".*?")/g, '<span class="text-[#A31515]">$1</span>');
+  text = text.replace(/\b(Algoritmo|FinAlgoritmo|Definir|Como|Escribir|Leer|Si|Entonces|Sino|FinSi|Mientras|Hacer|FinMientras|Para|Hasta|Con Paso|FinPara|Segun|De Otro Modo|FinSegun|Funcion|FinFuncion|Verdadero|Falso)\b/gi, '<span class="text-blue-600 font-extrabold">$&</span>');
+  text = text.replace(/\b(Entero|Real|Caracter|Logico|Cadena)\b/gi, '<span class="text-teal-600">$&</span>');
+  text = text.replace(/(\/\/.*)/g, '<span class="text-green-700 italic">$1</span>');
   return text;
 }
 
@@ -82,6 +84,9 @@ const idePalettes: Record<string, any> = {
   },
   pseint: {
     bg: '#ffffff', txt: '#000000', kw: '#0000FF', str: '#A31515', func: '#000000', type: '#008080', op: '#000000'
+  },
+  sql: {
+    bg: '#1e1e1e', txt: '#d4d4d4', kw: '#569cd6', str: '#ce9178', func: '#dcdcaa', type: '#4ec9b0', op: '#d4d4d4'
   }
 };
 
@@ -97,26 +102,28 @@ const ideStyles = `
 `;
 ---
 
-<div class="code-block" style={`border-color: ${badgeColor}; box-shadow: 4px 4px 0px ${badgeColor}; ${ideStyles}`}>
-  <div class="code-header" style={`border-bottom: 3px solid ${badgeColor};`}>
-    <span class="code-block-title" style={title ? '' : 'visibility: hidden;'}>
+<div class="my-8 border-[3px] border-border rounded-2xl bg-[var(--shiki-color-background,#1a1a1a)] overflow-hidden transition-colors shadow-neo" style={`border-color: ${badgeColor}; box-shadow: 4px 4px 0px ${badgeColor}; ${ideStyles}`}>
+  <div class="flex justify-between items-center bg-[#FAFAFA] border-b-[3px]" style={`border-bottom-color: ${badgeColor};`}>
+    <span class={`text-[0.95rem] text-[#111] px-4 py-2 font-nunito font-extrabold ${title ? '' : 'invisible'}`}>
       {title || 'Código'}
     </span>
-    <span class="lang-badge" style={`background-color: ${badgeColor};`}>{langName}</span>
+    <span class="text-[0.8rem] text-white px-3 py-1.5 font-mono font-extrabold rounded-bl-xl border-l-[3px] border-l-black/10 shadow-[inset_0_-2px_0_rgba(0,0,0,0.15)]" style={`background-color: ${badgeColor};`}>
+      {langName}
+    </span>
   </div>
 
   {isPseintFinal ? (
-    <div class="pseint-editor" aria-label={`Editor ${langName} (solo lectura)`}>
+    <div class="bg-white overflow-auto py-4 m-0 w-full font-mono transition-colors" aria-label={`Editor ${langName} (solo lectura)`}>
       {lines.map((line, idx) => (
-        <div class="pseint-line">
-          <span class="pseint-ln">{idx + 1}</span>
-          <span class="pseint-txt" set:html={highlightPSeInt(line === '' ? ' ' : line)}></span>
+        <div class="flex px-4 leading-[1.6] text-[0.95rem]">
+          <span class="text-textMuted text-right select-none min-w-[2rem] border-r-2 border-r-black/10 pr-3 mr-3">{idx + 1}</span>
+          <span class="text-black whitespace-pre-wrap" set:html={highlightPSeInt(line === '' ? ' ' : line)}></span>
         </div>
       ))}
     </div>
   ) : (
     <div class="standard-editor">
-      <Code code={code} lang={shikiLang as any} theme="css-variables" />
+      <Code code={safeCode} lang={shikiLang as any} theme="css-variables" />
     </div>
   )}
 </div>
@@ -169,84 +176,7 @@ const ideStyles = `
 )}
 
 <style>
-  .code-block {
-    margin: 2rem 0;
-    border: 3px solid var(--border);
-    border-radius: 16px;
-    background: var(--shiki-color-background, #1A1A1A);
-    transition: background-color 0.3s ease;
-    overflow: hidden;
-    /* Sombras y bordes del contenedor se re-estilizan inline según el lenguaje */
-  }
-  
-  .code-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: #FAFAFA;
-    padding: 0;
-  }
-  
-  .code-block-title {
-    font-size: 0.95rem;
-    color: #111;
-    padding: 0.6rem 1rem;
-    font-family: 'Nunito', sans-serif;
-    font-weight: 800;
-  }
-  
-  .lang-badge {
-    font-size: 0.8rem;
-    color: white;
-    padding: 0.4rem 0.9rem;
-    font-family: 'JetBrains Mono', monospace;
-    font-weight: 800;
-    border-bottom-left-radius: 12px;
-    border-left: 3px solid rgba(0,0,0,0.1);
-    box-shadow: inset 0px -2px 0px rgba(0,0,0,0.15);
-  }
-
-  /* ESTILO CONSOLA / IDE ADAPTABLE PARA PSEINT */
-  .pseint-editor {
-    background: var(--pseint-bg, #FFFFFF);
-    overflow: auto;
-    padding: 1rem 0;
-    margin: 0;
-    width: 100%;
-    font-family: 'JetBrains Mono', monospace;
-    transition: background-color 0.3s ease;
-  }
-  .pseint-line {
-    display: flex;
-    padding: 0 1rem;
-    line-height: 1.6;
-    font-size: 0.95rem;
-  }
-  .pseint-ln {
-    color: var(--code-muted);
-    text-align: right;
-    user-select: none;
-    min-width: 2rem;
-    border-right: 2px solid rgba(0,0,0,0.1);
-    padding-right: 0.75rem;
-    margin-right: 0.75rem;
-  }
-  .pseint-txt {
-    color: var(--pseint-txt, #000000);
-    white-space: pre-wrap;
-  }
-  
-  :global(.pseint-str) { color: var(--pseint-str, #A31515); }
-  :global(.pseint-kw) { color: var(--pseint-kw, #0000FF); font-weight: 800; }
-  :global(.pseint-type) { color: var(--pseint-type, #008080); }
-  :global(.pseint-comment) { color: var(--pseint-comment, #008000); font-style: italic; }
-
-  /* Contenedor estándar Astro Code (Shiki) */
-  .standard-editor {
-    padding: 0;
-    margin: 0;
-  }
-  /* Quitamos paddings/márgenes forzados de global.css para pre */
+  /* Quitamos paddings/márgenes forzados para pre (Shiki) */
   :global(.standard-editor pre) {
     margin: 0 !important;
     padding: 1.25rem 1rem !important;

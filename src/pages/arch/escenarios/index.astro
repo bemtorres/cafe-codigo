@@ -1,6 +1,7 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
 import ArchQuizModal from '../../../components/ArchQuizModal.astro';
+import vistaImg from '../../../assets/images/modelo_4_1/5_vista_proceso.png';
 ---
 
 <Layout title="Vista de Escenarios (+1)" description="El corazón del modelo 4+1: Casos de uso que unifican el resto de las vistas." courseSlug="arch">
@@ -19,6 +20,10 @@ import ArchQuizModal from '../../../components/ArchQuizModal.astro';
 
     <div class="note-box" style="background: #F1F5F9; border-left: 5px solid #475569;">
       <strong>Ejemplo:</strong> "Registrar Usuario" es un escenario. Para resolverlo, participan clases (Lógica), se guardan archivos (Desarrollo), corren hilos concurrentes (Proceso) y se viaja por la red (Física).
+    </div>
+
+    <div class="flex justify-center my-6">
+      <img src={vistaImg.src} alt="Diagrama Vista de Escenarios" class="w-full max-w-2xl rounded-xl border-4 border-[#4A3B22] shadow-[6px_6px_0px_#4A3B22]" />
     </div>
 
     <section class="mb-10">

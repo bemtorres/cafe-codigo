@@ -299,10 +299,10 @@ export const courses: Course[] = [
     status: 'available',
     color: '#e67e22',
     lessons: [
-      { slug: 'que-es-plsql', title: '1. Bloques Anónimos', href: '/programacion-db/que-es-plsql/' },
+      { slug: 'intro-plsql', title: '1. Bloques Anónimos', href: '/programacion-db/intro-plsql/' },
       { slug: 'procedimientos', title: '2. Store Procedures', href: '/programacion-db/procedimientos/' },
       { slug: 'funciones', title: '3. Funciones de Usuario', href: '/programacion-db/funciones/' },
-      { slug: 'disparadores', title: '4. Triggers (Gatillos)', href: '/programacion-db/disparadores/' },
+      { slug: 'triggers', title: '4. Triggers (Gatillos)', href: '/programacion-db/triggers/' },
     ],
   },
 ];

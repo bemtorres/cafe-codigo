@@ -1,0 +1,82 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import ModelamientoQuizModal from '../../../components/ModelamientoQuizModal.astro';
+---
+
+<Layout title="Diagrama Entidad-Relación (E-R)" description="Aprende a dibujar tu base de datos con Entidades, Atributos y Relaciones." courseSlug="modelamiento-db">
+  <article class="content-section">
+    <h1>2. El Diagrama E-R: Dibujando la Realidad ✏️</h1>
+
+    <section class="mb-10">
+      <h2>El Lenguaje Universal de los Datos</h2>
+      <p>
+        El Modelo Entidad-Relación (E-R) es como el plano de una casa. Es visual, fácil de entender y nos permite discutir el diseño con nuestros compañeros antes de construir la base de datos real.
+      </p>
+      <p>
+        Fue propuesto por Peter Chen en 1976 y, aunque antiguo, sigue siendo el estándar porque nos obliga a pensar en <strong>qué cosas (entidades)</strong> existen y <strong>cómo interactúan (relaciones)</strong>.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>1. Entidades (Los sustantivos)</h2>
+      <p>
+        Las <strong>Entidades</strong> son los objetos principales de los que queremos guardar información. Suelen ser sustantivos: Cliente, Producto, Factura, Estudiante.
+      </p>
+      <ul>
+        <li><strong>Físicas:</strong> Coche, Persona, Libro.</li>
+        <li><strong>Lógicas:</strong> Venta, Reservación, Asignatura.</li>
+      </ul>
+      <div class="note-box" style="background: #E8F5E9; border-left: 5px solid #16a085;">
+        <strong>Notación Clásica:</strong> En un diagrama, las entidades se dibujan como <strong>Rectángulos</strong>.
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2>2. Atributos (Los adjetivos)</h2>
+      <p>
+        Son las características o propiedades de una entidad. Por ejemplo, la entidad <em>Persona</em> tiene atributos como <code>Nombre</code>, <code>Edad</code> y <code>Estatura</code>.
+      </p>
+      <p>
+        <strong>Atributo Clave (Primary Key):</strong> Es un atributo especial que identifica de manera única a cada instancia de la entidad. Por ejemplo, un <code>DNI</code> para una persona o un <code>ISBN</code> para un libro. ¡Nunca pueden haber dos iguales!
+      </p>
+      <div class="note-box" style="background: #E8F5E9; border-left: 5px solid #16a085;">
+        <strong>Notación Clásica:</strong> Los atributos se dibujan como <strong>Óvalos</strong> conectado a su entidad, y el atributo clave se subraya.
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2>3. Relaciones (Los verbos)</h2>
+      <p>
+        Las relaciones describen cómo las entidades interactúan entre sí. Por ejemplo: un Médico <strong>atiende</strong> a un Paciente. Un Cliente <strong>compra</strong> un Producto.
+      </p>
+      <div class="note-box" style="background: #E8F5E9; border-left: 5px solid #16a085;">
+        <strong>Notación Clásica:</strong> Las relaciones se dibujan como <strong>Rombos</strong> (♦️) que unen a dos o más entidades.
+      </div>
+    </section>
+
+    <div class="ejercicio" style="background: #F4F6F6; border: 2px solid #BDC3C7;">
+      <h3>🎯 Ejercicio de Abstracción</h3>
+      <p class="enunciado">Imagina una Biblioteca. Tienes las palabras: "Libro", "Título", "Autor", "Escribe". Clasifícalas en Entidad, Atributo o Relación.</p>
+      
+      <details>
+        <summary>👁️ Ver respuesta correcta</summary>
+        <ul>
+            <li><strong>Libro:</strong> Entidad</li>
+            <li><strong>Autor:</strong> Entidad</li>
+            <li><strong>Título:</strong> Atributo (del Libro)</li>
+            <li><strong>Escribe:</strong> Relación (entre Autor y Libro)</li>
+        </ul>
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <ModelamientoQuizModal quizKey="entidad-relacion" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/modelamiento-db/conceptos-basicos/" class="prev">← Conceptos Básicos</a>
+      <a href="/modelamiento-db/modelo-relacional/" class="next">El Modelo Relacional →</a>
+    </nav>
+  </article>
+</Layout>

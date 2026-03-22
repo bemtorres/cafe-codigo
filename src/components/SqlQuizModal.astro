@@ -1,79 +1,79 @@
 ---
-import { pythonQuizBank } from '../data/pythonQuizBank';
+import { sqlQuizBank } from '../data/sqlQuizBank';
 
 type Props = {
   quizKey: string;
 };
 
 const { quizKey } = Astro.props as Props;
-const quiz = pythonQuizBank[quizKey];
+const quiz = sqlQuizBank[quizKey];
 
 if (!quiz) {
-  throw new Error(`PythonQuizModal: no existe quizKey "${quizKey}" en pythonQuizBank.`);
+  throw new Error(`SqlQuizModal: no existe quizKey "${quizKey}" en sqlQuizBank.`);
 }
 
-const modalId = `python-quiz-modal-${quizKey}`;
-const openBtnId = `python-quiz-open-${quizKey}`;
-const closeBtnId = `python-quiz-close-${quizKey}`;
-const resultId = `python-quiz-result-${quizKey}`;
-const radiosNamePrefix = `python_quiz_${quizKey}_q_`;
+const modalId = `sql-quiz-modal-${quizKey}`;
+const openBtnId = `sql-quiz-open-${quizKey}`;
+const closeBtnId = `sql-quiz-close-${quizKey}`;
+const resultId = `sql-quiz-result-${quizKey}`;
+const radiosNamePrefix = `sql_quiz_${quizKey}_q_`;
 ---
 
-<div class="python-quiz">
-  <button id={openBtnId} type="button" class="python-quiz__start" data-python-quiz-open>
-    <span class="python-logo">🐍</span> Comenzar Quiz Python
+<div class="sql-quiz">
+  <button id={openBtnId} type="button" class="sql-quiz__start" data-sql-quiz-open>
+    <span class="db-logo">🔍</span> Comenzar Quiz SQL
   </button>
 
-  <div id={modalId} class="python-quiz__modal" role="dialog" aria-modal="true" aria-hidden="true">
-    <div class="python-quiz__overlay" data-python-quiz-close></div>
+  <div id={modalId} class="sql-quiz__modal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="sql-quiz__overlay" data-sql-quiz-close></div>
 
-    <div class="python-quiz__panel">
-      <div class="python-quiz__header">
-        <div class="python-quiz__title">
-          <span class="python-quiz__title-badge">Python Quiz</span>
+    <div class="sql-quiz__panel">
+      <div class="sql-quiz__header">
+        <div class="sql-quiz__title">
+          <span class="sql-quiz__title-badge">SQL Quiz</span>
           <span>{quiz.title}</span>
         </div>
 
         <button
           id={closeBtnId}
           type="button"
-          class="python-quiz__close"
-          data-python-quiz-close
+          class="sql-quiz__close"
+          data-sql-quiz-close
           aria-label="Cerrar"
         >
           ✕
         </button>
       </div>
 
-      <div class="python-quiz__body">
-        <p class="python-quiz__intro">
-          Son <strong>{quiz.questions.length}</strong> preguntas interactivas. ¡Evalúa tu lógica Python!
+      <div class="sql-quiz__body">
+        <p class="sql-quiz__intro">
+          Son <strong>{quiz.questions.length}</strong> preguntas interactivas. ¡Evalúa tus consultas!
         </p>
 
-        <form class="python-quiz__form" onsubmit="return false;">
-          {quiz.questions.map((q, i) => (
+        <form class="sql-quiz__form" onsubmit="return false;">
+          {quiz.questions.map((q: any, i: number) => (
             <section
-              class="python-quiz__q"
-              data-python-quiz-q={i}
+              class="sql-quiz__q"
+              data-sql-quiz-q={i}
               data-correct-index={q.correctIndex}
             >
-              <h4 class="python-quiz__q-title">
-                <span class="python-quiz__q-num">{i + 1}</span>. {q.prompt}
+              <h4 class="sql-quiz__q-title">
+                <span class="sql-quiz__q-num">{i + 1}</span>. {q.prompt}
               </h4>
 
-              <div class="python-quiz__options">
-                {q.options.map((opt, idx) => {
+              <div class="sql-quiz__options">
+                {q.options.map((opt: string, idx: number) => {
                   const name = `${radiosNamePrefix}${i}`;
                   const value = String(idx);
                   const id = `${radiosNamePrefix}${i}_${idx}`;
                   return (
-                    <label class="python-quiz__opt" for={id}>
+                    <label class="sql-quiz__opt" for={id}>
                       <input
                         id={id}
                         type="radio"
                         name={name}
                         value={value}
-                        data-python-quiz-answer={i}
+                        data-sql-quiz-answer={i}
                       />
                       <span>{opt}</span>
                     </label>
@@ -82,8 +82,8 @@ const radiosNamePrefix = `python_quiz_${quizKey}_q_`;
               </div>
 
               <div
-                class="python-quiz__feedback"
-                data-python-quiz-feedback={i}
+                class="sql-quiz__feedback"
+                data-sql-quiz-feedback={i}
                 aria-live="polite"
               ></div>
             </section>
@@ -91,13 +91,13 @@ const radiosNamePrefix = `python_quiz_${quizKey}_q_`;
         </form>
       </div>
 
-      <div class="python-quiz__footer">
-        <div id={resultId} class="python-quiz__result" aria-live="polite"></div>
-        <div class="python-quiz__actions">
-          <button type="button" class="python-quiz__submit" data-python-quiz-submit>
+      <div class="sql-quiz__footer">
+        <div id={resultId} class="sql-quiz__result" aria-live="polite"></div>
+        <div class="sql-quiz__actions">
+          <button type="button" class="sql-quiz__submit" data-sql-quiz-submit>
             Finalizar y Revisar
           </button>
-          <button type="button" class="python-quiz__restart" data-python-quiz-restart>
+          <button type="button" class="sql-quiz__restart" data-sql-quiz-restart>
             Reintentar
           </button>
         </div>
@@ -108,7 +108,7 @@ const radiosNamePrefix = `python_quiz_${quizKey}_q_`;
 
 <script is:inline>
   (function () {
-    const WKEY = '__pythonQuizModalDelegated__';
+    const WKEY = '__sqlQuizModalDelegated__';
     if (window[WKEY]) return;
     window[WKEY] = true;
 
@@ -121,9 +121,9 @@ const radiosNamePrefix = `python_quiz_${quizKey}_q_`;
 
     function openModal(modal) {
       if (!modal) return;
-      const resultEl = modal.querySelector('.python-quiz__result');
+      const resultEl = modal.querySelector('.sql-quiz__result');
       if (resultEl) resultEl.textContent = '';
-      modal.querySelectorAll('[data-python-quiz-feedback]').forEach((el) => {
+      modal.querySelectorAll('[data-sql-quiz-feedback]').forEach((el) => {
         el.textContent = '';
       });
       modal.setAttribute('aria-hidden', 'false');
@@ -132,15 +132,15 @@ const radiosNamePrefix = `python_quiz_${quizKey}_q_`;
     }
 
     function gradeModal(modal) {
-      const resultEl = modal.querySelector('.python-quiz__result');
+      const resultEl = modal.querySelector('.sql-quiz__result');
       if (!resultEl) return;
 
-      const qEls = modal.querySelectorAll('[data-python-quiz-q]');
+      const qEls = modal.querySelectorAll('[data-sql-quiz-q]');
       let score = 0;
 
       qEls.forEach((qEl) => {
         const correct = Number(qEl.getAttribute('data-correct-index'));
-        const feedbackEl = qEl.querySelector('[data-python-quiz-feedback]');
+        const feedbackEl = qEl.querySelector('[data-sql-quiz-feedback]');
         const selected = qEl.querySelector('input[type="radio"]:checked');
         const idx = selected ? Number(selected.value) : null;
 
@@ -165,38 +165,38 @@ const radiosNamePrefix = `python_quiz_${quizKey}_q_`;
 
     document.addEventListener('click', (e) => {
       const target = e.target;
-      const startBtn = target.closest('.python-quiz__start');
+      const startBtn = target.closest('.sql-quiz__start');
       if (startBtn) {
-        const root = startBtn.closest('.python-quiz');
-        const modal = root?.querySelector('.python-quiz__modal');
+        const root = startBtn.closest('.sql-quiz');
+        const modal = root?.querySelector('.sql-quiz__modal');
         openModal(modal);
         return;
       }
 
-      const closeBtn = target.closest('[data-python-quiz-close]');
+      const closeBtn = target.closest('[data-sql-quiz-close]');
       if (closeBtn) {
-        const root = closeBtn.closest('.python-quiz');
-        const modal = root?.querySelector('.python-quiz__modal');
+        const root = closeBtn.closest('.sql-quiz');
+        const modal = root?.querySelector('.sql-quiz__modal');
         closeModal(modal);
         return;
       }
 
-      const submitBtn = target.closest('[data-python-quiz-submit]');
+      const submitBtn = target.closest('[data-sql-quiz-submit]');
       if (submitBtn) {
-        const root = submitBtn.closest('.python-quiz');
-        const modal = root?.querySelector('.python-quiz__modal');
+        const root = submitBtn.closest('.sql-quiz');
+        const modal = root?.querySelector('.sql-quiz__modal');
         if (modal) gradeModal(modal);
         return;
       }
 
-      const restartBtn = target.closest('[data-python-quiz-restart]');
+      const restartBtn = target.closest('[data-sql-quiz-restart]');
       if (restartBtn) {
-        const root = restartBtn.closest('.python-quiz');
-        const modal = root?.querySelector('.python-quiz__modal');
+        const root = restartBtn.closest('.sql-quiz');
+        const modal = root?.querySelector('.sql-quiz__modal');
         if (!modal) return;
         modal.querySelectorAll('input[type="radio"]').forEach((r) => r.checked = false);
-        modal.querySelectorAll('[data-python-quiz-feedback]').forEach((el) => el.textContent = '');
-        modal.querySelector('.python-quiz__result').textContent = '';
+        modal.querySelectorAll('[data-sql-quiz-feedback]').forEach((el) => el.textContent = '');
+        modal.querySelector('.sql-quiz__result').textContent = '';
         return;
       }
     });
@@ -204,15 +204,15 @@ const radiosNamePrefix = `python_quiz_${quizKey}_q_`;
 </script>
 
 <style>
-  .python-quiz { margin: 2rem 0; }
+  .sql-quiz { margin: 2rem 0; }
 
-  .python-quiz__start {
+  .sql-quiz__start {
     width: 100%;
     max-width: 400px;
     padding: 1rem;
     border-radius: 12px;
     border: 3px solid var(--border);
-    background: #3776ab; /* Python Blue */
+    background: #2980b9; /* SQL Blue */
     color: white;
     font-weight: 900;
     font-size: 1.1rem;
@@ -225,38 +225,38 @@ const radiosNamePrefix = `python_quiz_${quizKey}_q_`;
     margin: 0 auto;
     transition: transform 0.1s;
   }
-  .python-quiz__start:hover { transform: translateY(-2px); box-shadow: 6px 6px 0px var(--border); }
-  .python-quiz__start:active { transform: translateY(2px); box-shadow: 2px 2px 0px var(--border); }
+  .sql-quiz__start:hover { transform: translateY(-2px); box-shadow: 6px 6px 0px var(--border); }
+  .sql-quiz__start:active { transform: translateY(2px); box-shadow: 2px 2px 0px var(--border); }
 
-  .python-quiz__modal {
+  .sql-quiz__modal {
     position: fixed;
     inset: 0;
     z-index: 3000;
     display: none;
   }
-  .python-quiz__modal.is-open { display: block; }
+  .sql-quiz__modal.is-open { display: block; }
 
-  .python-quiz__overlay {
+  .sql-quiz__overlay {
     position: absolute;
     inset: 0;
     background: rgba(0,0,0,0.6);
     backdrop-filter: blur(5px);
   }
 
-  .python-quiz__panel {
+  .sql-quiz__panel {
     position: relative;
     max-width: 800px;
     margin: 4vh auto;
-    background: #FFD43B; /* Python Yellow */
+    background: #ecf0f1; 
     border: 4px solid var(--border);
     border-radius: 20px;
     box-shadow: 0 30px 60px rgba(0,0,0,0.4);
     overflow: hidden;
-    color: #1a1a1b;
+    color: #2c3e50;
   }
 
-  .python-quiz__header {
-    background: #3776ab;
+  .sql-quiz__header {
+    background: #2980b9;
     color: white;
     padding: 1.25rem;
     border-bottom: 4px solid var(--border);
@@ -265,9 +265,9 @@ const radiosNamePrefix = `python_quiz_${quizKey}_q_`;
     align-items: center;
   }
 
-  .python-quiz__title-badge {
-    background: #FFD43B;
-    color: #3776ab;
+  .sql-quiz__title-badge {
+    background: #f1c40f;
+    color: #2c3e50;
     padding: 0.2rem 0.6rem;
     border-radius: 8px;
     font-weight: 900;
@@ -275,7 +275,7 @@ const radiosNamePrefix = `python_quiz_${quizKey}_q_`;
     margin-right: 0.75rem;
   }
 
-  .python-quiz__close {
+  .sql-quiz__close {
     background: white;
     border: 2px solid var(--border);
     border-radius: 50%;
@@ -286,16 +286,16 @@ const radiosNamePrefix = `python_quiz_${quizKey}_q_`;
     justify-content: center;
     cursor: pointer;
     font-weight: 900;
-    color: #3776ab;
+    color: #2980b9;
   }
 
-  .python-quiz__body {
+  .sql-quiz__body {
     padding: 1.5rem;
     max-height: 70vh;
     overflow-y: auto;
   }
 
-  .python-quiz__q {
+  .sql-quiz__q {
     background: white;
     border: 3px solid var(--border);
     border-radius: 12px;
@@ -304,7 +304,7 @@ const radiosNamePrefix = `python_quiz_${quizKey}_q_`;
     box-shadow: 4px 4px 0px rgba(0,0,0,0.1);
   }
 
-  .python-quiz__opt {
+  .sql-quiz__opt {
     display: flex;
     gap: 0.5rem;
     align-items: center;
@@ -313,9 +313,9 @@ const radiosNamePrefix = `python_quiz_${quizKey}_q_`;
     font-weight: 700;
   }
 
-  .python-quiz__footer {
+  .sql-quiz__footer {
     padding: 1.25rem;
-    background: #3776ab;
+    background: #2980b9;
     border-top: 4px solid var(--border);
     display: flex;
     justify-content: space-between;
@@ -323,11 +323,11 @@ const radiosNamePrefix = `python_quiz_${quizKey}_q_`;
     color: white;
   }
 
-  .python-quiz__actions { display: flex; gap: 1rem; }
+  .sql-quiz__actions { display: flex; gap: 1rem; }
 
-  .python-quiz__submit {
-    background: #FFD43B;
-    color: #1a1a1b;
+  .sql-quiz__submit {
+    background: #f1c40f;
+    color: #2c3e50;
     border: 3px solid var(--border);
     padding: 0.6rem 1rem;
     border-radius: 10px;
@@ -336,9 +336,9 @@ const radiosNamePrefix = `python_quiz_${quizKey}_q_`;
     box-shadow: 3px 3px 0px rgba(0,0,0,0.3);
   }
 
-  .python-quiz__restart {
-    background: #f8f9fa;
-    color: #1a1a1b;
+  .sql-quiz__restart {
+    background: #ecf0f1;
+    color: #2c3e50;
     border: 3px solid var(--border);
     padding: 0.6rem 1rem;
     border-radius: 10px;
@@ -347,6 +347,6 @@ const radiosNamePrefix = `python_quiz_${quizKey}_q_`;
     box-shadow: 3px 3px 0px rgba(0,0,0,0.3);
     transition: transform 0.1s;
   }
-  .python-quiz__restart:hover { transform: translateY(-1px); box-shadow: 4px 4px 0px rgba(0,0,0,0.3); }
-  .python-quiz__restart:active { transform: translateY(1px); box-shadow: 2px 2px 0px rgba(0,0,0,0.3); }
+  .sql-quiz__restart:hover { transform: translateY(-1px); box-shadow: 4px 4px 0px rgba(0,0,0,0.3); }
+  .sql-quiz__restart:active { transform: translateY(1px); box-shadow: 2px 2px 0px rgba(0,0,0,0.3); }
 </style>

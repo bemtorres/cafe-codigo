@@ -1,27 +1,45 @@
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@600;800&family=Quicksand:wght@500;700&family=JetBrains+Mono:wght@500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&family=Quicksand:wght@500;700&family=JetBrains+Mono:wght@500;700;800&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #FFFDF7;
+  --color-secondary: #FFF9C4;
+  --color-tertiary: #E0F7FA;
+  --color-border: #1E1210;
+  --color-textPrimary: #2D2321;
+  --color-textSecondary: #4A3A37;
+  --color-textMuted: #6B5B58;
+  --color-accent: #EF476F;
+  --color-warning: #FFD166;
+  --color-success: #06D6A0;
+  --color-info: #45B3E0;
+
+  --font-nunito: "Nunito", sans-serif;
+  --font-quicksand: "Quicksand", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  --shadow-neo: 4px 4px 0px #1E1210;
+  --shadow-neo-lg: 6px 6px 0px #1E1210;
+  --shadow-soft: 0 18px 40px rgba(43, 29, 27, 0.22);
+}
+
+/* ==============================
+   CSS BASE PARA COMPONENTES GLOBALES
+   (compatible con Tailwind v4)
+   ============================== */
 
 :root {
-  /* Tema Alegre (App 3 / Dulce) */
-  --bg-primary: #FFFDF7; /* Crema */
-  --bg-secondary: #FFF9C4; /* Base amarilla suave */
-  --bg-tertiary: #E0F7FA;  /* Celeste clarito */
+  --bg-primary: #FFFDF7;
+  --bg-secondary: #FFF9C4;
+  --bg-tertiary: #E0F7FA;
   --border: #1E1210;
-  
   --text-primary: #2D2321;
   --text-secondary: #4A3A37;
   --text-muted: #6B5B58;
-  
-  --accent: #EF476F; /* Rosa fuerte */
-  --accent-hover: #D81B60;
-  --warning: #FFD166; /* Amarillo fuerte */
-  --success: #06D6A0; /* Verde brillante */
-  --info: #45B3E0;    /* Azul tech alegre */
-
-  --surface-1: #FFFFFF;
-  --surface-2: #FFF9C4;
-  --surface-3: #E0F7FA;
-
-  /* Estilos código Neo-brutalist oscuros */
+  --accent: #EF476F;
+  --warning: #FFD166;
+  --success: #06D6A0;
+  --info: #45B3E0;
   --code-bg: #1A1A1A;
   --code-border: #1E1210;
   --code-text: #F2F2F2;
@@ -29,67 +47,63 @@
   --code-accent: #06D6A0;
 }
 
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
   min-height: 100vh;
   background-color: var(--bg-primary);
   color: var(--text-primary);
   font-family: 'Quicksand', system-ui, sans-serif;
-  /* Fondo repetido infinito (la imagen tiene transparencia). */
   background-image: url('../assets/images/fondo2.png');
   background-repeat: repeat;
   background-size: auto;
   -webkit-font-smoothing: antialiased;
 }
 
-h1, h2, h3, h4, strong {
-  font-family: 'Nunito', sans-serif;
-  font-weight: 800;
-}
+h1, h2, h3, h4, strong { font-family: 'Nunito', sans-serif; font-weight: 800; }
+code, pre { font-family: 'JetBrains Mono', monospace; font-weight: 500; }
+a { transition: transform 0.2s, color 0.2s; }
 
-code, pre {
-  font-family: 'JetBrains Mono', monospace;
-  font-weight: 500;
-}
-
-a {
-  transition: transform 0.2s, color 0.2s;
-}
-
-/* -- Content Section Wrapper -- */
+/* ── Content Section ── */
 .content-section {
-  margin-bottom: 0.2rem;
+  margin-bottom: 2rem;
   background: white;
   border: 3px solid var(--border);
   border-radius: 24px;
-  padding: 0.5rem;
+  padding: 1.5rem;
   box-shadow: 6px 6px 0px var(--border);
 }
+@media (min-width: 768px) {
+  .content-section { padding: 2rem; }
+}
 
-.content-section h1 { font-size: 2.25rem; margin-bottom: 1.5rem; color: var(--info); text-shadow: 2px 2px 0px var(--border); }
+.content-section h1 { font-size: 2rem; margin-bottom: 1.5rem; color: var(--info); text-shadow: 2px 2px 0px var(--border); }
 .content-section h2 { font-size: 1.6rem; color: var(--text-primary); margin-bottom: 1.2rem; }
 .content-section h3 { font-size: 1.3rem; color: var(--accent); margin-bottom: 1rem; }
 .content-section p { font-size: 1.05rem; color: var(--text-secondary); margin-bottom: 1.25rem; line-height: 1.7; font-weight: 500; }
 .content-section ul { font-size: 1.05rem; color: var(--text-secondary); margin-bottom: 1.5rem; padding-left: 2rem; }
-.content-section li { margin-bottom: 0.75rem; font-weight: 500;}
+.content-section li { margin-bottom: 0.75rem; font-weight: 500; }
 
-/* Code Inline (Sólo inline, excluye bloques) */
-.content-section p code, 
-.content-section li code, 
-.ejercicio p code, 
+@media (min-width: 768px) {
+  .content-section h1 { font-size: 2.25rem; }
+}
+
+/* Code Inline */
+.content-section p code,
+.content-section li code,
+.ejercicio p code,
 .ejercicio li code,
 .ejercicio span code {
   color: white;
   background: var(--text-primary);
-  padding: 0.25rem 0.25rem;
+  padding: 0.25rem 0.35rem;
   border-radius: 8px;
   border: 2px solid var(--border);
+  font-size: 0.9em;
+  margin: 0 2px;
 }
 
-/* Code Editor Blocks Genéricos */
+/* Code Blocks */
 .content-section pre,
 .ejercicio pre {
   background: var(--shiki-color-background, var(--code-bg));
@@ -103,7 +117,6 @@ a {
   margin: 1.5rem 0;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
-
 .content-section pre code,
 .ejercicio pre code {
   color: var(--code-text);
@@ -113,46 +126,17 @@ a {
   border-radius: 0;
 }
 
-/* Code Block */
-.code-block {
-  margin: 2rem 0;
-  border: 3px solid var(--border);
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 4px 4px 0px var(--border);
-}
-.code-block-title {
-  font-size: 1rem;
-  color: #111;
-  background: var(--warning);
-  padding: 0.6rem 1rem;
-  font-family: 'Nunito', sans-serif;
-  font-weight: 800;
-  border-bottom: 3px solid var(--border);
-}
-.code-block pre {
-  background: var(--shiki-color-background, var(--code-bg));
-  padding: 1.5rem;
-  overflow-x: auto;
-  font-size: 0.95rem;
-  margin: 0;
-  transition: background-color 0.3s ease;
-}
-.code-block pre code {
-  color: var(--shiki-color-text, var(--code-text));
-  background: none;
-  padding: 0;
-  border: none;
-}
-
-/* Ejercicio component */
+/* ── Ejercicio ── */
 .ejercicio {
   border: 3px solid var(--border);
   border-radius: 20px;
-  padding: 2rem;
+  padding: 1.5rem;
   margin: 2.5rem 0;
-  background: #E8F5E9; /* Un verde pastel bonito */
+  background: #E8F5E9;
   box-shadow: 5px 5px 0px var(--border);
+}
+@media (min-width: 768px) {
+  .ejercicio { padding: 2rem; }
 }
 .ejercicio h3 { color: var(--success); text-shadow: 1px 1px 0px var(--border); font-size: 1.6rem; margin-bottom: 1rem; }
 .ejercicio .enunciado { font-size: 1.1rem; color: var(--text-primary); font-weight: 700; margin-bottom: 1.5rem; }
@@ -181,14 +165,15 @@ a {
   font-family: 'Nunito', sans-serif;
 }
 .ejercicio details pre { margin-top: 1rem; }
-/* Table */
+
+/* ── Tables ── */
 .content-table {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
   border: 3px solid var(--border);
   border-radius: 16px;
-  overflow: hidden; /* For border radius */
+  overflow: hidden;
   margin: 2rem 0;
   box-shadow: 5px 5px 0px var(--border);
   background: white;
@@ -199,7 +184,7 @@ a {
   padding: 1rem 1.25rem;
   text-align: left;
   font-weight: 500;
-  font-size: 1.0rem;
+  font-size: 1rem;
 }
 .content-table th {
   background: var(--info);
@@ -210,14 +195,21 @@ a {
 }
 .content-table tr:last-child td { border-bottom: none; }
 .content-table th:last-child, .content-table td:last-child { border-right: none; }
-.content-table .mono { font-family: 'JetBrains Mono', monospace; font-weight: 700; color: var(--accent); background: none; border: none;}
+.content-table .mono { font-family: 'JetBrains Mono', monospace; font-weight: 700; color: var(--accent); background: none; border: none; }
 
-/* Botones universales Nav Bottom */
+/* ── Nav Bottom ── */
 .nav-bottom {
   display: flex;
-  gap: 1.5rem;
+  flex-direction: column;
+  gap: 1rem;
   margin-top: 4rem;
   justify-content: space-between;
+}
+@media (min-width: 640px) {
+  .nav-bottom {
+    flex-direction: row;
+    gap: 1.5rem;
+  }
 }
 .nav-bottom a {
   padding: 0.8rem 1.5rem;
@@ -230,17 +222,17 @@ a {
   background: white;
   color: var(--text-primary);
   box-shadow: 4px 4px 0px var(--border);
+  text-align: center;
 }
 .nav-bottom a:hover { transform: translateY(-3px); }
 .nav-bottom a:active { transform: translate(3px, 3px); box-shadow: 0 0 0 var(--border); }
 .nav-bottom .next { background: var(--success); color: white; }
 
-/* Grid Cards Generales */
+/* ── Cards ── */
 .cards-grid { display: grid; gap: 1rem; }
 @media (min-width: 640px) { .cards-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (min-width: 1024px) { .cards-grid { grid-template-columns: repeat(4, 1fr); } }
 
-/* Cards Alegres */
 .card-fun {
   background: white;
   border: 3px solid var(--border);
@@ -250,8 +242,6 @@ a {
   transition: transform 0.2s;
   cursor: pointer;
   position: relative;
-  text-decoration: none;
-  color: inherit;
   display: block;
 }
 .card-fun:hover { transform: translateY(-5px); }
@@ -264,7 +254,7 @@ a {
   line-height: 1.35;
   display: -webkit-box;
   -webkit-line-clamp: 4;
-  line-clamp: 4; /* compatibilidad (estándar) */
+  line-clamp: 4;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -283,138 +273,54 @@ a {
   box-shadow: 2px 2px 0px var(--text-secondary);
 }
 
-.lessons-badge {
-  display: inline-block;
-  margin-top: 1.5rem;
-  font-weight: 800;
-  color: var(--info);
-  background: white;
-  border: 2px solid var(--info);
-  padding: 0.4rem 0.8rem;
+/* ── Note Box ── */
+.note-box {
+  padding: 1rem 1.25rem;
   border-radius: 12px;
+  margin: 1.5rem 0;
+  font-weight: 600;
 }
 
-/* Utilidades Layout Admin (si las necesitas mantener no molestar) */
-.admin-shell { display: none; }
-
-/* 📱 Responsive Mobile General */
-@media (max-width: 600px) {
-  .content-section {
-    padding: 1.5rem;
-    border-radius: 16px;
-    margin-bottom: 2rem;
-  }
-  .content-section h1 { font-size: 2rem; }
-  .content-section h2 { font-size: 1.6rem; }
-  .content-section p, .content-section ul { font-size: 1rem; line-height: 1.5; }
-  
-  .ejercicio {
-    padding: 1.5rem;
-    border-radius: 16px;
-  }
-  .ejercicio h3 { font-size: 1.5rem; }
-  .ejercicio .pregunta-box { font-size: 1rem; padding: 1rem; }
-  
-  .code-block pre { padding: 1rem; }
-  
-  .card-fun {
-    padding: 1.5rem;
-    border-radius: 16px;
-  }
-  .card-fun h2, .card-fun h3 { font-size: 1.5rem; }
-  .card-fun p { font-size: 1rem; }
-  
-  .cards-grid { gap: 1.25rem; }
-  
-  .nav-bottom {
-    flex-direction: column;
-    gap: 1rem;
-    margin-top: 2rem;
-  }
-  .nav-bottom a {
-    text-align: center;
-    width: 100%;
-  }
-  
-  .content-table { font-size: 0.95rem; }
-  .content-table th, .content-table td { padding: 0.75rem; }
-}
-
-/* --- ESTILO EGIPCIO (Curso Ark 4+1) --- */
+/* ── Egipcio Ark ── */
 body[data-course="arch"] {
-  --bg-primary: #F4EBD0; /* Papyrus */
+  --bg-primary: #F4EBD0;
   --bg-secondary: #E9D5A2;
   --bg-tertiary: #C5A059;
   --text-primary: #1E1210;
   --text-secondary: #3D2B1F;
-  --accent: #B8860B; /* Gold */
-  --info: #008B8B; /* Dark Cyan/Turquoise */
+  --accent: #B8860B;
+  --info: #008B8B;
   --border: #4A3B22;
-
-  background-image: 
-    radial-gradient(circle at 10% 20%, rgba(212, 175, 55, 0.05) 0%, transparent 20%),
-    radial-gradient(circle at 90% 80%, rgba(212, 175, 55, 0.05) 0%, transparent 20%);
+  
+  position: relative;
+  background-color: #F4EBD0 !important;
+  background-image: none !important;
 }
 
-body[data-course="arch"] .course-big-title,
+/* La imagen de fondo va en el ::before para poder difuminarla sin afectar el texto */
+body[data-course="arch"]::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-image: var(--arch-bg, none);
+  background-size: cover;
+  background-position: center;
+  filter: blur(3px) brightness(0.92) saturate(0.85);
+  transform: scale(1.05); /* evita bordes blancos del blur */
+  opacity: 0.55;
+}
 body[data-course="arch"] h1,
 body[data-course="arch"] h2,
-body[data-course="arch"] h3,
-body[data-course="arch"] .logo-text,
-body[data-course="arch"] .sidebar-title {
+body[data-course="arch"] h3 {
   font-family: 'Cinzel', serif;
   text-transform: uppercase;
   letter-spacing: 0.1em;
 }
-
-body[data-course="arch"] .content-section h1 {
-  background: linear-gradient(to right, transparent, rgba(184, 134, 11, 0.2), transparent);
-  padding: 1rem;
-  border-top: 2px solid var(--accent);
-  border-bottom: 2px solid var(--accent);
-}
-
-body[data-course="arch"] .lesson-card,
-body[data-course="arch"] .sidebar-inner,
 body[data-course="arch"] .content-section {
   border: 4px double var(--border);
   box-shadow: 6px 6px 0px var(--accent);
-  background: #FDF5E6; /* Old Lace */
+  background: #FDF5E6;
 }
-
-body[data-course="arch"] .sidebar-link {
-    border: 1px solid var(--accent);
-    background: #F4EBD0;
-    font-family: 'Cinzel', serif;
-    font-size: 0.85rem;
-}
-
-body[data-course="arch"] .sidebar-link:hover {
-    background: var(--bg-tertiary);
-    color: white;
-}
-
-body[data-course="arch"] .lesson-card:hover {
-  background: #F4EBD0;
-  transform: translate(-4px, -4px) rotate(0.5deg);
-}
-
-/* Decoraciones jeroglíficas */
-body[data-course="arch"] .lesson-card__number::after {
-  content: ' 𓊝';
-  opacity: 0.5;
-}
-
-body[data-course="arch"] .course-index-header::before {
-  content: '𓁑 𓃠 𓊝 𓋹 𓁑';
-  display: block;
-  font-size: 2rem;
-  margin-bottom: 1rem;
-  opacity: 0.3;
-  letter-spacing: 1.5rem;
-  text-align: center;
-}
-
-/* Scrollbar estilo papiro */
 body[data-course="arch"] ::-webkit-scrollbar-track { background: #E9D5A2; }
 body[data-course="arch"] ::-webkit-scrollbar-thumb { background: #C5A059; border: 2px solid #F4EBD0; }

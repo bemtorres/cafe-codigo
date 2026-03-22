@@ -1,0 +1,64 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import CodeBlock from '../../../components/CodeBlock.astro';
+import PythonQuizModal from '../../../components/PythonQuizModal.astro';
+---
+
+<Layout title="Funciones en Python" description="El corazón de la programación moderna: DRY." courseSlug="python">
+  <article class="content-section">
+    <h1>7. Funciones: Tu Caja de Herramientas 🧰</h1>
+
+    <section class="mb-10">
+      <h2>Escribir código una sola vez</h2>
+      <p>Una función es un bloque de código que puedes <strong>llamar muchas veces</strong>. ¡No te repitas! (D.R.Y - Don't Repeat Yourself).</p>
+      <CodeBlock
+        code={`def saludar(nombre, mensaje="Bienvenido"):
+    return f"¡Hola {nombre}! {mensaje}"
+
+# Llamada normal
+print(saludar("Benjamín"))
+
+# Llamada con parámetros específicos
+print(saludar("Juan", "Gusto en verte"))
+
+# Argumentos con nombre (puedes cambiar el orden)
+print(saludar(mensaje="¿Cómo estás?", nombre="Ana"))`}
+        title="saludos.py"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Funciones Lambda (Anónimas)</h2>
+      <p>Para lógica muy corta que se resuelve en una sola línea, puedes usar lambdas.</p>
+      <CodeBlock
+        code={`# Lambda que suma 10 a un número
+sumar_diez = lambda x : x + 10
+print(sumar_diez(5)) # 15`}
+        title="lambda.py"
+      />
+    </section>
+
+    <div class="ejercicio" style="background: #FFF9C4;">
+      <h3>🐍 Desafío: La máquina de calcular</h3>
+      <p class="enunciado">Crea una función llamada <code>multiplicar</code> que reciba dos números y retorne su resultado.</p>
+      
+      <details>
+        <summary>👁️ Ver solución sugerida</summary>
+        <CodeBlock code={`def multiplicar(a, b):
+    return a * b
+
+print(multiplicar(5, 4)) # 20`} title="Python" />
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Prueba de Funciones</h2>
+      <PythonQuizModal quizKey="funciones" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/python/bucles/" class="prev">← Bucles</a>
+      <a href="/python/list-comprehension/" class="next">List Comprehension →</a>
+    </nav>
+  </article>
+</Layout>

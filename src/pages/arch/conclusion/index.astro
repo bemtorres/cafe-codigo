@@ -1,6 +1,7 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
 import ArchQuizModal from '../../../components/ArchQuizModal.astro';
+import finalImg from '../../../assets/images/modelo_4_1/8_final.png';
 ---
 
 <Layout title="Conclusión del Modelo 4+1" description="Aprende a combinar todas las vistas para una comunicación de arquitectura efectiva." courseSlug="arch">
@@ -14,6 +15,18 @@ import ArchQuizModal from '../../../components/ArchQuizModal.astro';
       </p>
       <div class="note-box" style="background: #F1F5F9; border-left: 5px solid #475569;">
         <strong>Regla de Oro:</strong> No siempre necesitas las 5 vistas. Para proyectos pequeños, con la Lógica y la de Escenarios podrías tener suficiente. Sé pragmático.
+      </div>
+
+      <!-- Imagen del Creador -->
+      <div class="flex flex-col items-center gap-3 my-8">
+        <img
+          src={finalImg.src}
+          alt="Philippe Kruchten, creador del Modelo 4+1"
+          class="w-full max-w-sm rounded-2xl border-4 border-[#4A3B22] shadow-[6px_6px_0px_#4A3B22]"
+        />
+        <p class="text-center text-sm font-bold text-textSecondary m-0">
+          📜 <strong>Philippe Kruchten</strong> — Ingeniero de software canadiense que publicó el Modelo 4+1 en 1995 mientras trabajaba en Rational Software.
+        </p>
       </div>
     </section>
 
