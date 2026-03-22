@@ -1,0 +1,61 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import CodeBlock from '../../../components/CodeBlock.astro';
+import JavaScriptQuizModal from '../../../components/JavaScriptQuizModal.astro';
+---
+
+<Layout title="Arreglos y Métodos de Lista" description="Organiza colecciones de datos con JavaScript." courseSlug="javascript">
+  <article class="content-section">
+    <h1>7. Arreglos: Listas Organizadas 📋</h1>
+
+    <section class="mb-10">
+      <h2>¿Qué es un Arreglo (Array)?</h2>
+      <p>Es una variable que puede guardar <strong>muchos valores</strong> a la vez bajo un solo nombre. Imagina una lista de la compra o los jugadores de un equipo.</p>
+      <CodeBlock
+        code={`const lenguajes = ["JavaScript", "Python", "Java", "C#"];
+
+console.log(lenguajes[0]); // "JavaScript"
+console.log(lenguajes.length); // 4`}
+        title="listas.js"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Métodos que debes conocer</h2>
+      <p>JavaScript nos da superpoderes para manipular estas listas:</p>
+      <ul>
+        <li><strong>push():</strong> Añade al final.</li>
+        <li><strong>pop():</strong> Quita el último.</li>
+        <li><strong>map():</strong> Crea una nueva lista transformando cada elemento.</li>
+      </ul>
+      <CodeBlock
+        code={`const numeros = [1, 2, 3];
+numeros.push(4); // [1, 2, 3, 4]
+
+const dobles = numeros.map(n => n * 2); // [2, 4, 6, 8]`}
+        title="metodos.js"
+      />
+    </section>
+
+    <div class="ejercicio" style="background: #E8F5E9;">
+      <h3>💻 Misión: Invitados VIP</h3>
+      <p class="enunciado">Crea un arreglo con 3 nombres. Usa .push() para añadir un cuarto nombre y luego usa .length para imprimir cuántos invitados hay en total.</p>
+      
+      <details>
+        <summary>👁️ Ver solución sugerida</summary>
+        <CodeBlock code={`const invitados = ["Ana", "Pedro", "Luis"];
+invitados.push("Marta");
+console.log("Total: " + invitados.length);`} title="JS" />
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <JavaScriptQuizModal quizKey="arreglos" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/javascript/funciones/" class="prev">← Funciones</a>
+      <a href="/javascript/dom/" class="next">Manipular el DOM →</a>
+    </nav>
+  </article>
+</Layout>

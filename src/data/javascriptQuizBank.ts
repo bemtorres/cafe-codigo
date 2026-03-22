@@ -43,22 +43,6 @@ export const javascriptQuizBank: Record<string, JSQuizDefinition> = {
       }
     ]
   },
-  'dom': {
-    key: 'dom',
-    title: 'Quiz: Manipular el DOM',
-    questions: [
-      {
-        prompt: "¿Qué significa DOM?",
-        options: ["Data Object Model", "Document Object Model", "Direct Operation Mode", "Digital Object Main"],
-        correctIndex: 1
-      },
-      {
-        prompt: "¿Qué método se usa para seleccionar un elemento por su ID?",
-        options: ["getElementByClass", "querySelector", "getElementById", "selectById"],
-        correctIndex: 2
-      }
-    ]
-  },
   'operadores': {
     key: 'operadores',
     title: 'Quiz: Operadores en JS',
@@ -120,6 +104,70 @@ export const javascriptQuizBank: Record<string, JSQuizDefinition> = {
         prompt: "¿Qué palabra reservada sirve para que una función envíe un valor de vuelta?",
         options: ["send", "output", "return", "back"],
         correctIndex: 2
+      }
+    ]
+  },
+  'arreglos': {
+    key: 'arreglos',
+    title: 'Quiz: Arreglos y Métodos',
+    questions: [
+      {
+        prompt: "¿Qué método se usa para añadir un elemento al FINAL de un arreglo?",
+        options: ["add()", "push()", "pop()", "shift()"],
+        correctIndex: 1
+      },
+      {
+        prompt: "¿Cuál de estos métodos crea un NUEVO arreglo basado en el original?",
+        options: ["forEach", "map", "index", "find"],
+        correctIndex: 1
+      }
+    ]
+  },
+  'dom': {
+    key: 'dom',
+    title: 'Quiz: Manipular el DOM',
+    questions: [
+      {
+        prompt: "¿Qué método se usa para seleccionar múltiples elementos con un selector CSS?",
+        options: ["getElementById", "querySelector", "querySelectorAll", "getElements"],
+        correctIndex: 2
+      },
+      {
+        prompt: "¿Cómo se cambia el contenido de texto de un elemento seleccionado?",
+        options: [".text()", ".value", ".textContent", ".setHTML()"],
+        correctIndex: 2
+      }
+    ]
+  },
+  'eventos': {
+    key: 'eventos',
+    title: 'Quiz: Eventos y Click',
+    questions: [
+      {
+        prompt: "¿Cómo se llama al método para escuchar un evento como un 'click'?",
+        options: ["addListener()", "addEventListener()", "onClick()", "startEvent()"],
+        correctIndex: 1
+      },
+      {
+        prompt: "En un evento, ¿qué objeto contiene la información de lo que ocurrió?",
+        options: ["info", "event (e)", "context", "data"],
+        correctIndex: 1
+      }
+    ]
+  },
+  'async': {
+    key: 'async',
+    title: 'Quiz: Fetch y Promesas',
+    questions: [
+      {
+        prompt: "¿Qué palabra clave hace que una función devuelva automáticamente una Promesa?",
+        options: ["await", "async", "promise", "defer"],
+        correctIndex: 1
+      },
+      {
+        prompt: "¿Qué comando se usa para pedir datos a una API externa?",
+        options: ["get()", "fetch()", "request()", "api()"],
+        correctIndex: 1
       }
     ]
   }
