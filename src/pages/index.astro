@@ -253,6 +253,33 @@ import imagen1 from '../assets/images/imagen1.png';
         </div>
       </div>
 
+      <!-- Motores de Videojuego -->
+      <div class="mt-20 mb-20">
+        <h2 class="text-4xl font-nunito font-extrabold text-textPrimary mb-8">Motores de Videojuego</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {courses.filter(c => c.category === 'gamedev').map((course, i) => (
+            <a
+              href={course.status === 'coming' ? '#' : `/${course.slug}/`}
+              class="block group outline-none"
+              data-coming={course.status === 'coming' ? 'true' : 'false'}
+              data-course-name={course.name}
+            >
+              <div class={`relative border-[3px] border-border rounded-3xl p-6 shadow-neo-lg transition-transform group-hover:-translate-y-1 bg-${i % 2 === 0 ? 'tertiary' : 'secondary'}`}>
+                {course.status === 'coming' && (
+                  <div class="absolute -top-4 right-5 bg-border text-white border-[3px] border-border rounded-xl py-1 px-3 font-extrabold font-nunito shadow-[2px_2px_0px_var(--text-secondary)]">
+                    Próximamente
+                  </div>
+                )}
+                <h3 class="text-xl font-nunito font-extrabold text-textPrimary mb-2">{course.name}</h3>
+                <p class="text-[0.95rem] font-[650] text-textSecondary line-clamp-4 leading-relaxed m-0">
+                  {course.description}
+                </p>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+
     </div>
   </div>
 

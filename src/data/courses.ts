@@ -1,5 +1,5 @@
 export type CourseStatus = 'available' | 'coming';
-export type CourseCategory = 'language' | 'engineering' | 'tools' | 'foundations' | 'frontend' | 'database';
+export type CourseCategory = 'language' | 'engineering' | 'tools' | 'foundations' | 'frontend' | 'database' | 'gamedev';
 
 export interface Course {
   slug: string;
@@ -266,6 +266,20 @@ export const courses: Course[] = [
       { slug: 'github-nube', title: '4. GitHub y la Nube', href: '/git/github-nube/' },
       { slug: 'alternativas-git', title: '5. GitLab y Bitbucket', href: '/git/alternativas-git/' },
       { slug: 'pull-requests', title: '6. Colaboración y Conflictos', href: '/git/pull-requests/' },
+    ],
+  },
+  {
+    slug: 'unity-prototipado',
+    name: 'Unity Ágil',
+    description: 'Fundamentos de Unity orientados a la rápida creación y validación de prototipos jugables para Sprints.',
+    category: 'gamedev',
+    status: 'available',
+    color: '#000000',
+    lessons: [
+      { slug: 'interfaz', title: '1. Interfaz y Mentalidad', href: '/unity-prototipado/interfaz/' },
+      { slug: 'scripting', title: '2. Del Requisito al Script', href: '/unity-prototipado/scripting/' },
+      { slug: 'fisica', title: '3. Física y Colisiones', href: '/unity-prototipado/fisica/' },
+      { slug: 'ui-ciclo', title: '4. UI y Ciclo de Juego', href: '/unity-prototipado/ui-ciclo/' },
     ],
   },
   {

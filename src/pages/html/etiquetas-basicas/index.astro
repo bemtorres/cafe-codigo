@@ -2,6 +2,7 @@
 import Layout from '../../../layouts/Layout.astro';
 import CodeBlock from '../../../components/CodeBlock.astro';
 import HtmlQuizModal from '../../../components/HtmlQuizModal.astro';
+import SandpackEditor from '../../../components/SandpackEditor.jsx';
 ---
 
 <Layout title="Títulos y Enlaces: La jerarquía del contenido" description="Aprende a usar los encabezados h1-h6 y a crear enlaces inteligentes en tu web." courseSlug="html">
@@ -18,6 +19,15 @@ import HtmlQuizModal from '../../../components/HtmlQuizModal.astro';
 <h2>Título de Sección</h2>
 <h3>Subtítulo... hasta h6</h3>`}
           title="html"
+        />
+      </div>
+
+      <div class="card my-6 p-4" style="background: #fff5f0; border: 2px dashed #ff4d00; border-radius: 12px;">
+        <p class="font-bold text-[#ff4d00] mb-3 flex items-center gap-2">🕹️ ¡Ahora edítalo tú mismo en tiempo real!</p>
+        <SandpackEditor
+          client:visible
+          title="index.html"
+          code={`<h1>Título Principal (el más importante)</h1>\n<h2>Título de Sección</h2>\n<h3>Subtítulo... hasta h6</h3>\n<p>Modifica este texto y mira lo que pasa en la derecha.</p>`}
         />
       </div>
       <p><strong>REGLA DE ORO:</strong> Ten solo UN <code>&lt;h1&gt;</code> por página, para que Google sepa de qué trata tu sitio.</p>
