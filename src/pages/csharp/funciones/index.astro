@@ -26,7 +26,7 @@ import CsharpQuizModal from '../../../components/CsharpQuizModal.astro';
       <p>
         Los métodos <code>void</code> simplemente ejecutan una acción, como imprimir un menú en pantalla, pero no te devuelven cálculos que puedas guardar en variables.
       </p>
-      <CodeBlock
+      <CodeBlock lang="csharp"
         code={`class Program
 {
     // Definimos el método
@@ -51,7 +51,7 @@ import CsharpQuizModal from '../../../components/CsharpQuizModal.astro';
         Si el método necesita devolver un resultado, debes cambiar la palabra `void` por el tipo de dato que devuelve (por ejemplo, `int`). 
         Dentro del bloque, es obligatorio usar la instrucción <strong><code>return</code></strong>.
       </p>
-      <CodeBlock
+      <CodeBlock lang="csharp"
         code={`class Program
 {
     // Definimos un método que suma dos enteros y devuelve un entero
@@ -84,7 +84,7 @@ import CsharpQuizModal from '../../../components/CsharpQuizModal.astro';
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`class Program
+        <CodeBlock lang="csharp" code={`class Program
 {
     static bool EsPar(int num)
     {
@@ -111,7 +111,7 @@ import CsharpQuizModal from '../../../components/CsharpQuizModal.astro';
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`static void Saludar()
+        <CodeBlock lang="csharp" code={`static void Saludar()
 {
     Console.WriteLine("¡Saludos desde mi función!");
 }
@@ -132,7 +132,7 @@ static void Main()
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`static double CalcularArea(double bas, double alt)
+        <CodeBlock lang="csharp" code={`static double CalcularArea(double bas, double alt)
 {
     return bas * alt;
 }
@@ -153,7 +153,7 @@ static void Main()
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`static int Sumar(int a, int b)
+        <CodeBlock lang="csharp" code={`static int Sumar(int a, int b)
 {
     return a + b;
 }

@@ -13,7 +13,7 @@ import CssQuizModal from '../../../components/CssQuizModal.astro';
       <p>
         <strong>Flexbox</strong> es un modelo de diseño que hace que los ítems dentro de un contenedor se alineen automáticamente para caber perfectamente. Es ideal para una sola dirección (o fila o columna).
       </p>
-      <CodeBlock
+      <CodeBlock lang="css"
         code={`.contenedor {
   display: flex;
   justify-content: center; /* Centra horizontalmente */
@@ -30,7 +30,7 @@ import CssQuizModal from '../../../components/CssQuizModal.astro';
     <div class="card my-8" style="background: white; border: 3px solid #000; border-radius: 20px; padding: 1.5rem;">
       <h3 style="color: #264de4;">🗺️ CSS Grid: El Layout Maestro</h3>
       <p>A diferencia de Flexbox, Grid es para <strong>dos dimensiones</strong> (filas Y columnas a la vez). Es ideal para crear la estructura entera de una página.</p>
-      <CodeBlock
+      <CodeBlock lang="css"
         code={`.grid-web {
   display: grid;
   grid-template-columns: 200px 1fr 200px; /* Tres columnas */

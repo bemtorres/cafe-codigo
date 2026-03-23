@@ -13,8 +13,7 @@ import JavaQuizModal from '../../../components/JavaQuizModal.astro';
       <p>
         El flujo de tu programa puede partirse en múltiples direcciones dependiendo de ciertas condiciones usando la clásica estructura <code>if</code> y <code>else</code>, anidando bloques con llaves <code>{}</code>.
       </p>
-      <CodeBlock
-        code={`int bateria = 15;
+      <CodeBlock lang="java" code={`int bateria = 15;
 
 if (bateria > 50) {
     System.out.println("Dispositivo seguro.");
@@ -35,8 +34,7 @@ else {
       <p>
         Si tienes un menú con opciones exactas (como 1, 2, 3), escribir múltiples <code>else if</code> se vuelve visualmente sucio. En ese caso se utiliza el <code>switch</code>.
       </p>
-      <CodeBlock
-        code={`int opcion = 2;
+      <CodeBlock lang="java" code={`int opcion = 2;
 
 switch(opcion) {
     case 1:
@@ -63,7 +61,7 @@ switch(opcion) {
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`int num = -5;
+        <CodeBlock lang="java" code={`int num = -5;
 
 if (num > 0) {
     System.out.println("Positivo");
@@ -84,7 +82,7 @@ if (num > 0) {
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`String pass = "1234";
+        <CodeBlock lang="java" code={`String pass = "1234";
 
 // NUNCA uses == con Strings en Java. Usa .equals()
 if (pass.equals("1234")) {
@@ -104,7 +102,7 @@ if (pass.equals("1234")) {
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`int dia = 2;
+        <CodeBlock lang="java" code={`int dia = 2;
 
 switch(dia) {
     case 1: 
@@ -129,7 +127,7 @@ switch(dia) {
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`int nota = 85;
+        <CodeBlock lang="java" code={`int nota = 85;
 
 if (nota >= 90) {
     System.out.println("Excelencia");

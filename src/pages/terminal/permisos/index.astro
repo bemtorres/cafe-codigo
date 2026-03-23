@@ -18,8 +18,7 @@ import TerminalQuizModal from '../../../components/TerminalQuizModal.astro';
         <li><strong><code>w</code> (Write):</strong> Escritura (2).</li>
         <li><strong><code>x</code> (Execute):</strong> Ejecución (1).</li>
       </ul>
-      <CodeBlock
-        code={`chmod 755 script.sh
+      <CodeBlock lang="bash" code={`chmod 755 script.sh
 # 7 (4+2+1): rwx para el Dueño
 # 5 (4+0+1): r-x para el Grupo
 # 5 (4+0+1): r-x para Otros`}
@@ -42,7 +41,7 @@ import TerminalQuizModal from '../../../components/TerminalQuizModal.astro';
       
       <details>
         <summary>👁️ Ver comando</summary>
-        <CodeBlock code={`chmod 444 script.py`} title="Terminal" />
+        <CodeBlock lang="bash" code={`chmod 444 script.py`} title="Terminal" />
       </details>
     </div>
 

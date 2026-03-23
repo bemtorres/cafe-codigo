@@ -19,8 +19,7 @@ import JavaUnitQuizModal from '../../../components/JavaUnitQuizModal.astro';
         <li><code>assertFalse(condicion)</code>: Verifica que algo sea falso.</li>
         <li><code>assertNotNull(objeto)</code>: Verifica que el objeto se haya instanciado correctamente.</li>
       </ul>
-      <CodeBlock
-        code={`@Test
+      <CodeBlock lang="java" code={`@Test
 void testValores() {
     boolean estaVivo = true;
     String nombre = "Link";
@@ -41,7 +40,7 @@ void testValores() {
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`assertEquals(5, Math.abs(-5));`} />
+        <CodeBlock lang="java" code={`assertEquals(5, Math.abs(-5));`} />
       </details>
     </div>
 
@@ -54,7 +53,7 @@ void testValores() {
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`@Test
+        <CodeBlock lang="java" code={`@Test
 void testCadenaVacia() {
     assertTrue("".isEmpty());
 }`} />

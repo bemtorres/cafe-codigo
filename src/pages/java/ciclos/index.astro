@@ -14,8 +14,7 @@ import JavaQuizModal from '../../../components/JavaQuizModal.astro';
         El bucle <code>while</code> se ejecuta repetidas veces <strong>mientras</strong> su condición sea <code>true</code>. Si de entrada es falsa, nunca entraremos a él.
         Por otro lado, la variante <code>do-while</code> garantiza que el código de adentro se ejecute al menos <strong>una única vez</strong>, sin importar si la condición es falsa, porque verifica dicha condición al <em>final</em> de la llave en lugar de al principio.
       </p>
-      <CodeBlock
-        code={`int boletos = 5;
+      <CodeBlock lang="java" code={`int boletos = 5;
 
 // Mientras nos sigan quedando boletos...
 while(boletos > 0) {
@@ -31,8 +30,7 @@ while(boletos > 0) {
       <p>
         Cuando sabemos <strong>exactamente</strong> cuántas veces queremos que algo pase, el <code>for</code> es el rey porque compacta la lógica. Combina de un solo golpe: <em>(1) la creación del contador; (2) la condición que mantiene vivo el ciclo; (3) el incremento automático en cada vuelta</em>.
       </p>
-      <CodeBlock
-        code={`// Iniciamos en i=1, iteramos mientras i sea menor o igual a 10, y saltamos de a 1 (i++).
+      <CodeBlock lang="java" code={`// Iniciamos en i=1, iteramos mientras i sea menor o igual a 10, y saltamos de a 1 (i++).
 for (int i = 1; i <= 10; i++) {
     System.out.println("El valor de i en esta vuelta es: " + i);
 }`}
@@ -52,7 +50,7 @@ for (int i = 1; i <= 10; i++) {
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`for (int i = 1; i <= 10; i++) {
+        <CodeBlock lang="java" code={`for (int i = 1; i <= 10; i++) {
     if (i == 5) {
         continue; // Ignora el 5 y salta a la siguiente iteración
     }
@@ -70,7 +68,7 @@ for (int i = 1; i <= 10; i++) {
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`int cuenta = 5;
+        <CodeBlock lang="java" code={`int cuenta = 5;
 while (cuenta > 0) {
     System.out.println("T-menos: " + cuenta);
     cuenta--;
@@ -88,7 +86,7 @@ System.out.println("¡Despegue!");`} />
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`for (int i = 2; i <= 20; i += 2) {
+        <CodeBlock lang="java" code={`for (int i = 2; i <= 20; i += 2) {
     System.out.println("Es par: " + i);
 }`} />
       </details>
@@ -103,7 +101,7 @@ System.out.println("¡Despegue!");`} />
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`int op = 0;
+        <CodeBlock lang="java" code={`int op = 0;
 do {
     System.out.println("Cargando Menú de Usuario...");
     // Forzamos la salida simulando que el usuario digitó salir.

@@ -13,7 +13,7 @@ import CsharpQuizModal from '../../../components/CsharpQuizModal.astro';
       <p>
         El <code>while</code> repite un bloque de código <strong>mientras</strong> su condición sea <code>true</code>. Si la condición es falsa desde el principio, el código nunca se ejecuta.
       </p>
-      <CodeBlock
+      <CodeBlock lang="csharp"
         code={`int contador = 1;
 
 while (contador <= 5) 
@@ -31,7 +31,7 @@ while (contador <= 5)
         A diferencia del <code>while</code>, el <code>do-while</code> <strong>siempre ejecuta el código al menos una vez</strong> antes de verificar la condición al final.
         Es perfecto para menús o validaciones de entrada.
       </p>
-      <CodeBlock
+      <CodeBlock lang="csharp"
         code={`int eleccion;
 
 do 
@@ -53,7 +53,7 @@ Console.WriteLine("¡Adiós!");`}
       <p>
         El <code>for</code> es el rey de los bucles cuando <strong>sabes exactamente cuántas veces quieres repetir algo</strong>. Agrupa la declaración de la variable, la condición y el incremento en una sola línea ordenada.
       </p>
-      <CodeBlock
+      <CodeBlock lang="csharp"
         code={`// Sintaxis: for(inicialización; condición; incremento)
 for (int i = 1; i <= 10; i++)
 {
@@ -82,7 +82,7 @@ for (int i = 1; i <= 10; i++)
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`for (int i = 1; i <= 10; i++)
+        <CodeBlock lang="csharp" code={`for (int i = 1; i <= 10; i++)
 {
     if (i == 5)
     {
@@ -104,7 +104,7 @@ for (int i = 1; i <= 10; i++)
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`int cuenta = 5;
+        <CodeBlock lang="csharp" code={`int cuenta = 5;
 while(cuenta > 0)
 {
     Console.WriteLine(cuenta);
@@ -123,7 +123,7 @@ Console.WriteLine("¡Despegue!");`} />
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`for (int i = 2; i <= 20; i += 2)
+        <CodeBlock lang="csharp" code={`for (int i = 2; i <= 20; i += 2)
 {
     Console.WriteLine(i);
 }`} />
@@ -139,7 +139,7 @@ Console.WriteLine("¡Despegue!");`} />
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`int op = 0;
+        <CodeBlock lang="csharp" code={`int op = 0;
 do 
 {
     Console.WriteLine("Ejecutando iteración...");

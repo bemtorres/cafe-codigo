@@ -23,8 +23,7 @@ import GitQuizModal from '../../../components/GitQuizModal.astro';
     <div class="card my-8" style="background: #fff5f2; border: 3px solid #f05032; border-radius: 20px; padding: 1.5rem;">
       <h3 style="color: #f05032;">💥 ¡Alerta de conflicto!</h3>
       <p>A veces, dos personas editan <strong>exactamente la misma línea de código</strong> al mismo tiempo. Git no sabe a quién hacer caso y te pide ayuda humana.</p>
-      <CodeBlock
-        code={`<<<<<<< HEAD
+      <CodeBlock lang="bash" code={`<<<<<<< HEAD
 <h1>Tu Titulo de la Web</h1>
 =======
 <h1>Titulo de mi compañero</h1>

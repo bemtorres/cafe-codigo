@@ -11,8 +11,7 @@ import PythonQuizModal from '../../../components/PythonQuizModal.astro';
     <section class="mb-10">
       <h2>Estructura Clave: Valor</h2>
       <p>Un diccionario es una colección de <strong>pares clave-valor</strong> encerrados en llaves <code>{}</code>. Es como una base de datos pequeña que se guarda en una sola variable.</p>
-      <CodeBlock
-        code={`usuario = {
+      <CodeBlock lang="python" code={`usuario = {
     "nombre": "Benjamín",
     "edad": 28,
     "cargo": "Programador"
@@ -37,8 +36,7 @@ print(usuario.keys())`}
     <section class="mb-10">
       <h2>Método .get() vs []</h2>
       <p>Es mejor usar <code>.get()</code> porque si la clave no existe, tu programa no explota (devuelve <code>None</code>).</p>
-      <CodeBlock
-        code={`# Esto daría error si 'pais' no existe
+      <CodeBlock lang="python" code={`# Esto daría error si 'pais' no existe
 # print(usuario["pais"])
 
 # Esto es seguro (devuelve None o un valor por defecto)
@@ -54,7 +52,7 @@ print(pais)`}
       
       <details>
         <summary>👁️ Ver solución sugerida</summary>
-        <CodeBlock code={`tienda = { "iphone": 999, "laptop": 1200 }
+        <CodeBlock lang="python" code={`tienda = { "iphone": 999, "laptop": 1200 }
 print(tienda["iphone"])`} title="Python" />
       </details>
     </div>

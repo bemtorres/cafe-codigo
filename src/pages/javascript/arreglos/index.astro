@@ -11,8 +11,7 @@ import JavaScriptQuizModal from '../../../components/JavaScriptQuizModal.astro';
     <section class="mb-10">
       <h2>¿Qué es un Arreglo (Array)?</h2>
       <p>Es una variable que puede guardar <strong>muchos valores</strong> a la vez bajo un solo nombre. Imagina una lista de la compra o los jugadores de un equipo.</p>
-      <CodeBlock
-        code={`const lenguajes = ["JavaScript", "Python", "Java", "C#"];
+      <CodeBlock lang="javascript" code={`const lenguajes = ["JavaScript", "Python", "Java", "C#"];
 
 console.log(lenguajes[0]); // "JavaScript"
 console.log(lenguajes.length); // 4`}
@@ -28,8 +27,7 @@ console.log(lenguajes.length); // 4`}
         <li><strong>pop():</strong> Quita el último.</li>
         <li><strong>map():</strong> Crea una nueva lista transformando cada elemento.</li>
       </ul>
-      <CodeBlock
-        code={`const numeros = [1, 2, 3];
+      <CodeBlock lang="javascript" code={`const numeros = [1, 2, 3];
 numeros.push(4); // [1, 2, 3, 4]
 
 const dobles = numeros.map(n => n * 2); // [2, 4, 6, 8]`}
@@ -43,7 +41,7 @@ const dobles = numeros.map(n => n * 2); // [2, 4, 6, 8]`}
       
       <details>
         <summary>👁️ Ver solución sugerida</summary>
-        <CodeBlock code={`const invitados = ["Ana", "Pedro", "Luis"];
+        <CodeBlock lang="javascript" code={`const invitados = ["Ana", "Pedro", "Luis"];
 invitados.push("Marta");
 console.log("Total: " + invitados.length);`} title="JS" />
       </details>

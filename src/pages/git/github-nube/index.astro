@@ -16,8 +16,7 @@ import GitQuizModal from '../../../components/GitQuizModal.astro';
       <p>
         <strong>¿Para qué sirve?:</strong> Si tu computadora muere por un rayo, tu código está a salvo en GitHub. Y si quieres trabajar con alguien más, ambos se conectan a GitHub para compartir el trabajo.
       </p>
-      <CodeBlock
-        code={`git remote add origin https://github.com/tu-usuario/mi-proyecto.git
+      <CodeBlock lang="bash" code={`git remote add origin https://github.com/tu-usuario/mi-proyecto.git
 # ¡Listo para subir a la nube!`}
         title="bash"
       />
@@ -31,8 +30,7 @@ import GitQuizModal from '../../../components/GitQuizModal.astro';
         <li><strong>Forks:</strong> Puedes copiar el proyecto de otro, añadirle una mejora y enviársela.</li>
         <li><strong>Pull Requests (PR):</strong> La herramienta por excelencia para colaborar.</li>
       </ul>
-      <CodeBlock
-        code={`git push origin main
+      <CodeBlock lang="bash" code={`git push origin main
 # ¡Tus commits locales ahora se ven en la web de GitHub!`}
         title="bash"
       />

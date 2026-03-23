@@ -15,8 +15,7 @@ import PseintQuizModal from '../../../components/PseintQuizModal.astro';
         La instrucción <code>Leer</code> permite que el usuario ingrese datos desde el teclado 
         mientras el programa se ejecuta. El valor introducido se guarda en la variable indicada.
       </p>
-      <CodeBlock
-        code={`Definir nombre Como Caracter;
+      <CodeBlock lang="pseint" code={`Definir nombre Como Caracter;
 Escribir "¿Cuál es tu nombre?";
 Leer nombre;
 Escribir "Hola, ", nombre;`}
@@ -37,8 +36,7 @@ Escribir "Hola, ", nombre;`}
 
     <section class="mb-10">
       <h2>Leer diferentes tipos</h2>
-      <CodeBlock
-        code={`Algoritmo TiposDeDatos
+      <CodeBlock lang="pseint" code={`Algoritmo TiposDeDatos
   Definir nombre Como Caracter;
   Definir edad Como Entero;
   Definir altura Como Real;

@@ -1,5 +1,3 @@
-/* Shiki CSS Variables Themes */
-
 /* ── DEFAULT: One Dark (fallback si no hay data-code-theme) ── */
 :root {
   --shiki-color-text: #abb2bf;
@@ -18,6 +16,7 @@
   --shiki-token-property: #d19a66;
   --shiki-token-operator: #56b6c2;
 
+  /* PSeInt vars */
   --pseint-bg: #282c34;
   --pseint-txt: #abb2bf;
   --pseint-kw: #c678dd;

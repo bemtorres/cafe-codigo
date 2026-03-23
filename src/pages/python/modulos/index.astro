@@ -11,8 +11,7 @@ import PythonQuizModal from '../../../components/PythonQuizModal.astro';
     <section class="mb-10">
       <h2>Librerías estándar de Python</h2>
       <p>Python viene con un montón de herramientas "incluidas en el precio". Puedes importarlas con la palabra clave <code>import</code>.</p>
-      <CodeBlock
-        code={`import math
+      <CodeBlock lang="python" code={`import math
 import random
 
 # Calcular raíz cuadrada
@@ -27,8 +26,7 @@ print(random.randint(1, 10))`}
     <section class="mb-10">
       <h2>Módulos Propios</h2>
       <p>Un módulo es simplemente un archivo <code>.py</code>. Puedes importar funciones de tus propios archivos para organizar mejor tu código.</p>
-      <CodeBlock
-        code={`# Archivo: utilidades.py
+      <CodeBlock lang="python" code={`# Archivo: utilidades.py
 def sumar(a, b):
     return a + b
 
@@ -42,8 +40,7 @@ print(sumar(10, 5))`}
     <section class="mb-10">
       <h2>El archivo requirements.txt</h2>
       <p>Cuando trabajas en equipo, guardas todas las librerías necesarias en un archivo de texto para que otros las instalen con un solo comando.</p>
-      <CodeBlock
-        code={`# Ejecuta esto para instalar todo lo del proyecto
+      <CodeBlock lang="python" code={`# Ejecuta esto para instalar todo lo del proyecto
 pip install -r requirements.txt`}
         title="Terminal"
       />
@@ -52,8 +49,7 @@ pip install -r requirements.txt`}
     <section class="mb-10">
       <h2>¿Qué es PIP?</h2>
       <p>Es el **gestor de paquetes** de Python. Sirve para instalar librerías que **otras personas** han escrito y compartido con el mundo (como Pandas, Requests, Django o FastAPI).</p>
-      <CodeBlock
-        code={`# Ejecuta esto en tu consola (fuera de Python)
+      <CodeBlock lang="python" code={`# Ejecuta esto en tu consola (fuera de Python)
 pip install requests`}
         title="Terminal"
       />
@@ -65,7 +61,7 @@ pip install requests`}
       
       <details>
         <summary>👁️ Ver solución sugerida</summary>
-        <CodeBlock code={`import random
+        <CodeBlock lang="python" code={`import random
 caras = random.randint(1, 6)
 print("Ha salido un: " + str(caras))`} title="Python" />
       </details>

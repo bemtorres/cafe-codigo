@@ -13,8 +13,7 @@ import JavaUnitQuizModal from '../../../components/JavaUnitQuizModal.astro';
       <p>
         En Java, una <strong>Interfaz</strong> es un contrato. Si tenemos la interfaz <code>Volable</code> con el método <code>volar()</code>, a nuestros tests no les importa si probamos un <code>Avion</code> o un <code>Dragon</code>; lo único que importa es que ante el llamado de volar, ambos despeguen igual.
       </p>
-      <CodeBlock
-        code={`@Test
+      <CodeBlock lang="java" code={`@Test
 void testConexiones() {
     IConexion cWiFi = new WiFi();
     IConexion cCable = new Ethernet();
@@ -36,7 +35,7 @@ void testConexiones() {
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`@Test
+        <CodeBlock lang="java" code={`@Test
 void testMotor() {
     IMotor d = new Diesel();
     d.encender();
@@ -54,7 +53,7 @@ void testMotor() {
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`@Test
+        <CodeBlock lang="java" code={`@Test
 void testJSON() {
     IDocumento d = new JSONData();
     assertEquals("{}", d.toString());

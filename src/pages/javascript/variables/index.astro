@@ -15,8 +15,7 @@ import JavaScriptQuizModal from '../../../components/JavaScriptQuizModal.astro';
         <li><strong>let:</strong> Para valores que <strong>pueden cambiar</strong> (como un contador o el nombre del usuario).</li>
         <li><strong>const:</strong> Para valores que <strong>NUNCA cambian</strong> (como el nombre de tu empresa o la gravedad).</li>
       </ul>
-      <CodeBlock
-        code={`let puntos = 100;
+      <CodeBlock lang="javascript" code={`let puntos = 100;
 puntos = 150; // ¡Puedo cambiarlo!
 
 const nombre = "JavaScript";
@@ -28,8 +27,7 @@ const nombre = "JavaScript";
     <section class="mb-10">
       <h2>Tipado Dinámico e Inspección</h2>
       <p>Al igual que Python, JavaScript no te obliga a decir el tipo de dato. Pero si quieres saber qué hay dentro de una variable en cualquier momento, usa <code>typeof</code>.</p>
-      <CodeBlock
-        code={`let algo = "Hola";
+      <CodeBlock lang="javascript" code={`let algo = "Hola";
 console.log(typeof algo); // Imprime "string"
 
 algo = 42; 
@@ -44,7 +42,7 @@ console.log(typeof algo); // Imprime "number"`}
       
       <details>
         <summary>👁️ Ver solución sugerida</summary>
-        <CodeBlock code={`const juegoFav = "Zelda: Tears of the Kingdom";
+        <CodeBlock lang="javascript" code={`const juegoFav = "Zelda: Tears of the Kingdom";
 let nivelActual = 42;`} title="JS" />
       </details>
     </div>

@@ -27,7 +27,7 @@ import TerminalQuizModal from '../../../components/TerminalQuizModal.astro';
         <li><strong><code>ls > lista.txt</code></strong>: Crea (sobrescribe) <code>lista.txt</code> con lo que diga <code>ls</code>.</li>
         <li><strong><code>ls >> lista.txt</code></strong>: Añade (append) sin borrar lo de antes al final de <code>lista.txt</code>.</li>
       </ul>
-      <CodeBlock
+      <CodeBlock lang="bash"
         code={`grep "error" server.log > errores_detectados.txt
 # Solo los errores se guardarán en el nuevo archivo.`}
         title="bash"
@@ -40,7 +40,7 @@ import TerminalQuizModal from '../../../components/TerminalQuizModal.astro';
       
       <details>
         <summary>👁️ Ver comando</summary>
-        <CodeBlock code={`echo "Terminado" >> progreso.txt`} title="Terminal" />
+        <CodeBlock lang="bash" code={`echo "Terminado" >> progreso.txt`} title="Terminal" />
       </details>
     </div>
 

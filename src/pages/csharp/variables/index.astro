@@ -60,7 +60,7 @@ import CsharpQuizModal from '../../../components/CsharpQuizModal.astro';
       <p>
         En C# puedes declarar la variable primero y asignarle valor después, o hacerlo todo en la misma línea (lo recomendado).
       </p>
-      <CodeBlock
+      <CodeBlock lang="csharp"
         code={`// Definición explícita
 int edad = 25;
 string nombre = "Juan";
@@ -81,7 +81,7 @@ Console.WriteLine("Nombre: " + nombre + ", Edad: " + edad);`}
       <p>
         Puedes usar <code>var</code> si le asignas un valor a la variable al momento de crearla. C# es lo suficientemente inteligente para adivinar de qué tipo se trata basado en el valor.
       </p>
-      <CodeBlock
+      <CodeBlock lang="csharp"
         code={`// C# asume que 'ciudad' es un string
 var ciudad = "Buenos Aires";
 
@@ -102,7 +102,7 @@ var anio = 2024;`}
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`string nombre = "Arthas";
+        <CodeBlock lang="csharp" code={`string nombre = "Arthas";
 int nivel = 85;
 bool estaVivo = false;
 
@@ -120,7 +120,7 @@ Console.WriteLine($"El jugador {nombre} de nivel {nivel} ¿está vivo? {estaVivo
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`int a = 10;
+        <CodeBlock lang="csharp" code={`int a = 10;
 int b = 5;
 int resultado = a + b;
 Console.WriteLine(resultado);`} />
@@ -136,7 +136,7 @@ Console.WriteLine(resultado);`} />
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`const double PI = 3.1416;
+        <CodeBlock lang="csharp" code={`const double PI = 3.1416;
 Console.WriteLine($"El valor de pi es {PI}");`} />
       </details>
     </div>
@@ -150,7 +150,7 @@ Console.WriteLine($"El valor de pi es {PI}");`} />
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`string texto1 = "5";
+        <CodeBlock lang="csharp" code={`string texto1 = "5";
 string texto2 = "10";
 Console.WriteLine(texto1 + texto2); // Imprime 510`} />
       </details>

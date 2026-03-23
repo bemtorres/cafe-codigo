@@ -11,8 +11,7 @@ import PythonQuizModal from '../../../components/PythonQuizModal.astro';
     <section class="mb-10">
       <h2>Listas: Elásticas y flexibles</h2>
       <p>Una lista es una colección <strong>mutable</strong> (puedes cambiar sus elementos) que se define con corchetes <code>[]</code>.</p>
-      <CodeBlock
-        code={`frutas = ["manzana", "platano", "cereza"]
+      <CodeBlock lang="python" code={`frutas = ["manzana", "platano", "cereza"]
 frutas.append("naranja") # Añadir al final
 frutas[0] = "kiwi" # Cambiar el primero (índice 0)
 
@@ -32,8 +31,7 @@ print(ultimo) # naranja`}
     <section class="mb-10">
       <h2>Slicing: Troceando la lista</h2>
       <p>Python te permite sacar un "pedazo" de la lista indicando el rango.</p>
-      <CodeBlock
-        code={`# [inicio : fin] 
+      <CodeBlock lang="python" code={`# [inicio : fin] 
 numeros = [0, 1, 2, 3, 4, 5]
 recorte = numeros[1:4] 
 print(recorte) # [1, 2, 3]`}
@@ -44,8 +42,7 @@ print(recorte) # [1, 2, 3]`}
     <section class="mb-10">
       <h2>Tuplas: Fijas e inmutables</h2>
       <p>Las tuplas se definen con paréntesis <code>()</code>. Son ideales para datos que <strong>no deben cambiar</strong> (como coordenadas GPS o los meses del año).</p>
-      <CodeBlock
-        code={`coordenadas = (10.5, 20.3)
+      <CodeBlock lang="python" code={`coordenadas = (10.5, 20.3)
 # coordenadas[0] = 5.0 # ERROR: No se puede cambiar`}
         title="tuplas.py"
       />
@@ -57,7 +54,7 @@ print(recorte) # [1, 2, 3]`}
       
       <details>
         <summary>👁️ Ver solución sugerida</summary>
-        <CodeBlock code={`carrito = []
+        <CodeBlock lang="python" code={`carrito = []
 carrito.append("Leche")
 carrito.append("Pan")
 carrito.append("Huevos")

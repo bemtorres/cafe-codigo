@@ -13,8 +13,7 @@ import JavaQuizModal from '../../../components/JavaQuizModal.astro';
       <p>
         Cuando varias de nuestras Clases tienen datos redundantes (como "PersonajeJugable" y "Enemigo" repitiendo el atributo de `nivel` y el método `moverse()`), creamos una Clase Padre y hacemos que éstas la <strong>hereden</strong> mediante <code>extends</code>. Así evitamos repetir código, respetando el sagrado principio DRY (Don't Repeat Yourself).
       </p>
-      <CodeBlock
-        code={`// 1. La clase Padre Original
+      <CodeBlock lang="java" code={`// 1. La clase Padre Original
 class EntidadVisual {
     public int x = 0;
     public int y = 0;
@@ -57,7 +56,7 @@ public class Juego {
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`class Instrumento {
+        <CodeBlock lang="java" code={`class Instrumento {
     protected void tocar() { 
         System.out.println("Suena instrumento estandar"); 
     } 
@@ -82,7 +81,7 @@ class Guitarra extends Instrumento {
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`class EmpleadoBase {
+        <CodeBlock lang="java" code={`class EmpleadoBase {
     void cobrar() { System.out.println("Cobró salario mínimo"); }
 }
 
@@ -105,7 +104,7 @@ class Director extends EmpleadoBase {
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`interface IVolador {
+        <CodeBlock lang="java" code={`interface IVolador {
     // Vacío y abstracto obligatoriamente
     void volar();
 }
@@ -128,7 +127,7 @@ class Pato implements IVolador {
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`public abstract class SerVivo {
+        <CodeBlock lang="java" code={`public abstract class SerVivo {
     public int pulsaciones;
 }
 

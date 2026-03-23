@@ -18,8 +18,7 @@ import TerminalQuizModal from '../../../components/TerminalQuizModal.astro';
         <li><strong><code>pwd</code> (Print Working Directory):</strong> Te dice exactamente en qué ruta estás en este momento.</li>
         <li><strong><code>cd</code> (Change Directory):</strong> Te permite "entrar" en una carpeta diferente.</li>
       </ul>
-      <CodeBlock
-        code={`pwd
+      <CodeBlock lang="bash" code={`pwd
 # /home/usuario/documentos
 
 ls
@@ -46,7 +45,7 @@ cd carpeta_1
       
       <details>
         <summary>👁️ Ver comando</summary>
-        <CodeBlock code={`cd ..`} title="Terminal" />
+        <CodeBlock lang="bash" code={`cd ..`} title="Terminal" />
       </details>
     </div>
 

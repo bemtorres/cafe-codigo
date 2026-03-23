@@ -24,7 +24,7 @@ import CsharpQuizModal from '../../../components/CsharpQuizModal.astro';
       <p>
         En lugar de usar el símbolo `+` para unir (concatenar) texto y variables, C# tiene una funcionalidad elegante llamada **Interpolación de Cadenas**. Solo pon un signo de dólar `$` antes de las comillas e inserta las variables entre llaves `{}`.
       </p>
-      <CodeBlock
+      <CodeBlock lang="csharp"
         code={`string nombre = "Ana";
 int edad = 30;
 
@@ -43,7 +43,7 @@ Console.WriteLine($"Hola, me llamo {nombre} y tengo {edad} años.");`}
         Para que el usuario ingrese información, usamos <code>Console.ReadLine()</code>. 
         <strong>Importante:</strong> Este método *siempre* devuelve un dato de tipo cadena (`string`).
       </p>
-      <CodeBlock
+      <CodeBlock lang="csharp"
         code={`Console.Write("Escribe tu nombre: ");
 string nombreUsuario = Console.ReadLine();
 
@@ -57,7 +57,7 @@ Console.WriteLine($"¡Bienvenido, {nombreUsuario}!");`}
       <p>
         Dado que `Console.ReadLine()` devuelve texto, si le pedimos al usuario su edad (un número), C# fallará si intentamos sumarle algo. Para eso debemos **Convertir / Parsear** el texto a un número usando `int.Parse()` o `Convert.ToInt32()`.
       </p>
-      <CodeBlock
+      <CodeBlock lang="csharp"
         code={`Console.Write("Ingresa tu edad: ");
 string inputEdad = Console.ReadLine();
 
@@ -81,7 +81,7 @@ Console.WriteLine($"En 10 años, tendrás {edadFutura} años.");`}
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`Console.Write("Ingresa el primer número: ");
+        <CodeBlock lang="csharp" code={`Console.Write("Ingresa el primer número: ");
 int num1 = int.Parse(Console.ReadLine());
 
 Console.Write("Ingresa el segundo número: ");
@@ -102,7 +102,7 @@ Console.WriteLine($"La suma total es: {suma}");`} />
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`Console.Write("¿Cuál es tu nombre?: ");
+        <CodeBlock lang="csharp" code={`Console.Write("¿Cuál es tu nombre?: ");
 string nombre = Console.ReadLine();
 Console.WriteLine($"¡Bienvenido, {nombre}!");`} />
       </details>
@@ -117,7 +117,7 @@ Console.WriteLine($"¡Bienvenido, {nombre}!");`} />
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`Console.Write("Ingresa tu edad: ");
+        <CodeBlock lang="csharp" code={`Console.Write("Ingresa tu edad: ");
 int edad = int.Parse(Console.ReadLine());
 int anioNacimiento = 2026 - edad;
 Console.WriteLine($"Naciste aproximadamente en {anioNacimiento}");`} />
@@ -133,7 +133,7 @@ Console.WriteLine($"Naciste aproximadamente en {anioNacimiento}");`} />
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`Console.Write("Introduce el precio: ");
+        <CodeBlock lang="csharp" code={`Console.Write("Introduce el precio: ");
 double precio = double.Parse(Console.ReadLine());
 Console.WriteLine($"El costo final es: $ {precio}");`} />
       </details>

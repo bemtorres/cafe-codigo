@@ -13,7 +13,7 @@ import CsharpQuizModal from '../../../components/CsharpQuizModal.astro';
       <p>
         El condicional <code>if</code> (Si) evalúa una expresión lógica (que devuelve `true` o `false`). Si es verdadera, ejecuta el bloque de código dentro de las llaves <code>{}</code>. Si es falsa, ejecuta el bloque <code>else</code> (Sino).
       </p>
-      <CodeBlock
+      <CodeBlock lang="csharp"
         code={`int edad = 18;
 
 if (edad >= 18) 
@@ -33,7 +33,7 @@ else
       <p>
         Cuando tienes más de dos caminos posibles, puedes encadenar las condiciones usando <code>else if</code>. C# evaluará una por una desde arriba hacia abajo y ejecutará solo la primera que sea verdadera.
       </p>
-      <CodeBlock
+      <CodeBlock lang="csharp"
         code={`double nota = 8.5;
 
 if (nota >= 9.0) 
@@ -57,7 +57,7 @@ else
       <p>
         El <code>switch</code> es ideal cuando quieres evaluar una <strong>sola variable contra muchos valores exactos</strong> (como un menú de opciones). Es más limpio y rápido que hacer muchos `if-else`.
       </p>
-      <CodeBlock
+      <CodeBlock lang="csharp"
         code={`int diaSemana = 3;
 
 switch (diaSemana)
@@ -90,7 +90,7 @@ switch (diaSemana)
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`int num = -5;
+        <CodeBlock lang="csharp" code={`int num = -5;
 
 if (num > 0) 
 {
@@ -117,7 +117,7 @@ else
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`string pass = "1234";
+        <CodeBlock lang="csharp" code={`string pass = "1234";
 if (pass == "1234") {
     Console.WriteLine("Acceso concedido");
 } else {
@@ -135,7 +135,7 @@ if (pass == "1234") {
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`int dia = 2;
+        <CodeBlock lang="csharp" code={`int dia = 2;
 switch(dia) 
 {
     case 1: Console.WriteLine("Lunes"); break;
@@ -154,7 +154,7 @@ switch(dia)
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`int nota = 85;
+        <CodeBlock lang="csharp" code={`int nota = 85;
 if (nota >= 90) Console.WriteLine("A");
 else if (nota >= 80) Console.WriteLine("B");
 else Console.WriteLine("C");`} />

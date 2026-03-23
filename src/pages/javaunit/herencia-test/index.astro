@@ -13,8 +13,7 @@ import JavaUnitQuizModal from '../../../components/JavaUnitQuizModal.astro';
       <p>
         Cuando una clase hija hereda de un padre (<code>Guerrero extends Personaje</code>), debe seguir cumpliendo las reglas del padre pero comportarse a su manera en los métodos sobrescritos (<code>@Override</code>). Un test unitario nos permite asegurar que el hijo <strong>realmente es</strong> un padre y que sus ataques especiales funcionan.
       </p>
-      <CodeBlock
-        code={`@Test
+      <CodeBlock lang="java" code={`@Test
 void testGuerreroEsUnPersonaje() {
     Personaje p = new Guerrero("Hercules");
     // Assert 1: ¿De verdad es un Personaje?
@@ -41,7 +40,7 @@ void testAtaqueGuerrero() {
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`@Test
+        <CodeBlock lang="java" code={`@Test
 void testEsAve() {
     Ave p = new Pinguino();
     assertTrue(p instanceof Ave);
@@ -58,7 +57,7 @@ void testEsAve() {
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`@Test
+        <CodeBlock lang="java" code={`@Test
 void testIdHeredado() {
     Coche c = new Coche();
     assertNotNull(c.getId());

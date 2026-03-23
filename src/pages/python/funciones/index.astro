@@ -11,8 +11,7 @@ import PythonQuizModal from '../../../components/PythonQuizModal.astro';
     <section class="mb-10">
       <h2>Escribir código una sola vez</h2>
       <p>Una función es un bloque de código que puedes <strong>llamar muchas veces</strong>. ¡No te repitas! (D.R.Y - Don't Repeat Yourself).</p>
-      <CodeBlock
-        code={`def saludar(nombre, mensaje="Bienvenido"):
+      <CodeBlock lang="python" code={`def saludar(nombre, mensaje="Bienvenido"):
     return f"¡Hola {nombre}! {mensaje}"
 
 # Llamada normal
@@ -30,8 +29,7 @@ print(saludar(mensaje="¿Cómo estás?", nombre="Ana"))`}
     <section class="mb-10">
       <h2>Funciones Lambda (Anónimas)</h2>
       <p>Para lógica muy corta que se resuelve en una sola línea, puedes usar lambdas.</p>
-      <CodeBlock
-        code={`# Lambda que suma 10 a un número
+      <CodeBlock lang="python" code={`# Lambda que suma 10 a un número
 sumar_diez = lambda x : x + 10
 print(sumar_diez(5)) # 15`}
         title="lambda.py"
@@ -44,7 +42,7 @@ print(sumar_diez(5)) # 15`}
       
       <details>
         <summary>👁️ Ver solución sugerida</summary>
-        <CodeBlock code={`def multiplicar(a, b):
+        <CodeBlock lang="python" code={`def multiplicar(a, b):
     return a * b
 
 print(multiplicar(5, 4)) # 20`} title="Python" />

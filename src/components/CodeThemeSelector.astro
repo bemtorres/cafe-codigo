@@ -1,6 +1,5 @@
 ---
 const themes = [
-  { id: 'ide', name: 'Estilo IDE 💻', group: 'dark' },
   { id: 'monokai', name: 'Monokai 🍎', group: 'dark' },
   { id: 'dracula', name: 'Dracula 🧛', group: 'dark' },
   { id: 'one-dark', name: 'One Dark 🌑', group: 'dark' },
@@ -49,9 +48,11 @@ const themes = [
     const dropdown = document.getElementById('theme-dropdown');
     const options = document.querySelectorAll('.theme-option');
 
-    // Cargar preferencia
-    const savedTheme = localStorage.getItem('code-theme') || 'one-dark';
+    // Cargar preferencia (si tenía ide guardado, pasar a one-dark)
+    const raw = localStorage.getItem('code-theme') || 'one-dark';
+    const savedTheme = raw === 'ide' ? 'one-dark' : raw;
     document.documentElement.setAttribute('data-code-theme', savedTheme);
+    if (raw === 'ide') localStorage.setItem('code-theme', 'one-dark');
     setActive(savedTheme);
 
     toggle?.addEventListener('click', (e) => {

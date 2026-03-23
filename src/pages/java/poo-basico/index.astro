@@ -17,8 +17,7 @@ import JavaQuizModal from '../../../components/JavaQuizModal.astro';
         <li><strong>La Clase:</strong> Solo es la plantilla base de cómo fabricar un tipo de cosa (qué propiedades tiene, qué métodos ejecuta).</li>
         <li><strong>El Objeto (Instancia):</strong> La materialización exacta de la Clase en la memoria de la PC de tu cliente, construida con la palabra reservada <code>new</code>.</li>
       </ul>
-      <CodeBlock
-        code={`public class Mascota {
+      <CodeBlock lang="java" code={`public class Mascota {
     // 1. Atributos (lo que tiene)
     public String nombre;
     public int edad;
@@ -52,7 +51,7 @@ public class Main {
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`class Mascota {
+        <CodeBlock lang="java" code={`class Mascota {
     public String nombre;
     public int edad;
 
@@ -77,7 +76,7 @@ Mascota perro = new Mascota("Rex", 2);`} />
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`class Libro {
+        <CodeBlock lang="java" code={`class Libro {
     private String titulo;
 
     public Libro(String miTitulo) {
@@ -104,7 +103,7 @@ System.out.println( x.getTitulo() );`} />
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`class CuentaBancaria {
+        <CodeBlock lang="java" code={`class CuentaBancaria {
     private int saldo = 0;
 
     public void depositar(int cantidad) {
@@ -124,7 +123,7 @@ System.out.println( x.getTitulo() );`} />
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`class ColorBox { public String hex; }
+        <CodeBlock lang="java" code={`class ColorBox { public String hex; }
 
 // En Main
 ColorBox a = new ColorBox();

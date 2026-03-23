@@ -23,8 +23,7 @@ import JavaUnitQuizModal from '../../../components/JavaUnitQuizModal.astro';
       <p>
         En Java, las pruebas suelen vivir en una carpeta separada (normalmente <code>src/test/java</code>). Usamos la anotación <code>@Test</code> para decirle a JUnit que ese método no es código normal, sino una prueba.
       </p>
-      <CodeBlock
-        code={`import org.junit.jupiter.api.Test;
+      <CodeBlock lang="java" code={`import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CalculadoraTest {
@@ -49,7 +48,7 @@ public class CalculadoraTest {
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`@Test
+        <CodeBlock lang="java" code={`@Test
 void testSaludo() {
     String saludo = "Hola JUnit";
     assertEquals("Hola JUnit", saludo);
@@ -66,7 +65,7 @@ void testSaludo() {
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`@Test
+        <CodeBlock lang="java" code={`@Test
 void testNulo() {
     String miVariable = null;
     assertNull(miVariable);

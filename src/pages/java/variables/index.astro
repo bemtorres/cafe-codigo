@@ -27,8 +27,7 @@ import JavaQuizModal from '../../../components/JavaQuizModal.astro';
       <p>
         Curiosamente, <code>String</code> en Java (con 'S' mayúscula) <strong>no es un tipo primitivo</strong>, es una Clase completa. Esto significa que tiene métodos asociados (como <code>.length()</code> o <code>.toUpperCase()</code>) para manipular el texto. Los strings deben escribirse entre comillas dobles.
       </p>
-      <CodeBlock
-        code={`public class Main {
+      <CodeBlock lang="java" code={`public class Main {
     public static void main(String[] args) {
         int nivel = 99;
         boolean maxeado = true;
@@ -56,7 +55,7 @@ import JavaQuizModal from '../../../components/JavaQuizModal.astro';
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`String nombre = "Sylvanas";
+        <CodeBlock lang="java" code={`String nombre = "Sylvanas";
 int nivel = 85;
 boolean estaViva = false; // No-muerta
 
@@ -73,7 +72,7 @@ System.out.println("La jugadora " + nombre + " de nivel " + nivel + " ¿está vi
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`int a = 20;
+        <CodeBlock lang="java" code={`int a = 20;
 int b = 15;
 int resultado = a + b;
 System.out.println("La suma da: " + resultado);`} />
@@ -89,7 +88,7 @@ System.out.println("La suma da: " + resultado);`} />
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`final double PI = 3.1416;
+        <CodeBlock lang="java" code={`final double PI = 3.1416;
 System.out.println("El valor inmutable de pi es " + PI);`} />
       </details>
     </div>
@@ -103,7 +102,7 @@ System.out.println("El valor inmutable de pi es " + PI);`} />
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`String texto1 = "5";
+        <CodeBlock lang="java" code={`String texto1 = "5";
 String texto2 = "10";
 System.out.println(texto1 + texto2); // Imprime 510`} />
       </details>

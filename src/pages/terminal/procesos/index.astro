@@ -20,8 +20,7 @@ import TerminalQuizModal from '../../../components/TerminalQuizModal.astro';
         <li><strong><code>free -m</code></strong>: Muestra cuánta memoria RAM libre tienes en megabytes.</li>
         <li><strong><code>df -h</code></strong>: Muestra el espacio libre en tus discos duros.</li>
       </ul>
-      <CodeBlock
-        code={`kill -9 1234
+      <CodeBlock lang="bash" code={`kill -9 1234
 # Forzamos el cierre del proceso con ID 1234.`}
         title="bash"
       />
@@ -33,7 +32,7 @@ import TerminalQuizModal from '../../../components/TerminalQuizModal.astro';
       
       <details>
         <summary>👁️ Ver comando</summary>
-        <CodeBlock code={`top`} title="Terminal" />
+        <CodeBlock lang="bash" code={`top`} title="Terminal" />
       </details>
     </div>
 

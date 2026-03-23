@@ -20,8 +20,7 @@ import TerminalQuizModal from '../../../components/TerminalQuizModal.astro';
         <li><strong><code>tail -n 20</code></strong>: Muestra las últimas 20 (¡fabuloso para logs en tiempo real!).</li>
         <li><strong><code>wc -l</code></strong>: Cuenta cuántas líneas tiene el archivo.</li>
       </ul>
-      <CodeBlock
-        code={`grep -i "ERROR" logs.txt # Busca sin importar mayúsculas
+      <CodeBlock lang="bash" code={`grep -i "ERROR" logs.txt # Busca sin importar mayúsculas
 tail -f access.log # Sigue el archivo en vivo (Ctrl+C para salir)`}
         title="bash"
       />
@@ -33,7 +32,7 @@ tail -f access.log # Sigue el archivo en vivo (Ctrl+C para salir)`}
       
       <details>
         <summary>👁️ Ver comando</summary>
-        <CodeBlock code={`grep "TuNombre" agenda.txt`} title="Terminal" />
+        <CodeBlock lang="bash" code={`grep "TuNombre" agenda.txt`} title="Terminal" />
       </details>
     </div>
 

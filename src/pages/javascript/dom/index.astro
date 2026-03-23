@@ -11,8 +11,7 @@ import JavaScriptQuizModal from '../../../components/JavaScriptQuizModal.astro';
     <section class="mb-10">
       <h2>¿Qué es el DOM?</h2>
       <p>Es el <strong>Document Object Model</strong>. Es una representación que hace el navegador de tu archivo HTML para que JavaScript pueda entrar, leerlo y cambiarlo en tiempo real.</p>
-      <CodeBlock
-        code={`// Seleccionar un título
+      <CodeBlock lang="javascript" code={`// Seleccionar un título
 const titulo = document.getElementById("titulo-principal");
 
 // Cambiar su texto
@@ -28,8 +27,7 @@ titulo.textContent = "¡He sido hackeado con JS!";`}
         <li><strong>querySelector():</strong> Devuelve el primero que encuentre.</li>
         <li><strong>querySelectorAll():</strong> Devuelve todos los que coincidan (un arreglo).</li>
       </ul>
-      <CodeBlock
-        code={`// Seleccionar el primer botón que sea de clase .btn-enviar
+      <CodeBlock lang="javascript" code={`// Seleccionar el primer botón que sea de clase .btn-enviar
 const boton = document.querySelector(".btn-enviar");
 
 // Seleccionar todos los párrafos <p>
@@ -44,7 +42,7 @@ const parrafos = document.querySelectorAll("p");`}
       
       <details>
         <summary>👁️ Ver solución sugerida</summary>
-        <CodeBlock code={`const elemento = document.querySelector("#mi-div");
+        <CodeBlock lang="javascript" code={`const elemento = document.querySelector("#mi-div");
 elemento.style.backgroundColor = "blue";`} title="JS" />
       </details>
     </div>

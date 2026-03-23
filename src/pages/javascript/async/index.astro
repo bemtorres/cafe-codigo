@@ -11,8 +11,7 @@ import JavaScriptQuizModal from '../../../components/JavaScriptQuizModal.astro';
     <section class="mb-10">
       <h2>¿Qué es una Promesa?</h2>
       <p>Es un objeto que representa algo que va a ocurrir en el futuro: <strong>¡Prometo traerte los datos que me pediste!</strong>. Puede estar pendiente, cumplida (success) o rechazada (error).</p>
-      <CodeBlock
-        code={`// Definición moderna (Async / Await)
+      <CodeBlock lang="javascript" code={`// Definición moderna (Async / Await)
 async function obtenerDatos() {
   const respuesta = await fetch("https://api.ejemplo.com/servicios");
   const datos = await respuesta.json();
@@ -28,8 +27,7 @@ obtenerDatos();`}
     <section class="mb-10">
       <h2>El poder de Fetch</h2>
       <p>Fetch es el comando que lanza una petición a una URL (un servidor) para traer información.</p>
-      <CodeBlock
-        code={`// Una forma compacta con promesas encadenadas (.then)
+      <CodeBlock lang="javascript" code={`// Una forma compacta con promesas encadenadas (.then)
 fetch("https://pokeapi.co/api/v2/pokemon/pikachu")
   .then(res => res.json())
   .then(pokemon => {
@@ -45,7 +43,7 @@ fetch("https://pokeapi.co/api/v2/pokemon/pikachu")
       
       <details>
         <summary>👁️ Ver solución sugerida</summary>
-        <CodeBlock code={`async function miPedido() {
+        <CodeBlock lang="javascript" code={`async function miPedido() {
   let res = await fetch("...");
   let final = await res.json();
   return final;

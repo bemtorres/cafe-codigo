@@ -22,7 +22,7 @@ import CsharpQuizModal from '../../../components/CsharpQuizModal.astro';
         Una <strong>Clase</strong> es el plano o receta. Define qué propiedades tendrá algo.
         Un <strong>Objeto</strong> (o <em>instancia</em>) es aquello concreto que creaste usando la palabra <code>new</code>.
       </p>
-      <CodeBlock
+      <CodeBlock lang="csharp"
         code={`// Definición de una clase (el molde del Perro)
 class Perro 
 {
@@ -60,7 +60,7 @@ class Program
       <p>
         En el ejemplo anterior creamos un Perro y *después* le asignamos nombre. ¿Qué pasa si quiero que nazca con un nombre obligatorio? Usamos un <strong>Constructor</strong> (un método especial que tiene el mismo nombre que la clase).
       </p>
-      <CodeBlock
+      <CodeBlock lang="csharp"
         code={`class Perro 
 {
     public string nombre;
@@ -90,7 +90,7 @@ class Program
       <p>
         A diferencia de los campos públicos simples (<code>public string nombre;</code>), las <strong>Propiedades</strong> nos permiten proteger los datos (Encapsulamiento). En C#, este concepto se ha vuelto tremendamente elegante con los <em>Auto-Implemented Properties</em>.
       </p>
-      <CodeBlock
+      <CodeBlock lang="csharp"
         code={`class Personaje 
 {
     // Propiedad con 'get' (solo lectura desde afuera)
@@ -138,7 +138,7 @@ class Program
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`class Mascota 
+        <CodeBlock lang="csharp" code={`class Mascota 
 {
     public string Nombre { get; set; }
     public int Edad { get; set; }
@@ -172,7 +172,7 @@ class Program
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`class Libro 
+        <CodeBlock lang="csharp" code={`class Libro 
 {
     public string Titulo { get; set; }
     public string Autor { get; set; }
@@ -194,7 +194,7 @@ m.Autor = "Tolkien";`} />
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`class Cuenta 
+        <CodeBlock lang="csharp" code={`class Cuenta 
 {
     public int Saldo { get; private set; }
     public void Depositar(int cr)
@@ -214,7 +214,7 @@ m.Autor = "Tolkien";`} />
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`class Coche { public string Marca { get; set;} }
+        <CodeBlock lang="csharp" code={`class Coche { public string Marca { get; set;} }
 
 // En Main
 Coche c1 = new Coche();

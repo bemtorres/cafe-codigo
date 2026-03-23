@@ -20,7 +20,7 @@ import CsharpQuizModal from '../../../components/CsharpQuizModal.astro';
       <p>
         La herencia significa crear una "clase hija" que obtiene todas las propiedades y métodos de una "clase padre", logrando así reutilizar el comportamiento base sin tener que escribirlo de nuevo.
       </p>
-      <CodeBlock
+      <CodeBlock lang="csharp"
         code={`// Clase Padre General (Base)
 class Animal 
 {
@@ -62,7 +62,7 @@ class Program
       <p>
         Ocurre cuando heredaste de la clase base un método, pero te das cuenta que es deficiente, así que la hija decide sobrescribirlo (rediseñarlo por su cuenta), logrando tener "múltiples formas" de ejecución bajo el mismo nombre.
       </p>
-      <CodeBlock
+      <CodeBlock lang="csharp"
         code={`// Clase Base
 class Enemigo 
 {
@@ -91,7 +91,7 @@ class JefeFinal : Enemigo
         Las Interfaces en C# son como contratos. Las llamas empezando con <code>I</code> obligan a una clase a decir: <em>"Yo prometo firmar el contrato e implementar estos métodos"</em>.
         Es clave en arquitecturas de dependencias, y aunque no permite variables, dictará el comportamiento exacto que deba ser seguido.
       </p>
-      <CodeBlock
+      <CodeBlock lang="csharp"
         code={`// Es como un contrato que dice "quien use esto DEBE poder VOLAR"
 interface IVolador
 {
@@ -138,7 +138,7 @@ class Pato : IVolador
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`class Personaje
+        <CodeBlock lang="csharp" code={`class Personaje
 {
     public virtual void Atacar()
     {
@@ -175,7 +175,7 @@ class Program
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`class Instrumento 
+        <CodeBlock lang="csharp" code={`class Instrumento 
 {
     public virtual void Tocar() { Console.WriteLine("Suena algo"); } 
 }
@@ -196,7 +196,7 @@ class Guitarra : Instrumento
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`interface IVolador 
+        <CodeBlock lang="csharp" code={`interface IVolador 
 {
     void Volar();
 }
@@ -219,7 +219,7 @@ class Pato : IVolador
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`class Vehiculo
+        <CodeBlock lang="csharp" code={`class Vehiculo
 {
     public int Llantas { get; set; }
 }

@@ -11,8 +11,7 @@ import JavaScriptQuizModal from '../../../components/JavaScriptQuizModal.astro';
     <section class="mb-10">
       <h2>El flujo lógico (If / Else)</h2>
       <p>Un condicional es como un semáforo. Solo avanzas si la luz es verde (o si la condición es <code>true</code>).</p>
-      <CodeBlock
-        code={`let edad = 18;
+      <CodeBlock lang="javascript" code={`let edad = 18;
 
 if (edad >= 18) {
   console.log("¡Eres mayor de edad! Bienvenido al club.");
@@ -26,8 +25,7 @@ if (edad >= 18) {
     <section class="mb-10">
       <h2>Varias condiciones: Else If</h2>
       <p>Cuando tienes más de dos opciones, puedes encadenar reglas.</p>
-      <CodeBlock
-        code={`let hora = 14;
+      <CodeBlock lang="javascript" code={`let hora = 14;
 
 if (hora < 12) {
   console.log("¡Buenos días!");
@@ -46,7 +44,7 @@ if (hora < 12) {
       
       <details>
         <summary>👁️ Ver solución sugerida</summary>
-        <CodeBlock code={`let edad = 20;
+        <CodeBlock lang="javascript" code={`let edad = 20;
 let tengoEntrada = true;
 
 if (edad >= 18 && tengoEntrada) {

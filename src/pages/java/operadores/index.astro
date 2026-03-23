@@ -13,8 +13,7 @@ import JavaQuizModal from '../../../components/JavaQuizModal.astro';
       <p>
         Java soporta los operadores tradicionales de casi cualquier lenguaje: suma (<code>+</code>), resta (<code>-</code>), multiplicación (<code>*</code>) y división (<code>/</code>). Adicionalmente, cuenta con el operador <strong>módulo</strong> (<code>%</code>), que es extremadamente útil porque devuelve el <em>residuo</em> de una división exacta.
       </p>
-      <CodeBlock
-        code={`int resultado = 10 % 3; 
+      <CodeBlock lang="java" code={`int resultado = 10 % 3; 
 // 10 dividido entre 3 es 9. Sobra 1.
 // Por lo tanto, el resultado es 1.
 
@@ -46,7 +45,7 @@ boolean esPar = (8 % 2 == 0); // true`}
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`int num = 15;
+        <CodeBlock lang="java" code={`int num = 15;
 boolean esDivisiblePor3 = (num % 3 == 0);
 System.out.println("¿Es 15 divisible entre 3?: " + esDivisiblePor3);`} />
       </details>
@@ -61,7 +60,7 @@ System.out.println("¿Es 15 divisible entre 3?: " + esDivisiblePor3);`} />
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`int contador = 0;
+        <CodeBlock lang="java" code={`int contador = 0;
 contador++; // ahora es 1
 contador--; // regresa a 0
 System.out.println("Contador final: " + contador);`} />
@@ -77,7 +76,7 @@ System.out.println("Contador final: " + contador);`} />
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`boolean mayorDeEdad = true;
+        <CodeBlock lang="java" code={`boolean mayorDeEdad = true;
 boolean tieneEntrada = false;
 boolean puedePasar = mayorDeEdad && tieneEntrada;
 System.out.println("¿Permitir acceso al concierto?: " + puedePasar);`} />
@@ -93,7 +92,7 @@ System.out.println("¿Permitir acceso al concierto?: " + puedePasar);`} />
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`int cofres = 200;
+        <CodeBlock lang="java" code={`int cofres = 200;
 int valorCofre = 8000;
 int tesoro = cofres * valorCofre;
 System.out.println("¡Conseguiste " + tesoro + " monedas de oro!");`} />

@@ -18,8 +18,7 @@ import JavaUnitQuizModal from '../../../components/JavaUnitQuizModal.astro';
         <li><strong>Act (Actuar):</strong> Aquí ejecutamos la lógica que realmente queremos probar (normalmente llamamos a un solo método).</li>
         <li><strong>Assert (Aseverar):</strong> Comprobamos que el resultado que nos dio el paso anterior es el que esperábamos.</li>
       </ul>
-      <CodeBlock
-        code={`@Test
+      <CodeBlock lang="java" code={`@Test
 void testCalculoDescuento() {
     // 1. Arrange (Preparar)
     Producto p = new Producto("Zapatilla", 100.0);
@@ -44,7 +43,7 @@ void testCalculoDescuento() {
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`Usuario user = new Usuario("Paco", 30);`} />
+        <CodeBlock lang="java" code={`Usuario user = new Usuario("Paco", 30);`} />
       </details>
     </div>
 
@@ -57,7 +56,7 @@ void testCalculoDescuento() {
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`@Test
+        <CodeBlock lang="java" code={`@Test
 void testDuplicar() {
     Sumador s = new Sumador();     // Arrange
     int result = s.duplicar(5);    // Act

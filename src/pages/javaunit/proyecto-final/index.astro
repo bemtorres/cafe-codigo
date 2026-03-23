@@ -18,8 +18,7 @@ import JavaUnitQuizModal from '../../../components/JavaUnitQuizModal.astro';
         <li><strong>Verde:</strong> Escibes el código mínimo para que el test pase.</li>
         <li><strong>Refactor:</strong> Mejoras el código con la seguridad de que el test sigue en verde.</li>
       </ol>
-      <CodeBlock
-        code={`// 1. Rojo: No existe LoginService.login()
+      <CodeBlock lang="java" code={`// 1. Rojo: No existe LoginService.login()
 @Test
 void testLoginAceptado() {
     LoginService service = new LoginService();
@@ -41,7 +40,7 @@ void testLoginAceptado() {
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`@Test
+        <CodeBlock lang="java" code={`@Test
 void passwordInsegura() {
     Validador v = new Validador();
     boolean result = v.esSegura("123");

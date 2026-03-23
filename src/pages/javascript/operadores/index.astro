@@ -11,8 +11,7 @@ import JavaScriptQuizModal from '../../../components/JavaScriptQuizModal.astro';
     <section class="mb-10">
       <h2>Matemáticas Básicas</h2>
       <p>JavaScript tiene todos los operadores que esperarías: <code>+</code>, <code>-</code>, <code>*</code>, <code>/</code> y el módulo <code>%</code> (resto de una división).</p>
-      <CodeBlock
-        code={`let a = 10;
+      <CodeBlock lang="javascript" code={`let a = 10;
 let b = 3;
 console.log(a + b); // 13
 console.log(a % b); // 1 (¿Cuántas veces cabe el 3 en el 10? Tres veces, y sobra 1)`}
@@ -27,8 +26,7 @@ console.log(a % b); // 1 (¿Cuántas veces cabe el 3 en el 10? Tres veces, y sob
         <li><strong>== (Igualdad débil):</strong> Compara solo el valor. Intenta convertir el tipo (ej: "10" lo toma como 10).</li>
         <li><strong>=== (Igualdad estricta):</strong> Compara valor <strong>Y TIPO</strong>. Si uno es texto y otro es número, son distintos.</li>
       </ul>
-      <CodeBlock
-        code={`console.log(10 == "10");  // true (¡Cuidado!)
+      <CodeBlock lang="javascript" code={`console.log(10 == "10");  // true (¡Cuidado!)
 console.log(10 === "10"); // false (Es lo correcto)`}
         title="comparacion.js"
       />
@@ -40,7 +38,7 @@ console.log(10 === "10"); // false (Es lo correcto)`}
       
       <details>
         <summary>👁️ Ver solución sugerida</summary>
-        <CodeBlock code={`let cervezas = 21;
+        <CodeBlock lang="javascript" code={`let cervezas = 21;
 let amigos = 4;
 let sobrantes = cervezas % amigos;
 console.log("Sobran: " + sobrantes);`} title="JS" />

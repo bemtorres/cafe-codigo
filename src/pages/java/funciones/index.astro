@@ -13,8 +13,7 @@ import JavaQuizModal from '../../../components/JavaQuizModal.astro';
       <p>
         En Java, estrictamente hablando, solo existen <strong>Métodos</strong> (porque de fondo, todo pertenece a una Clase). Romper un problema gigantesco (como un Main de 1000 líneas) en pequeños "sub-programitas" independientes no solo hace tu código profesional, sino inmensamente más reciclable y fácil de depurar.
       </p>
-      <CodeBlock
-        code={`public class MathUtils {
+      <CodeBlock lang="java" code={`public class MathUtils {
 
     // Método que ejecuta una acción pero no regresa una respuesta física (void)
     static void mostrarMensaje() {
@@ -51,7 +50,7 @@ import JavaQuizModal from '../../../components/JavaQuizModal.astro';
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`class App {
+        <CodeBlock lang="java" code={`class App {
     static boolean esPar(int num) {
         return (num % 2 == 0);
     }
@@ -72,7 +71,7 @@ import JavaQuizModal from '../../../components/JavaQuizModal.astro';
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`static void notificarError() {
+        <CodeBlock lang="java" code={`static void notificarError() {
     System.out.println("Alarma.");
 }
 
@@ -91,7 +90,7 @@ public static void main(String[] args) {
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`static double calcularArea(double b, double h) {
+        <CodeBlock lang="java" code={`static double calcularArea(double b, double h) {
     return b * h;
 }
 
@@ -110,7 +109,7 @@ public static void main(String[] args) {
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`static String guardarDatos(String nombre, int edad) {
+        <CodeBlock lang="java" code={`static String guardarDatos(String nombre, int edad) {
     return "Usuario " + nombre + " guardado con edad de " + edad;
 }
 

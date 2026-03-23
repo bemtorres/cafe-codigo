@@ -11,8 +11,7 @@ import PythonQuizModal from '../../../components/PythonQuizModal.astro';
     <section class="mb-10">
       <h2>El flujo lógico (If / Else)</h2>
       <p>Python toma decisiones basándose en la luz del semáforo. Solo avanzas si la luz es verde (o si la condición es <code>True</code>). ¡Cuidado con la indentación!</p>
-      <CodeBlock
-        code={`edad = 18
+      <CodeBlock lang="python" code={`edad = 18
 
 if edad >= 18:
     print("¡Eres mayor de edad! Bienvenido al club.")
@@ -25,8 +24,7 @@ else:
     <section class="mb-10">
       <h2>Varias condiciones: Elif</h2>
       <p>Cuando tienes más de dos opciones, puedes encadenar reglas con <code>elif</code>.</p>
-      <CodeBlock
-        code={`hora = 14
+      <CodeBlock lang="python" code={`hora = 14
 
 if hora < 12:
     print("¡Buenos días!")
@@ -41,8 +39,7 @@ else:
     <section class="mb-10">
       <h2>Lógica de pertenencia: in</h2>
       <p>Python tiene un operador muy "humano" para saber si un elemento está dentro de una lista o un texto.</p>
-      <CodeBlock
-        code={`fruta = "manzana"
+      <CodeBlock lang="python" code={`fruta = "manzana"
 carrito = ["peras", "manzanas", "uvas"]
 
 if fruta in carrito:
@@ -56,8 +53,7 @@ else:
     <section class="mb-10">
       <h2>Operador Ternario (If en una línea)</h2>
       <p>Para decisiones muy simples de "esto o aquello", Python ofrece una sintaxis ultrarrápida.</p>
-      <CodeBlock
-        code={`edad = 18
+      <CodeBlock lang="python" code={`edad = 18
 estado = "Adulto" if edad >= 18 else "Menor"
 print(estado)`}
         title="ternario.py"
@@ -70,7 +66,7 @@ print(estado)`}
       
       <details>
         <summary>👁️ Ver solución sugerida</summary>
-        <CodeBlock code={`edad = 20
+        <CodeBlock lang="python" code={`edad = 20
 tengo_entrada = True
 
 if edad >= 18 and tengo_entrada:

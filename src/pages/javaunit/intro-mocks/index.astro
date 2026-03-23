@@ -13,8 +13,7 @@ import JavaUnitQuizModal from '../../../components/JavaUnitQuizModal.astro';
       <p>
         Un <strong>Mock</strong> es un objeto simulado. Imagina que el código de tu <code>UsuarioService</code> necesita una <code>BaseDeDatos</code> para funcionar. ¡No queremos depender de una DB de verdad en un test unitario! Para eso usamos <strong>Mockito</strong>, que nos permite fingir que la DB existe y que devuelve lo que nosotros queramos.
       </p>
-      <CodeBlock
-        code={`import static org.mockito.Mockito.*;
+      <CodeBlock lang="java" code={`import static org.mockito.Mockito.*;
 
 @Test
 void testLoginService() {
@@ -42,7 +41,7 @@ void testLoginService() {
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`Banco bMock = mock(Banco.class);
+        <CodeBlock lang="java" code={`Banco bMock = mock(Banco.class);
 when(bMock.getSaldo()).thenReturn(100.0);`} />
       </details>
     </div>
@@ -56,7 +55,7 @@ when(bMock.getSaldo()).thenReturn(100.0);`} />
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`verify(bMock, times(1)).getSaldo();`} />
+        <CodeBlock lang="java" code={`verify(bMock, times(1)).getSaldo();`} />
       </details>
     </div>
 

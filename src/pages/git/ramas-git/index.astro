@@ -16,8 +16,7 @@ import GitQuizModal from '../../../components/GitQuizModal.astro';
       <p>
         <strong>¿Para qué sirve?:</strong> Imagina que tu web ya funciona, pero quieres probar un menú de color rosa. Creas una rama <code>rama-rosa</code>, pruebas todo, y si te gusta, lo unes de vuelta al principal.
       </p>
-      <CodeBlock
-        code={`git branch nombre-rama # Crea la rama
+      <CodeBlock lang="bash" code={`git branch nombre-rama # Crea la rama
 git checkout nombre-rama # Salta a esa rama (y los archivos de tu carpeta cambian mágicament!)`}
         title="bash"
       />
@@ -31,8 +30,7 @@ git checkout nombre-rama # Salta a esa rama (y los archivos de tu carpeta cambia
         <li><strong>git switch:</strong> Una forma moderna de saltar de rama (más segura que checkout).</li>
         <li><strong>git merge:</strong> El comando final para fusionar tu rama con la principal.</li>
       </ul>
-      <CodeBlock
-        code={`git merge mi-nueva-funcion
+      <CodeBlock lang="bash" code={`git merge mi-nueva-funcion
 # ¡Pum! Todo el trabajo de esa rama ahora forma parte del código estable.`}
         title="bash"
       />

@@ -17,8 +17,7 @@ import PythonQuizModal from '../../../components/PythonQuizModal.astro';
         <li><strong>texto (string):</strong> <code>nombre = "Python"</code></li>
         <li><strong>booleano:</strong> <code>es_genial = True</code></li>
       </ul>
-      <CodeBlock
-        code={`mi_variable = 10
+      <CodeBlock lang="python" code={`mi_variable = 10
 # Puedo cambiar el tipo sin permiso
 mi_variable = "Ahora soy un texto"
 print(mi_variable)`}
@@ -29,8 +28,7 @@ print(mi_variable)`}
     <section class="mb-10">
       <h2>Interactuar: La función input()</h2>
       <p>Python te permite hablar con el usuario muy fácil. Pero ojo: <strong>input() siempre nos devuelve un texto</strong>. Si quieres hacer matemáticas, debes convertirlo.</p>
-      <CodeBlock
-        code={`# Pedimos la edad
+      <CodeBlock lang="python" code={`# Pedimos la edad
 edad_txt = input("¿Cuántos años tienes? ")
 
 # Convertimos el texto a número entero
@@ -47,8 +45,7 @@ print(f"Con el 10% de descuento: {precio * 0.9}")`}
     <section class="mb-10">
       <h2>El poder de los f-strings</h2>
       <p>Usar la letra <code>f</code> antes de las comillas te permite inyectar variables directamente dentro de un texto de forma limpia y moderna.</p>
-      <CodeBlock
-        code={`perfil = "Guerrero"
+      <CodeBlock lang="python" code={`perfil = "Guerrero"
 nivel = 42
 print(f"Estado Actual: {perfil} (Nvl. {nivel})")`}
         title="formateo.py"
@@ -61,7 +58,7 @@ print(f"Estado Actual: {perfil} (Nvl. {nivel})")`}
       
       <details>
         <summary>👁️ Ver solución sugerida</summary>
-        <CodeBlock code={`nacimiento = input("¿En qué año naciste? ")
+        <CodeBlock lang="python" code={`nacimiento = input("¿En qué año naciste? ")
 edad_actual = 2024 - int(nacimiento)
 print(f"Tienes o cumplirás {edad_actual} años")`} title="Python" />
       </details>

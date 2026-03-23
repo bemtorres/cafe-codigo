@@ -57,8 +57,7 @@ import PseintQuizModal from '../../../components/PseintQuizModal.astro';
 
     <section class="mb-10">
       <h2>Sintaxis: Si - Entonces - FinSi</h2>
-      <CodeBlock
-        code={`Si condicion Entonces
+      <CodeBlock lang="pseint" code={`Si condicion Entonces
   // Código si la condición es verdadera
   Escribir "La condición se cumple";
 FinSi`}
@@ -68,8 +67,7 @@ FinSi`}
 
     <section class="mb-10">
       <h2>Si - Sino - FinSi</h2>
-      <CodeBlock
-        code={`Si edad >= 18 Entonces
+      <CodeBlock lang="pseint" code={`Si edad >= 18 Entonces
   Escribir "Eres mayor de edad";
 Sino
   Escribir "Eres menor de edad";
@@ -80,8 +78,7 @@ FinSi`}
 
     <section class="mb-10">
       <h2>Ejemplo completo</h2>
-      <CodeBlock
-        code={`Algoritmo MayorDeEdad
+      <CodeBlock lang="pseint" code={`Algoritmo MayorDeEdad
   Definir edad Como Entero;
   Escribir "¿Cuántos años tienes?";
   Leer edad;

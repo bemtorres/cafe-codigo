@@ -14,7 +14,7 @@ import CsharpQuizModal from '../../../components/CsharpQuizModal.astro';
         Un arreglo es una caja dividida en múltiples compartimentos ordenados. Sirve para guardar múltiples valores <strong>del mismo tipo</strong>.
         Tienen una regla estricta: <strong>Su tamaño es fijo</strong> desde el momento que se crean, no puede crecer ni achicarse.
       </p>
-      <CodeBlock
+      <CodeBlock lang="csharp"
         code={`// Declarar un arreglo de 5 números (inicia lleno de ceros)
 int[] notas = new int[5];
 
@@ -35,7 +35,7 @@ Console.WriteLine(nombres[1]); // Imprime "Luis"`}
         Cuando tienes una colección (como un arreglo), la forma más elegante de recorrer todos sus elementos es usando <code>foreach</code> (por cada).
         No necesitas preocuparte por los índices, C# sacará cada elemento uno por uno internamente.
       </p>
-      <CodeBlock
+      <CodeBlock lang="csharp"
         code={`string[] colores = { "Rojo", "Verde", "Azul" };
 
 foreach (string color in colores)
@@ -52,7 +52,7 @@ foreach (string color in colores)
         Las listas son la evolución de los arreglos. Son dinámicas, lo que significa que <strong>pueden crecer sin límite aparente</strong> a medida que les agregas elementos.
         Para usarlas, debes asegurarte de tener <code>using System.Collections.Generic;</code> al principio del archivo.
       </p>
-      <CodeBlock
+      <CodeBlock lang="csharp"
         code={`using System.Collections.Generic;
 
 // Se crea una nueva lista vacía de tipo string
@@ -83,7 +83,7 @@ Console.WriteLine($"Tienes {inventario.Count} objetos.");`}
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`using System.Collections.Generic;
+        <CodeBlock lang="csharp" code={`using System.Collections.Generic;
 
 List<string> tareas = new List<string>();
 tareas.Add("Estudiar");
@@ -107,7 +107,7 @@ foreach (string t in tareas)
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`string[] colores = { "Rojo", "Azul", "Verde" };
+        <CodeBlock lang="csharp" code={`string[] colores = { "Rojo", "Azul", "Verde" };
 Console.WriteLine($"Hay {colores.Length} colores en el arreglo.");`} />
       </details>
     </div>
@@ -121,7 +121,7 @@ Console.WriteLine($"Hay {colores.Length} colores en el arreglo.");`} />
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`using System.Collections.Generic;
+        <CodeBlock lang="csharp" code={`using System.Collections.Generic;
 
 List<int> puntos = new List<int>();
 puntos.Add(10);
@@ -140,7 +140,7 @@ puntos.Remove(20); // Quedan 10 y 30`} />
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`string[] amigos = { "Ana", "Beto", "Carlos" };
+        <CodeBlock lang="csharp" code={`string[] amigos = { "Ana", "Beto", "Carlos" };
 foreach(string amigo in amigos)
 {
     Console.WriteLine($"¡Hola {amigo}!");

@@ -34,15 +34,13 @@ import PseintQuizModal from '../../../components/PseintQuizModal.astro';
         La condición se evalúa <strong>antes</strong> de cada iteración.
         Si al inicio no se cumple, el bloque puede no ejecutarse nunca.
       </p>
-      <CodeBlock
-        title="Sintaxis"
+      <CodeBlock lang="pseint" title="Sintaxis"
         code={`Mientras condicion Hacer
   // Instrucciones a repetir
 FinMientras`}
       />
 
-      <CodeBlock
-        title="Ejemplo: pedir números hasta que ingrese 0"
+      <CodeBlock lang="pseint" title="Ejemplo: pedir números hasta que ingrese 0"
         code={`Algoritmo MientrasEjemplo
   Definir num Como Entero;
   Escribir "Ingrese un número (0 para salir):";
@@ -63,15 +61,13 @@ FinAlgoritmo`}
         El bloque se ejecuta <strong>al menos una vez</strong>.
         La condición se revisa al final: repetís hasta que se cumpla.
       </p>
-      <CodeBlock
-        title="Sintaxis"
+      <CodeBlock lang="pseint" title="Sintaxis"
         code={`Repetir
   // Instrucciones a repetir (se ejecuta al menos una vez)
 Hasta Que condicion`}
       />
 
-      <CodeBlock
-        title="Ejemplo: menú hasta elegir opción 1"
+      <CodeBlock lang="pseint" title="Ejemplo: menú hasta elegir opción 1"
         code={`Algoritmo RepetirEjemplo
   Definir opcion Como Entero;
 
@@ -93,15 +89,13 @@ FinAlgoritmo`}
         Cuando ya sabés cuántas veces repetir, este bucle es ideal. Itera sobre un valor (contador)
         desde un inicio hasta un final.
       </p>
-      <CodeBlock
-        title="Sintaxis típica"
+      <CodeBlock lang="pseint" title="Sintaxis típica"
         code={`Para i = 1 Hasta n Hacer
   // Instrucciones
 FinPara`}
       />
 
-      <CodeBlock
-        title="Ejemplo: sumar 1 a n"
+      <CodeBlock lang="pseint" title="Ejemplo: sumar 1 a n"
         code={`Algoritmo ParaEjemplo
   Definir n Como Entero;
   Definir i Como Entero;

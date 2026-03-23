@@ -23,8 +23,7 @@ import PythonQuizModal from '../../../components/PythonQuizModal.astro';
       <p>
         A diferencia de otros lenguajes que usan llaves <code>{`{}`}</code>, Python usa <strong>espacios</strong> (indentación) para saber qué código está dentro de una función o bucle. 
       </p>
-      <CodeBlock
-        code={`print("Esto siempre se ejecuta")
+      <CodeBlock lang="python" code={`print("Esto siempre se ejecuta")
 if True:
     print("Esto está indentado (está dentro del IF)")
 print("Esto está fuera")`}
@@ -38,7 +37,7 @@ print("Esto está fuera")`}
       
       <details>
         <summary>👁️ Ver solución sugerida</summary>
-        <CodeBlock code={`print("Hola, soy Benjamín")
+        <CodeBlock lang="python" code={`print("Hola, soy Benjamín")
 print("Quiero crear mi propia app de música")`} title="Python" />
       </details>
     </div>
@@ -46,8 +45,7 @@ print("Quiero crear mi propia app de música")`} title="Python" />
     <section class="mb-10">
       <h2>Ejemplos rápidos en la consola (REPL)</h2>
       <p>Python no es solo para scripts largos. Puedes usarlo como una calculadora superpotente directamente en tu terminal:</p>
-      <CodeBlock
-        code={`>>> 2 + 2
+      <CodeBlock lang="python" code={`>>> 2 + 2
 4
 >>> name = "Cyborg"
 >>> name.upper()

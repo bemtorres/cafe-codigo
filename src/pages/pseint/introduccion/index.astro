@@ -73,8 +73,7 @@ import PseintQuizModal from '../../../components/PseintQuizModal.astro';
       <p>
         Puedes añadir comentarios en el código para explicar qué hace cada parte. Todo lo que escribas después de <code>//</code> en una línea se considera comentario y el intérprete lo ignora. Puedes usar una línea entera para comentar o poner <code>//</code> al final de una instrucción.
       </p>
-      <CodeBlock
-        code={`Algoritmo EjemploComentarios
+      <CodeBlock lang="pseint" code={`Algoritmo EjemploComentarios
   // Este algoritmo muestra un saludo
   Definir nombre Como Caracter;
   Escribir "¿Tu nombre?";  // pedir al usuario
@@ -87,8 +86,7 @@ FinAlgoritmo`}
 
     <section class="mb-10">
       <h2>Estructura básica de un algoritmo</h2>
-      <CodeBlock
-        code={`Algoritmo MiPrimerAlgoritmo
+      <CodeBlock lang="pseint" code={`Algoritmo MiPrimerAlgoritmo
   Definir nombre Como Caracter;
   Escribir "Hola, bienvenido a PSeInt";
   Escribir "¿Cuál es tu nombre?";

@@ -13,8 +13,7 @@ import JavaQuizModal from '../../../components/JavaQuizModal.astro';
       <p>
         Los arreglos estándar en Java son estáticos y estrictos (nacen con un tamaño, y mueren con ese tamaño). Sirven para juntar muchos elementos del MISMO tipo bajo un solo nombre en diferentes índices (empezando por el índice <code>0</code>).
       </p>
-      <CodeBlock
-        code={`// Arreglo de tamaño 3 con valores de fábrica predefinidos
+      <CodeBlock lang="java" code={`// Arreglo de tamaño 3 con valores de fábrica predefinidos
 String[] herramientas = { "Martillo", "Llave", "Serrucho" };
 
 // Imprimir el primer elemento
@@ -31,8 +30,7 @@ int cant = herramientas.length;`}
       <p>
         En la vida real de los proyectos empresariales, las listas cambian constantemente. Usamos la clase nativa <code>ArrayList</code> del paquete <code>java.util</code> para esto. A diferencia del Array, es súper dinámico y posee métodos útiles como `.add()`, `.remove()` y `.size()`.
       </p>
-      <CodeBlock
-        code={`import java.util.ArrayList;
+      <CodeBlock lang="java" code={`import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) {
@@ -63,7 +61,7 @@ public class Main {
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`String[] amigos = { "Ana", "Fernando", "Lucía" };
+        <CodeBlock lang="java" code={`String[] amigos = { "Ana", "Fernando", "Lucía" };
 
 // "Por cada amigo dentro de mi colección de amigos..."
 for (String amigo : amigos) {
@@ -81,7 +79,7 @@ for (String amigo : amigos) {
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`String[] colores = { "Rojo", "Azul", "Verde" };
+        <CodeBlock lang="java" code={`String[] colores = { "Rojo", "Azul", "Verde" };
 System.out.println("Hay en total " + colores.length + " colores guardados.");`} />
       </details>
     </div>
@@ -95,7 +93,7 @@ System.out.println("Hay en total " + colores.length + " colores guardados.");`} 
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`import java.util.ArrayList;
+        <CodeBlock lang="java" code={`import java.util.ArrayList;
 
 public class App {
     public static void main(String[] args) {
@@ -121,7 +119,7 @@ public class App {
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`// Siguiendo el ArrayList anterior...
+        <CodeBlock lang="java" code={`// Siguiendo el ArrayList anterior...
 int vivos = puntos.size();
 System.out.println("Nos han quedado " + vivos + " elementos intactos.");`} />
       </details>

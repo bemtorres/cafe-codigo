@@ -33,8 +33,7 @@ import PseintQuizModal from '../../../components/PseintQuizModal.astro';
       <p>
         La sintaxis es: <code>Definir nombreVariable Como Tipo;</code>
       </p>
-      <CodeBlock
-        code={`Algoritmo DefinirVariables
+      <CodeBlock lang="pseint" code={`Algoritmo DefinirVariables
   Definir edad Como Entero;
   Definir precio Como Real;
   Definir nombre Como Caracter;
@@ -50,8 +49,7 @@ FinAlgoritmo`}
         Para mostrar texto y variables juntos, usamos <code>Escribir</code> con 
         comas <code>,</code> para concatenar:
       </p>
-      <CodeBlock
-        code={`Algoritmo Presentacion
+      <CodeBlock lang="pseint" code={`Algoritmo Presentacion
   Definir nombre Como Caracter;
   Definir edad Como Entero;
   nombre = "María";
@@ -70,8 +68,7 @@ FinAlgoritmo`}
       <p>
         Usamos <code>&lt;-</code> para asignar un valor a una variable:
       </p>
-      <CodeBlock
-        code={`Algoritmo Asignacion
+      <CodeBlock lang="pseint" code={`Algoritmo Asignacion
   Definir x Como Entero;
   Definir mensaje Como Caracter;
   x = 10;

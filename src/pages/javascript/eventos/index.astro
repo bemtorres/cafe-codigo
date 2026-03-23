@@ -11,8 +11,7 @@ import JavaScriptQuizModal from '../../../components/JavaScriptQuizModal.astro';
     <section class="mb-10">
       <h2>¿Qué es un Evento?</h2>
       <p>Es cualquier acción que ocurre en tu página: un <strong>clic</strong>, mover el ratón, escribir en un campo de texto o cargar la página completa. JavaScript está escuchando estos eventos para responder.</p>
-      <CodeBlock
-        code={`// 1. Seleccionar el botón
+      <CodeBlock lang="javascript" code={`// 1. Seleccionar el botón
 const btn = document.querySelector("#btn-magico");
 
 // 2. Escuchar el evento
@@ -27,8 +26,7 @@ btn.addEventListener("click", () => {
     <section class="mb-10">
       <h2>El objeto Event (e)</h2>
       <p>Cuando ocurre un evento, este te envía una caja con información extra de lo que pasó: qué elemento se clicó, dónde estaba el ratón, qué tecla se pulsó, etc.</p>
-      <CodeBlock
-        code={`const entrada = document.querySelector("#mi-input");
+      <CodeBlock lang="javascript" code={`const entrada = document.querySelector("#mi-input");
 
 entrada.addEventListener("keydown", (e) => {
   console.log("Pulsaste la tecla: " + e.key);
@@ -43,7 +41,7 @@ entrada.addEventListener("keydown", (e) => {
       
       <details>
         <summary>👁️ Ver solución sugerida</summary>
-        <CodeBlock code={`const titulo = document.getElementById("mi-titulo");
+        <CodeBlock lang="javascript" code={`const titulo = document.getElementById("mi-titulo");
 
 titulo.addEventListener("click", () => {
   titulo.textContent = "¡Gracias por el clic!";

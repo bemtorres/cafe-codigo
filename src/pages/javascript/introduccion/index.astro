@@ -23,8 +23,7 @@ import JavaScriptQuizModal from '../../../components/JavaScriptQuizModal.astro';
       <p>
         No necesitas instalar nada para empezar. Si haces clic derecho en esta página, eliges "Inspeccionar" y vas a la pestaña <strong>Console</strong>, ya puedes programar.
       </p>
-      <CodeBlock
-        code={`console.log("¡Hola desde la terminal del navegador!");
+      <CodeBlock lang="javascript" code={`console.log("¡Hola desde la terminal del navegador!");
 console.log(2 + 2); // Imprime 4`}
         title="consola.js"
       />
@@ -36,7 +35,7 @@ console.log(2 + 2); // Imprime 4`}
       
       <details>
         <summary>👁️ Ver solución sugerida</summary>
-        <CodeBlock code={`console.log("Quiero tener 10 años de experiencia en JavaScript");`} title="JS" />
+        <CodeBlock lang="javascript" code={`console.log("Quiero tener 10 años de experiencia en JavaScript");`} title="JS" />
       </details>
     </div>
 

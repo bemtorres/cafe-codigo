@@ -25,7 +25,7 @@ import CsharpQuizModal from '../../../components/CsharpQuizModal.astro';
         <li><strong>/</strong> (División entera o decimal dependiendo del tipo)</li>
         <li><strong>%</strong> (Módulo: el resto de una división entera)</li>
       </ul>
-      <CodeBlock
+      <CodeBlock lang="csharp"
         code={`int a = 10;
 int b = 3;
 
@@ -38,7 +38,7 @@ int modulo = a % b; // 1 (porque 10 divido 3 es 9, y sobra 1)`}
     <section class="mb-10">
       <h2>Atajos Aritméticos (Incremento)</h2>
       <p>A menudo necesitarás sumarle 1 a una variable, o sumarle un valor a sí misma.</p>
-      <CodeBlock
+      <CodeBlock lang="csharp"
         code={`int contador = 5;
 
 contador++; // Es igual a contador = contador + 1 (ahora vale 6)
@@ -69,7 +69,7 @@ contador *= 2; // (Ahora vale 30)`}
         <li><strong>||</strong> (OR / O): Verdadero si <strong>al menos una</strong> condición es verdadera.</li>
         <li><strong>!</strong> (NOT / NO): Invierte el valor (de true a false).</li>
       </ul>
-      <CodeBlock
+      <CodeBlock lang="csharp"
         code={`bool tieneEntrada = true;
 bool esMayorDeEdad = false;
 
@@ -93,7 +93,7 @@ bool excepcion = tieneEntrada || esMayorDeEdad; // true`}
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`int num = 15;
+        <CodeBlock lang="csharp" code={`int num = 15;
 // El módulo devuelve el residuo. Si es 0, es divisible.
 bool esDivisiblePor3 = (num % 3 == 0);
 
@@ -111,7 +111,7 @@ Console.WriteLine($"¿Es 15 divisible entre 3?: {esDivisiblePor3}");`} />
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`int contador = 0;
+        <CodeBlock lang="csharp" code={`int contador = 0;
 contador++; // ahora es 1
 contador--; // regresa a 0
 Console.WriteLine(contador);`} />
@@ -127,7 +127,7 @@ Console.WriteLine(contador);`} />
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`bool mayorDeEdad = true;
+        <CodeBlock lang="csharp" code={`bool mayorDeEdad = true;
 bool tieneEntrada = false;
 bool puedePasar = mayorDeEdad && tieneEntrada;
 Console.WriteLine(puedePasar); // Imprime False`} />
@@ -143,7 +143,7 @@ Console.WriteLine(puedePasar); // Imprime False`} />
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`int tesoro = 200 * 8000;
+        <CodeBlock lang="csharp" code={`int tesoro = 200 * 8000;
 Console.WriteLine($"Conseguiste {tesoro} monedas.");`} />
       </details>
     </div>

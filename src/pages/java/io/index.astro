@@ -16,8 +16,7 @@ import JavaQuizModal from '../../../components/JavaQuizModal.astro';
       <p>
         Para iniciarla, hay que crear una instancia (objeto) vinculándola a la entrada del sistema opertivo (<code>System.in</code>).
       </p>
-      <CodeBlock
-        code={`// 1. Importación obligatoria antes de tu class
+      <CodeBlock lang="java" code={`// 1. Importación obligatoria antes de tu class
 import java.util.Scanner;
 
 public class Main {
@@ -44,8 +43,7 @@ public class Main {
       <p>
         Si un usuario necesita ingresar su edad para hacer un guardado matemático (no un string), usamos métodos específicos de la clase Scanner como <code>nextInt()</code> o <code>nextDouble()</code>.
       </p>
-      <CodeBlock
-        code={`System.out.print("Ingresa tu edad: ");
+      <CodeBlock lang="java" code={`System.out.print("Ingresa tu edad: ");
 int edad = lector.nextInt();
 
 int restan = 100 - edad;
@@ -63,7 +61,7 @@ System.out.println("Te faltan " + restan + " años para ser centenario.");`}
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`import java.util.Scanner;
+        <CodeBlock lang="java" code={`import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
@@ -87,7 +85,7 @@ public class Main {
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`import java.util.Scanner;
+        <CodeBlock lang="java" code={`import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
@@ -115,7 +113,7 @@ public class Main {
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`Scanner lector = new Scanner(System.in);
+        <CodeBlock lang="java" code={`Scanner lector = new Scanner(System.in);
 System.out.print("Ingresa tu edad entera: ");
 int edad = lector.nextInt();
 int anio = 2026 - edad;
@@ -132,7 +130,7 @@ System.out.println("Naciste aproximadamente en " + anio);`} />
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`Scanner lector = new Scanner(System.in);
+        <CodeBlock lang="java" code={`Scanner lector = new Scanner(System.in);
 System.out.print("Introduce el precio: ");
 double precio = lector.nextDouble();
 System.out.println("El costo final registrado es: $" + precio);`} />

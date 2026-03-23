@@ -26,8 +26,7 @@ import JavaQuizModal from '../../../components/JavaQuizModal.astro';
       <p>
         A diferencia de otros lenguajes más informales, Java te exige que <strong>todo</strong> esté dentro de una clase. Además, el nombre de esa clase pública debe coincidir exactamente con el nombre de tu archivo físico (ej: <code>Main.java</code>).
       </p>
-      <CodeBlock
-        code={`public class Main {
+      <CodeBlock lang="java" code={`public class Main {
     // El método main es la puerta de entrada de tu aplicación
     public static void main(String[] args) {
         // Equivale a 'Escribir' en pseudocódigo
@@ -50,7 +49,7 @@ import JavaQuizModal from '../../../components/JavaQuizModal.astro';
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`public class App {
+        <CodeBlock lang="java" code={`public class App {
     public static void main(String[] args) {
         System.out.println("¡Java será mi mejor amigo!");
     }
@@ -67,7 +66,7 @@ import JavaQuizModal from '../../../components/JavaQuizModal.astro';
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`System.out.println("Benjamín");
+        <CodeBlock lang="java" code={`System.out.println("Benjamín");
 System.out.println("Madrid");`} />
       </details>
     </div>
@@ -81,7 +80,7 @@ System.out.println("Madrid");`} />
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`System.out.print("Hola ");
+        <CodeBlock lang="java" code={`System.out.print("Hola ");
 System.out.print("Mundo");`} />
       </details>
     </div>
@@ -95,7 +94,7 @@ System.out.print("Mundo");`} />
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`// Autor: Yo
+        <CodeBlock lang="java" code={`// Autor: Yo
 /* Mi primer acercamiento
    a la JVM */
 System.out.println("Código documentado");`} />

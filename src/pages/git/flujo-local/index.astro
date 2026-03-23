@@ -13,7 +13,7 @@ import GitQuizModal from '../../../components/GitQuizModal.astro';
       <p>
         Para empezar a rastrear cambios en una carpeta, lo primero es avisarle a Git:
       </p>
-      <CodeBlock code={`git init # Crea la "base de datos" secreta (.git) en tu carpeta.`} title="bash" />
+      <CodeBlock lang="bash" code={`git init # Crea la "base de datos" secreta (.git) en tu carpeta.`} title="bash" />
       <p>
         Una vez el repositorio está vivo, tus archivos pasan por tres estados:
       </p>
@@ -31,7 +31,7 @@ import GitQuizModal from '../../../components/GitQuizModal.astro';
         <li><strong>git add:</strong> Llamas a la gente al escenario (Staging). Solo los que estén ahí saldrán en la foto.</li>
         <li><strong>git commit:</strong> ¡Clic! Sacas la foto y le pones una etiqueta de lo que pasó.</li>
       </ul>
-      <CodeBlock
+      <CodeBlock lang="bash"
         code={`git add index.html
 git commit -m "Se añade la estructura básica de la web"`}
         title="bash"

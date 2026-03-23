@@ -13,8 +13,7 @@ import JavaUnitQuizModal from '../../../components/JavaUnitQuizModal.astro';
       <p>
         El <strong>encapsulamiento</strong> es uno de los pilares de la POO. Nuestros objetos deben tener sus atributos privados y ser accedidos mediante Getters y Setters. En un test unitario, verificamos que esta interacción sea segura y que el objeto no se "corrompa" por accidente.
       </p>
-      <CodeBlock
-        code={`@Test
+      <CodeBlock lang="java" code={`@Test
 void testUsuarioCambioNombre() {
     // 1. Arrange
     Usuario user = new Usuario("Ada");
@@ -38,7 +37,7 @@ void testUsuarioCambioNombre() {
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`@Test
+        <CodeBlock lang="java" code={`@Test
 void testSaldoInicial() {
     CuentaBancaria cuenta = new CuentaBancaria();
     assertEquals(0.0, cuenta.getSaldo());
@@ -55,7 +54,7 @@ void testSaldoInicial() {
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`@Test
+        <CodeBlock lang="java" code={`@Test
 void testNivelJugador() {
     Jugador j = new Jugador();
     j.setNivel(5);

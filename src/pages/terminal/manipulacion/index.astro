@@ -20,8 +20,7 @@ import TerminalQuizModal from '../../../components/TerminalQuizModal.astro';
         <li><strong><code>mv</code> (Move):</strong> Mueve archivos de sitio o les cambia el nombre.</li>
         <li><strong><code>rm</code> (Remove):</strong> ¡Peligro! Borra algo para siempre (no hay papelera).</li>
       </ul>
-      <CodeBlock
-        code={`mkdir proyectos
+      <CodeBlock lang="bash" code={`mkdir proyectos
 touch index.html
 # Crea la carpeta proyectos e index.html dentro.
 
@@ -37,7 +36,7 @@ cp index.html copia.html
       
       <details>
         <summary>👁️ Ver comando</summary>
-        <CodeBlock code={`mv viejo.txt nuevo.txt`} title="Terminal" />
+        <CodeBlock lang="bash" code={`mv viejo.txt nuevo.txt`} title="Terminal" />
       </details>
     </div>
 

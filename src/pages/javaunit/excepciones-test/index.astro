@@ -16,8 +16,7 @@ import JavaUnitQuizModal from '../../../components/JavaUnitQuizModal.astro';
       <p>
         Para esto usamos <code>assertThrows</code>, el cual captura una excepción y nos permite asegurar que nuestro sistema sabe protegerse.
       </p>
-      <CodeBlock
-        code={`@Test
+      <CodeBlock lang="java" code={`@Test
 void testDivisionEntreCero() {
     Calculadora calc = new Calculadora();
 
@@ -39,7 +38,7 @@ void testDivisionEntreCero() {
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`assertThrows(NumberFormatException.class, () -> {
+        <CodeBlock lang="java" code={`assertThrows(NumberFormatException.class, () -> {
     Integer.parseInt("HOLA");
 });`} />
       </details>
@@ -54,7 +53,7 @@ void testDivisionEntreCero() {
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`Exception ex = assertThrows(NumberFormatException.class, () -> {
+        <CodeBlock lang="java" code={`Exception ex = assertThrows(NumberFormatException.class, () -> {
     Integer.parseInt("ABC");
 });
 assertNotNull(ex);`} />

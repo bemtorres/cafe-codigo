@@ -13,8 +13,7 @@ import JavaUnitQuizModal from '../../../components/JavaUnitQuizModal.astro';
       <p>
         En el mundo real, no basta con un solo test. Debemos probar cada <code>if</code>, cada <code>else</code> y cada condición límite (Boundary Case). Si nuestro método <code>puedeVotar(int edad)</code> tiene un <code>if (edad >= 18)</code>, ¡debemos probar con 17, 18 y 19 años!
       </p>
-      <CodeBlock
-        code={`@Test
+      <CodeBlock lang="java" code={`@Test
 void testPuedeVotar() {
     Validador v = new Validador();
 
@@ -40,7 +39,7 @@ void testPuedeVotar() {
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`@Test
+        <CodeBlock lang="java" code={`@Test
 void testDescuentoCaminos() {
     Carrito c = new Carrito();
     // No debería aplicar con 5 (es el límite)
@@ -60,7 +59,7 @@ void testDescuentoCaminos() {
       
       <details>
         <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock code={`@Test
+        <CodeBlock lang="java" code={`@Test
 void testListaVacia() {
     ArrayList<String> lista = new ArrayList<>();
     assertEquals(0, lista.size());
