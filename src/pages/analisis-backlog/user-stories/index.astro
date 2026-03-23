@@ -1,0 +1,71 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import AnalisisBacklogQuizModal from '../../../components/AnalisisBacklogQuizModal.astro';
+---
+
+<Layout title="2. Agilidad en el Papel (User Stories)" description="Cómo escribir Historias de Usuario, Criterios de aceptación e INVEST. Priorización MoSCoW." courseSlug="analisis-backlog">
+  <article class="content-section">
+    <h1>2. Agilidad en Papel: Historias de Usuario</h1>
+
+    <section class="mb-10">
+      <h2>Escribiendo Historias de Usuario</h2>
+      <p>
+        Atrás quedaron los documentos de 500 páginas de Cascada. En metodologías ágiles como Scrum, los desarrolladores usan <strong>Historias de Usuario (User Stories)</strong>. Estas capturan una funcionalidad desde la perspectiva de quien la usa.
+      </p>
+      <div class="note-box" style="background: #eff6ff; border-left: 5px solid #3b82f6;">
+        <strong>Sintaxis universal:</strong> <br/> Como <code>[Rol/Perfil]</code>,<br/>quiero <code>[Acción/Objetivo]</code>,<br/>para <code>[Beneficio/Valor]</code>.
+      </div>
+      <p><em>Ejemplo: "Como Usuario Registrado, quiero restablecer mi contraseña por email, para poder acceder a mi cuenta si la olvido."</em></p>
+    </section>
+
+    <section class="mb-10">
+      <h2>El modelo INVEST</h2>
+      <p>Una buena historia de usuario debe cumplir las siglas <strong>INVEST</strong>:</p>
+      <ul>
+        <li><strong>I</strong>ndependent (Independiente de otras historias)</li>
+        <li><strong>N</strong>egotiable (Negociable: Es una invitación a charlar, no un contrato rígido)</li>
+        <li><strong>V</strong>aluable (Aporta valor real al cliente o negocio)</li>
+        <li><strong>E</strong>stimable (El equipo puede aproximar su esfuerzo)</li>
+        <li><strong>S</strong>mall (Suficientemente pequeña para terminarla en 1 Sprint/Iteración)</li>
+        <li><strong>T</strong>estable (Testeable: Debe haber forma de comprobar que funciona)</li>
+      </ul>
+    </section>
+
+    <section class="mb-10">
+      <h2>Criterios de Aceptación</h2>
+      <p>
+        Son la lista de condiciones que debe cumplir el software para que la historia se considere "Terminada". Sirven para alinear al QA, al cliente y al Developer.
+      </p>
+      <p>
+        Ejemplo para recuperar contraseña:<br/>
+        1. "El sistema envía un email formateado con un link seguro".<br/>
+        2. "El link expirará a los 15 minutos".<br/>
+        3. "Al intentar usar un link expirado da error 400".
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Priorización y el Product Backlog</h2>
+      <p>
+        El contenedor de todas las historias de usuario de un producto se llama <strong>Product Backlog</strong>. Está ordenado desde arriba (lo más importante) abajo.
+      </p>
+      <p>Una técnica estelar para ordenar esto es <strong>MoSCoW</strong>:</p>
+      <ul>
+        <li><strong>M</strong>ust Have: Crítico. Sin esto, el sistema no tiene sentido.</li>
+        <li><strong>S</strong>hould Have: Importante pero no de vida o muerte.</li>
+        <li><strong>C</strong>ould Have: Algo "bonito de tener" si sobra tiempo o plata.</li>
+        <li><strong>W</strong>on't Have: En esta versión inicial (MVP), definitivamente no lo haremos.</li>
+      </ul>
+    </section>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <AnalisisBacklogQuizModal quizKey="user-stories" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/analisis-backlog/elicitacion/" class="prev">← Elicitación</a>
+      <a href="/analisis-backlog/estimacion/" class="next">Estimación →</a>
+    </nav>
+  </article>
+</Layout>

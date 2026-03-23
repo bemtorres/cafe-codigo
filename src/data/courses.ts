@@ -9,6 +9,7 @@ export interface Course {
   status: CourseStatus;
   color: string;
   lessons?: { slug: string; title: string; href: string }[];
+  requiresPassword?: boolean;
 }
 
 export const courses: Course[] = [
@@ -147,6 +148,61 @@ export const courses: Course[] = [
       { slug: 'vista-proceso', title: '5. Vista de Proceso', href: '/arch/vista-proceso/' },
       { slug: 'vista-fisica', title: '6. Vista Física', href: '/arch/vista-fisica/' },
       { slug: 'conclusion', title: '7. Conclusión', href: '/arch/conclusion/' },
+    ],
+  },
+  {
+    slug: 'c4',
+    name: 'Modelo C4',
+    description: 'Aprende a mapear la arquitectura de tu software en diferentes niveles de abstracción (Contexto, Contenedores, Componentes, Código).',
+    category: 'engineering',
+    status: 'available',
+    requiresPassword: true,
+    color: '#1a5ebd',
+    lessons: [
+      { slug: 'introduccion', title: '1. ¿Qué es C4?', href: '/c4/introduccion/' },
+      { slug: 'contexto', title: '2. Nivel 1: Contexto', href: '/c4/contexto/' },
+      { slug: 'contenedores', title: '3. Nivel 2: Contenedores', href: '/c4/contenedores/' },
+      { slug: 'componentes', title: '4. Nivel 3: Componentes', href: '/c4/componentes/' },
+      { slug: 'codigo', title: '5. Nivel 4: Código', href: '/c4/codigo/' },
+    ],
+  },
+  {
+    slug: 'vision-producto',
+    name: 'Fundamentos y Definición de Visión del Producto',
+    description: 'Aprende los fundamentos de ingeniería de software: ciclos de vida, stakeholders y levantamiento de requisitos.',
+    category: 'engineering',
+    status: 'available',
+    color: '#8b5cf6',
+    lessons: [
+      { slug: 'ciclos-de-vida', title: '1. Ciclos de Vida', href: '/vision-producto/ciclos-de-vida/' },
+      { slug: 'inicio-y-usuario', title: '2. Inicio y Usuario', href: '/vision-producto/inicio-y-usuario/' },
+      { slug: 'requisitos', title: '3. Ingeniería de Requisitos', href: '/vision-producto/requisitos/' },
+    ],
+  },
+  {
+    slug: 'analisis-backlog',
+    name: 'Análisis y Backlog',
+    description: 'Aprende a transformar necesidades vagas en requerimientos técnicos, historias de usuario e hitos estimables.',
+    category: 'engineering',
+    status: 'available',
+    color: '#3b82f6',
+    lessons: [
+      { slug: 'elicitacion', title: '1. Técnicas de Elicitación', href: '/analisis-backlog/elicitacion/' },
+      { slug: 'user-stories', title: '2. Agilidad en Papel', href: '/analisis-backlog/user-stories/' },
+      { slug: 'estimacion', title: '3. Validación y Estimación', href: '/analisis-backlog/estimacion/' },
+    ],
+  },
+  {
+    slug: 'scrum-prototipado',
+    name: 'Scrum y Prototipado',
+    description: 'Aplica el marco de trabajo Scrum en acción, diseña Sprints y crea maquetas funcionales.',
+    category: 'engineering',
+    status: 'available',
+    color: '#10b981',
+    lessons: [
+      { slug: 'marco-scrum', title: '1. El Marco Scrum', href: '/scrum-prototipado/marco-scrum/' },
+      { slug: 'diseno-sprints', title: '2. Sprints y Prototipado', href: '/scrum-prototipado/diseno-sprints/' },
+      { slug: 'presentacion-mejora', title: '3. Review y Mejora Continua', href: '/scrum-prototipado/presentacion-mejora/' },
     ],
   },
   {
@@ -297,6 +353,7 @@ export const courses: Course[] = [
     description: 'Aprende a programar dentro de la base de datos: Procedures, Triggers y Funciones.',
     category: 'database',
     status: 'available',
+    requiresPassword: true,
     color: '#e67e22',
     lessons: [
       { slug: 'intro-plsql', title: '1. Bloques Anónimos', href: '/programacion-db/intro-plsql/' },

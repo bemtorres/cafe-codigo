@@ -1,0 +1,40 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import C4QuizModal from '../../../components/C4QuizModal.astro';
+---
+
+<Layout title="2. Nivel 1: Contexto" description="Diagramas de Contexto en el Modelo C4." courseSlug="c4">
+  <article class="content-section">
+    <h1>2. Nivel 1: Diagramas de Contexto</h1>
+
+    <section class="mb-10">
+      <h2>La vista desde el satélite</h2>
+      <p>
+        El <strong>Diagrama de Contexto</strong> es el punto de partida. Imagina que haces un diagrama para el Director Ejecutivo (CEO) o para el equipo de ventas. No les interesa si usas Node.js, Python o MySQL. Les interesa entender qué hace el sistema, quién lo usa y con qué otros sistemas se conecta.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Elementos del Diagrama de Contexto</h2>
+      <p>En este nivel, solo existen 3 tipos de capas o entidades:</p>
+      <ul>
+        <li><strong>Usuarios / Personas:</strong> Los actores humanos que interactúan con el sistema.</li>
+        <li><strong>Tu Sistema (El sujeto principal):</strong> Una caja grande en el centro que representa tu producto completo.</li>
+        <li><strong>Sistemas Externos:</strong> APIs de terceros, sistemas legacy del banco, proveedores de pago (ej. Stripe o PayPal).</li>
+      </ul>
+      <div class="note-box" style="background: #eef2ff; border-left: 5px solid #1a5ebd;">
+        <strong>¡Prohibido hablar técnico!</strong> Evita poner nombres de tecnologías, bases de datos o protocolos específicos (como REST o gRPC). El objetivo es que cualquier stakeholder entienda la imagen.
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <C4QuizModal quizKey="contexto" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/c4/introduccion/" class="prev">← Introducción a C4</a>
+      <a href="/c4/contenedores/" class="next">Nivel 2: Contenedores →</a>
+    </nav>
+  </article>
+</Layout>

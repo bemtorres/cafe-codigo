@@ -1,0 +1,469 @@
+---
+import { visionProductoQuizBank } from '../data/visionProductoQuizBank';
+
+type Props = {
+  quizKey: string;
+};
+
+const { quizKey } = Astro.props as Props;
+const quiz = visionProductoQuizBank[quizKey];
+
+if (!quiz) {
+  throw new Error(`VisionProductoQuizModal: no existe quizKey "${quizKey}" en visionProductoQuizBank.`);
+}
+
+const modalId = `vp-quiz-modal-${quizKey}`;
+const openBtnId = `vp-quiz-open-${quizKey}`;
+const closeBtnId = `vp-quiz-close-${quizKey}`;
+const resultId = `vp-quiz-result-${quizKey}`;
+const radiosNamePrefix = `vp_quiz_${quizKey}_q_`;
+---
+
+<div class="vp-quiz">
+  <button id={openBtnId} type="button" class="vp-quiz__start" data-vp-quiz-open>
+    Comenzar Test
+  </button>
+
+  <div id={modalId} class="vp-quiz__modal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="vp-quiz__overlay" data-vp-quiz-close></div>
+
+    <div class="vp-quiz__panel">
+      <div class="vp-quiz__header">
+        <div class="vp-quiz__title">
+          <span class="vp-quiz__title-badge">Product Quiz</span>
+          <span>{quiz.title}</span>
+        </div>
+
+        <button
+          id={closeBtnId}
+          type="button"
+          class="vp-quiz__close"
+          data-vp-quiz-close
+          aria-label="Cerrar"
+        >
+          ✕
+        </button>
+      </div>
+
+      <div class="vp-quiz__body">
+        <p class="vp-quiz__intro">
+          Valida tus conocimientos teóricos. Son <strong>{quiz.questions.length}</strong> preguntas.
+        </p>
+
+        <form class="vp-quiz__form" onsubmit="return false;">
+          {quiz.questions.map((q, i) => (
+            <section
+              class="vp-quiz__q"
+              data-vp-quiz-q={i}
+              data-correct-index={q.correctIndex}
+            >
+              <h4 class="vp-quiz__q-title">
+                <span class="vp-quiz__q-num">{i + 1}</span>. {q.prompt}
+              </h4>
+
+              <div class="vp-quiz__options">
+                {q.options.map((opt, idx) => {
+                  const name = `${radiosNamePrefix}${i}`;
+                  const value = String(idx);
+                  const id = `${radiosNamePrefix}${i}_${idx}`;
+                  return (
+                    <label class="vp-quiz__opt" for={id}>
+                      <input
+                        id={id}
+                        type="radio"
+                        name={name}
+                        value={value}
+                        data-vp-quiz-answer={i}
+                      />
+                      <span>{opt}</span>
+                    </label>
+                  );
+                })}
+              </div>
+
+              <div
+                class="vp-quiz__feedback"
+                data-vp-quiz-feedback={i}
+                aria-live="polite"
+              ></div>
+            </section>
+          ))}
+        </form>
+      </div>
+
+      <div class="vp-quiz__footer">
+        <div id={resultId} class="vp-quiz__result" aria-live="polite"></div>
+        <div class="vp-quiz__actions">
+          <button type="button" class="vp-quiz__submit" data-vp-quiz-submit>
+            Finalizar y Revisar
+          </button>
+          <button type="button" class="vp-quiz__restart" data-vp-quiz-restart>
+            Reiniciar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+  (function () {
+    const WKEY = '__vpQuizModalDelegated__';
+    if (window[WKEY]) return;
+    window[WKEY] = true;
+
+    function closeModal(modal) {
+      if (!modal) return;
+      modal.setAttribute('aria-hidden', 'true');
+      modal.classList.remove('is-open');
+      document.documentElement.style.overflow = '';
+    }
+
+    function openModal(modal) {
+      if (!modal) return;
+      const resultEl = modal.querySelector('.vp-quiz__result');
+      if (resultEl) resultEl.textContent = '';
+      modal.querySelectorAll('[data-vp-quiz-feedback]').forEach((el) => {
+        el.textContent = '';
+      });
+      modal.setAttribute('aria-hidden', 'false');
+      modal.classList.add('is-open');
+      document.documentElement.style.overflow = 'hidden';
+    }
+
+    function shuffleQuestions(modal) {
+      const form = modal.querySelector('.vp-quiz__form');
+      const qEls = Array.from(modal.querySelectorAll('[data-vp-quiz-q]'));
+      if (!form || qEls.length < 2) return;
+
+      for (let i = qEls.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        const tmp = qEls[i];
+        qEls[i] = qEls[j];
+        qEls[j] = tmp;
+      }
+
+      qEls.forEach((el) => {
+        form.appendChild(el);
+      });
+
+      qEls.forEach((qEl, idx) => {
+        const numEl = qEl.querySelector('.vp-quiz__q-num');
+        if (numEl) numEl.textContent = String(idx + 1);
+      });
+    }
+
+    function gradeModal(modal) {
+      const resultEl = modal.querySelector('.vp-quiz__result');
+      if (!resultEl) return;
+
+      const qEls = modal.querySelectorAll('[data-vp-quiz-q]');
+      let score = 0;
+
+      qEls.forEach((qEl) => {
+        const correct = Number(qEl.getAttribute('data-correct-index'));
+        const feedbackEl = qEl.querySelector('[data-vp-quiz-feedback]');
+        const selected = qEl.querySelector('input[type="radio"]:checked');
+        const idx = selected ? Number(selected.value) : null;
+
+        const correctInput = qEl.querySelector(`input[type="radio"][value="${correct}"]`);
+        const correctText = correctInput?.parentElement?.querySelector('span')?.textContent ?? '';
+        const selectedText = selected?.parentElement?.querySelector('span')?.textContent ?? '';
+
+        const isCorrect = idx === correct;
+        if (isCorrect) score++;
+
+        if (feedbackEl) {
+          if (isCorrect) {
+            feedbackEl.innerHTML = '<span style="color:#05c290;">Correcto ✅</span>';
+          } else {
+            feedbackEl.innerHTML =
+              `<span style="color:#D81B60;">Incorrecto ❌. Correcta: "${correctText}".</span>` +
+              (selectedText ? `<br>Tu respuesta: "${selectedText}".` : '');
+          }
+        }
+      });
+
+      const total = qEls.length;
+      if (score === total) resultEl.innerHTML = `🌟 ¡Excelente! Obtuviste ${score}/${total} puntos.`;
+      else if (score > total / 2) resultEl.innerHTML = `👍 ¡Bien hecho! Obtuviste ${score}/${total}.`;
+      else resultEl.innerHTML = `📚 Puntaje: ${score}/${total}. Sigue repasando.`;
+    }
+
+    document.addEventListener('click', (e) => {
+      const target = e.target;
+
+      const startBtn = target instanceof Element ? target.closest('.vp-quiz__start') : null;
+      if (startBtn) {
+        e.preventDefault();
+        const root = startBtn.closest('.vp-quiz');
+        const modal = root?.querySelector('.vp-quiz__modal') || null;
+        openModal(modal);
+        if (modal) shuffleQuestions(modal);
+        return;
+      }
+
+      const closeBtn = target instanceof Element ? target.closest('[data-vp-quiz-close]') : null;
+      if (closeBtn) {
+        const root = closeBtn.closest('.vp-quiz');
+        const modal = root?.querySelector('.vp-quiz__modal') || null;
+        closeModal(modal);
+        return;
+      }
+
+      const submitBtn = target instanceof Element ? target.closest('[data-vp-quiz-submit]') : null;
+      if (submitBtn) {
+        const root = submitBtn.closest('.vp-quiz');
+        const modal = root?.querySelector('.vp-quiz__modal') || null;
+        if (modal) gradeModal(modal);
+        return;
+      }
+
+      const restartBtn = target instanceof Element ? target.closest('[data-vp-quiz-restart]') : null;
+      if (restartBtn) {
+        const root = restartBtn.closest('.vp-quiz');
+        const modal = root?.querySelector('.vp-quiz__modal') || null;
+        if (!modal) return;
+        const resultEl = modal.querySelector('.vp-quiz__result');
+        if (resultEl) resultEl.textContent = '';
+        modal.querySelectorAll('input[type="radio"]').forEach((r) => {
+          r.checked = false;
+        });
+        modal.querySelectorAll('[data-vp-quiz-feedback]').forEach((el) => {
+          el.textContent = '';
+        });
+        return;
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape') return;
+      document.querySelectorAll('.vp-quiz__modal.is-open').forEach((m) => closeModal(m));
+    });
+  })();
+</script>
+
+<style>
+  .vp-quiz {
+    margin: 2.5rem 0 2rem;
+  }
+
+  /* Color Product Vision Course (#8b5cf6) */
+  .vp-quiz__start {
+    width: 100%;
+    max-width: 420px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    padding: 0.9rem 1.1rem;
+    border-radius: 18px;
+    border: 3px solid var(--border);
+    background: #8b5cf6; 
+    color: white;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    cursor: pointer;
+    box-shadow: 5px 5px 0px var(--border);
+    transition: transform 0.1s, box-shadow 0.1s;
+    margin: 0 auto;
+  }
+
+  .vp-quiz__start:hover {
+    transform: translateY(-2px);
+    box-shadow: 7px 7px 0px var(--border);
+  }
+  
+  .vp-quiz__start:active {
+    transform: translateY(2px);
+    box-shadow: 3px 3px 0px var(--border);
+  }
+
+  .vp-quiz__modal {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    display: none;
+  }
+
+  .vp-quiz__modal.is-open {
+    display: block;
+  }
+
+  .vp-quiz__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(4px);
+  }
+
+  .vp-quiz__panel {
+    position: relative;
+    max-width: 860px;
+    margin: 6vh auto 0;
+    background: white;
+    border: 3px solid var(--border);
+    border-radius: 22px;
+    box-shadow: 0 28px 90px rgba(30, 18, 16, 0.25);
+    overflow: hidden;
+  }
+
+  .vp-quiz__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    border-bottom: 3px solid var(--border);
+    background: #F8FAFC; 
+  }
+
+  .vp-quiz__title {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    font-size: 1.1rem;
+    color: #8b5cf6;
+  }
+
+  .vp-quiz__title-badge {
+    background: #EDE9FE;
+    color: #4C1D95;
+    border: 2px solid var(--border);
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    box-shadow: 2px 2px 0px var(--border);
+  }
+
+  .vp-quiz__close {
+    width: 42px;
+    height: 42px;
+    border-radius: 999px;
+    border: 2px solid var(--border);
+    background: rgba(255, 255, 255, 0.9);
+    cursor: pointer;
+    font-size: 1.05rem;
+    font-weight: 900;
+  }
+
+  .vp-quiz__body {
+    padding: 1rem 1.25rem;
+    max-height: 68vh;
+    overflow: auto;
+  }
+
+  .vp-quiz__intro {
+    margin: 0 0 1rem;
+    color: var(--text-secondary);
+    font-weight: 700;
+    line-height: 1.5;
+  }
+
+  .vp-quiz__q {
+    padding: 0.85rem 0.85rem 1rem;
+    border: 2px dashed rgba(30, 18, 16, 0.15);
+    border-radius: 16px;
+    background: #F8FAFC;
+    margin-bottom: 1rem;
+  }
+
+  .vp-quiz__q-title {
+    margin: 0 0 0.75rem;
+    font-weight: 900;
+    color: var(--text-primary);
+    font-family: 'Nunito', sans-serif;
+  }
+
+  .vp-quiz__options {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.55rem;
+  }
+
+  .vp-quiz__opt {
+    display: flex;
+    gap: 0.7rem;
+    align-items: flex-start;
+    cursor: pointer;
+    font-weight: 750;
+    color: var(--text-secondary);
+    line-height: 1.4;
+  }
+
+  .vp-quiz__opt input {
+    margin-top: 2px;
+    width: 18px;
+    height: 18px;
+    accent-color: #8b5cf6;
+  }
+
+  .vp-quiz__footer {
+    padding: 0.95rem 1.25rem;
+    border-top: 3px solid var(--border);
+    background: #FAFAFA;
+  }
+
+  .vp-quiz__result {
+    min-height: 1.25rem;
+    margin-bottom: 0.75rem;
+    font-weight: 900;
+    color: #8b5cf6;
+    font-family: 'Nunito', sans-serif;
+  }
+
+  .vp-quiz__feedback {
+    margin-top: 0.65rem;
+    font-weight: 900;
+    line-height: 1.4;
+    font-family: 'Nunito', sans-serif;
+  }
+
+  .vp-quiz__actions {
+    display: flex;
+    gap: 0.8rem;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+  }
+
+  .vp-quiz__submit {
+    border: 3px solid var(--border);
+    background: #8b5cf6;
+    color: white;
+    padding: 0.65rem 1rem;
+    border-radius: 14px;
+    font-weight: 900;
+    font-family: 'Nunito', sans-serif;
+    cursor: pointer;
+    box-shadow: 4px 4px 0px var(--border);
+  }
+
+  .vp-quiz__restart {
+    border: 3px solid var(--border);
+    background: white;
+    color: var(--text-primary);
+    padding: 0.65rem 1rem;
+    border-radius: 14px;
+    font-weight: 900;
+    font-family: 'Nunito', sans-serif;
+    cursor: pointer;
+    box-shadow: 4px 4px 0px var(--border);
+  }
+
+  @media (max-width: 650px) {
+    .vp-quiz__panel {
+      margin-top: 4vh;
+      width: calc(100% - 1.2rem);
+    }
+    .vp-quiz__actions {
+      justify-content: stretch;
+    }
+    .vp-quiz__submit,
+    .vp-quiz__restart {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+</style>

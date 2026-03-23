@@ -3,6 +3,7 @@ import '../styles/global.css';
 import '../styles/code-themes.css';
 import CodeThemeSelector from '../components/CodeThemeSelector.astro';
 import WelcomeModal from '../components/WelcomeModal.astro';
+import PasswordProtect from '../components/PasswordProtect.astro';
 import { courses } from '../data/courses';
 import logoCafeycodigo from '../assets/images/cafeycodigo.png';
 import logoPseint from '../assets/images/pseint.png';
@@ -73,6 +74,7 @@ const isInsideLesson = lessons.length > 0 && currentLessonIdx >= 0;
     
     <!-- Modal de bienvenida (nombre de usuario) -->
     <WelcomeModal />
+    {currentCourse?.requiresPassword && <PasswordProtect courseSlug={currentCourse.slug} />}
     
     <!-- Mini header solo mobile -->
     <header class="sm:hidden sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b-2 border-[#1E1210]/10 px-4 py-3 flex items-center justify-between gap-3">
@@ -258,6 +260,10 @@ const isInsideLesson = lessons.length > 0 && currentLessonIdx >= 0;
             <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
               <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#0891b2] shadow-neo hover:-translate-y-0.5 transition-transform" href="/javaunit/">JUnit</a>
               <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#475569] shadow-neo hover:-translate-y-0.5 transition-transform" href="/arch/">Ark (4+1)</a>
+              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#1a5ebd] shadow-neo hover:-translate-y-0.5 transition-transform" href="/c4/">🔒 Modelo C4</a>
+              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#8b5cf6] shadow-neo hover:-translate-y-0.5 transition-transform" href="/vision-producto/">Visión Producto</a>
+              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#3b82f6] shadow-neo hover:-translate-y-0.5 transition-transform" href="/analisis-backlog/">Análisis Backlog</a>
+              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#10b981] shadow-neo hover:-translate-y-0.5 transition-transform" href="/scrum-prototipado/">Scrum</a>
             </div>
           </div>
 
@@ -266,7 +272,7 @@ const isInsideLesson = lessons.length > 0 && currentLessonIdx >= 0;
             <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
               <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#16a085] shadow-neo hover:-translate-y-0.5 transition-transform" href="/modelamiento-db/">Modelamiento</a>
               <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#2980b9] shadow-neo hover:-translate-y-0.5 transition-transform" href="/consultas-sql/">Consultas SQL</a>
-              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#e67e22] shadow-neo hover:-translate-y-0.5 transition-transform" href="/programacion-db/">PL/SQL</a>
+              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#e67e22] shadow-neo hover:-translate-y-0.5 transition-transform" href="/programacion-db/">🔒 PL/SQL</a>
             </div>
           </div>
 

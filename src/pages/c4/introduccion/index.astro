@@ -1,0 +1,44 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import C4QuizModal from '../../../components/C4QuizModal.astro';
+---
+
+<Layout title="1. ¿Qué es C4?" description="Introducción al Modelo C4 de Simon Brown." courseSlug="c4">
+  <article class="content-section">
+    <h1>1. Nivel 0: Introducción al Modelo C4</h1>
+
+    <section class="mb-10">
+      <h2>El problema de los diagramas de arquitectura</h2>
+      <p>
+        Históricamente, los arquitectos de software usaban cajas y flechas sin ningún estándar. Algunos diagramas eran demasiado complejos (mostrando todas las clases) y otros demasiado simples (mostrando solo 3 cajas que no explicaban nada).
+      </p>
+      <p>
+        <strong>Simon Brown</strong>, frustrado con esto, creó el <strong>Modelo C4</strong>. Su analogía principal es Google Maps: cuando usas un mapa, no ves todo al mismo tiempo. Empiezas viendo continentes, luego países, luego ciudades, y finalmente calles.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Los 4 Niveles de Abstracción</h2>
+      <p>El nombre "C4" proviene de sus 4 niveles iterativos (de mayor a menor abstracción):</p>
+      <ul>
+        <li><strong>Nivel 1: Contexto (Context)</strong> — La vista panorámica. Muestra usuarios interactuando con tu sistema y con otros sistemas externos.</li>
+        <li><strong>Nivel 2: Contenedores (Containers)</strong> — Haces zoom a tu sistema y ves sus partes ejecutables (ej: la app móvil, el backend, la base de datos).</li>
+        <li><strong>Nivel 3: Componentes (Components)</strong> — Haces zoom a un contenedor y ves los módulos lógicos o componentes que lo forman (ej: Controladores, Repositorios).</li>
+        <li><strong>Nivel 4: Código (Code)</strong> — El máximo zoom. Diagramas de clase UML detallando atributos y métodos exactos.</li>
+      </ul>
+      <div class="note-box" style="background: #eef2ff; border-left: 5px solid #1a5ebd;">
+        <strong>Dato clave:</strong> A diferencia de UML, C4 se enfoca primero en la abstracción y luego en la notación técnica. ¡Un buen diagrama C4 puede ser entendido por alguien sin conocimientos técnicos en sus primeros niveles!
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <C4QuizModal quizKey="introduccion" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/c4/" class="prev">← Índice del Curso</a>
+      <a href="/c4/contexto/" class="next">Nivel 1: Contexto →</a>
+    </nav>
+  </article>
+</Layout>

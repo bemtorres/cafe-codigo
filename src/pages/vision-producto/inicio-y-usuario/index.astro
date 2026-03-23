@@ -1,0 +1,69 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import VisionProductoQuizModal from '../../../components/VisionProductoQuizModal.astro';
+---
+
+<Layout title="2. El Inicio del Proyecto y el Usuario" description="Definición de Visión del Producto, Stakeholders y Mapas de Empatía." courseSlug="vision-producto">
+  <article class="content-section">
+    <h1>2. Inicio del Proyecto y el Usuario</h1>
+
+    <section class="mb-10">
+      <h2>Identificación de Stakeholders</h2>
+      <p>
+        Un <strong>Stakeholder</strong> (o interesado) es <em>cualquier persona, organización o grupo de personas que puede afectar, o verse afectado, por las decisiones de tu proyecto</em>.
+      </p>
+      <p>
+        ¡El stakeholder NO es solo el que paga! Si construyes una app para pedir comida, los stakeholders son: el restaurante, el delivery, el cliente que compra, los inversores, e incluso los entes reguladores de sanidad que puedan auditarte. Ignorar a un stakeholder importante puede arruinar tu software.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Visión del Producto (Elevator Pitch)</h2>
+      <p>
+        Una vez conoces a los involucrados, necesitas definir claramente la estrella polar de tu proyecto. El <strong>Elevator Pitch</strong> (o Visión de producto de 30 segundos) es una fórmula para definir tu producto de un vistazo:
+      </p>
+      <ul>
+        <li><strong>Para</strong> (cliente objetivo)</li>
+        <li><strong>Quien</strong> (necesidad/problema)</li>
+        <li><strong>Nuestro producto es un</strong> (categoría del producto)</li>
+        <li><strong>Que</strong> (beneficio principal, razón de compra)</li>
+        <li><strong>A diferencia de</strong> (el competidor alternativo)</li>
+        <li><strong>Nuestro producto</strong> (diferenciador principal)</li>
+      </ul>
+    </section>
+
+    <section class="mb-10">
+      <h2>Conociendo al Usuario Real: User Personas</h2>
+      <p>
+        "El sistema será usado por gente de 18 a 60 años". Esa descripción es tan ambigua que no sirve para diseñar. Aquí entran los <strong>User Personas</strong>: son arquetipos ficticios creados en base a estudios y datos reales que representan a tus usuarios.
+      </p>
+      <div class="note-box" style="background: #f8fafc; border-left: 5px solid #8b5cf6;">
+        <strong>Ejemplo:</strong> "María (34 años), gerente ocupada, tiene poco tiempo para cocinar. Usa el celular siempre de pie mientras viaja al trabajo." <br/><em>Diseñar para "María" es más fácil y empático que diseñar para un grupo demográfico abstracto.</em>
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2>Mapas de Empatía</h2>
+      <p>
+        Complementa el User Persona con un <strong>Mapa de Empatía</strong>. Es un lienzo dividido en cuadrantes para entender verdaderamente la psicología de tu usuario:
+      </p>
+      <ul>
+        <li><strong>¿Qué piensa y siente?:</strong> Preocupaciones, frustraciones (ej. "tengo hambre").</li>
+        <li><strong>¿Qué ve?:</strong> Entorno, competencia, a sus amigos usando otras apps.</li>
+        <li><strong>¿Qué dice y hace?:</strong> Actitud en público ("me gusta la comida sana" vs pide hamburguesa).</li>
+        <li><strong>¿Qué oye?:</strong> Influencia de amigos, familia, redes sociales.</li>
+      </ul>
+      <p>Analizando esto antes del código, construirás algo que el mercado <em>realmente</em> necesite.</p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <VisionProductoQuizModal quizKey="inicio-y-usuario" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/vision-producto/ciclos-de-vida/" class="prev">← Ciclos de Vida</a>
+      <a href="/vision-producto/requisitos/" class="next">Ing. de Requisitos →</a>
+    </nav>
+  </article>
+</Layout>
