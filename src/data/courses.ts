@@ -376,4 +376,23 @@ export const courses: Course[] = [
       { slug: 'triggers', title: '4. Triggers (Gatillos)', href: '/programacion-db/triggers/' },
     ],
   },
+  {
+    slug: 'excel',
+    name: 'Excel Básico',
+    description: 'Excel desde cero: interfaz, fórmulas, funciones, referencias, condicionales, búsquedas, fechas, análisis y tablas dinámicas, con tablas tipo hoja y práctica guiada en cada lección.',
+    category: 'tools',
+    status: 'available',
+    color: '#107c41',
+    lessons: [
+      { slug: 'introduccion', title: '1. Introducción y Conceptos', href: '/excel/introduccion/' },
+      { slug: 'calculos-matematicos', title: '2. Cálculos Manuales', href: '/excel/calculos-matematicos/' },
+      { slug: 'funciones-basicas', title: '3. Funciones Básicas', href: '/excel/funciones-basicas/' },
+      { slug: 'referencias', title: '4. Referencias y Fijado', href: '/excel/referencias/' },
+      { slug: 'funciones-condicionales', title: '5. Lógica y Condicionales', href: '/excel/funciones-condicionales/' },
+      { slug: 'funciones-busqueda', title: '6. Funciones de Búsqueda', href: '/excel/funciones-busqueda/' },
+      { slug: 'funciones-fechas', title: '7. Funciones de Fechas', href: '/excel/funciones-fechas/' },
+      { slug: 'analisis-celdas', title: '8. Análisis de Celdas', href: '/excel/analisis-celdas/' },
+      { slug: 'tablas-dinamicas', title: '9. Tablas Dinámicas y Gráficos', href: '/excel/tablas-dinamicas/' },
+    ],
+  },
 ];

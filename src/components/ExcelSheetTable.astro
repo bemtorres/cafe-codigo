@@ -1,0 +1,424 @@
+---
+/**
+ * Tabla con apariencia de hoja de Excel: letras (A, B, C…) en la primera fila
+ * y números de fila en la primera columna, para que el alumno relacione celdas reales.
+ */
+export type ExcelSheetVariant = 'default' | 'entrada' | 'maestro' | 'resultado' | 'resumen';
+
+export interface Props {
+  tableId: string;
+  /** Letras de columna mostradas encima (ej. ['A','B','C']) */
+  columns: string[];
+  /** Contenido de la fila 1 (encabezados de datos), una celda por columna de datos */
+  headers: string[];
+  /** Filas de datos desde la fila 2; cada celda es texto o fragmento HTML */
+  rows: (string | { html: string })[][];
+  /** Título visible antes de la tabla (rol del bloque en la lección) */
+  tableLabel?: string;
+  /** Una o dos frases: qué es esta tabla y cómo encaja con las demás */
+  tableDescription?: string;
+  /** Acento visual: entrada (azul), maestro (verde), resultado (violeta), resumen (ámbar) */
+  variant?: ExcelSheetVariant;
+  /** Texto opcional bajo el botón de copiar */
+  hint?: string;
+  /** Mostrar explicación de letras/filas (desactivar en tablas adicionales de la misma página) */
+  showCoordinateHelp?: boolean;
+}
+
+const {
+  tableId,
+  columns,
+  headers,
+  rows,
+  tableLabel,
+  tableDescription,
+  variant = 'default',
+  hint,
+  showCoordinateHelp = true,
+} = Astro.props;
+
+const variantClass =
+  variant === 'entrada'
+    ? 'excel-sheet-wrap--entrada'
+    : variant === 'maestro'
+      ? 'excel-sheet-wrap--maestro'
+      : variant === 'resultado'
+        ? 'excel-sheet-wrap--resultado'
+        : variant === 'resumen'
+          ? 'excel-sheet-wrap--resumen'
+          : '';
+
+const variantBadge: Record<ExcelSheetVariant, string | null> = {
+  default: null,
+  entrada: 'Entrada',
+  maestro: 'Catálogo / datos maestros',
+  resultado: 'Resultado / fórmula',
+  resumen: 'Resumen',
+};
+const badge = variantBadge[variant];
+const colU = (c: string) => String(c).toUpperCase();
+---
+
+{
+  showCoordinateHelp && (
+    <p class="excel-sheet-hint text-sm text-gray-600 mb-2">
+      Vista tipo Excel: la primera fila muestra las <strong>letras de columna</strong>; la primera columna muestra los <strong>números de fila</strong>. En las celdas con fórmula (<code>=...</code>), cada referencia lleva un color distinto. <strong>Clic en la referencia</strong>: resalta solo esa celda. <strong>Clic en el resto de la celda</strong> (por ejemplo el <code>=</code> o los operadores): resalta <strong>todas</strong> las celdas citadas. Repetir el mismo gesto sobre lo ya resaltado lo oculta.
+    </p>
+  )
+}
+{
+  (tableLabel || tableDescription || badge) && (
+    <div class="excel-sheet-block-head mb-3">
+      {tableLabel && (
+        <h3 class="text-base font-bold text-gray-900 m-0 mb-1 flex flex-wrap items-center gap-2">
+          {tableLabel}
+          {badge && variant !== 'default' && (
+            <span class="text-xs font-semibold uppercase tracking-wide px-2 py-0.5 rounded-md bg-[#e7f5ed] text-[#0d5c2e] border border-[#107c41]/30">
+              {badge}
+            </span>
+          )}
+        </h3>
+      )}
+      {tableDescription && <p class="text-sm text-gray-600 m-0 mb-1">{tableDescription}</p>}
+    </div>
+  )
+}
+
+{hint && <p class="text-sm text-gray-600 mb-2">{hint}</p>}
+
+<div
+  class:list={[
+    'excel-sheet-wrap overflow-x-auto rounded-lg border-2 border-[#107c41] shadow-md bg-[#f0f0f0]',
+    variantClass,
+  ]}
+>
+  <table
+    id={tableId}
+    class="excel-grid w-full text-left border-collapse text-sm"
+    style="font-family: Calibri, 'Segoe UI', system-ui, sans-serif; background: #fff;"
+  >
+    <thead>
+      <tr class="excel-col-letters">
+        <th
+          class="excel-corner w-10 min-w-[2.5rem] border border-[#c6c6c6] bg-[#e7e7e7] text-center text-xs font-semibold text-gray-500 p-1"
+        ></th>
+        {
+          columns.map((letter) => (
+            <th
+              class="border border-[#c6c6c6] bg-[#e7e7e7] text-center text-xs font-bold text-[#107c41] py-1.5 px-2 tracking-wide"
+              scope="col"
+            >
+              {letter}
+            </th>
+          ))
+        }
+      </tr>
+      <tr class="excel-header-row">
+        <th
+          class="excel-row-num border border-[#c6c6c6] bg-[#e7f5ed] text-center text-xs font-semibold text-gray-600 w-10 min-w-[2.5rem] p-1"
+          scope="row"
+        >
+          1
+        </th>
+        {
+          headers.map((h, i) => (
+            <th
+              class="excel-grid-cell border border-[#107c41] bg-[#e7f5ed] text-left font-semibold text-gray-800 p-2"
+              scope="col"
+              data-excel-address={`${colU(columns[i])}1`}
+            >
+              {h}
+            </th>
+          ))
+        }
+      </tr>
+    </thead>
+    <tbody>
+      {
+        rows.map((cells, i) => {
+          const rowNum = i + 2;
+          return (
+            <tr class="excel-data-row">
+              <th
+                class="excel-row-num border border-[#c6c6c6] bg-[#f3f3f3] text-center text-xs font-semibold text-gray-500 p-1"
+                scope="row"
+              >
+                {rowNum}
+              </th>
+              {cells.map((cell, j) =>
+                typeof cell === 'object' && cell !== null && 'html' in cell ? (
+                  <td
+                    class="excel-grid-cell border border-[#d4d4d4] p-2 text-gray-800 align-top"
+                    data-excel-address={`${colU(columns[j])}${rowNum}`}
+                    set:html={cell.html}
+                  />
+                ) : (
+                  <td
+                    class="excel-grid-cell border border-[#d4d4d4] p-2 text-gray-800 align-top"
+                    data-excel-address={`${colU(columns[j])}${rowNum}`}
+                  >
+                    {cell}
+                  </td>
+                )
+              )}
+            </tr>
+          );
+        })
+      }
+    </tbody>
+  </table>
+</div>
+
+<style is:global>
+  .excel-grid td {
+    vertical-align: middle;
+  }
+
+  .excel-grid-cell.excel-ref-target-active {
+    box-shadow: inset 0 0 0 3px var(--excel-ref-ring, #2563eb);
+    background-color: color-mix(in srgb, var(--excel-ref-ring, #2563eb) 12%, transparent);
+  }
+
+  .excel-formula-ref {
+    cursor: pointer;
+    padding: 0 0.15em;
+    border-radius: 3px;
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    transition: filter 0.15s ease;
+  }
+
+  .excel-formula-ref:hover {
+    filter: brightness(0.92);
+  }
+
+  .excel-formula-ref--0 { --ref-bg: rgba(37, 99, 235, 0.2); --ref-fg: #1d4ed8; --ref-ring: #2563eb; }
+  .excel-formula-ref--1 { --ref-bg: rgba(194, 65, 12, 0.2); --ref-fg: #c2410c; --ref-ring: #ea580c; }
+  .excel-formula-ref--2 { --ref-bg: rgba(124, 58, 237, 0.2); --ref-fg: #6d28d9; --ref-ring: #7c3aed; }
+  .excel-formula-ref--3 { --ref-bg: rgba(5, 150, 105, 0.2); --ref-fg: #047857; --ref-ring: #059669; }
+  .excel-formula-ref--4 { --ref-bg: rgba(202, 138, 4, 0.22); --ref-fg: #a16207; --ref-ring: #ca8a04; }
+  .excel-formula-ref--5 { --ref-bg: rgba(219, 39, 119, 0.18); --ref-fg: #be185d; --ref-ring: #db2777; }
+  .excel-formula-ref--6 { --ref-bg: rgba(13, 148, 136, 0.2); --ref-fg: #0f766e; --ref-ring: #0d9488; }
+  .excel-formula-ref--7 { --ref-bg: rgba(79, 70, 229, 0.2); --ref-fg: #4338ca; --ref-ring: #4f46e5; }
+
+  .excel-formula-ref {
+    background-color: var(--ref-bg);
+    color: var(--ref-fg);
+  }
+
+  .excel-grid-cell:has(.excel-formula-ref) {
+    cursor: pointer;
+  }
+
+  .excel-grid-cell:has(.excel-formula-ref) code {
+    cursor: pointer;
+  }
+
+  .excel-sheet-wrap--entrada {
+    border-color: #3b82f6;
+    background: linear-gradient(90deg, rgba(59, 130, 246, 0.08) 0%, #f0f0f0 12px);
+  }
+
+  .excel-sheet-wrap--maestro {
+    border-color: #107c41;
+  }
+
+  .excel-sheet-wrap--resultado {
+    border-color: #7c3aed;
+    background: linear-gradient(90deg, rgba(124, 58, 237, 0.07) 0%, #f0f0f0 12px);
+  }
+
+  .excel-sheet-wrap--resumen {
+    border-color: #ca8a04;
+    background: linear-gradient(90deg, rgba(202, 138, 4, 0.1) 0%, #f0f0f0 12px);
+  }
+</style>
+
+<script is:inline>
+  (function () {
+    if (window.__excelFormulaRefsInit) return;
+    window.__excelFormulaRefsInit = true;
+
+    var REF_CLASS_RE = /(\$?)([A-Za-z]{1,3})(\$?)(\d+)/g;
+
+    function escHtml(s) {
+      return s
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function normalizeAddr(col, row) {
+      return String(col).toUpperCase() + String(row);
+    }
+
+    function parseFormulaRefs(formula) {
+      var parts = [];
+      var re = new RegExp(REF_CLASS_RE.source, 'g');
+      var m;
+      var last = 0;
+      while ((m = re.exec(formula)) !== null) {
+        if (m.index > last) parts.push({ type: 'text', value: formula.slice(last, m.index) });
+        var full = m[0];
+        var col = m[2].toUpperCase();
+        var row = m[4];
+        parts.push({ type: 'ref', raw: full, addr: normalizeAddr(col, row) });
+        last = m.index + full.length;
+      }
+      if (last < formula.length) parts.push({ type: 'text', value: formula.slice(last) });
+      return parts;
+    }
+
+    function buildFormulaHtml(formula) {
+      var parts = parseFormulaRefs(formula);
+      var refCount = 0;
+      var html = '';
+      for (var i = 0; i < parts.length; i++) {
+        if (parts[i].type === 'text') {
+          html += escHtml(parts[i].value);
+          continue;
+        }
+        var idx = refCount % 8;
+        refCount++;
+        var addr = parts[i].addr;
+        var raw = parts[i].raw;
+        html +=
+          '<span class="excel-formula-ref excel-formula-ref--' +
+          idx +
+          '" tabindex="0" role="button" data-excel-target="' +
+          escHtml(addr) +
+          '" data-ref-idx="' +
+          idx +
+          '" title="Clic para resaltar la celda ' +
+          escHtml(addr) +
+          '">' +
+          escHtml(raw) +
+          '</span>';
+      }
+      return html;
+    }
+
+    function processTable(table) {
+      var codes = table.querySelectorAll('code');
+      for (var i = 0; i < codes.length; i++) {
+        var code = codes[i];
+        if (code.getAttribute('data-excel-formula-done') === '1') continue;
+        var t = code.textContent.trim();
+        if (t.charAt(0) !== '=') continue;
+        code.setAttribute('data-excel-formula-done', '1');
+        code.innerHTML = buildFormulaHtml(t);
+      }
+    }
+
+    function clearHighlights(table) {
+      var cells = table.querySelectorAll('.excel-grid-cell.excel-ref-target-active');
+      for (var i = 0; i < cells.length; i++) {
+        cells[i].classList.remove('excel-ref-target-active');
+        cells[i].style.removeProperty('--excel-ref-ring');
+      }
+    }
+
+    function highlightCell(table, addrUpper, ringColor) {
+      var sel = '[data-excel-address="' + addrUpper.replace(/"/g, '\\"') + '"]';
+      var cell = table.querySelector(sel);
+      if (!cell) return;
+      cell.classList.add('excel-ref-target-active');
+      cell.style.setProperty('--excel-ref-ring', ringColor);
+    }
+
+    function getRingColor(span) {
+      var st = getComputedStyle(span);
+      var c = st.getPropertyValue('--ref-ring').trim();
+      if (c) return c;
+      var cls = span.className;
+      var m = cls.match(/excel-formula-ref--(\d)/);
+      if (m) {
+        var tmp = document.createElement('span');
+        tmp.className = 'excel-formula-ref excel-formula-ref--' + m[1];
+        document.body.appendChild(tmp);
+        c = getComputedStyle(tmp).getPropertyValue('--ref-ring').trim();
+        tmp.remove();
+      }
+      return c || '#2563eb';
+    }
+
+    function highlightAllRefsInFormulaCell(table, cell) {
+      var refs = cell.querySelectorAll('.excel-formula-ref');
+      if (!refs.length) return;
+
+      var allActive = true;
+      for (var i = 0; i < refs.length; i++) {
+        var a = refs[i].getAttribute('data-excel-target');
+        if (!a) {
+          allActive = false;
+          break;
+        }
+        var tc = table.querySelector('[data-excel-address="' + a + '"]');
+        if (!tc || !tc.classList.contains('excel-ref-target-active')) {
+          allActive = false;
+          break;
+        }
+      }
+      if (allActive) {
+        clearHighlights(table);
+        return;
+      }
+
+      clearHighlights(table);
+      for (var j = 0; j < refs.length; j++) {
+        var sp = refs[j];
+        var addr = sp.getAttribute('data-excel-target');
+        if (addr) highlightCell(table, addr, getRingColor(sp));
+      }
+    }
+
+    function onClick(e) {
+      var table = e.target.closest('table.excel-grid');
+      if (!table) return;
+
+      var span = e.target.closest('.excel-formula-ref');
+      if (span && table.contains(span)) {
+        if (typeof e.preventDefault === 'function') e.preventDefault();
+        var addr = span.getAttribute('data-excel-target');
+        if (!addr) return;
+
+        var targetCell = table.querySelector('[data-excel-address="' + addr + '"]');
+        if (targetCell && targetCell.classList.contains('excel-ref-target-active')) {
+          clearHighlights(table);
+          return;
+        }
+
+        clearHighlights(table);
+        highlightCell(table, addr, getRingColor(span));
+        return;
+      }
+
+      var cell = e.target.closest('.excel-grid-cell');
+      if (!cell || !table.contains(cell)) return;
+      if (!cell.querySelector('.excel-formula-ref')) return;
+      if (typeof e.preventDefault === 'function') e.preventDefault();
+      highlightAllRefsInFormulaCell(table, cell);
+    }
+
+    function scan() {
+      document.querySelectorAll('table.excel-grid').forEach(processTable);
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', scan);
+    } else {
+      scan();
+    }
+
+    document.addEventListener('click', onClick);
+    document.addEventListener('keydown', function (e) {
+      if (e.key !== 'Enter' && e.key !== ' ') return;
+      var span = e.target.closest('.excel-formula-ref');
+      if (!span) return;
+      e.preventDefault();
+      onClick({ target: span, preventDefault: function () {} });
+    });
+  })();
+</script>

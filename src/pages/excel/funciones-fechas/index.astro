@@ -1,0 +1,87 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import ExcelQuizModal from '../../../components/ExcelQuizModal.astro';
+import CopyTableBtn from '../../../components/CopyTableBtn.astro';
+import ExcelSheetTable from '../../../components/ExcelSheetTable.astro';
+import ExcelPracticeBlock from '../../../components/ExcelPracticeBlock.astro';
+---
+
+<Layout title="7. Funciones de Fechas" description="Aprende a calcular antigüedad y manejar fechas de empleados con HOY, SIFECHA y mucho más." courseSlug="excel">
+  <article class="content-section">
+    <h1>7. Funciones de Fechas</h1>
+
+    <p class="font-semibold text-gray-800 mb-2">En esta lección aprenderás a:</p>
+    <ul class="list-disc pl-6 text-gray-700 mb-8 space-y-1">
+      <li>Usar <code>HOY</code>, <code>AHORA</code> y entender las fechas como <strong>números seriados</strong>.</li>
+      <li>Calcular antigüedad con <code>SIFECHA</code> (equivalente al DATEDIF en inglés en muchos materiales).</li>
+      <li>Extraer día, mes y año con <code>DIA</code>, <code>MES</code> y <code>AÑO</code>; restar fechas para obtener días.</li>
+    </ul>
+
+    <section class="mb-10">
+      <h2>Tabla – Nómina y antigüedad</h2>
+      <p>
+        La columna B debe estar en formato <strong>Fecha</strong>. Si Excel la trata como texto, <code>SIFECHA</code> puede fallar. En algunos libros y cursos en inglés verás la función <code>DATEDIF</code>; en Excel en español lo habitual es <code>SIFECHA</code> con el mismo propósito para intervalos.
+      </p>
+      <CopyTableBtn tableId="tabla-rrhh-fechas" />
+      <ExcelSheetTable
+        tableId="tabla-rrhh-fechas"
+        tableLabel="Empleados con fecha de ingreso"
+        tableDescription="Cada fila es una persona. La columna C muestra la fórmula típica de años completos hasta hoy."
+        variant="maestro"
+        columns={['A', 'B', 'C']}
+        headers={['Empleado', 'Fecha de ingreso', 'Antigüedad (años)']}
+        rows={[
+          ['Juan Pérez', '15/03/2018', { html: '<code>=SIFECHA(B2; HOY(); "Y")</code>' }],
+          ['Ana María Soto', '02/01/2021', { html: '<code>=SIFECHA(B3; HOY(); "Y")</code>' }],
+          ['Luis Herrera', '20/11/2015', { html: '<code>=SIFECHA(B4; HOY(); "Y")</code>' }],
+          ['Rosa Quispe', '08/07/2019', { html: '<code>=SIFECHA(B5; HOY(); "Y")</code>' }],
+          ['Marco León', '30/04/2022', { html: '<code>=SIFECHA(B6; HOY(); "Y")</code>' }],
+          ['Patricia Ruiz', '12/12/2014', { html: '<code>=SIFECHA(B7; HOY(); "Y")</code>' }],
+          ['Daniel Flores', '05/06/2020', { html: '<code>=SIFECHA(B8; HOY(); "Y")</code>' }],
+          ['Carla Méndez', '18/09/2023', { html: '<code>=SIFECHA(B9; HOY(); "Y")</code>' }],
+        ]}
+        hint={'Tercer argumento: letra Y / M / D entre comillas para años, meses o días. FIN.MES y EOMONTH (inglés) sirven para límites de mes.'}
+      />
+      <p>
+        Restar dos fechas válidas da <strong>días</strong> entre ellas: <code>=C2-B2</code> si ambas son fechas reconocidas.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>HOY, AHORA y despiece</h2>
+      <ul>
+        <li><code>=HOY()</code>: solo fecha del sistema.</li>
+        <li><code>=AHORA()</code>: fecha y hora (se actualiza al recalcular).</li>
+        <li><code>=DIA(B2)</code>, <code>=MES(B2)</code>, <code>=AÑO(B2)</code>: partes numéricas de una fecha.</li>
+      </ul>
+    </section>
+
+    <section class="mb-10">
+      <div class="card my-8" style="background: #e7f5ed; border: 3px solid #107c41; border-radius: 20px; padding: 1.5rem;">
+        <h3 style="color: #107c41;">SIFECHA en una línea</h3>
+        <p class="font-bold font-mono text-lg rounded-md bg-gray-50 border py-2 px-3 m-0 mt-2 text-gray-800">=SIFECHA(B2; HOY(); "Y")</p>
+        <p class="mt-4 mb-0">Sustituye <code>B2</code> por la celda de ingreso en cada fila.</p>
+      </div>
+    </section>
+
+    <ExcelPracticeBlock
+      steps={[
+        'Copia la tabla y formatea la columna B como Fecha corta.',
+        'Escribe la fórmula de antigüedad en C2 y cópiala hasta el final.',
+        'En una celda aparte calcula =HOY() y comprueba que cambia si abres el archivo otro día.',
+        'Prueba =DIA(B2) y =AÑO(B2) para un empleado concreto.',
+        'Calcula días entre dos fechas en celdas aparte con =fecha_fin-fecha_inicio.',
+      ]}
+    />
+
+    <section class="mb-10">
+      <h2>Pon a prueba tus conocimientos</h2>
+      <ExcelQuizModal quizKey="funciones-fechas" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/excel/funciones-busqueda/" class="prev">← Funciones de Búsqueda</a>
+      <a href="/excel/analisis-celdas/" class="next">Análisis de Celdas →</a>
+    </nav>
+  </article>
+</Layout>

@@ -1,0 +1,94 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import ExcelQuizModal from '../../../components/ExcelQuizModal.astro';
+import CopyTableBtn from '../../../components/CopyTableBtn.astro';
+import ExcelSheetTable from '../../../components/ExcelSheetTable.astro';
+import ExcelPracticeBlock from '../../../components/ExcelPracticeBlock.astro';
+---
+
+<Layout title="2. Cálculos Matemáticos" description="Suma, resta, multiplicación, división e inserción de ecuaciones manuales." courseSlug="excel">
+  <article class="content-section">
+    <h1>2. Cálculos Manuales</h1>
+
+    <p class="font-semibold text-gray-800 mb-2">En esta lección aprenderás a:</p>
+    <ul class="list-disc pl-6 text-gray-700 mb-8 space-y-1">
+      <li>Usar <code>+</code>, <code>-</code>, <code>*</code>, <code>/</code> y <code>^</code> en fórmulas que empiezan por <code>=</code>.</li>
+      <li>Aplicar <strong>PEMDAS</strong> (paréntesis primero) para no equivocar el orden.</li>
+      <li>Calcular subtotales en una tabla real (cantidad × precio).</li>
+    </ul>
+
+    <section class="mb-10">
+      <h2>Operadores básicos</h2>
+      <p>
+        Toda fórmula comienza con <code>=</code>. Excel no usa <code>×</code> ni <code>÷</code>: la multiplicación es <code>*</code> y la división <code>/</code>. La potencia es <code>^</code> (por ejemplo <code>=2^3</code> da 8).
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Tabla – Pedido de ferretería (subtotal con fórmula)</h2>
+      <p>
+        En la columna D verás la forma típica de un subtotal: multiplicar cantidad (B) por precio (C). Al copiar la fórmula hacia abajo, las filas B2/C2, B3/C3… cambian solas (referencias relativas; lo profundizarás en la lección 4).
+      </p>
+      <CopyTableBtn tableId="tabla-calculos" />
+      <ExcelSheetTable
+        tableId="tabla-calculos"
+        tableLabel="Líneas de pedido y subtotal"
+        tableDescription="Cada fila es un material distinto. Las celdas D2:D7 muestran el patrón =B2*C2, =B3*C3, etc."
+        variant="resultado"
+        columns={['A', 'B', 'C', 'D']}
+        headers={['Material', 'Cantidad', 'Precio unit.', 'Subtotal (fórmula)']}
+        rows={[
+          [{ html: 'Saco cemento 50 kg' }, '10', '5.00', { html: '<code>=B2*C2</code>' }],
+          [{ html: 'Varilla corrugada' }, '24', '8.50', { html: '<code>=B3*C3</code>' }],
+          [{ html: 'Arena m³' }, '3', '45.00', { html: '<code>=B4*C4</code>' }],
+          [{ html: 'Cal hidratada' }, '15', '3.20', { html: '<code>=B5*C5</code>' }],
+          [{ html: 'Clavo 3"`' }, '8', '4.75', { html: '<code>=B6*C6</code>' }],
+          [{ html: 'Madera pino 2x4' }, '20', '6.30', { html: '<code>=B7*C7</code>' }],
+        ]}
+        hint="Pega en Excel y sustituye la columna D por fórmulas reales. Comprueba: fila del cemento debe dar 50 en D2."
+      />
+      <ul>
+        <li><strong>Suma:</strong> <code>=A1+B1</code></li>
+        <li><strong>Resta:</strong> <code>=C2-10</code></li>
+        <li><strong>Multiplicación:</strong> <code>=B2*C2</code></li>
+        <li><strong>División:</strong> <code>=C2/2</code></li>
+      </ul>
+      <p>
+        Con <em>10</em> en <code>B2</code> y <em>5</em> en <code>C2</code>, <code>=B2*C2</code> da <strong>50</strong>.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Jerarquía PEMDAS (con ejemplo resuelto)</h2>
+      <p>
+        Quieres sumar 50 + 20 y aplicar 19 % sobre <strong>ese</strong> total. Si escribes <code>=50+20*1.19</code>, Excel hace primero <code>20*1.19</code> y luego suma 50: el resultado <strong>no</strong> es el IVA sobre 70.
+      </p>
+      <p>
+        Lo correcto es forzar el orden con paréntesis: <code>=(50+20)*1.19</code>. Paso a paso: <code>50+20 = 70</code>; <code>70*1.19 = 83,3</code>. Los <strong>paréntesis</strong> tienen la prioridad más alta.
+      </p>
+      <p>
+        <strong>Ejercicio mental:</strong> en la tabla, si el cemento (D2=50) lleva un recargo fijo de 5 en la misma línea, una expresión podría ser <code>=(B2*C2)+5</code> para obtener 55.
+      </p>
+    </section>
+
+    <ExcelPracticeBlock
+      steps={[
+        'Copia la tabla de ferretería a Excel y escribe en D2 la fórmula =B2*C2 (o con comas si tu Excel las exige en funciones, aquí son celdas sueltas).',
+        'Arrastra el controlador de relleno de D2 hasta D7 y verifica que cada fila multiplique su propia B y C.',
+        'En una celda vacía calcula =(50+20)*1.19 y confirma 83,3 (o 83.3 según formato).',
+        'Prueba =50+20*1.19 y compara: verás que sin paréntesis el resultado es distinto.',
+        'En otra celda calcula =10^2 y confirma 100.',
+      ]}
+    />
+
+    <section class="mb-10">
+      <h2>Pon a prueba tus conocimientos</h2>
+      <ExcelQuizModal quizKey="calculos-matematicos" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/excel/introduccion/" class="prev">← Introducción</a>
+      <a href="/excel/funciones-basicas/" class="next">Funciones Básicas →</a>
+    </nav>
+  </article>
+</Layout>

@@ -1,0 +1,44 @@
+---
+export interface Props {
+  tableId: string;
+}
+const { tableId } = Astro.props;
+---
+<button
+  type="button"
+  data-copy-table={tableId}
+  class="bg-[#107c41] text-white px-3 py-1.5 rounded-lg text-sm font-bold shadow-sm hover:-translate-y-0.5 hover:shadow-md transition-all mb-2 inline-flex items-center gap-2"
+>
+  📋 Copiar datos para Excel
+</button>
+
+<script is:inline>
+  if (!window.__copyTableScriptLoaded) {
+    window.__copyTableScriptLoaded = true;
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-copy-table]');
+      if (!btn) return;
+      const tId = btn.getAttribute('data-copy-table');
+      const table = document.getElementById(tId);
+      if (!table) return;
+
+      try {
+        const range = document.createRange();
+        range.selectNode(table);
+        const selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+        
+        document.execCommand('copy');
+        selection.removeAllRanges();
+        
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '✅ ¡Copiado al portapapeles!';
+        setTimeout(() => { btn.innerHTML = originalText; }, 2000);
+      } catch (err) {
+        console.error('Error al copiar la tabla:', err);
+        alert('No se pudo copiar la tabla. Selecciona manualmente.');
+      }
+    });
+  }
+</script>

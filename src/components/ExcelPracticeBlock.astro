@@ -1,0 +1,20 @@
+---
+export interface Props {
+  steps: string[];
+}
+
+const { steps } = Astro.props;
+---
+
+<section
+  class="excel-practice mb-10 rounded-xl border-2 border-dashed border-[#107c41]/40 bg-[#f8fdf9] p-5 shadow-sm"
+  aria-label="Práctica guiada en Excel"
+>
+  <h2 class="text-lg font-bold text-[#107c41] mt-0 mb-3">Practica en Excel</h2>
+  <p class="text-sm text-gray-600 mb-3">
+    Abre Excel (o copia los datos con el botón de la tabla), sigue los pasos y comprueba el resultado en tu hoja.
+  </p>
+  <ol class="list-decimal pl-5 space-y-2.5 text-gray-800 m-0">
+    {steps.map((s) => <li>{s}</li>)}
+  </ol>
+</section>
