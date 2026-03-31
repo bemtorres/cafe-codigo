@@ -1,0 +1,105 @@
+﻿---
+import Layout from '../../../../layouts/Layout.astro';
+import ExcelQuizModal from '../../../../components/ExcelQuizModal.astro';
+import CopyTableBtn from '../../../../components/CopyTableBtn.astro';
+import ExcelSheetTable from '../../../../components/ExcelSheetTable.astro';
+import ExcelPracticeBlock from '../../../../components/ExcelPracticeBlock.astro';
+---
+
+<Layout title="9. Tablas Dinámicas y Gráficos" description="Aprende a resumir miles de datos al instante mediante Pivot Tables y gráficas visuales." courseSlug="excel">
+  <article class="content-section">
+    <h1>9. Tablas Dinámicas y Gráficos</h1>
+
+    <p class="font-semibold text-gray-800 mb-2">En esta lección aprenderás a:</p>
+    <ul class="list-disc pl-6 text-gray-700 mb-8 space-y-1">
+      <li>Diferenciar una <strong>Tabla</strong> de Excel (rango con formato estructurado) de una <strong>tabla dinámica</strong> (resumen arrastrable).</li>
+      <li>Colocar campos en <strong>Filas</strong>, <strong>Columnas</strong>, <strong>Valores</strong> y <strong>Filtros</strong>.</li>
+      <li>Actualizar el informe cuando cambien los datos y usar <strong>gráficos dinámicos</strong> y <strong>segmentadores</strong> donde estén disponibles.</li>
+    </ul>
+
+    <section class="mb-10">
+      <h2>Tabla de Excel vs tabla dinámica</h2>
+      <p>
+        <strong>Insertar &gt; Tabla</strong> convierte un rango en una “Tabla” con encabezados filtrables y filas alternas: sigue siendo <em>los mismos datos</em> en filas. <strong>Insertar &gt; Tabla dinámica</strong> crea un <em>resumen nuevo</em> (en la misma hoja o en otra) que puedes pivotar: sumas por categoría, por mes, etc., sin borrar el origen.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Tabla de origen – Movimientos de tienda</h2>
+      <p>
+        Este bloque es el <strong>origen de datos</strong> (similar a una “Tabla” de Excel). La tabla dinámica se alimenta de estas filas; al añadir líneas debes <strong>actualizar</strong> la dinámica (clic derecho &gt; Actualizar o botón del panel).
+      </p>
+      <CopyTableBtn tableId="tabla-ventas-pivot" />
+      <ExcelSheetTable
+        tableId="tabla-ventas-pivot"
+        tableLabel="Origen: transacciones (una fila = un movimiento)"
+        tableDescription="Incluye ventas positivas y reembolsos negativos. En la dinámica puedes filtrar Tipo = Venta para sumar solo ingresos efectivos."
+        variant="maestro"
+        columns={['A', 'B', 'C', 'D', 'E']}
+        headers={['Fecha', 'Categoría', 'Producto', 'Monto', 'Tipo']}
+        rows={[
+          ['05/01/2025', 'Electrónica', 'Auriculares BT', '45.00', 'Venta'],
+          ['05/01/2025', 'Hogar', 'Sartén 24 cm', '32.00', 'Venta'],
+          ['06/01/2025', 'Electrónica', 'Cable USB-C', '12.00', 'Venta'],
+          ['06/01/2025', 'Ropa', 'Camiseta básica', '18.00', 'Venta'],
+          ['07/01/2025', 'Electrónica', 'Auriculares BT', '-45.00', 'Reembolso'],
+          ['07/01/2025', 'Hogar', 'Set cubiertos', '28.00', 'Venta'],
+          ['08/01/2025', 'Alimentos', 'Café 500 g', '9.50', 'Venta'],
+          ['08/01/2025', 'Ropa', 'Jeans', '55.00', 'Venta'],
+          ['09/01/2025', 'Electrónica', 'Mouse inalámbrico', '22.00', 'Venta'],
+          ['09/01/2025', 'Alimentos', 'Aceite 1 L', '6.20', 'Venta'],
+          ['10/01/2025', 'Hogar', 'Almohada', '24.00', 'Venta'],
+          ['10/01/2025', 'Ropa', 'Bufanda', '15.00', 'Venta'],
+          ['11/01/2025', 'Electrónica', 'Teclado mecánico', '89.00', 'Venta'],
+          ['11/01/2025', 'Alimentos', 'Arroz 5 kg', '14.00', 'Venta'],
+          ['12/01/2025', 'Hogar', 'Lámpara LED', '19.00', 'Venta'],
+          ['12/01/2025', 'Ropa', 'Gorra', '16.00', 'Venta'],
+          ['13/01/2025', 'Electrónica', 'Webcam HD', '48.00', 'Venta'],
+          ['13/01/2025', 'Alimentos', 'Leche pack x6', '7.80', 'Venta'],
+          ['14/01/2025', 'Hogar', 'Toallas pack', '11.00', 'Venta'],
+          ['14/01/2025', 'Electrónica', 'Mouse inalámbrico', '-22.00', 'Reembolso'],
+        ]}
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Checklist del panel de tabla dinámica</h2>
+      <ul class="list-disc pl-5">
+        <li><strong>Filas:</strong> categorías, meses, vendedores… (eje vertical típico).</li>
+        <li><strong>Columnas:</strong> cruces opcionales (por ejemplo meses en columnas).</li>
+        <li><strong>Valores:</strong> suma, promedio, conteo del campo numérico (Monto).</li>
+        <li><strong>Filtros:</strong> segmenta el informe (ej. solo <code>Tipo = Venta</code>).</li>
+      </ul>
+      <p>
+        Los <strong>segmentadores</strong> (en versiones recientes) son botones visuales ligados a la dinámica: filtran igual que el área Filtros pero son más claros para presentaciones.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Gráfico dinámico</h2>
+      <p>
+        Con la dinámica activa, <strong>Insertar &gt; Gráfico dinámico</strong> crea un gráfico que respeta filtros y campos. Si cambias la disposición de la tabla dinámica, el gráfico se actualiza.
+      </p>
+    </section>
+
+    <ExcelPracticeBlock
+      steps={[
+        'Copia el bloque de transacciones y conviértelo en Tabla (Insertar > Tabla) con encabezados.',
+        'Inserta una tabla dinámica en una hoja nueva; arrastra Categoría a Filas y Monto a Valores.',
+        'Coloca Tipo en Filtros y elige solo Venta: comprueba que los reembolsos negativos no entren en la suma.',
+        'Añade una fila nueva al origen y usa Actualizar en la dinámica para incluirla.',
+        'Opcional: inserta un gráfico dinámico y, si tu Excel lo permite, añade un segmentador por Categoría.',
+      ]}
+    />
+
+    <section class="mb-10">
+      <h2>Pon a prueba tus conocimientos</h2>
+      <ExcelQuizModal quizKey="tablas-dinamicas" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/excel/analisis-celdas/" class="prev">← Análisis de Celdas</a>
+      <a href="/course/excel/" class="next">Terminar Curso →</a>
+    </nav>
+  </article>
+</Layout>

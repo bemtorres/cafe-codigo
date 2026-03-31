@@ -1,0 +1,88 @@
+﻿---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import PythonQuizModal from '../../../../components/PythonQuizModal.astro';
+---
+
+<Layout title="Condicionales (If / Else)" description="Toma caminos distintos en tu código Python." courseSlug="python">
+  <article class="content-section">
+    <h1>5. Condicionales: Tomando Decisiones 🚦</h1>
+
+    <section class="mb-10">
+      <h2>El flujo lógico (If / Else)</h2>
+      <p>Python toma decisiones basándose en la luz del semáforo. Solo avanzas si la luz es verde (o si la condición es <code>True</code>). ¡Cuidado con la indentación!</p>
+      <CodeBlock lang="python" code={`edad = 18
+
+if edad >= 18:
+    print("¡Eres mayor de edad! Bienvenido al club.")
+else:
+    print("Lo siento, eres menor de edad.")`}
+        title="seguridad.py"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Varias condiciones: Elif</h2>
+      <p>Cuando tienes más de dos opciones, puedes encadenar reglas con <code>elif</code>.</p>
+      <CodeBlock lang="python" code={`hora = 14
+
+if hora < 12:
+    print("¡Buenos días!")
+elif hora < 20:
+    print("¡Buenas tardes!")
+else:
+    print("¡Buenas noches!")`}
+        title="saludo.py"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Lógica de pertenencia: in</h2>
+      <p>Python tiene un operador muy "humano" para saber si un elemento está dentro de una lista o un texto.</p>
+      <CodeBlock lang="python" code={`fruta = "manzana"
+carrito = ["peras", "manzanas", "uvas"]
+
+if fruta in carrito:
+    print("Ya lo tenemos")
+else:
+    print("Falta comprarlo")`}
+        title="pertenencia.py"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Operador Ternario (If en una línea)</h2>
+      <p>Para decisiones muy simples de "esto o aquello", Python ofrece una sintaxis ultrarrápida.</p>
+      <CodeBlock lang="python" code={`edad = 18
+estado = "Adulto" if edad >= 18 else "Menor"
+print(estado)`}
+        title="ternario.py"
+      />
+    </section>
+
+    <div class="ejercicio" style="background: #F8BBD0;">
+      <h3>🐍 Desafío: El portero de la disco PRO</h3>
+      <p class="enunciado">Crea una variable <code>tengo_entrada</code> (True/False) y otra variable <code>edad</code>. Escribe un if que diga "Pasa" solo si eres mayor de 18 y además tienes entrada (usa <code>and</code>).</p>
+      
+      <details>
+        <summary>👁️ Ver solución sugerida</summary>
+        <CodeBlock lang="python" code={`edad = 20
+tengo_entrada = True
+
+if edad >= 18 and tengo_entrada:
+    print("Adelante, ¡pasa!")
+else:
+    print("No puedes entrar.")`} title="Python" />
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <PythonQuizModal quizKey="condicionales" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/python/diccionarios/" class="prev">← Diccionarios</a>
+      <a href="/course/python/bucles/" class="next">Bucles →</a>
+    </nav>
+  </article>
+</Layout>

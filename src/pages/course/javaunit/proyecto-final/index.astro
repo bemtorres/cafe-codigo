@@ -1,0 +1,63 @@
+﻿---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import JavaUnitQuizModal from '../../../../components/JavaUnitQuizModal.astro';
+---
+
+<Layout title="Proyecto Final: JavaUnit Mastery" description="Aplica todo lo aprendido sobre testing unitario y POO en este proyecto final." courseSlug="javaunit">
+  <article class="content-section">
+    <h1>10. Proyecto Final: Corriendo en Verde</h1>
+
+    <section class="mb-10">
+      <h2>Mindset: TDD (Test Driven Development)</h2>
+      <p>
+        Has aprendido a testear código que ya existe. Pero la verdadera maestría llega con el <strong>TDD</strong>: escribir el test <strong>ANTES</strong> que el código real. 
+      </p>
+      <ol class="mb-4">
+        <li><strong>Rojo:</strong> Ecribes un test de algo que no has programado y falla.</li>
+        <li><strong>Verde:</strong> Escibes el código mínimo para que el test pase.</li>
+        <li><strong>Refactor:</strong> Mejoras el código con la seguridad de que el test sigue en verde.</li>
+      </ol>
+      <CodeBlock lang="java" code={`// 1. Rojo: No existe LoginService.login()
+@Test
+void testLoginAceptado() {
+    LoginService service = new LoginService();
+    assertTrue(service.login("admin", "1234"));
+}
+
+// 2. Verde: Creamos el método login que devuelva true manual
+// 3. Refactor: Implementamos lógica real y volvemos a correr el test!`}
+        title="Flujo TDD Básico"
+      />
+    </section>
+
+    <div class="ejercicio" style="background: #E0F2F1;">
+      <h3>👨‍💻 Desafío Final 🌟</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> El Validador de Passwords
+      </div>
+      <p class="enunciado">Escribe un test completo para una clase <code>Validador</code> que tenga un método <code>esSegura(String p)</code>. El test debe asegurar que si la password tiene menos de 5 caracteres, devuelva <code>false</code>.</p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock lang="java" code={`@Test
+void passwordInsegura() {
+    Validador v = new Validador();
+    boolean result = v.esSegura("123");
+    assertFalse(result, "Passwords de 3 caracteres no son seguras");
+}`} />
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>¡Examen Final!</h2>
+      <p>Demuestra que eres un experto en QA y JavaUnit.</p>
+      <JavaUnitQuizModal quizKey="proyecto-final" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/javaunit/intro-mocks/" class="prev">← Intro a Mocks</a>
+      <a href="/course/javaunit/" class="next">Cerrar Curso →</a>
+    </nav>
+  </article>
+</Layout>

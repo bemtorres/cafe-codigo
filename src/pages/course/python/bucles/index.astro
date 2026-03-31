@@ -1,0 +1,79 @@
+﻿---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import PythonQuizModal from '../../../../components/PythonQuizModal.astro';
+---
+
+<Layout title="Bucles: For / While" description="Repite tareas tediosas automáticamente con Python." courseSlug="python">
+  <article class="content-section">
+    <h1>6. Bucles: Automatizando tareas 🔁</h1>
+
+    <section class="mb-10">
+      <h2>El Clásico: Bucle For</h2>
+      <p>Es el más potente. Se usa cuando sabes <strong>exactamente cuántas veces</strong> quieres repetir algo o cuando quieres recorrer una lista.</p>
+      <CodeBlock lang="python" code={`# Repetir 5 veces (del 0 al 4)
+for i in range(5):
+    print(f"Vuelta: \${i}")
+
+# Recorrer una lista
+frutas = ["Manzana", "Banana", "Cereza"]
+for f in frutas:
+    print(f"Comiendo \${f}...")
+
+# Recorrer un diccionario
+precios = {"pan": 1, "leche": 2}
+for producto, precio in precios.items():
+    print(f"El \${producto} cuesta $\${precio}")`}
+        title="vueltas.py"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Break y Continue: Controlando el ciclo</h2>
+      <p>A veces necesitas detener el bucle por completo (break) o saltar a la siguiente vuelta (continue).</p>
+      <CodeBlock lang="python" code={`# Buscar el número 3 y salir
+for n in range(1, 10):
+    if n == 3:
+        print("¡Encontrado!")
+        break 
+    print(n)`}
+        title="control.py"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Bucle While: Mientras...</h2>
+      <p>Se ejecuta <strong>mientras la condición sea verdadera</strong>. ¡Ten cuidado de no crear uno infinito!</p>
+      <CodeBlock lang="python" code={`energia = 100
+
+while energia > 0:
+    print("Entrenando... Energía actual: " + str(energia))
+    energia -= 20 # ¡Restamos energía cada vez!
+
+print("¡Cansado! A descansar.")`}
+        title="entrenamiento.py"
+      />
+    </section>
+
+    <div class="ejercicio" style="background: #E8F5E9;">
+      <h3>🐍 Desafío: La tabla del 2</h3>
+      <p class="enunciado">Usa un bucle <code>for</code> que recorra un <code>range</code> de 1 a 10 y para cada número imprima el resultado de multiplicarlo por 2.</p>
+      
+      <details>
+        <summary>👁️ Ver solución sugerida</summary>
+        <CodeBlock lang="python" code={`for i in range(1, 11):
+    print(i * 2)`} title="Python" />
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Quiz de Bucles</h2>
+      <PythonQuizModal quizKey="bucles" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/python/condicionales/" class="prev">← Condicionales</a>
+      <a href="/course/python/funciones/" class="next">Funciones →</a>
+    </nav>
+  </article>
+</Layout>

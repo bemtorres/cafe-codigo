@@ -1,0 +1,78 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import SponsorsWall from '../../components/colaboradores/SponsorsWall';
+
+const KO_FI_URL = 'https://ko-fi.com/cafeycodigo';
+---
+
+<Layout
+  title="Colaboradores"
+  description="Colaborá con cafeycodigo vía Ko-fi: insignia sponsor, muro de reconocimiento y zona exclusiva para quienes apoyan el proyecto."
+>
+  <div class="max-w-4xl mx-auto px-4 pt-6 pb-20">
+    <header class="mb-10 rounded-[28px] border-4 border-border bg-gradient-to-br from-[#fff7ed] via-white to-[#ecfdf5] p-8 shadow-neo-lg md:p-10">
+      <p class="font-nunito font-black text-sm uppercase tracking-[0.12em] text-[#c2410c] mb-2">Apoyo al proyecto</p>
+      <h1 class="font-nunito font-black text-3xl sm:text-4xl text-textPrimary mb-4 text-balance">
+        Colaboradores y sponsors
+      </h1>
+      <p class="text-[1.08rem] leading-relaxed text-textSecondary font-[650] max-w-2xl m-0 mb-6">
+        cafeycodigo es gratuito en lo esencial. Quienes <strong class="text-textPrimary">invitan un café</strong> en Ko-fi
+        ayudan a hosting, dominio y tiempo para nuevas lecciones. A cambio, el proyecto reconoce a los colaboradores con
+        una <strong class="text-textPrimary">insignia</strong>, un lugar en el <strong class="text-textPrimary">muro público</strong> y
+        <strong class="text-textPrimary">acceso a una zona exclusiva</strong> en el sitio (paywall ligero vinculado a tu cuenta).
+      </p>
+      <div class="flex flex-wrap gap-3">
+        <a
+          href={KO_FI_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center justify-center gap-2 rounded-full border-[3px] border-border bg-[#FF5E5B] px-6 py-3.5 font-nunito font-black text-white no-underline shadow-neo hover:-translate-y-0.5 transition-transform"
+        >
+          Ir a Ko-fi
+          <span aria-hidden>↗</span>
+        </a>
+        <a
+          href="/colaboradores/zona/"
+          class="inline-flex items-center justify-center gap-2 rounded-full border-[3px] border-border bg-white px-6 py-3.5 font-nunito font-black text-textPrimary no-underline shadow-neo hover:-translate-y-0.5 transition-transform"
+        >
+          Zona exclusiva (sponsors)
+        </a>
+      </div>
+    </header>
+
+    <section class="mb-12" aria-labelledby="wall-heading">
+      <h2 id="wall-heading" class="font-nunito font-black text-2xl sm:text-3xl text-textPrimary mb-2">
+        Muro de reconocimiento
+      </h2>
+      <p class="text-textSecondary font-[650] mb-6 max-w-2xl m-0">
+        Personas que colaboraron y eligieron aparecer listadas (nombre desde el perfil de cuenta). El equipo activa el
+        estado <code class="rounded bg-tertiary/80 px-1.5 py-0.5 font-mono text-sm">sponsor</code> en la base tras
+        verificar el aporte.
+      </p>
+      <SponsorsWall client:load />
+    </section>
+
+    <section class="rounded-2xl border-4 border-border bg-white p-6 shadow-neo md:p-8" aria-labelledby="how-heading">
+      <h2 id="how-heading" class="font-nunito font-black text-xl text-textPrimary mt-0 mb-4">
+        Cómo obtener la insignia y el acceso
+      </h2>
+      <ol class="m-0 list-decimal space-y-3 pl-5 font-nunito font-[650] text-textSecondary">
+        <li>
+          Creá cuenta en cafeycodigo con el <strong class="text-textPrimary">mismo correo</strong> que uses en Ko-fi (o el que
+          indiques al donar).
+        </li>
+        <li>
+          Colaborá desde{' '}
+          <a href={KO_FI_URL} class="font-black text-info underline decoration-2 underline-offset-2" target="_blank" rel="noopener noreferrer">
+            nuestra página de Ko-fi
+          </a>
+          .
+        </li>
+        <li>
+          El equipo asigna <code class="rounded bg-tertiary/80 px-1 font-mono text-sm">is_sponsor</code> en Supabase a tu perfil.
+          No hace falta código secreto: al iniciar sesión, ves la insignia y la zona exclusiva.
+        </li>
+      </ol>
+    </section>
+  </div>
+</Layout>

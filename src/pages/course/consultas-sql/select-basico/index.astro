@@ -1,0 +1,88 @@
+﻿---
+import Layout from '../../../../layouts/Layout.astro';
+import SqlQuizModal from '../../../../components/SqlQuizModal.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+---
+
+<Layout title="SELECT Básico" description="Aprende a usar SELECT, FROM, WHERE y ORDER BY en SQL." courseSlug="consultas-sql">
+  <article class="content-section">
+    <h1>2. El Arte de Buscar: SELECT Básico 🔎</h1>
+
+    <section class="mb-10">
+      <h2>La anatomía de una consulta</h2>
+      <p>
+        La sentencia <code>SELECT</code> es la herramienta principal en SQL. Sirve para pedirle a la base de datos exactamente las columnas y filas que necesitas.
+      </p>
+      <p>Su estructura más básica siempre tiene dos partes obligatorias: el <strong>QUÉ</strong> quieres (SELECT) y el <strong>DÓNDE</strong> está (FROM).</p>
+      
+      <CodeBlock lang="sql" code={`-- Traer TODAS las columnas (*) de la tabla "usuarios"
+SELECT * 
+FROM usuarios;
+
+-- Traer solo el nombre y correo
+SELECT nombre, correo 
+FROM usuarios;`} />
+    </section>
+
+    <section class="mb-10">
+      <h2>Filtrando con WHERE</h2>
+      <p>
+        Si tienes 10 millones de usuarios, hacer un <code>SELECT *</code> destruirá tu servidor. Necesitas filtrar para traer solo lo que buscas. Ahí entra la cláusula <code>WHERE</code>.
+      </p>
+      
+      <CodeBlock lang="sql" code={`-- Usuarios mayores de edad
+SELECT nombre, edad 
+FROM usuarios 
+WHERE edad >= 18;
+
+-- Buscar a alguien específico
+SELECT * 
+FROM usuarios 
+WHERE correo = 'juan@mail.com';`} />
+      
+      <div class="note-box" style="background: #E8F5E9; border-left: 5px solid #2980b9;">
+        <strong>Tip Ninja:</strong> Puedes combinar filtros usando <code>AND</code> y <code>OR</code>. Por ejemplo: <code>WHERE edad >= 18 AND pais = 'México'</code>.
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2>Ordenando resultados: ORDER BY</h2>
+      <p>
+        A menudo querrás que los resultados vengan ordenados alfabéticamente o por fecha. Para eso añadimos <code>ORDER BY</code> al final de la consulta.
+      </p>
+      
+      <CodeBlock lang="sql" code={`-- Ordenar por edad de menor a mayor (Ascendente)
+SELECT nombre, edad 
+FROM usuarios 
+ORDER BY edad ASC;
+
+-- Ordenar por fecha de registro del más nuevo al más antiguo (Descendente)
+SELECT nombre, fecha_registro 
+FROM usuarios 
+ORDER BY fecha_registro DESC;`} />
+    </section>
+
+    <div class="ejercicio" style="background: #F4F6F6; border: 2px solid #BDC3C7;">
+      <h3>🎮 Tu turno</h3>
+      <p class="enunciado">Escribe mentalmente (o en papel) la consulta para obtener los <code>nombres</code> y <code>precios</code> de la tabla <code>productos</code>, que cuesten más de <code>100</code>, ordenados del más caro al más barato.</p>
+      
+      <details>
+        <summary>👁️ Ver respuesta sugerida</summary>
+        <CodeBlock lang="sql" code={`SELECT nombre, precio
+FROM productos
+WHERE precio > 100
+ORDER BY precio DESC;`} />
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <SqlQuizModal quizKey="select-basico" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/consultas-sql/intro-sql/" class="prev">← Intro a SQL</a>
+      <a href="/course/consultas-sql/joins/" class="next">Relaciones (JOIN) →</a>
+    </nav>
+  </article>
+</Layout>

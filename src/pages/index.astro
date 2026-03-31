@@ -1,342 +1,407 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { courses } from '../data/courses';
-import logoPseint from '../assets/images/pseint.png';
 import imagen1 from '../assets/images/imagen1.png';
+
+const KO_FI_URL = 'https://ko-fi.com/cafeycodigo';
+
+const benefits = [
+  {
+    icon: '📚',
+    title: 'Rutas claras',
+    text: 'Contenidos ordenados por temas: fundamentos, lenguajes, web, bases de datos, herramientas y más. Sabés qué estudiar después.',
+  },
+  {
+    icon: '✏️',
+    title: 'Práctica integrada',
+    text: 'Lecciones con ejemplos y ejercicios para aplicar lo aprendido sin saltar al vacío.',
+  },
+  {
+    icon: '🧪',
+    title: 'Simulador PSeInt',
+    text: 'Probá pseudocódigo en el navegador y reforzá la lógica antes de pasar a un lenguaje concreto.',
+  },
+  {
+    icon: '🔖',
+    title: 'Tu progreso',
+    text: 'Con cuenta podés marcar lecciones y organizar lo que ya viste (según las funciones activas del sitio).',
+  },
+  {
+    icon: '🌐',
+    title: 'Desde cualquier lugar',
+    text: 'Sitio web responsive: estudiás en la PC, tablet o celular cuando te quede un rato.',
+  },
+  {
+    icon: '💸',
+    title: 'Enfoque accesible',
+    text: 'El acceso al material principal está pensado para ser gratuito; el apoyo opcional ayuda a mantener el proyecto.',
+  },
+  {
+    icon: '🎓',
+    title: 'Modo academia',
+    text: 'Acceso y apoyo para docentes: armar secciones, invitar estudiantes y revisar el rendimiento en quizzes y lecciones (según las funciones activas de tu cuenta).',
+  },
+];
+
+const testimonials = [
+  {
+    quote:
+      'Empecé de cero con PSeInt y la progresión me ayudó a no frustrarme. Los textos son claros y sin humo.',
+    name: 'María L.',
+    role: 'Estudiante de sistemas',
+  },
+  {
+    quote:
+      'Uso los cursos de Git y SQL como repaso rápido antes de entrevistas. Me gusta que todo esté en un solo lugar.',
+    name: 'Lucas G.',
+    role: 'Desarrollador junior',
+  },
+  {
+    quote:
+      'Mis hijos y yo miramos HTML/CSS los fines de semana. Los ejemplos cortos se entienden sin ser expertos.',
+    name: 'Ana R.',
+    role: 'Autodidacta',
+  },
+];
+
+const faqItems = [
+  {
+    q: '¿Qué es cafeycodigo?',
+    a: 'Es una plataforma educativa en español para aprender programación y temas relacionados (herramientas, bases de datos, metodologías). Combina lecciones escritas, ejercicios y recursos como el simulador de PSeInt, con una vista de cursos donde podés explorar todo el catálogo.',
+  },
+  {
+    q: '¿Es gratis?',
+    a: 'Sí: el contenido principal está pensado para ser accesible sin costo. Podés apoyar el proyecto de forma voluntaria a través de Ko-fi (café / donación), lo que ayuda a cubrir hosting, tiempo de mantenimiento y nuevas mejoras.',
+  },
+  {
+    q: '¿Necesito crear una cuenta?',
+    a: 'Podés leer gran parte del material sin cuenta. Algunas funciones (como marcar progreso o favoritos) pueden requerir registro según la configuración del sitio.',
+  },
+  {
+    q: '¿Hay algo para docentes o para medir el rendimiento en clase?',
+    a: 'Sí: el modo academia ofrece acceso y apoyo para docentes que quieren armar secciones, invitar estudiantes con enlace y revisar el rendimiento en quizzes y lecciones (según las funciones activas de tu cuenta). La entrada es la página Academia.',
+  },
+  {
+    q: '¿Por dónde empiezo si no sé nada?',
+    a: 'Una buena ruta es comenzar con fundamentos o PSeInt para pensar en pasos y condiciones, y luego pasar a un lenguaje concreto (por ejemplo Python o JavaScript) según tu objetivo. En la página Cursos podés filtrar y leer descripciones.',
+  },
+  {
+    q: '¿Se actualiza el contenido?',
+    a: 'El proyecto se va ampliando y corrigiendo con el tiempo. Si un curso figura como “próximamente”, significa que aún no está publicado.',
+  },
+  {
+    q: '¿Cómo reporto un error en una lección?',
+    a: 'Si encontrás un typo, enlace roto o explicación confusa, podés contactar al proyecto por los canales indicados (por ejemplo redes o Ko-fi) según lo que el autor habilite.',
+  },
+];
 ---
 
 <Layout
   title="Inicio"
-  description="cafeycodigo: aprende a programar gratis con cursos paso a paso, ejercicios y simulador."
+  description="cafeycodigo: aprendé programación gratis con rutas claras, ejercicios, simulador PSeInt, cursos por tema y modo academia para docentes que quieren medir el rendimiento de sus estudiantes."
 >
-  <div class="max-w-7xl mx-auto px-4 pt-10">
-    <!-- Hero Section -->
-    <section class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center py-6">
-      
-      <!-- Text Side -->
-      <div class="flex flex-col">
-        <h1 class="text-[3.3rem] leading-[1.02] -tracking-[0.03em] font-nunito font-black text-textPrimary mb-3">
-          Aprendé a programar,<br />
-          <span class="text-[#b06d63]">creá tu futuro</span>
-        </h1>
-        <p class="text-[1.08rem] leading-relaxed text-textPrimary/80 font-[650] max-w-2xl mb-5">
-          Cursos prácticos, ejercicios y un simulador para practicar desde cero 🚀
-        </p>
-
-        <div class="flex flex-wrap gap-3 mb-4">
-          <a href="/pseint/" class="bg-[#2b1d1b] text-white py-3 px-6 rounded-full font-black font-nunito border border-black/10 shadow-soft hover:-translate-y-1 transition-transform">
-            Empezar a aprender <span class="ml-1 inline-block">→</span>
-          </a>
-          <a href="/pseint/" class="bg-white/80 text-[#2b1d1b] py-3 px-6 rounded-full font-black font-nunito border border-black/10 shadow-sm hover:-translate-y-1 transition-transform">
-            Ver cursos
-          </a>
+  <div class="max-w-6xl mx-auto px-4 pt-8 pb-20">
+    <!-- Hero -->
+    <section class="relative overflow-hidden rounded-[28px] border-4 border-border bg-white shadow-neo-lg mb-16 md:mb-24">
+      <div
+        class="absolute inset-0 pointer-events-none opacity-90"
+        style="background-image: radial-gradient(700px 280px at 15% 20%, rgba(239, 71, 111, 0.12), transparent 55%), radial-gradient(600px 240px at 90% 15%, rgba(69, 179, 224, 0.18), transparent 50%), radial-gradient(500px 200px at 70% 90%, rgba(6, 214, 160, 0.1), transparent 55%);"
+        aria-hidden="true"
+      />
+      <div class="relative grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center p-6 sm:p-10 lg:p-12">
+        <div class="flex flex-col order-2 lg:order-1">
+          <p class="font-nunito font-black text-sm uppercase tracking-[0.12em] text-accent mb-3">
+            Aprender a programar · en español
+          </p>
+          <h1 class="text-[2.35rem] sm:text-[2.85rem] lg:text-[3.15rem] leading-[1.05] -tracking-[0.03em] font-nunito font-black text-textPrimary mb-4">
+            Tu espacio para
+            <span class="text-[#b06d63]">codear con calma</span>
+          </h1>
+          <p class="text-[1.08rem] sm:text-[1.12rem] leading-relaxed text-textSecondary font-[650] max-w-xl mb-4">
+            cafeycodigo reúne cursos, ejercicios y un simulador para que practiques desde cero o refuerces lo que ya sabés — con rutas ordenadas y una vista dedicada para explorar todo el catálogo.
+          </p>
+          <p class="text-[1.02rem] sm:text-[1.06rem] leading-relaxed text-textSecondary font-[650] max-w-xl mb-6 border-l-4 border-info/70 pl-4">
+            <span class="font-black text-textPrimary">También en clave académica:</span> acceso y apoyo para docentes que quieren organizar grupos, acompañar a sus estudiantes y <span class="font-black text-textPrimary">medir el rendimiento</span> en quizzes y lecciones.
+          </p>
+          <div class="flex flex-wrap gap-3 mb-6">
+            <a
+              href="/cursos/"
+              class="inline-flex items-center justify-center gap-2 bg-[#2b1d1b] text-white py-3.5 px-7 rounded-full font-black font-nunito border-2 border-border shadow-neo hover:-translate-y-0.5 transition-transform"
+            >
+              Ver todos los cursos
+              <span aria-hidden="true">→</span>
+            </a>
+            <a
+              href="/course/pseint/"
+              class="inline-flex items-center justify-center gap-2 bg-white text-[#2b1d1b] py-3.5 px-7 rounded-full font-black font-nunito border-2 border-border shadow-[3px_3px_0px_#1E1210] hover:-translate-y-0.5 transition-transform"
+            >
+              Empezar con PSeInt
+            </a>
+            <a
+              href="/academia/"
+              class="inline-flex items-center justify-center gap-2 bg-[#f0f7fb] text-[#1a4a5c] py-3.5 px-7 rounded-full font-black font-nunito border-2 border-border shadow-[3px_3px_0px_#1E1210] hover:-translate-y-0.5 transition-transform"
+            >
+              Modo academia (docentes)
+            </a>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <span
+              class="inline-flex items-center gap-2 rounded-full border-2 border-border bg-secondary/80 py-2 px-4 text-textPrimary font-extrabold font-nunito text-sm shadow-[2px_2px_0px_#1E1210]"
+            >
+              <span class="text-base" aria-hidden="true">☕</span> Proyecto independiente
+            </span>
+            <span
+              class="inline-flex items-center gap-2 rounded-full border-2 border-border bg-tertiary/90 py-2 px-4 text-textPrimary font-extrabold font-nunito text-sm shadow-[2px_2px_0px_#1E1210]"
+            >
+              <span class="text-base" aria-hidden="true">🚀</span> En constante crecimiento
+            </span>
+            <span
+              class="inline-flex items-center gap-2 rounded-full border-2 border-border bg-info/15 py-2 px-4 text-textPrimary font-extrabold font-nunito text-sm shadow-[2px_2px_0px_#1E1210]"
+            >
+              <span class="text-base" aria-hidden="true">🎓</span> Academia para docentes
+            </span>
+          </div>
         </div>
-
-        <div class="flex flex-wrap gap-3 mt-2">
-          <span class="inline-flex items-center gap-2 bg-white/70 border border-black/10 rounded-full py-2 px-4 text-textPrimary/85 font-extrabold font-nunito text-[0.95rem] shadow-sm">
-            <span class="w-6 h-6 grid place-items-center rounded bg-white/70">⚡</span> Para principiantes
-          </span>
-          <span class="inline-flex items-center gap-2 bg-white/70 border border-black/10 rounded-full py-2 px-4 text-textPrimary/85 font-extrabold font-nunito text-[0.95rem] shadow-sm">
-            <span class="w-6 h-6 grid place-items-center rounded bg-white/70">🧩</span> Proyectos guiados
-          </span>
-        </div>
-      </div>
-
-      <!-- Image Side -->
-      <div class="flex items-stretch w-full">
-        <!-- Background decoration div imitating radial gradient mesh -->
-        <div class="flex-1 flex items-center justify-center bg-white/70 border border-black/10 rounded-[22px] p-3 w-full" 
-             style="background-image: radial-gradient(900px 360px at 20% 25%, rgba(239, 71, 111, 0.18), transparent 60%), radial-gradient(900px 360px at 95% 10%, rgba(69, 179, 224, 0.22), transparent 60%), radial-gradient(900px 360px at 70% 95%, rgba(6, 214, 160, 0.14), transparent 60%);">
-          <img
-            src={imagen1.src}
-            alt="Café y código"
-            class="w-full h-auto object-contain rounded-[18px]"
-            loading="eager"
-            decoding="async"
-          />
+        <div class="order-1 lg:order-2 flex justify-center lg:justify-end">
+          <div
+            class="w-full max-w-md rounded-[22px] border-2 border-border bg-white/80 p-3 shadow-neo"
+            style="background-image: radial-gradient(400px 200px at 30% 20%, rgba(239, 71, 111, 0.1), transparent 60%);"
+          >
+            <img
+              src={imagen1.src}
+              alt="Ilustración: café y código, ambiente de aprendizaje"
+              class="w-full h-auto object-contain rounded-[16px]"
+              loading="eager"
+              decoding="async"
+              width={imagen1.width}
+              height={imagen1.height}
+            />
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- Courses Sections -->
-    <div class="mt-10">
-      
-      <!-- Conceptos Base -->
-      <div class="mt-20">
-        <h2 class="text-4xl font-nunito font-extrabold text-textPrimary mb-8">Conceptos Base (Nivel 0)</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {courses.filter(c => c.category === 'foundations').map((course, i) => (
-            <a
-              href={course.status === 'coming' ? '#' : `/${course.slug}/`}
-              class="block group outline-none"
-              data-coming={course.status === 'coming' ? 'true' : 'false'}
-              data-course-name={course.name}
-            >
-              <div class={`relative border-[3px] border-border rounded-3xl p-6 shadow-neo-lg transition-transform group-hover:-translate-y-1 bg-${i % 2 === 0 ? 'tertiary' : 'secondary'}`}>
-                {course.status === 'coming' && (
-                  <div class="absolute -top-4 right-5 bg-border text-white border-[3px] border-border rounded-xl py-1 px-3 font-extrabold font-nunito shadow-[2px_2px_0px_var(--text-secondary)]">
-                    Próximamente
-                  </div>
-                )}
-                {course.requiresPassword && course.status !== 'coming' && (
-                  <div class="absolute -top-4 right-5 bg-border text-white border-[3px] border-border rounded-xl py-1 px-3 font-extrabold font-nunito shadow-[2px_2px_0px_var(--text-secondary)]">
-                    🔒 Exclusivo
-                  </div>
-                )}
-                <h3 class="text-xl font-nunito font-extrabold text-textPrimary mb-2">{course.name}</h3>
-                <p class="text-[0.95rem] font-[650] text-textSecondary line-clamp-4 leading-relaxed m-0">
-                  {course.description}
-                </p>
-              </div>
-            </a>
-          ))}
-        </div>
-      </div>
-
-      <!-- Lenguajes de Programación -->
-      <div class="mt-20">
-        <h2 class="text-4xl font-nunito font-extrabold text-textPrimary mb-8">Lenguajes de Programación</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {courses.filter(c => c.category === 'language').map((course, i) => (
-            <a
-              href={course.status === 'coming' ? '#' : `/${course.slug}/`}
-              class="block group outline-none"
-              data-coming={course.status === 'coming' ? 'true' : 'false'}
-              data-course-name={course.name}
-            >
-              <div class={`relative border-[3px] border-border rounded-3xl p-6 shadow-neo-lg transition-transform group-hover:-translate-y-1 bg-${i % 2 === 0 ? 'tertiary' : 'secondary'}`}>
-                {course.status === 'coming' && (
-                  <div class="absolute -top-4 right-5 bg-border text-white border-[3px] border-border rounded-xl py-1 px-3 font-extrabold font-nunito shadow-[2px_2px_0px_var(--text-secondary)]">
-                    Próximamente
-                  </div>
-                )}
-                {course.requiresPassword && course.status !== 'coming' && (
-                  <div class="absolute -top-4 right-5 bg-border text-white border-[3px] border-border rounded-xl py-1 px-3 font-extrabold font-nunito shadow-[2px_2px_0px_var(--text-secondary)]">
-                    🔒 Exclusivo
-                  </div>
-                )}
-                <h3 class="text-xl font-nunito font-extrabold text-textPrimary mb-2">{course.name}</h3>
-                <p class="text-[0.95rem] font-[650] text-textSecondary line-clamp-4 leading-relaxed m-0">
-                  {course.description}
-                </p>
-              </div>
-            </a>
-          ))}
-        </div>
-      </div>
-
-      <!-- Desarrollo Frontend -->
-      <div class="mt-20">
-        <h2 class="text-4xl font-nunito font-extrabold text-textPrimary mb-8">Desarrollo Frontend (Web)</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {courses.filter(c => c.category === 'frontend').map((course, i) => (
-            <a
-              href={course.status === 'coming' ? '#' : `/${course.slug}/`}
-              class="block group outline-none"
-              data-coming={course.status === 'coming' ? 'true' : 'false'}
-              data-course-name={course.name}
-            >
-              <div class={`relative border-[3px] border-border rounded-3xl p-6 shadow-neo-lg transition-transform group-hover:-translate-y-1 bg-${i % 2 === 0 ? 'tertiary' : 'secondary'}`}>
-                {course.status === 'coming' && (
-                  <div class="absolute -top-4 right-5 bg-border text-white border-[3px] border-border rounded-xl py-1 px-3 font-extrabold font-nunito shadow-[2px_2px_0px_var(--text-secondary)]">
-                    Próximamente
-                  </div>
-                )}
-                {course.requiresPassword && course.status !== 'coming' && (
-                  <div class="absolute -top-4 right-5 bg-border text-white border-[3px] border-border rounded-xl py-1 px-3 font-extrabold font-nunito shadow-[2px_2px_0px_var(--text-secondary)]">
-                    🔒 Exclusivo
-                  </div>
-                )}
-                <h3 class="text-xl font-nunito font-extrabold text-textPrimary mb-2">{course.name}</h3>
-                <p class="text-[0.95rem] font-[650] text-textSecondary line-clamp-4 leading-relaxed m-0">
-                  {course.description}
-                </p>
-              </div>
-            </a>
-          ))}
-        </div>
-      </div>
-
-      <!-- Ingeniería y Calidad -->
-      <div class="mt-20">
-        <h2 class="text-4xl font-nunito font-extrabold text-textPrimary mb-8">Ingeniería y Calidad</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {courses.filter(c => c.category === 'engineering').map((course, i) => (
-            <a
-              href={course.status === 'coming' ? '#' : `/${course.slug}/`}
-              class="block group outline-none"
-              data-coming={course.status === 'coming' ? 'true' : 'false'}
-              data-course-name={course.name}
-            >
-              <div class={`relative border-[3px] border-border rounded-3xl p-6 shadow-neo-lg transition-transform group-hover:-translate-y-1 bg-${i % 2 === 0 ? 'tertiary' : 'secondary'}`}>
-                {course.status === 'coming' && (
-                  <div class="absolute -top-4 right-5 bg-border text-white border-[3px] border-border rounded-xl py-1 px-3 font-extrabold font-nunito shadow-[2px_2px_0px_var(--text-secondary)]">
-                    Próximamente
-                  </div>
-                )}
-                {course.requiresPassword && course.status !== 'coming' && (
-                  <div class="absolute -top-4 right-5 bg-border text-white border-[3px] border-border rounded-xl py-1 px-3 font-extrabold font-nunito shadow-[2px_2px_0px_var(--text-secondary)]">
-                    🔒 Exclusivo
-                  </div>
-                )}
-                <h3 class="text-xl font-nunito font-extrabold text-textPrimary mb-2">{course.name}</h3>
-                <p class="text-[0.95rem] font-[650] text-textSecondary line-clamp-4 leading-relaxed m-0">
-                  {course.description}
-                </p>
-              </div>
-            </a>
-          ))}
-        </div>
-      </div>
-
-      <!-- Bases de Datos -->
-      <div class="mt-20">
-        <h2 class="text-4xl font-nunito font-extrabold text-textPrimary mb-8">Bases de Datos</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {courses.filter(c => c.category === 'database').map((course, i) => (
-            <a
-              href={course.status === 'coming' ? '#' : `/${course.slug}/`}
-              class="block group outline-none"
-              data-coming={course.status === 'coming' ? 'true' : 'false'}
-              data-course-name={course.name}
-            >
-              <div class={`relative border-[3px] border-border rounded-3xl p-6 shadow-neo-lg transition-transform group-hover:-translate-y-1 bg-${i % 2 === 0 ? 'tertiary' : 'secondary'}`}>
-                {course.status === 'coming' && (
-                  <div class="absolute -top-4 right-5 bg-border text-white border-[3px] border-border rounded-xl py-1 px-3 font-extrabold font-nunito shadow-[2px_2px_0px_var(--text-secondary)]">
-                    Próximamente
-                  </div>
-                )}
-                {course.requiresPassword && course.status !== 'coming' && (
-                  <div class="absolute -top-4 right-5 bg-border text-white border-[3px] border-border rounded-xl py-1 px-3 font-extrabold font-nunito shadow-[2px_2px_0px_var(--text-secondary)]">
-                    🔒 Exclusivo
-                  </div>
-                )}
-                <h3 class="text-xl font-nunito font-extrabold text-textPrimary mb-2">{course.name}</h3>
-                <p class="text-[0.95rem] font-[650] text-textSecondary line-clamp-4 leading-relaxed m-0">
-                  {course.description}
-                </p>
-              </div>
-            </a>
-          ))}
-        </div>
-      </div>
-
-      <!-- Herramientas -->
-      <div class="mt-20 mb-20">
-        <h2 class="text-4xl font-nunito font-extrabold text-textPrimary mb-8">Herramientas</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {courses.filter(c => c.category === 'tools').map((course, i) => (
-            <a
-              href={course.status === 'coming' ? '#' : `/${course.slug}/`}
-              class="block group outline-none"
-              data-coming={course.status === 'coming' ? 'true' : 'false'}
-              data-course-name={course.name}
-            >
-              <div class={`relative border-[3px] border-border rounded-3xl p-6 shadow-neo-lg transition-transform group-hover:-translate-y-1 bg-${i % 2 === 0 ? 'tertiary' : 'secondary'}`}>
-                {course.status === 'coming' && (
-                  <div class="absolute -top-4 right-5 bg-border text-white border-[3px] border-border rounded-xl py-1 px-3 font-extrabold font-nunito shadow-[2px_2px_0px_var(--text-secondary)]">
-                    Próximamente
-                  </div>
-                )}
-                {course.requiresPassword && course.status !== 'coming' && (
-                  <div class="absolute -top-4 right-5 bg-border text-white border-[3px] border-border rounded-xl py-1 px-3 font-extrabold font-nunito shadow-[2px_2px_0px_var(--text-secondary)]">
-                    🔒 Exclusivo
-                  </div>
-                )}
-                <h3 class="text-xl font-nunito font-extrabold text-textPrimary mb-2">{course.name}</h3>
-                <p class="text-[0.95rem] font-[650] text-textSecondary line-clamp-4 leading-relaxed m-0">
-                  {course.description}
-                </p>
-              </div>
-            </a>
-          ))}
-        </div>
-      </div>
-
-      <!-- Motores de Videojuego -->
-      <div class="mt-20 mb-20">
-        <h2 class="text-4xl font-nunito font-extrabold text-textPrimary mb-8">Motores de Videojuego</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {courses.filter(c => c.category === 'gamedev').map((course, i) => (
-            <a
-              href={course.status === 'coming' ? '#' : `/${course.slug}/`}
-              class="block group outline-none"
-              data-coming={course.status === 'coming' ? 'true' : 'false'}
-              data-course-name={course.name}
-            >
-              <div class={`relative border-[3px] border-border rounded-3xl p-6 shadow-neo-lg transition-transform group-hover:-translate-y-1 bg-${i % 2 === 0 ? 'tertiary' : 'secondary'}`}>
-                {course.status === 'coming' && (
-                  <div class="absolute -top-4 right-5 bg-border text-white border-[3px] border-border rounded-xl py-1 px-3 font-extrabold font-nunito shadow-[2px_2px_0px_var(--text-secondary)]">
-                    Próximamente
-                  </div>
-                )}
-                <h3 class="text-xl font-nunito font-extrabold text-textPrimary mb-2">{course.name}</h3>
-                <p class="text-[0.95rem] font-[650] text-textSecondary line-clamp-4 leading-relaxed m-0">
-                  {course.description}
-                </p>
-              </div>
-            </a>
-          ))}
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- Modal Próximamente -->
-  <div id="comingCoursesModal" class="fixed inset-0 z-[1100] hidden [&.is-open]:block" role="dialog" aria-modal="true" aria-hidden="true">
-    <div class="absolute inset-0 bg-black/35 backdrop-blur-sm" data-close-coming-modal="1"></div>
-    <div class="relative max-w-lg mx-auto mt-[10vh] bg-white border-4 border-border rounded-3xl shadow-2xl p-6 md:mt-[20vh] max-md:w-[90%] max-md:mt-[6vh]">
-      <div class="flex justify-between items-center mb-4">
-        <h3 id="comingCoursesTitle" class="text-2xl text-info font-nunito font-black m-0">Próximamente</h3>
-        <button type="button" class="w-10 h-10 rounded-full border-2 border-border bg-white text-lg font-black cursor-pointer hover:bg-gray-100" data-close-coming-modal="1" aria-label="Cerrar modal">
-          ✕
-        </button>
-      </div>
-      <p id="comingCoursesText" class="text-lg text-textSecondary font-bold leading-relaxed m-0">
-        Este curso estará disponible pronto.
+    <!-- Sobre el proyecto -->
+    <section id="proyecto" class="mb-16 md:mb-24 scroll-mt-24" aria-labelledby="heading-proyecto">
+      <h2 id="heading-proyecto" class="font-nunito font-black text-3xl sm:text-4xl text-textPrimary mb-2 text-balance">
+        Qué es este proyecto
+      </h2>
+      <p class="font-nunito font-bold text-info text-lg mb-8 max-w-3xl">
+        Material educativo abierto y ameno, pensado para quien aprende solo, en familia o en clase.
       </p>
-    </div>
-  </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="rounded-2xl border-4 border-border bg-white p-6 shadow-neo">
+          <div class="font-nunito font-black text-4xl text-accent mb-2">1</div>
+          <h3 class="font-nunito font-black text-xl text-textPrimary mb-2">Un solo sitio</h3>
+          <p class="text-textSecondary font-[650] leading-relaxed m-0">
+            De pseudocódigo a bases de datos, pasando por web y herramientas: menos saltar entre cientos de tutoriales sueltos.
+          </p>
+        </div>
+        <div class="rounded-2xl border-4 border-border bg-white p-6 shadow-neo">
+          <div class="font-nunito font-black text-4xl text-info mb-2">2</div>
+          <h3 class="font-nunito font-black text-xl text-textPrimary mb-2">Ritmo propio</h3>
+          <p class="text-textSecondary font-[650] leading-relaxed m-0">
+            Sin fechas rígidas: leés y practicás cuando podés. El buscador en Cursos ayuda a encontrar el tema que necesitás.
+          </p>
+        </div>
+        <div class="rounded-2xl border-4 border-border bg-white p-6 shadow-neo">
+          <div class="font-nunito font-black text-4xl text-success mb-2">3</div>
+          <h3 class="font-nunito font-black text-xl text-textPrimary mb-2">Comunidad y apoyo</h3>
+          <p class="text-textSecondary font-[650] leading-relaxed m-0">
+            Si el contenido te sirve, podés invitar un café en Ko-fi para sostener servidor y mejoras.
+          </p>
+        </div>
+      </div>
+    </section>
 
+    <!-- Beneficios -->
+    <section id="beneficios" class="mb-16 md:mb-24 scroll-mt-24" aria-labelledby="heading-beneficios">
+      <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-10">
+        <div>
+          <h2 id="heading-beneficios" class="font-nunito font-black text-3xl sm:text-4xl text-textPrimary mb-2">
+            Beneficios
+          </h2>
+          <p class="text-textSecondary font-[650] max-w-2xl m-0">
+            Lo que podés esperar al usar cafeycodigo como apoyo para estudiar o enseñar.
+          </p>
+        </div>
+        <a
+          href="/cursos/"
+          class="shrink-0 font-nunito font-black text-info underline decoration-2 underline-offset-4 hover:text-accent"
+        >
+          Explorar cursos →
+        </a>
+      </div>
+      <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 list-none p-0 m-0">
+        {benefits.map((b) => (
+          <li class="rounded-2xl border-4 border-border bg-primary p-5 shadow-neo hover:-translate-y-0.5 transition-transform">
+            <span class="text-2xl mb-3 block" aria-hidden="true">
+              {b.icon}
+            </span>
+            <h3 class="font-nunito font-black text-lg text-textPrimary m-0 mb-2">{b.title}</h3>
+            <p class="text-textSecondary font-[650] text-[0.98rem] leading-relaxed m-0">{b.text}</p>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <!-- Pricing / apoyo -->
+    <section id="precios" class="mb-16 md:mb-24 scroll-mt-24" aria-labelledby="heading-precios">
+      <h2 id="heading-precios" class="font-nunito font-black text-3xl sm:text-4xl text-textPrimary mb-2">
+        Acceso y apoyo
+      </h2>
+      <p class="text-textSecondary font-[650] max-w-2xl mb-10">
+        El modelo es simple: aprender sin barrera de pago para el contenido principal, y apoyo voluntario para quien quiera y pueda. Si enseñás, el <strong class="text-textPrimary">modo academia</strong> suma acceso y herramientas para acompañar grupos y revisar el rendimiento.
+      </p>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+        <div class="rounded-[24px] border-4 border-border bg-white p-8 shadow-neo-lg relative overflow-hidden">
+          <div class="absolute top-4 right-4 font-nunito font-black text-xs uppercase tracking-wider bg-success text-[#0d3d2f] px-3 py-1 rounded-full border-2 border-border">
+            Principal
+          </div>
+          <h3 class="font-nunito font-black text-2xl text-textPrimary mt-2 mb-1">Gratis</h3>
+          <p class="text-textMuted font-nunito font-bold text-sm mb-6">Para siempre · sin tarjeta</p>
+          <ul class="space-y-3 text-textSecondary font-[650] m-0 p-0 list-none">
+            <li class="flex gap-2">
+              <span class="text-success font-black" aria-hidden="true">✓</span>
+              Acceso a lecciones y ejercicios del catálogo publicado
+            </li>
+            <li class="flex gap-2">
+              <span class="text-success font-black" aria-hidden="true">✓</span>
+              Uso del simulador PSeInt y materiales de práctica
+            </li>
+            <li class="flex gap-2">
+              <span class="text-success font-black" aria-hidden="true">✓</span>
+              Vista <strong class="text-textPrimary">Cursos</strong> con buscador para filtrar temas
+            </li>
+            <li class="flex gap-2">
+              <span class="text-success font-black" aria-hidden="true">✓</span>
+              Diseño usable en móvil y escritorio
+            </li>
+            <li class="flex gap-2">
+              <span class="text-success font-black" aria-hidden="true">✓</span>
+              <span>
+                <strong class="text-textPrimary">Docentes:</strong> modo academia para secciones, alumnos y seguimiento de rendimiento (con cuenta; ver <a href="/academia/" class="text-info font-black underline decoration-2 underline-offset-2">Academia</a>)
+              </span>
+            </li>
+          </ul>
+          <a
+            href="/cursos/"
+            class="mt-8 inline-flex w-full sm:w-auto justify-center items-center rounded-full bg-[#2b1d1b] text-white font-nunito font-black py-3.5 px-8 border-2 border-border shadow-neo hover:-translate-y-0.5 transition-transform"
+          >
+            Entrar al catálogo
+          </a>
+        </div>
+
+        <div class="rounded-[24px] border-4 border-border bg-linear-to-br from-secondary to-tertiary p-8 shadow-neo-lg">
+          <div class="flex items-center gap-3 mb-4">
+            <span class="text-3xl" aria-hidden="true">☕</span>
+            <h3 class="font-nunito font-black text-2xl text-textPrimary m-0">Apoyá el proyecto</h3>
+          </div>
+          <p class="text-textSecondary font-[650] leading-relaxed mb-6">
+            cafeycodigo es un proyecto independiente. Las donaciones en <strong class="text-textPrimary">Ko-fi</strong> ayudan a pagar
+            dominio, hosting y el tiempo dedicado a nuevas lecciones y mejoras.
+          </p>
+          <ul class="space-y-2 text-textSecondary font-[650] m-0 mb-8 p-0 list-none text-[0.98rem]">
+            <li>· Contribución 100 % opcional</li>
+            <li>· Sin “paywall”: el apoyo no desbloquea contenido exclusivo por dinero</li>
+            <li>· Transparencia: si colaborás, impulsás que el sitio siga online y crezca</li>
+          </ul>
+          <a
+            href={KO_FI_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex w-full sm:w-auto justify-center items-center gap-2 rounded-full bg-white text-[#2b1d1b] font-nunito font-black py-3.5 px-8 border-4 border-border shadow-neo hover:-translate-y-0.5 transition-transform"
+          >
+            Ir a Ko-fi
+            <span aria-hidden="true">↗</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Testimonios -->
+    <section id="testimonios" class="mb-16 md:mb-24 scroll-mt-24" aria-labelledby="heading-testimonios">
+      <h2 id="heading-testimonios" class="font-nunito font-black text-3xl sm:text-4xl text-textPrimary mb-2">
+        Voces de quienes estudian
+      </h2>
+      <p class="text-textSecondary font-[650] max-w-2xl mb-10">
+        Opiniones representativas de usuarios del tipo de público al que apunta el proyecto (ejemplos ilustrativos).
+      </p>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {testimonials.map((t) => (
+          <blockquote class="m-0 rounded-2xl border-4 border-border bg-white p-6 shadow-neo flex flex-col">
+            <p class="text-textPrimary font-[650] leading-relaxed text-[1.02rem] mb-4 grow">
+              “{t.quote}”
+            </p>
+            <footer class="border-t-2 border-dashed border-border pt-4">
+              <cite class="not-italic font-nunito font-black text-textPrimary block">{t.name}</cite>
+              <span class="text-sm text-textMuted font-bold">{t.role}</span>
+            </footer>
+          </blockquote>
+        ))}
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="mb-12 scroll-mt-24" aria-labelledby="heading-faq">
+      <h2 id="heading-faq" class="font-nunito font-black text-3xl sm:text-4xl text-textPrimary mb-2">
+        Preguntas frecuentes
+      </h2>
+      <p class="text-textSecondary font-[650] mb-8 max-w-2xl">
+        Respuestas directas sobre el modelo del sitio y cómo aprovecharlo.
+      </p>
+      <div class="space-y-3 max-w-3xl mx-auto">
+        {faqItems.map((item) => (
+          <details class="group rounded-2xl border-4 border-border bg-white shadow-[3px_3px_0px_#1E1210] open:shadow-neo">
+            <summary class="cursor-pointer list-none font-nunito font-black text-textPrimary py-4 px-5 pr-12 relative [&::-webkit-details-marker]:hidden">
+              {item.q}
+              <span
+                class="absolute right-4 top-1/2 -translate-y-1/2 text-xl text-info group-open:rotate-45 transition-transform"
+                aria-hidden="true"
+              >
+                +
+              </span>
+            </summary>
+            <div class="px-5 pb-5 pt-0 border-t-2 border-dashed border-border">
+              <p class="text-textSecondary font-[650] leading-relaxed m-0 pt-4">{item.a}</p>
+            </div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <!-- CTA final -->
+    <section
+      class="rounded-[28px] border-4 border-border bg-[#2b1d1b] text-white p-8 sm:p-10 text-center shadow-neo-lg"
+      aria-labelledby="heading-cta"
+    >
+      <h2 id="heading-cta" class="font-nunito font-black text-2xl sm:text-3xl mb-3 text-balance">
+        ¿Listo para abrir el editor mental?
+      </h2>
+      <p class="text-white/85 font-[650] max-w-xl mx-auto mb-6">
+        Entrá a Cursos, buscá por tema o recorré las categorías. Si preferís lógica pura primero, PSeInt es un buen punto de partida.
+      </p>
+      <div class="flex flex-wrap justify-center gap-3">
+        <a
+          href="/cursos/"
+          class="inline-flex items-center justify-center rounded-full bg-white text-[#2b1d1b] font-nunito font-black py-3.5 px-8 border-2 border-white shadow-[4px_4px_0px_rgba(255,255,255,0.3)] hover:-translate-y-0.5 transition-transform"
+        >
+          Ir a Cursos
+        </a>
+        <a
+          href={KO_FI_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center justify-center rounded-full bg-transparent text-white font-nunito font-black py-3.5 px-8 border-2 border-white/50 hover:bg-white/10 transition-colors"
+        >
+          Apoyar en Ko-fi
+        </a>
+      </div>
+    </section>
+  </div>
 </Layout>
 
-<script is:inline>
-  (function () {
-    const modal = document.getElementById('comingCoursesModal');
-    if (!modal) return;
-
-    const titleEl = document.getElementById('comingCoursesTitle');
-    const textEl = document.getElementById('comingCoursesText');
-
-    const close = () => {
-      modal.classList.remove('is-open');
-      modal.setAttribute('aria-hidden', 'true');
-      document.documentElement.style.overflow = '';
-    };
-
-    const open = (courseName) => {
-      const name = courseName ? String(courseName) : '';
-      titleEl.textContent = 'Próximamente';
-      textEl.textContent = name ? `El curso "${name}" estará disponible pronto.` : 'Este curso estará disponible pronto.';
-      modal.classList.add('is-open');
-      modal.setAttribute('aria-hidden', 'false');
-      document.documentElement.style.overflow = 'hidden';
-    };
-
-    document.querySelectorAll('[data-coming="true"]').forEach((a) => {
-      a.addEventListener('click', (e) => {
-        e.preventDefault();
-        open(a.getAttribute('data-course-name') || '');
-      });
-    });
-
-    modal.querySelectorAll('[data-close-coming-modal="1"]').forEach((el) => {
-      el.addEventListener('click', close);
-    });
-
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') close();
-    });
-  })();
-</script>
+<style>
+  details summary::-webkit-details-marker {
+    display: none;
+  }
+</style>

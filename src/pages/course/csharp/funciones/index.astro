@@ -1,0 +1,180 @@
+﻿---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import CsharpQuizModal from '../../../../components/CsharpQuizModal.astro';
+---
+
+<Layout title="Funciones y Métodos en C#" description="Aprende a reutilizar y modularizar tu código en C#" courseSlug="csharp">
+  <article class="content-section">
+    <h1>8. Funciones (Métodos)</h1>
+
+    <section class="mb-10">
+      <h2>Modularizando el caos</h2>
+      <p>
+        A medida que tu programa crece, no puedes poner todo el código dentro de <code>Main()</code>. Las funciones (también llamadas <strong>métodos</strong> en C#) te permiten empaquetar un bloque de código, ponerle nombre y reutilizarlo cuantas veces quieras.
+        Un método tiene:
+      </p>
+      <ul class="mb-4">
+        <li><strong>Firma/Nombre:</strong> Cómo se llama.</li>
+        <li><strong>Parámetros:</strong> Los datos que recibe para trabajar (opcional).</li>
+        <li><strong>Retorno:</strong> Lo que devuelve al terminar (puede devolver nada, en cuyo caso usamos <code>void</code>).</li>
+      </ul>
+    </section>
+
+    <section class="mb-10">
+      <h2>Métodos que NO devuelven datos (`void`)</h2>
+      <p>
+        Los métodos <code>void</code> simplemente ejecutan una acción, como imprimir un menú en pantalla, pero no te devuelven cálculos que puedas guardar en variables.
+      </p>
+      <CodeBlock lang="csharp"
+        code={`class Program
+{
+    // Definimos el método
+    static void MostrarSaludoEnPantalla(string nombre)
+    {
+        Console.WriteLine($"¡Hola, bienvenido {nombre} a nuestro sistema!");
+    }
+
+    static void Main()
+    {
+        // Lo llamamos (invocación)
+        MostrarSaludoEnPantalla("María");
+    }
+}`}
+        title="Método Void con parámetros"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Métodos que sí devuelven datos</h2>
+      <p>
+        Si el método necesita devolver un resultado, debes cambiar la palabra `void` por el tipo de dato que devuelve (por ejemplo, `int`). 
+        Dentro del bloque, es obligatorio usar la instrucción <strong><code>return</code></strong>.
+      </p>
+      <CodeBlock lang="csharp"
+        code={`class Program
+{
+    // Definimos un método que suma dos enteros y devuelve un entero
+    static int SumarNumeros(int numA, int numB)
+    {
+        int resultado = numA + numB;
+        return resultado;
+        // Todo lo que esté después del return es ignorado
+    }
+
+    static void Main()
+    {
+        // Invocamos y guardamos el resultado
+        int total = SumarNumeros(5, 7);
+        Console.WriteLine($"El total es {total}"); // Imprime 12
+    }
+}`}
+        title="Funciones con Return"
+      />
+    </section>
+
+    
+    
+    <div class="ejercicio">
+      <h3>👨‍💻 Ejercicio Práctico</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> Detector de Paridad
+      </div>
+      <p class="enunciado" set:html={'Crea un método estático llamado <code>EsPar</code> que reciba un entero (<code>int num</code>) y devuelva un <code>bool</code> (true si es par, false si es impar). Pruébalo en tu Main.'}></p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock lang="csharp" code={`class Program
+{
+    static bool EsPar(int num)
+    {
+        // Si el residuo de dividir por 2 es 0, es par
+        return num % 2 == 0;
+    }
+
+    static void Main()
+    {
+        bool resultado = EsPar(10);
+        Console.WriteLine($"¿10 es par?: {resultado}");
+    }
+}`} />
+      </details>
+    </div>
+
+    
+    <div class="ejercicio" style="background: #F4E8F4;">
+      <h3>👨‍💻 Ejercicio Práctico 2</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> Un método para saludar
+      </div>
+      <p class="enunciado" set:html={'Crea un método <code>static void Saludar()</code> que imprima un saludo. Invócalo desde el Main.'}></p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock lang="csharp" code={`static void Saludar()
+{
+    Console.WriteLine("¡Saludos desde mi función!");
+}
+
+static void Main()
+{
+    Saludar();
+}`} />
+      </details>
+    </div>
+
+    <div class="ejercicio" style="background: #F4E8F4;">
+      <h3>👨‍💻 Ejercicio Práctico 3</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> Cálculo de Área
+      </div>
+      <p class="enunciado" set:html={'Escribe un método <code>double CalcularArea()</code> que reciba la base y altura (doubles), y retorne la multiplicación de ambos (área del rectángulo).'}></p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock lang="csharp" code={`static double CalcularArea(double bas, double alt)
+{
+    return bas * alt;
+}
+
+static void Main()
+{
+    Console.WriteLine(CalcularArea(5.0, 10.0));
+}`} />
+      </details>
+    </div>
+
+    <div class="ejercicio" style="background: #F4E8F4;">
+      <h3>👨‍💻 Ejercicio Práctico 4</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> Un retorno matemático
+      </div>
+      <p class="enunciado" set:html={'Haz que una función reciba dos números, los sume y los retorne. En Main, guarda ese retorno en una variable e imprímelo.'}></p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock lang="csharp" code={`static int Sumar(int a, int b)
+{
+    return a + b;
+}
+
+static void Main()
+{
+    int total = Sumar(7, 3);
+    Console.WriteLine($"7 + 3 es {total}");
+}`} />
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>Comprueba tus conocimientos sobre este tema realizando nuestro pequeño test.</p>
+      <CsharpQuizModal quizKey="funciones" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/csharp/colecciones/" class="prev">← Colecciones</a>
+      <a href="/course/csharp/poo-basico/" class="next">POO Básico →</a>
+    </nav>
+  </article>
+</Layout>

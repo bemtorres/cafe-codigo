@@ -1,0 +1,72 @@
+﻿---
+import Layout from '../../../../layouts/Layout.astro';
+import PlsqlQuizModal from '../../../../components/PlsqlQuizModal.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+---
+
+<Layout title="Disparadores (Triggers)" description="Entiende cómo crear eventos automáticos que reaccionen a cambios en tu base de datos." courseSlug="programacion-db">
+  <article class="content-section">
+    <h1>4. Disparadores Automáticos (Triggers) 🔫</h1>
+
+    <section class="mb-10">
+      <h2>Eventos Fantasma</h2>
+      <p>
+        Muchas veces quieres que algo pase <strong>automáticamente</strong> en la base de datos sin que la aplicación (Node, Python) tenga que dar la orden.
+      </p>
+      <p>
+        Un <strong>Trigger</strong> es un bloque de código PL/SQL que "escucha" y se dispara solo cuando alguien intenta hacer un <code>INSERT</code>, un <code>UPDATE</code> o un <code>DELETE</code> en una tabla específica.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>¿Para qué sirven? Casos de uso</h2>
+      <ul>
+        <li><strong>Auditoría:</strong> (El uso más común) Guardar un historial de todos los salarios modificados y quién los modificó.</li>
+        <li><strong>Reglas de negocio estrictas:</strong> Impedir que alguien actualice un pedido a "Cancelado" si ya está "Enviado".</li>
+        <li><strong>Campos calculados automáticos:</strong> Cada vez que se añade un producto (insert), restar 1 del stock.</li>
+      </ul>
+    </section>
+
+    <section class="mb-10">
+      <h2>Sintaxis y Magia: OLD y NEW</h2>
+      <p>La gran magia de los triggers es que tienen acceso a dos registros fantasma: <code>:NEW</code> (cómo quedará el dato después del cambio) y <code>:OLD</code> (cómo estaba el dato antes del cambio).</p>
+      
+      <CodeBlock lang="sql" code={`-- Trigger para auditar los aumentos de salario
+CREATE OR REPLACE TRIGGER trg_AuditarSalario
+AFTER UPDATE OF salario ON empleados
+FOR EACH ROW -- Ejecutar esto por CADA FILA que haya sido modificada
+BEGIN
+  -- Comparamos lo viejo con lo nuevo
+  IF :NEW.salario > :OLD.salario THEN
+    -- Insertar en una tabla de bitácora
+    INSERT INTO historial_salarios (empleado_id, viejo_salario, nuevo_salario, fecha)
+    VALUES (:OLD.id, :OLD.salario, :NEW.salario, SYSDATE);
+  END IF;
+END;`} />
+      
+      <div class="note-box" style="background: #E8F5E9; border-left: 5px solid #2980b9;">
+        <strong>Con un Gran Poder...</strong> Los Triggers son peligrosos porque suceden "en la sombra". Si una consulta de tu backend repentinamente falla o se vuelve muy lenta, muchas veces la culpa la tiene un Trigger escondido haciendo trabajo pesado silenciosamente.
+      </div>
+    </section>
+
+    <div class="ejercicio" style="background: #F4F6F6; border: 2px solid #BDC3C7;">
+      <h3>🎮 Previniendo Horrores</h3>
+      <p class="enunciado">Si quisieras usar un Trigger para impedir (abortar) que alguien borre a un "Gerente", ¿deberías usar un trigger tipo <code>BEFORE DELETE</code> o <code>AFTER DELETE</code>?</p>
+      
+      <details>
+        <summary>👁️ Ver respuesta sugerida</summary>
+        <p>Debería ser <code>BEFORE DELETE</code>. De esa forma, evaluamos el cargo del empleado antes de que el motor lo borre, y si es 'Gerente', lanzamos un error y frenamos la operación.</p>
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <PlsqlQuizModal quizKey="triggers" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/programacion-db/funciones/" class="prev">← Funciones (UDF)</a>
+      <a href="/course/javascript/" class="next">Ir a Curso JavaScript 🚀</a>
+    </nav>
+  </article>
+</Layout>

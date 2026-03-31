@@ -1,0 +1,55 @@
+﻿---
+import Layout from '../../../../layouts/Layout.astro';
+import ScrumQuizModal from '../../../../components/ScrumQuizModal.astro';
+---
+
+<Layout title="3. Presentación y Mejora Continua" description="Sprint Review, Retrospectiva e iteraciones de calidad." courseSlug="scrum-prototipado">
+  <article class="content-section">
+    <h1>3. Review y Mejora Continua</h1>
+
+    <section class="mb-10">
+      <h2>La Sprint Review (Mostrando el software)</h2>
+      <p>
+        Llegó el día de la verdad. Al terminar la iteración, el Equipo Scrum se reúne con todos los <em>Stakeholders</em> clave (clientes reales, inversores o directivos).
+      </p>
+      <ul>
+        <li><strong>Punto clave 1:</strong> NO se muestran PowerPoints abstractos. Se ejecuta el "Incremento de Producto" real que se programó esta semana. <em>"Miren, hago click aquí y hace esto"</em>.</li>
+        <li><strong>Punto clave 2:</strong> Es un evento de <em>colaboración informal</em>, no un tribunal acusatorio.</li>
+        <li><strong>Punto clave 3:</strong> El cliente prueba el software y genera nuevo conocimiento: "Ah, visto así en pantalla verde, no me gusta, lo prefiero azul... ¿Podemos cambiarlo?".</li>
+      </ul>
+    </section>
+
+    <section class="mb-10">
+      <h2>Análisis de Feedback (Iteración y Adaptación)</h2>
+      <p>
+        Cuando el cliente pide "cambiarlo a azul", no gritamos ni lloramos por nuestro código tirado a la basura. Agradecemos. Hemos fallado barato (tras 2 semanas de trabajo, no 2 años).
+      </p>
+      <div class="note-box" style="background: #e0f2fe; border-left: 5px solid #0ea5e9;">
+        Ese feedback se vuelve de inmediato una nueva Historia de Usuario o Tarea, y se inserta en el <strong>Product Backlog</strong> para ser priorizada. Quizás en el próximo Sprint se trabaje en ello. Ágil abraza el cambio.
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2>Sprint Retrospective (Mejorándonos a nosotros mismos)</h2>
+      <p>
+        La Review fue para mejorar el <em>producto</em>. La Retrospectiva es para mejorar el <em>equipo</em>.
+      </p>
+      <p>Se hace después de la Review y antes del siguiente Sprint. Los Stakeholders NO pueden entrar. Es un lugar psicológicamente seguro para debatir:</p>
+      <ul>
+        <li><strong>¿Qué hicimos bien?</strong> (Nuevas prácticas que descubrimos, compañerismo).</li>
+        <li><strong>¿Qué hicimos mal o podríamos mejorar?</strong> (Deuda técnica, mala comunicación, fallos en Git).</li>
+        <li><strong>Plan de Acción:</strong> Seleccionar 1 o 2 cosas tangibles para reparar e inyectarlas OBLIGATORIAMENTE en el Sprint Backlog de la semana que empieza. <em>"Este próximo sprint usaremos linters automáticos y dejaremos de pelearnos por los espacios en blanco."</em></li>
+      </ul>
+    </section>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <ScrumQuizModal quizKey="presentacion-mejora" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/scrum-prototipado/diseno-sprints/" class="prev">← Sprints y Prototipado</a>
+      <a href="/course/scrum-prototipado/" class="next">Índice del Curso →</a>
+    </nav>
+  </article>
+</Layout>

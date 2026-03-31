@@ -1,0 +1,63 @@
+﻿---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import JavaScriptQuizModal from '../../../../components/JavaScriptQuizModal.astro';
+---
+
+<Layout title="Asincronía: Fetch y Promesas" description="Conecta con el mundo exterior: APIs y datos a tiempo real." courseSlug="javascript">
+  <article class="content-section">
+    <h1>10. Asincronía: ¡A esperar sin bloquear! 🔗</h1>
+
+    <section class="mb-10">
+      <h2>¿Qué es una Promesa?</h2>
+      <p>Es un objeto que representa algo que va a ocurrir en el futuro: <strong>¡Prometo traerte los datos que me pediste!</strong>. Puede estar pendiente, cumplida (success) o rechazada (error).</p>
+      <CodeBlock lang="javascript" code={`// Definición moderna (Async / Await)
+async function obtenerDatos() {
+  const respuesta = await fetch("https://api.ejemplo.com/servicios");
+  const datos = await respuesta.json();
+
+  console.log(datos);
+}
+
+obtenerDatos();`}
+        title="fetch.js"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>El poder de Fetch</h2>
+      <p>Fetch es el comando que lanza una petición a una URL (un servidor) para traer información.</p>
+      <CodeBlock lang="javascript" code={`// Una forma compacta con promesas encadenadas (.then)
+fetch("https://pokeapi.co/api/v2/pokemon/pikachu")
+  .then(res => res.json())
+  .then(pokemon => {
+    console.log("Nombre del pokemon: " + pokemon.name);
+  });`}
+        title="pokemon.js"
+      />
+    </section>
+
+    <div class="ejercicio" style="background: #E1F5FE;">
+      <h3>💻 Misión: Crea tu propia función asíncrona</h3>
+      <p class="enunciado">Escribe una función asincrónica que llame a una API y espere el resultado usando la sintaxis moderna await.</p>
+      
+      <details>
+        <summary>👁️ Ver solución sugerida</summary>
+        <CodeBlock lang="javascript" code={`async function miPedido() {
+  let res = await fetch("...");
+  let final = await res.json();
+  return final;
+}`} title="JS" />
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <JavaScriptQuizModal quizKey="async" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/javascript/eventos/" class="prev">← Eventos</a>
+      <a href="/course/javascript/" class="next">Finalizar curso de JS 🏆</a>
+    </nav>
+  </article>
+</Layout>

@@ -1,0 +1,17 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import UserPanel from '../../components/auth/UserPanel';
+---
+
+<Layout title="Mi panel" description="Tu dashboard: progreso, marcadores y preferencias en café y código.">
+  <div class="mx-auto max-w-6xl px-4 pb-10 pt-2 sm:px-5">
+    <!-- <header class="content-section mb-4 border-0 bg-transparent p-0 shadow-none md:mb-6">
+      <p class="m-0 font-nunito text-[0.65rem] font-extrabold uppercase tracking-[0.25em] text-textMuted">Panel</p>
+      <h1 class="!mt-1 !mb-2 font-nunito text-3xl font-black text-textPrimary sm:text-4xl">Dashboard</h1>
+      <p class="m-0 max-w-2xl font-nunito text-base font-[650] leading-relaxed text-textSecondary">
+        Resumen de tu actividad, quizzes PSeInt y accesos rápidos. Optimizado para móvil y escritorio.
+      </p>
+    </header> -->
+    <UserPanel client:load />
+  </div>
+</Layout>

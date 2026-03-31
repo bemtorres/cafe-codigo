@@ -1,0 +1,139 @@
+﻿---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import JavaQuizModal from '../../../../components/JavaQuizModal.astro';
+---
+
+<Layout title="Colecciones en Java" description="Diferencias entre Arreglos estáticos y ArrayList" courseSlug="java">
+  <article class="content-section">
+    <h1>7. Manejo de Datos: Arrays y ArrayList</h1>
+
+    <section class="mb-10">
+      <h2>El Array Clásico (Estático)</h2>
+      <p>
+        Los arreglos estándar en Java son estáticos y estrictos (nacen con un tamaño, y mueren con ese tamaño). Sirven para juntar muchos elementos del MISMO tipo bajo un solo nombre en diferentes índices (empezando por el índice <code>0</code>).
+      </p>
+      <CodeBlock lang="java" code={`// Arreglo de tamaño 3 con valores de fábrica predefinidos
+String[] herramientas = { "Martillo", "Llave", "Serrucho" };
+
+// Imprimir el primer elemento
+System.out.println(herramientas[0]); // Martillo
+
+// Descubrir cuán grande es (devuelve 3)
+int cant = herramientas.length;`}
+        title="Array Tradicional"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>El todopoderoso ArrayList (Dinámico)</h2>
+      <p>
+        En la vida real de los proyectos empresariales, las listas cambian constantemente. Usamos la clase nativa <code>ArrayList</code> del paquete <code>java.util</code> para esto. A diferencia del Array, es súper dinámico y posee métodos útiles como `.add()`, `.remove()` y `.size()`.
+      </p>
+      <CodeBlock lang="java" code={`import java.util.ArrayList;
+
+public class Main {
+    public static void main(String[] args) {
+        // Al crear listas dinámicas con diamantes <>, 
+        // no admiten primitivos int, exigen su clase Wrapper Integer
+        ArrayList<String> alumnos = new ArrayList<String>();
+        
+        // Agregar es sumamente fácil y elástico
+        alumnos.add("Carlos");
+        alumnos.add("Sofía");
+        
+        // Iterar de la forma moderna usando "for-each"
+        for (String nombre : alumnos) {
+            System.out.println("Alumno: " + nombre);
+        }
+    }
+}`}
+        title="Listas Dinámicas en Java"
+      />
+    </section>
+
+    <div class="ejercicio">
+      <h3>👨‍💻 Ejercicio Práctico 1</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> El saludo masivo
+      </div>
+      <p class="enunciado">Crea un arreglo estático de Strings llamado <code>amigos</code> con 3 nombres. Trata de recorrerlos e imprimirlos usando un <code>for-each</code>.</p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock lang="java" code={`String[] amigos = { "Ana", "Fernando", "Lucía" };
+
+// "Por cada amigo dentro de mi colección de amigos..."
+for (String amigo : amigos) {
+    System.out.println("¡Hola " + amigo + "!");
+}`} />
+      </details>
+    </div>
+
+    <div class="ejercicio" style="background: #FFF3E0;">
+      <h3>👨‍💻 Ejercicio Práctico 2</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> Longitud de Arreglos
+      </div>
+      <p class="enunciado">Declara un <code>String[] colores = {"Rojo", "Azul", "Verde"};</code> y usa sin iterar la propiedad nativa <code>.length</code> para imprimir en texto cuántos colores cargó metiste en duro.</p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock lang="java" code={`String[] colores = { "Rojo", "Azul", "Verde" };
+System.out.println("Hay en total " + colores.length + " colores guardados.");`} />
+      </details>
+    </div>
+
+    <div class="ejercicio" style="background: #FFF3E0;">
+      <h3>👨‍💻 Ejercicio Práctico 3</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> Manipulando el ArrayList
+      </div>
+      <p class="enunciado">Activa e instancia una <code>ArrayList&lt;Integer&gt; puntos = new ArrayList&lt;&gt;();</code>. Usando <code>.add()</code> inyecta los números 10, 20 y 30. Finalmente, borra el 20 usando <code>.remove(Integer.valueOf(20))</code> o referenciando el índice.</p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock lang="java" code={`import java.util.ArrayList;
+
+public class App {
+    public static void main(String[] args) {
+        ArrayList<Integer> puntos = new ArrayList<>();
+        puntos.add(10);
+        puntos.add(20);
+        puntos.add(30);
+        
+        // Cuidado: .remove(20) querrá borrar la POSICIÓN 20 si lo pasas crudo.
+        // Mejor removemos el índice 1 (que guarda el valor 20),
+        puntos.remove(1);
+    }
+}`} />
+      </details>
+    </div>
+
+    <div class="ejercicio" style="background: #FFF3E0;">
+      <h3>👨‍💻 Ejercicio Práctico 4</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> Leyendo tu propia Lista
+      </div>
+      <p class="enunciado">Usando la lista <code>puntos</code> anterior donde quedaron vivos el 10 y el 30, utiliza <code>.size()</code> para imprimir cuántos registros oficiales te quedaron.</p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock lang="java" code={`// Siguiendo el ArrayList anterior...
+int vivos = puntos.size();
+System.out.println("Nos han quedado " + vivos + " elementos intactos.");`} />
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>Termina de dominar a las Colecciones y demuestra cuánto sabes de estáticos versus dinámicos.</p>
+      <JavaQuizModal quizKey="colecciones" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/java/ciclos/" class="prev">← Ciclos</a>
+      <a href="/course/java/funciones/" class="next">Funciones y Métodos →</a>
+    </nav>
+  </article>
+</Layout>

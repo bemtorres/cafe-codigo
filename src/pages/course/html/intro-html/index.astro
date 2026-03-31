@@ -1,0 +1,49 @@
+﻿---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import HtmlQuizModal from '../../../../components/HtmlQuizModal.astro';
+---
+
+<Layout title="Estructura Básica HTML5" description="Aprende cómo se compone un archivo HTML desde el Doctype hasta el cierre del Body." courseSlug="html">
+  <article class="content-section">
+    <h1>1. Estructura Básica: El Esqueleto</h1>
+
+    <section class="mb-10">
+      <h2>¿Qué es HTML?</h2>
+      <p>
+        <strong>HTML</strong> (HyperText Markup Language) no es un lenguaje de programación, sino un lenguaje de <strong>marcado</strong>. Sirve para decirle al navegador: "esto es un título", "esto es un párrafo" o "esto es un botón".
+      </p>
+    </section>
+
+    <div class="card my-8" style="background: white; border: 3px solid #ff4d00; border-radius: 20px; padding: 1.5rem;">
+      <h3 style="color: #ff4d00;">🏗️ La Plantilla Maestra</h3>
+      <p>Todo archivo HTML profesional debe empezar así:</p>
+      <CodeBlock lang="html" code={`<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Mi Primera Web</title>
+</head>
+<body>
+    <h1>¡Hola Mundo!</h1>
+</body>
+</html>`}
+        title="index.html"
+      />
+      <ul class="list-disc pl-5 mt-4">
+        <li><strong>head:</strong> Contiene información para el navegador y buscadores (no visible).</li>
+        <li><strong>body:</strong> Contiene todo lo que el usuario ve en pantalla.</li>
+      </ul>
+    </div>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <HtmlQuizModal quizKey="intro-html" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/html/" class="prev">← Intro HTML</a>
+      <a href="/course/html/etiquetas-basicas/" class="next">Etiquetas Básicas →</a>
+    </nav>
+  </article>
+</Layout>

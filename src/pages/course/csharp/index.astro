@@ -1,0 +1,89 @@
+﻿---
+import Layout from '../../../layouts/Layout.astro';
+---
+
+<Layout title="Curso C#" description="Guía completa de C# desde cero hasta POO" courseSlug="csharp">
+  <div class="content-section" style="background: var(--bg-tertiary);">
+    <h1 class="course-big-title course-big-title--brand">
+      <span style="color: #9B4F96; font-weight: 900; font-size: 1.1em; background: rgba(155, 79, 150, 0.15); padding: 0.2rem 1rem; border-radius: 12px; margin-right: 0.5rem;">C#</span>
+      <span>Curso Completo</span>
+    </h1>
+    <p class="course-subtitle">
+      Aprende C# desde los fundamentos hasta la Programación Orientada a Objetos (POO). Domina la sintaxis, el control de flujo y crea tus propias clases.
+    </p>
+  </div>
+
+  <section class="cards-grid" style="margin-top: 4rem;">
+    <!-- Módulo 1 -->
+    <a href="/course/csharp/introduccion/" class="card-fun" style="background: white;">
+      <h2>1. Introducción 🚀</h2>
+      <p>¿Qué es C# y .NET? Estructura básica de un programa y el clásico Hola Mundo.</p>
+    </a>
+    <a href="/course/csharp/variables/" class="card-fun" style="background: var(--bg-secondary);">
+      <h2>2. Variables 📦</h2>
+      <p>Tipos de datos (int, string, bool) y cómo guardar información temporal.</p>
+    </a>
+    <a href="/course/csharp/io/" class="card-fun" style="background: #E8F5E9;">
+      <h2>3. Entrada / Salida ⌨️</h2>
+      <p>Capturar datos del usuario usando Console.ReadLine y convertirlos.</p>
+    </a>
+    <a href="/course/csharp/operadores/" class="card-fun" style="background: #FFF3E0;">
+      <h2>4. Operadores 🧮</h2>
+      <p>Matemática, lógica booleana y comparaciones esenciales.</p>
+    </a>
+
+    <!-- Módulo 2 -->
+    <a href="/course/csharp/condicionales/" class="card-fun" style="background: #E3F2FD;">
+      <h2>5. Condicionales 🔀</h2>
+      <p>If, else, switch. Cómo hacer que tu programa tome decisiones.</p>
+    </a>
+    <a href="/course/csharp/ciclos/" class="card-fun" style="background: #F3E5F5;">
+      <h2>6. Ciclos 🔁</h2>
+      <p>Repetición controlada. Uso de loops while, do-while y for.</p>
+    </a>
+
+    <!-- Módulo 3 -->
+    <a href="/course/csharp/colecciones/" class="card-fun" style="background: #FFFDE7;">
+      <h2>7. Colecciones 📚</h2>
+      <p>Agrupa datos múltiples usando Arreglos (Arrays) y Listas Genéricas (List).</p>
+    </a>
+    <a href="/course/csharp/funciones/" class="card-fun" style="background: #E0F7FA;">
+      <h2>8. Funciones 🛠️</h2>
+      <p>Modulariza tu código agrupándolo en métodos con parámetros y retornos.</p>
+    </a>
+
+    <!-- Módulo 4 -->
+    <a href="/course/csharp/poo-basico/" class="card-fun" style="background: var(--info); color: white; border-color: var(--border);">
+      <h2 style="color: white; text-shadow: 2px 2px 0px var(--border);">9. POO Básico 🧱</h2>
+      <p style="color: rgba(255,255,255,0.9);">Clases, objetos, propiedades y constructores. El salto a la arquitectura real.</p>
+    </a>
+    <a href="/course/csharp/poo-pilares/" class="card-fun" style="background: var(--border); color: white;">
+      <h2 style="color: var(--warning);">10. Pilares POO 🏛️</h2>
+      <p style="color: #ccc;">Herencia, Polimorfismo e Interfaces. Crea sistemas escalables.</p>
+    </a>
+  </section>
+
+  <nav class="nav-bottom">
+    <a href="/" class="prev">← Menu Principal</a>
+    <a href="/course/csharp/introduccion/" class="next">¡Empezar Introducción! 👾</a>
+  </nav>
+</Layout>
+
+<style>
+  .course-big-title {
+    font-size: 2.8rem;
+  }
+  .course-big-title--brand {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.75rem 0.2rem;
+  }
+  .course-subtitle {
+    font-size: 1.2rem;
+  }
+  @media (max-width: 600px) {
+    .course-big-title { font-size: 2rem; margin-bottom: 1rem; }
+    .course-subtitle { font-size: 1.05rem; line-height: 1.5; }
+  }
+</style>

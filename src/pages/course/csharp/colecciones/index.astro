@@ -1,0 +1,162 @@
+﻿---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import CsharpQuizModal from '../../../../components/CsharpQuizModal.astro';
+---
+
+<Layout title="Colecciones en C#" description="Uso de arreglos y Listas Genéricas en C#" courseSlug="csharp">
+  <article class="content-section">
+    <h1>7. Colecciones (Arreglos y Listas)</h1>
+
+    <section class="mb-10">
+      <h2>Arreglos Clásicos (Arrays)</h2>
+      <p>
+        Un arreglo es una caja dividida en múltiples compartimentos ordenados. Sirve para guardar múltiples valores <strong>del mismo tipo</strong>.
+        Tienen una regla estricta: <strong>Su tamaño es fijo</strong> desde el momento que se crean, no puede crecer ni achicarse.
+      </p>
+      <CodeBlock lang="csharp"
+        code={`// Declarar un arreglo de 5 números (inicia lleno de ceros)
+int[] notas = new int[5];
+
+// Llenarlo (los índices empiezan en el 0)
+notas[0] = 8;
+notas[1] = 9;
+
+// Declarar e inicializar al mismo tiempo, el tamaño se ajusta solo (tamaño 3)
+string[] nombres = { "Ana", "Luis", "Carlos" };
+Console.WriteLine(nombres[1]); // Imprime "Luis"`}
+        title="Sintaxis de Arrays"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>El Ciclo Foreach</h2>
+      <p>
+        Cuando tienes una colección (como un arreglo), la forma más elegante de recorrer todos sus elementos es usando <code>foreach</code> (por cada).
+        No necesitas preocuparte por los índices, C# sacará cada elemento uno por uno internamente.
+      </p>
+      <CodeBlock lang="csharp"
+        code={`string[] colores = { "Rojo", "Verde", "Azul" };
+
+foreach (string color in colores)
+{
+    Console.WriteLine($"Me gusta el color {color}");
+}`}
+        title="Recorriendo colecciones con Foreach"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Listas Genéricas (List&lt;T&gt;)</h2>
+      <p>
+        Las listas son la evolución de los arreglos. Son dinámicas, lo que significa que <strong>pueden crecer sin límite aparente</strong> a medida que les agregas elementos.
+        Para usarlas, debes asegurarte de tener <code>using System.Collections.Generic;</code> al principio del archivo.
+      </p>
+      <CodeBlock lang="csharp"
+        code={`using System.Collections.Generic;
+
+// Se crea una nueva lista vacía de tipo string
+List<string> inventario = new List<string>();
+
+// Agregamos elementos dinámicaente
+inventario.Add("Espada");
+inventario.Add("Escudo");
+inventario.Add("Poción");
+
+// Podemos removerlos fácilmente
+inventario.Remove("Escudo");
+
+// O saber cuántos elementos hay
+Console.WriteLine($"Tienes {inventario.Count} objetos.");`}
+        title="El poder de List<T>"
+      />
+    </section>
+
+    
+    
+    <div class="ejercicio">
+      <h3>👨‍💻 Ejercicio Práctico</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> Tu lista de Tareas
+      </div>
+      <p class="enunciado" set:html={'Crea una <code>List&lt;string&gt;</code>, agrégale tres tareas como "Estudiar", "Comer", "Dormir", y recórrelas todas usando un bucle <code>foreach</code> imprimiéndolas en pantalla.'}></p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock lang="csharp" code={`using System.Collections.Generic;
+
+List<string> tareas = new List<string>();
+tareas.Add("Estudiar");
+tareas.Add("Comer");
+tareas.Add("Dormir");
+
+foreach (string t in tareas)
+{
+    Console.WriteLine($"- {t}");
+}`} />
+      </details>
+    </div>
+
+    
+    <div class="ejercicio" style="background: #F4E8F4;">
+      <h3>👨‍💻 Ejercicio Práctico 2</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> Arreglo estático
+      </div>
+      <p class="enunciado" set:html={'Crea un <code>string[] colores = {"Rojo", "Azul", "Verde"};</code> y usa <code>colores.Length</code> para imprimir cuántos colores metiste.'}></p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock lang="csharp" code={`string[] colores = { "Rojo", "Azul", "Verde" };
+Console.WriteLine($"Hay {colores.Length} colores en el arreglo.");`} />
+      </details>
+    </div>
+
+    <div class="ejercicio" style="background: #F4E8F4;">
+      <h3>👨‍💻 Ejercicio Práctico 3</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> Manipulando una Lista
+      </div>
+      <p class="enunciado" set:html={'Crea una <code>List&lt;int&gt;</code>. Agrégale los números 10, 20 y 30. Luego elimina el 20 usando <code>.Remove(20)</code>.'}></p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock lang="csharp" code={`using System.Collections.Generic;
+
+List<int> puntos = new List<int>();
+puntos.Add(10);
+puntos.Add(20);
+puntos.Add(30);
+puntos.Remove(20); // Quedan 10 y 30`} />
+      </details>
+    </div>
+
+    <div class="ejercicio" style="background: #F4E8F4;">
+      <h3>👨‍💻 Ejercicio Práctico 4</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> El saludo masivo
+      </div>
+      <p class="enunciado" set:html={'En un arreglo de 3 amigos, usa un bucle <code>foreach</code> para saludar a cada uno.'}></p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock lang="csharp" code={`string[] amigos = { "Ana", "Beto", "Carlos" };
+foreach(string amigo in amigos)
+{
+    Console.WriteLine($"¡Hola {amigo}!");
+}`} />
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>Comprueba tus conocimientos sobre este tema realizando nuestro pequeño test.</p>
+      <CsharpQuizModal quizKey="colecciones" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/csharp/ciclos/" class="prev">← Ciclos</a>
+      <a href="/course/csharp/funciones/" class="next">Funciones →</a>
+    </nav>
+  </article>
+</Layout>

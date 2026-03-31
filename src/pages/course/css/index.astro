@@ -1,0 +1,110 @@
+﻿---
+import Layout from '../../../layouts/Layout.astro';
+import { courses } from '../../../data/courses';
+
+const cssCourse = courses.find(c => c.slug === 'css');
+if (!cssCourse) {
+  throw new Error("No se encontró el curso 'css' en el archivo de datos.");
+}
+---
+
+<Layout title="CSS3: El poder de los estilos" description="Domina el diseño web con Flexbox, Grid y los frameworks Bootstrap y Tailwind." courseSlug="css">
+  <div class="course-container">
+    <header class="course-index-header">
+      <h1 class="course-big-title" style={`--course-color: ${cssCourse.color}`}>
+        🎨 {cssCourse.name}
+      </h1>
+      <p class="course-description">
+        {cssCourse.description}
+      </p>
+    </header>
+
+    <div class="cards-grid">
+      {cssCourse.lessons?.map((lesson, index) => (
+        <a href={lesson.href} class="lesson-card">
+          <div class="lesson-card__number">{index + 1}</div>
+          <div class="lesson-card__content">
+            <h3 class="lesson-card__title">{lesson.title}</h3>
+            <span class="lesson-card__cta">Empezar a diseñar →</span>
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .course-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2.25rem 1rem;
+  }
+
+  .course-index-header {
+    text-align: center;
+    margin-bottom: 4rem;
+  }
+
+  .course-big-title {
+    font-size: clamp(2rem, 7vw, 3.5rem);
+    font-weight: 900;
+    color: #264de4;
+    margin-bottom: 1rem;
+    line-height: 1;
+    font-family: 'Nunito', sans-serif;
+    text-shadow: 4px 4px 0px var(--border);
+  }
+
+  .course-description {
+    font-size: 1.25rem;
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto;
+    font-weight: 700;
+  }
+
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .lesson-card {
+    display: flex;
+    gap: 1.1rem;
+    background: white;
+    border: 3.5px solid var(--border);
+    border-radius: 20px;
+    padding: 1.25rem;
+    text-decoration: none;
+    color: var(--text-primary);
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 4px 4px 0px var(--border);
+    align-items: center;
+  }
+
+  .lesson-card:hover {
+    transform: translate(-5px, -5px);
+    box-shadow: 9px 9px 0px var(--border);
+    background: #f0f4ff;
+  }
+
+  .lesson-card__number {
+    font-size: 2.2rem;
+    font-weight: 900;
+    color: #ffd166;
+    line-height: 1;
+  }
+
+  .lesson-card__title {
+    font-size: 1.15rem;
+    font-weight: 900;
+    margin: 0 0 0.25rem;
+  }
+
+  .lesson-card__cta {
+    font-size: 0.9rem;
+    font-weight: 800;
+    color: #264de4;
+  }
+</style>

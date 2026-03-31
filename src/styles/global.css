@@ -324,3 +324,199 @@ body[data-course="arch"] .content-section {
 }
 body[data-course="arch"] ::-webkit-scrollbar-track { background: #E9D5A2; }
 body[data-course="arch"] ::-webkit-scrollbar-thumb { background: #C5A059; border: 2px solid #F4EBD0; }
+
+/* ── Tarjetas de curso premium (ticket / marco brillante) ── */
+@keyframes course-premium-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes course-premium-glint {
+  0%,
+  100% {
+    transform: translateX(-140%) rotate(12deg);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.55;
+  }
+  45% {
+    transform: translateX(180%) rotate(12deg);
+    opacity: 0.4;
+  }
+  60% {
+    opacity: 0;
+  }
+}
+
+.course-premium-shell {
+  position: relative;
+  border-radius: 1.5rem;
+  padding: 3px;
+  overflow: hidden;
+}
+
+.course-premium-shell::before {
+  content: '';
+  position: absolute;
+  inset: -55%;
+  z-index: 0;
+  animation: course-premium-spin 5.5s linear infinite;
+  will-change: transform;
+}
+
+.course-premium-inner {
+  position: relative;
+  z-index: 1;
+  border-radius: calc(1.5rem - 3px);
+  overflow: hidden;
+  transition:
+    filter 0.35s ease,
+    box-shadow 0.35s ease;
+}
+
+/* Brillo interior al hover (encima del fondo, debajo del texto) */
+.course-premium-inner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  mix-blend-mode: soft-light;
+  background:
+    radial-gradient(ellipse 110% 85% at 50% 0%, rgba(255, 255, 255, 0.65) 0%, transparent 58%),
+    radial-gradient(ellipse 90% 70% at 80% 100%, rgba(255, 255, 255, 0.35) 0%, transparent 50%);
+}
+
+.group:hover .course-premium-inner::before {
+  opacity: 1;
+}
+
+.group:hover .course-premium-inner {
+  filter: brightness(1.08) saturate(1.06);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.35),
+    inset 0 0 48px rgba(255, 255, 255, 0.28);
+}
+
+.course-premium-inner::after {
+  content: '';
+  position: absolute;
+  inset: -20%;
+  z-index: 1;
+  background: linear-gradient(
+    105deg,
+    transparent 35%,
+    rgba(255, 255, 255, 0.55) 48%,
+    rgba(255, 255, 255, 0.2) 52%,
+    transparent 65%
+  );
+  animation: course-premium-glint 3.2s ease-in-out infinite;
+  pointer-events: none;
+  mix-blend-mode: soft-light;
+}
+
+.group:hover .course-premium-inner::after {
+  animation-duration: 1.35s;
+  mix-blend-mode: overlay;
+}
+
+.course-premium-shell--gold {
+  box-shadow: 0 0 22px rgba(251, 191, 36, 0.42), 6px 6px 0px #1e1210;
+}
+.course-premium-shell--gold::before {
+  background: conic-gradient(
+    from 0deg,
+    #fbbf24,
+    #fde047,
+    #f59e0b,
+    #d97706,
+    #fde68a,
+    #fbbf24,
+    #f59e0b,
+    #fbbf24
+  );
+}
+
+.course-premium-shell--emerald {
+  box-shadow: 0 0 22px rgba(52, 211, 153, 0.4), 6px 6px 0px #1e1210;
+}
+.course-premium-shell--emerald::before {
+  background: conic-gradient(
+    from 0deg,
+    #34d399,
+    #6ee7b7,
+    #059669,
+    #10b981,
+    #a7f3d0,
+    #047857,
+    #34d399
+  );
+}
+
+.course-premium-shell--platinum {
+  box-shadow: 0 0 24px rgba(148, 163, 184, 0.55), 6px 6px 0px #1e1210;
+}
+.course-premium-shell--platinum::before {
+  background: conic-gradient(
+    from 0deg,
+    #e2e8f0,
+    #f8fafc,
+    #94a3b8,
+    #cbd5e1,
+    #f1f5f9,
+    #64748b,
+    #e2e8f0
+  );
+}
+
+.course-premium-shell--ruby {
+  box-shadow: 0 0 22px rgba(244, 63, 94, 0.42), 6px 6px 0px #1e1210;
+}
+.course-premium-shell--ruby::before {
+  background: conic-gradient(
+    from 0deg,
+    #fb7185,
+    #f43f5e,
+    #be123c,
+    #fda4af,
+    #e11d48,
+    #881337,
+    #fb7185
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .course-premium-shell::before,
+  .course-premium-inner::after {
+    animation: none;
+  }
+  .course-premium-shell::before {
+    inset: 0;
+    transform: none;
+    opacity: 0.95;
+  }
+  .course-premium-inner,
+  .course-premium-inner::before {
+    transition: none;
+  }
+}
+
+/* input-otp (código academia): cursor falso en slots */
+@keyframes join-otp-caret-blink {
+  0%,
+  70%,
+  100% {
+    opacity: 1;
+  }
+  20%,
+  50% {
+    opacity: 0;
+  }
+}
+.join-otp-caret-blink {
+  animation: join-otp-caret-blink 1.2s ease-out infinite;
+}

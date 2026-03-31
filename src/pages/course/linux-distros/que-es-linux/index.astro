@@ -1,0 +1,48 @@
+﻿---
+import Layout from '../../../../layouts/Layout.astro';
+import LinuxDistrosQuizModal from '../../../../components/LinuxDistrosQuizModal.astro';
+---
+
+<Layout title="¿Qué es Linux? El Núcleo del Mundo" description="Descubre la diferencia entre el Kernel de Linux y una distribución. Conoce a Linus Torvalds y el software libre." courseSlug="linux-distros">
+  <article class="content-section">
+    <h1>1. El Núcleo Linux: El cerebro invisible</h1>
+
+    <section class="mb-10">
+      <h2>Linux NO es un Sistema Operativo (técnicamente)</h2>
+      <p>
+        Cuando la gente dice "uso Linux", en realidad se refieren a que usan una <strong>Distribución de Linux</strong>. El "Linux" real es solo el <strong>Kernel (Núcleo)</strong>: el programa que se encarga de que el software pueda hablar con el hardware (memoria, procesador, teclado).
+      </p>
+      <p>
+        Fue creado en 1991 por <strong>Linus Torvalds</strong> como un proyecto personal. Hoy, es el proyecto de software colaborativo más grande de la historia.
+      </p>
+    </section>
+
+    <div class="card my-8" style="background: #fff9ea; border: 3px solid #f59e0b; border-radius: 20px; padding: 1.5rem;">
+      <h3 style="color: #b45309;">📖 La metáfora del Coche</h3>
+      <p>Imagina un coche:</p>
+      <ul class="list-disc pl-5">
+        <li><strong>El Kernel (Linux)</strong> es el Motor. Sin motor el coche no se mueve.</li>
+        <li><strong>La Distro (Ubuntu, Fedora)</strong> es el coche completo: tiene motor, pero también asientos, radio, aire acondicionado y carrocería.</li>
+      </ul>
+    </div>
+
+    <section class="mb-10">
+      <h2>¿Por qué es tan importante?</h2>
+      <ul class="mb-4">
+        <li><strong>Código Abierto:</strong> Cualquiera puede ver cómo funciona y mejorarlo.</li>
+        <li><strong>Seguro:</strong> Su diseño basado en permisos Unix lo hace muy resistente a virus.</li>
+        <li><strong>Gratis:</strong> No tienes que pagar licencias por usarlo (en la gran mayoría de casos).</li>
+      </ul>
+    </section>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <LinuxDistrosQuizModal quizKey="que-es-linux" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/linux-distros/" class="prev">← Intro Linux</a>
+      <a href="/course/linux-distros/debian-ubuntu/" class="next">Debian y Ubuntu →</a>
+    </nav>
+  </article>
+</Layout>

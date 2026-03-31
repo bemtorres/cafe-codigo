@@ -1,0 +1,139 @@
+﻿---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import CsharpQuizModal from '../../../../components/CsharpQuizModal.astro';
+import LoginGatedVideo from '../../../../components/auth/LoginGatedVideo';
+---
+
+<Layout title="Introducción a C#" description="¿Qué es C# y .NET? Estructura básica de un programa" courseSlug="csharp">
+  <article class="content-section">
+    <h1>1. Introducción a C#</h1>
+
+    <section class="mb-10">
+      <h2>¿Qué es C# y .NET?</h2>
+      <p>
+        <strong>C# (C-Sharp)</strong> es un lenguaje de programación moderno, orientado a objetos y fuertemente tipado, creado por Microsoft.
+        Corre sobre la plataforma <strong>.NET</strong>, lo que significa que puedes crear aplicaciones de escritorio, web, móviles (con MAUI) e incluso videojuegos (con Unity).
+      </p>
+      <p>
+        Si vienes de aprender pseudocódigo (como PSeInt), notarás que C# exige más precisión en cómo defines las cosas, pero a cambio te da un poder inmenso para crear software real y escalable.
+      </p>
+      <h3 class="mt-8 mb-3 text-lg font-black text-textPrimary">Video: C# y .NET</h3>
+      <LoginGatedVideo client:load videoId="NKPMGY6NCko" title="C# y .NET — introducción" />
+    </section>
+
+    <section class="mb-10">
+      <h2>Estructura Básica y el Hola Mundo</h2>
+      <p>
+        Todo programa en C# reciente (desde C# 9.0 en adelante) permite un estilo simplificado usando las "Top-level statements". Sin embargo, tradicionalmente, C# siempre ha sido estructurado dentro de clases y métodos de esta forma:
+      </p>
+      <CodeBlock lang="csharp"
+        code={`using System;
+
+namespace MiPrimerPrograma 
+{
+    class Program 
+    {
+        static void Main(string[] args) 
+        {
+            // Este es el equivalente a 'Escribir'
+            Console.WriteLine("¡Hola, Mundo desde C#!");
+        }
+    }
+}`}
+        title="Estructura Tradicional (Program.cs)"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Sintaxis: Reglas de Oro</h2>
+      <ul class="mb-4">
+        <li><strong>Punto y coma (;):</strong> Toda instrucción debe terminar con <code>;</code>. Igual que en PSeInt.</li>
+        <li><strong>Case-sensitive:</strong> C# distingue entre mayúsculas y minúsculas (<code>Saludar</code> no es lo mismo que <code>saludar</code>).</li>
+        <li><strong>Librerías principales:</strong> <code>using System;</code> incluye funciones básicas, como entrada y salida de datos a la consola.</li>
+      </ul>
+    </section>
+
+    
+    
+    <div class="ejercicio">
+      <h3>👨‍💻 Ejercicio Práctico</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> Tu primer despliegue
+      </div>
+      <p class="enunciado" set:html={'Escribe la estructura base de C# en la clase <code>Program</code> con el método <code>Main</code> e imprime en consola el mensaje: <strong>"¡C# será mi mejor amigo!"</strong>'}></p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock lang="csharp" code={`using System;
+
+namespace Ejercicio
+{
+    class Program 
+    {
+        static void Main() 
+        {
+            Console.WriteLine("¡C# será mi mejor amigo!");
+        }
+    }
+}`} />
+      </details>
+    </div>
+
+    
+    <div class="ejercicio" style="background: #F4E8F4;">
+      <h3>👨‍💻 Ejercicio Práctico 2</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> Múltiples líneas
+      </div>
+      <p class="enunciado" set:html={'Imprime tu nombre en la primera línea y tu ciudad en la segunda utilizando dos <code>Console.WriteLine</code> distintos.'}></p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock lang="csharp" code={`Console.WriteLine("Benjamín");
+Console.WriteLine("Madrid");`} />
+      </details>
+    </div>
+
+    <div class="ejercicio" style="background: #F4E8F4;">
+      <h3>👨‍💻 Ejercicio Práctico 3</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> Escribiendo en la misma línea
+      </div>
+      <p class="enunciado" set:html={'Utiliza <code>Console.Write</code> (sin Line) para imprimir "Hola " y "Mundo" en comandos separados, pero que aparezcan juntos en la pantalla.'}></p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock lang="csharp" code={`Console.Write("Hola ");
+Console.Write("Mundo");`} />
+      </details>
+    </div>
+
+    <div class="ejercicio" style="background: #F4E8F4;">
+      <h3>👨‍💻 Ejercicio Práctico 4</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> Documentando tu código
+      </div>
+      <p class="enunciado" set:html={'Añade un comentario de una línea que diga "Autor: Yo" y un comentario multilínea explicando qué hace tu programa principal.'}></p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock lang="csharp" code={`// Autor: Yo
+/* Este programa es una prueba
+   para el curso de C# */
+Console.WriteLine("Código documentado");`} />
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>Comprueba tus conocimientos sobre este tema realizando nuestro pequeño test.</p>
+      <CsharpQuizModal quizKey="introduccion" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/csharp/" class="prev">← Curso de C#</a>
+      <a href="/course/csharp/variables/" class="next">Variables →</a>
+    </nav>
+  </article>
+</Layout>

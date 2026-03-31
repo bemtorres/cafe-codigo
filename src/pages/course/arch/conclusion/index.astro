@@ -1,0 +1,68 @@
+﻿---
+import Layout from '../../../../layouts/Layout.astro';
+import ArchQuizModal from '../../../../components/ArchQuizModal.astro';
+import finalImg from '../../../../assets/images/modelo_4_1/8_final.png';
+---
+
+<Layout title="Conclusión del Modelo 4+1" description="Aprende a combinar todas las vistas para una comunicación de arquitectura efectiva." courseSlug="arch">
+  <article class="content-section">
+    <h1>7. Conclusión: ¡Arquitectura Definida!</h1>
+
+    <section class="mb-10">
+      <h2>El Valor de las Múltiples Vistas</h2>
+      <p>
+        Has aprendido que la arquitectura no es un solo plano, sino una <strong>vista</strong> desde diferentes ángulos. Como dijo Kruchten: "No existe una sola vista para expresar todo lo que ocurre en un sistema".
+      </p>
+      <div class="note-box" style="background: #F1F5F9; border-left: 5px solid #475569;">
+        <strong>Regla de Oro:</strong> No siempre necesitas las 5 vistas. Para proyectos pequeños, con la Lógica y la de Escenarios podrías tener suficiente. Sé pragmático.
+      </div>
+
+      <!-- Imagen del Creador -->
+      <div class="flex flex-col items-center gap-3 my-8">
+        <img
+          src={finalImg.src}
+          alt="Philippe Kruchten, creador del Modelo 4+1"
+          class="w-full max-w-sm rounded-2xl border-4 border-[#4A3B22] shadow-[6px_6px_0px_#4A3B22]"
+        />
+        <p class="text-center text-sm font-bold text-textSecondary m-0">
+          📜 <strong>Philippe Kruchten</strong> — Ingeniero de software canadiense que publicó el Modelo 4+1 en 1995 mientras trabajaba en Rational Software.
+        </p>
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2>Recuerda el 4+1</h2>
+      <ol>
+        <li><strong>Lógica:</strong> El QUÉ (clases).</li>
+        <li><strong>Desarrollo:</strong> El CÓMO (módulos).</li>
+        <li><strong>Proceso:</strong> El CUÁNDO (hilos).</li>
+        <li><strong>Física:</strong> El DÓNDE (servidores).</li>
+        <li><strong>Escenarios (+1):</strong> El PARA QUÉ (uso del sistema).</li>
+      </ol>
+    </section>
+
+    <div class="ejercicio" style="background: #F8FAFC; border: 2px solid #E2E8F0;">
+      <h3>🏁 Desafío Final</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> El Documento de Arquitectura
+      </div>
+      <p class="enunciado">Si te piden escribir un documento de arquitectura estándar, ¿qué incluirías para ser un profesional?</p>
+      
+      <details>
+        <summary>👁️ Ver respuesta</summary>
+        <p>Dividiría mi documento en 5 capítulos, cada uno dedicado a una vista, y los validaría todos con un escenario de caso de uso real.</p>
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>¡Examen Final!</h2>
+      <p>Demuestra que puedes pensar como un verdadero arquitecto de software.</p>
+      <ArchQuizModal quizKey="conclusion" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/arch/vista-fisica/" class="prev">← Vista Física</a>
+      <a href="/course/arch/" class="next">Cerrar Curso →</a>
+    </nav>
+  </article>
+</Layout>

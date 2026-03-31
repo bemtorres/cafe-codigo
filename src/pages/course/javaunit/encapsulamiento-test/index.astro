@@ -1,0 +1,77 @@
+﻿---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import JavaUnitQuizModal from '../../../../components/JavaUnitQuizModal.astro';
+---
+
+<Layout title="Testing Encapsulamiento en Java" description="Verifica que tus objetos mantengan su estado interno correctamente mediante tests unitarios." courseSlug="javaunit">
+  <article class="content-section">
+    <h1>4. Testing: Encapsulamiento y Estado</h1>
+
+    <section class="mb-10">
+      <h2>Validando el Plano de Clase</h2>
+      <p>
+        El <strong>encapsulamiento</strong> es uno de los pilares de la POO. Nuestros objetos deben tener sus atributos privados y ser accedidos mediante Getters y Setters. En un test unitario, verificamos que esta interacción sea segura y que el objeto no se "corrompa" por accidente.
+      </p>
+      <CodeBlock lang="java" code={`@Test
+void testUsuarioCambioNombre() {
+    // 1. Arrange
+    Usuario user = new Usuario("Ada");
+
+    // 2. Act
+    user.setNombre("Grace");
+
+    // 3. Assert
+    assertEquals("Grace", user.getNombre(), "El nombre no se actualizó bien");
+}`}
+        title="Validando un Setter clásico"
+      />
+    </section>
+
+    <div class="ejercicio" style="background: #E0F2F1;">
+      <h3>👨‍💻 Ejercicio Práctico 1</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> El valor de inicio
+      </div>
+      <p class="enunciado">Verifica en un test que un objeto <code>new CuentaBancaria()</code> recién creado tenga un <code>getSaldo()</code> de <code>0.0</code>.</p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock lang="java" code={`@Test
+void testSaldoInicial() {
+    CuentaBancaria cuenta = new CuentaBancaria();
+    assertEquals(0.0, cuenta.getSaldo());
+}`} />
+      </details>
+    </div>
+
+    <div class="ejercicio" style="background: #E0F2F1;">
+      <h3>👨‍💻 Ejercicio Práctico 2</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> Detectando la mutación
+      </div>
+      <p class="enunciado">Crea un <code>Jugador j = new Jugador()</code>, envíale <code>j.setNivel(5)</code> y verifica que su nivel sea 5 usando <code>assertEquals</code>.</p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock lang="java" code={`@Test
+void testNivelJugador() {
+    Jugador j = new Jugador();
+    j.setNivel(5);
+    assertEquals(5, j.getNivel());
+}`} />
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>Verifica que tus objetos guarden sus secretos como es debido.</p>
+      <JavaUnitQuizModal quizKey="encapsulamiento-test" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/javaunit/assertions/" class="prev">← Assertions</a>
+      <a href="/course/javaunit/excepciones-test/" class="next">Excepciones →</a>
+    </nav>
+  </article>
+</Layout>

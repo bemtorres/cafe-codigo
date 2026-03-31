@@ -1,0 +1,67 @@
+﻿---
+import Layout from '../../../../layouts/Layout.astro';
+import UnityQuizModal from '../../../../components/UnityQuizModal.astro';
+---
+
+<Layout title="2. Del Requisito a la Mecánica (Scripting)" description="C# para No Programadores, uso de [SerializeField] e Input System." courseSlug="unity-prototipado">
+  <article class="content-section">
+    <h1>2. Del Requisito a la Mecánica (Scripting Básico)</h1>
+
+    <section class="mb-10">
+      <h2>Conectando con el Requisito (RA2)</h2>
+      <p>
+        Si el documento de requisitos (Sprint Backlog) dice: <em>"El usuario debe poder mover la nave hacia arriba apretando la barra espaciadora"</em>, ha llegado el momento de codificarlo.
+      </p>
+      <div class="note-box" style="background: #e0f2fe; border-left: 5px solid #0ea5e9;">
+        Un Script en Unity (escrito en <strong>C#</strong>) no es más que un "Componente" personalizado que tú mismo creas y arrastras a un GameObject.
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2>C# para No Programadores: Start vs Update</h2>
+      <p>Al crear un Script <em>MonoBehaviour</em> (clase base de Unity), te aparecerán dos métodos automáticos principales:</p>
+      <ul>
+        <li><code>void Start()</code>: Se ejecuta <strong>una sola vez</strong> cuando el objeto "nace" en la pantalla. Útil para: dar puntos de vida iniciales, cargar referencias a la UI.</li>
+        <li><code>void Update()</code>: Se ejecuta <strong>cada frame (fotograma) constante</strong>. Si el juego va a 60 FPS, se llama 60 veces por segundo. Útil para: leer si se está apretando un botón, mover un personaje, chequear si cayó por un barranco.</li>
+      </ul>
+    </section>
+
+    <section class="mb-10">
+      <h2>Variables y [SerializeField] en el Inspector</h2>
+      <p>
+        Uno de los poderes del Prototipado Ágil en equipos mixtos (Programadores + Diseñadores) es permitir que los diseñadores cambien variables (la gravedad, la velocidad) ¡Sin rescribir código ni compilar!
+      </p>
+      <pre><code>// Mala práctica para prototipado en equipo:
+private float speed = 5.0f; // Está oculto y fijo.
+
+// Buena práctica:
+[SerializeField] private float speed = 5.0f; // Se ajusta visualmente en el Inspector de Unity.
+</code></pre>
+      <p>Con <code>[SerializeField]</code>, tu variable privada en C# generará una cajita en la interfaz gráfica de Unity que otro compañero podrá alterar probando en vivo (Play Mode).</p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Input System clásico: Detectar Teclas</h2>
+      <p>
+        En el <code>Update()</code>, puedes preguntar al sistema si ocurrió un evento físico.
+      </p>
+      <pre><code>void Update() &#123;
+  // Si presiono una vez la barra espaciadora
+  if (Input.GetKeyDown(KeyCode.Space)) &#123;
+     // Hago que mi personaje salte aquí
+  &#125;
+&#125;</code></pre>
+      <p>Así implementamos los verbos de los requisitos funcionales ("saltar", "disparar", "pausar").</p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <UnityQuizModal quizKey="scripting" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/unity-prototipado/interfaz/" class="prev">← Interfaz y Mentalidad</a>
+      <a href="/course/unity-prototipado/fisica/" class="next">Física y Colisiones →</a>
+    </nav>
+  </article>
+</Layout>

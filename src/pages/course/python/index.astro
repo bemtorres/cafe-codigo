@@ -1,0 +1,123 @@
+﻿---
+import Layout from '../../../layouts/Layout.astro';
+import { courses } from '../../../data/courses';
+
+const pythonCourse = courses.find(c => c.slug === 'python');
+if (!pythonCourse) {
+  throw new Error("No se encontró el curso 'python' en el archivo de datos.");
+}
+---
+
+<Layout title="Curso de Python Pro: De Novato a Data Scientist" description="Aprende el lenguaje más versátil del mundo: automatización, ciencia de datos, IA y desarrollo web simplificado." courseSlug="python">
+  <div class="course-container">
+    <header class="course-index-header">
+      <div class="python-logo-box">
+        <span class="snake">🐍</span>
+      </div>
+      <h1 class="course-big-title">
+        {pythonCourse.name}
+      </h1>
+      <p class="course-description">
+        {pythonCourse.description}
+      </p>
+    </header>
+
+    <div class="cards-grid">
+      {pythonCourse.lessons?.map((lesson, index) => (
+        <a href={lesson.href} class="lesson-card">
+          <div class="lesson-card__number">{index + 1}</div>
+          <div class="lesson-card__content">
+            <h3 class="lesson-card__title">{lesson.title}</h3>
+            <span class="lesson-card__cta">Ejecutar script →</span>
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .course-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2.5rem 1.25rem;
+  }
+
+  .course-index-header {
+    text-align: center;
+    margin-bottom: 4rem;
+  }
+
+  .python-logo-box {
+    font-size: 4rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .course-big-title {
+    font-size: clamp(2rem, 7vw, 3.5rem);
+    font-weight: 950;
+    color: #3776ab;
+    margin-bottom: 1rem;
+    line-height: 1;
+    font-family: 'Nunito', sans-serif;
+    text-shadow: 4px 4px 0px var(--border);
+  }
+
+  .course-description {
+    font-size: 1.35rem;
+    color: var(--text-secondary);
+    max-width: 650px;
+    margin: 0 auto;
+    font-weight: 800;
+  }
+
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.75rem;
+  }
+
+  .lesson-card {
+    display: flex;
+    gap: 1.25rem;
+    background: white;
+    border: 3.5px solid var(--border);
+    border-radius: 18px;
+    padding: 1.5rem;
+    text-decoration: none;
+    color: var(--text-primary);
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 6px 6px 0px var(--border);
+    align-items: center;
+  }
+
+  .lesson-card:hover {
+    transform: translate(-6px, -6px);
+    box-shadow: 12px 12px 0px var(--border);
+    background: #fdfdfd;
+    border-color: #ffd43b;
+  }
+
+  .lesson-card__number {
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: var(--border);
+    opacity: 0.15;
+    line-height: 1;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .lesson-card__title {
+    font-size: 1.25rem;
+    font-weight: 950;
+    margin: 0 0 0.35rem;
+    color: #1a1a1b;
+  }
+
+  .lesson-card__cta {
+    font-size: 0.95rem;
+    font-weight: 900;
+    color: #3776ab;
+    font-family: 'JetBrains Mono', monospace;
+  }
+</style>

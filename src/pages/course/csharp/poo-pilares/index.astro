@@ -1,0 +1,246 @@
+﻿---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import CsharpQuizModal from '../../../../components/CsharpQuizModal.astro';
+---
+
+<Layout title="Pilares de la POO" description="Profundiza en Herencia, Interfades y Polimorfismo" courseSlug="csharp">
+  <article class="content-section">
+    <h1>10. Los Pilares de la POO</h1>
+
+    <section class="mb-10">
+      <h2>¿A dónde vamos con todo esto?</h2>
+      <p>
+        Ya conoces la Abstracción y el Encapsulamiento ({`get / set`}). Ahora nos enfocaremos en <strong>Herencia y Polimorfismo</strong>. Estos pilares te permitirán escribir enormes simulaciones, videojuegos o aplicaciones reduciendo el código repetido casi a cero.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Herencia (`:`)</h2>
+      <p>
+        La herencia significa crear una "clase hija" que obtiene todas las propiedades y métodos de una "clase padre", logrando así reutilizar el comportamiento base sin tener que escribirlo de nuevo.
+      </p>
+      <CodeBlock lang="csharp"
+        code={`// Clase Padre General (Base)
+class Animal 
+{
+    public string Nombre { get; set; }
+
+    public void Respirar()
+    {
+        Console.WriteLine("Respirando...");
+    }
+}
+
+// Gato *es un* Animal (Clase hija o Derivada)
+class Gato : Animal
+{
+    public void Maullar()
+    {
+        Console.WriteLine("¡Miau!");
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        Gato miGatito = new Gato();
+        
+        miGatito.Nombre = "Michi"; // Propiedad heredada de Animal
+        miGatito.Respirar(); // Método heredado de Animal
+        
+        miGatito.Maullar();  // Su propio método
+    }
+}`}
+        title="Herencia en Acción"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Polimorfismo (`virtual` y `override`)</h2>
+      <p>
+        Ocurre cuando heredaste de la clase base un método, pero te das cuenta que es deficiente, así que la hija decide sobrescribirlo (rediseñarlo por su cuenta), logrando tener "múltiples formas" de ejecución bajo el mismo nombre.
+      </p>
+      <CodeBlock lang="csharp"
+        code={`// Clase Base
+class Enemigo 
+{
+    // 'virtual' significa: "Las hijas pueden modificar este botón"
+    public virtual void Atacar() 
+    {
+        Console.WriteLine("El enemigo da un golpe simple: -10 HP");
+    }
+}
+
+class JefeFinal : Enemigo
+{
+    // 'override' significa: "Lo siento papá, yo lo haré a mi manera"
+    public override void Atacar()
+    {
+        Console.WriteLine("El JEFE LANZA FUEGO: -100 HP y quema todo");
+    }
+}`}
+        title="Polimorfismo (Sobrescritura)"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Interfaces (`I`)</h2>
+      <p>
+        Las Interfaces en C# son como contratos. Las llamas empezando con <code>I</code> obligan a una clase a decir: <em>"Yo prometo firmar el contrato e implementar estos métodos"</em>.
+        Es clave en arquitecturas de dependencias, y aunque no permite variables, dictará el comportamiento exacto que deba ser seguido.
+      </p>
+      <CodeBlock lang="csharp"
+        code={`// Es como un contrato que dice "quien use esto DEBE poder VOLAR"
+interface IVolador
+{
+    void Volar();
+}
+
+// Un avión implementa el contrato
+class Avion : IVolador
+{
+    public void Volar()
+    {
+        Console.WriteLine("Motores encendidos. Volando por el cielo.");
+    }
+}
+
+// Un pato también
+class Pato : IVolador
+{
+    public void Volar()
+    {
+        Console.WriteLine("El pato mueve las alas.");
+    }
+}`}
+        title="Sintaxis de Interfaces"
+      />
+    </section>
+
+    <section class="mb-10" style="background: rgba(155, 79, 150, 0.1); padding: 1.5rem; border-radius: 18px; border: 2px solid #9B4F96;">
+      <h2 style="color: #9B4F96;">¡Felicidades, has dominado los fundamentos de C#! 🎉</h2>
+      <p>
+        Desde escribir tu primer programa secuencial, evaluar lógicas con ciclos, agrupar datos, hasta aplicar buenas prácticas de ingeniería de software mediante Clases e Interfaces. 
+        Estás completamente capacitado para saltar a un Framework moderno (`ASP.NET Core`, `Unity`, `React con C# backend`) o afrontar nuestra sección del "Modo Desafío".
+      </p>
+    </section>
+
+    
+    
+    <div class="ejercicio">
+      <h3>👨‍💻 Ejercicio Práctico</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> Herencia Heroica
+      </div>
+      <p class="enunciado" set:html={'Crea una clase base <code>Personaje</code> con un método virtual <code>Atacar()</code>. Luego, crea una clase hija <code>Guerrero : Personaje</code> que le haga <code>override</code> al ataque para hacerlo más fuerte.'}></p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock lang="csharp" code={`class Personaje
+{
+    public virtual void Atacar()
+    {
+        Console.WriteLine("Daño básico de 10 puntos.");
+    }
+}
+
+class Guerrero : Personaje
+{
+    public override void Atacar()
+    {
+        Console.WriteLine("¡Golpe Aplastante! Daño de 50 puntos.");
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        Guerrero g = new Guerrero();
+        g.Atacar(); // Imprime el golpe del Guerrero
+    }
+}`} />
+      </details>
+    </div>
+
+    
+    <div class="ejercicio" style="background: #F4E8F4;">
+      <h3>👨‍💻 Ejercicio Práctico 2</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> El polimorfismo musical
+      </div>
+      <p class="enunciado" set:html={'Crea clase base `Instrumento` con método <code>virtual Tocar()</code>. Herédala en <code>Guitarra</code> y hazle un <code>override</code> diciendo "¡Riff de Rock!".'}></p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock lang="csharp" code={`class Instrumento 
+{
+    public virtual void Tocar() { Console.WriteLine("Suena algo"); } 
+}
+
+class Guitarra : Instrumento
+{
+    public override void Tocar() { Console.WriteLine("¡Riff de Rock!"); }
+}`} />
+      </details>
+    </div>
+
+    <div class="ejercicio" style="background: #F4E8F4;">
+      <h3>👨‍💻 Ejercicio Práctico 3</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> Contrato Volador
+      </div>
+      <p class="enunciado" set:html={'Desarrolla una interfaz <code>IVolador</code> con el método <code>Volar()</code>. Haz que una clase <code>Pato</code> implemente la interfaz.'}></p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock lang="csharp" code={`interface IVolador 
+{
+    void Volar();
+}
+
+class Pato : IVolador 
+{
+    public void Volar() {
+        Console.WriteLine("El pato vuela");
+    }
+}`} />
+      </details>
+    </div>
+
+    <div class="ejercicio" style="background: #F4E8F4;">
+      <h3>👨‍💻 Ejercicio Práctico 4</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> Herencia de Propiedades
+      </div>
+      <p class="enunciado" set:html={'Una clase <code>Vehiculo</code> con propiedad `Llantas`. La clase <code>Moto</code> hereda de ella. En Main crea tu moto y asígnale `m.Llantas = 2`.'}></p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock lang="csharp" code={`class Vehiculo
+{
+    public int Llantas { get; set; }
+}
+
+class Moto : Vehiculo { }
+
+// En Main
+Moto m = new Moto();
+m.Llantas = 2;`} />
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>Comprueba tus conocimientos sobre este tema realizando nuestro pequeño test.</p>
+      <CsharpQuizModal quizKey="poo-pilares" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/csharp/poo-basico/" class="prev">← POO Básico</a>
+      <a href="/ejercicios/" class="next" style="background: var(--warning); color: #1e1210;">Modo Desafío →</a>
+    </nav>
+  </article>
+</Layout>

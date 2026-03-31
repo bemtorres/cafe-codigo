@@ -1,0 +1,75 @@
+﻿---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import HtmlQuizModal from '../../../../components/HtmlQuizModal.astro';
+---
+
+<Layout title="Listas y Tablas en HTML: Datos y Puntos" description="Aprende a organizar información de forma estructurada con listas ordenadas y tablas profesionales." courseSlug="html">
+  <article class="content-section">
+    <h1>3. Listas y Tablas: Ordenando datos</h1>
+
+    <section class="mb-10">
+      <h2>Listas: El punto por punto</h2>
+      <p>
+        Para hacer menús de navegación, ítemes de compra o pasos de una receta, usamos listas.
+      </p>
+      <div class="card my-6 p-4" style="background: white; border: 3px solid #ff4d00; border-radius: 20px;">
+        <h3 style="color: #ff4d00;">📂 Tipos de Listas</h3>
+        <CodeBlock lang="html" code={`<!-- Lista Desordenada (puntos) -->
+<ul>
+  <li>Huevo</li>
+  <li>Harina</li>
+</ul>
+
+<!-- Lista Ordenada (números) -->
+<ol>
+  <li>Primer paso</li>
+  <li>Segundo paso</li>
+</ol>`}
+          title="html"
+        />
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2>Tablas: El Excel de la Web</h2>
+      <p>
+        Hoy en día las tablas no se usan para el diseño de la web (eso es para el CSS), sino solo para mostrar <strong>datos tabulares</strong> reales (precios, horarios, etc.).
+      </p>
+      <div class="card my-6 p-4" style="background: white; border: 3px solid #ff4d00; border-radius: 20px;">
+        <h3 style="color: #ff4d00;">🏗️ Estructura de Tabla</h3>
+        <CodeBlock lang="html" code={`<table border="1">
+  <thead>
+    <tr>
+      <th>Producto</th>
+      <th>Precio</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Café</td>
+      <td>2.50€</td>
+    </tr>
+  </tbody>
+</table>`}
+          title="html"
+        />
+        <ul class="list-disc pl-5 mt-4">
+          <li><strong>tr</strong>: Table Row (Fila).</li>
+          <li><strong>th</strong>: Table Header (Encabezado).</li>
+          <li><strong>td</strong>: Table Data (Celda normal).</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <HtmlQuizModal quizKey="listas-tablas" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/html/etiquetas-basicas/" class="prev">← Texto y Enlaces</a>
+      <a href="/course/html/formularios/" class="next">Formularios e Inputs →</a>
+    </nav>
+  </article>
+</Layout>

@@ -1,0 +1,162 @@
+﻿---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import CsharpQuizModal from '../../../../components/CsharpQuizModal.astro';
+---
+
+<Layout title="Operadores en C#" description="Operadores matemáticos, lógicos y relacionales" courseSlug="csharp">
+  <article class="content-section">
+    <h1>4. Operadores</h1>
+
+    <section class="mb-10">
+      <p>
+        Los operadores nos permiten transformar las variables, compararlas y hacer cálculos lógicos.
+        C# cuenta con operadores aritméticos, relacionales y lógicos.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Operadores Aritméticos</h2>
+      <p>Usados para calcular matemáticas simples.</p>
+      <ul class="mb-4">
+        <li><strong>+</strong> (Suma)</li>
+        <li><strong>-</strong> (Resta)</li>
+        <li><strong>*</strong> (Multiplicación)</li>
+        <li><strong>/</strong> (División entera o decimal dependiendo del tipo)</li>
+        <li><strong>%</strong> (Módulo: el resto de una división entera)</li>
+      </ul>
+      <CodeBlock lang="csharp"
+        code={`int a = 10;
+int b = 3;
+
+int suma = a + b; // 13
+int modulo = a % b; // 1 (porque 10 divido 3 es 9, y sobra 1)`}
+        title="Operadores matemáticos"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Atajos Aritméticos (Incremento)</h2>
+      <p>A menudo necesitarás sumarle 1 a una variable, o sumarle un valor a sí misma.</p>
+      <CodeBlock lang="csharp"
+        code={`int contador = 5;
+
+contador++; // Es igual a contador = contador + 1 (ahora vale 6)
+contador--; // Ahora vuelve a 5
+
+contador += 10; // Es igual a contador = contador + 10 (ahora vale 15)
+contador *= 2; // (Ahora vale 30)`}
+        title="Incrementos y Asignación"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Operadores Relacionales (Comparación)</h2>
+      <p>Devuelven un valor booleano (`true` o `false`):</p>
+      <ul class="mb-4">
+        <li><strong>==</strong> (Igualdad) <em>¡Nota que usamos doble igual, no confundir con `=` de asignación!</em></li>
+        <li><strong>!=</strong> (Diferente a)</li>
+        <li><strong>&lt; / &gt;</strong> (Menor que / Mayor que)</li>
+        <li><strong>&gt;= / &lt;=</strong> (Mayor o igual / Menor o igual)</li>
+      </ul>
+    </section>
+
+    <section class="mb-10">
+      <h2>Operadores Lógicos</h2>
+      <p>Se usan para evaluar múltiples condiciones a la vez.</p>
+      <ul class="mb-4">
+        <li><strong>&&</strong> (AND / Y): Verdadero solo si <strong>ambas</strong> condiciones son verdaderas.</li>
+        <li><strong>||</strong> (OR / O): Verdadero si <strong>al menos una</strong> condición es verdadera.</li>
+        <li><strong>!</strong> (NOT / NO): Invierte el valor (de true a false).</li>
+      </ul>
+      <CodeBlock lang="csharp"
+        code={`bool tieneEntrada = true;
+bool esMayorDeEdad = false;
+
+// && -> ¿Tiene entrada Y es mayor de edad?
+bool puedePasar = tieneEntrada && esMayorDeEdad; // false
+
+// || -> ¿Tiene entrada O es mayor de edad?
+bool excepcion = tieneEntrada || esMayorDeEdad; // true`}
+        title="Lógica Booleana"
+      />
+    </section>
+
+    
+    
+    <div class="ejercicio">
+      <h3>👨‍💻 Ejercicio Práctico</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> El número Misterioso
+      </div>
+      <p class="enunciado" set:html={'Crea una variable <code>int num = 15;</code>. Usa el operador módulo (<code>%</code>) para comprobar si es divisible entre 3, guardando el resultado en una variable <code>bool</code>.'}></p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock lang="csharp" code={`int num = 15;
+// El módulo devuelve el residuo. Si es 0, es divisible.
+bool esDivisiblePor3 = (num % 3 == 0);
+
+Console.WriteLine($"¿Es 15 divisible entre 3?: {esDivisiblePor3}");`} />
+      </details>
+    </div>
+
+    
+    <div class="ejercicio" style="background: #F4E8F4;">
+      <h3>👨‍💻 Ejercicio Práctico 2</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> Incrementos y Decrementos
+      </div>
+      <p class="enunciado" set:html={'Declara <code>int contador = 0;</code>. Auméntalo en 1 usando <code>++</code> y luego réstale 1 usando <code>--</code>. Imprímelo.'}></p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock lang="csharp" code={`int contador = 0;
+contador++; // ahora es 1
+contador--; // regresa a 0
+Console.WriteLine(contador);`} />
+      </details>
+    </div>
+
+    <div class="ejercicio" style="background: #F4E8F4;">
+      <h3>👨‍💻 Ejercicio Práctico 3</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> Lógica AND estricta
+      </div>
+      <p class="enunciado" set:html={'Crea <code>bool mayorDeEdad = true;</code> y <code>bool tieneEntrada = false;</code>. Usa <code>&&</code> para imprimir si puede entrar al concierto o no.'}></p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock lang="csharp" code={`bool mayorDeEdad = true;
+bool tieneEntrada = false;
+bool puedePasar = mayorDeEdad && tieneEntrada;
+Console.WriteLine(puedePasar); // Imprime False`} />
+      </details>
+    </div>
+
+    <div class="ejercicio" style="background: #F4E8F4;">
+      <h3>👨‍💻 Ejercicio Práctico 4</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> Multiplicando la Fortuna
+      </div>
+      <p class="enunciado" set:html={'Multiplica 200 por 8000 usando el operador <code>*</code> y muestra el resultado del tesoro obtenido.'}></p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock lang="csharp" code={`int tesoro = 200 * 8000;
+Console.WriteLine($"Conseguiste {tesoro} monedas.");`} />
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>Comprueba tus conocimientos sobre este tema realizando nuestro pequeño test.</p>
+      <CsharpQuizModal quizKey="operadores" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/csharp/io/" class="prev">← Entrada / Salida</a>
+      <a href="/course/csharp/condicionales/" class="next">Condicionales →</a>
+    </nav>
+  </article>
+</Layout>

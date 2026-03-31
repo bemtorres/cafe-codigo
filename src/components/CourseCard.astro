@@ -1,0 +1,69 @@
+---
+import type { Course } from '../data/courses';
+
+interface Props {
+  course: Course;
+  stripeIndex: number;
+}
+
+const { course, stripeIndex } = Astro.props;
+const bgClass = stripeIndex % 2 === 0 ? 'bg-tertiary' : 'bg-secondary';
+const mode = course.styleMode;
+const hasPremium = Boolean(mode);
+
+const badgeBase =
+  'absolute z-20 font-extrabold font-nunito shadow-[2px_2px_0px_var(--text-secondary)] border-[3px] border-border rounded-xl py-1 px-3';
+const badgePos = hasPremium ? 'top-3 right-3' : '-top-4 right-5';
+---
+
+<a
+  href={course.status === 'coming' ? '#' : `/${course.slug}/`}
+  class="block group outline-none"
+  data-coming={course.status === 'coming' ? 'true' : 'false'}
+  data-course-name={course.name}
+>
+  {
+    hasPremium ? (
+      <div
+        class:list={[
+          'course-premium-shell',
+          `course-premium-shell--${mode}`,
+          'rounded-3xl shadow-neo-lg transition-transform group-hover:-translate-y-1',
+        ]}
+      >
+        <div class:list={['course-premium-inner relative p-6', bgClass]}>
+          <div class="relative z-10">
+            {course.status === 'coming' && (
+              <div class:list={[badgeBase, badgePos, 'bg-border text-white']}>Próximamente</div>
+            )}
+            {course.requiresPassword && course.status !== 'coming' && (
+              <div class:list={[badgeBase, badgePos, 'bg-border text-white']}>🔒 Exclusivo</div>
+            )}
+            <h3 class="text-xl font-nunito font-extrabold text-textPrimary mb-2">{course.name}</h3>
+            <p class="text-[0.95rem] font-[650] text-textSecondary line-clamp-4 leading-relaxed m-0">
+              {course.description}
+            </p>
+          </div>
+        </div>
+      </div>
+    ) : (
+      <div
+        class:list={[
+          'relative border-[3px] border-border rounded-3xl p-6 shadow-neo-lg transition-transform group-hover:-translate-y-1',
+          bgClass,
+        ]}
+      >
+        {course.status === 'coming' && (
+          <div class:list={[badgeBase, badgePos, 'bg-border text-white']}>Próximamente</div>
+        )}
+        {course.requiresPassword && course.status !== 'coming' && (
+          <div class:list={[badgeBase, badgePos, 'bg-border text-white']}>🔒 Exclusivo</div>
+        )}
+        <h3 class="text-xl font-nunito font-extrabold text-textPrimary mb-2">{course.name}</h3>
+        <p class="text-[0.95rem] font-[650] text-textSecondary line-clamp-4 leading-relaxed m-0">
+          {course.description}
+        </p>
+      </div>
+    )
+  }
+</a>

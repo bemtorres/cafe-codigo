@@ -58,6 +58,7 @@ const langColors: Record<string, string> = {
   java: '#f59e0b', python: '#3572A5', javascript: '#F7DF1E',
   typescript: '#3178C6', html: '#E34F26', css: '#1572B6',
   bash: '#4EAA25', sql: '#2980b9', cmd: '#888888',
+  json: '#13aa52',
 };
 const badgeColor = langColors[finalLang.toLowerCase()] || '#1E1210';
 const langName = finalLang.toUpperCase();
@@ -75,6 +76,7 @@ const idePalettes: Record<string, any> = {
   csharp:     { bg: '#1e1e1e', txt: '#d4d4d4', kw: '#569cd6', str: '#d69d85', func: '#dcdcaa', type: '#4ec9b0', op: '#b4b4b4' },
   python:     { bg: '#282c34', txt: '#abb2bf', kw: '#c678dd', str: '#98c379', func: '#61afef', type: '#e5c07b', op: '#c678dd' },
   javascript: { bg: '#1e1e1e', txt: '#9cdcfe', kw: '#569cd6', str: '#ce9178', func: '#dcdcaa', type: '#4ec9b0', op: '#d4d4d4' },
+  json:       { bg: '#1e1e1e', txt: '#d4d4d4', kw: '#569cd6', str: '#ce9178', func: '#4ec9b0', type: '#569cd6', op: '#d4d4d4' },
   typescript: { bg: '#1e1e1e', txt: '#9cdcfe', kw: '#569cd6', str: '#ce9178', func: '#dcdcaa', type: '#4ec9b0', op: '#d4d4d4' },
   sql:        { bg: '#1e1e1e', txt: '#d4d4d4', kw: '#569cd6', str: '#ce9178', func: '#dcdcaa', type: '#4ec9b0', op: '#d4d4d4' },
   html:       { bg: '#1e1e1e', txt: '#d4d4d4', kw: '#569cd6', str: '#ce9178', func: '#dcdcaa', type: '#4ec9b0', op: '#d4d4d4' },
@@ -226,6 +228,16 @@ function highlightHtml(line: string): string {
   ]);
 }
 
+// ── JSON (documentos, BSON estilo MongoDB) ───────────────────────────────────
+function highlightJson(line: string): string {
+  return tokenize(line, [
+    { re: /"(?:[^"\\]|\\.)*"/, cls: 'hl-str' },
+    { re: /\b(true|false|null)\b/, cls: 'hl-kw' },
+    { re: /\b(ObjectId)\b(?=\s*\()/, cls: 'hl-func' },
+    { re: /\b\d+\.?\d*\b/, cls: 'hl-num' },
+  ]);
+}
+
 // ── CSS ───────────────────────────────────────────────────────────────────────
 function highlightCss(line: string): string {
   return tokenize(line, [
@@ -250,6 +262,7 @@ function highlightLine(line: string, lang: string): string {
     case 'sql':        return highlightSql(line);
     case 'javascript':
     case 'typescript': return highlightJs(line);
+    case 'json':       return highlightJson(line);
     case 'html':       return highlightHtml(line);
     case 'css':        return highlightCss(line);
     default:           return escape(line);

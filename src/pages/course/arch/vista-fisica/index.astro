@@ -1,0 +1,59 @@
+﻿---
+import Layout from '../../../../layouts/Layout.astro';
+import ArchQuizModal from '../../../../components/ArchQuizModal.astro';
+import vistaImg from '../../../../assets/images/modelo_4_1/6_vista_fisica.png';
+---
+
+<Layout title="Vista Física: Despliegue y Hardware" description="Mapea tu software en el hardware real: Servidores, Redes y Capas de Infraestructura." courseSlug="arch">
+  <article class="content-section">
+    <h1>6. Vista Física: El Mapa del Despliegue</h1>
+
+    <section class="mb-10">
+      <h2>Nodos y Servidores</h2>
+      <p>
+        También llamada <strong>Vista de Despliegue</strong>. Por fin salimos del mundo del software puro y vamos al centro de datos (on-premise) o a la nube (AWS/Azure).
+      </p>
+      <p>
+        <strong>¿Qué describe?:</strong> El mapeo del software sobre el hardware real (Nodos). Topología de red, protocolos de comunicación y servidores involucrados.
+      </p>
+    </section>
+
+    <div class="note-box" style="background: #F1F5F9; border-left: 5px solid #475569;">
+      <strong>UML Estrella:</strong> Diagramas de Despliegue (Deployment Diagrams).
+    </div>
+
+    <div class="flex justify-center my-6">
+      <img src={vistaImg.src} alt="Diagrama Vista Física" class="w-full max-w-2xl rounded-xl border-4 border-[#4A3B22] shadow-[6px_6px_0px_#4A3B22]" />
+    </div>
+
+    <section class="mb-10">
+      <h2>Interesados (Stakeholders)</h2>
+      <p>A esta vista le interesa a:</p>
+      <ul>
+        <li><strong>Ingenieros de Infraestructura (SysAdmins):</strong> Para dimensionar la red.</li>
+        <li><strong>DevOps:</strong> Para automatizar despliegues.</li>
+        <li><strong>Arquitectos de Sistemas:</strong> Para garantizar la continuidad del negocio.</li>
+      </ul>
+    </section>
+
+    <div class="ejercicio" style="background: #F8FAFC; border: 2px solid #E2E8F0;">
+      <h3>🤔 Reflexión de Arquitecto</h3>
+      <p class="enunciado">Si estoy decidiendo que mi base de datos estará en un servidor MySQL diferente al del servidor web, ¿qué vista estoy usando?</p>
+      
+      <details>
+        <summary>👁️ Ver respuesta</summary>
+        <p>En la <strong>Vista Física</strong>. El diseño de la infraestructura hardware de tu sistema es el centro aquí.</p>
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <ArchQuizModal quizKey="vista-fisica" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/arch/vista-proceso/" class="prev">← Vista Proceso</a>
+      <a href="/course/arch/conclusion/" class="next">Conclusión →</a>
+    </nav>
+  </article>
+</Layout>

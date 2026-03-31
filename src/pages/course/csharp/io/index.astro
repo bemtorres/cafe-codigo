@@ -1,0 +1,153 @@
+﻿---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import CsharpQuizModal from '../../../../components/CsharpQuizModal.astro';
+---
+
+<Layout title="Entrada y Salida en C#" description="Interactúa con el usuario capturando datos" courseSlug="csharp">
+  <article class="content-section">
+    <h1>3. Entrada y Salida (I/O)</h1>
+
+    <section class="mb-10">
+      <h2>Mostrar datos (Escribir)</h2>
+      <p>
+        Para imprimir mensajes en la pantalla (la consola), usamos la clase `Console`. C# nos da dos versiones principales para esto:
+      </p>
+      <ul class="mb-4">
+        <li><strong>Console.WriteLine("...");</strong> Imprime el mensaje y hace un salto de línea (enter) al final.</li>
+        <li><strong>Console.Write("...");</strong> Imprime el mensaje pero el cursor se queda en la misma línea. Útil cuando quieres que el usuario escriba su respuesta al lado del texto.</li>
+      </ul>
+    </section>
+
+    <section class="mb-10">
+      <h2>Formateo de Textos y Variables</h2>
+      <p>
+        En lugar de usar el símbolo `+` para unir (concatenar) texto y variables, C# tiene una funcionalidad elegante llamada **Interpolación de Cadenas**. Solo pon un signo de dólar `$` antes de las comillas e inserta las variables entre llaves `{}`.
+      </p>
+      <CodeBlock lang="csharp"
+        code={`string nombre = "Ana";
+int edad = 30;
+
+// Método antiguo (concatenación)
+Console.WriteLine("Hola, me llamo " + nombre + " y tengo " + edad + " años.");
+
+// Interpolación (¡Mejor forma!)
+Console.WriteLine($"Hola, me llamo {nombre} y tengo {edad} años.");`}
+        title="Interpolación de Strings"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Capturar datos (Leer)</h2>
+      <p>
+        Para que el usuario ingrese información, usamos <code>Console.ReadLine()</code>. 
+        <strong>Importante:</strong> Este método *siempre* devuelve un dato de tipo cadena (`string`).
+      </p>
+      <CodeBlock lang="csharp"
+        code={`Console.Write("Escribe tu nombre: ");
+string nombreUsuario = Console.ReadLine();
+
+Console.WriteLine($"¡Bienvenido, {nombreUsuario}!");`}
+        title="Console.ReadLine()"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Conversión de Tipos (Parseo)</h2>
+      <p>
+        Dado que `Console.ReadLine()` devuelve texto, si le pedimos al usuario su edad (un número), C# fallará si intentamos sumarle algo. Para eso debemos **Convertir / Parsear** el texto a un número usando `int.Parse()` o `Convert.ToInt32()`.
+      </p>
+      <CodeBlock lang="csharp"
+        code={`Console.Write("Ingresa tu edad: ");
+string inputEdad = Console.ReadLine();
+
+// Parsear el string a entero
+int edadEntera = int.Parse(inputEdad);
+int edadFutura = edadEntera + 10;
+
+Console.WriteLine($"En 10 años, tendrás {edadFutura} años.");`}
+        title="Parseo de Strings a Enteros"
+      />
+    </section>
+
+    
+    
+    <div class="ejercicio">
+      <h3>👨‍💻 Ejercicio Práctico</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> Calculadora Automática
+      </div>
+      <p class="enunciado" set:html={'Usa <code>Console.ReadLine()</code> para solicitar dos números al usuario (recuerda convertirlos con <code>int.Parse()</code>) e imprime la suma de ambos.'}></p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock lang="csharp" code={`Console.Write("Ingresa el primer número: ");
+int num1 = int.Parse(Console.ReadLine());
+
+Console.Write("Ingresa el segundo número: ");
+int num2 = int.Parse(Console.ReadLine());
+
+int suma = num1 + num2;
+Console.WriteLine($"La suma total es: {suma}");`} />
+      </details>
+    </div>
+
+    
+    <div class="ejercicio" style="background: #F4E8F4;">
+      <h3>👨‍💻 Ejercicio Práctico 2</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> Saludo Personalizado
+      </div>
+      <p class="enunciado" set:html={'Pide al usuario que ingrese su nombre, léelo con <code>Console.ReadLine()</code> y usa interpolación con el prefijo <code>$</code> para decirle "¡Bienvenido, [Nombre]!".'}></p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock lang="csharp" code={`Console.Write("¿Cuál es tu nombre?: ");
+string nombre = Console.ReadLine();
+Console.WriteLine($"¡Bienvenido, {nombre}!");`} />
+      </details>
+    </div>
+
+    <div class="ejercicio" style="background: #F4E8F4;">
+      <h3>👨‍💻 Ejercicio Práctico 3</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> Nacimiento estimado
+      </div>
+      <p class="enunciado" set:html={'Pregúntale al usuario su edad actual (número). Conviértela y réstala a 2026 para calcular su año de nacimiento e imprimirlo.'}></p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock lang="csharp" code={`Console.Write("Ingresa tu edad: ");
+int edad = int.Parse(Console.ReadLine());
+int anioNacimiento = 2026 - edad;
+Console.WriteLine($"Naciste aproximadamente en {anioNacimiento}");`} />
+      </details>
+    </div>
+
+    <div class="ejercicio" style="background: #F4E8F4;">
+      <h3>👨‍💻 Ejercicio Práctico 4</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> Números decimales en entrada
+      </div>
+      <p class="enunciado" set:html={'Solicita al usuario el precio de un producto. Usa <code>double.Parse()</code> para convertirlo y muéstralo con un mensaje.'}></p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock lang="csharp" code={`Console.Write("Introduce el precio: ");
+double precio = double.Parse(Console.ReadLine());
+Console.WriteLine($"El costo final es: $ {precio}");`} />
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>Comprueba tus conocimientos sobre este tema realizando nuestro pequeño test.</p>
+      <CsharpQuizModal quizKey="io" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/csharp/variables/" class="prev">← Variables</a>
+      <a href="/course/csharp/operadores/" class="next">Operadores →</a>
+    </nav>
+  </article>
+</Layout>

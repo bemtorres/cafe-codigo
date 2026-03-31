@@ -1,0 +1,63 @@
+﻿---
+import Layout from '../../../../layouts/Layout.astro';
+import UnityQuizModal from '../../../../components/UnityQuizModal.astro';
+---
+
+<Layout title="4. UI y Ciclo de Juego (El Prototipo Final)" description="Canvas de UI, cambio de escenas con SceneManager, compilación y entrega." courseSlug="unity-prototipado">
+  <article class="content-section">
+    <h1>4. UI y Ciclo de Juego (El Prototipo Final)</h1>
+
+    <section class="mb-10">
+      <h2>El Sistema de Interfaz de Usuario (UI) y el Canvas</h2>
+      <p>
+        Para cumplir con la Sprint Review y que tu cliente "juegue" al prototipo, necesitas al menos presionar botones de "Start" o ver tu puntuación en pantalla. 
+      </p>
+      <ul>
+        <li>🖼️ <strong>Canvas:</strong> El lienzo infinito y plano que flota frente a la cámara. OBLIGATORIAMENTE todos los botones, textos (TMP) e imágenes UI deben vivir como "hijos" de un Canvas. Si los sacas, desaparecen visualmente del layout de pantalla (HUD).</li>
+        <li>👇 <strong>EventSystem:</strong> Se crea automáticamente con un Canvas. Si lo borras accidentalmente por error, ¡Tus botones mágicamente dejarán de ser clickeables! Gestiona los toques táctiles y clics de mouse.</li>
+      </ul>
+    </section>
+
+    <section class="mb-10">
+      <h2>Gestión de Escenas y Cargar el Siguiente Nivel</h2>
+      <p>
+        El flujo básico de cualquier aplicación va del "Inicio de Sesión" al "Dashboard", o en juegos: "Menú Principal" -> "Nivel 1" -> "Pantalla de Fin".
+      </p>
+      <div class="note-box" style="background: #f0fdf4; border-left: 5px solid #22c55e;">
+        Para conectar este ciclo programáticamente, usamos el namespace <code>using UnityEngine.SceneManagement;</code> al tope de nuestros scripts de botones. Y llamamos a cargar niveles pasándole el nombre de la Escena (Ej: <code>SceneManager.LoadScene("Level1");</code>).
+      </div>
+      <p><em>Importante: En los "Build Settings" de Unity siempre debes añadir (añadir y listar con index numérico) todas las escenas que tu código vaya a cargar, sino fallará y cerrará el prototipo ejecutado.</em></p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Build & Run: Empaquetar el Entregable</h2>
+      <p>
+        Pasar un archivo <code>.zip</code> con código fuente sin compilar a tu cliente es un antipatrón catastrófico (¡Quizás ni siquiera tiene Unity instalado!). 
+      </p>
+      <p>
+        Para validar, siempre debes <strong>exportar a un "Prototipo Ejecutable"</strong> (Ej: Windows <code>.exe</code>, WebGL subido a un link web, o una <code>.apk</code> en Android). Haz clic en <code>File > Build Settings</code>, selecciona plataforma, y dale en "Build and Run".
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>💡 Conexión con el Proyecto Semestral</h2>
+      <p>Para aplicar estos módulos, todo Sprint final a entregar en Universidad/Semestre debería contemplar estas fases:</p>
+      <ol>
+        <li><strong>Documento de Mapeo:</strong> Traza. Una tabla cruzada (Matriz de Trazabilidad) donde dices explícitamente: "El RF01 (El jugador dispara bala láser) se cumplió mediante el C# Script <code>Shooter.cs</code> y el Prefab <code>LaserBlast</code> en la Escena 1".</li>
+        <li><strong>Sprint Log / Retrospectiva:</strong> Evidencia de tu adaptación. Mostrar capturas y actas que demuestren que en el <em>Sprint 1</em> solo existía el movimiento bloque, pero el Feedback obligó a poner obstáculos dinámicos para el <em>Sprint 2</em>.</li>
+        <li><strong>El Prototipo Jugable:</strong> La prueba contundente e indiscutible que se aloja en un repo Git (.gitignore para Build) con un Release empaquetado; O mejor aún, subido online directo a link de navegador web.</li>
+      </ol>
+      <p>Es así como validamos los requerimientos funcionales documentados del primer avance, ejecutando y no asumiendo.</p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <UnityQuizModal quizKey="ui-ciclo" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/unity-prototipado/fisica/" class="prev">← Física y Colisiones</a>
+      <a href="/course/unity-prototipado/" class="next">Índice del Curso →</a>
+    </nav>
+  </article>
+</Layout>

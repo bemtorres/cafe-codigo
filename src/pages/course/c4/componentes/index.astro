@@ -1,0 +1,45 @@
+﻿---
+import Layout from '../../../../layouts/Layout.astro';
+import C4QuizModal from '../../../../components/C4QuizModal.astro';
+---
+
+<Layout title="4. Nivel 3: Componentes" description="Diagramas de Componentes en el Modelo C4." courseSlug="c4">
+  <article class="content-section">
+    <h1>4. Nivel 3: Componentes</h1>
+
+    <section class="mb-10">
+      <h2>Dentro de un Contenedor</h2>
+      <p>
+        En el <strong>Nivel 3 (Componentes)</strong>, tomas un Contenedor individual (por ejemplo, el Backend hecho en Spring Boot) y lo abres para ver qué tiene adentro.
+      </p>
+      <p>
+        En lugar de ver clases (como en UML), ves <strong>Componentes</strong> funcionales. Los componentes suelen ser agrupar código por responsabilidades. Por ejemplo, en una arquitectura MVC o Hexagonal, podrías tener cajas como:
+      </p>
+      <ul>
+        <li><code>User Controller</code>: Maneja peticiones HTTP.</li>
+        <li><code>Auth Service</code>: Lógica de negocio para iniciar sesión.</li>
+        <li><code>User Repository</code>: El componente que hace las queries a la BD.</li>
+      </ul>
+    </section>
+
+    <section class="mb-10">
+      <h2>Limitaciones de este Nivel</h2>
+      <p>
+        Crear diagramas de Componentes a mano para sistemas muy grandes puede ser exhaustivo. Simon Brown (creador de C4) aconseja que este diagrama sólo te lo plantees si realmente aporta valor al equipo de desarrollo (por ejemplo, para explicar la estructura de un monolito gigante complejo).
+      </p>
+      <div class="note-box" style="background: #eef2ff; border-left: 5px solid #1a5ebd;">
+        <strong>Tip de Arquitecto:</strong> Este diagrama rara vez lo verán los PMs o clientes. Es información pura y dura para los programadores del equipo que necesitan entender cómo se estructura el código del contenedor.
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <C4QuizModal quizKey="componentes" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/c4/contenedores/" class="prev">← Nivel 2: Contenedores</a>
+      <a href="/course/c4/codigo/" class="next">Nivel 4: Código →</a>
+    </nav>
+  </article>
+</Layout>

@@ -1,0 +1,120 @@
+﻿---
+import Layout from '../../../../layouts/Layout.astro';
+import ExcelQuizModal from '../../../../components/ExcelQuizModal.astro';
+import CopyTableBtn from '../../../../components/CopyTableBtn.astro';
+import ExcelSheetTable from '../../../../components/ExcelSheetTable.astro';
+import ExcelPracticeBlock from '../../../../components/ExcelPracticeBlock.astro';
+
+const si = (n: number) => ({
+  html: `<code>=SI(B${n}&gt;=6;"Aprobado";"Reprobado")</code>`,
+});
+
+const filasCalificaciones: (string | { html: string })[][] = [
+  ['Martina López', '8.5', si(2)],
+  ['Benjamín Ríos', '4.0', si(3)],
+  ['Camila Duarte', '6.0', si(4)],
+  ['Diego Paredes', '7.2', si(5)],
+  ['Elena Vargas', '5.4', si(6)],
+  ['Felipe Castro', '9.1', si(7)],
+  ['Gabriela Mena', '6.8', si(8)],
+  ['Hugo Salinas', '3.5', si(9)],
+  ['Isabel Núñez', '10.0', si(10)],
+  ['Javier Ortega', '5.9', si(11)],
+];
+---
+
+<Layout title="5. Lógica y Condicionales" description="Aprende a usar la función SI y contar datos basados en criterios." courseSlug="excel">
+  <article class="content-section">
+    <h1>5. Lógica y Condicionales (SI, CONTAR.SI)</h1>
+
+    <p class="font-semibold text-gray-800 mb-2">En esta lección aprenderás a:</p>
+    <ul class="list-disc pl-6 text-gray-700 mb-8 space-y-1">
+      <li>Usar <code>SI</code> con prueba lógica y dos resultados (verdadero / falso).</li>
+      <li>Combinar <code>CONTAR.SI</code> y <code>SUMAR.SI</code> con criterios de texto o número.</li>
+      <li>Saber cuándo un <strong>SI anidado</strong> o <code>IFS</code> / <code>ELEGIR</code> conviene en Excel moderno.</li>
+    </ul>
+
+    <section class="mb-10">
+      <h2>Tabla 1 – Calificaciones y estado (SI)</h2>
+      <p>
+        Cada fila es un alumno. La columna C muestra la forma típica de <code>SI</code> copiada hacia abajo: la referencia a la nota (B) cambia de fila; la regla ≥ 6 es la misma.
+      </p>
+      <CopyTableBtn tableId="tabla-calificaciones" />
+      <ExcelSheetTable
+        tableId="tabla-calificaciones"
+        tableLabel="Libreta con fórmula de aprobado / reprobado"
+        tableDescription="Tabla de evaluación. Tras copiar en Excel, la columna C debe mostrar texto según la nota de la columna B."
+        variant="resultado"
+        columns={['A', 'B', 'C']}
+        headers={['Alumno', 'Nota final', 'Estado (fórmula)']}
+        rows={filasCalificaciones}
+        hint={'En Excel en español suele usarse punto y coma entre argumentos. Si tu Excel pide comas, usa comas como separadores en la función SI.'}
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>La función SI</h2>
+      <p>
+        <strong>Sintaxis:</strong>{' '}
+        <code>{'=SI(prueba_lógica; valor_si_verdadero; valor_si_falso)'}</code>
+      </p>
+      <p>
+        Si omites el tercer argumento y la prueba es falsa, Excel puede mostrar <code>FALSO</code>. Con muchas categorías (A, B, C…) los <strong>SI anidados</strong> se vuelven difíciles de leer; en Excel 365 suele preferirse <code>IFS</code> o, en algunos idiomas, <code>ELEGIR</code> con una tabla auxiliar.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Tabla 2 – Ventas por categoría (SUMAR.SI)</h2>
+      <p>
+        Segunda tabla, <strong>independiente</strong> de la de alumnos: aquí el objetivo es sumar importes solo cuando la categoría cumple un criterio. En la práctica usarías <code>SUMAR.SI</code> sobre el rango de categorías y el de montos.
+      </p>
+      <CopyTableBtn tableId="tabla-sumarsi" />
+      <ExcelSheetTable
+        tableId="tabla-sumarsi"
+        showCoordinateHelp={false}
+        tableLabel="Movimientos para practicar SUMAR.SI"
+        tableDescription={'Cada fila es una venta. Ejemplo de fórmula aparte: =SUMAR.SI(A2:A7;"Electrónica";C2:C7) suma solo las filas cuya categoría es Electrónica (ajusta el rango si copias más filas).'}
+        variant="maestro"
+        columns={['A', 'B', 'C']}
+        headers={['Categoría', 'Producto', 'Monto']}
+        rows={[
+          ['Electrónica', 'Mouse', '25'],
+          ['Hogar', 'Lámpara', '40'],
+          ['Electrónica', 'Teclado', '80'],
+          ['Ropa', 'Polo', '35'],
+          ['Electrónica', 'USB', '12'],
+          ['Hogar', 'Sartén', '28'],
+        ]}
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>CONTAR.SI</h2>
+      <p>
+        Cuenta cuántas celdas en un rango cumplen un criterio, por ejemplo{' '}
+        <code>{'=CONTAR.SI(D2:D500;"Aprobado")'}</code> si en D tienes el estado. El criterio entre comillas puede incluir{' '}
+        <code>&gt;6</code> para números.
+      </p>
+    </section>
+
+    <ExcelPracticeBlock
+      steps={[
+        'Copia la tabla de calificaciones y reemplaza la columna C por fórmulas SI reales.',
+        'Cuenta los aprobados con =CONTAR.SI(C2:C11;"Aprobado") (ajusta el rango si cambia).',
+        'Copia la tabla de ventas por categoría y en una celda aparte calcula la suma solo de Electrónica con SUMAR.SI.',
+        'Prueba CONTAR.SI sobre las notas con un criterio numérico tipo mayor o igual a 6 (en Excel español el criterio suele ir entre comillas).',
+        'Opcional: busca en tu Excel la función IFS y escribe una versión con tres tramos de nota (reprobado / regular / notable).',
+      ]}
+    />
+
+    <section class="mb-10">
+      <h2>Pon a prueba tus conocimientos</h2>
+      <ExcelQuizModal quizKey="funciones-condicionales" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/excel/referencias/" class="prev">← Referencias</a>
+      <a href="/course/excel/funciones-busqueda/" class="next">Funciones de Búsqueda →</a>
+    </nav>
+  </article>
+</Layout>

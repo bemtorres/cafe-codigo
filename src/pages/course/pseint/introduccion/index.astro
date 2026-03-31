@@ -1,0 +1,117 @@
+﻿---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import PseintQuizModal from '../../../../components/PseintQuizModal.astro';
+---
+
+<Layout title="Introducción" description="Introducción a PSeInt y configuración flexible" courseSlug="pseint">
+  <article class="content-section">
+    <h1>Introducción a PSeInt</h1>
+
+    <section class="mb-10">
+      <h2>¿Qué es PSeInt?</h2>
+      <p>
+        PSeInt es una herramienta educativa para aprender la lógica de programación mediante pseudocódigo en español. 
+        Permite escribir algoritmos de forma sencilla y ejecutarlos paso a paso para entender cómo funcionan.
+      </p>
+      <p>
+        Es ideal para principiantes porque usa palabras en español y una sintaxis clara, facilitando el aprendizaje 
+        antes de pasar a lenguajes de programación reales como Python, Java o JavaScript.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Configuración flexible</h2>
+      <p>
+        PSeInt ofrece <strong>configuración flexible</strong>, lo que significa que puedes ajustar la sintaxis 
+        según tus preferencias o las reglas de tu curso. En esta guía usaremos las siguientes reglas:
+      </p>
+      <ul class="mb-4">
+        <li><strong>Definir variables:</strong> Cada variable debe declararse con su tipo antes de usarse.</li>
+        <li><strong>Punto y coma:</strong> Todas las instrucciones terminan con <code>;</code></li>
+        <li><strong>Escribir:</strong> Se usa la coma <code>,</code> para concatenar texto y variables.</li>
+        <li><strong>Comentarios:</strong> Se usa <code>//</code> para escribir comentarios (el resto de la línea se ignora).</li>
+      </ul>
+    </section>
+
+    <section class="mb-10">
+      <h2>Reglas básicas de sintaxis</h2>
+      <table class="content-table">
+        <thead>
+          <tr>
+            <th>Regla</th>
+            <th>Descripción</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="mono">Definir variable;</td>
+            <td>Toda variable se declara con su tipo y termina en ;</td>
+          </tr>
+          <tr>
+            <td class="mono">Escribir "texto", variable;</td>
+            <td>Concatenación con coma entre texto y variables</td>
+          </tr>
+          <tr>
+            <td class="mono">Leer variable;</td>
+            <td>Lee un valor desde el teclado</td>
+          </tr>
+          <tr>
+            <td class="mono">FinAlgoritmo</td>
+            <td>Marca el final del algoritmo</td>
+          </tr>
+          <tr>
+            <td class="mono">// texto</td>
+            <td>Comentario: todo lo que sigue a <code>//</code> en la misma línea se ignora al ejecutar</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="mb-10">
+      <h2>Comentarios</h2>
+      <p>
+        Puedes añadir comentarios en el código para explicar qué hace cada parte. Todo lo que escribas después de <code>//</code> en una línea se considera comentario y el intérprete lo ignora. Puedes usar una línea entera para comentar o poner <code>//</code> al final de una instrucción.
+      </p>
+      <CodeBlock lang="pseint" code={`Algoritmo EjemploComentarios
+  // Este algoritmo muestra un saludo
+  Definir nombre Como Caracter;
+  Escribir "¿Tu nombre?";  // pedir al usuario
+  Leer nombre;
+  Escribir "Hola, ", nombre;
+FinAlgoritmo`}
+        title="Ejemplo con comentarios"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Estructura básica de un algoritmo</h2>
+      <CodeBlock lang="pseint" code={`Algoritmo MiPrimerAlgoritmo
+  Definir nombre Como Caracter;
+  Escribir "Hola, bienvenido a PSeInt";
+  Escribir "¿Cuál es tu nombre?";
+  Leer nombre;
+  Escribir "Mucho gusto, ", nombre;
+FinAlgoritmo`}
+        title="Ejemplo de estructura básica"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Preguntas de repaso</h2>
+      <ol class="ordered-list">
+        <li>¿Para qué sirve PSeInt?</li>
+        <li>¿Qué significa "configuración flexible" en PSeInt?</li>
+        <li>¿Con qué carácter se separan el texto y las variables en Escribir?</li>
+        <li>¿Cómo debe terminar cada instrucción en PSeInt?</li>
+      </ol>
+    </section>
+
+    <PseintQuizModal quizKey="introduccion" />
+
+    <nav class="nav-bottom">
+      <a href="/course/pseint/" class="prev">← Curso PSeInt</a>
+      <a href="/course/pseint/variables/" class="next">Variables →</a>
+    </nav>
+  </article>
+</Layout>

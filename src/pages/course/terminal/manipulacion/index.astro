@@ -1,0 +1,54 @@
+﻿---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import TerminalQuizModal from '../../../../components/TerminalQuizModal.astro';
+---
+
+<Layout title="Creación y Borrado de Archivos Unix" description="Aprende a crear, copiar, mover y borrar archivos y carpetas desde la terminal Linux." courseSlug="terminal">
+  <article class="content-section">
+    <h1>3. Manipulación: Escribiendo y Borrando</h1>
+
+    <section class="mb-10">
+      <h2>El poder de tocar y mover</h2>
+      <p>
+        Para crear y destruir en la terminal, no necesitas abrir un explorador de archivos. Estos comandos son tus herramientas:
+      </p>
+      <ul class="mb-4">
+        <li><strong><code>mkdir</code> (Make Directory):</strong> Crea una carpeta nueva.</li>
+        <li><strong><code>touch</code>:</strong> ¡Toca! Crea un archivo vacío (o actualiza su fecha) rápidamente.</li>
+        <li><strong><code>cp</code> (Copy):</strong> Copia archivos o carpetas (usa <code>-r</code> para carpetas enteras).</li>
+        <li><strong><code>mv</code> (Move):</strong> Mueve archivos de sitio o les cambia el nombre.</li>
+        <li><strong><code>rm</code> (Remove):</strong> ¡Peligro! Borra algo para siempre (no hay papelera).</li>
+      </ul>
+      <CodeBlock lang="bash" code={`mkdir proyectos
+touch index.html
+# Crea la carpeta proyectos e index.html dentro.
+
+cp index.html copia.html
+# Copia index en un nuevo archivo llamado copia.html.`}
+        title="bash"
+      />
+    </section>
+
+    <div class="ejercicio" style="background: #f1f1f1; border-left: 5px solid #1a1a1b; padding: 1rem; border-radius: 8px;">
+      <h3>💻 Misión: Organizador</h3>
+      <p class="enunciado">Si tienes un archivo <code>viejo.txt</code> y quieres que se llame <code>nuevo.txt</code>, ¿qué comando usarías?</p>
+      
+      <details>
+        <summary>👁️ Ver comando</summary>
+        <CodeBlock lang="bash" code={`mv viejo.txt nuevo.txt`} title="Terminal" />
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>Ten cuidado con <code>rm</code>, ¡no hay marcha atrás!</p>
+      <TerminalQuizModal quizKey="manipulacion" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/terminal/navegacion/" class="prev">← Navegación</a>
+      <a href="/course/terminal/permisos/" class="next">Permisos →</a>
+    </nav>
+  </article>
+</Layout>

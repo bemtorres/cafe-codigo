@@ -1,0 +1,67 @@
+﻿---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import JavaScriptQuizModal from '../../../../components/JavaScriptQuizModal.astro';
+---
+
+<Layout title="Condicionales (If / Else)" description="Toma caminos distintos en tu código JS." courseSlug="javascript">
+  <article class="content-section">
+    <h1>4. Condicionales: Tomando Decisiones 🚦</h1>
+
+    <section class="mb-10">
+      <h2>El flujo lógico (If / Else)</h2>
+      <p>Un condicional es como un semáforo. Solo avanzas si la luz es verde (o si la condición es <code>true</code>).</p>
+      <CodeBlock lang="javascript" code={`let edad = 18;
+
+if (edad >= 18) {
+  console.log("¡Eres mayor de edad! Bienvenido al club.");
+} else {
+  console.log("Lo siento, eres menor de edad.");
+}`}
+        title="seguridad.js"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Varias condiciones: Else If</h2>
+      <p>Cuando tienes más de dos opciones, puedes encadenar reglas.</p>
+      <CodeBlock lang="javascript" code={`let hora = 14;
+
+if (hora < 12) {
+  console.log("¡Buenos días!");
+} else if (hora < 20) {
+  console.log("¡Buenas tardes!");
+} else {
+  console.log("¡Buenas noches!");
+}`}
+        title="saludo.js"
+      />
+    </section>
+
+    <div class="ejercicio" style="background: #F8BBD0;">
+      <h3>💻 Misión: El portero de la disco</h3>
+      <p class="enunciado">Crea una variable "tengoEntrada" (true/false) y otra variable "edad". Escribe un if que diga "Pasa" solo si eres mayor de 18 y además tienes entrada (usa &&).</p>
+      
+      <details>
+        <summary>👁️ Ver solución sugerida</summary>
+        <CodeBlock lang="javascript" code={`let edad = 20;
+let tengoEntrada = true;
+
+if (edad >= 18 && tengoEntrada) {
+  console.log("Adelante, ¡pasa!");
+} else {
+  console.log("No puedes entrar.");
+}`} title="JS" />
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <JavaScriptQuizModal quizKey="condicionales" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/javascript/operadores/" class="prev">← Operadores</a>
+      <a href="/course/javascript/bucles/" class="next">Bucles →</a>
+    </nav>
+  </article>
+</Layout>

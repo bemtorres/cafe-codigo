@@ -1,0 +1,50 @@
+﻿---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import TerminalQuizModal from '../../../../components/TerminalQuizModal.astro';
+---
+
+<Layout title="Filtros y Búsqueda con Grep" description="Analiza texto como un profesional: grep, cat, head, tail y wc en la terminal Unix." courseSlug="terminal">
+  <article class="content-section">
+    <h1>5. Grep y Filtros: El ojo de lince</h1>
+
+    <section class="mb-10">
+      <h2>En busca de la palabra perdida</h2>
+      <p>
+        Cuando tienes archivos con miles de líneas, abrirlos y buscar a mano es imposible. Estos comandos te permiten leer y filtrar solo lo que importa:
+      </p>
+      <ul class="mb-4">
+        <li><strong><code>cat log.txt</code></strong>: Muestra todo el archivo (cuidado si es gigante).</li>
+        <li><strong><code>grep "error" log.txt</code></strong>: Busca y muestra solo las líneas que tengan la palabra "error".</li>
+        <li><strong><code>head -n 10</code></strong>: Muestra las primeras 10 líneas.</li>
+        <li><strong><code>tail -n 20</code></strong>: Muestra las últimas 20 (¡fabuloso para logs en tiempo real!).</li>
+        <li><strong><code>wc -l</code></strong>: Cuenta cuántas líneas tiene el archivo.</li>
+      </ul>
+      <CodeBlock lang="bash" code={`grep -i "ERROR" logs.txt # Busca sin importar mayúsculas
+tail -f access.log # Sigue el archivo en vivo (Ctrl+C para salir)`}
+        title="bash"
+      />
+    </section>
+
+    <div class="ejercicio" style="background: #f1f1f1; border-left: 5px solid #1a1a1b; padding: 1rem; border-radius: 8px;">
+      <h3>💻 Misión: Investigador</h3>
+      <p class="enunciado">Si quieres buscar tu nombre en el archivo <code>agenda.txt</code>, ¿qué comando usarías?</p>
+      
+      <details>
+        <summary>👁️ Ver comando</summary>
+        <CodeBlock lang="bash" code={`grep "TuNombre" agenda.txt`} title="Terminal" />
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>Afila tu vista con los filtros.</p>
+      <TerminalQuizModal quizKey="filtros-grep" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/terminal/permisos/" class="prev">← Permisos</a>
+      <a href="/course/terminal/redireccion/" class="next">Pipes y Redirección →</a>
+    </nav>
+  </article>
+</Layout>

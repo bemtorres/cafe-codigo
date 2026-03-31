@@ -1,0 +1,65 @@
+﻿---
+import Layout from '../../../../layouts/Layout.astro';
+import PlsqlQuizModal from '../../../../components/PlsqlQuizModal.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+---
+
+<Layout title="Bloques Anónimos en PL/SQL" description="Aprende cómo PL/SQL añade lógica de programación a las simples consultas SQL." courseSlug="programacion-db">
+  <article class="content-section">
+    <h1>1. Dándole Superpoderes al SQL 🦸‍♂️</h1>
+
+    <section class="mb-10">
+      <h2>¿Qué es la Programación en Base de Datos?</h2>
+      <p>
+        Hasta ahora, el SQL normal es declarativo: "Dame esto". Pero, ¿y si necesitas lógica de negocios real <em>dentro</em> de la base de datos? ¿Qué pasa si necesitas un <code>IF/ELSE</code>, o recorrer los resultados con un bucle <code>FOR</code>?
+      </p>
+      <p>
+        Ahí entran los lenguajes procedimentales de Base de Datos. Oracle usa <strong>PL/SQL</strong>, SQL Server usa <strong>T-SQL</strong>, y PostgreSQL usa <strong>PL/pgSQL</strong>. Todos añaden la lógica clásica (variables, flujos, errores) al SQL crudo.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Estructura de un Bloque (El Anónimo)</h2>
+      <p>
+        El código PL/SQL se ejecuta en "Bloques". Un Bloque Anónimo es un script rápido que compilas y corres de inmediato, sin guardarlo en la base de datos para el futuro.
+      </p>
+      
+      <p>Todo bloque tiene 3 secciones principales:</p>
+      <ul>
+        <li><code>DECLARE</code>: (Opcional) Dónde declaras tus variables.</li>
+        <li><code>BEGIN ... END</code>: (Obligatorio) Dónde va tu código (Ifs, Fors, Selects).</li>
+        <li><code>EXCEPTION</code>: (Opcional) Para capturar errores como <em>Try/Catch</em>.</li>
+      </ul>
+
+      <CodeBlock lang="sql" code={`DECLARE
+  v_saludo VARCHAR2(50); -- Creando una variable
+BEGIN
+  v_saludo := '¡Hola Mundo desde PL/SQL!';
+  DBMS_OUTPUT.PUT_LINE(v_saludo); -- Imprimir en consola
+EXCEPTION
+  WHEN OTHERS THEN
+    DBMS_OUTPUT.PUT_LINE('Hubo un error D:');
+END;`} />
+    </section>
+
+    <div class="ejercicio" style="background: #F4F6F6; border: 2px solid #BDC3C7;">
+      <h3>🎮 Sintaxis Ninja</h3>
+      <p class="enunciado">En lenguajes como Java o Javascript usamos <code>=</code> para asignar un valor a una variable. ¿Cuál es el operador de asignación en PL/SQL según el ejemplo de arriba?</p>
+      
+      <details>
+        <summary>👁️ Ver respuesta sugerida</summary>
+        <p>El operador en PL/SQL (y en Pascal, su padre espiritual) es <code>:=</code> (dos puntos y el igual).</p>
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <PlsqlQuizModal quizKey="intro-plsql" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/programacion-db/" class="prev">← Curso PL/SQL</a>
+      <a href="/course/programacion-db/procedimientos/" class="next">Procedimientos →</a>
+    </nav>
+  </article>
+</Layout>

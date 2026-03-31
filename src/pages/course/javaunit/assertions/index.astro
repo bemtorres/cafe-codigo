@@ -1,0 +1,74 @@
+﻿---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import JavaUnitQuizModal from '../../../../components/JavaUnitQuizModal.astro';
+---
+
+<Layout title="Assertions en JUnit 5" description="Aprende a usar assertEquals, assertTrue y otras aseveraciones para verificar tus tests." courseSlug="javaunit">
+  <article class="content-section">
+    <h1>3. Assertions: El Juez del Test</h1>
+
+    <section class="mb-10">
+      <h2>Tipos de Assertions</h2>
+      <p>
+        Las <strong>Assertions</strong> (aseveraciones) son métodos estáticos que nos permiten decidir si un test aprueba o falla. El más famoso es <code>assertEquals</code>, pero no es el único.
+      </p>
+      <ul class="mb-4">
+        <li><code>assertEquals(esperado, actual)</code>: Verifica que dos valores sean iguales.</li>
+        <li><code>assertTrue(condicion)</code>: Verifica que algo sea verdadero.</li>
+        <li><code>assertFalse(condicion)</code>: Verifica que algo sea falso.</li>
+        <li><code>assertNotNull(objeto)</code>: Verifica que el objeto se haya instanciado correctamente.</li>
+      </ul>
+      <CodeBlock lang="java" code={`@Test
+void testValores() {
+    boolean estaVivo = true;
+    String nombre = "Link";
+
+    assertTrue(estaViva);
+    assertEquals("Link", nombre);
+}`}
+        title="Uso de múltiples assertions"
+      />
+    </section>
+
+    <div class="ejercicio" style="background: #E0F2F1;">
+      <h3>👨‍💻 Ejercicio Práctico 1</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> El valor absoluto
+      </div>
+      <p class="enunciado">Usa <code>assertEquals</code> para verificar que <code>Math.abs(-5)</code> es igual a <code>5</code> en un test.</p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock lang="java" code={`assertEquals(5, Math.abs(-5));`} />
+      </details>
+    </div>
+
+    <div class="ejercicio" style="background: #E0F2F1;">
+      <h3>👨‍💻 Ejercicio Práctico 2</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> Testeando el vacío
+      </div>
+      <p class="enunciado">Crea un test llamado <code>testCadenaVacia</code> que verifique si <code>"".isEmpty()</code> devuelve verdadero usando <code>assertTrue</code>.</p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock lang="java" code={`@Test
+void testCadenaVacia() {
+    assertTrue("".isEmpty());
+}`} />
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>¿Qué assertion usarías tú? ¡Averígualo!</p>
+      <JavaUnitQuizModal quizKey="assertions" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/javaunit/patron-aaa/" class="prev">← Patrón AAA</a>
+      <a href="/course/javaunit/encapsulamiento-test/" class="next">Encapsulamiento →</a>
+    </nav>
+  </article>
+</Layout>

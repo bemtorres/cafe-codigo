@@ -1,0 +1,50 @@
+﻿---
+import Layout from '../../../../layouts/Layout.astro';
+import C4QuizModal from '../../../../components/C4QuizModal.astro';
+---
+
+<Layout title="5. Nivel 4: Código" description="El nivel más bajo del Modelo C4 (Código)." courseSlug="c4">
+  <article class="content-section">
+    <h1>5. Nivel 4: Código</h1>
+
+    <section class="mb-10">
+      <h2>El Zoom Máximo: Las Líneas de Código</h2>
+      <p>
+        Si abres un componente de Nivel 3 (ej. <code>User Repository</code>), ¿qué verás? Verás las clases (Interfaces, abstract classes, entities, etc) reales que componen el código de ese módulo. Este es el <strong>Nivel 4 (Código)</strong>.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>¿Dibujar Nivel 4 o no?</h2>
+      <p>
+        <strong>Simon Brown tiene una regla clara para este nivel: ¡Normalmente no deberías hacerlo!</strong>
+      </p>
+      <p>
+        Los diagramas a nivel de código se vuelven obsoletos muy rápido. Si dibujas un diagrama de clases UML a mano, a los dos días el equipo habrá modificado clases, añadido interfaces y cambiado dependencias, volviendo el diagrama inútil.
+      </p>
+      <ul>
+        <li>El código mismo es la verdad absoluta. Lee el código.</li>
+        <li>Si logras automatizar la generación de estos diagramas desde IDEs (ej: IntelliJ IDEA, Sonargraph, Structurizr), entonces sí pueden ser útiles.</li>
+        <li>Hacer diagramas a mano (UML Clase/Relación) a nivel de sistema entero en C4 es un "anti-patrón".</li>
+      </ul>
+    </section>
+
+    <div class="note-box" style="background: #f8fafc; border: 2px solid #e2e8f0; margin-bottom:2rem;">
+      <h3>🎯 Resumen: Niveles C4</h3>
+      <p><strong>Nivel 1 (Contexto):</strong> El bosque. ¿A quién conectamos?</p>
+      <p><strong>Nivel 2 (Contenedores):</strong> Los árboles. ¿Cuántas apps y BDs lo forman?</p>
+      <p><strong>Nivel 3 (Componentes):</strong> Las ramas. ¿Cómo se estructura internamente nuestra app?</p>
+      <p><strong>Nivel 4 (Código):</strong> Las hojas. ¿Cuáles son las clases y funciones? (Evita dibujarlas).</p>
+    </div>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <C4QuizModal quizKey="codigo" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/c4/componentes/" class="prev">← Nivel 3: Componentes</a>
+      <a href="/course/c4/" class="next">Índice del Curso C4 →</a>
+    </nav>
+  </article>
+</Layout>

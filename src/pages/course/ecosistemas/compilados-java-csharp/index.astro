@@ -1,0 +1,62 @@
+﻿---
+import Layout from '../../../../layouts/Layout.astro';
+import EcosystemsQuizModal from '../../../../components/EcosystemsQuizModal.astro';
+---
+
+<Layout title="Ecosistemas de Java y C#" description="Descubre para qué se usan estos lenguajes en la vida real: banca, medicina y videojuegos." courseSlug="ecosistemas">
+  <article class="content-section">
+    <h1>2. Java y C#: Los Pilares Robustos</h1>
+
+    <section class="mb-10">
+      <h2>Software que no debe fallar</h2>
+      <p>
+        Si un banco, un hospital o una gran empresa necesita software, suelen elegir lenguajes <strong>estáticamente tipados</strong> como Java o C#. Tienen una característica común: son muy estrictos.
+      </p>
+      <p>
+        <strong>¿Por qué?:</strong> Si cometes un error escribiendo el código, el sistema no te deja ni siquiera arrancarlo. Esto evita el 90% de los errores antes de que el usuario vea la app.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Los grandes Frameworks</h2>
+      <div class="space-y-6">
+        <div style="background: #E76F00; color: white; border-radius: 12px; padding: 1.5rem;">
+          <h3 class="font-black text-white">Ecosistema Java ☕</h3>
+          <p>Usado por el 90% de las empresas de Fortune 500.</p>
+          <ul class="list-disc pl-5">
+            <li><strong>Spring Boot:</strong> El estándar para crear "Backends" (servidores) que aguantan millones de transacciones.</li>
+            <li><strong>Kotlin:</strong> El hermano moderno de Java que domina Google Android nativo.</li>
+          </ul>
+        </div>
+        <div style="background: #6d28d9; color: white; border-radius: 12px; padding: 1.5rem;">
+          <h3 class="font-black text-white">Ecosistema C# 🟣</h3>
+          <p>La joya de Microsoft para todo tipo de plataformas.</p>
+          <ul class="list-disc pl-5">
+            <li><strong>ASP.NET Core:</strong> Framework increíblemente rápido para servidores web.</li>
+            <li><strong>Unity:</strong> Si has jugado un videojuego en tu celular, lo más probable es que se hiciera con Unity usando C#.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <div class="ejercicio" style="background: #fff5f7; border-left: 5px solid #ef476f; padding: 1rem; border-radius: 12px; margin: 2rem 0;">
+      <h3>🎮 Misión Hacker</h3>
+      <p class="enunciado">¿Qué lenguaje deberías aprender si tu sueño es trabajar creando el próximo gran juego indie en 3D?</p>
+      
+      <details>
+        <summary>👁️ Ver respuesta</summary>
+        <p><strong>C#</strong>, ya que es el lenguaje principal que usa el motor <strong>Unity</strong>.</p>
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <EcosystemsQuizModal quizKey="compilados-java-csharp" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/ecosistemas/que-es-lenguaje/" class="prev">← ¿Qué es un Lenguaje?</a>
+      <a href="/course/ecosistemas/web-javascript/" class="next">JavaScript y la Web →</a>
+    </nav>
+  </article>
+</Layout>

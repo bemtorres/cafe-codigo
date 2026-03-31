@@ -1,0 +1,113 @@
+﻿---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import JavaQuizModal from '../../../../components/JavaQuizModal.astro';
+---
+
+<Layout title="Operadores en Java" description="Aritméticos, Relacionales y Lógicos" courseSlug="java">
+  <article class="content-section">
+    <h1>4. Operadores Matemáticos y Lógicos</h1>
+
+    <section class="mb-10">
+      <h2>Aritmética Básica y el Módulo</h2>
+      <p>
+        Java soporta los operadores tradicionales de casi cualquier lenguaje: suma (<code>+</code>), resta (<code>-</code>), multiplicación (<code>*</code>) y división (<code>/</code>). Adicionalmente, cuenta con el operador <strong>módulo</strong> (<code>%</code>), que es extremadamente útil porque devuelve el <em>residuo</em> de una división exacta.
+      </p>
+      <CodeBlock lang="java" code={`int resultado = 10 % 3; 
+// 10 dividido entre 3 es 9. Sobra 1.
+// Por lo tanto, el resultado es 1.
+
+// Saber si un número es par es tan fácil como:
+boolean esPar = (8 % 2 == 0); // true`}
+        title="Uso del Módulo"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Operadores Relacionales y Lógicos</h2>
+      <p>
+        Al tomar una decisión, a menudo combinamos preguntas usando Lógica Booleana.
+      </p>
+      <ul class="mb-4">
+        <li><strong><code>==</code></strong> (Doble igual): Compara si dos primitivos valen lo mismo.</li>
+        <li><strong><code>!=</code></strong> (Exclamación igual): Compara si dos datos son DIFERENTES.</li>
+        <li><strong><code>&&</code></strong> (AND lógico): Verdadero SÓLO SI ambas partes son verdaderas.</li>
+        <li><strong><code>||</code></strong> (OR lógico): Verdadero con que al menos UNA parte sea verdadera.</li>
+      </ul>
+    </section>
+
+    <div class="ejercicio">
+      <h3>👨‍💻 Ejercicio Práctico 1</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> El número Misterioso
+      </div>
+      <p class="enunciado">Crea una variable <code>int num = 15;</code>. Usa el operador módulo (<code>%</code>) para comprobar si es divisible de forma exacta entre 3, guardando el resultado en un <code>boolean</code>.</p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock lang="java" code={`int num = 15;
+boolean esDivisiblePor3 = (num % 3 == 0);
+System.out.println("¿Es 15 divisible entre 3?: " + esDivisiblePor3);`} />
+      </details>
+    </div>
+
+    <div class="ejercicio" style="background: #FFF3E0;">
+      <h3>👨‍💻 Ejercicio Práctico 2</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> Incrementos y Decrementos
+      </div>
+      <p class="enunciado">Declara <code>int contador = 0;</code>. Auméntalo en 1 usando su sintaxis corta <code>++</code> y luego réstale 1 usando <code>--</code>. Imprímelo finalmente.</p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock lang="java" code={`int contador = 0;
+contador++; // ahora es 1
+contador--; // regresa a 0
+System.out.println("Contador final: " + contador);`} />
+      </details>
+    </div>
+
+    <div class="ejercicio" style="background: #FFF3E0;">
+      <h3>👨‍💻 Ejercicio Práctico 3</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> Lógica AND estricta
+      </div>
+      <p class="enunciado">Crea <code>boolean mayorDeEdad = true;</code> y <code>boolean tieneEntrada = false;</code>. Usa <code>&&</code> para comprobar si puede entrar e imprímelo.</p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock lang="java" code={`boolean mayorDeEdad = true;
+boolean tieneEntrada = false;
+boolean puedePasar = mayorDeEdad && tieneEntrada;
+System.out.println("¿Permitir acceso al concierto?: " + puedePasar);`} />
+      </details>
+    </div>
+
+    <div class="ejercicio" style="background: #FFF3E0;">
+      <h3>👨‍💻 Ejercicio Práctico 4</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> Multiplicando la Fortuna
+      </div>
+      <p class="enunciado">Eres un pirata que encontró 200 cofres que adentro tienen 8000 monedas cada uno. Multiplícalos e imprime el gran acumulado.</p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock lang="java" code={`int cofres = 200;
+int valorCofre = 8000;
+int tesoro = cofres * valorCofre;
+System.out.println("¡Conseguiste " + tesoro + " monedas de oro!");`} />
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>Demuestra si comprendes cómo funcionan las compuertas lógicas dentro del Motor de Java.</p>
+      <JavaQuizModal quizKey="operadores" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/java/io/" class="prev">← Entrada / Salida</a>
+      <a href="/course/java/condicionales/" class="next">Condicionales →</a>
+    </nav>
+  </article>
+</Layout>

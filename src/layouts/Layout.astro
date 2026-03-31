@@ -5,11 +5,17 @@ import CodeThemeSelector from '../components/CodeThemeSelector.astro';
 import WelcomeModal from '../components/WelcomeModal.astro';
 import PasswordProtect from '../components/PasswordProtect.astro';
 import { courses } from '../data/courses';
+import { COURSE_PATH_PREFIX } from '../lib/coursePaths';
 import logoCafeycodigo from '../assets/images/cafeycodigo.png';
 import logoPseint from '../assets/images/pseint.png';
 import ogLogo from '../assets/images/logo-cafecodigo.png';
 import arkBg from '../assets/images/modelo_4_1/1_modelo.png';
 import kofiLogo from '../assets/images/kofi.png';
+import HeaderAuth from '../components/auth/HeaderAuth';
+import MobileNavProfile from '../components/auth/MobileNavProfile';
+import LessonBookmarkToggle from '../components/auth/LessonBookmarkToggle';
+import CourseFavoriteButton from '../components/auth/CourseFavoriteButton';
+import CourseLoginUnlock from '../components/auth/CourseLoginUnlock';
 
 const KO_FI_URL = 'https://ko-fi.com/cafeycodigo';
 
@@ -27,12 +33,18 @@ const currentPath = Astro.url.pathname;
 const lessons = currentCourse?.lessons ?? [];
 const normalizedPath = currentPath.replace(/\/$/, '');
 const currentLessonIdx = lessons.findIndex(l => {
-  const lessonPath = `/${currentCourse?.slug}/${l.slug}`.replace(/\/$/, '');
+  const lessonPath = `${COURSE_PATH_PREFIX}/${currentCourse?.slug}/${l.slug}`.replace(/\/$/, '');
   return normalizedPath === lessonPath || normalizedPath.startsWith(lessonPath);
 });
 const prevLesson = currentLessonIdx > 0 ? lessons[currentLessonIdx - 1] : null;
 const nextLesson = currentLessonIdx >= 0 && currentLessonIdx < lessons.length - 1 ? lessons[currentLessonIdx + 1] : null;
 const isInsideLesson = lessons.length > 0 && currentLessonIdx >= 0;
+const currentLesson = currentLessonIdx >= 0 ? lessons[currentLessonIdx] : null;
+/** Portada del curso: /course/slug/ — no es una lección concreta */
+const isCourseHome =
+  !!currentCourse &&
+  (normalizedPath === `${COURSE_PATH_PREFIX}/${currentCourse.slug}` ||
+    normalizedPath === `${COURSE_PATH_PREFIX}/${currentCourse.slug}/`);
 ---
 
 <!DOCTYPE html>
@@ -74,7 +86,12 @@ const isInsideLesson = lessons.length > 0 && currentLessonIdx >= 0;
     
     <!-- Modal de bienvenida (nombre de usuario) -->
     <WelcomeModal />
-    {currentCourse?.requiresPassword && <PasswordProtect courseSlug={currentCourse.slug} />}
+    {currentCourse?.requiresPassword && (
+      <>
+        <PasswordProtect courseSlug={currentCourse.slug} />
+        <CourseLoginUnlock client:load courseSlug={currentCourse.slug} />
+      </>
+    )}
     
     <!-- Mini header solo mobile -->
     <header class="sm:hidden sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b-2 border-[#1E1210]/10 px-4 py-3 flex items-center justify-between gap-3">
@@ -167,6 +184,8 @@ const isInsideLesson = lessons.length > 0 && currentLessonIdx >= 0;
                 Aprende
               </button>
               <a href="/ejercicios/" class="bg-white/70 border border-black/10 rounded-full px-4 py-2 font-nunito font-extrabold text-textPrimary shadow-[0_14px_34px_rgba(30,18,16,0.08)] hover:-translate-y-0.5 hover:bg-white/95 transition-all no-underline">Ejercicios</a>
+              <a href="/academia/" class="bg-white/70 border border-black/10 rounded-full px-4 py-2 font-nunito font-extrabold text-textPrimary shadow-[0_14px_34px_rgba(30,18,16,0.08)] hover:-translate-y-0.5 hover:bg-white/95 transition-all no-underline">Academia</a>
+              <a href="/colaboradores/" class="bg-white/70 border border-black/10 rounded-full px-4 py-2 font-nunito font-extrabold text-textPrimary shadow-[0_14px_34px_rgba(30,18,16,0.08)] hover:-translate-y-0.5 hover:bg-white/95 transition-all no-underline">Colaboradores</a>
             </div>
           ) : currentCourse?.slug === 'pseint' ? (
             <span class="inline-flex items-center gap-1.5 bg-tertiary text-info border-2 border-info px-3 py-1 rounded-full text-sm font-extrabold font-nunito">
@@ -177,16 +196,17 @@ const isInsideLesson = lessons.length > 0 && currentLessonIdx >= 0;
         </div>
 
         <div class="flex items-center justify-end gap-4 row-start-1 sm:row-auto col-start-2 sm:col-auto">
-          <button class="w-10 h-10 rounded-full border border-black/15 bg-white/90 shadow-[0_10px_24px_rgba(30,18,16,0.1)] font-black font-nunito leading-none hover:-translate-y-0.5 transition-transform" type="button" aria-label="Cambiar tema">
+          <!-- <button class="w-10 h-10 rounded-full border border-black/15 bg-white/90 shadow-[0_10px_24px_rgba(30,18,16,0.1)] font-black font-nunito leading-none hover:-translate-y-0.5 transition-transform" type="button" aria-label="Cambiar tema">
             ☾
-          </button>
+          </button> -->
 
           <div class="flex items-center gap-4">
             <CodeThemeSelector />
+            <HeaderAuth client:load />
             {currentCourse && (
               <div class="flex items-center">
                 {currentCourse.slug === 'pseint' && (
-                  <a href="/pseint/simulador/" class="bg-warning text-textPrimary px-3 py-1.5 rounded-full font-extrabold text-sm font-nunito border-2 border-border shadow-[2px_2px_0px_#1E1210] hover:-translate-y-0.5 hover:bg-[#ffdb4d] active:translate-y-0.5 active:translate-x-0.5 active:shadow-[0px_0px_0px_#1E1210] transition-all no-underline">▶ Simulador</a>
+                  <a href="/course/pseint/simulador/" class="bg-warning text-textPrimary px-3 py-1.5 rounded-full font-extrabold text-sm font-nunito border-2 border-border shadow-[2px_2px_0px_#1E1210] hover:-translate-y-0.5 hover:bg-[#ffdb4d] active:translate-y-0.5 active:translate-x-0.5 active:shadow-[0px_0px_0px_#1E1210] transition-all no-underline">▶ Simulador</a>
                 )}
                 {currentCourse.slug !== 'pseint' && (
                   <span class="inline-flex items-center gap-1.5 bg-tertiary text-info border-2 border-info px-3 py-1 rounded-full text-sm font-extrabold font-nunito hidden md:inline-flex">
@@ -195,11 +215,11 @@ const isInsideLesson = lessons.length > 0 && currentLessonIdx >= 0;
                 )}
               </div>
             )}
-            {!currentCourse && (
+            <!-- {!currentCourse && (
               <a class="inline-flex items-center gap-2 bg-white/90 border border-black/15 rounded-full px-3 py-1.5 font-nunito font-extrabold text-textPrimary shadow-[0_10px_24px_rgba(30,18,16,0.1)] hover:bg-white hover:-translate-y-0.5 active:translate-y-0 transition-all outline-none" href="https://github.com/bemtorres/cafe-codigo" target="_blank" rel="noreferrer">
                 GitHub
               </a>
-            )}
+            )} -->
           </div>
         </div>
       </nav>
@@ -230,65 +250,72 @@ const isInsideLesson = lessons.length > 0 && currentLessonIdx >= 0;
           <div>
             <h4 class="text-xs font-extrabold uppercase tracking-widest text-textSecondary mb-3 font-nunito ml-1">Nivel 0: Conceptos</h4>
             <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#ef476f] shadow-neo hover:-translate-y-0.5 transition-transform" href="/ecosistemas/">Ecosistemas Pro</a>
+              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#ef476f] shadow-neo hover:-translate-y-0.5 transition-transform" href="/course/ecosistemas/">Ecosistemas Pro</a>
             </div>
           </div>
 
           <div>
             <h4 class="text-xs font-extrabold uppercase tracking-widest text-textSecondary mb-3 font-nunito ml-1">Lenguajes</h4>
             <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-textPrimary shadow-neo hover:-translate-y-0.5 transition-transform" href="/pseint/">
+              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-textPrimary shadow-neo hover:-translate-y-0.5 transition-transform" href="/course/pseint/">
                 <img class="w-5 h-5 rounded" src={logoPseint.src} alt="" />PSeInt
               </a>
-              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-textPrimary shadow-neo hover:-translate-y-0.5 transition-transform" href="/csharp/">C#</a>
-              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-textPrimary shadow-neo hover:-translate-y-0.5 transition-transform" href="/java/">Java</a>
-              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-textPrimary shadow-neo hover:-translate-y-0.5 transition-transform" href="/python/">Python</a>
+              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-textPrimary shadow-neo hover:-translate-y-0.5 transition-transform" href="/course/csharp/">C#</a>
+              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-textPrimary shadow-neo hover:-translate-y-0.5 transition-transform" href="/course/java/">Java</a>
+              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-textPrimary shadow-neo hover:-translate-y-0.5 transition-transform" href="/course/python/">Python</a>
+            </div>
+          </div>
+
+          <div>
+            <h4 class="text-xs font-extrabold uppercase tracking-widest text-textSecondary mb-3 font-nunito ml-1">Test</h4>
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#0891b2] shadow-neo hover:-translate-y-0.5 transition-transform" href="/course/javaunit/">JUnit</a>
             </div>
           </div>
 
           <div>
             <h4 class="text-xs font-extrabold uppercase tracking-widest text-textSecondary mb-3 font-nunito ml-1">Frontend</h4>
             <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#ff4d00] shadow-neo hover:-translate-y-0.5 transition-transform" href="/html/">HTML5</a>
-              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#264de4] shadow-neo hover:-translate-y-0.5 transition-transform" href="/css/">CSS3</a>
-              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#F7DF1E] shadow-neo hover:-translate-y-0.5 transition-transform" href="/javascript/">JavaScript</a>
+              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#ff4d00] shadow-neo hover:-translate-y-0.5 transition-transform" href="/course/html/">HTML5</a>
+              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#264de4] shadow-neo hover:-translate-y-0.5 transition-transform" href="/course/css/">CSS3</a>
+              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#F7DF1E] shadow-neo hover:-translate-y-0.5 transition-transform" href="/course/javascript/">JavaScript</a>
             </div>
           </div>
 
           <div>
             <h4 class="text-xs font-extrabold uppercase tracking-widest text-textSecondary mb-3 font-nunito ml-1">Ingeniería y Calidad</h4>
             <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#0891b2] shadow-neo hover:-translate-y-0.5 transition-transform" href="/javaunit/">JUnit</a>
-              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#475569] shadow-neo hover:-translate-y-0.5 transition-transform" href="/arch/">Ark (4+1)</a>
-              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#1a5ebd] shadow-neo hover:-translate-y-0.5 transition-transform" href="/c4/">🔒 Modelo C4</a>
-              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#8b5cf6] shadow-neo hover:-translate-y-0.5 transition-transform" href="/vision-producto/">Visión Producto</a>
-              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#3b82f6] shadow-neo hover:-translate-y-0.5 transition-transform" href="/analisis-backlog/">Análisis Backlog</a>
-              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#10b981] shadow-neo hover:-translate-y-0.5 transition-transform" href="/scrum-prototipado/">Scrum</a>
+              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#475569] shadow-neo hover:-translate-y-0.5 transition-transform" href="/course/arch/">Ark (4+1)</a>
+              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#1a5ebd] shadow-neo hover:-translate-y-0.5 transition-transform" href="/course/c4/">🔒 Modelo C4</a>
+              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#8b5cf6] shadow-neo hover:-translate-y-0.5 transition-transform" href="/course/vision-producto/">Visión Producto</a>
+              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#3b82f6] shadow-neo hover:-translate-y-0.5 transition-transform" href="/course/analisis-backlog/">Análisis Backlog</a>
+              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#10b981] shadow-neo hover:-translate-y-0.5 transition-transform" href="/course/scrum-prototipado/">Scrum</a>
             </div>
           </div>
 
           <div>
             <h4 class="text-xs font-extrabold uppercase tracking-widest text-textSecondary mb-3 font-nunito ml-1">Base de Datos</h4>
             <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#16a085] shadow-neo hover:-translate-y-0.5 transition-transform" href="/modelamiento-db/">Modelamiento</a>
-              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#2980b9] shadow-neo hover:-translate-y-0.5 transition-transform" href="/consultas-sql/">Consultas SQL</a>
-              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#e67e22] shadow-neo hover:-translate-y-0.5 transition-transform" href="/programacion-db/">🔒 PL/SQL</a>
+              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#16a085] shadow-neo hover:-translate-y-0.5 transition-transform" href="/course/modelamiento-db/">Modelamiento</a>
+              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#2980b9] shadow-neo hover:-translate-y-0.5 transition-transform" href="/course/consultas-sql/">Consultas SQL</a>
+              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#13aa52] shadow-neo hover:-translate-y-0.5 transition-transform" href="/course/nosql/">NoSQL</a>
+              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#e67e22] shadow-neo hover:-translate-y-0.5 transition-transform" href="/course/programacion-db/">🔒 PL/SQL</a>
             </div>
           </div>
 
           <div class="pb-24 sm:pb-2">
             <h4 class="text-xs font-extrabold uppercase tracking-widest text-textSecondary mb-3 font-nunito ml-1">Herramientas</h4>
             <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-textPrimary shadow-neo hover:-translate-y-0.5 transition-transform" href="/terminal/">Terminal</a>
-              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#f59e0b] shadow-neo hover:-translate-y-0.5 transition-transform" href="/linux-distros/">Linux</a>
-              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#f05032] shadow-neo hover:-translate-y-0.5 transition-transform" href="/git/">Git / GitHub</a>
+              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-textPrimary shadow-neo hover:-translate-y-0.5 transition-transform" href="/course/terminal/">Terminal</a>
+              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#f59e0b] shadow-neo hover:-translate-y-0.5 transition-transform" href="/course/linux-distros/">Linux</a>
+              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#f05032] shadow-neo hover:-translate-y-0.5 transition-transform" href="/course/git/">Git / GitHub</a>
             </div>
           </div>
 
           <div class="pb-24 sm:pb-2">
             <h4 class="text-xs font-extrabold uppercase tracking-widest text-textSecondary mb-3 font-nunito ml-1">Motor de Videojuegos</h4>
             <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#000000] shadow-neo hover:-translate-y-0.5 transition-transform" href="/unity-prototipado/">Unity</a>
+              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#000000] shadow-neo hover:-translate-y-0.5 transition-transform" href="/course/unity-prototipado/">Unity</a>
             </div>
           </div>
 
@@ -327,6 +354,21 @@ const isInsideLesson = lessons.length > 0 && currentLessonIdx >= 0;
 
       <!-- CONTENIDO PRINCIPAL -->
       <main class="flex-1 min-w-0 w-full">
+        {isCourseHome && currentCourse && (
+          <CourseFavoriteButton
+            client:load
+            courseSlug={currentCourse.slug}
+            courseName={currentCourse.name}
+          />
+        )}
+        {currentCourse && currentLesson && (
+          <LessonBookmarkToggle
+            client:load
+            courseSlug={currentCourse.slug}
+            lessonSlug={currentLesson.slug}
+            lessonTitle={currentLesson.title}
+          />
+        )}
         <slot />
       </main>
     </div>
@@ -337,13 +379,20 @@ const isInsideLesson = lessons.length > 0 && currentLessonIdx >= 0;
           <img class="w-12 h-12 object-contain rounded-xl border border-black/10 bg-white" src={kofiLogo.src} alt="Ko-fi" loading="lazy" decoding="async" />
           <div>
             <div class="font-extrabold font-nunito text-[1.15rem]">Donaciones</div>
-            <div class="text-textSecondary font-[650] leading-relaxed">Apoyá cafeycodigo con un café en Ko-fi.</div>
+            <div class="text-textSecondary font-[650] leading-relaxed">
+              Apoyá cafeycodigo con un café en Ko-fi. <a href="/colaboradores/" class="font-black text-info underline decoration-2 underline-offset-2">Colaboradores</a>: insignia, muro y zona exclusiva.
+            </div>
           </div>
         </div>
 
-        <a class="bg-[#2b1d1b] text-white py-3 px-5 rounded-full font-black font-nunito border border-black/10 shadow-soft hover:-translate-y-0.5 transition-transform" href={KO_FI_URL} target="_blank" rel="noreferrer noopener">
-          Ir a Ko-fi →
-        </a>
+        <div class="flex flex-col sm:flex-row gap-2 sm:items-center shrink-0">
+          <a class="text-center bg-[#2b1d1b] text-white py-3 px-5 rounded-full font-black font-nunito border border-black/10 shadow-soft hover:-translate-y-0.5 transition-transform" href={KO_FI_URL} target="_blank" rel="noreferrer noopener">
+            Ir a Ko-fi →
+          </a>
+          <a class="text-center bg-white text-[#2b1d1b] py-3 px-5 rounded-full font-black font-nunito border-2 border-border shadow-[3px_3px_0px_#1E1210] hover:-translate-y-0.5 transition-transform no-underline" href="/colaboradores/">
+            Programa sponsors
+          </a>
+        </div>
       </div>
     </section>
 
@@ -432,7 +481,7 @@ const isInsideLesson = lessons.length > 0 && currentLessonIdx >= 0;
           {/* Botón Anterior */}
           {prevLesson ? (
             <a
-              href={`/${currentCourse?.slug}/${prevLesson.slug}/`}
+              href={`${COURSE_PATH_PREFIX}/${currentCourse?.slug}/${prevLesson.slug}/`}
               class="flex-1 flex items-center justify-center gap-1.5 h-[44px] rounded-2xl border-[3px] border-[#1E1210] bg-white shadow-[2px_2px_0px_#1E1210] font-nunito font-extrabold text-[0.78rem] text-[#1E1210] no-underline hover:bg-[#F0F0F0] active:translate-y-0.5 active:shadow-none transition-all truncate px-2"
               aria-label={`Lección anterior: ${prevLesson.title}`}
             >
@@ -441,7 +490,7 @@ const isInsideLesson = lessons.length > 0 && currentLessonIdx >= 0;
             </a>
           ) : (
             <a
-              href={`/${currentCourse?.slug}/`}
+              href={`${COURSE_PATH_PREFIX}/${currentCourse?.slug}/`}
               class="flex-none flex items-center justify-center gap-1.5 h-[44px] px-3 rounded-2xl border-[3px] border-[#1E1210] bg-white shadow-[2px_2px_0px_#1E1210] font-nunito font-extrabold text-[0.78rem] text-[#1E1210] no-underline hover:bg-[#F0F0F0] active:translate-y-0.5 active:shadow-none transition-all"
               aria-label="Inicio del curso"
             >
@@ -451,7 +500,7 @@ const isInsideLesson = lessons.length > 0 && currentLessonIdx >= 0;
 
           {/* Botón central — logo volver al curso */}
           <a
-            href={`/${currentCourse?.slug}/`}
+            href={`${COURSE_PATH_PREFIX}/${currentCourse?.slug}/`}
             class="flex-none flex items-center justify-center w-12 h-12 -mt-3 rounded-full bg-[#EF476F] border-[3px] border-[#1E1210] shadow-[0_4px_0px_#1E1210] no-underline hover:-translate-y-1 transition-transform active:translate-y-0 active:shadow-none"
             aria-label="Volver al índice del curso"
             title={currentCourse?.name}
@@ -462,7 +511,7 @@ const isInsideLesson = lessons.length > 0 && currentLessonIdx >= 0;
           {/* Botón Siguiente */}
           {nextLesson ? (
             <a
-              href={`/${currentCourse?.slug}/${nextLesson.slug}/`}
+              href={`${COURSE_PATH_PREFIX}/${currentCourse?.slug}/${nextLesson.slug}/`}
               class="flex-1 flex items-center justify-center gap-1.5 h-[44px] rounded-2xl border-[3px] border-[#1E1210] bg-[#45B3E0] shadow-[2px_2px_0px_#1E1210] font-nunito font-extrabold text-[0.78rem] text-white no-underline hover:bg-[#3BA2CC] active:translate-y-0.5 active:shadow-none transition-all truncate px-2"
               aria-label={`Siguiente lección: ${nextLesson.title}`}
             >
@@ -510,11 +559,7 @@ const isInsideLesson = lessons.length > 0 && currentLessonIdx >= 0;
             <span class="text-[10px] font-nunito font-extrabold tracking-wide">Temas</span>
           </button>
 
-          <!-- Perfil / Nombre -->
-          <button type="button" id="mbnProfile" class="mobile-nav-item flex flex-col items-center justify-center gap-0.5 flex-1 text-[#4A3A37] hover:text-[#FFD166] transition-colors bg-transparent border-none cursor-pointer" aria-label="Perfil">
-            <span class="text-[22px] leading-none" id="mbnProfileIcon">👤</span>
-            <span class="text-[10px] font-nunito font-extrabold tracking-wide" id="mbnProfileLabel">Perfil</span>
-          </button>
+          <MobileNavProfile client:load />
 
         </div>
       )}
@@ -560,8 +605,12 @@ const isInsideLesson = lessons.length > 0 && currentLessonIdx >= 0;
             Este proyecto nació de la pasión por la enseñanza y el deseo de hacer la programación
             <strong>accesible para todos</strong>.
           </p>
-          <p class="font-nunito text-[#3D2B1F] text-[0.95rem] leading-relaxed mb-5">
+          <p class="font-nunito text-[#3D2B1F] text-[0.95rem] leading-relaxed mb-2">
             Si te ha sido útil, puedes colaborar con <strong>una taza de café</strong> ☕ para seguir creando contenido gratuito.
+          </p>
+          <p class="font-nunito text-[#3D2B1F] text-[0.9rem] leading-relaxed mb-5">
+            <a href="/colaboradores/" class="font-black text-[#118AB2] underline decoration-2 underline-offset-2">Programa de colaboradores</a>
+            · insignia, muro y zona exclusiva.
           </p>
 
           <!-- Corazones decorativos -->
@@ -595,27 +644,7 @@ const isInsideLesson = lessons.length > 0 && currentLessonIdx >= 0;
     </div>
 
     <script is:inline>
-      // Actualizar el ícono de perfil con las iniciales del usuario
-      (function() {
-        const name = localStorage.getItem('user.name');
-        const icon = document.getElementById('mbnProfileIcon');
-        const label = document.getElementById('mbnProfileLabel');
-        if (name && icon && label) {
-          label.textContent = name.split(' ')[0].slice(0, 8);
-        }
-
-        // Tap en perfil → resetear nombre (mostrar modal)
-        const btn = document.getElementById('mbnProfile');
-        if (btn) {
-          btn.addEventListener('click', () => {
-            localStorage.removeItem('user.name');
-            localStorage.removeItem('user.welcomed');
-            const modal = document.getElementById('welcomeModal');
-            if (modal) { modal.classList.remove('hidden'); }
-          });
-        }
-
-        // Marcar el ítem activo según la URL
+      (function () {
         const path = window.location.pathname;
         const homeBtn = document.getElementById('mbnHome');
         if (homeBtn && path === '/') homeBtn.classList.add('text-[#EF476F]');

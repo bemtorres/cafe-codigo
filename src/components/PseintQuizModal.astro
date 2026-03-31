@@ -19,7 +19,8 @@ const resultId = `pseint-quiz-result-${quizKey}`;
 const radiosNamePrefix = `pseint_quiz_${quizKey}_q_`;
 ---
 
-<div class="pseint-quiz">
+<div class="pseint-quiz" data-course-slug="pseint" data-quiz-key={quizKey}>
+  <p class="pseint-quiz__hint" data-pseint-quiz-hint></p>
   <button id={openBtnId} type="button" class="pseint-quiz__start" data-pseint-quiz-open>
     Comenzar examen
   </button>
@@ -94,6 +95,7 @@ const radiosNamePrefix = `pseint_quiz_${quizKey}_q_`;
 
       <div class="pseint-quiz__footer">
         <div id={resultId} class="pseint-quiz__result" aria-live="polite"></div>
+        <p class="pseint-quiz__sync" data-pseint-quiz-sync></p>
         <div class="pseint-quiz__actions">
           <button type="button" class="pseint-quiz__submit" data-pseint-quiz-submit>
             Finalizar
@@ -107,148 +109,37 @@ const radiosNamePrefix = `pseint_quiz_${quizKey}_q_`;
   </div>
 </div>
 
-<script is:inline>
-  (function () {
-    const WKEY = '__pseintQuizModalDelegated__';
-    if (window[WKEY]) return;
-    window[WKEY] = true;
-
-    function closeModal(modal) {
-      if (!modal) return;
-      modal.setAttribute('aria-hidden', 'true');
-      modal.classList.remove('is-open');
-      document.documentElement.style.overflow = '';
-    }
-
-    function openModal(modal) {
-      if (!modal) return;
-      const resultEl = modal.querySelector('.pseint-quiz__result');
-      if (resultEl) resultEl.textContent = '';
-      modal.querySelectorAll('[data-pseint-quiz-feedback]').forEach((el) => {
-        el.textContent = '';
-      });
-      modal.setAttribute('aria-hidden', 'false');
-      modal.classList.add('is-open');
-      document.documentElement.style.overflow = 'hidden';
-    }
-
-    function shuffleQuestions(modal) {
-      const form = modal.querySelector('.pseint-quiz__form');
-      const qEls = Array.from(modal.querySelectorAll('[data-pseint-quiz-q]'));
-      if (!form || qEls.length < 2) return;
-
-      // Fisher-Yates shuffle
-      for (let i = qEls.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        const tmp = qEls[i];
-        qEls[i] = qEls[j];
-        qEls[j] = tmp;
-      }
-
-      // Reinsert in new order
-      qEls.forEach((el) => {
-        form.appendChild(el);
-      });
-
-      // Update displayed numbering
-      qEls.forEach((qEl, idx) => {
-        const numEl = qEl.querySelector('.pseint-quiz__q-num');
-        if (numEl) numEl.textContent = String(idx + 1);
-      });
-    }
-
-    function gradeModal(modal) {
-      const resultEl = modal.querySelector('.pseint-quiz__result');
-      if (!resultEl) return;
-
-      const qEls = modal.querySelectorAll('[data-pseint-quiz-q]');
-      let score = 0;
-
-      qEls.forEach((qEl) => {
-        const correct = Number(qEl.getAttribute('data-correct-index'));
-        const feedbackEl = qEl.querySelector('[data-pseint-quiz-feedback]');
-        const selected = qEl.querySelector('input[type="radio"]:checked');
-        const idx = selected ? Number(selected.value) : null;
-
-        const correctInput = qEl.querySelector(`input[type="radio"][value="${correct}"]`);
-        const correctText = correctInput?.parentElement?.querySelector('span')?.textContent ?? '';
-        const selectedText = selected?.parentElement?.querySelector('span')?.textContent ?? '';
-
-        const isCorrect = idx === correct;
-        if (isCorrect) score++;
-
-        if (feedbackEl) {
-          if (isCorrect) {
-            feedbackEl.textContent = 'Correcto ✅';
-          } else {
-            feedbackEl.textContent =
-              `Incorrecto ❌. Correcta: "${correctText}".` +
-              (selectedText ? ` Tu respuesta: "${selectedText}".` : '');
-          }
-        }
-      });
-
-      const total = qEls.length;
-      if (score === total) resultEl.textContent = `¡Excelente! Obtuviste ${score}/${total}.`;
-      else resultEl.textContent = `Puntaje: ${score}/${total}.`;
-    }
-
-    document.addEventListener('click', (e) => {
-      const target = e.target;
-
-      const startBtn = target instanceof Element ? target.closest('.pseint-quiz__start') : null;
-      if (startBtn) {
-        e.preventDefault();
-        const root = startBtn.closest('.pseint-quiz');
-        const modal = root?.querySelector('.pseint-quiz__modal') || null;
-        openModal(modal);
-        if (modal) shuffleQuestions(modal);
-        return;
-      }
-
-      const closeBtn = target instanceof Element ? target.closest('[data-pseint-quiz-close]') : null;
-      if (closeBtn) {
-        const root = closeBtn.closest('.pseint-quiz');
-        const modal = root?.querySelector('.pseint-quiz__modal') || null;
-        closeModal(modal);
-        return;
-      }
-
-      const submitBtn = target instanceof Element ? target.closest('[data-pseint-quiz-submit]') : null;
-      if (submitBtn) {
-        const root = submitBtn.closest('.pseint-quiz');
-        const modal = root?.querySelector('.pseint-quiz__modal') || null;
-        if (modal) gradeModal(modal);
-        return;
-      }
-
-      const restartBtn = target instanceof Element ? target.closest('[data-pseint-quiz-restart]') : null;
-      if (restartBtn) {
-        const root = restartBtn.closest('.pseint-quiz');
-        const modal = root?.querySelector('.pseint-quiz__modal') || null;
-        if (!modal) return;
-        const resultEl = modal.querySelector('.pseint-quiz__result');
-        if (resultEl) resultEl.textContent = '';
-        modal.querySelectorAll('input[type="radio"]').forEach((r) => {
-          r.checked = false;
-        });
-        modal.querySelectorAll('[data-pseint-quiz-feedback]').forEach((el) => {
-          el.textContent = '';
-        });
-        return;
-      }
-    });
-
-    document.addEventListener('keydown', (e) => {
-      if (e.key !== 'Escape') return;
-      document.querySelectorAll('.pseint-quiz__modal.is-open').forEach((m) => closeModal(m));
-    });
-  })();
+<script>
+  import { initPseintQuizModals } from '../lib/pseint/pseintQuizModal';
+  initPseintQuizModals();
 </script>
 
 <style>
   .pseint-quiz {
     margin: 2.5rem 0 1rem;
+  }
+
+  .pseint-quiz__hint {
+    margin: 0 0 0.75rem;
+    font-size: 0.88rem;
+    font-weight: 800;
+    color: var(--text-secondary);
+    line-height: 1.45;
+    font-family: 'Nunito', sans-serif;
+    min-height: 1.25rem;
+  }
+
+  .pseint-quiz__sync {
+    margin: 0 0 0.65rem;
+    font-size: 0.82rem;
+    font-weight: 800;
+    color: var(--success);
+    font-family: 'Nunito', sans-serif;
+    min-height: 1rem;
+  }
+
+  .pseint-quiz__sync.pseint-quiz__sync--err {
+    color: #b91c1c;
   }
 
   .pseint-quiz__start {

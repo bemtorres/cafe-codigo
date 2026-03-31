@@ -1,0 +1,170 @@
+﻿---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import CsharpQuizModal from '../../../../components/CsharpQuizModal.astro';
+---
+
+<Layout title="Variables en C#" description="Tipos de datos y guardado de información en C#" courseSlug="csharp">
+  <article class="content-section">
+    <h1>2. Variables y Tipos de Datos</h1>
+
+    <section class="mb-10">
+      <h2>¿Qué es una variable?</h2>
+      <p>
+        En C#, antes de usar una variable (la caja que guarda datos), <strong>debes indicar qué tipo de dato</strong> guardará. A esto se le llama ser "fuertemente tipado".
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Tipos de Datos Principales</h2>
+      <table class="content-table">
+        <thead>
+          <tr>
+            <th>Tipo</th>
+            <th>Descripción</th>
+            <th>Ejemplo de valor</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="mono">int</td>
+            <td>Números enteros sin decimales.</td>
+            <td><code>42</code>, <code>-15</code></td>
+          </tr>
+          <tr>
+            <td class="mono">double / float</td>
+            <td>Números con puntos decimales.</td>
+            <td><code>3.14</code>, <code>-0.99</code></td>
+          </tr>
+          <tr>
+            <td class="mono">string</td>
+            <td>Cadenas de texto. Siempre van entre comillas dobles.</td>
+            <td><code>"Hola"</code></td>
+          </tr>
+          <tr>
+            <td class="mono">char</td>
+            <td>Un solo carácter. Va entre comillas simples.</td>
+            <td><code>'A'</code></td>
+          </tr>
+          <tr>
+            <td class="mono">bool</td>
+            <td>Verdadero o falso.</td>
+            <td><code>true</code>, <code>false</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="mb-10">
+      <h2>Declaración y Asignación</h2>
+      <p>
+        En C# puedes declarar la variable primero y asignarle valor después, o hacerlo todo en la misma línea (lo recomendado).
+      </p>
+      <CodeBlock lang="csharp"
+        code={`// Definición explícita
+int edad = 25;
+string nombre = "Juan";
+double precio = 19.99;
+bool esAdmin = true;
+
+// Solo declaración
+int puntosOcultos;
+puntosOcultos = 100;
+
+Console.WriteLine("Nombre: " + nombre + ", Edad: " + edad);`}
+        title="Declarando variables en C#"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>La palabra clave "var"</h2>
+      <p>
+        Puedes usar <code>var</code> si le asignas un valor a la variable al momento de crearla. C# es lo suficientemente inteligente para adivinar de qué tipo se trata basado en el valor.
+      </p>
+      <CodeBlock lang="csharp"
+        code={`// C# asume que 'ciudad' es un string
+var ciudad = "Buenos Aires";
+
+// C# asume que 'año' es un int
+var anio = 2024;`}
+        title="Uso de var"
+      />
+    </section>
+
+    
+    
+    <div class="ejercicio">
+      <h3>👨‍💻 Ejercicio Práctico</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> Ficha de Personaje
+      </div>
+      <p class="enunciado" set:html={'Declara una variable <code>string</code> para el nombre, un <code>int</code> para el nivel, y un <code>bool</code> para saber si está vivo. Asígnales un valor e imprímelas combinadas.'}></p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock lang="csharp" code={`string nombre = "Arthas";
+int nivel = 85;
+bool estaVivo = false;
+
+Console.WriteLine($"El jugador {nombre} de nivel {nivel} ¿está vivo? {estaVivo}");`} />
+      </details>
+    </div>
+
+    
+    <div class="ejercicio" style="background: #F4E8F4;">
+      <h3>👨‍💻 Ejercicio Práctico 2</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> Calculadora de Variables
+      </div>
+      <p class="enunciado" set:html={'Mete el número 10 en una variable <code>A</code> y el número 5 en una variable <code>B</code>. Suma ambas en una variable <code>resultado</code> y muéstralo.'}></p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock lang="csharp" code={`int a = 10;
+int b = 5;
+int resultado = a + b;
+Console.WriteLine(resultado);`} />
+      </details>
+    </div>
+
+    <div class="ejercicio" style="background: #F4E8F4;">
+      <h3>👨‍💻 Ejercicio Práctico 3</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> El uso de Constantes
+      </div>
+      <p class="enunciado" set:html={'Declara una constante (<code>const</code>) para el valor de PI (3.1416) como <code>double</code> e imprímela.'}></p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock lang="csharp" code={`const double PI = 3.1416;
+Console.WriteLine($"El valor de pi es {PI}");`} />
+      </details>
+    </div>
+
+    <div class="ejercicio" style="background: #F4E8F4;">
+      <h3>👨‍💻 Ejercicio Práctico 4</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> Cadenas vs Números
+      </div>
+      <p class="enunciado" set:html={'Declara dos <code>string</code> con los valores "5" y "10". Súmalos con un `+` e imprime el resultado. (Nota si se suman matemáticamente o se pegan el uno al otro).'}></p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock lang="csharp" code={`string texto1 = "5";
+string texto2 = "10";
+Console.WriteLine(texto1 + texto2); // Imprime 510`} />
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>Comprueba tus conocimientos sobre este tema realizando nuestro pequeño test.</p>
+      <CsharpQuizModal quizKey="variables" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/csharp/introduccion/" class="prev">← Introducción</a>
+      <a href="/course/csharp/io/" class="next">Entrada y Salida →</a>
+    </nav>
+  </article>
+</Layout>

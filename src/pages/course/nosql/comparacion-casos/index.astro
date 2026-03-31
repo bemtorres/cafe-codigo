@@ -1,0 +1,44 @@
+﻿---
+import Layout from '../../../../layouts/Layout.astro';
+---
+
+<Layout
+  title="Comparar y elegir stack"
+  description="MongoDB frente a Firestore, casos de uso y cómo combinar NoSQL con SQL cuando haga falta."
+  courseSlug="nosql"
+>
+  <article class="content-section">
+    <h1>6. Comparar y elegir stack ⚖️</h1>
+
+    <section class="mb-10">
+      <h2>MongoDB vs Firestore (resumen)</h2>
+      <p>
+        <strong>MongoDB</strong> suele vivir como base “de servidor”: tú eliges dónde está alojada (Atlas, tu VPS, etc.), controlas índices, backups y conexiones desde backend. Es muy flexible para APIs y microservicios.
+      </p>
+      <p>
+        <strong>Firestore</strong> está pensado para <strong>acceso desde clientes</strong> con autenticación y reglas, sincronización en tiempo real y integración con el resto de Firebase. Menos control “a bajo nivel” que un Mongo self-hosted, más velocidad para productos móviles y web con poco backend propio.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>¿Hace falta elegir solo uno?</h2>
+      <p>
+        En sistemas grandes es habitual usar <strong>varias bases</strong>: por ejemplo SQL para facturación y reportes, Redis para caché, Mongo o Firestore para perfiles y contenido dinámico. Lo importante es <strong>no duplicar la verdad</strong> sin estrategia (qué sistema manda en cada dato).
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Próximos pasos sugeridos</h2>
+      <ul class="list-disc pl-6 space-y-2 font-[650] text-textSecondary">
+        <li>Crear un proyecto en <strong>MongoDB Atlas</strong> y cargar una colección de prueba.</li>
+        <li>Crear un proyecto <strong>Firebase</strong>, activar Firestore y escribir reglas mínimas seguras para tu UID.</li>
+        <li>Repasar el curso de <a href="/course/modelamiento-db/" class="text-primary font-bold underline">modelamiento de datos</a> para conectar conceptos de diseño con el mundo NoSQL.</li>
+      </ul>
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/nosql/firestore-datos/" class="prev">← Firestore: colecciones</a>
+      <a href="/course/nosql/" class="next">Volver al índice →</a>
+    </nav>
+  </article>
+</Layout>

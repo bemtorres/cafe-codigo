@@ -1,0 +1,70 @@
+﻿---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import PythonQuizModal from '../../../../components/PythonQuizModal.astro';
+---
+
+<Layout title="Diccionarios en Python" description="Clave-Valor: Busca información al instante." courseSlug="python">
+  <article class="content-section">
+    <h1>4. Diccionarios: El Archivador Maestro 🗃️</h1>
+
+    <section class="mb-10">
+      <h2>Estructura Clave: Valor</h2>
+      <p>Un diccionario es una colección de <strong>pares clave-valor</strong> encerrados en llaves <code>{}</code>. Es como una base de datos pequeña que se guarda en una sola variable.</p>
+      <CodeBlock lang="python" code={`usuario = {
+    "nombre": "Benjamín",
+    "edad": 28,
+    "cargo": "Programador"
+}
+
+# 1. Ver un valor
+print(usuario["nombre"])
+
+# 2. Agregar o cambiar
+usuario["web"] = "cafeycodigo.com"
+
+# 3. ¿Existe una clave?
+if "edad" in usuario:
+    print("La clave edad sí existe")
+
+# 4. Ver todas las claves
+print(usuario.keys())`}
+        title="perfil.py"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Método .get() vs []</h2>
+      <p>Es mejor usar <code>.get()</code> porque si la clave no existe, tu programa no explota (devuelve <code>None</code>).</p>
+      <CodeBlock lang="python" code={`# Esto daría error si 'pais' no existe
+# print(usuario["pais"])
+
+# Esto es seguro (devuelve None o un valor por defecto)
+pais = usuario.get("pais", "No especificado")
+print(pais)`}
+        title="seguridad.py"
+      />
+    </section>
+
+    <div class="ejercicio" style="background: #FFF3E0;">
+      <h3>🐍 Desafío: El mapa de precios</h3>
+      <p class="enunciado">Crea un diccionario llamado <code>tienda</code> que tenga como claves <code>"iphone"</code> y <code>"laptop"</code> con sus respectivos precios numéricos.</p>
+      
+      <details>
+        <summary>👁️ Ver solución sugerida</summary>
+        <CodeBlock lang="python" code={`tienda = { "iphone": 999, "laptop": 1200 }
+print(tienda["iphone"])`} title="Python" />
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Prueba sobre Diccionarios</h2>
+      <PythonQuizModal quizKey="diccionarios" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/python/listas/" class="prev">← Listas y Tuplas</a>
+      <a href="/course/python/condicionales/" class="next">Lógica (If) →</a>
+    </nav>
+  </article>
+</Layout>

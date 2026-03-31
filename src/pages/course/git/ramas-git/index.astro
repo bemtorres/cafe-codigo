@@ -1,0 +1,49 @@
+﻿---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import GitQuizModal from '../../../../components/GitQuizModal.astro';
+---
+
+<Layout title="Ramas de Git: Universos en Paralelo" description="Prueba funciones nuevas sin miedo a romper el código principal. Aprende a saltar entre ramas y a unir tus cambios con Merge." courseSlug="git">
+  <article class="content-section">
+    <h1>3. Ramas: Universos Paralelos</h1>
+
+    <section class="mb-10">
+      <h2>Pruébalo todo sin miedo</h2>
+      <p>
+        En Git, una <strong>rama (branch)</strong> es como un universo paralelo de tu proyecto. Cuando creas una rama, copias el estado actual del código y puedes hacer todos los cambios locos que quieras <strong>sin romper</strong> lo que está en la rama principal.
+      </p>
+      <p>
+        <strong>¿Para qué sirve?:</strong> Imagina que tu web ya funciona, pero quieres probar un menú de color rosa. Creas una rama <code>rama-rosa</code>, pruebas todo, y si te gusta, lo unes de vuelta al principal.
+      </p>
+      <CodeBlock lang="bash" code={`git branch nombre-rama # Crea la rama
+git checkout nombre-rama # Salta a esa rama (y los archivos de tu carpeta cambian mágicament!)`}
+        title="bash"
+      />
+    </section>
+
+    <div class="card my-8" style="background: white; border: 3.5px dashed #f05032; border-radius: 20px; padding: 1.5rem;">
+      <h3 style="color: #f05032;">🚀 El Viaje en el Tiempo (Checkout)</h3>
+      <p>Cuando haces checkout de una rama, los archivos en tu disco duro se transforman instantáneamente para verse exactos a cómo estaban en esa rama. ¡Es como viajar entre dimensiones del código!</p>
+      <ul class="list-disc pl-5">
+        <li><strong>git branch:</strong> Te dice en qué universo (rama) estás ahora.</li>
+        <li><strong>git switch:</strong> Una forma moderna de saltar de rama (más segura que checkout).</li>
+        <li><strong>git merge:</strong> El comando final para fusionar tu rama con la principal.</li>
+      </ul>
+      <CodeBlock lang="bash" code={`git merge mi-nueva-funcion
+# ¡Pum! Todo el trabajo de esa rama ahora forma parte del código estable.`}
+        title="bash"
+      />
+    </div>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <GitQuizModal quizKey="ramas-git" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/git/flujo-local/" class="prev">← El Ciclo Local</a>
+      <a href="/course/git/github-nube/" class="next">GitHub y el Servidor →</a>
+    </nav>
+  </article>
+</Layout>

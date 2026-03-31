@@ -1,0 +1,66 @@
+﻿---
+import Layout from '../../../../layouts/Layout.astro';
+import ModelamientoQuizModal from '../../../../components/ModelamientoQuizModal.astro';
+---
+
+<Layout title="El Modelo Relacional" description="Transformando entidades y relaciones en tablas y llaves reales." courseSlug="modelamiento-db">
+  <article class="content-section">
+    <h1>3. El Modelo Relacional: De Dibujo a Tablas 🗃️</h1>
+
+    <section class="mb-10">
+      <h2>Transformando el plano en estructura</h2>
+      <p>
+        El diagrama E-R está genial para dibujarlo en una pizarra, pero a una base de datos (como MySQL o PostgreSQL) no le entienden a los dibujos. Ellos entienden de <strong>Tablas</strong>.
+      </p>
+      <p>
+        El modelo relacional, creado por Edgar Codd en 1970, es la manera de traducir nuestro E-R a un esquema compuesto por filas y columnas interconectadas.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Las Reglas de Oro de la Traducción</h2>
+      <ul>
+        <li><strong>Entidad = Tabla:</strong> Si en tu diagrama dibujaste la entidad "Cliente", crearás una tabla llamada <code>Cliente</code>.</li>
+        <li><strong>Atributo = Columna:</strong> Las propiedades (Nombre, Apellido, Edad) pasan a ser las columnas de esa tabla.</li>
+        <li><strong>Registro = Fila:</strong> Cada entidad específica (Juan Pérez, 25 años) se convierte en una fila entera en la tabla.</li>
+      </ul>
+    </section>
+
+    <section class="mb-10">
+      <h2>Llaves Primarias y Foráneas 🔑</h2>
+      <p>
+        Aquí está el verdadero poder del modelo <em>relacional</em>. ¿Cómo conectamos dos tablas para saber qué cliente hizo qué pedido?
+      </p>
+      
+      <h3>Primary Key (PK) - Llave Primaria</h3>
+      <p>Es la columna que identifica de forma única a cada fila de su tabla. Ej: el <code>ID</code> del cliente. Nunca se puede repetir, ni puede quedar vacía.</p>
+
+      <h3>Foreign Key (FK) - Llave Foránea</h3>
+      <p>Es una columna en una tabla B, que guarda el valor de la <em>Primary Key</em> de una tabla A. Así es como se "enlaza".</p>
+      
+      <div class="note-box" style="background: #E8F5E9; border-left: 5px solid #16a085;">
+        <strong>Ejemplo:</strong> La tabla <code>Pedido</code> tiene una columna <code>Cliente_ID</code> (que es una Foreign Key). Si el <code>Cliente_ID</code> es 5, sabemos que ese pedido pertenece al cliente de la tabla <code>Cliente</code> cuyo ID es 5.
+      </div>
+    </section>
+
+    <div class="ejercicio" style="background: #F4F6F6; border: 2px solid #BDC3C7;">
+      <h3>🎮 Desafío Rápido: Conecta las tablas</h3>
+      <p class="enunciado">Tienes una tabla <code>Mascotas(ID_Mascota, Nombre)</code> y una tabla <code>Dueño(ID_Dueño, Nombre)</code>. ¿Dónde pondrías la Foreign Key para que cada mascota sepa quién es su dueño?</p>
+      
+      <details>
+        <summary>👁️ Ver respuesta sugerida</summary>
+        <p>Añadirías una columna <code>ID_Dueño</code> (Foreign Key) a la tabla <strong>Mascota</strong>. Así, la fila de "Firulais" podría tener un <code>ID_Dueño = 3</code>, apuntando a "Carlos".</p>
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <ModelamientoQuizModal quizKey="modelo-relacional" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/modelamiento-db/entidad-relacion/" class="prev">← Entidad-Relación</a>
+      <a href="/course/modelamiento-db/normalizacion/" class="next">Normalización →</a>
+    </nav>
+  </article>
+</Layout>

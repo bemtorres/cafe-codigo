@@ -1,0 +1,66 @@
+﻿---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+---
+
+<Layout
+  title="Firestore: colecciones y reglas"
+  description="Modelado en Firestore, consultas básicas y reglas de seguridad para no exponer datos por error."
+  courseSlug="nosql"
+>
+  <article class="content-section">
+    <h1>5. Firestore: colecciones y reglas 🛡️</h1>
+
+    <section class="mb-10">
+      <h2>Modelado mental</h2>
+      <p>
+        Cada documento tiene un ID único dentro de su colección. Podés anidar <strong>subcolecciones</strong> cuando tiene sentido agrupar datos “bajo” un usuario o una entidad padre (por ejemplo <code>{'usuarios/{uid}/notas'}</code>).
+      </p>
+      <p>
+        Firestore no es SQL: las <strong>consultas compuestas</strong> tienen reglas (índices compuestos, limitaciones de <code>or</code> en ciertos casos). Conviene diseñar el modelo pensando en <strong>qué listados</strong> vas a mostrar en la app.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Ejemplo conceptual (SDK web)</h2>
+      <p>
+        Con el SDK de Firebase v9+ en modo modular, el flujo típico es obtener referencias a documentos o colecciones y luego <code>getDoc</code>, <code>getDocs</code>, <code>setDoc</code>, <code>onSnapshot</code>, etc.
+      </p>
+      <CodeBlock
+        lang="javascript"
+        title="SDK modular (v9+)"
+        code={`import { doc, getDoc, setDoc } from "firebase/firestore";
+
+// Leer un documento
+const snap = await getDoc(doc(db, "perfiles", uid));
+if (snap.exists()) {
+  console.log(snap.data());
+}
+
+// Crear o sobrescribir (cuidado: define bien las reglas)
+await setDoc(doc(db, "perfiles", uid), {
+  nombre: "Ana",
+  actualizado: new Date()
+});`}
+      />
+      <p>
+        En apps reales, <code>actualizado</code> suele ser un <code>Timestamp</code> de Firestore, no un <code>Date</code> de JS crudo, según cómo configures el cliente.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Reglas de seguridad (imprescindible)</h2>
+      <p>
+        Firestore <strong>no</strong> debe quedar abierto a todo el mundo en producción. Las <strong>Security Rules</strong> definen quién puede leer o escribir qué rutas, normalmente en función de <code>request.auth.uid</code> tras iniciar sesión con Firebase Auth.
+      </p>
+      <div class="note-box" style="background: #fff4e6; border-left: 5px solid #f6820c;">
+        <strong>Regla de oro:</strong> el cliente nunca es de confianza. Todo lo que no esté prohibido por reglas puede ser abusado. Probá reglas con el simulador de la consola antes de publicar.
+      </div>
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/nosql/firebase-intro/" class="prev">← Firebase y Firestore</a>
+      <a href="/course/nosql/comparacion-casos/" class="next">Comparar y elegir →</a>
+    </nav>
+  </article>
+</Layout>

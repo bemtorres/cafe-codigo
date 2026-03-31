@@ -1,0 +1,81 @@
+﻿---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+---
+
+<Layout
+  title="MongoDB: documentos y BSON"
+  description="Colecciones, documentos, BSON y el shell mongosh para empezar a pensar como MongoDB."
+  courseSlug="nosql"
+>
+  <article class="content-section">
+    <h1>2. MongoDB: documentos y BSON 🍃</h1>
+
+    <section class="mb-10">
+      <h2>Colección = conjunto de documentos</h2>
+      <p>
+        En MongoDB no defines tablas con columnas fijas como en SQL. Agrupás datos en <strong>colecciones</strong>; cada fila lógica es un <strong>documento</strong>, normalmente en formato parecido a <strong>JSON</strong>.
+      </p>
+      <p>
+        Ejemplo de documento que podría vivir en la colección <code>usuarios</code>:
+      </p>
+      <CodeBlock
+        lang="json"
+        title="Ejemplo de documento"
+        code={`{
+  "_id": ObjectId("..."),
+  "nombre": "Ana",
+  "email": "ana@ejemplo.com",
+  "preferencias": {
+    "tema": "oscuro",
+    "notificaciones": true
+  },
+  "cursos": ["nosql", "java"]
+}`}
+      />
+      <p>
+        Los campos pueden ser <strong>anidados</strong> y las listas (arrays) son ciudadanos de primera clase: eso encaja con cómo ya pensás en JavaScript u otros lenguajes.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>BSON, no solo JSON</h2>
+      <p>
+        MongoDB almacena internamente en <strong>BSON</strong> (Binary JSON): compatible con JSON pero con tipos extra (fechas, ObjectId, binario, etc.) y eficiencia en disco y red.
+      </p>
+      <p>
+        El <code>_id</code> es la clave primaria del documento; si no lo enviás, el servidor puede generar un <code>ObjectId</code> único.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>CRUD en pocas palabras</h2>
+      <p>
+        Todo lo que vas a hacer con una colección encaja en cuatro letras: <strong>CRUD</strong> — <strong>crear</strong> documentos, <strong>leerlos</strong> con filtros, <strong>actualizarlos</strong> (campos o el documento entero) y <strong>borrarlos</strong>. En MongoDB eso se traduce en métodos como <code>insertOne</code>, <code>find</code>, <code>updateOne</code> y <code>deleteOne</code>, siempre apoyados en un <strong>filtro</strong> en formato documento JSON.
+      </p>
+      <p>
+        La siguiente lección desarrolla cada operación con ejemplos en <code>mongosh</code>.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Herramientas para practicar</h2>
+      <ul class="list-disc pl-6 space-y-2 font-[650] text-textSecondary">
+        <li>
+          <strong>MongoDB Atlas</strong>: cluster gratuito en la nube y consola web.
+        </li>
+        <li>
+          <strong>mongosh</strong>: shell oficial para conectar a tu base y ejecutar comandos.
+        </li>
+        <li>
+          <strong>Compass</strong>: cliente gráfico para explorar colecciones y probar consultas.
+        </li>
+      </ul>
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/nosql/introduccion/" class="prev">← Qué es NoSQL</a>
+      <a href="/course/nosql/mongodb-crud/" class="next">MongoDB: CRUD →</a>
+    </nav>
+  </article>
+</Layout>

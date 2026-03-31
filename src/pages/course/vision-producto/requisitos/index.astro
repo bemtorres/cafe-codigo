@@ -1,0 +1,58 @@
+﻿---
+import Layout from '../../../../layouts/Layout.astro';
+import VisionProductoQuizModal from '../../../../components/VisionProductoQuizModal.astro';
+---
+
+<Layout title="3. Ingeniería de Requisitos I" description="Requisitos Funcionales vs No Funcionales." courseSlug="vision-producto">
+  <article class="content-section">
+    <h1>3. Ingeniería de Requisitos</h1>
+
+    <section class="mb-10">
+      <h2>El proceso de descubrir y documentar</h2>
+      <p>
+        La <strong>Ingeniería de Requisitos</strong> NO es adivinar lo que el usuario quiere. Es sentarse, conversar, extraer la verdad y plasmarla en un documento u hoja de ruta para que el equipo de programación sepa exactamente qué contruir.
+      </p>
+      <div class="note-box" style="background: #e0e7ff; border-left: 5px solid #4f46e5;">
+        <strong>Regla de Oro:</strong> Todo requisito debe ser: <strong>Claro, Constante (no contradictorio con otro requisito) y Verificable/Testeable</strong>. Si no puedes probarlo cuando el código esté hecho, es un mal requisito.
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2>1. Requisitos Funcionales</h2>
+      <p>
+        Describen el "COMPORTAMIENTO" del sistema. Son el <em>qué</em> debe hacer el software. Sus acciones y flujos.
+      </p>
+      <ul>
+        <li>❌ <em>Mal requisito funcional:</em> "La app debe tener login".</li>
+        <li>✅ <em>Buen requisito funcional:</em> "El sistema debe permitir que un usuario registrado inicie sesión utilizando su correo electrónico y su contraseña".</li>
+        <li>✅ "El sistema de ventas debe aplicar un 10% de descuento si la compra del usuario supera los 50.000 Pesos".</li>
+        <li>✅ "El administrador debe poder generar un reporte en PDF o Excel con las ventas mensuales filtradas por rango de fechas".</li>
+      </ul>
+      <p>Típicamente estos se convierten en Historias de Usuario (Scrum) o Casos de Uso (UML).</p>
+    </section>
+
+    <section class="mb-10">
+      <h2>2. Requisitos No Funcionales (Atributos de Calidad)</h2>
+      <p>
+        Describen la "CUALIDAD" del sistema. Son el <em>cómo</em> de bien (o rápido, o seguro) debe funcionar el software. Limitan al sistema. Sin ellos, el software puede compilar y hacer lo que se pide, pero ser inutilizable en el mundo real.
+      </p>
+      <p>Se dividen en categorías (URPS+, etc.):</p>
+      <ul>
+        <li>⚙️ <strong>Rendimiento / Escalabilidad:</strong> "El sistema debe responder consultas dentro del catálogo en menos de 2.5 segundos bajo una carga de 1000 usuarios concurrentes".</li>
+        <li>🔐 <strong>Seguridad:</strong> "Todas las contraseñas de los usuarios deben almacenarse en la base de datos hasheadas utilizando el algoritmo Bcrypt".</li>
+        <li>🎨 <strong>Usabilidad:</strong> "El flujo de compra principal no debe tener más de 3 pantallas antes de requerir que el usuario pague".</li>
+        <li>💻 <strong>Tecnológicos / Portabilidad:</strong> "La aplicación debe ser compatible con los navegadores Chrome v90+, Firefox v88+ y Safari 14+".</li>
+      </ul>
+    </section>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <VisionProductoQuizModal quizKey="requisitos" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/vision-producto/inicio-y-usuario/" class="prev">← Inicio y Usuario</a>
+      <a href="/course/vision-producto/" class="next">Índice del Curso →</a>
+    </nav>
+  </article>
+</Layout>

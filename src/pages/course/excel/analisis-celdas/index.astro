@@ -1,0 +1,102 @@
+﻿---
+import Layout from '../../../../layouts/Layout.astro';
+import ExcelQuizModal from '../../../../components/ExcelQuizModal.astro';
+import CopyTableBtn from '../../../../components/CopyTableBtn.astro';
+import ExcelSheetTable from '../../../../components/ExcelSheetTable.astro';
+import ExcelPracticeBlock from '../../../../components/ExcelPracticeBlock.astro';
+---
+
+<Layout title="8. Análisis de Celdas" description="Formato condicional, validación de datos y filtrado para analizar celdas." courseSlug="excel">
+  <article class="content-section">
+    <h1>8. Análisis de Celdas</h1>
+
+    <p class="font-semibold text-gray-800 mb-2">En esta lección aprenderás a:</p>
+    <ul class="list-disc pl-6 text-gray-700 mb-8 space-y-1">
+      <li>Usar <strong>filtros</strong> y <strong>ordenar</strong> sin perder datos (solo ocultar o reordenar filas).</li>
+      <li>Aplicar <strong>formato condicional</strong> según umbrales.</li>
+      <li>Configurar <strong>validación de datos</strong> y quitar <strong>duplicados</strong> desde la pestaña Datos.</li>
+    </ul>
+
+    <section class="mb-10">
+      <h2>Tabla – Ventas por sucursal y mes</h2>
+      <p>
+        Usa esta tabla para practicar: filtra solo “Norte”, ordena por ingresos de mayor a menor y aplica formato condicional a valores bajo 10 000.
+      </p>
+      <CopyTableBtn tableId="tabla-reporte" />
+      <ExcelSheetTable
+        tableId="tabla-reporte"
+        tableLabel="Datos brutos de sucursales"
+        tableDescription="Cada fila es un registro (sucursal + mes + ingreso). Filtro y orden no borran filas: las ocultan o las reubican temporalmente."
+        variant="maestro"
+        columns={['A', 'B', 'C']}
+        headers={['Sucursal', 'Mes', 'Ingresos ($)']}
+        rows={[
+          ['Norte', 'Enero', '15000'],
+          ['Sur', 'Enero', '8500'],
+          ['Centro', 'Enero', '12300'],
+          ['Este', 'Enero', '9800'],
+          ['Norte', 'Febrero', '22000'],
+          ['Sur', 'Febrero', '9000'],
+          ['Centro', 'Febrero', '14100'],
+          ['Este', 'Febrero', '10200'],
+          ['Norte', 'Marzo', '19800'],
+          ['Sur', 'Marzo', '7800'],
+          ['Centro', 'Marzo', '13550'],
+          ['Este', 'Marzo', '11100'],
+          ['Norte', 'Abril', '20500'],
+          ['Sur', 'Abril', '9200'],
+          ['Centro', 'Abril', '14800'],
+          ['Este', 'Abril', '9900'],
+        ]}
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Filtro vs ordenar</h2>
+      <p>
+        Con la cabecera seleccionada, <strong>Datos &gt; Filtrar</strong> añade flechas: puedes ocultar sucursales que no te interesan. <strong>Ordenar</strong> cambia el orden de las filas según una columna (por ejemplo ingresos descendente). Ninguna de las dos elimina filas del archivo hasta que guardes; el filtro solo las oculta.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Formato condicional</h2>
+      <p>
+        Selecciona la columna de ingresos y usa <strong>Inicio &gt; Formato condicional</strong>. Una regla del tipo “celdas menores que 10 000” resalta en rojo los meses débiles del Sur y otros por debajo del umbral.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Validación de datos</h2>
+      <p>
+        En <strong>Datos &gt; Validación de datos</strong> puedes restringir lo que se escribe en una columna (lista desplegable de sucursales, solo números entre 0 y 50000, fechas válidas, etc.). Es útil para que otros usuarios no rompan el informe al escribir “norte” con minúscula distinta o texto suelto.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Quitar duplicados</h2>
+      <p>
+        En <strong>Datos &gt; Quitar duplicados</strong> eliges columnas clave (por ejemplo sucursal + mes) y Excel elimina filas repetidas. Haz una copia de seguridad antes si no estás seguro: la acción modifica el rango seleccionado.
+      </p>
+    </section>
+
+    <ExcelPracticeBlock
+      steps={[
+        'Copia la tabla de ventas y activa Datos > Filtrar.',
+        'Oculta todas las filas excepto la sucursal Norte y comprueba el subconjunto.',
+        'Ordena por la columna de ingresos de mayor a menor.',
+        'Aplica formato condicional a valores inferiores a 10000 en la columna de ingresos.',
+        'En una columna nueva, define validación de lista con las cuatro sucursales y prueba escribir un valor no permitido.',
+      ]}
+    />
+
+    <section class="mb-10">
+      <h2>Pon a prueba tus conocimientos</h2>
+      <ExcelQuizModal quizKey="analisis-celdas" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/excel/funciones-fechas/" class="prev">← Funciones de Fechas</a>
+      <a href="/course/excel/tablas-dinamicas/" class="next">Tablas Dinámicas →</a>
+    </nav>
+  </article>
+</Layout>

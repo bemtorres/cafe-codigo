@@ -1,0 +1,80 @@
+﻿---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import PythonQuizModal from '../../../../components/PythonQuizModal.astro';
+---
+
+<Layout title="Módulos y PIP: Librerías externas en Python" description="No reinventes la rueda: Aprende a usar librerías externas." courseSlug="python">
+  <article class="content-section">
+    <h1>10. Módulos y PIP: ¡El Universo Python! 🌌</h1>
+
+    <section class="mb-10">
+      <h2>Librerías estándar de Python</h2>
+      <p>Python viene con un montón de herramientas "incluidas en el precio". Puedes importarlas con la palabra clave <code>import</code>.</p>
+      <CodeBlock lang="python" code={`import math
+import random
+
+# Calcular raíz cuadrada
+print(math.sqrt(16)) # 4.0
+
+# Elegir un número al azar de 1 a 10
+print(random.randint(1, 10))`}
+        title="librerias.py"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Módulos Propios</h2>
+      <p>Un módulo es simplemente un archivo <code>.py</code>. Puedes importar funciones de tus propios archivos para organizar mejor tu código.</p>
+      <CodeBlock lang="python" code={`# Archivo: utilidades.py
+def sumar(a, b):
+    return a + b
+
+# Archivo: main.py
+from utilidades import sumar
+print(sumar(10, 5))`}
+        title="organizacion.py"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>El archivo requirements.txt</h2>
+      <p>Cuando trabajas en equipo, guardas todas las librerías necesarias en un archivo de texto para que otros las instalen con un solo comando.</p>
+      <CodeBlock lang="python" code={`# Ejecuta esto para instalar todo lo del proyecto
+pip install -r requirements.txt`}
+        title="Terminal"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>¿Qué es PIP?</h2>
+      <p>Es el **gestor de paquetes** de Python. Sirve para instalar librerías que **otras personas** han escrito y compartido con el mundo (como Pandas, Requests, Django o FastAPI).</p>
+      <CodeBlock lang="python" code={`# Ejecuta esto en tu consola (fuera de Python)
+pip install requests`}
+        title="Terminal"
+      />
+    </section>
+
+    <div class="ejercicio" style="background: #E3F2FD;">
+      <h3>🐍 Desafío: El dado de la suerte</h3>
+      <p class="enunciado">Importa el módulo <code>random</code> y crea un dado de 6 caras usando <code>random.randint(1, 6)</code>. Imprime el resultado.</p>
+      
+      <details>
+        <summary>👁️ Ver solución sugerida</summary>
+        <CodeBlock lang="python" code={`import random
+caras = random.randint(1, 6)
+print("Ha salido un: " + str(caras))`} title="Python" />
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Prueba Final del Ecosistema</h2>
+      <PythonQuizModal quizKey="modulos" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/python/poo/" class="prev">← Clases y Objetos</a>
+      <a href="/course/python/" class="next">Finalizar Curso de Python 🏆</a>
+    </nav>
+  </article>
+</Layout>

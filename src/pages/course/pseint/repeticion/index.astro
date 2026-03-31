@@ -1,0 +1,222 @@
+﻿---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import Ejercicio from '../../../../components/Ejercicio.astro';
+import PseintQuizModal from '../../../../components/PseintQuizModal.astro';
+---
+
+<Layout
+  title="Repetición (Bucles)"
+  description="Mientras, Repetir y Para en PSeInt con ejemplos, ejercicios y preguntas."
+  courseSlug="pseint"
+>
+  <article class="content-section">
+    <h1>🔁 Repetición en PSeInt (Bucles)</h1>
+    <p class="lead">
+      Los bucles sirven para repetir un bloque de instrucciones varias veces. Según cómo escribas
+      la condición, el bloque se puede ejecutar <strong>cero veces</strong>, <strong>una o más veces</strong>,
+      o exactamente una vez por cada valor de un rango.
+    </p>
+
+    <section class="mb-12">
+      <h2>1) ¿Cómo funciona un bucle?</h2>
+      <ul>
+        <li><strong>Entrada:</strong> cargás datos (por ejemplo un número inicial).</li>
+        <li><strong>Condición:</strong> evaluás una condición para decidir si seguís repitiendo.</li>
+        <li><strong>Proceso dentro del ciclo:</strong> ejecutás acciones (cálculos, acumuladores, escribir resultados).</li>
+        <li><strong>Actualización:</strong> modificás variables que participan de la condición (si no, el bucle puede quedarse infinito).</li>
+      </ul>
+    </section>
+
+    <section class="mb-12">
+      <h2>2) Mientras ... Hacer ... FinMientras</h2>
+      <p>
+        La condición se evalúa <strong>antes</strong> de cada iteración.
+        Si al inicio no se cumple, el bloque puede no ejecutarse nunca.
+      </p>
+      <CodeBlock lang="pseint" title="Sintaxis"
+        code={`Mientras condicion Hacer
+  // Instrucciones a repetir
+FinMientras`}
+      />
+
+      <CodeBlock lang="pseint" title="Ejemplo: pedir números hasta que ingrese 0"
+        code={`Algoritmo MientrasEjemplo
+  Definir num Como Entero;
+  Escribir "Ingrese un número (0 para salir):";
+  Leer num;
+
+  Mientras num <> 0 Hacer
+    Escribir "Ingresaste: ", num;
+    Escribir "Ingrese un número (0 para salir):";
+    Leer num;
+  FinMientras
+FinAlgoritmo`}
+      />
+    </section>
+
+    <section class="mb-12">
+      <h2>3) Repetir ... Hasta Que</h2>
+      <p>
+        El bloque se ejecuta <strong>al menos una vez</strong>.
+        La condición se revisa al final: repetís hasta que se cumpla.
+      </p>
+      <CodeBlock lang="pseint" title="Sintaxis"
+        code={`Repetir
+  // Instrucciones a repetir (se ejecuta al menos una vez)
+Hasta Que condicion`}
+      />
+
+      <CodeBlock lang="pseint" title="Ejemplo: menú hasta elegir opción 1"
+        code={`Algoritmo RepetirEjemplo
+  Definir opcion Como Entero;
+
+  Repetir
+    Escribir "1) Continuar";
+    Escribir "2) Salir";
+    Escribir "Elija una opción:";
+    Leer opcion;
+  Hasta Que opcion = 1
+
+  Escribir "Elegiste la opción 1.";
+FinAlgoritmo`}
+      />
+    </section>
+
+    <section class="mb-12">
+      <h2>4) Para ... Hasta ... Hacer ... FinPara</h2>
+      <p>
+        Cuando ya sabés cuántas veces repetir, este bucle es ideal. Itera sobre un valor (contador)
+        desde un inicio hasta un final.
+      </p>
+      <CodeBlock lang="pseint" title="Sintaxis típica"
+        code={`Para i = 1 Hasta n Hacer
+  // Instrucciones
+FinPara`}
+      />
+
+      <CodeBlock lang="pseint" title="Ejemplo: sumar 1 a n"
+        code={`Algoritmo ParaEjemplo
+  Definir n Como Entero;
+  Definir i Como Entero;
+  Definir suma Como Entero;
+
+  Escribir "Ingrese n:";
+  Leer n;
+  suma = 0;
+
+  Para i = 1 Hasta n Hacer
+    suma = suma + i;
+  FinPara
+
+  Escribir "Suma = ", suma;
+FinAlgoritmo`}
+      />
+    </section>
+
+    <section class="mb-12">
+      <h2>Ejercicios</h2>
+
+      <Ejercicio
+        titulo="Ejercicio 1: Suma con Mientras"
+        enunciado="Leer números enteros y acumulá su suma mientras el número ingresado sea mayor o igual a 0. Al ingresar un número negativo, detener y mostrar la suma total."
+        solucion={`Algoritmo SumaMientras
+  Definir num Como Entero;
+  Definir suma Como Entero;
+
+  suma = 0;
+  Escribir "Ingrese un número (negativo para terminar):";
+  Leer num;
+
+  Mientras num >= 0 Hacer
+    suma = suma + num;
+    Escribir "Ingrese un número (negativo para terminar):";
+    Leer num;
+  FinMientras
+
+  Escribir "Suma total = ", suma;
+FinAlgoritmo`}
+      />
+
+      <Ejercicio
+        titulo="Ejercicio 2: Validación con Repetir"
+        enunciado="Pedir una edad hasta que el usuario ingrese una edad válida (por ejemplo entre 0 y 120, inclusive). Cuando sea válida, mostrar un mensaje de bienvenida."
+        solucion={`Algoritmo EdadValida
+  Definir edad Como Entero;
+
+  Repetir
+    Escribir "Ingrese su edad (0 a 120):";
+    Leer edad;
+  Hasta Que edad >= 0 Y edad <= 120
+
+  Escribir "Bienvenido/a. Tu edad es ", edad;
+FinAlgoritmo`}
+      />
+
+      <Ejercicio
+        titulo="Ejercicio 3: Tabla con Para"
+        enunciado="Leer un número entero n y mostrar la tabla de multiplicar de 1 a 10 (n x i) usando Para."
+        solucion={`Algoritmo TablaMultiplicar
+  Definir n Como Entero;
+  Definir i Como Entero;
+
+  Escribir "Ingrese n:";
+  Leer n;
+
+  Para i = 1 Hasta 10 Hacer
+    Escribir n, " x ", i, " = ", n * i;
+  FinPara
+FinAlgoritmo`}
+      />
+    </section>
+
+    <section class="mb-12">
+      <h2>Preguntas para repasar</h2>
+
+      <Ejercicio
+        titulo="Pregunta 1"
+        enunciado="Respondé:"
+        pregunta="¿Cuál es la diferencia clave entre `Mientras` y `Repetir` respecto a cuántas veces se ejecuta el bloque?"
+      />
+
+      <Ejercicio
+        titulo="Pregunta 2"
+        enunciado="Respondé:"
+        pregunta="Si no actualizás la variable que controla la condición dentro del bucle, ¿qué problema puede ocurrir?"
+      />
+
+      <Ejercicio
+        titulo="Pregunta 3"
+        enunciado="Respondé:"
+        pregunta="¿En qué caso conviene más usar `Para` que `Mientras`?"
+      />
+    </section>
+
+    <PseintQuizModal quizKey="repeticion" />
+
+    <nav class="nav-bottom">
+      <a href="/course/pseint/condicionales/" class="prev">← Condicionales</a>
+      <a href="/course/pseint/simulador/" class="next">Ir al Simulador →</a>
+    </nav>
+  </article>
+</Layout>
+
+<style>
+  .lead {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+    line-height: 1.7;
+    font-weight: 650;
+  }
+
+  .mb-12 {
+    margin-bottom: 3rem;
+  }
+  .bullet-list {
+    list-style: disc;
+    padding-left: 1.5rem;
+    margin-top: 1rem;
+  }
+</style>
+

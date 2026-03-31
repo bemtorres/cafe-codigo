@@ -1,0 +1,167 @@
+﻿---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import Ejercicio from '../../../../components/Ejercicio.astro';
+import PseintQuizModal from '../../../../components/PseintQuizModal.astro';
+---
+
+<Layout title="Matemáticas" description="Operaciones aritméticas y ejercicios matemáticos en PSeInt" courseSlug="pseint">
+  <article class="content-section">
+    <h1>Ejercicios matemáticos</h1>
+
+    <section class="mb-10">
+      <h2>Operadores aritméticos</h2>
+      <table class="content-table">
+        <thead>
+          <tr>
+            <th>Operador</th>
+            <th>Significado</th>
+            <th>Ejemplo</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="mono">+</td>
+            <td>Suma</td>
+            <td class="mono">5 + 3 = 8</td>
+          </tr>
+          <tr>
+            <td class="mono">-</td>
+            <td>Resta</td>
+            <td class="mono">5 - 3 = 2</td>
+          </tr>
+          <tr>
+            <td class="mono">*</td>
+            <td>Multiplicación</td>
+            <td class="mono">5 * 3 = 15</td>
+          </tr>
+          <tr>
+            <td class="mono">/</td>
+            <td>División</td>
+            <td class="mono">6 / 2 = 3</td>
+          </tr>
+          <tr>
+            <td class="mono">^</td>
+            <td>Potencia</td>
+            <td class="mono">2 ^ 3 = 8</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="mb-10">
+      <h2>Ejemplo básico</h2>
+      <CodeBlock lang="pseint" code={`Algoritmo OperacionesBasicas
+  Definir a Como Entero;
+  Definir b Como Entero;
+  Definir suma Como Entero;
+  Definir resta Como Entero;
+  a = 10;
+  b = 4;
+  suma = a + b;
+  resta = a - b;
+  Escribir "Suma: ", suma;
+  Escribir "Resta: ", resta;
+FinAlgoritmo`}
+        title="Operaciones con variables"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Ejercicios matemáticos</h2>
+
+      <Ejercicio
+        titulo="Ejercicio 1: Suma de dos números"
+        enunciado="Pide dos números al usuario y muestra la suma de ambos."
+        solucion={`Algoritmo SumaDosNumeros
+  Definir num1 Como Entero;
+  Definir num2 Como Entero;
+  Definir resultado Como Entero;
+  Escribir "Primer número:";
+  Leer num1;
+  Escribir "Segundo número:";
+  Leer num2;
+  resultado = num1 + num2;
+  Escribir "La suma es: ", resultado;
+FinAlgoritmo`}
+      />
+
+      <Ejercicio
+        titulo="Ejercicio 2: Área del rectángulo"
+        enunciado="Pide la base y la altura de un rectángulo. Calcula y muestra su área (base * altura)."
+        solucion={`Algoritmo AreaRectangulo
+  Definir base Como Real;
+  Definir altura Como Real;
+  Definir area Como Real;
+  Escribir "Base del rectángulo:";
+  Leer base;
+  Escribir "Altura del rectángulo:";
+  Leer altura;
+  area = base * altura;
+  Escribir "El área es: ", area;
+FinAlgoritmo`}
+      />
+
+      <Ejercicio
+        titulo="Ejercicio 3: Promedio de tres notas"
+        enunciado="Pide tres notas y calcula el promedio. Muestra el resultado."
+        solucion={`Algoritmo PromedioNotas
+  Definir nota1 Como Real;
+  Definir nota2 Como Real;
+  Definir nota3 Como Real;
+  Definir promedio Como Real;
+  Escribir "Nota 1:";
+  Leer nota1;
+  Escribir "Nota 2:";
+  Leer nota2;
+  Escribir "Nota 3:";
+  Leer nota3;
+  promedio = (nota1 + nota2 + nota3) / 3;
+  Escribir "El promedio es: ", promedio;
+FinAlgoritmo`}
+      />
+
+      <Ejercicio
+        titulo="Ejercicio 4: Conversión de temperatura"
+        enunciado="Pide la temperatura en Celsius y convierte a Fahrenheit usando: F = C * 9/5 + 32"
+        solucion={`Algoritmo CelsiusAFahrenheit
+  Definir celsius Como Real;
+  Definir fahrenheit Como Real;
+  Escribir "Temperatura en Celsius:";
+  Leer celsius;
+  fahrenheit = celsius * 9 / 5 + 32;
+  Escribir celsius, "°C equivale a ", fahrenheit, "°F";
+FinAlgoritmo`}
+      />
+
+      <Ejercicio
+        titulo="Ejercicio 5: Perímetro y área de un cuadrado"
+        enunciado="Pide el lado de un cuadrado. Calcula y muestra tanto el perímetro (4 * lado) como el área (lado²)."
+        solucion={`Algoritmo Cuadrado
+  Definir lado Como Real;
+  Definir perimetro Como Real;
+  Definir area Como Real;
+  Escribir "Lado del cuadrado:";
+  Leer lado;
+  perimetro = 4 * lado;
+  area = lado ^ 2;
+  Escribir "Perímetro: ", perimetro;
+  Escribir "Área: ", area;
+FinAlgoritmo`}
+      />
+
+      <Ejercicio
+        titulo="Ejercicio 6: Pregunta"
+        enunciado="¿Por qué usamos Real en lugar de Entero para el área de un rectángulo?"
+        pregunta="Piensa en los posibles valores que puede tener el área."
+      />
+    </section>
+
+    <PseintQuizModal quizKey="matematicas" />
+
+    <nav class="nav-bottom">
+      <a href="/course/pseint/leer/" class="prev">← Leer</a>
+      <a href="/course/pseint/condicionales/" class="next">Condicionales →</a>
+    </nav>
+  </article>
+</Layout>

@@ -1,0 +1,60 @@
+﻿---
+import Layout from '../../../../layouts/Layout.astro';
+import VisionProductoQuizModal from '../../../../components/VisionProductoQuizModal.astro';
+---
+
+<Layout title="1. Ciclos de Vida del Software" description="Módulo 1: Diferencias críticas entre Cascada y Ágil, y cuándo usarlos." courseSlug="vision-producto">
+  <article class="content-section">
+    <h1>1. Ciclos de Vida del Software</h1>
+
+    <section class="mb-10">
+      <h2>El proceso de construir software</h2>
+      <p>
+        Antes de empezar a programar (y antes de diseñar), todo equipo de software debe elegir un "cómo". ¿Cómo vamos a organizar el trabajo a lo largo de los meses o años? A esto se le conoce como <strong>Ciclo de Vida de Desarrollo de Software (SDLC)</strong>.
+      </p>
+      <p>
+        Existen dos grandes corrientes o formas de pensar fundamentales que han definido la industria: el método <strong>Predictivo (Cascada o Waterfall)</strong> y el método <strong>Adaptativo (Metodologías Ágiles)</strong>.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>1. Cascada (Predictivo)</h2>
+      <p>
+        Es el enfoque tradicional. Es un proceso lineal y secuencial. Se asume que puedes "predecir" todo el proyecto al inicio.
+      </p>
+      <ul>
+        <li><strong>Fases:</strong> 1. Requisitos -> 2. Diseño -> 3. Implementación (Código) -> 4. Pruebas -> 5. Despliegue.</li>
+        <li><strong>Ventajas:</strong> Documentación exhaustiva, fechas y presupuestos fijos, roles muy marcados.</li>
+        <li><strong>Desventajas:</strong> ¡El usuario final no ve el producto hasta que termina! (Meses o años después). Si los requerimientos cambian a mitad de camino, es muy costoso y difícil regresar.</li>
+      </ul>
+      <div class="note-box" style="background: #fdf2f8; border-left: 5px solid #ec4899;">
+        <strong>¿Cuándo usar Cascada?</strong> En sistemas críticos donde el fallo no es opción y los requerimientos son fijos e inmutables. <em>Ejemplo: Software para el motor de un avión comercial o equipamiento médico.</em>
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2>2. Metodologías Ágiles (Adaptativas)</h2>
+      <p>
+        Nacen en 2001 (Manifiesto Ágil) como respuesta al fracaso de proyectos cascada. En lugar de predecir el futuro, asumen que el <strong>cambio es inevitable y bienvenido</strong>.
+      </p>
+      <ul>
+        <li><strong>Fases:</strong> Iteraciones cortas (Ej. Sprints de 2 semanas en Scrum). En cada iteración se levantan requisitos, se diseña, se programa, se prueba y se entrega algo pequeñito pero 100% funcional.</li>
+        <li><strong>Ventajas:</strong> Entregas rápidas y continuas. Feedback temprano del cliente. Adaptación inmediata si el negocio cambia.</li>
+        <li><strong>Desventajas:</strong> El alcance y presupuesto final son inciertos al principio. Requiere mucha comunicación y clientes muy involucrados.</li>
+      </ul>
+      <div class="note-box" style="background: #f0fdf4; border-left: 5px solid #22c55e;">
+        <strong>¿Cuándo usar Ágil?</strong> En la inmensa mayoría de proyectos de software actuales: Startups, aplicaciones web/mobile, productos innovadores donde tú y el cliente "van descubriendo" lo que aporta más valor.
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <VisionProductoQuizModal quizKey="ciclos-de-vida" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/vision-producto/" class="prev">← Índice del Curso</a>
+      <a href="/course/vision-producto/inicio-y-usuario/" class="next">Inicio y Usuario →</a>
+    </nav>
+  </article>
+</Layout>

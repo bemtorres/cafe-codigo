@@ -1,0 +1,57 @@
+﻿---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import CssQuizModal from '../../../../components/CssQuizModal.astro';
+---
+
+<Layout title="Tailwind CSS: El poder de las utilidades" description="Descubre por qué Tailwind es el framework favorito hoy: construye diseños 100% personalizados sin escribir una sola línea de CSS propio." courseSlug="css">
+  <article class="content-section">
+    <h1>5. Tailwind CSS: Diseños Únicos</h1>
+
+    <section class="mb-10">
+      <h2>El fin del CSS a medida</h2>
+      <p>
+        <strong>Tailwind CSS</strong> es la forma de diseñar directamente en el HTML con miles de clases pequeñas pero potentes. No hay un <code>btn-primary</code> hecho; <strong>tú</strong> lo construyes así:
+      </p>
+      <CodeBlock lang="html"
+        code={`<button class="bg-blue-600 p-4 rounded-lg text-white hover:bg-blue-700">
+  Botón creado con piezas
+</button>`}
+        title="html+tailwind"
+      />
+    </section>
+
+    <div class="card my-8" style="background: white; border: 3px solid #38bdf8; border-radius: 20px; padding: 1.5rem;">
+      <h3 style="color: #38bdf8;">🔧 Clases de utilidad comunes</h3>
+      <p>Aprende las piezas básicas para armar cualquier web:</p>
+      <ul class="list-disc pl-5">
+        <li><strong>bg-red-500:</strong> Color de fondo rojo nivel 500.</li>
+        <li><strong>p-2, p-4, p-8:</strong> Espaciado interior (Padding).</li>
+        <li><strong>rounded-xl:</strong> Bordes muy redondeados.</li>
+        <li><strong>shadow-lg:</strong> Sombra exterior grande y suave.</li>
+        <li><strong>flex / grid:</strong> Activa el layout moderno al instante.</li>
+      </ul>
+    </div>
+
+    <section class="mb-10">
+      <h2>¿Por qué Tailwind y no Bootstrap?</h2>
+      <p>
+        <strong>Bootstrap</strong> te da bloques ya hechos (como LEGOs ya montados). <strong>Tailwind</strong> te da las piezas individuales, por lo que ninguna web hecha con Tailwind se parece a otra. Tú tienes el control absoluto del píxel.
+      </p>
+      <div class="card p-4" style="background: #f8fafc; border: 2px dashed #38bdf8; border-radius: 12px;">
+        <p><strong>Dato Pro:</strong> Tailwind también tiene soporte nativo para <strong>Modo Oscuro</strong> (añadiendo el prefijo <code>dark:</code>) y para <strong>dispositivos móviles</strong> (usando <code>md:</code> o <code>lg:</code> directamente en las clases).</p>
+      </div>
+    </section>
+
+    <div class="ejercicio" style="background: #f0f7ff; border-left: 5px solid #264de4; padding: 1rem; border-radius: 12px; margin: 2rem 0;">
+      <h3>🎨 Examen Final CSS3</h3>
+      <p class="enunciado">¡Increíble! Has dominado el diseño web moderno. ¿Estás listo para darle vida a tus páginas con JavaScript en el futuro?</p>
+      <CssQuizModal quizKey="tailwind" />
+    </div>
+
+    <nav class="nav-bottom">
+      <a href="/course/css/bootstrap/" class="prev">← Bootstrap Essentials</a>
+      <a href="/course/css/" class="next">Ir al Inicio →</a>
+    </nav>
+  </article>
+</Layout>

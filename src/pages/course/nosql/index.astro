@@ -1,0 +1,122 @@
+﻿---
+import Layout from '../../../layouts/Layout.astro';
+import { courses } from '../../../data/courses';
+
+const course = courses.find((c) => c.slug === 'nosql');
+if (!course) {
+  throw new Error("No se encontró el curso 'nosql' en courses.ts");
+}
+---
+
+<Layout
+  title="NoSQL: MongoDB y Firebase"
+  description={course.description}
+  courseSlug="nosql"
+>
+  <div class="course-container">
+    <header class="course-index-header">
+      <div class="nosql-logo-box" aria-hidden="true">
+        <span class="nosql-badge">🍃</span>
+      </div>
+      <h1 class="course-big-title" style={`--course-accent: ${course.color}`}>
+        {course.name}
+      </h1>
+      <p class="course-description">
+        {course.description}
+      </p>
+    </header>
+
+    <div class="cards-grid">
+      {course.lessons?.map((lesson, index) => (
+        <a href={lesson.href} class="lesson-card">
+          <div class="lesson-card__number">{index + 1}</div>
+          <div class="lesson-card__content">
+            <h3 class="lesson-card__title">{lesson.title}</h3>
+            <span class="lesson-card__cta">Abrir lección →</span>
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .course-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2.5rem 1.25rem;
+  }
+  .course-index-header {
+    text-align: center;
+    margin-bottom: 3.5rem;
+  }
+  .nosql-logo-box {
+    margin-bottom: 1.25rem;
+  }
+  .nosql-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #13aa52 0%, #f6820c 100%);
+    color: white;
+    padding: 0.45rem 1rem;
+    border-radius: 14px;
+    border: 3px solid var(--border);
+    box-shadow: 4px 4px 0px var(--border);
+    font-size: 1.75rem;
+  }
+  .course-big-title {
+    font-size: clamp(2rem, 6vw, 3rem);
+    font-weight: 950;
+    color: var(--course-accent, #13aa52);
+    text-shadow: 2px 2px 0px var(--border);
+    margin: 0 0 1rem;
+  }
+  .course-description {
+    font-size: 1.12rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    max-width: 640px;
+    margin: 0 auto;
+    line-height: 1.55;
+  }
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+  .lesson-card {
+    display: flex;
+    gap: 1rem;
+    background: white;
+    border: 3px solid var(--border);
+    border-radius: 20px;
+    padding: 1.5rem;
+    text-decoration: none;
+    color: var(--text-primary);
+    box-shadow: 5px 5px 0px var(--border);
+    align-items: center;
+    transition:
+      transform 0.2s,
+      box-shadow 0.2s;
+  }
+  .lesson-card:hover {
+    transform: translate(-4px, -4px);
+    box-shadow: 9px 9px 0px var(--border);
+    border-color: #13aa52;
+  }
+  .lesson-card__number {
+    font-size: 2rem;
+    font-weight: 900;
+    opacity: 0.12;
+    color: #13aa52;
+  }
+  .lesson-card__title {
+    font-size: 1.08rem;
+    font-weight: 950;
+    margin: 0 0 0.35rem;
+  }
+  .lesson-card__cta {
+    font-size: 0.88rem;
+    font-weight: 800;
+    color: #13aa52;
+  }
+</style>

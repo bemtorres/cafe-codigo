@@ -1,0 +1,134 @@
+﻿---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+---
+
+<Layout
+  title="MongoDB: CRUD"
+  description="Create, Read, Update y Delete en MongoDB: insertOne, find, update y delete con filtros, proyección e índices."
+  courseSlug="nosql"
+>
+  <article class="content-section">
+    <h1>3. MongoDB: CRUD ⚡</h1>
+
+    <section class="mb-10">
+      <h2>¿Qué es CRUD en MongoDB?</h2>
+      <p>
+        <strong>CRUD</strong> son las cuatro operaciones básicas sobre datos: <strong>C</strong>reate (crear), <strong>R</strong>ead (leer), <strong>U</strong>pdate (actualizar) y <strong>D</strong>elete (eliminar). En bases relacionales suele mapearse a <code>INSERT</code>, <code>SELECT</code>, <code>UPDATE</code> y <code>DELETE</code>. En MongoDB se hace sobre <strong>colecciones</strong> de <strong>documentos</strong>, usando métodos del driver o de <code>mongosh</code>.
+      </p>
+      <ul class="list-disc pl-6 space-y-2 font-[650] text-textSecondary">
+        <li><strong>Create</strong> → <code>insertOne</code>, <code>insertMany</code></li>
+        <li><strong>Read</strong> → <code>find</code>, <code>findOne</code>, <code>countDocuments</code></li>
+        <li><strong>Update</strong> → <code>updateOne</code>, <code>updateMany</code>, <code>replaceOne</code></li>
+        <li><strong>Delete</strong> → <code>deleteOne</code>, <code>deleteMany</code></li>
+      </ul>
+      <p>
+        El primer argumento de casi todas las operaciones es un <strong>filtro</strong>: un documento JSON con condiciones (por ejemplo <code>{'{ anio: 2025 }'}</code> o <code>{'{ "precio": { "$lte": 50 } }'}</code> usando operadores como <code>$lte</code>, <code>$in</code>, <code>$regex</code>, etc.).
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>C — Create (insertar)</h2>
+      <p>
+        <strong><code>insertOne</code></strong> agrega un documento a la colección. <strong><code>insertMany</code></strong> agrega varios en una sola operación (útil para cargas iniciales o migraciones).
+      </p>
+      <CodeBlock
+        lang="javascript"
+        title="Create"
+        code={`db.libros.insertOne({
+  titulo: "NoSQL explicado",
+  anio: 2025,
+  tags: ["datos", "mongodb"]
+});
+
+db.libros.insertMany([
+  { titulo: "A", anio: 2024 },
+  { titulo: "B", anio: 2023 }
+]);`}
+      />
+      <p>
+        Si no enviás <code>_id</code>, MongoDB puede generar uno automáticamente (<code>ObjectId</code>).
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>R — Read (leer)</h2>
+      <p>
+        <strong><code>find</code></strong> devuelve un cursor con todos los documentos que cumplen el filtro (podés encadenar <code>.limit()</code>, <code>.sort()</code>, etc.). <strong><code>findOne</code></strong> devuelve solo el primero o <code>null</code>. La <strong>proyección</strong> (segundo argumento) indica qué campos traer: <code>1</code> incluir, <code>0</code> excluir (excepto <code>_id</code>, que hay que excluir explícitamente si no lo querés).
+      </p>
+      <CodeBlock
+        lang="javascript"
+        title="Read"
+        code={`// Todos los libros de 2025 en adelante
+db.libros.find({ anio: { $gte: 2020 } });
+
+// Un solo documento (el primero que coincida)
+db.libros.findOne({ titulo: "NoSQL explicado" });
+
+// Solo título y año (sin _id)
+db.libros.find({ anio: 2025 }, { titulo: 1, anio: 1, _id: 0 });
+
+// Cuántos documentos cumplen el filtro
+db.libros.countDocuments({ anio: { $gte: 2024 } });`}
+      />
+      <p>
+        Los operadores como <code>$gte</code> (mayor o igual), <code>$in</code>, <code>$regex</code> para texto, etc., van <strong>dentro</strong> del documento de filtro y componen el “lenguaje de consulta” de MongoDB.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>U — Update (actualizar)</h2>
+      <p>
+        No se hace con un <code>UPDATE ... SET</code> como en SQL: pasás el filtro y un documento de <strong>operadores</strong>. Lo más habitual es <strong><code>$set</code></strong> para modificar o añadir campos, <strong><code>$inc</code></strong> para sumar a números, <strong><code>$unset</code></strong> para quitar un campo. <strong><code>replaceOne</code></strong> reemplaza el documento entero (menos común si solo querés tocar algunos campos).
+      </p>
+      <CodeBlock
+        lang="javascript"
+        title="Update"
+        code={`// Actualizar un documento que coincida con el filtro
+db.libros.updateOne(
+  { titulo: "NoSQL explicado" },
+  { $set: { stock: 12 }, $inc: { visitas: 1 } }
+);
+
+// Varios documentos a la vez (mismo criterio de filtro)
+db.libros.updateMany(
+  { anio: { $lt: 2020 } },
+  { $set: { archivado: true } }
+);`}
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>D — Delete (eliminar)</h2>
+      <p>
+        <strong><code>deleteOne</code></strong> borra como mucho un documento (el primero que cumpla el filtro). <strong><code>deleteMany</code></strong> borra todos los que cumplan. Conviene usar filtros muy específicos (a menudo por <code>_id</code>) para no borrar de más en producción.
+      </p>
+      <CodeBlock
+        lang="javascript"
+        title="Delete"
+        code={`// Borrar por _id (recomendado cuando conocés el id exacto)
+db.libros.deleteOne({ _id: ObjectId("...") });
+
+// Borrar todos los que cumplan la condición (¡cuidado!)
+db.libros.deleteMany({ archivado: true });`}
+      />
+      <p>
+        En producción, los <strong>índices</strong> sobre campos usados en filtros aceleran lecturas y escrituras y evitan escaneos completos de la colección cuando crece el volumen.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Buenas prácticas rápidas</h2>
+      <ul class="list-disc pl-6 space-y-2 font-[650] text-textSecondary">
+        <li>Modelá pensando en las <strong>consultas frecuentes</strong> (qué vas a leer junto).</li>
+        <li>Evitá documentos gigantes sin necesidad; a veces conviene <strong>referenciar</strong> otra colección.</li>
+        <li>Definí <strong>índices</strong> para campos usados en filtros y ordenamientos críticos.</li>
+      </ul>
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/nosql/mongodb-conceptos/" class="prev">← Documentos y BSON</a>
+      <a href="/course/nosql/firebase-intro/" class="next">Firebase y Firestore →</a>
+    </nav>
+  </article>
+</Layout>

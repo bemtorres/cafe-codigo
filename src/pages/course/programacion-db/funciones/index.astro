@@ -1,0 +1,78 @@
+﻿---
+import Layout from '../../../../layouts/Layout.astro';
+import PlsqlQuizModal from '../../../../components/PlsqlQuizModal.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+---
+
+<Layout title="Funciones (UDF)" description="Aprende a crear tus propias funciones personalizadas para usarlas dentro de consultas SELECT." courseSlug="programacion-db">
+  <article class="content-section">
+    <h1>3. Funciones Personalizadas (UDF) 🧮</h1>
+
+    <section class="mb-10">
+      <h2>¿Funciones vs Procedimientos?</h2>
+      <p>
+        Las <strong>Funciones Definidas por el Usuario (UDF)</strong> se parecen muchísimo a los Procedimientos Almacenados, pero tienen una diferencia fundamental: <strong>Una función TIENE que retornar un valor (<code>RETURN</code>).</strong>
+      </p>
+      <p>
+        Mientras que un Procedure suele hacer trabajo sucio (Inserts, Updates gruesos de lógica de negocio), una Función se diseña para <strong>procesar datos y devolver una respuesta</strong> plana.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Creando una Función</h2>
+      <p>La sintaxis requiere que especifiques qué tipo de dato va a devolver en la cabecera usando <code>RETURN</code>.</p>
+      
+      <CodeBlock lang="sql" code={`-- Función para calcular un descuento simple
+CREATE OR REPLACE FUNCTION CalcularDescuentoVIP (
+  p_precio_original IN NUMBER
+) 
+RETURN NUMBER -- Declaramos qué tipo de dato retorna
+IS
+  v_precio_final NUMBER;
+BEGIN
+  v_precio_final := p_precio_original * 0.85; -- 15% de descuento
+  
+  RETURN v_precio_final; -- Obligatorio devolver el valor
+END CalcularDescuentoVIP;`} />
+    </section>
+
+    <section class="mb-10">
+      <h2>El superpoder: Usarlas en un SELECT</h2>
+      <p>
+        Debido a que devuelven un valor puro, ¡puedes inyectar tus propias funciones personalizadas directamente adentro de una consulta SQL normal!
+      </p>
+      
+      <CodeBlock lang="sql" code={`-- Podemos usar la función directamente en nuestro query:
+SELECT 
+  nombre_producto, 
+  precio AS precio_normal, 
+  CalcularDescuentoVIP(precio) AS precio_con_descuento
+FROM productos
+WHERE categoria = 'Lujo';`} />
+      
+      <div class="note-box" style="background: #E8F5E9; border-left: 5px solid #2980b9;">
+        <strong>Buena Práctica:</strong> Evita hacer <code>UPDATE</code> o <code>INSERT</code> pesados adentro de una Función. Las funciones sirven para leer y calcular. Deja la escritura masiva para los Procedures.
+      </div>
+    </section>
+
+    <div class="ejercicio" style="background: #F4F6F6; border: 2px solid #BDC3C7;">
+      <h3>🎮 Analizando Retornos</h3>
+      <p class="enunciado">Si en medio del código de una función escribes <code>RETURN 100;</code>, ¿qué ocurre con el resto del código que esté debajo de esa línea en el bloque BEGIN?</p>
+      
+      <details>
+        <summary>👁️ Ver respuesta sugerida</summary>
+        <p>No se ejecuta. La palabra clave <code>RETURN</code> termina inmediatamente la función y devuelve el valor al programa que la invocó.</p>
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <PlsqlQuizModal quizKey="funciones" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/programacion-db/procedimientos/" class="prev">← Procedimientos</a>
+      <a href="/course/programacion-db/triggers/" class="next">Disparadores (Triggers) →</a>
+    </nav>
+  </article>
+</Layout>

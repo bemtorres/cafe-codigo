@@ -1,0 +1,53 @@
+﻿---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import CssQuizModal from '../../../../components/CssQuizModal.astro';
+---
+
+<Layout title="Diseño Web Adaptable (Responsive)" description="Haz que tu web se vea increíble en el iPhone de un usuario y en el iMac de 27 pulgadas de otro con CSS Media Queries." courseSlug="css">
+  <article class="content-section">
+    <h1>3. Diseño Responsive: El mundo adaptado</h1>
+
+    <section class="mb-10">
+      <h2>Media Queries: La magia del cambio</h2>
+      <p>
+        Una <strong>Media Query</strong> te permite decir: "Aplica estas reglas CSS SOLO SI la pantalla mide más de 768 píxeles".
+      </p>
+      <CodeBlock lang="css"
+        code={`@media (min-width: 768px) {
+  /* Reglas exclusivas para tablets y PCs */
+  .grid { grid-template-columns: repeat(3, 1fr); }
+}`}
+        title="css-responsive"
+      />
+    </section>
+
+    <div class="card my-8" style="background: white; border: 3px solid #264de4; border-radius: 20px; padding: 1.5rem;">
+      <h3 style="color: #264de4;">📱 El Enfoque Mobile First</h3>
+      <p>Hoy en día, se diseña primero para el celular y luego se añaden capas para lo más ancho. ¿Por qué?</p>
+      <ol class="list-decimal pl-5 mt-4">
+        <li><strong>Más usuarios:</strong> Hay más gente en el móvil que en PC.</li>
+        <li><strong>CSS más limpio:</strong> Es más fácil añadir reglas conforme crece la pantalla que intentar "quitar" cosas de una web de escritorio gigante para que quepan en un móvil.</li>
+      </ol>
+    </div>
+
+    <section class="mb-10">
+      <h2>Unidades Relativas</h2>
+      <ul class="list-disc pl-5 mt-4">
+        <li><strong>% (Porcentaje):</strong> El espacio comparado con su padre.</li>
+        <li><strong>vw / vh:</strong> Porcentaje de lo que mide toda la pantalla física (Viewport).</li>
+        <li><strong>rem:</strong> Unidades comparadas con el tamaño de letra raíz. ¡Genial para que el usuario pueda hacer Zoom sin que la web se rompa!</li>
+      </ul>
+    </section>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <CssQuizModal quizKey="responsive" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/css/flexbox-grid/" class="prev">← Flexbox y Grid</a>
+      <a href="/course/css/bootstrap/" class="next">Bootstrap Essentials →</a>
+    </nav>
+  </article>
+</Layout>

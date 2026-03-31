@@ -1,0 +1,51 @@
+﻿---
+import Layout from '../../../../layouts/Layout.astro';
+import UnityQuizModal from '../../../../components/UnityQuizModal.astro';
+---
+
+<Layout title="3. Física, Colisiones y Feedback" description="RigidBody, Colliders, y Triggers (Detectar áreas de efecto o recolección)." courseSlug="unity-prototipado">
+  <article class="content-section">
+    <h1>3. Física, Colisiones y Feedback</h1>
+
+    <section class="mb-10">
+      <h2>Una escena es hueca sin físicas</h2>
+      <p>
+        Por defecto, mover el <code>Transform</code> de un objeto mediante script es como Mover pintura en un canvas: ignora completamente los muros u otros objetos. Para cumplir expectativas funcionales (IL 3.3) donde un jugador deba "chocar" o "caer", necesitamos el motor de física (PhysX para 3D o Box2D para 2D).
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Rigidbody y Colliders: Hacer que duelan los golpes</h2>
+      <ul>
+        <li>💥 <strong>El Collider:</strong> Es la "piel" o armadura invisible geométrica de un objeto (ej. BoxCollider, SphereCollider). Si dos objetos con Collider se tocan, sus áreas interfieren (se detecta que se rozaron). <em>Sin colliders no hay interacción fìsica posible.</em></li>
+        <li>⚖️ <strong>El Rigidbody:</strong> Le dice al motor de Unity "Este objeto obedece a fuerzas del universo". Le agrega peso (Mass), gravedad, y le permite chocar realísticamente. <em>¡Si se lo añades a un auto, este caerá infinitamente si no hay un plano/suelo con Collider debajo!</em></li>
+      </ul>
+    </section>
+
+    <section class="mb-10">
+      <h2>Triggers: Monedas invisibles y Puertas mágicas</h2>
+      <p>
+        Un "Trigger" (Gatillo) es un Collider configurado con la palomita <strong>Is Trigger</strong> marcada en el Inspector.
+      </p>
+      <div class="note-box" style="background: #fdf2f8; border-left: 5px solid #ec4899;">
+        <strong>Súper Utilidad:</strong> Al marcar algo como "Trigger", pierde su "solidez" (los objetos lo atraviesan como fantasmas), PERO avisa silenciosamente al código de C# usando <code>OnTriggerEnter()</code> que algo entró.
+      </div>
+      <p>Aplicaciones clásicas:</p>
+      <ul>
+        <li>Recoger una moneda/arma (Atraviesas la moneda, desaparece y suma puntos).</li>
+        <li>Trampas (Entras a un área y detonas un explosivo secreto).</li>
+        <li>Checkpoints invisibles en pistas de carreras.</li>
+      </ul>
+    </section>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <UnityQuizModal quizKey="fisica" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/unity-prototipado/scripting/" class="prev">← Scripting Básico</a>
+      <a href="/course/unity-prototipado/ui-ciclo/" class="next">UI y Ciclo de Juego →</a>
+    </nav>
+  </article>
+</Layout>

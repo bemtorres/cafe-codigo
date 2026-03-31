@@ -1,0 +1,50 @@
+﻿---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import TerminalQuizModal from '../../../../components/TerminalQuizModal.astro';
+---
+
+<Layout title="Gestión de Procesos Unix" description="Maneja la vida y la muerte de los programas en tu sistema operativo: ps, top, kill y htop." courseSlug="terminal">
+  <article class="content-section">
+    <h1>7. Procesos: Administrando la vida</h1>
+
+    <section class="mb-10">
+      <h2>¿Quién gasta CPU?</h2>
+      <p>
+        Un proceso es un programa que está corriendo. Desde la terminal, puedes verlos todos, ver cuánto pesan y, si se congelan, ¡terminarlos!
+      </p>
+      <ul class="mb-4">
+        <li><strong><code>ps aux</code></strong>: Lista todos los procesos que corren ahora.</li>
+        <li><strong><code>top</code> (o htop)</strong>: Monitor interactivo de CPU y memoria en tiempo real.</li>
+        <li><strong><code>kill -9 &lt;PID&gt;</code></strong>: Mata el proceso con el identificador PID de forma inmediata.</li>
+        <li><strong><code>free -m</code></strong>: Muestra cuánta memoria RAM libre tienes en megabytes.</li>
+        <li><strong><code>df -h</code></strong>: Muestra el espacio libre en tus discos duros.</li>
+      </ul>
+      <CodeBlock lang="bash" code={`kill -9 1234
+# Forzamos el cierre del proceso con ID 1234.`}
+        title="bash"
+      />
+    </section>
+
+    <div class="ejercicio" style="background: #f1f1f1; border-left: 5px solid #1a1a1b; padding: 1rem; border-radius: 8px;">
+      <h3>💻 Misión: Administrador</h3>
+      <p class="enunciado">Si quieres ver el monitor de procesos en vivo para saber qué programa está usando todo tu procesador, ¿qué comando usarías?</p>
+      
+      <details>
+        <summary>👁️ Ver comando</summary>
+        <CodeBlock lang="bash" code={`top`} title="Terminal" />
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>¡Examen Final Terminal!</h2>
+      <p>Demuestra que eres un maestro de la línea de comandos.</p>
+      <TerminalQuizModal quizKey="procesos" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/terminal/redireccion/" class="prev">← Pipes y Redirección</a>
+      <a href="/course/terminal/" class="next">Ir al Inicio →</a>
+    </nav>
+  </article>
+</Layout>

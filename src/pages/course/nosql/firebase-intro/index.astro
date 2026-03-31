@@ -1,0 +1,50 @@
+﻿---
+import Layout from '../../../../layouts/Layout.astro';
+---
+
+<Layout
+  title="Firebase y Firestore"
+  description="Qué es Firebase, el ecosistema Google Cloud y por qué Firestore encaja en apps web y móviles."
+  courseSlug="nosql"
+>
+  <article class="content-section">
+    <h1>4. Firebase y Firestore 🔥</h1>
+
+    <section class="mb-10">
+      <h2>¿Qué es Firebase?</h2>
+      <p>
+        <strong>Firebase</strong> es una plataforma de Google para construir y operar aplicaciones (web, Android, iOS). Incluye autenticación, hosting, funciones en la nube, mensajería, analítica y, lo que nos interesa aquí, bases de datos.
+      </p>
+      <p>
+        Históricamente existió la <strong>Realtime Database</strong> (JSON en tiempo real, modelo de árbol). Hoy, para nuevos proyectos, lo habitual es <strong>Cloud Firestore</strong>: base de datos <strong>documental</strong>, escalable y con consultas más ricas que la RTDB clásica.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Firestore en una frase</h2>
+      <p>
+        Organizás datos en <strong>colecciones</strong> de <strong>documentos</strong> (mapas de campos y valores). Los documentos pueden contener <strong>subcolecciones</strong>, formando una jerarquía que encaja con rutas tipo <code>{'/usuarios/{uid}/pedidos/{pedidoId}'}</code>.
+      </p>
+      <p>
+        Desde el cliente (con las reglas de seguridad bien configuradas) podés <strong>escuchar cambios en tiempo real</strong>: ideal para interfaces que se actualizan solas cuando otro usuario o el servidor modifica datos.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Qué necesitás en la práctica</h2>
+      <ul class="list-disc pl-6 space-y-2 font-[650] text-textSecondary">
+        <li>Un <strong>proyecto</strong> en la consola de Firebase.</li>
+        <li>Activar <strong>Firestore</strong> en modo de prueba solo para desarrollo (luego endurecés las reglas).</li>
+        <li>Registrar la app (web o móvil) y usar el <strong>SDK</strong> oficial para leer y escribir.</li>
+      </ul>
+      <p>
+        La siguiente lección profundiza en <strong>colecciones</strong>, <strong>consultas</strong> y el papel de las <strong>reglas de seguridad</strong>.
+      </p>
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/nosql/mongodb-crud/" class="prev">← MongoDB CRUD</a>
+      <a href="/course/nosql/firestore-datos/" class="next">Firestore: colecciones →</a>
+    </nav>
+  </article>
+</Layout>

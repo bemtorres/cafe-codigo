@@ -1,0 +1,59 @@
+﻿---
+import Layout from '../../../../layouts/Layout.astro';
+import ArchQuizModal from '../../../../components/ArchQuizModal.astro';
+import vistaImg from '../../../../assets/images/modelo_4_1/5_vista_proceso.png';
+---
+
+<Layout title="Vista de Proceso: Concurrencia" description="Aspectos dinámicos del sistema: hilos, procesos, rendimiento y escalabilidad." courseSlug="arch">
+  <article class="content-section">
+    <h1>5. Vista de Proceso: Aspectos Dinámicos</h1>
+
+    <section class="mb-10">
+      <h2>Hilos y Flujos</h2>
+      <p>
+        Ya no nos importa la carpeta o la clase, sino <strong>cómo se ejecuta</strong> todo. Es la vista del rendimiento y la sincronización.
+      </p>
+      <p>
+        <strong>¿Qué describe?:</strong> Descomposición del sistema en procesos (SO) y threads (hilos), control de concurrencia y flujo de control dinámico.
+      </p>
+    </section>
+
+    <div class="note-box" style="background: #F1F5F9; border-left: 5px solid #475569;">
+      <strong>UML Estrella:</strong> Diagramas de Secuencia, Diagramas de Actividad, Diagramas de Estados.
+    </div>
+
+    <div class="flex justify-center my-6">
+      <img src={vistaImg.src} alt="Diagrama Vista de Proceso" class="w-full max-w-2xl rounded-xl border-4 border-[#4A3B22] shadow-[6px_6px_0px_#4A3B22]" />
+    </div>
+
+    <section class="mb-10">
+      <h2>Interesados (Stakeholders)</h2>
+      <p>A esta vista le interesa a:</p>
+      <ul>
+        <li><strong>Arquitectos de Sistema:</strong> Para asegurar el rendimiento.</li>
+        <li><strong>Programadores Especializados:</strong> En concurrencia y backend.</li>
+        <li><strong>Integradores de Sistema:</strong> Para saber cómo fluyen los datos.</li>
+      </ul>
+    </section>
+
+    <div class="ejercicio" style="background: #F8FAFC; border: 2px solid #E2E8F0;">
+      <h3>🤔 Reflexión de Arquitecto</h3>
+      <p class="enunciado">Si estoy diseñando cómo mis procesos manejan el "Lock" de una base de datos para evitar colisiones, ¿en qué vista estoy?</p>
+      
+      <details>
+        <summary>👁️ Ver respuesta</summary>
+        <p>En la <strong>Vista de Proceso</strong>. El control de la sincronización y bloqueos de concurrencia de hilos es su dominio.</p>
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <ArchQuizModal quizKey="vista-proceso" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/arch/vista-desarrollo/" class="prev">← Vista Desarrollo</a>
+      <a href="/course/arch/vista-fisica/" class="next">Vista Física →</a>
+    </nav>
+  </article>
+</Layout>

@@ -1,0 +1,122 @@
+﻿---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import JavaQuizModal from '../../../../components/JavaQuizModal.astro';
+---
+
+<Layout title="Variables en Java" description="Tipos primitivos y la magia de los Strings" courseSlug="java">
+  <article class="content-section">
+    <h1>2. Variables y Primitivos</h1>
+
+    <section class="mb-10">
+      <h2>Tipos de Datos Primitivos</h2>
+      <p>
+        Al ser un lenguaje <strong>fuertemente tipado</strong>, debes decirle a Java exactamente qué tipo de dato vas a guardar dentro de una variable en el momento de crearla. Los primitivos (aquellos que se guardan en la memoria rápida o <em>stack</em>) más comunes son:
+      </p>
+      <ul class="mb-4">
+        <li><strong><code>int</code></strong>: Para números enteros sin decimales (ej. 1, 5, -20).</li>
+        <li><strong><code>double</code></strong>: Para números con punto decimal de gran precisión.</li>
+        <li><strong><code>float</code></strong>: Para números decimales, pero exige una 'f' al final del número (ej. <code>3.14f</code>).</li>
+        <li><strong><code>boolean</code></strong>: Solo acepta <code>true</code> o <code>false</code>.</li>
+        <li><strong><code>char</code></strong>: Almacena un solo caracter entre comillas simples (ej. <code>'a'</code>).</li>
+      </ul>
+    </section>
+
+    <section class="mb-10">
+      <h2>Los Strings (Cadena de Textos)</h2>
+      <p>
+        Curiosamente, <code>String</code> en Java (con 'S' mayúscula) <strong>no es un tipo primitivo</strong>, es una Clase completa. Esto significa que tiene métodos asociados (como <code>.length()</code> o <code>.toUpperCase()</code>) para manipular el texto. Los strings deben escribirse entre comillas dobles.
+      </p>
+      <CodeBlock lang="java" code={`public class Main {
+    public static void main(String[] args) {
+        int nivel = 99;
+        boolean maxeado = true;
+        char inicial = 'A';
+        
+        // Uso de variables Primitivas y la Clase String
+        String nombre = "Arthur Pendragon";
+        
+        System.out.println("El Rey " + nombre + " es nivel " + nivel);
+    }
+}`}
+        title="Declaración y Concatenación"
+      />
+      <p class="mt-4 text-sm bg-blue-50 p-3 rounded-lg border border-blue-100">
+        <strong>💡 Dato de oro de la convención Java:</strong> Los nombres de variables y métodos de forma oficial en Java siempre se escriben en <code>camelCase</code> (ej: <code>miVariableLoca</code>).
+      </p>
+    </section>
+
+    <div class="ejercicio">
+      <h3>👨‍💻 Ejercicio Práctico 1</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> Ficha de Personaje
+      </div>
+      <p class="enunciado">Declara una variable <code>String</code> para un nombre, un <code>int</code> para el nivel, y un <code>boolean</code> para saber si está vivo. Asígnales un valor e imprímelas concatenadas usando <code>+</code>.</p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock lang="java" code={`String nombre = "Sylvanas";
+int nivel = 85;
+boolean estaViva = false; // No-muerta
+
+System.out.println("La jugadora " + nombre + " de nivel " + nivel + " ¿está viva? " + estaViva);`} />
+      </details>
+    </div>
+
+    <div class="ejercicio" style="background: #FFF3E0;">
+      <h3>👨‍💻 Ejercicio Práctico 2</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> Calculadora de Variables
+      </div>
+      <p class="enunciado">Mete el número 20 en una variable <code>A</code> y el número 15 en una variable <code>B</code>. Suma ambas en una nueva variable <code>resultado</code> y muéstrala.</p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock lang="java" code={`int a = 20;
+int b = 15;
+int resultado = a + b;
+System.out.println("La suma da: " + resultado);`} />
+      </details>
+    </div>
+
+    <div class="ejercicio" style="background: #FFF3E0;">
+      <h3>👨‍💻 Ejercicio Práctico 3</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> El uso de Constantes
+      </div>
+      <p class="enunciado">Declara una constante. En Java utilizamos la palabra reservada <code>final</code> seguida del tipo de dato. Declara <code>final double PI = 3.1416;</code> e imprímela.</p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock lang="java" code={`final double PI = 3.1416;
+System.out.println("El valor inmutable de pi es " + PI);`} />
+      </details>
+    </div>
+
+    <div class="ejercicio" style="background: #FFF3E0;">
+      <h3>👨‍💻 Ejercicio Práctico 4</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> Cadenas vs Números
+      </div>
+      <p class="enunciado">Declara dos <code>String</code> con los valores "5" y "10". Súmalos con un <code>+</code> e imprime el resultado. Verás que no arroja 15, sino que concatena los textos.</p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock lang="java" code={`String texto1 = "5";
+String texto2 = "10";
+System.out.println(texto1 + texto2); // Imprime 510`} />
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>¿Recuerdas cuál es un Wrapper y cuál un Primitivo? ¡Supera el test!</p>
+      <JavaQuizModal quizKey="variables" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/java/introduccion/" class="prev">← Introducción</a>
+      <a href="/course/java/io/" class="next">Entrada / Salida →</a>
+    </nav>
+  </article>
+</Layout>

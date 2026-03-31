@@ -1,0 +1,57 @@
+﻿---
+import Layout from '../../../../layouts/Layout.astro';
+import ScrumQuizModal from '../../../../components/ScrumQuizModal.astro';
+---
+
+<Layout title="2. Sprints y Prototipado" description="Sprint Backlog, diseño de wireframes, mockups en Figma y el incremento de producto." courseSlug="scrum-prototipado">
+  <article class="content-section">
+    <h1>2. Diseño de Sprints y Prototipado</h1>
+
+    <section class="mb-10">
+      <h2>El Sprint Backlog</h2>
+      <p>
+        No puedes hacer todo a la vez. El <strong>Sprint Backlog</strong> es el plan "táctico". Es la pila de tareas e historias de usuario seleccionadas del <em>Product Backlog</em> para hacer <strong>exclusivamente en este Sprint</strong>. 
+      </p>
+      <div class="note-box" style="background: #e6fffa; border-left: 5px solid #10b981;">
+        <strong>Regla:</strong> Una vez definido y arrancado el Sprint, EL ALCANCE SE CIERRA. El cliente/jefe no puede "colar" cosas nuevas a mitad de semana. Si es urgente de vida o muerte, se cancela el Sprint entero.
+      </div>
+      <p>El Sprint Backlog pertenece únicamente a los Developers. Ellos deciden cómo dividir el trabajo diario.</p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Prototipado en Acción (Figma, Miro, Balsamiq)</h2>
+      <p>
+        En equipos modernos (especialmente con UX/UI designers colaborando), una historia de usuario rara vez entra al Sprint Backlog siendo solo texto.
+      </p>
+      <ul>
+        <li><strong>Wireframes:</strong> Dibujos "en alambre". Bloques grises que muestran dónde va el menú, dónde el botón y dónde la imagen. Mide <em>la estructura y la experiencia (UX)</em>.</li>
+        <li><strong>Mockups:</strong> El diseño casi final. Colores, tipografías e imágenes reales. Mide <em>la interfaz visual (UI) y la belleza</em>. Herramienta rey hoy en día: <strong>Figma</strong>.</li>
+      </ul>
+      <p>Prototipar antes o al inicio del Sprint ahorra código inútil. "Escribir código y borrarlo cuesta oro; dibujar cajas en Figma y borrarlas cuesta centavos."</p>
+    </section>
+
+    <section class="mb-10">
+      <h2>El Incremento de Producto</h2>
+      <p>
+        El resultado, pase lo que pase al final de las 2 semanas, debe ser un <strong>Incremento de Producto</strong>.
+      </p>
+      <p>¿Qué significa eso?</p>
+      <ul>
+        <li>No sirve decir "Avancé la interfaz al 80%". Si el usuario no puede hacer click y usar algo, el incremento es 0.</li>
+        <li>El Incremento debe ser <strong>Utilizable</strong> (funciona, sin bugs bloqueantes).</li>
+        <li>El Incremento debe estar <strong>Potencialmente Listo</strong> para lanzarse a público si el PO lo decide.</li>
+      </ul>
+      <p>Scrum fomenta el hacer cosas <em>completas</em> en lugar de tener 5 cosas empezadas al mismo tiempo.</p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <ScrumQuizModal quizKey="diseno-sprints" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/scrum-prototipado/marco-scrum/" class="prev">← El Marco Scrum</a>
+      <a href="/course/scrum-prototipado/presentacion-mejora/" class="next">Review y Mejora →</a>
+    </nav>
+  </article>
+</Layout>

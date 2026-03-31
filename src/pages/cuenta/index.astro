@@ -1,0 +1,20 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import AuthForms from '../../components/auth/AuthForms';
+---
+
+<Layout title="Cuenta" description="Iniciá sesión o creá tu cuenta en café y código. Registro con onboarding opcional y recuperación de contraseña.">
+  <div class="mx-auto max-w-6xl px-4 pb-12 pt-2 sm:px-6">
+    <div class="mx-auto max-w-xl">
+      <header class="mb-8 text-center md:mb-10">
+        <p class="mb-2 font-nunito text-[0.65rem] font-extrabold uppercase tracking-[0.2em] text-textMuted">Acceso</p>
+        <h1 class="!mt-0 font-nunito text-3xl font-black text-textPrimary sm:text-4xl">Tu cuenta</h1>
+        <p class="mx-auto mt-3 max-w-md font-nunito text-base font-[650] leading-relaxed text-textSecondary">
+          Entrá al panel para favoritos, quizzes y marcadores. Al crear cuenta te mostramos tres pasos de bienvenida y, al
+          final, podés usar la clave secreta para los cursos con candado.
+        </p>
+      </header>
+      <AuthForms client:load />
+    </div>
+  </div>
+</Layout>

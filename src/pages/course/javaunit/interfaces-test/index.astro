@@ -1,0 +1,75 @@
+﻿---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import JavaUnitQuizModal from '../../../../components/JavaUnitQuizModal.astro';
+---
+
+<Layout title="Testing de Interfaces en Java" description="Crea pruebas genéricas para verificar que cualquier implementación de tu contrato sea válida." courseSlug="javaunit">
+  <article class="content-section">
+    <h1>8. Interfaces: El Test del Contrato</h1>
+
+    <section class="mb-10">
+      <h2>Validando la Firma, no la Forma</h2>
+      <p>
+        En Java, una <strong>Interfaz</strong> es un contrato. Si tenemos la interfaz <code>Volable</code> con el método <code>volar()</code>, a nuestros tests no les importa si probamos un <code>Avion</code> o un <code>Dragon</code>; lo único que importa es que ante el llamado de volar, ambos despeguen igual.
+      </p>
+      <CodeBlock lang="java" code={`@Test
+void testConexiones() {
+    IConexion cWiFi = new WiFi();
+    IConexion cCable = new Ethernet();
+
+    // Ambos deben cumplir el contrato
+    assertTrue(cWiFi.conectar());
+    assertTrue(cCable.conectar());
+}`}
+        title="Validando múltiples implementaciones"
+      />
+    </section>
+
+    <div class="ejercicio" style="background: #E0F2F1;">
+      <h3>👨‍💻 Ejercicio Práctico 1</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> El motor imparable
+      </div>
+      <p class="enunciado">Si <code>IMotor</code> tiene un método <code>void encender()</code>, crea el test para <code>Diesel d = new Diesel()</code> y verifica que tras llamarlo, <code>d.estaEncendido()</code> sea verdadero.</p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock lang="java" code={`@Test
+void testMotor() {
+    IMotor d = new Diesel();
+    d.encender();
+    assertTrue(d.estaEncendido());
+}`} />
+      </details>
+    </div>
+
+    <div class="ejercicio" style="background: #E0F2F1;">
+      <h3>👨‍💻 Ejercicio Práctico 2</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> El contrato de Texto
+      </div>
+      <p class="enunciado">Usa <code>assertEquals</code> para ver si un objeto <code>JSONData d = new JSONData()</code> que implementa <code>IDocumento</code>, nos devuelve <code>"{}"</code> al llamar a <code>d.toString()</code>.</p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock lang="java" code={`@Test
+void testJSON() {
+    IDocumento d = new JSONData();
+    assertEquals("{}", d.toString());
+}`} />
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>¿Tus clases cumplen con lo prometido?</p>
+      <JavaUnitQuizModal quizKey="interfaces-test" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/javaunit/herencia-test/" class="prev">← Herencia Test</a>
+      <a href="/course/javaunit/intro-mocks/" class="next">Mocks Basiquísimos →</a>
+    </nav>
+  </article>
+</Layout>
