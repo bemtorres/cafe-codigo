@@ -9,6 +9,8 @@ export type ProfileRow = {
   /** Donante reconocido; solo se asigna desde SQL en Supabase. */
   is_sponsor?: boolean | null;
   sponsor_since?: string | null;
+  /** Puntos por concursos / desafíos; el nivel cafetero se calcula en la app. */
+  competition_points?: number | null;
   updated_at?: string;
 };
 

@@ -1,0 +1,18 @@
+diff --git a/node_modules/@vitejs/plugin-react/dist/index.js b/node_modules/@vitejs/plugin-react/dist/index.js
+index cc231a8..4d462cb 100644
+--- a/node_modules/@vitejs/plugin-react/dist/index.js
++++ b/node_modules/@vitejs/plugin-react/dist/index.js
+@@ -245,11 +245,12 @@ function viteReact(opts = {}) {
+ 			try {
+ 				nativePlugin = (await import("vite/internal")).reactRefreshWrapperPlugin;
+ 			} catch {}
++			// Vite 7.3+: borrar transform deja el plugin en la lista cacheada sin handler (handler.call falla).
+ 			if (!nativePlugin || [
+ 				"7.1.10",
+ 				"7.1.11",
+ 				"7.1.12"
+-			].includes(vite.version)) return true;
++			].includes(vite.version) || vite.version.startsWith("7.3.")) return true;
+ 			delete viteRefreshWrapper.transform;
+ 			return nativePlugin({
+ 				cwd: process.cwd(),

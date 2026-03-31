@@ -1,8 +1,12 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import imagen1 from '../assets/images/imagen1.png';
+import TestimonialsSlider from '../components/TestimonialsSlider';
+import HomeMusicPlayer from '../components/music/HomeMusicPlayer';
+import { getHomeMusicTracks } from '../lib/homeMusicPlaylist';
 
 const KO_FI_URL = 'https://ko-fi.com/cafeycodigo';
+const homeMusicTracks = getHomeMusicTracks();
 
 const benefits = [
   {
@@ -42,31 +46,72 @@ const benefits = [
   },
 ];
 
+/** `carita`: clave de emoji (ver CARITAS en TestimonialsSlider). `photoUrl` opcional para foto real más adelante. */
 const testimonials = [
   {
     quote:
       'Empecé de cero con PSeInt y la progresión me ayudó a no frustrarme. Los textos son claros y sin humo.',
     name: 'María L.',
     role: 'Estudiante de sistemas',
+    carita: 'study',
   },
   {
     quote:
       'Uso los cursos de Git y SQL como repaso rápido antes de entrevistas. Me gusta que todo esté en un solo lugar.',
     name: 'Lucas G.',
     role: 'Desarrollador junior',
+    carita: 'code',
   },
   {
     quote:
       'Mis hijos y yo miramos HTML/CSS los fines de semana. Los ejemplos cortos se entienden sin ser expertos.',
     name: 'Ana R.',
     role: 'Autodidacta',
+    carita: 'heart',
+  },
+  {
+    quote: 'Volví a estudiar después de años; el tono amable y los pasos cortos me sacaron el miedo a “no dar abasto”.',
+    name: 'Diego F.',
+    role: 'Cambio de carrera',
+    carita: 'thinking',
+  },
+  {
+    quote:
+      'Los quizzes me avisan si entendí antes de seguir. Con Python pude practicar sin instalar nada raro al principio.',
+    name: 'Valentina S.',
+    role: 'Estudiante secundaria',
+    carita: 'happy',
+  },
+  {
+    quote: 'Cerré el curso de terminal y por fin entiendo qué hago cuando copio y pego comandos del trabajo.',
+    name: 'Martín K.',
+    role: 'Autodidacta',
+    carita: 'cool',
+  },
+  {
+    quote: 'Comparto enlaces en el aula virtual: todos llegan con la misma explicación y discutimos en clase.',
+    name: 'Laura P.',
+    role: 'Docente',
+    carita: 'teacher',
+  },
+  {
+    quote: 'JavaScript en el navegador me conectó con lo que veía en tutoriales sueltos; acá tenía el hilo conductor.',
+    name: 'Franco T.',
+    role: 'Estudiante de bootcamp',
+    carita: 'spark',
+  },
+  {
+    quote: 'El modelo C4 y el tema de arquitectura me sirvieron para ordenar el proyecto final de la facultad.',
+    name: 'Julieta N.',
+    role: 'Estudiante universitaria',
+    carita: 'wave',
   },
 ];
 
 const faqItems = [
   {
     q: '¿Qué es cafeycodigo?',
-    a: 'Es una plataforma educativa en español para aprender programación y temas relacionados (herramientas, bases de datos, metodologías). Combina lecciones escritas, ejercicios y recursos como el simulador de PSeInt, con una vista de cursos donde podés explorar todo el catálogo.',
+    a: 'Es una guía en español para aprender a programar desde una base técnica: metodología de proyecto, desafío y caso a caso, con explicaciones breves y ejemplos, ejercicios, quizzes y desafíos. Incluye lecciones por tema, simulador de PSeInt y una vista de cursos para orientarte en el catálogo.',
   },
   {
     q: '¿Es gratis?',
@@ -97,7 +142,7 @@ const faqItems = [
 
 <Layout
   title="Inicio"
-  description="cafeycodigo: aprendé programación gratis con rutas claras, ejercicios, simulador PSeInt, cursos por tema y modo academia para docentes que quieren medir el rendimiento de sus estudiantes."
+  description="cafeycodigo: guía paso a paso para aprender a programar desde cero — proyecto, desafío y caso a caso; ejemplos, ejercicios, quizzes y simulador PSeInt. Gratis, en español, con modo academia para docentes."
 >
   <div class="max-w-6xl mx-auto px-4 pt-8 pb-20">
     <!-- Hero -->
@@ -110,15 +155,17 @@ const faqItems = [
       <div class="relative grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center p-6 sm:p-10 lg:p-12">
         <div class="flex flex-col order-2 lg:order-1">
           <p class="font-nunito font-black text-sm uppercase tracking-[0.12em] text-accent mb-3">
-            Aprender a programar · en español
+            Guía paso a paso · en español
           </p>
           <h1 class="text-[2.35rem] sm:text-[2.85rem] lg:text-[3.15rem] leading-[1.05] -tracking-[0.03em] font-nunito font-black text-textPrimary mb-4">
             Tu espacio para
             <span class="text-[#b06d63]">codear con calma</span>
           </h1>
           <p class="text-[1.08rem] sm:text-[1.12rem] leading-relaxed text-textSecondary font-[650] max-w-xl mb-4">
-            cafeycodigo reúne cursos, ejercicios y un simulador para que practiques desde cero o refuerces lo que ya sabés — con rutas ordenadas y una vista dedicada para explorar todo el catálogo.
+            cafeycodigo está pensado para quienes empiezan: aprender código con <strong class="text-textPrimary font-black">proyecto</strong>,{' '}
+            <strong class="text-textPrimary font-black">desafío</strong> y <strong class="text-textPrimary font-black">caso a caso</strong>, con explicaciones simples y al grano, apoyadas en la historia de la programación y en cómo se construye el software en la práctica.
           </p>
+          
           <p class="text-[1.02rem] sm:text-[1.06rem] leading-relaxed text-textSecondary font-[650] max-w-xl mb-6 border-l-4 border-info/70 pl-4">
             <span class="font-black text-textPrimary">También en clave académica:</span> acceso y apoyo para docentes que quieren organizar grupos, acompañar a sus estudiantes y <span class="font-black text-textPrimary">medir el rendimiento</span> en quizzes y lecciones.
           </p>
@@ -130,35 +177,6 @@ const faqItems = [
               Ver todos los cursos
               <span aria-hidden="true">→</span>
             </a>
-            <a
-              href="/course/pseint/"
-              class="inline-flex items-center justify-center gap-2 bg-white text-[#2b1d1b] py-3.5 px-7 rounded-full font-black font-nunito border-2 border-border shadow-[3px_3px_0px_#1E1210] hover:-translate-y-0.5 transition-transform"
-            >
-              Empezar con PSeInt
-            </a>
-            <a
-              href="/academia/"
-              class="inline-flex items-center justify-center gap-2 bg-[#f0f7fb] text-[#1a4a5c] py-3.5 px-7 rounded-full font-black font-nunito border-2 border-border shadow-[3px_3px_0px_#1E1210] hover:-translate-y-0.5 transition-transform"
-            >
-              Modo academia (docentes)
-            </a>
-          </div>
-          <div class="flex flex-wrap gap-2">
-            <span
-              class="inline-flex items-center gap-2 rounded-full border-2 border-border bg-secondary/80 py-2 px-4 text-textPrimary font-extrabold font-nunito text-sm shadow-[2px_2px_0px_#1E1210]"
-            >
-              <span class="text-base" aria-hidden="true">☕</span> Proyecto independiente
-            </span>
-            <span
-              class="inline-flex items-center gap-2 rounded-full border-2 border-border bg-tertiary/90 py-2 px-4 text-textPrimary font-extrabold font-nunito text-sm shadow-[2px_2px_0px_#1E1210]"
-            >
-              <span class="text-base" aria-hidden="true">🚀</span> En constante crecimiento
-            </span>
-            <span
-              class="inline-flex items-center gap-2 rounded-full border-2 border-border bg-info/15 py-2 px-4 text-textPrimary font-extrabold font-nunito text-sm shadow-[2px_2px_0px_#1E1210]"
-            >
-              <span class="text-base" aria-hidden="true">🎓</span> Academia para docentes
-            </span>
           </div>
         </div>
         <div class="order-1 lg:order-2 flex justify-center lg:justify-end">
@@ -168,7 +186,7 @@ const faqItems = [
           >
             <img
               src={imagen1.src}
-              alt="Ilustración: café y código, ambiente de aprendizaje"
+              alt="Ilustración: Café y Código, ambiente de aprendizaje"
               class="w-full h-auto object-contain rounded-[16px]"
               loading="eager"
               decoding="async"
@@ -180,13 +198,25 @@ const faqItems = [
       </div>
     </section>
 
+    <!-- Playlist / música -->
+    <section id="musica" class="mb-16 md:mb-24 scroll-mt-24" aria-labelledby="heading-musica">
+      <h2 id="heading-musica" class="font-nunito font-black text-3xl sm:text-4xl text-textPrimary mb-2">
+        Sonidos para concentrarte
+      </h2>
+      <p class="text-textSecondary font-[650] max-w-2xl mb-6">
+        Mientras programas, podés escuchar una playlist de música para concentrarte.
+      </p>
+      <HomeMusicPlayer client:load tracks={homeMusicTracks} />
+    </section>
+
     <!-- Sobre el proyecto -->
     <section id="proyecto" class="mb-16 md:mb-24 scroll-mt-24" aria-labelledby="heading-proyecto">
       <h2 id="heading-proyecto" class="font-nunito font-black text-3xl sm:text-4xl text-textPrimary mb-2 text-balance">
         Qué es este proyecto
       </h2>
-      <p class="font-nunito font-bold text-info text-lg mb-8 max-w-3xl">
-        Material educativo abierto y ameno, pensado para quien aprende solo, en familia o en clase.
+      <p class="text-textSecondary font-[650] text-[1.05rem] sm:text-[1.08rem] leading-relaxed mb-6 max-w-3xl">
+        Es un proyecto que busca ayudar a estudiantes de inicio a aprender código con metodología de <strong class="text-textPrimary font-black">proyecto</strong>,{' '}
+        <strong class="text-textPrimary font-black">desafío</strong> y <strong class="text-textPrimary font-black">caso a caso</strong>: conceptos explicados de forma directa, con el contexto de su historia y de cómo es la creación de código en el mundo real. Así se arma una guía paso a paso para formarte como desarrollador de manera técnica — en el aula, en familia o estudiando por tu cuenta.
       </p>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div class="rounded-2xl border-4 border-border bg-white p-6 shadow-neo">
@@ -252,7 +282,7 @@ const faqItems = [
       <p class="text-textSecondary font-[650] max-w-2xl mb-10">
         El modelo es simple: aprender sin barrera de pago para el contenido principal, y apoyo voluntario para quien quiera y pueda. Si enseñás, el <strong class="text-textPrimary">modo academia</strong> suma acceso y herramientas para acompañar grupos y revisar el rendimiento.
       </p>
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
         <div class="rounded-[24px] border-4 border-border bg-white p-8 shadow-neo-lg relative overflow-hidden">
           <div class="absolute top-4 right-4 font-nunito font-black text-xs uppercase tracking-wider bg-success text-[#0d3d2f] px-3 py-1 rounded-full border-2 border-border">
             Principal
@@ -315,30 +345,52 @@ const faqItems = [
             <span aria-hidden="true">↗</span>
           </a>
         </div>
+
+        <div class="rounded-[24px] border-4 border-border bg-linear-to-br from-tertiary to-primary p-8 shadow-neo-lg flex flex-col">
+          <div class="flex items-center gap-3 mb-4">
+            <span class="text-3xl" aria-hidden="true">🎓</span>
+            <h3 class="font-nunito font-black text-2xl text-textPrimary m-0">¿Sos docente?</h3>
+          </div>
+          <p class="text-textSecondary font-[650] leading-relaxed mb-6 grow">
+            Si enseñás y querés acompañar mejor a tus estudiantes con el material del sitio, el <strong class="text-textPrimary">modo academia</strong> permite armar secciones, códigos de unión y seguimiento. Escribinos y coordinamos cómo puede encajar en tu curso.
+          </p>
+          <ul class="space-y-2 text-textSecondary font-[650] m-0 mb-8 p-0 list-none text-[0.98rem]">
+            <li>· Prioridad: que tus alumnos estudien sin barrera de pago</li>
+            <li>· Herramientas para grupos y seguimiento, según las funciones activas</li>
+          </ul>
+          <div class="flex flex-col sm:flex-row flex-wrap gap-3 mt-auto">
+            <a
+              href="/academia/"
+              class="inline-flex flex-1 min-w-[10rem] justify-center items-center rounded-full bg-[#2b1d1b] text-white font-nunito font-black py-3.5 px-6 border-2 border-border shadow-neo hover:-translate-y-0.5 transition-transform no-underline"
+            >
+              Ver Academia
+            </a>
+            <a
+              href={KO_FI_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex flex-1 min-w-[10rem] justify-center items-center gap-2 rounded-full bg-white text-[#2b1d1b] font-nunito font-black py-3.5 px-6 border-4 border-border shadow-neo hover:-translate-y-0.5 transition-transform no-underline"
+            >
+              Contáctanos
+              <span aria-hidden="true">↗</span>
+            </a>
+          </div>
+          <p class="text-textMuted font-nunito text-xs font-bold mt-4 m-0">
+            Podés escribirnos por Ko-fi (mensaje) para coordinar uso con tu institución o grupo.
+          </p>
+        </div>
       </div>
     </section>
 
     <!-- Testimonios -->
     <section id="testimonios" class="mb-16 md:mb-24 scroll-mt-24" aria-labelledby="heading-testimonios">
-      <h2 id="heading-testimonios" class="font-nunito font-black text-3xl sm:text-4xl text-textPrimary mb-2">
-        Voces de quienes estudian
+      <h2 id="heading-testimonios" class="mb-3 font-nunito font-black text-3xl sm:text-4xl text-textPrimary mb-2">
+        Testimonios de quienes estudian
       </h2>
-      <p class="text-textSecondary font-[650] max-w-2xl mb-10">
+      <!-- <p class="text-textSecondary font-[650] max-w-2xl mb-6">
         Opiniones representativas de usuarios del tipo de público al que apunta el proyecto (ejemplos ilustrativos).
-      </p>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {testimonials.map((t) => (
-          <blockquote class="m-0 rounded-2xl border-4 border-border bg-white p-6 shadow-neo flex flex-col">
-            <p class="text-textPrimary font-[650] leading-relaxed text-[1.02rem] mb-4 grow">
-              “{t.quote}”
-            </p>
-            <footer class="border-t-2 border-dashed border-border pt-4">
-              <cite class="not-italic font-nunito font-black text-textPrimary block">{t.name}</cite>
-              <span class="text-sm text-textMuted font-bold">{t.role}</span>
-            </footer>
-          </blockquote>
-        ))}
-      </div>
+      </p> -->
+      <TestimonialsSlider client:load testimonials={testimonials} />
     </section>
 
     <!-- FAQ -->

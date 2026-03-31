@@ -15,6 +15,8 @@ create table public.profiles (
   -- Colaborador (Ko-fi): insignia, muro y zona exclusiva; is_sponsor solo desde SQL en Supabase.
   is_sponsor boolean not null default false,
   sponsor_since timestamptz,
+  -- Puntos de competencia (concursos, desafíos); niveles cafeteros en código (userLevels.ts).
+  competition_points int not null default 0 check (competition_points >= 0),
   updated_at timestamptz not null default now()
 );
 

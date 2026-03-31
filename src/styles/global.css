@@ -61,7 +61,24 @@ body {
 }
 
 h1, h2, h3, h4, strong { font-family: 'Nunito', sans-serif; font-weight: 800; }
-code, pre { font-family: 'JetBrains Mono', monospace; font-weight: 500; }
+code, pre, kbd, samp {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 500;
+  /* Sin ligaduras: >= y <= se leen como dos caracteres (mejor para estudiantes) */
+  font-variant-ligatures: none;
+  font-feature-settings: "liga" 0, "calt" 0, "dlig" 0;
+}
+.font-mono {
+  font-variant-ligatures: none;
+  font-feature-settings: "liga" 0, "calt" 0, "dlig" 0;
+}
+/* Editores embebidos (Sandpack / CodeMirror / Monaco) */
+.cm-editor,
+.cm-editor .cm-content,
+.cm-editor .cm-line {
+  font-variant-ligatures: none !important;
+  font-feature-settings: "liga" 0, "calt" 0, "dlig" 0 !important;
+}
 a { transition: transform 0.2s, color 0.2s; }
 
 /* ── Content Section ── */

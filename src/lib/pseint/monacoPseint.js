@@ -189,6 +189,8 @@ export async function createMonacoPSeIntEditor(container, initialValue) {
     theme: 'vs',
     fontSize: 14,
     lineHeight: 22,
+    /** Evita que >= <= se vean como un solo símbolo (ligaduras) */
+    fontLigatures: false,
     minimap: { enabled: false },
     scrollBeyondLastLine: false,
     renderWhitespace: 'selection',

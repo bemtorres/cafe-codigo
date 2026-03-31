@@ -28,10 +28,15 @@ interface Props {
 const { title, description = "Aprende a programar gratis con cursos paso a paso", courseSlug } = Astro.props;
 const currentCourse = courseSlug ? courses.find((c) => c.slug === courseSlug) : null;
 const currentPath = Astro.url.pathname;
+const normalizedPath = currentPath.replace(/\/$/, '');
+/** Banner “café y programemos” solo en la portada */
+const showHomeCoffeeBanner = normalizedPath === '' || normalizedPath === '/';
+/** Selector de tema de código solo en páginas de cursos (/course/…), no en inicio ni resto del sitio */
+const showCodeThemeSelector =
+  normalizedPath === COURSE_PATH_PREFIX || normalizedPath.startsWith(`${COURSE_PATH_PREFIX}/`);
 
 // Navegación de lecciones para mobile
 const lessons = currentCourse?.lessons ?? [];
-const normalizedPath = currentPath.replace(/\/$/, '');
 const currentLessonIdx = lessons.findIndex(l => {
   const lessonPath = `${COURSE_PATH_PREFIX}/${currentCourse?.slug}/${l.slug}`.replace(/\/$/, '');
   return normalizedPath === lessonPath || normalizedPath.startsWith(lessonPath);
@@ -83,7 +88,18 @@ const isCourseHome =
       : `background-color: var(--bg-primary); background-image: url('/images/fondo2.png'); background-repeat: repeat;`
     }
   >
-    
+    {showHomeCoffeeBanner && (
+      <div
+        class="w-full border-b-2 border-border bg-[#2b1d1b] text-center py-2 px-3 sm:py-2.5 shadow-[0_2px_0_#1E1210]"
+        role="note"
+      >
+        <p class="m-0 inline-flex max-w-[min(100%,40rem)] flex-wrap items-center justify-center gap-x-2 gap-y-0.5 font-nunito text-[0.8rem] font-black uppercase tracking-[0.06em] text-[#FFF9C4] sm:text-sm sm:tracking-[0.08em]">
+          <span class="text-base sm:text-lg" aria-hidden="true">☕</span>
+          <span>Tomate un café y programemos juntos</span>
+        </p>
+      </div>
+    )}
+
     <!-- Modal de bienvenida (nombre de usuario) -->
     <WelcomeModal />
     {currentCourse?.requiresPassword && (
@@ -97,7 +113,7 @@ const isCourseHome =
     <header class="sm:hidden sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b-2 border-[#1E1210]/10 px-4 py-3 flex items-center justify-between gap-3">
       <a href="/" class="flex items-center gap-2 no-underline shrink-0">
         <img src={logoCafeycodigo.src} alt="" class="w-8 h-8 object-contain rounded-lg" />
-        <span class="font-nunito font-black text-[1.1rem] text-[#EF476F] leading-none">café y código</span>
+        <span class="font-nunito font-black text-[1.1rem] text-[#EF476F] leading-none">Café y Código</span>
       </a>
       {currentCourse && (
         <button
@@ -173,7 +189,7 @@ const isCourseHome =
         <div class="flex items-center gap-4">
           <a href="/" class="flex items-center gap-2 text-accent font-nunito font-extrabold text-[1.5rem] no-underline hover:-translate-y-0.5 transition-transform">
             <img class="shrink-0 w-10 h-10 object-contain rounded-xl" src={logoCafeycodigo.src} alt="" width="42" height="42" decoding="async" />
-            <span class="leading-none">café y código</span>
+            <span class="leading-none">Café y Código</span>
           </a>
         </div>
 
@@ -201,7 +217,7 @@ const isCourseHome =
           </button> -->
 
           <div class="flex items-center gap-4">
-            <CodeThemeSelector />
+           
             <HeaderAuth client:load />
             {currentCourse && (
               <div class="flex items-center">
@@ -215,6 +231,7 @@ const isCourseHome =
                 )}
               </div>
             )}
+            {showCodeThemeSelector && <CodeThemeSelector />}
             <!-- {!currentCourse && (
               <a class="inline-flex items-center gap-2 bg-white/90 border border-black/15 rounded-full px-3 py-1.5 font-nunito font-extrabold text-textPrimary shadow-[0_10px_24px_rgba(30,18,16,0.1)] hover:bg-white hover:-translate-y-0.5 active:translate-y-0 transition-all outline-none" href="https://github.com/bemtorres/cafe-codigo" target="_blank" rel="noreferrer">
                 GitHub

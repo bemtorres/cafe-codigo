@@ -364,6 +364,13 @@ const encodedCode = encodeURIComponent(safeCode);
     background-color: var(--shiki-color-background, #1e1e1e);
     color: var(--shiki-color-text, #d4d4d4);
     transition: background-color 0.3s, color 0.3s;
+    font-variant-ligatures: none;
+    font-feature-settings: "liga" 0, "calt" 0, "dlig" 0;
+  }
+  .code-viewer :global(.code-line),
+  .code-viewer :global(.whitespace-pre) {
+    font-variant-ligatures: none;
+    font-feature-settings: "liga" 0, "calt" 0, "dlig" 0;
   }
 
   /* Tokens — usan las mismas CSS vars que los temas en code-themes.css */

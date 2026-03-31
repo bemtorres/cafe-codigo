@@ -7,6 +7,7 @@ import { quizPercent, type QuizProgressRow } from '../../lib/supabase/quizProgre
 import { useSupabaseAuth } from '../../lib/supabase/useSupabaseAuth';
 import { passwordProtectedSlugs, tryUnlockWithSecret } from '../../lib/courseUnlock';
 import CoffeeCoinStoreSection from './CoffeeCoinStoreSection';
+import UserLevelCard from './UserLevelCard';
 
 const categoryOrder: CourseCategory[] = [
   'foundations',
@@ -230,10 +231,16 @@ export default function UserPanel() {
           id: userId,
           display_name: display || null,
           favorite_course_slug: null,
+          competition_points: 0,
         });
         if (upErr) setErr(upErr.message);
         else {
-          setProfile({ id: userId, display_name: display || null, favorite_course_slug: null });
+          setProfile({
+            id: userId,
+            display_name: display || null,
+            favorite_course_slug: null,
+            competition_points: 0,
+          });
           setFavoriteSlug('');
         }
       }
@@ -298,7 +305,7 @@ export default function UserPanel() {
     }
     setPseintQuizLoading(true);
     setPseintQuizError(null);
-    void supabase
+    void supabase!
       .from('quiz_progress')
       .select('lesson_slug, correct_best, question_count, attempts')
       .eq('user_id', user.id)
@@ -317,7 +324,8 @@ export default function UserPanel() {
   }, [user?.id, supabase]);
 
   const saveFavorite = async () => {
-    if (!supabase || !user) return;
+    if (!user) return;
+    if (!supabase) return;
     setSaving(true);
     setErr(null);
     setStatus(null);
@@ -327,6 +335,7 @@ export default function UserPanel() {
         id: user.id,
         display_name: profile?.display_name ?? null,
         favorite_course_slug: slug,
+        competition_points: profile?.competition_points ?? 0,
         updated_at: new Date().toISOString(),
       },
       { onConflict: 'id' },
@@ -340,7 +349,12 @@ export default function UserPanel() {
     setProfile((p) =>
       p
         ? { ...p, favorite_course_slug: slug, updated_at: new Date().toISOString() }
-        : { id: user.id, display_name: profile?.display_name ?? metaName, favorite_course_slug: slug },
+        : {
+            id: user.id,
+            display_name: profile?.display_name ?? metaName,
+            favorite_course_slug: slug,
+            competition_points: profile?.competition_points ?? 0,
+          },
     );
     setStatus('Curso favorito guardado.');
     void loadBookmarks(user.id, slug);
@@ -525,6 +539,8 @@ export default function UserPanel() {
           </button>
         </div>
       </header>
+
+      <UserLevelCard competitionPoints={profile?.competition_points ?? 0} />
 
       {showSecretBanner && (
         <section
