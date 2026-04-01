@@ -1,10 +1,8 @@
-import { mockCoffeeCoinBalance } from '../../lib/coffeeCoin';
 import { useSupabaseAuth } from '../../lib/supabase/useSupabaseAuth';
 
 /** Enlaza a /panel o /cuenta según sesión (misma fuente que el resto: INITIAL_SESSION). */
 export default function MobileNavProfile() {
   const { supabase, loading, user } = useSupabaseAuth();
-  const coffeeCoins = mockCoffeeCoinBalance();
 
   if (!supabase) {
     return (
@@ -38,14 +36,7 @@ export default function MobileNavProfile() {
     >
       <span className="text-[22px] leading-none">{user ? '⚙️' : '👤'}</span>
       <span className="text-[10px] font-nunito font-extrabold tracking-wide max-w-[4.5rem] truncate">{short}</span>
-      {user && (
-        <span
-          className="text-[9px] font-nunito font-black tabular-nums leading-none text-[#b45309]"
-          title="CoffeeCoin (vista previa)"
-        >
-          ☕ {coffeeCoins} CC
-        </span>
-      )}
+      {/* CoffeeCoin en nav móvil: omitido por ahora */}
     </a>
   );
 }

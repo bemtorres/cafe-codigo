@@ -6,7 +6,6 @@ import type { LessonBookmarkRow, ProfileRow } from '../../lib/supabase/client';
 import { quizPercent, type QuizProgressRow } from '../../lib/supabase/quizProgress';
 import { useSupabaseAuth } from '../../lib/supabase/useSupabaseAuth';
 import { passwordProtectedSlugs, tryUnlockWithSecret } from '../../lib/courseUnlock';
-import CoffeeCoinStoreSection from './CoffeeCoinStoreSection';
 import UserLevelCard from './UserLevelCard';
 
 const categoryOrder: CourseCategory[] = [
@@ -540,7 +539,7 @@ export default function UserPanel() {
         </div>
       </header>
 
-      <UserLevelCard competitionPoints={profile?.competition_points ?? 0} />
+      {/* <UserLevelCard competitionPoints={profile?.competition_points ?? 0} /> */}
 
       {showSecretBanner && (
         <section
@@ -596,7 +595,7 @@ export default function UserPanel() {
       )}
 
       {/* KPIs */}
-      <section aria-labelledby="dash-summary-heading">
+      <section hidden aria-labelledby="dash-summary-heading">
         <h2 id="dash-summary-heading" className="sr-only">
           Resumen de actividad
         </h2>
@@ -628,10 +627,10 @@ export default function UserPanel() {
         </div>
       </section>
 
-      <CoffeeCoinStoreSection />
+      {/* CoffeeCoin · tienda: omitido por ahora (CoffeeCoinStoreSection) */}
 
       {/* PSeInt report */}
-      <section
+      <section hidden
         className="rounded-3xl border-[3px] border-border bg-white p-5 shadow-[5px_5px_0px_#1E1210] md:p-8"
         aria-labelledby="pseint-report-heading"
       >

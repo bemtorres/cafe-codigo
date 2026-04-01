@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react';
-import { mockCoffeeCoinBalance } from '../../lib/coffeeCoin';
 import { useSupabaseAuth } from '../../lib/supabase/useSupabaseAuth';
 
 export default function HeaderAuth() {
@@ -51,7 +50,6 @@ export default function HeaderAuth() {
   }
 
   const label = user.user_metadata?.display_name?.trim?.() || user.email?.split('@')[0] || 'Panel';
-  const coffeeCoins = mockCoffeeCoinBalance();
 
   const closeMenu = () => setMenuOpen(false);
 
@@ -119,15 +117,7 @@ export default function HeaderAuth() {
           </div>
         )}
       </div>
-      <a
-        href="/panel/"
-        className="inline-flex shrink-0 items-center gap-1 rounded-full border-2 border-border bg-gradient-to-br from-[#fef3c7] to-[#fde68a] px-2 py-1 font-nunito text-xs font-black text-textPrimary no-underline shadow-[2px_2px_0px_#1E1210] hover:-translate-y-0.5 transition-transform"
-        title="CoffeeCoin · ver detalle en el panel"
-      >
-        <span aria-hidden>☕</span>
-        <span className="tabular-nums">{coffeeCoins}</span>
-        <span className="hidden font-extrabold text-textSecondary xl:inline">CC</span>
-      </a>
+      {/* CoffeeCoin en header: omitido por ahora */}
     </div>
   );
 }
