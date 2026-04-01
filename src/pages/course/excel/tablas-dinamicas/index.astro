@@ -1,9 +1,10 @@
-﻿---
+---
 import Layout from '../../../../layouts/Layout.astro';
 import ExcelQuizModal from '../../../../components/ExcelQuizModal.astro';
 import CopyTableBtn from '../../../../components/CopyTableBtn.astro';
 import ExcelSheetTable from '../../../../components/ExcelSheetTable.astro';
 import ExcelPracticeBlock from '../../../../components/ExcelPracticeBlock.astro';
+import ExcelPivotFilterDemo from '../../../../components/excel/ExcelPivotFilterDemo';
 ---
 
 <Layout title="9. Tablas Dinámicas y Gráficos" description="Aprende a resumir miles de datos al instante mediante Pivot Tables y gráficas visuales." courseSlug="excel">
@@ -80,6 +81,12 @@ import ExcelPracticeBlock from '../../../../components/ExcelPracticeBlock.astro'
       <p>
         Con la dinámica activa, <strong>Insertar &gt; Gráfico dinámico</strong> crea un gráfico que respeta filtros y campos. Si cambias la disposición de la tabla dinámica, el gráfico se actualiza.
       </p>
+      <p class="text-gray-700 mt-4">
+        En Excel, el menú de <strong>filtro</strong> en el encabezado de una columna permite <strong>ordenar</strong> y <strong>marcar qué valores</strong> entran en el informe (como en la cinta de una tabla o de una dinámica). La simulación siguiente resume ventas por categoría: al ordenar o filtrar, la tabla y el gráfico se mueven a la vez.
+      </p>
+      <div class="mt-6">
+        <ExcelPivotFilterDemo client:load />
+      </div>
     </section>
 
     <ExcelPracticeBlock
@@ -99,7 +106,7 @@ import ExcelPracticeBlock from '../../../../components/ExcelPracticeBlock.astro'
 
     <nav class="nav-bottom">
       <a href="/course/excel/analisis-celdas/" class="prev">← Análisis de Celdas</a>
-      <a href="/course/excel/" class="next">Terminar Curso →</a>
+      <a href="/course/excel/graficos/" class="next">10. Gráficos y visualización →</a>
     </nav>
   </article>
 </Layout>

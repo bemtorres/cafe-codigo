@@ -1,0 +1,46 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+---
+
+<Layout title="Operadores en C++" description="Aritmética, comparación y lógica en C++" courseSlug="cpp">
+  <article class="content-section">
+    <h1>4. Operadores</h1>
+
+    <section class="mb-10">
+      <h2>Aritméticos</h2>
+      <p><code>+</code> <code>-</code> <code>*</code> <code>/</code> <code>%</code> (módulo solo con enteros).</p>
+      <CodeBlock lang="cpp" code={`int r = 17 % 5;  // 2
+double x = 7.0 / 2.0;  // 3.5`} title="Ejemplos" />
+    </section>
+
+    <section class="mb-10">
+      <h2>Incremento</h2>
+      <CodeBlock
+        lang="cpp"
+        code={`int i = 0;
+i++;      // post-incremento
+++i;      // pre-incremento
+i += 2;   // i = i + 2`}
+        title="++ y +="
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Relacionales y lógicos</h2>
+      <p><code>==</code> <code>!=</code> <code>&lt;</code> <code>&gt;</code> <code>&lt;=</code> <code>&gt;=</code></p>
+      <p><code>&&</code> AND · <code>||</code> OR · <code>!</code> NOT</p>
+      <CodeBlock
+        lang="cpp"
+        code={`bool ok = (a >= 0 && a <= 100);
+bool fuera = (x < 0 || x > 10);`}
+        title="Condiciones compuestas"
+      />
+    </section>
+
+    <div class="ejercicio">
+      <h3>Ejercicio</h3>
+      <p class="enunciado">Dado un entero <code>n</code>, decidir si es par (usar <code>%</code>).</p>
+    </div>
+  </article>
+</Layout>

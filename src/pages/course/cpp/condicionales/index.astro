@@ -1,0 +1,57 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+---
+
+<Layout title="Condicionales en C++" description="if, else y switch" courseSlug="cpp">
+  <article class="content-section">
+    <h1>5. Condicionales</h1>
+
+    <section class="mb-10">
+      <h2><code>if</code> / <code>else</code></h2>
+      <p>Equivalente a <strong>Si</strong> / <strong>Sino</strong> en PSeInt.</p>
+      <CodeBlock
+        lang="cpp"
+        code={`#include <iostream>
+
+int main() {
+    int x;
+    std::cin >> x;
+    if (x > 0) {
+        std::cout << "positivo\\n";
+    } else if (x < 0) {
+        std::cout << "negativo\\n";
+    } else {
+        std::cout << "cero\\n";
+    }
+    return 0;
+}`}
+        title="if / else if / else"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2><code>switch</code></h2>
+      <p>Útil cuando comparás una expresión entera contra constantes. No olvides <code>break</code> (salvo que quieras “caída” a la siguiente rama).</p>
+      <CodeBlock
+        lang="cpp"
+        code={`switch (opcion) {
+    case 1:
+        std::cout << "Uno\\n";
+        break;
+    case 2:
+        std::cout << "Dos\\n";
+        break;
+    default:
+        std::cout << "Otro\\n";
+}`}
+        title="switch"
+      />
+    </section>
+
+    <div class="ejercicio">
+      <h3>Ejercicio</h3>
+      <p class="enunciado">Leer una nota de 0 a 10 e imprimir: Insuficiente (&lt;4), Regular, Bueno o Excelente (≥9).</p>
+    </div>
+  </article>
+</Layout>

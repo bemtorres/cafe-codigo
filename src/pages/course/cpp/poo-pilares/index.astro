@@ -1,0 +1,68 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+---
+
+<Layout title="Herencia y polimorfismo en C++" description="Clases derivadas y métodos virtuales" courseSlug="cpp">
+  <article class="content-section">
+    <h1>10. Herencia y polimorfismo</h1>
+
+    <section class="mb-10">
+      <h2>Herencia</h2>
+      <p>Una clase <strong>derivada</strong> extiende una <strong>base</strong>, reutilizando y especializando comportamiento.</p>
+      <CodeBlock
+        lang="cpp"
+        code={`#include <iostream>
+
+class Animal {
+public:
+    virtual void sonido() const {
+        std::cout << "...\\n";
+    }
+    virtual ~Animal() = default;
+};
+
+class Perro : public Animal {
+public:
+    void sonido() const override {
+        std::cout << "Guau\\n";
+    }
+};`}
+        title="Herencia básica"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Polimorfismo</h2>
+      <p>
+        Con <code>virtual</code> en la base, una referencia o puntero a <code>Animal</code> puede llamar a la versión correcta de <code>sonido()</code> según el objeto real (<code>Perro</code>, etc.).
+      </p>
+      <CodeBlock
+        lang="cpp"
+        code={`#include <iostream>
+// (mismas clases Animal / Perro que arriba)
+
+void escuchar(const Animal& a) {
+    a.sonido();
+}
+
+int main() {
+    Perro p;
+    escuchar(p);  // Guau
+    return 0;
+}`}
+        title="Enlace dinámico"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Destructor virtual</h2>
+      <p>Si borrás objetos a través de puntero a base, el destructor de la base debe ser <code>virtual</code> para que se destruya bien la parte derivada.</p>
+    </section>
+
+    <div class="ejercicio">
+      <h3>Ejercicio</h3>
+      <p class="enunciado">Modelá <code>Figura</code> con <code>area()</code> virtual y dos clases <code>Circulo</code> y <code>Cuadrado</code> que la implementen.</p>
+    </div>
+  </article>
+</Layout>

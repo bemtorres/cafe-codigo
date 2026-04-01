@@ -23,6 +23,8 @@ export interface Course {
   lessons?: { slug: string; title: string; href: string }[];
   requiresPassword?: boolean;
   styleMode?: CourseStyleMode;
+  /** Año de la primera versión pública orientada a la comunidad (p. ej. lenguajes). */
+  communityReleaseYear?: number;
 }
 
 export const courses: Course[] = [
@@ -48,6 +50,8 @@ export const courses: Course[] = [
     category: 'foundations',
     status: 'available',
     color: '#34d399',
+    /** Primera difusión pública amplia del proyecto (Pablo Novara). */
+    communityReleaseYear: 2004,
     lessons: [
       { slug: 'introduccion', title: 'Introducción', href: '/course/pseint/introduccion/' },
       { slug: 'metodologia', title: 'Metodología', href: '/course/pseint/metodologia/' },
@@ -58,6 +62,28 @@ export const courses: Course[] = [
       { slug: 'repeticion', title: 'Repetición (Bucles)', href: '/course/pseint/repeticion/' },
       { slug: 'simulador', title: 'Simulador', href: '/course/pseint/simulador/' },
       { slug: 'ayuda', title: 'Ayuda / Guía', href: '/course/pseint/ayuda/' },
+    ],
+  },
+  {
+    slug: 'cpp',
+    name: 'C++',
+    description:
+      'Del pseudocódigo a un lenguaje real: sintaxis, memoria, STL y bases de POO. Ideal después de PSeInt.',
+    category: 'language',
+    status: 'available',
+    color: '#00599C',
+    communityReleaseYear: 1985,
+    lessons: [
+      { slug: 'introduccion', title: '1. Introducción', href: '/course/cpp/introduccion/' },
+      { slug: 'variables', title: '2. Variables y tipos', href: '/course/cpp/variables/' },
+      { slug: 'io', title: '3. Entrada y salida', href: '/course/cpp/io/' },
+      { slug: 'operadores', title: '4. Operadores', href: '/course/cpp/operadores/' },
+      { slug: 'condicionales', title: '5. Condicionales', href: '/course/cpp/condicionales/' },
+      { slug: 'ciclos', title: '6. Bucles', href: '/course/cpp/ciclos/' },
+      { slug: 'colecciones', title: '7. Arreglos y vector', href: '/course/cpp/colecciones/' },
+      { slug: 'funciones', title: '8. Funciones', href: '/course/cpp/funciones/' },
+      { slug: 'poo-basico', title: '9. POO básico', href: '/course/cpp/poo-basico/' },
+      { slug: 'poo-pilares', title: '10. Herencia y polimorfismo', href: '/course/cpp/poo-pilares/' },
     ],
   },
   // {
@@ -80,6 +106,7 @@ export const courses: Course[] = [
     category: 'language',
     status: 'available',
     color: '#6d28d9',
+    communityReleaseYear: 2002,
     lessons: [
       { slug: 'introduccion', title: '1. Introducción', href: '/course/csharp/introduccion/' },
       { slug: 'variables', title: '2. Variables', href: '/course/csharp/variables/' },
@@ -100,6 +127,7 @@ export const courses: Course[] = [
     category: 'language',
     status: 'available',
     color: '#3776ab',
+    communityReleaseYear: 1991,
     lessons: [
       { slug: 'introduccion', title: '1. El comienzo', href: '/course/python/introduccion/' },
       { slug: 'variables', title: '2. Inputs y Variables', href: '/course/python/variables/' },
@@ -120,6 +148,7 @@ export const courses: Course[] = [
     category: 'language',
     status: 'available',
     color: '#E76F00',
+    communityReleaseYear: 1996,
     lessons: [
       { slug: 'introduccion', title: '1. Introducción', href: '/course/java/introduccion/' },
       { slug: 'variables', title: '2. Variables', href: '/course/java/variables/' },
@@ -326,6 +355,7 @@ export const courses: Course[] = [
     category: 'language',
     status: 'available',
     color: '#f1c40f',
+    communityReleaseYear: 1995,
     lessons: [
       { slug: 'introduccion', title: '1. Hola Mundo JS', href: '/course/javascript/introduccion/' },
       { slug: 'variables', title: '2. Variables (let/const)', href: '/course/javascript/variables/' },
@@ -417,6 +447,7 @@ export const courses: Course[] = [
       { slug: 'funciones-fechas', title: '7. Funciones de Fechas', href: '/course/excel/funciones-fechas/' },
       { slug: 'analisis-celdas', title: '8. Análisis de Celdas', href: '/course/excel/analisis-celdas/' },
       { slug: 'tablas-dinamicas', title: '9. Tablas Dinámicas y Gráficos', href: '/course/excel/tablas-dinamicas/' },
+      { slug: 'graficos', title: '10. Gráficos y visualización profesional', href: '/course/excel/graficos/' },
     ],
   },
 ];

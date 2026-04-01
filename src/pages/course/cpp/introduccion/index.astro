@@ -1,0 +1,89 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+---
+
+<Layout title="Introducción a C++" description="Qué es C++, compilación y primer programa" courseSlug="cpp">
+  <article class="content-section">
+    <h1>1. Introducción a C++</h1>
+
+    <section class="mb-10">
+      <h2>Después de PSeInt</h2>
+      <p>
+        En PSeInt escribiste <strong>algoritmos</strong> en pseudocódigo. <strong>C++</strong> es un lenguaje de programación real: se <strong>compila</strong> a código máquina, es <strong>rápido</strong> y se usa en videojuegos motores, sistemas operativos, banca de alta frecuencia y mucho más.
+      </p>
+      <p>
+        La lógica es la misma (variables, decisiones, repeticiones); cambia la <strong>sintaxis</strong> y que el compilador es estricto con errores de tipeo y tipos.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>¿Qué necesitás?</h2>
+      <ul class="mb-4">
+        <li>Un <strong>compilador</strong> (por ejemplo <a href="https://www.mingw-w64.org/" class="text-info font-bold">MinGW-w64</a> en Windows, o <code>g++</code> en Linux/macOS).</li>
+        <li>O un IDE online para probar fragmentos (replit, Compiler Explorer, etc.).</li>
+      </ul>
+      <p>Para compilar un archivo <code>main.cpp</code> con g++:</p>
+      <CodeBlock
+        lang="text"
+        code={`g++ -std=c++17 -Wall -o programa main.cpp
+./programa`}
+        title="Terminal (ejemplo)"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Programa mínimo</h2>
+      <p>
+        C++ hereda de C la función de entrada <code>main</code>. Lo habitual es incluir cabeceras de la biblioteca estándar y usar el espacio de nombres <code>std</code> para entrada/salida (lo veremos en detalle en la lección de E/S).
+      </p>
+      <CodeBlock
+        lang="cpp"
+        code={`#include <iostream>
+
+int main() {
+    std::cout << "Hola desde C++\\n";
+    return 0;
+}`}
+        title="main.cpp"
+      />
+      <p class="mt-4">
+        <code>return 0;</code> le indica al sistema que el programa terminó bien (convención; en muchos entornos podés omitirlo en <code>main</code> en C++ moderno, pero es buena costumbre al aprender).
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Comentarios</h2>
+      <CodeBlock
+        lang="cpp"
+        code={`// Comentario de una línea
+
+/*
+  Comentario
+  multilínea
+*/`}
+        title="Comentarios en C++"
+      />
+    </section>
+
+    <div class="ejercicio">
+      <h3>Ejercicio</h3>
+      <p class="enunciado">
+        Creá un programa que imprima dos líneas: tu nombre y la frase <strong>&quot;PSeInt → C++&quot;</strong>.
+      </p>
+      <details>
+        <summary>Ver idea de solución</summary>
+        <CodeBlock
+          lang="cpp"
+          code={`#include <iostream>
+
+int main() {
+    std::cout << "Tu Nombre\\n";
+    std::cout << "PSeInt -> C++\\n";
+    return 0;
+}`}
+        />
+      </details>
+    </div>
+  </article>
+</Layout>

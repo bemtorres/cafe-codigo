@@ -44,7 +44,8 @@ function courseMatchesQuery(course: Course, q: string): boolean {
     hay(course.name) ||
     hay(course.description) ||
     hay(course.slug) ||
-    hay(categoryLabel[course.category])
+    hay(categoryLabel[course.category]) ||
+    (course.communityReleaseYear != null && hay(String(course.communityReleaseYear)))
   );
 }
 
@@ -103,6 +104,10 @@ export default function CoursesCatalog() {
       list.push(c);
       m.set(c.category, list);
     }
+    const langs = m.get('language');
+    if (langs) {
+      langs.sort((a, b) => (a.communityReleaseYear ?? 0) - (b.communityReleaseYear ?? 0));
+    }
     return categoryOrder
       .map((cat) => ({ cat, label: categoryLabel[cat], items: m.get(cat) ?? [] }))
       .filter((g) => g.items.length > 0);
@@ -158,6 +163,9 @@ export default function CoursesCatalog() {
           <h3 className="font-nunito text-lg font-black text-textPrimary">{course.name}</h3>
           <CourseBadges course={course} />
         </div>
+        {course.communityReleaseYear != null && (
+          <p className="m-0 mb-2 font-nunito text-xs font-extrabold text-textMuted">Comunidad · {course.communityReleaseYear}</p>
+        )}
         <p className="m-0 line-clamp-3 font-nunito text-sm font-[650] leading-relaxed text-textSecondary">{course.description}</p>
       </div>
     );
@@ -217,6 +225,9 @@ export default function CoursesCatalog() {
             <h3 className="m-0 font-nunito text-base font-black text-textPrimary sm:text-lg">{course.name}</h3>
             <CourseBadges course={course} />
           </div>
+          {course.communityReleaseYear != null && (
+            <p className="m-0 mt-0.5 font-nunito text-xs font-extrabold text-textMuted">Comunidad · {course.communityReleaseYear}</p>
+          )}
           <p className="mt-1 line-clamp-2 font-nunito text-sm font-[650] text-textSecondary">{course.description}</p>
         </div>
         <span className="hidden shrink-0 self-center text-xl text-textMuted sm:inline" aria-hidden>

@@ -1,0 +1,64 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+---
+
+<Layout title="Bucles en C++" description="while, for y do-while" courseSlug="cpp">
+  <article class="content-section">
+    <h1>6. Bucles</h1>
+
+    <section class="mb-10">
+      <h2>Equivalencias con PSeInt</h2>
+      <ul class="mb-4">
+        <li><strong>Mientras</strong> → <code>while</code></li>
+        <li><strong>Repetir / Hasta</strong> → <code>do { } while</code></li>
+        <li><strong>Para</strong> → <code>for</code></li>
+      </ul>
+    </section>
+
+    <section class="mb-10">
+      <h2>while</h2>
+      <CodeBlock
+        lang="cpp"
+        code={`int i = 0;
+while (i < 5) {
+    std::cout << i << "\\n";
+    i++;
+}`}
+        title="while"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>for</h2>
+      <CodeBlock
+        lang="cpp"
+        code={`for (int i = 0; i < 5; i++) {
+    std::cout << i << "\\n";
+}`}
+        title="for clásico"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Rango for (C++11)</h2>
+      <p>Muy útil con arreglos y <code>vector</code> (lo profundizamos en la siguiente lección).</p>
+      <CodeBlock
+        lang="cpp"
+        code={`#include <vector>
+// ...
+std::vector<int> v = {1, 2, 3};
+for (int x : v) {
+    std::cout << x << " ";
+}`}
+        title="for-each (rango)"
+      />
+
+    </section>
+
+    <div class="ejercicio">
+      <h3>Ejercicio</h3>
+      <p class="enunciado">Imprimir los números del 1 al 100 que sean múltiplos de 7.</p>
+    </div>
+  </article>
+</Layout>

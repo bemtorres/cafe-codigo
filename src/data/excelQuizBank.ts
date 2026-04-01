@@ -684,5 +684,130 @@ export const excelQuizBank: Record<string, QuizData> = {
         correctIndex: 1
       }
     ]
-  }
+  },
+  graficos: {
+    title: 'Gráficos y visualización',
+    questions: [
+      {
+        prompt: '¿Cuándo suele ser preferible un gráfico de líneas frente a uno de columnas?',
+        options: [
+          'Para enfatizar la jerarquía de categorías sin orden temporal',
+          'Para mostrar la evolución de una métrica a lo largo del tiempo',
+          'Solo cuando hay exactamente dos categorías',
+          'Cuando los datos están en texto sin números',
+        ],
+        correctIndex: 1,
+      },
+      {
+        prompt: 'Un gráfico circular (pastel) es más adecuado cuando…',
+        options: [
+          'Hay muchas categorías con valores muy parecidos',
+          'Se comparan partes de un mismo total y pocas categorías',
+          'Se necesita comparar dos variables numéricas independientes',
+          'El eje X debe ser una línea de tiempo continua',
+        ],
+        correctIndex: 1,
+      },
+      {
+        prompt: 'El gráfico de dispersión (XY) se usa principalmente para…',
+        options: [
+          'Mostrar proporciones porcentuales',
+          'Explorar la relación entre dos variables numéricas',
+          'Listar totales en una tabla',
+          'Reemplazar siempre a un histograma',
+        ],
+        correctIndex: 1,
+      },
+      {
+        prompt: 'Un gráfico combinado con eje secundario es útil cuando…',
+        options: [
+          'Todas las series comparten la misma unidad y escala',
+          'Dos series tienen escalas muy distintas (p. ej. unidades y %)',
+          'Nunca se debe usar en informes profesionales',
+          'Solo funciona con gráficos circulares',
+        ],
+        correctIndex: 1,
+      },
+      {
+        prompt: 'Un histograma representa sobre todo…',
+        options: [
+          'La participación de cada categoría en un total del 100%',
+          'La distribución de frecuencias de una variable numérica en intervalos',
+          'Solo datos de texto',
+          'Relaciones entre tres variables a la vez',
+        ],
+        correctIndex: 1,
+      },
+      {
+        prompt: '¿Qué práctica mejora la honestidad visual en gráficos de columnas?',
+        options: [
+          'Ocultar siempre el eje vertical',
+          'Usar siempre escala 3D',
+          'Elegir un eje Y que no distorsione las diferencias (p. ej. empezar en cero cuando corresponda)',
+          'Fusionar celdas en el rango de datos',
+        ],
+        correctIndex: 2,
+      },
+      {
+        prompt: 'Un error común al preparar datos para gráficos es…',
+        options: [
+          'Usar una fila de encabezados claros',
+          'Incluir filas en blanco dentro del rango de datos',
+          'Poner una variable por columna',
+          'Una fila por observación',
+        ],
+        correctIndex: 1,
+      },
+      {
+        prompt: 'Las barras horizontales suelen preferirse cuando…',
+        options: [
+          'Hay etiquetas de categoría largas y se busca legibilidad',
+          'Solo hay datos de fechas',
+          'No hay categorías, solo números sueltos',
+          'Se quiere representar un todo del 100%',
+        ],
+        correctIndex: 0,
+      },
+      {
+        prompt: 'El gráfico de áreas apiladas puede ser engañoso si…',
+        options: [
+          'Solo hay una serie',
+          'Las series intermedias se vuelven difíciles de comparar entre sí',
+          'El título está vacío',
+          'Se usa en Excel 365',
+        ],
+        correctIndex: 1,
+      },
+      {
+        prompt: 'En la comunicación de resultados, el “data storytelling” implica…',
+        options: [
+          'Añadir el mayor número de gráficos posible',
+          'Estructurar mensaje con contexto, hallazgo y acción con apoyo visual claro',
+          'Evitar siempre los títulos en los gráficos',
+          'Usar solo tablas sin gráficos',
+        ],
+        correctIndex: 1,
+      },
+      {
+        prompt: '¿Qué afirmación sobre gráficos de columnas vs barras es razonable?',
+        options: [
+          'Son equivalentes en todo contexto; no importa la orientación',
+          'Las barras horizontales suelen leerse mejor con nombres largos en el eje de categorías',
+          'Las columnas nunca deben usarse para comparar categorías',
+          'Las barras solo sirven para tiempo',
+        ],
+        correctIndex: 1,
+      },
+      {
+        prompt: 'Una tabla en “formato largo” (Región | Mes | Ventas) suele ser…',
+        options: [
+          'Incorrecta para tablas dinámicas',
+          'Cómoda para pivotar y alimentar gráficos flexibles',
+          'Igual a tener un total en medio de los datos',
+          'Solo válida para gráficos circulares',
+        ],
+        correctIndex: 1,
+      },
+    ],
+  },
 };

@@ -38,5 +38,22 @@ Para mantener la coherencia y garantizar la mejor experiencia de aprendizaje gam
 - **`<Layout>`**: Envuelve a cada lección para inyectar los metadatos SEO, el menú lateral y la lógica de estado local.
 - **`<CodeBlock code={...} title="..." lang="..." />`**: Renderiza el código. Si no entregas `lang`, utiliza una heurística interna mediante RegExp para averiguar de qué lenguaje se trata y auto-asignar iconos, bordes coloreados y su parser correspondiente.
 
+## Cursos de lenguaje (`category: 'language'`)
+
+Los cursos marcados como lenguaje en `src/data/courses.ts` (por ejemplo C++, C#, Java, Python, JavaScript) comparten:
+
+- **`communityReleaseYear`** (opcional): año de referencia de la primera difusión pública a la comunidad; se usa en el catálogo `/cursos/` y en el modal «Elige un curso» del layout (`Layout.astro`) como texto «Comunidad · año».
+- **Pie «Dato curioso»**: al final del `<main>` se renderiza `LanguageCuriosity` (`src/components/LanguageCuriosity.astro`), con datos en `src/data/languageCuriosityMeta.ts` (una frase corta + enlace a Wikipedia).
+
+### Reglas del pie «Dato curioso»
+
+- Se muestra en la **portada del curso** (`/course/{slug}/`) y en **todas las lecciones** de ese curso **excepto** la lección cuyo slug es `introduccion`.
+- No se muestra en cursos que no sean de categoría `language`.
+- Para añadir o editar textos: `src/data/languageCuriosityMeta.ts` (una entrada por `slug` del curso). El componente es deliberadamente minimalista (párrafo + enlace).
+
+### Lección `introduccion`
+
+Las páginas `introduccion` **no** incluyen el bloque de dato curioso; el contexto histórico queda en `languageCuriosityMeta` y aparece en el resto de lecciones y en la portada. No dupliques bloques de origen en el `.astro` de la intro salvo que el contenido pedagógico lo exija explícitamente.
+
 ---
 *Con consistencia arquitectónica formaremos mejores profesionales del software.*

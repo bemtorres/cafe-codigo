@@ -1,0 +1,59 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+---
+
+<Layout title="Arreglos y vector en C++" description="Arrays C y std::vector" courseSlug="cpp">
+  <article class="content-section">
+    <h1>7. Arreglos y <code>vector</code></h1>
+
+    <section class="mb-10">
+      <h2>Arreglo fijo (C-style)</h2>
+      <CodeBlock
+        lang="cpp"
+        code={`#include <iostream>
+
+int main() {
+    int a[5] = { 10, 20, 30, 40, 50 };
+    for (int i = 0; i < 5; i++) {
+        std::cout << a[i] << " ";
+    }
+    std::cout << "\\n";
+    return 0;
+}`}
+        title="int a[5]"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2><code>std::vector</code></h2>
+      <p>Arreglo dinámico de la STL: tamaño variable, métodos <code>push_back</code>, <code>size()</code>, etc.</p>
+      <CodeBlock
+        lang="cpp"
+        code={`#include <iostream>
+#include <vector>
+
+int main() {
+    std::vector<int> v;
+    v.push_back(1);
+    v.push_back(2);
+    v.push_back(3);
+
+    for (int x : v) {
+        std::cout << x << " ";
+    }
+    std::cout << "\\n";
+    return 0;
+}`}
+        title="vector"
+      />
+    </section>
+
+    <div class="ejercicio">
+      <h3>Ejercicio</h3>
+      <p class="enunciado">
+        Leer <code>n</code> y luego <code>n</code> enteros en un <code>vector</code>; mostrar la suma.
+      </p>
+    </div>
+  </article>
+</Layout>

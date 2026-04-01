@@ -1,0 +1,538 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import ExcelQuizModal from '../../../../components/ExcelQuizModal.astro';
+import CopyTableBtn from '../../../../components/CopyTableBtn.astro';
+import ExcelSheetTable from '../../../../components/ExcelSheetTable.astro';
+import ExcelPracticeBlock from '../../../../components/ExcelPracticeBlock.astro';
+import { ExcelInteractiveFilterChart } from '../../../../components/excel/ExcelInteractiveFilterChart';
+
+const grafColVentas = [
+  { category: 'Norte', value: 120 },
+  { category: 'Sur', value: 95 },
+  { category: 'Este', value: 140 },
+  { category: 'Oeste', value: 88 },
+];
+const grafBarProyectos = [
+  { category: 'Migración CRM', value: 210 },
+  { category: 'Web corporativa', value: 165 },
+  { category: 'Informe BI', value: 92 },
+];
+const grafLineMeses = [
+  { category: 'Ene', value: 42 },
+  { category: 'Feb', value: 45 },
+  { category: 'Mar', value: 41 },
+  { category: 'Abr', value: 52 },
+  { category: 'May', value: 49 },
+];
+const grafPieCanal = [
+  { category: 'Tienda', value: 45 },
+  { category: 'Online', value: 35 },
+  { category: 'Mayorista', value: 20 },
+];
+const grafAreaTrim = [
+  { category: 'T1', s1: 18, s2: 12 },
+  { category: 'T2', s1: 22, s2: 14 },
+  { category: 'T3', s1: 20, s2: 16 },
+];
+const grafScatterSem = [
+  { category: 'Sem 1', x: 2, y: 48 },
+  { category: 'Sem 2', x: 3, y: 52 },
+  { category: 'Sem 3', x: 2.5, y: 50 },
+  { category: 'Sem 4', x: 4, y: 58 },
+  { category: 'Sem 5', x: 5, y: 62 },
+  { category: 'Sem 6', x: 4.5, y: 60 },
+  { category: 'Sem 7', x: 6, y: 65 },
+  { category: 'Sem 8', x: 5.5, y: 63 },
+];
+const grafComboMes = [
+  { category: 'Ene', units: 320, marginPct: 22 },
+  { category: 'Feb', units: 340, marginPct: 24 },
+  { category: 'Mar', units: 310, marginPct: 21 },
+];
+const grafHistoMin = [
+  { category: 'Obs 1', value: 4 },
+  { category: 'Obs 2', value: 7 },
+  { category: 'Obs 3', value: 5 },
+  { category: 'Obs 4', value: 12 },
+  { category: 'Obs 5', value: 6 },
+  { category: 'Obs 6', value: 8 },
+  { category: 'Obs 7', value: 15 },
+  { category: 'Obs 8', value: 5 },
+  { category: 'Obs 9', value: 9 },
+  { category: 'Obs 10', value: 11 },
+];
+---
+
+<Layout
+  title="10. Gráficos y visualización profesional"
+  description="Domina tipos de gráficos en Excel, buenas prácticas de datos, personalización, interpretación y comunicación de resultados."
+  courseSlug="excel"
+>
+  <article class="content-section">
+    <h1>10. Gráficos y visualización profesional</h1>
+
+    <p class="font-semibold text-gray-800 mb-2">En esta lección aprenderás a:</p>
+    <ul class="list-disc pl-6 text-gray-700 mb-8 space-y-1">
+      <li>Elegir el <strong>tipo de gráfico</strong> adecuado según la pregunta de negocio y la forma de los datos.</li>
+      <li><strong>Construir e interpretar</strong> columnas, barras, líneas, circular, áreas, dispersión, combinados e histogramas.</li>
+      <li><strong>Organizar tablas</strong> para que Excel entienda categorías y series sin errores comunes.</li>
+      <li><strong>Personalizar</strong> títulos, ejes y estilo con criterio profesional y contar una historia con datos.</li>
+    </ul>
+
+    <!-- 1. Introducción -->
+    <section class="mb-10">
+      <h2>1. Introducción a los gráficos en Excel</h2>
+
+      <h3 class="text-lg font-bold text-gray-900 mt-6 mb-2">1.1 Qué son y para qué sirven</h3>
+      <p>
+        Un <strong>gráfico</strong> es una representación visual de valores numéricos asociados a categorías, fechas o puntos. En Excel, el gráfico se vincula a un rango de celdas: cuando cambian los datos (o la tabla dinámica que los alimenta), el dibujo puede actualizarse para reflejar la nueva información.
+      </p>
+      <p>
+        Sirven para <strong>comparar magnitudes</strong>, ver <strong>proporciones</strong>, seguir <strong>tendencias en el tiempo</strong>, detectar <strong>relaciones entre dos variables</strong> y comunicar hallazgos a personas que no revisarán la hoja celda por celda.
+      </p>
+
+      <h3 class="text-lg font-bold text-gray-900 mt-6 mb-2">1.2 Cuándo usar gráficos en lugar de tablas</h3>
+      <ul class="list-disc pl-6 space-y-2 text-gray-700">
+        <li><strong>Gráfico:</strong> cuando necesitás <em>patrones globales</em> (quién vende más, cómo evoluciona el mes, qué parte del total representa cada segmento).</li>
+        <li><strong>Tabla:</strong> cuando necesitás <em>exactitud</em> (cada importe al céntimo, listados largos, auditoría, o copiar/pegar a otro sistema).</li>
+        <li><strong>Los dos:</strong> en informes suele haber una tabla resumida <em>y</em> un gráfico que destaca el mensaje principal.</li>
+      </ul>
+
+      <h3 class="text-lg font-bold text-gray-900 mt-6 mb-2">1.3 Importancia en el análisis de datos</h3>
+      <p>
+        Los gráficos aceleran la <strong>exploración</strong>: anomalías, estacionalidad y comparaciones salen a la vista antes que con solo números. También reducen errores de interpretación si el tipo de gráfico coincide con la pregunta (por ejemplo, no usar pastel para comparar 15 categorías similares).
+      </p>
+    </section>
+
+    <!-- 2. Tipos de gráficos -->
+    <section class="mb-10">
+      <h2>2. Tipos de gráficos en Excel (en profundidad)</h2>
+      <p class="text-gray-700">
+        Para cada tipo: definición, cuándo usarlo, ventajas y límites, datos de ejemplo, pasos en Excel, interpretación y frase tipo para una reunión.
+      </p>
+      <p class="mb-8 text-gray-700">
+        En cada apartado verás <strong>una sola tabla interactiva</strong> ligada al <strong>gráfico</strong> (mismos datos): usá el botón <strong>Filtro</strong> para ordenar o elegir filas y el dibujo se actualiza al instante. Los importes de ejemplo están en <strong>miles de dólares estadounidenses (miles USD)</strong>, salvo que se indique otra unidad (porcentaje, horas, unidades, minutos).
+      </p>
+
+      <!-- Columnas -->
+      <h3 class="text-xl font-black text-[#107c41] mt-10 mb-3">2.1 Gráfico de columnas</h3>
+      <p><strong>Definición:</strong> barras verticales con altura proporcional al valor; el eje horizontal suele llevar categorías.</p>
+      <p><strong>Casos de uso:</strong> comparar ventas por región, unidades por producto, puntajes por equipo.</p>
+      <p><strong>Ventajas:</strong> lectura rápida de ranking y diferencias. <strong>Limitaciones:</strong> muchas categorías amontonan etiquetas; poco adecuado si el eje X es tiempo continuo (mejor líneas).</p>
+
+      <div class="mb-6">
+        <ExcelInteractiveFilterChart
+          client:visible
+          chartKind="bar"
+          rows={grafColVentas}
+          rowLabel="Región"
+          valueColumnLabel="Ventas (miles USD)"
+          valueFormat="number"
+          chartTitle="Gráfico de columnas — ventas por región (miles USD)"
+          tableSubtitle="Ejemplo: ventas por región (miles USD)"
+          showIntro={false}
+        />
+      </div>
+
+      <p class="font-semibold mt-4">Cómo construirlo (pasos)</p>
+      <ol class="list-decimal pl-6 space-y-1 text-gray-700">
+        <li>Seleccioná el rango con encabezados (incluyendo la fila de títulos).</li>
+        <li><strong>Insertar &gt; Gráficos de columna</strong> y elegí <em>Columna agrupada 2D</em> (el más neutro).</li>
+        <li>Clic en el gráfico &gt; <strong>Elementos del gráfico (+)</strong>: activá título del gráfico y leyenda solo si aporta.</li>
+        <li>Formato de ejes: clic en el eje vertical &gt; opciones para unidades y número de decimales coherentes con el mensaje.</li>
+      </ol>
+      <p><strong>Interpretación:</strong> el Este lidera; Oeste queda último con diferencia clara respecto al centro del grupo.</p>
+      <p>
+        <strong>Frase para la reunión:</strong> «Las ventas por región muestran al Este como principal motor, con 140 kUSD, mientras Oeste concentra el menor volumen en este periodo, 88 kUSD; la brecha sugiere revisar cobertura comercial o stock en esa zona.»
+      </p>
+
+      <!-- Barras -->
+      <h3 class="text-xl font-black text-[#107c41] mt-10 mb-3">2.2 Gráfico de barras</h3>
+      <p><strong>Definición:</strong> igual que columnas pero las barras son horizontales; las categorías van en el eje vertical.</p>
+      <p><strong>Casos de uso:</strong> etiquetas largas (nombres de proyectos), rankings legibles en una sola lectura de arriba abajo.</p>
+      <p><strong>Ventajas:</strong> buena legibilidad con textos largos.</p>
+      <p><strong>Limitaciones:</strong> comparar muchas series a la vez puede saturar.</p>
+
+      <div class="mb-6">
+        <ExcelInteractiveFilterChart
+          client:visible
+          chartKind="horizontalBar"
+          rows={grafBarProyectos}
+          rowLabel="Proyecto"
+          valueColumnLabel="Horas"
+          valueFormat="hours"
+          chartTitle="Gráfico de barras — horas dedicadas por proyecto"
+          tableSubtitle="Horas dedicadas por proyecto"
+          showIntro={false}
+        />
+      </div>
+      <ol class="list-decimal pl-6 space-y-1 text-gray-700 mt-3">
+        <li>Seleccioná datos con encabezados.</li>
+        <li><strong>Insertar &gt; Barra</strong> &gt; <em>Barras agrupadas 2D</em>.</li>
+        <li>Ordená de mayor a menor (datos &gt; ordenar) si querés un ranking visual limpio.</li>
+      </ol>
+      <p><strong>Interpretación:</strong> Migración CRM concentra más esfuerzo que Informe BI.</p>
+      <p><strong>Frase:</strong> «El reparto de horas refleja la prioridad operativa: casi el doble de tiempo va al CRM frente al informe BI.»</p>
+
+      <!-- Líneas -->
+      <h3 class="text-xl font-black text-[#107c41] mt-10 mb-3">2.3 Gráfico de líneas</h3>
+      <p><strong>Definición:</strong> puntos unidos por trazos; el eje X suele ser tiempo u orden secuencial.</p>
+      <p><strong>Casos de uso:</strong> series temporales (mensual, trimestral), seguimiento de KPI.</p>
+      <p><strong>Ventajas:</strong> tendencias y cambios de pendiente muy visibles.</p>
+      <p><strong>Limitaciones:</strong> interpolar entre puntos puede sugerir continuidad que no existe si los datos son escasos.</p>
+
+      <div class="mb-6">
+        <ExcelInteractiveFilterChart
+          client:visible
+          chartKind="line"
+          rows={grafLineMeses}
+          rowLabel="Mes"
+          valueColumnLabel="Ingreso (miles USD)"
+          valueFormat="number"
+          chartTitle="Gráfico de líneas — ingresos mensuales (miles USD)"
+          tableSubtitle="Ingresos mensuales (miles USD)"
+          showIntro={false}
+        />
+      </div>
+      <ol class="list-decimal pl-6 space-y-1 text-gray-700 mt-3">
+        <li>Seleccioná Mes e Ingreso.</li>
+        <li><strong>Insertar &gt; Línea</strong> &gt; <em>Líneas 2D</em>.</li>
+        <li>Si hay fechas reales en columnas, Excel puede reconocer el eje temporal; si son texto (Ene, Feb), igual funciona como categorías.</li>
+      </ol>
+      <p><strong>Interpretación:</strong> subida marcada hacia abril; leve corrección en mayo respecto al pico.</p>
+      <p><strong>Frase:</strong> «La serie muestra una aceleración clara en el segundo trimestre, con máximo en abril; conviene cruzar con campañas o estacionalidad antes de proyectar junio.»</p>
+
+      <!-- Circular -->
+      <h3 class="text-xl font-black text-[#107c41] mt-10 mb-3">2.4 Gráfico circular (pastel)</h3>
+      <p><strong>Definición:</strong> sectores angulares proporcionales al peso de cada parte sobre el total (100%).</p>
+      <p><strong>Casos de uso:</strong> pocas categorías (idealmente 3–6), partes del mismo entero (cuota de mercado, mezcla de gastos).</p>
+      <p><strong>Ventajas:</strong> mensaje de «participación» muy directo. <strong>Limitaciones:</strong> malo con muchas porciones similares; el ojo humano compara mal ángulos finos.</p>
+
+      <div class="mb-6">
+        <ExcelInteractiveFilterChart
+          client:visible
+          chartKind="pie"
+          rows={grafPieCanal}
+          rowLabel="Canal"
+          valueColumnLabel="Porcentaje"
+          valueFormat="percent"
+          chartTitle="Gráfico circular — participación por canal (%)"
+          tableSubtitle="Ventas por canal (% del total)"
+          showIntro={false}
+        />
+      </div>
+      <ol class="list-decimal pl-6 space-y-1 text-gray-700 mt-3">
+        <li>Seleccioná canal y porcentajes (que sumen 100 o los valores brutos que Excel pueda sumar).</li>
+        <li><strong>Insertar &gt; Circular</strong>; preferí <em>sectores 2D</em> antes que efectos 3D que distorsionan ángulos.</li>
+        <li>Etiquetas de datos: porcentaje y/o categoría según claridad.</li>
+      </ol>
+      <p><strong>Interpretación:</strong> la tienda física sigue siendo la mitad del negocio aproximadamente.</p>
+      <p><strong>Frase:</strong> «Tres cuartas partes de las ventas se reparten entre tienda y online; el canal mayorista completa el mix con un quinto del total.»</p>
+
+      <!-- Áreas -->
+      <h3 class="text-xl font-black text-[#107c41] mt-10 mb-3">2.5 Gráfico de áreas</h3>
+      <p><strong>Definición:</strong> similar a líneas pero con el espacio bajo la serie relleno (apilado o no).</p>
+      <p><strong>Casos de uso:</strong> magnitud acumulada en el tiempo, varias series cuando querés énfasis en volumen total.</p>
+      <p><strong>Ventajas:</strong> sensación de «masa» de datos. <strong>Limitaciones:</strong> las series apiladas pueden ocultar series intermedias; revisá transparencia o líneas superpuestas.</p>
+
+      <div class="mb-6">
+        <ExcelInteractiveFilterChart
+          client:visible
+          chartKind="area"
+          rows={grafAreaTrim}
+          rowLabel="Trimestre"
+          valueColumnLabel="Contratos"
+          seriesLabels={['Nuevos', 'Renovados']}
+          valueFormat="number"
+          chartTitle="Gráfico de áreas — nuevos y renovados por trimestre"
+          tableSubtitle="Contratos nuevos por trimestre"
+          showIntro={false}
+        />
+      </div>
+      <ol class="list-decimal pl-6 space-y-1 text-gray-700 mt-3">
+        <li>Seleccioná rango con dos series numéricas y un eje común.</li>
+        <li><strong>Insertar &gt; Área</strong>; probá <em>Área apilada</em> solo si el mensaje es volumen combinado, no comparación exacta entre series.</li>
+      </ol>
+      <p><strong>Interpretación:</strong> ambas series crecen hacia T2; nuevos contratos siempre por encima de renovados en el ejemplo.</p>
+      <p><strong>Frase:</strong> «El área combinada muestra expansión en captación y renovación en paralelo, con pico de actividad en el segundo trimestre.»</p>
+
+      <!-- Dispersión -->
+      <h3 class="text-xl font-black text-[#107c41] mt-10 mb-3">2.6 Gráfico de dispersión (XY)</h3>
+      <p><strong>Definición:</strong> cada punto es un par (x, y); muestra relación entre dos variables numéricas.</p>
+      <p><strong>Casos de uso:</strong> horas de estudio vs nota, precio vs demanda, edad vs gasto.</p>
+      <p><strong>Ventajas:</strong> correlación y outliers. <strong>Limitaciones:</strong> no mezclar variables que no comparten escala sin estandarizar o sin segundo eje (mejor combinado).</p>
+
+      <div class="mb-6">
+        <ExcelInteractiveFilterChart
+          client:visible
+          chartKind="scatter"
+          rows={grafScatterSem}
+          rowLabel="Semana"
+          xLabel="Publicidad (miles USD)"
+          yLabel="Ventas (miles USD)"
+          valueFormat="number"
+          chartTitle="Dispersión (XY) — publicidad vs ventas (miles USD)"
+          tableSubtitle="Publicidad (miles USD) vs ventas (miles USD) — 8 semanas"
+          showIntro={false}
+        />
+      </div>
+      <ol class="list-decimal pl-6 space-y-1 text-gray-700 mt-3">
+        <li>Colocá variable independiente en columna A y dependiente en B (o al revés, pero sé consistente).</li>
+        <li><strong>Insertar &gt; Dispersión</strong> &gt; solo marcadores.</li>
+        <li>Etiquetá ejes: «Inversión publicitaria (miles USD)» y «Ventas (miles USD)».</li>
+      </ol>
+      <p><strong>Interpretación:</strong> nube ascendente: a mayor publicidad, ventas mayores; dispersión moderada sugiere otros factores.</p>
+      <p><strong>Frase:</strong> «La dispersión confirma una asociación positiva entre inversión y ventas en estas semanas; habría que validar con más periodos y controlar estacionalidad.»</p>
+
+      <!-- Combinado -->
+      <h3 class="text-xl font-black text-[#107c41] mt-10 mb-3">2.7 Gráfico combinado</h3>
+      <p><strong>Definición:</strong> dos o más tipos en un mismo gráfico (p. ej. columnas + línea), a menudo con <strong>eje secundario</strong> cuando las escalas difieren (unidades vs %).</p>
+      <p><strong>Casos de uso:</strong> volumen y margen, ingresos y tasa de conversión, temperatura y ventas.</p>
+      <p><strong>Ventajas:</strong> una sola vista para KPIs ligados. <strong>Limitaciones:</strong> puede cargarse de líneas; máximo dos ejes y pocas series.</p>
+
+      <div class="mb-6">
+        <ExcelInteractiveFilterChart
+          client:visible
+          chartKind="mixed"
+          rows={grafComboMes}
+          rowLabel="Mes"
+          valueColumnLabel="Unidades"
+          chartTitle="Gráfico combinado — unidades y margen % (dos ejes)"
+          tableSubtitle="Mes, unidades vendidas y margen %"
+          showIntro={false}
+        />
+      </div>
+      <ol class="list-decimal pl-6 space-y-1 text-gray-700 mt-3">
+        <li>Seleccioná las tres columnas.</li>
+        <li><strong>Insertar &gt; Gráfico combinado</strong> o creá columnas y luego: clic en la serie «Margen_%» &gt; <strong>Cambiar tipo de gráfico de series</strong> &gt; línea.</li>
+        <li>Activá <strong>eje secundario</strong> para la serie en porcentaje (clic en serie &gt; formato &gt; eje secundario).</li>
+      </ol>
+      <p><strong>Interpretación:</strong> febrero mejora unidades y margen; marzo cae en ambos.</p>
+      <p><strong>Frase:</strong> «Combinamos volumen y rentabilidad: febrero es el mejor mes en ambos frentes; marzo pide revisión de costos o mix de producto.»</p>
+
+      <!-- Histograma -->
+      <h3 class="text-xl font-black text-[#107c41] mt-10 mb-3">2.8 Histogramas</h3>
+      <p><strong>Definición:</strong> distribución de una variable numérica en <strong>intervalos (bins)</strong>: frecuencia o conteo por intervalo.</p>
+      <p><strong>Casos de uso:</strong> tiempos de respuesta, edades de clientes, días de entrega.</p>
+      <p><strong>Ventajas:</strong> forma de la distribución (sesgo, colas). <strong>Limitaciones:</strong> el ancho del bin cambia la historia; probá varios anchos.</p>
+
+      <div class="mb-6">
+        <ExcelInteractiveFilterChart
+          client:visible
+          chartKind="histogram"
+          rows={grafHistoMin}
+          rowLabel="Observación"
+          valueColumnLabel="Minutos"
+          valueFormat="number"
+          histogramBinWidth={5}
+          chartTitle="Histograma — distribución de minutos hasta la 1.ª respuesta"
+          tableSubtitle="Muestra: minutos hasta primera respuesta (soporte)"
+          showIntro={false}
+        />
+      </div>
+      <ol class="list-decimal pl-6 space-y-1 text-gray-700 mt-3">
+        <li>Seleccioná la columna numérica (con encabezado).</li>
+        <li><strong>Insertar &gt; Gráficos estadísticos &gt; Histograma</strong> (Excel 2016+; la ruta exacta puede variar según idioma y versión).</li>
+        <li>Ajustá el <strong>ancho del bin</strong> (Formato del eje horizontal &gt; opciones de bin) para suavizar o detallar.</li>
+        <li>Alternativa: <strong>Análisis de datos &gt; Histograma</strong> o gráfico de columnas de frecuencias calculadas manualmente.</li>
+      </ol>
+      <p><strong>Interpretación:</strong> la mayoría de valores agrupados entre 5–10 min con cola hacia tiempos mayores.</p>
+      <p><strong>Frase:</strong> «La distribución muestra concentración en la franja baja de minutos, con una cola que indica algunos casos lentos a revisar como outliers operativos.»</p>
+    </section>
+
+    <!-- 3. Estructura de datos -->
+    <section class="mb-10">
+      <h2>3. Estructura de datos para gráficos</h2>
+
+      <h3 class="text-lg font-bold text-gray-900 mt-4 mb-2">3.1 Cómo organizar las tablas</h3>
+      <ul class="list-disc pl-6 text-gray-700 space-y-1">
+        <li><strong>Una fila = un registro</strong> (una venta, un día, un cliente-evento).</li>
+        <li><strong>Primera fila = encabezados</strong> claros y sin celdas fusionadas en el rango fuente.</li>
+        <li><strong>Una columna por variable</strong>: fechas en una columna, importes en otra; no mezclar texto y números en la misma celda si van a ser eje numérico.</li>
+        <li>Para gráficos por categoría, <strong>orden coherente</strong> (cronológico o por magnitud) según el mensaje.</li>
+      </ul>
+
+      <h3 class="text-lg font-bold text-gray-900 mt-6 mb-2">3.2 Errores comunes</h3>
+      <ul class="list-disc pl-6 text-gray-700 space-y-1">
+        <li>Filas en blanco dentro del rango: Excel puede cortar series o interpretar mal el bloque.</li>
+        <li>Totales al pie mezclados con datos: el gráfico puede incluir el total como si fuera otra categoría.</li>
+        <li>Fechas como texto inconsistente («01/03/25» vs «mar-25») dificultan el eje temporal.</li>
+        <li>Gráfico circular con valores que <strong>no suman un todo</strong> o con doble conteo.</li>
+      </ul>
+
+      <h3 class="text-lg font-bold text-gray-900 mt-6 mb-2">3.3 Mal vs bien diseñado (resumen)</h3>
+      <div class="grid gap-6 md:grid-cols-2 mt-4">
+        <div class="rounded-xl border-2 border-red-200 bg-red-50/80 p-4">
+          <p class="font-black text-red-800 m-0 mb-2">Tabla problemática</p>
+          <ul class="text-sm text-gray-800 space-y-1 m-0 pl-4 list-disc">
+            <li>Encabezados en la fila 3 y título fusionado en filas 1–2.</li>
+            <li>Columnas «Enero» y «Febrero» con subcolumnas sin nombre único.</li>
+            <li>Una fila «TOTAL» entre medio de regiones.</li>
+          </ul>
+        </div>
+        <div class="rounded-xl border-2 border-emerald-200 bg-emerald-50/80 p-4">
+          <p class="font-black text-emerald-900 m-0 mb-2">Tabla recomendable</p>
+          <ul class="text-sm text-gray-800 space-y-1 m-0 pl-4 list-disc">
+            <li>Fila 1: Región | Mes | Ventas.</li>
+            <li>Cada combinación región-mes en su fila (formato largo).</li>
+            <li>Totales en otra hoja o con fórmulas fuera del rango del gráfico.</li>
+          </ul>
+        </div>
+      </div>
+
+      <CopyTableBtn tableId="graf-largo-bien" />
+      <ExcelSheetTable
+        tableId="graf-largo-bien"
+        tableLabel="Formato largo (adecuado para tablas dinámicas y gráficos)"
+        variant="maestro"
+        columns={['A', 'B', 'C']}
+        headers={['Región', 'Mes', 'Ventas']}
+        rows={[
+          ['Norte', 'Ene', '40'],
+          ['Norte', 'Feb', '42'],
+          ['Sur', 'Ene', '33'],
+          ['Sur', 'Feb', '35'],
+        ]}
+        showCoordinateHelp={false}
+      />
+    </section>
+
+    <!-- 4. Personalización -->
+    <section class="mb-10">
+      <h2>4. Personalización de gráficos</h2>
+      <ol class="list-decimal pl-6 text-gray-700 space-y-2">
+        <li><strong>Título del gráfico:</strong> debe responder a una pregunta («Ventas por región — Q1 2025»), no solo «Gráfico 1».</li>
+        <li><strong>Ejes:</strong> títulos con unidades (USD, %, unidades); escala que no exagere diferencias (evitar eje Y que no empiece en cero en columnas si querés honestidad visual).</li>
+        <li><strong>Leyenda:</strong> útil con varias series; si hay una sola, a veces basta el título del eje.</li>
+        <li><strong>Colores:</strong> paleta limitada (2–3 colores + neutros); mismo color para la misma dimensión en todos los informes del equipo.</li>
+        <li><strong>Profesional:</strong> menos rejilla, sin 3D innecesario, fuentes legibles, alineación con la marca si aplica.</li>
+      </ol>
+      <p class="text-gray-700 mt-3">
+        <strong>Buenas prácticas:</strong> un mensaje por gráfico; si hay dos historias, dos gráficos. Evitá «chartjunk» (decoración que no aporta datos).
+      </p>
+    </section>
+
+    <!-- 5. Análisis -->
+    <section class="mb-10">
+      <h2>5. Análisis e interpretación</h2>
+      <ul class="list-disc pl-6 text-gray-700 space-y-2">
+        <li><strong>Leer el tipo:</strong> columnas/barras → comparar magnitudes; líneas → tendencia; circular → partes de un todo; dispersión → relación X–Y; histograma → forma de la distribución.</li>
+        <li><strong>Tendencias:</strong> pendiente creciente/decreciente, cambios de ritmo, estacionalidad repetida.</li>
+        <li><strong>Patrones:</strong> clusters en dispersión, picos recurrentes en líneas.</li>
+        <li><strong>Anomalías:</strong> puntos aislados, saltos sin causa en el diccionario de datos, sectores demasiado pequeños en pastel.</li>
+        <li><strong>De datos a conclusiones:</strong> describí qué ves, cuántificá (orden de magnitud), proponé hipótesis y qué dato faltaría para confirmar.</li>
+      </ul>
+    </section>
+
+    <!-- 6. Comunicación -->
+    <section class="mb-10">
+      <h2>6. Comunicación de resultados</h2>
+      <p class="text-gray-700">
+        <strong>Estructura oral:</strong> contexto (qué mide) → hallazgo principal (una frase) → evidencia en el gráfico → implicación o siguiente paso.
+      </p>
+      <p class="font-semibold text-gray-900 mt-3">Frases útiles</p>
+      <ul class="list-disc pl-6 text-gray-700 space-y-1">
+        <li>«El gráfico resume [periodo]: el patrón dominante es…»</li>
+        <li>«Comparado con [referencia], observamos un desvío de…»</li>
+        <li>«La distribución sugiere dos grupos de comportamiento…»</li>
+      </ul>
+      <p class="text-gray-700 mt-3">
+        <strong>Data storytelling:</strong> elegí un héroe (métrica o segmento), un conflicto (caída, brecha) y un desenlace (acción propuesta); el gráfico es la escena clave, no el apéndice.
+      </p>
+    </section>
+
+    <!-- 7. Ejercicios -->
+    <section class="mb-10">
+      <h2>7. Ejercicios prácticos</h2>
+
+      <h3 class="text-lg font-bold text-gray-900 mt-4">Ejercicio 1 — Columnas y ranking</h3>
+      <p>Copiá la tabla, insertá un <strong>gráfico de columnas 2D</strong> y ordená los datos para que el mensaje sea «ranking de satisfacción».</p>
+      <CopyTableBtn tableId="ej-graf-1" />
+      <ExcelSheetTable
+        tableId="ej-graf-1"
+        tableLabel="Satisfacción (1–10) por taller"
+        variant="entrada"
+        columns={['A', 'B']}
+        headers={['Taller', 'Nota']}
+        rows={[
+          ['Excel básico', '8.2'],
+          ['Gráficos', '9.1'],
+          ['Tablas dinámicas', '8.7'],
+          ['Macros', '7.4'],
+        ]}
+        showCoordinateHelp={false}
+      />
+      <p class="mt-3 font-semibold">Solución guiada</p>
+      <p class="text-gray-700">
+        Ordená la tabla por Nota de mayor a menor (Datos &gt; Ordenar). Gráfico de columnas con talleres en el eje X. Conclusión esperada: «Gráficos» lidera; «Macros» queda último en satisfacción en esta cohorte.
+      </p>
+
+      <h3 class="text-lg font-bold text-gray-900 mt-8">Ejercicio 2 — Línea y tendencia</h3>
+      <p>Creá un <strong>gráfico de líneas</strong> y describí la tendencia en dos frases.</p>
+      <CopyTableBtn tableId="ej-graf-2" />
+      <ExcelSheetTable
+        tableId="ej-graf-2"
+        tableLabel="Tickets abiertos por semana"
+        variant="entrada"
+        columns={['A', 'B']}
+        headers={['Semana', 'Tickets']}
+        rows={[
+          ['S1', '210'],
+          ['S2', '198'],
+          ['S3', '185'],
+          ['S4', '172'],
+        ]}
+        showCoordinateHelp={false}
+      />
+      <p class="mt-3 font-semibold">Solución guiada</p>
+      <p class="text-gray-700">
+        Serie claramente decreciente: mejora operativa o menor volumen entrante. Para una reunión: «La línea muestra cuatro semanas consecutivas de descenso en tickets abiertos; conviene validar si es por capacidad resolutiva o menor demanda.»
+      </p>
+
+      <h3 class="text-lg font-bold text-gray-900 mt-8">Ejercicio 3 — Dispersión y conclusión</h3>
+      <p>Insertá un <strong>dispersión</strong> con X = horas de capacitación e Y = errores reportados. Interpretá si hay relación.</p>
+      <CopyTableBtn tableId="ej-graf-3" />
+      <ExcelSheetTable
+        tableId="ej-graf-3"
+        tableLabel="Equipo (anónimo): horas de curso vs errores"
+        variant="entrada"
+        columns={['A', 'B']}
+        headers={['Horas', 'Errores']}
+        rows={[
+          ['2', '14'],
+          ['4', '11'],
+          ['6', '9'],
+          ['8', '7'],
+          ['10', '5'],
+        ]}
+        showCoordinateHelp={false}
+      />
+      <p class="mt-3 font-semibold">Solución guiada</p>
+      <p class="text-gray-700">
+        Nube descendente: a más horas, menos errores (asociación negativa en este conjunto). No implica causalidad sola; frase: «Los puntos sugieren que equipos con más horas de capacitación reportan menos errores en este periodo; recomendaría ampliar muestra y controlar por antigüedad.»
+      </p>
+    </section>
+
+    <ExcelPracticeBlock
+      steps={[
+        'Elegí un gráfico de esta lección y reproducilo con una tabla propia (mínimo 5 filas de datos).',
+        'Añadí título del gráfico y títulos de ejes con unidades.',
+        'Creá un segundo gráfico del mismo dato con un tipo distinto (p. ej. columnas vs líneas) y decidí cuál comunica mejor tu pregunta.',
+        'Escribí en tres frases: hallazgo, evidencia en el gráfico y acción sugerida.',
+      ]}
+    />
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p class="text-gray-700 mb-4">
+        Comprobá lo aprendido sobre tipos de gráficos, datos y buenas prácticas (12 preguntas).
+      </p>
+      <ExcelQuizModal quizKey="graficos" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/excel/tablas-dinamicas/" class="prev">← Tablas Dinámicas</a>
+      <a href="/course/excel/" class="next">Volver al curso →</a>
+    </nav>
+  </article>
+</Layout>

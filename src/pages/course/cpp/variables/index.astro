@@ -1,0 +1,69 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+---
+
+<Layout title="Variables en C++" description="Tipos básicos y declaración en C++" courseSlug="cpp">
+  <article class="content-section">
+    <h1>2. Variables y tipos</h1>
+
+    <section class="mb-10">
+      <h2>Declaración</h2>
+      <p>
+        En C++ el tipo va <strong>antes</strong> del nombre (como en muchos lenguajes compilados). Algunos tipos viven en cabeceras aparte; para texto cómodo usamos <code>std::string</code> con <code>#include &lt;string&gt;</code>.
+      </p>
+      <CodeBlock
+        lang="cpp"
+        code={`#include <iostream>
+#include <string>
+
+int main() {
+    int edad = 20;
+    double pi = 3.14159;
+    bool activo = true;
+    char inicial = 'A';
+    std::string nombre = "Ana";
+
+    std::cout << nombre << " tiene " << edad << " años\\n";
+    return 0;
+}`}
+        title="Tipos comunes"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2><code>const</code> y literales</h2>
+      <p>Los valores que no deben cambiar se marcan con <code>const</code> (ayuda al compilador y a vos).</p>
+      <CodeBlock lang="cpp" code={`const int MESES = 12;
+const double IVA = 0.21;`} title="Constantes" />
+    </section>
+
+    <section class="mb-10">
+      <h2><code>auto</code> (C++11+)</h2>
+      <p>El compilador deduce el tipo a partir del valor inicial (tiene que haber inicialización).</p>
+      <CodeBlock lang="cpp" code={`auto x = 42;        // int
+auto z = 3.14;      // double
+auto ok = false;    // bool`} title="auto" />
+    </section>
+
+    <div class="ejercicio">
+      <h3>Ejercicio</h3>
+      <p class="enunciado">Declará variables para el precio de un producto (<code>double</code>), la cantidad (<code>int</code>) y mostrá el total.</p>
+      <details>
+        <summary>Ver idea</summary>
+        <CodeBlock
+          lang="cpp"
+          code={`#include <iostream>
+
+int main() {
+    double precio = 9.99;
+    int cantidad = 3;
+    double total = precio * cantidad;
+    std::cout << "Total: " << total << "\\n";
+    return 0;
+}`}
+        />
+      </details>
+    </div>
+  </article>
+</Layout>

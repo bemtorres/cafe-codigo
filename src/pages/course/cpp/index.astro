@@ -1,0 +1,58 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+---
+
+<Layout title="Curso C++" description="C++ desde cero: sintaxis, control de flujo, STL básico y POO" courseSlug="cpp">
+  <div class="content-section" style="background: var(--bg-tertiary);">
+    <h1 class="course-big-title course-big-title--brand">
+      <span style="color: #00599C; font-weight: 900; font-size: 1.1em; background: rgba(0, 89, 156, 0.12); padding: 0.2rem 1rem; border-radius: 12px; margin-right: 0.5rem;">C++</span>
+      <span>Curso completo</span>
+    </h1>
+    <p class="course-subtitle">
+      Seguí después de <strong>PSeInt</strong>: mismo tipo de lógica (variables, condicionales, bucles), pero con un lenguaje compilado, tipado y usado en sistemas, juegos y alto rendimiento.
+    </p>
+  </div>
+
+  <section class="cards-grid" style="margin-top: 4rem;">
+    <a href="/course/cpp/introduccion/" class="card-fun" style="background: white;">
+      <h2>1. Introducción 🚀</h2>
+      <p>Qué es C++, herramientas mínimas (compilador) y tu primer <code>main</code> con Hola mundo.</p>
+    </a>
+    <a href="/course/cpp/variables/" class="card-fun" style="background: var(--bg-secondary);">
+      <h2>2. Variables y tipos 📦</h2>
+      <p><code>int</code>, <code>double</code>, <code>bool</code>, <code>char</code>, <code>string</code> y <code>auto</code>.</p>
+    </a>
+    <a href="/course/cpp/io/" class="card-fun" style="background: #E3F2FD;">
+      <h2>3. Entrada y salida ⌨️</h2>
+      <p><code>std::cin</code>, <code>std::cout</code>, <code>std::getline</code> y formato básico.</p>
+    </a>
+    <a href="/course/cpp/operadores/" class="card-fun" style="background: #FFF3E0;">
+      <h2>4. Operadores 🧮</h2>
+      <p>Aritméticos, relacionales, lógicos y precedencia.</p>
+    </a>
+    <a href="/course/cpp/condicionales/" class="card-fun" style="background: #E8F5E9;">
+      <h2>5. Condicionales 🔀</h2>
+      <p><code>if</code>, <code>else</code>, <code>else if</code> y <code>switch</code>.</p>
+    </a>
+    <a href="/course/cpp/ciclos/" class="card-fun" style="background: #F3E5F5;">
+      <h2>6. Bucles 🔁</h2>
+      <p><code>while</code>, <code>do-while</code> y <code>for</code>; comparación con PSeInt.</p>
+    </a>
+    <a href="/course/cpp/colecciones/" class="card-fun" style="background: #FFFDE7;">
+      <h2>7. Arreglos y <code>vector</code> 📚</h2>
+      <p>Arrays en stack, <code>std::vector</code> y recorrido con rangos for.</p>
+    </a>
+    <a href="/course/cpp/funciones/" class="card-fun" style="background: #E0F7FA;">
+      <h2>8. Funciones 🛠️</h2>
+      <p>Declaración, parámetros, retorno, prototipos y sobrecarga ligera.</p>
+    </a>
+    <a href="/course/cpp/poo-basico/" class="card-fun" style="background: var(--info); color: white; border-color: var(--border);">
+      <h2 style="color: white; text-shadow: 2px 2px 0px var(--border);">9. POO básico 🧱</h2>
+      <p style="color: rgba(255,255,255,0.9);">Clases, objetos, <code>public</code>/<code>private</code>, constructores.</p>
+    </a>
+    <a href="/course/cpp/poo-pilares/" class="card-fun" style="background: var(--border); color: white;">
+      <h2 style="color: white; text-shadow: 2px 2px 0px #000;">10. Herencia y polimorfismo ⚡</h2>
+      <p style="color: rgba(255,255,255,0.9);">Herencia, métodos virtuales y punteros/referencias a base.</p>
+    </a>
+  </section>
+</Layout>

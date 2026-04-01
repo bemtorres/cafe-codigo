@@ -1,0 +1,64 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+---
+
+<Layout title="Funciones en C++" description="Declaración, definición y paso de parámetros" courseSlug="cpp">
+  <article class="content-section">
+    <h1>8. Funciones</h1>
+
+    <section class="mb-10">
+      <h2>Función con retorno</h2>
+      <CodeBlock
+        lang="cpp"
+        code={`#include <iostream>
+
+int cuadrado(int x) {
+    return x * x;
+}
+
+int main() {
+    std::cout << cuadrado(5) << "\\n";  // 25
+    return 0;
+}`}
+        title="Ejemplo"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Prototipo y definición</h2>
+      <p>En proyectos grandes se declara el prototipo arriba y la definición puede ir en otro archivo <code>.cpp</code>.</p>
+      <CodeBlock
+        lang="cpp"
+        code={`int maximo(int a, int b);  // prototipo
+
+int main() {
+    std::cout << maximo(3, 7) << "\\n";
+    return 0;
+}
+
+int maximo(int a, int b) {
+    return (a > b) ? a : b;
+}`}
+        title="Prototipo + definición"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Paso por valor vs referencia</h2>
+      <p>Por defecto los argumentos se copian. Para modificar una variable externa usá referencia <code>&amp;</code>.</p>
+      <CodeBlock
+        lang="cpp"
+        code={`void duplicar(int& x) {
+    x *= 2;
+}`}
+        title="Referencia"
+      />
+    </section>
+
+    <div class="ejercicio">
+      <h3>Ejercicio</h3>
+      <p class="enunciado">Escribir una función <code>es_primo(int n)</code> que devuelva <code>bool</code>.</p>
+    </div>
+  </article>
+</Layout>

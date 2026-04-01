@@ -1,0 +1,27 @@
+---
+import { getLanguageCuriosityMeta } from '../data/languageCuriosityMeta';
+
+interface Props {
+  courseSlug: string;
+}
+
+const { courseSlug } = Astro.props;
+const meta = getLanguageCuriosityMeta(courseSlug);
+---
+
+{
+  meta && (
+    <p class="mt-8 border-t border-border/40 pt-4 m-0 font-nunito text-sm leading-relaxed text-textSecondary">
+      <span class="font-black text-textPrimary">Dato curioso:</span>{' '}
+      {meta.line}{' '}
+      <a
+        href={meta.wikiUrl}
+        class="font-bold text-info underline decoration-1 underline-offset-2 hover:opacity-90"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Wikipedia
+      </a>
+    </p>
+  )
+}

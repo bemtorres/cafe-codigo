@@ -1,0 +1,53 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+---
+
+<Layout title="POO básico en C++" description="Clases, objetos y encapsulamiento" courseSlug="cpp">
+  <article class="content-section">
+    <h1>9. POO básico</h1>
+
+    <section class="mb-10">
+      <h2>Clase simple</h2>
+      <CodeBlock
+        lang="cpp"
+        code={`#include <iostream>
+#include <string>
+
+class Persona {
+public:
+    Persona(std::string n, int e) : nombre(std::move(n)), edad(e) {}
+
+    void saludar() const {
+        std::cout << "Hola, soy " << nombre << "\\n";
+    }
+
+    int getEdad() const { return edad; }
+
+private:
+    std::string nombre;
+    int edad;
+};
+
+int main() {
+    Persona p("Lucía", 22);
+    p.saludar();
+    return 0;
+}`}
+        title="class Persona"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2><code>public</code> y <code>private</code></h2>
+      <p>
+        <code>private</code> oculta los datos; solo la propia clase (o amigas) puede tocarlos directamente. Es el corazón del <strong>encapsulamiento</strong>.
+      </p>
+    </section>
+
+    <div class="ejercicio">
+      <h3>Ejercicio</h3>
+      <p class="enunciado">Creá una clase <code>Rectangulo</code> con ancho y alto, un método <code>area()</code> y otro <code>perimetro()</code>.</p>
+    </div>
+  </article>
+</Layout>

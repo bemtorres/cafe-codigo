@@ -1,0 +1,72 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+---
+
+<Layout title="Entrada y salida en C++" description="cin, cout y getline" courseSlug="cpp">
+  <article class="content-section">
+    <h1>3. Entrada y salida</h1>
+
+    <section class="mb-10">
+      <h2><code>std::cout</code> y <code>std::endl</code></h2>
+      <p>Salida estándar. <code>\\n</code> o <code>std::endl</code> (este último además vacía el buffer).</p>
+      <CodeBlock
+        lang="cpp"
+        code={`#include <iostream>
+
+int main() {
+    std::cout << "Línea 1\\n";
+    std::cout << "Línea 2" << std::endl;
+    return 0;
+}`}
+        title="Salida"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2><code>std::cin</code></h2>
+      <p>
+        Equivale a “Leer” en PSeInt para números y palabras simples. Ojo: <code>cin &gt;&gt;</code> deja el salto de línea en el buffer; si después leés una línea completa, conviene usar <code>std::getline</code> con cuidado (a veces hace falta un <code>cin.ignore()</code> antes).
+      </p>
+      <CodeBlock
+        lang="cpp"
+        code={`#include <iostream>
+#include <string>
+
+int main() {
+    int n;
+    std::cout << "Ingresá un entero: ";
+    std::cin >> n;
+
+    std::cin.ignore(10000, '\\n'); // limpiar hasta el fin de línea
+    std::string linea;
+    std::cout << "Ingresá una frase: ";
+    std::getline(std::cin, linea);
+
+    std::cout << "n=" << n << " frase=" << linea << "\\n";
+    return 0;
+}`}
+        title="Entrada básica"
+      />
+    </section>
+
+    <div class="ejercicio">
+      <h3>Ejercicio</h3>
+      <p class="enunciado">Pedí dos enteros y mostrá su suma.</p>
+      <details>
+        <summary>Ver idea</summary>
+        <CodeBlock
+          lang="cpp"
+          code={`#include <iostream>
+
+int main() {
+    int a, b;
+    std::cin >> a >> b;
+    std::cout << a + b << "\\n";
+    return 0;
+}`}
+        />
+      </details>
+    </div>
+  </article>
+</Layout>

@@ -5,7 +5,7 @@ import CodeThemeSelector from '../components/CodeThemeSelector.astro';
 import WelcomeModal from '../components/WelcomeModal.astro';
 import PasswordProtect from '../components/PasswordProtect.astro';
 import { courses } from '../data/courses';
-import { COURSE_PATH_PREFIX } from '../lib/coursePaths';
+import { COURSE_PATH_PREFIX, courseHomePath } from '../lib/coursePaths';
 import logoCafeycodigo from '../assets/images/cafeycodigo.png';
 import logoPseint from '../assets/images/pseint.png';
 import ogLogo from '../assets/images/logo-cafecodigo.png';
@@ -16,6 +16,7 @@ import MobileNavProfile from '../components/auth/MobileNavProfile';
 import LessonBookmarkToggle from '../components/auth/LessonBookmarkToggle';
 import CourseFavoriteButton from '../components/auth/CourseFavoriteButton';
 import CourseLoginUnlock from '../components/auth/CourseLoginUnlock';
+import LanguageCuriosity from '../components/LanguageCuriosity.astro';
 
 const KO_FI_URL = 'https://ko-fi.com/cafeycodigo';
 
@@ -27,6 +28,11 @@ interface Props {
 
 const { title, description = "Aprende a programar gratis con cursos paso a paso", courseSlug } = Astro.props;
 const currentCourse = courseSlug ? courses.find((c) => c.slug === courseSlug) : null;
+/** Lenguajes en el modal «Elige un curso», orden cronológico por año de lanzamiento público */
+const menuLanguageCourses = [...courses.filter((c) => c.category === 'language')].sort(
+  (a, b) => (a.communityReleaseYear ?? 0) - (b.communityReleaseYear ?? 0),
+);
+const pseintCourse = courses.find((c) => c.slug === 'pseint');
 const currentPath = Astro.url.pathname;
 const normalizedPath = currentPath.replace(/\/$/, '');
 /** Banner “café y programemos” solo en la portada */
@@ -50,6 +56,15 @@ const isCourseHome =
   !!currentCourse &&
   (normalizedPath === `${COURSE_PATH_PREFIX}/${currentCourse.slug}` ||
     normalizedPath === `${COURSE_PATH_PREFIX}/${currentCourse.slug}/`);
+/** Pie «dato curioso» en cursos de lenguaje: portada y lecciones, no en introducción */
+const isLanguageCourse = currentCourse?.category === 'language';
+const isIntroLesson = currentLesson?.slug === 'introduccion';
+const showLanguageCuriosity =
+  Boolean(
+    currentCourse &&
+      isLanguageCourse &&
+      (isCourseHome || (isInsideLesson && !isIntroLesson)),
+  );
 ---
 
 <!DOCTYPE html>
@@ -95,7 +110,7 @@ const isCourseHome =
       >
         <p class="m-0 inline-flex max-w-[min(100%,40rem)] flex-wrap items-center justify-center gap-x-2 gap-y-0.5 font-nunito text-[0.8rem] font-black uppercase tracking-[0.06em] text-[#FFF9C4] sm:text-sm sm:tracking-[0.08em]">
           <span class="text-base sm:text-lg" aria-hidden="true">☕</span>
-          <span>Tomate un café y programemos juntos</span>
+          <span>Tomate un café y programemos juntos 💖</span>
         </p>
       </div>
     )}
@@ -274,12 +289,25 @@ const isCourseHome =
           <div>
             <h4 class="text-xs font-extrabold uppercase tracking-widest text-textSecondary mb-3 font-nunito ml-1">Lenguajes</h4>
             <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-textPrimary shadow-neo hover:-translate-y-0.5 transition-transform" href="/course/pseint/">
-                <img class="w-5 h-5 rounded" src={logoPseint.src} alt="" />PSeInt
+              <a class="inline-flex flex-col items-center justify-center gap-0.5 py-3 px-3 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-textPrimary text-center shadow-neo hover:-translate-y-0.5 transition-transform min-h-[4.25rem]" href="/course/pseint/">
+                <span class="inline-flex items-center justify-center gap-2">
+                  <img class="w-5 h-5 rounded shrink-0" src={logoPseint.src} alt="" />PSeInt
+                </span>
+                {pseintCourse?.communityReleaseYear != null && (
+                  <span class="text-[0.65rem] font-bold leading-tight text-textSecondary">Comunidad · {pseintCourse.communityReleaseYear}</span>
+                )}
               </a>
-              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-textPrimary shadow-neo hover:-translate-y-0.5 transition-transform" href="/course/csharp/">C#</a>
-              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-textPrimary shadow-neo hover:-translate-y-0.5 transition-transform" href="/course/java/">Java</a>
-              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-textPrimary shadow-neo hover:-translate-y-0.5 transition-transform" href="/course/python/">Python</a>
+              {menuLanguageCourses.map((c) => (
+                <a
+                  class="inline-flex flex-col items-center justify-center gap-0.5 py-3 px-3 rounded-2xl border-4 border-border bg-tertiary font-nunito text-center shadow-neo hover:-translate-y-0.5 transition-transform min-h-[4.25rem]"
+                  href={courseHomePath(c.slug)}
+                >
+                  <span class="font-black" style={`color: ${c.color}`}>{c.name}</span>
+                  {c.communityReleaseYear != null && (
+                    <span class="text-[0.65rem] font-bold leading-tight text-textSecondary">Comunidad · {c.communityReleaseYear}</span>
+                  )}
+                </a>
+              ))}
             </div>
           </div>
 
@@ -387,6 +415,9 @@ const isCourseHome =
           />
         )}
         <slot />
+        {showLanguageCuriosity && currentCourse && (
+          <LanguageCuriosity courseSlug={currentCourse.slug} />
+        )}
       </main>
     </div>
 

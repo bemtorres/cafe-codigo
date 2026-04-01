@@ -26,6 +26,8 @@ function detectLang(src: string) {
   ];
   if (pseintHits.filter(r => r.test(s)).length >= 2) return 'pseint';
 
+  // C++ (antes que C#: ambos usan "namespace"; acá solo señales claras de C++)
+  if (/#include\s*</.test(s) || /\bstd::\w+/.test(s) || /\b(cout|cin|cerr|clog|endl)\b/.test(s)) return 'cpp';
   // C#
   if (/\bConsole\.Write(Line)?\b/.test(s) || /\busing System\b/.test(s) || /\bnamespace\b/.test(s)) return 'csharp';
   // Kotlin
@@ -55,6 +57,7 @@ const isPseintFinal = finalLang === 'pseint';
 // ─── Badge color por lenguaje ────────────────────────────────────────────────
 const langColors: Record<string, string> = {
   pseint: '#45B3E0', csharp: '#9B4F96', kotlin: '#F18E33',
+  cpp: '#00599C',
   java: '#f59e0b', python: '#3572A5', javascript: '#F7DF1E',
   typescript: '#3178C6', html: '#E34F26', css: '#1572B6',
   bash: '#4EAA25', sql: '#2980b9', cmd: '#888888',
@@ -181,6 +184,25 @@ function highlightPython(line: string): string {
   ]);
 }
 
+// ── C++ ───────────────────────────────────────────────────────────────────────
+function highlightCpp(line: string): string {
+  return tokenize(line, [
+    { re: /\/\/.*/, cls: 'hl-comment' },
+    { re: /"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)'/, cls: 'hl-str' },
+    { re: /^#.*/, cls: 'hl-kw' },
+    {
+      re: /\b(alignas|alignof|and|and_eq|asm|auto|bitand|bitor|bool|break|case|catch|char|char8_t|char16_t|char32_t|class|compl|concept|const|consteval|constexpr|constinit|continue|co_await|co_return|co_yield|decltype|default|delete|do|double|dynamic_cast|else|enum|explicit|export|extern|false|float|for|friend|goto|if|inline|int|long|mutable|namespace|new|noexcept|nullptr|operator|or|or_eq|private|protected|public|register|reinterpret_cast|requires|return|short|signed|sizeof|static|static_assert|static_cast|struct|switch|template|this|thread_local|throw|true|try|typedef|typeid|typename|union|unsigned|using|virtual|void|volatile|wchar_t|while|xor|xor_eq|override|final)\b/,
+      cls: 'hl-kw',
+    },
+    {
+      re: /\b(std|string|vector|map|set|list|deque|array|unique_ptr|shared_ptr|optional|variant|cout|cin|cerr|clog|endl|string_view|size_t|int64_t|uint32_t)\b/,
+      cls: 'hl-type',
+    },
+    { re: /\b(\w+)(?=\s*\()/, cls: 'hl-func' },
+    { re: /\b0x[0-9a-fA-F]+|\b\d+\.?\d*[fFlLuUzZ]*\b/, cls: 'hl-num' },
+  ]);
+}
+
 // ── C# ────────────────────────────────────────────────────────────────────────
 function highlightCsharp(line: string): string {
   return tokenize(line, [
@@ -258,6 +280,7 @@ function highlightLine(line: string, lang: string): string {
     case 'java':
     case 'kotlin':     return highlightJava(line);
     case 'csharp':     return highlightCsharp(line);
+    case 'cpp':        return highlightCpp(line);
     case 'python':     return highlightPython(line);
     case 'sql':        return highlightSql(line);
     case 'javascript':
@@ -366,6 +389,25 @@ const encodedCode = encodeURIComponent(safeCode);
     transition: background-color 0.3s, color 0.3s;
     font-variant-ligatures: none;
     font-feature-settings: "liga" 0, "calt" 0, "dlig" 0;
+  }
+
+  /* Consola C++: usa la paleta --ide-* inyectada en el bloque (azul profundo + acentos) */
+  .code-viewer[data-lang='cpp'] {
+    background-color: var(--ide-bg);
+    color: var(--ide-txt);
+    --shiki-color-background: var(--ide-bg);
+    --shiki-color-text: var(--ide-txt);
+    --shiki-token-keyword: var(--ide-kw);
+    --shiki-token-string: var(--ide-str);
+    --shiki-token-string-expression: var(--ide-str);
+    --shiki-token-function: var(--ide-func);
+    --shiki-token-type: var(--ide-type);
+    --shiki-token-comment: #7a9ab8;
+    --shiki-token-constant: var(--ide-type);
+    --shiki-token-parameter: var(--ide-txt);
+    --shiki-token-operator: var(--ide-op);
+    --shiki-token-variable: var(--ide-txt);
+    --shiki-token-punctuation: var(--ide-op);
   }
   .code-viewer :global(.code-line),
   .code-viewer :global(.whitespace-pre) {
