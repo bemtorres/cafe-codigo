@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { HomeMusicTrack } from '../../lib/homeMusicPlaylist';
+import MusicAmbienceBackdrop from './MusicAmbienceBackdrop';
 
 const LEVEL_BARS = 36;
 const CANVAS_H = 80;
@@ -165,8 +166,8 @@ export default function HomeMusicPlayer({ tracks }: Props) {
       ctx = new AudioContext();
       const source = ctx.createMediaElementSource(audio);
       const analyser = ctx.createAnalyser();
-      analyser.fftSize = 128;
-      analyser.smoothingTimeConstant = 0.65;
+      analyser.fftSize = 256;
+      analyser.smoothingTimeConstant = 0.72;
       source.connect(analyser);
       analyser.connect(ctx.destination);
       audioCtxRef.current = ctx;
@@ -273,6 +274,8 @@ export default function HomeMusicPlayer({ tracks }: Props) {
   const progress = duration > 0 ? currentTime / duration : 0;
 
   return (
+    <>
+      <MusicAmbienceBackdrop playing={playing} analyser={analyserNode} fakeMode={fakeVisualizer} />
     <div className="rounded-[24px] border-4 border-border bg-white p-4 sm:p-6 shadow-neo-lg">
       <audio ref={audioRef} preload="metadata" className="hidden" crossOrigin="anonymous" />
 
@@ -405,5 +408,6 @@ export default function HomeMusicPlayer({ tracks }: Props) {
         </div>
       </div>
     </div>
+    </>
   );
 }

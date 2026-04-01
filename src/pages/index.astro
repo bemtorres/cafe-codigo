@@ -144,7 +144,7 @@ const faqItems = [
   title="Inicio"
   description="cafeycodigo: guía paso a paso para aprender a programar desde cero — proyecto, desafío y caso a caso; ejemplos, ejercicios, quizzes y simulador PSeInt. Gratis, en español, con modo academia para docentes."
 >
-  <div class="max-w-6xl mx-auto px-4 pt-8 pb-20">
+  <div class="relative z-[15] max-w-6xl mx-auto px-4 pt-8 pb-20">
     <!-- Hero -->
     <section class="relative overflow-hidden rounded-[28px] border-4 border-border bg-white shadow-neo-lg mb-16 md:mb-24">
       <div
@@ -204,7 +204,7 @@ const faqItems = [
         Sonidos para concentrarte
       </h2>
       <p class="text-textSecondary font-[650] max-w-2xl mb-6">
-        Mientras programas, podés escuchar una playlist de música para concentrarte.
+        Mientras programas, podés escuchar una playlist para concentrarte. Con la música en play, la página se atenúa un poco y el fondo pulsa suave al ritmo — ambiente relajado sin tapar el contenido.
       </p>
       <HomeMusicPlayer client:load tracks={homeMusicTracks} />
     </section>

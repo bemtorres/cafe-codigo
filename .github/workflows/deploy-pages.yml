@@ -1,3 +1,9 @@
+# Requiere secretos en el repo: Settings → Secrets and variables → Actions → New repository secret
+# - PUBLIC_SUPABASE_URL
+# - PUBLIC_SUPABASE_ANON_KEY
+# Opcional: PUBLIC_COFFEECOIN_STORE_ENABLED (ej. false). Si no existe, el build igual funciona.
+# Valores: los mismos que en .env.local (no commitees .env.local).
+
 name: Deploy to GitHub Pages
 
 on:
@@ -31,6 +37,10 @@ jobs:
         run: npm ci
 
       - name: Build
+        env:
+          PUBLIC_SUPABASE_URL: ${{ secrets.PUBLIC_SUPABASE_URL }}
+          PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.PUBLIC_SUPABASE_ANON_KEY }}
+          PUBLIC_COFFEECOIN_STORE_ENABLED: ${{ secrets.PUBLIC_COFFEECOIN_STORE_ENABLED }}
         run: npm run build
 
       - name: Setup Pages
