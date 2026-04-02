@@ -72,7 +72,7 @@ export const USER_LEVELS: readonly UserLevelDefinition[] = [
     badgeUrl: '/badges/ristretto.svg',
     comment: 'La esencia pura. Solo los mejores llegan acá.',
     description: 'Usuario legendario con beneficios exclusivos y reconocimiento especial.',
-    levelUpMessage: '¡Sos una leyenda! La concentración máxima del sistema.',
+    levelUpMessage: 'Eres una leyenda! La concentración máxima del sistema.',
   },
 ] as const;
 

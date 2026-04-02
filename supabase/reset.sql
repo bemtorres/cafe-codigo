@@ -19,5 +19,6 @@ drop table if exists public.academy_section_courses cascade;
 drop table if exists public.academy_sections cascade;
 drop table if exists public.quiz_progress cascade;
 drop table if exists public.lesson_bookmarks cascade;
+drop table if exists public.coffee_history cascade;
 drop table if exists public.schema_migrations cascade;
 drop table if exists public.profiles cascade;

@@ -20,11 +20,6 @@ const benefits = [
     text: 'Lecciones con ejemplos y ejercicios para aplicar lo aprendido sin saltar al vacío.',
   },
   {
-    icon: '🧪',
-    title: 'Simulador PSeInt',
-    text: 'Probá pseudocódigo en el navegador y reforzá la lógica antes de pasar a un lenguaje concreto.',
-  },
-  {
     icon: '🔖',
     title: 'Tu progreso',
     text: 'Con cuenta podés marcar lecciones y organizar lo que ya viste (según las funciones activas del sitio).',
@@ -41,8 +36,8 @@ const benefits = [
   },
   {
     icon: '🎓',
-    title: 'Modo academia',
-    text: 'Acceso y apoyo para docentes: armar secciones, invitar estudiantes y revisar el rendimiento en quizzes y lecciones (según las funciones activas de tu cuenta).',
+    title: 'Modo academia (próximamente)',
+    text: 'Si eres docente, podés armar secciones, invitar estudiantes y revisar el rendimiento en quizzes y lecciones (según las funciones activas de tu cuenta).',
   },
 ];
 
@@ -159,16 +154,12 @@ const faqItems = [
           </p>
           <h1 class="text-[2.35rem] sm:text-[2.85rem] lg:text-[3.15rem] leading-[1.05] -tracking-[0.03em] font-nunito font-black text-textPrimary mb-4">
             Tu espacio para
-            <span class="text-[#b06d63]">codear con calma</span>
+            <span class="text-[#b06d63]">aprender con calma</span>
           </h1>
-          <p class="text-[1.08rem] sm:text-[1.12rem] leading-relaxed text-textSecondary font-[650] max-w-xl mb-4">
-            cafeycodigo está pensado para quienes empiezan: aprender código con <strong class="text-textPrimary font-black">proyecto</strong>,{' '}
-            <strong class="text-textPrimary font-black">desafío</strong> y <strong class="text-textPrimary font-black">caso a caso</strong>, con explicaciones simples y al grano, apoyadas en la historia de la programación y en cómo se construye el software en la práctica.
-          </p>
-          
-          <p class="text-[1.02rem] sm:text-[1.06rem] leading-relaxed text-textSecondary font-[650] max-w-xl mb-6 border-l-4 border-info/70 pl-4">
-            <span class="font-black text-textPrimary">También en clave académica:</span> acceso y apoyo para docentes que quieren organizar grupos, acompañar a sus estudiantes y <span class="font-black text-textPrimary">medir el rendimiento</span> en quizzes y lecciones.
-          </p>
+          <p class="text-[1.08rem] sm:text-[1rem] leading-relaxed text-textSecondary font-[650] max-w-xl mb-4">
+            <strong>Café y código</strong> es el punto de encuentro para quienes buscan dominar las herramientas clave del mundo actual. Desde la lógica de la programación hasta el control de gestión, ofrecemos explicaciones prácticas y directas para que transformes tu manera de trabajar y construir proyectos.
+        </p>
+        
           <div class="flex flex-wrap gap-3 mb-6">
             <a
               href="/cursos/"
@@ -176,6 +167,13 @@ const faqItems = [
             >
               Ver todos los cursos
               <span aria-hidden="true">→</span>
+            </a>
+            <a
+              href="/cursos/"
+              class="inline-flex items-center justify-center gap-2 bg-[#2b1d1b] text-white py-3.5 px-7 rounded-full font-black font-nunito border-2 border-border shadow-neo hover:-translate-y-0.5 transition-transform"
+            >
+              Sirvete un café
+              <span aria-hidden="true">☕</span>
             </a>
           </div>
         </div>
@@ -204,7 +202,7 @@ const faqItems = [
         Sonidos para concentrarte
       </h2>
       <p class="text-textSecondary font-[650] max-w-2xl mb-6">
-        Mientras programas, podés escuchar una playlist para concentrarte. Con la música en play, la página se atenúa un poco y el fondo pulsa suave al ritmo — ambiente relajado sin tapar el contenido.
+        Mientras programas, podés escuchar una playlist para concentrarte. 
       </p>
       <HomeMusicPlayer client:load tracks={homeMusicTracks} />
     </section>
@@ -306,12 +304,6 @@ const faqItems = [
               <span class="text-success font-black" aria-hidden="true">✓</span>
               Diseño usable en móvil y escritorio
             </li>
-            <li class="flex gap-2">
-              <span class="text-success font-black" aria-hidden="true">✓</span>
-              <span>
-                <strong class="text-textPrimary">Docentes:</strong> modo academia para secciones, alumnos y seguimiento de rendimiento (con cuenta; ver <a href="/academia/" class="text-info font-black underline decoration-2 underline-offset-2">Academia</a>)
-              </span>
-            </li>
           </ul>
           <a
             href="/cursos/"
@@ -349,7 +341,7 @@ const faqItems = [
         <div class="rounded-[24px] border-4 border-border bg-linear-to-br from-tertiary to-primary p-8 shadow-neo-lg flex flex-col">
           <div class="flex items-center gap-3 mb-4">
             <span class="text-3xl" aria-hidden="true">🎓</span>
-            <h3 class="font-nunito font-black text-2xl text-textPrimary m-0">¿Sos docente?</h3>
+            <h3 class="font-nunito font-black text-2xl text-textPrimary m-0">¿Eres docente?</h3>
           </div>
           <p class="text-textSecondary font-[650] leading-relaxed mb-6 grow">
             Si enseñás y querés acompañar mejor a tus estudiantes con el material del sitio, el <strong class="text-textPrimary">modo academia</strong> permite armar secciones, códigos de unión y seguimiento. Escribinos y coordinamos cómo puede encajar en tu curso.

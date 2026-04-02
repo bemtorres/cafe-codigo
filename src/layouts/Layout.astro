@@ -12,6 +12,8 @@ import ogLogo from '../assets/images/logo-cafecodigo.png';
 import arkBg from '../assets/images/modelo_4_1/1_modelo.png';
 import kofiLogo from '../assets/images/kofi.png';
 import HeaderAuth from '../components/auth/HeaderAuth';
+import CafeDelDiaNavBtn from '../components/CafeDelDiaNavBtn';
+import CoffeeTimerWidget from '../components/CoffeeTimerWidget';
 import MobileNavProfile from '../components/auth/MobileNavProfile';
 import LessonBookmarkToggle from '../components/auth/LessonBookmarkToggle';
 import CourseFavoriteButton from '../components/auth/CourseFavoriteButton';
@@ -204,7 +206,7 @@ const showLanguageCuriosity =
         <div class="flex items-center gap-4">
           <a href="/" class="flex items-center gap-2 text-accent font-nunito font-extrabold text-[1.5rem] no-underline hover:-translate-y-0.5 transition-transform">
             <img class="shrink-0 w-10 h-10 object-contain rounded-xl" src={logoCafeycodigo.src} alt="" width="42" height="42" decoding="async" />
-            <span class="leading-none">Café y Código</span>
+            <span class="leading-none"><span class="text-textPrimary">Café y</span> <span class="text-[#b06d63]"> Código</span></span>
           </a>
         </div>
 
@@ -215,8 +217,9 @@ const showLanguageCuriosity =
                 Aprende
               </button>
               <a href="/ejercicios/" class="bg-white/70 border border-black/10 rounded-full px-4 py-2 font-nunito font-extrabold text-textPrimary shadow-[0_14px_34px_rgba(30,18,16,0.08)] hover:-translate-y-0.5 hover:bg-white/95 transition-all no-underline">Ejercicios</a>
-              <a href="/academia/" class="bg-white/70 border border-black/10 rounded-full px-4 py-2 font-nunito font-extrabold text-textPrimary shadow-[0_14px_34px_rgba(30,18,16,0.08)] hover:-translate-y-0.5 hover:bg-white/95 transition-all no-underline">Academia</a>
-              <a href="/colaboradores/" class="bg-white/70 border border-black/10 rounded-full px-4 py-2 font-nunito font-extrabold text-textPrimary shadow-[0_14px_34px_rgba(30,18,16,0.08)] hover:-translate-y-0.5 hover:bg-white/95 transition-all no-underline">Colaboradores</a>
+              {/* <a href="/academia/" class="bg-white/70 border border-black/10 rounded-full px-4 py-2 font-nunito font-extrabold text-textPrimary shadow-[0_14px_34px_rgba(30,18,16,0.08)] hover:-translate-y-0.5 hover:bg-white/95 transition-all no-underline">Academia</a> */}
+              {/* <a href="/colaboradores/" class="bg-white/70 border border-black/10 rounded-full px-4 py-2 font-nunito font-extrabold text-textPrimary shadow-[0_14px_34px_rgba(30,18,16,0.08)] hover:-translate-y-0.5 hover:bg-white/95 transition-all no-underline">Colaboradores</a> */}
+              <CafeDelDiaNavBtn client:load />
             </div>
           ) : currentCourse?.slug === 'pseint' ? (
             <span class="inline-flex items-center gap-1.5 bg-tertiary text-info border-2 border-info px-3 py-1 rounded-full text-sm font-extrabold font-nunito">
@@ -276,93 +279,145 @@ const showLanguageCuriosity =
           <button type="button" class="w-10 h-10 rounded-full border-2 border-border bg-white text-lg font-black cursor-pointer hover:bg-gray-100" data-close-modal="langs" aria-label="Cerrar modal">✕</button>
         </div>
 
-        <!-- Contenido scrolleable -->
-        <div class="overflow-y-auto px-6 py-5 flex flex-col gap-6 pb-safe">
+        <!-- Contenido scrolleable — modo lista -->
+        <div class="overflow-y-auto px-4 py-4 flex flex-col gap-1 pb-safe">
 
-          <div>
-            <h4 class="text-xs font-extrabold uppercase tracking-widest text-textSecondary mb-3 font-nunito ml-1">Nivel 0: Conceptos</h4>
-            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#ef476f] shadow-neo hover:-translate-y-0.5 transition-transform" href="/course/ecosistemas/">Ecosistemas Pro</a>
-            </div>
-          </div>
+          <!-- Nivel 0: Conceptos -->
+          <p class="px-2 pt-1 pb-1 text-[0.65rem] font-extrabold uppercase tracking-widest text-textMuted font-nunito">Conceptos base</p>
+          <a class="flex items-center gap-3 rounded-xl border-2 border-border bg-white px-3 py-2.5 font-nunito font-bold text-textPrimary no-underline shadow-neo transition-all hover:-translate-y-0.5 hover:bg-tertiary/30" href="/course/ecosistemas/">
+            <span class="h-3 w-3 shrink-0 rounded-full" style="background:#ef476f"></span>
+            <span class="flex-1 text-sm">Ecosistemas Pro</span>
+            <span class="text-textMuted text-sm">→</span>
+          </a>
 
-          <div>
-            <h4 class="text-xs font-extrabold uppercase tracking-widest text-textSecondary mb-3 font-nunito ml-1">Lenguajes</h4>
-            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-              <a class="inline-flex flex-col items-center justify-center gap-0.5 py-3 px-3 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-textPrimary text-center shadow-neo hover:-translate-y-0.5 transition-transform min-h-[4.25rem]" href="/course/pseint/">
-                <span class="inline-flex items-center justify-center gap-2">
-                  <img class="w-5 h-5 rounded shrink-0" src={logoPseint.src} alt="" />PSeInt
-                </span>
-                {pseintCourse?.communityReleaseYear != null && (
-                  <span class="text-[0.65rem] font-bold leading-tight text-textSecondary">Comunidad · {pseintCourse.communityReleaseYear}</span>
-                )}
-              </a>
-              {menuLanguageCourses.map((c) => (
-                <a
-                  class="inline-flex flex-col items-center justify-center gap-0.5 py-3 px-3 rounded-2xl border-4 border-border bg-tertiary font-nunito text-center shadow-neo hover:-translate-y-0.5 transition-transform min-h-[4.25rem]"
-                  href={courseHomePath(c.slug)}
-                >
-                  <span class="font-black" style={`color: ${c.color}`}>{c.name}</span>
-                  {c.communityReleaseYear != null && (
-                    <span class="text-[0.65rem] font-bold leading-tight text-textSecondary">Comunidad · {c.communityReleaseYear}</span>
-                  )}
-                </a>
-              ))}
-            </div>
-          </div>
+          <!-- Lenguajes -->
+          <p class="px-2 pt-3 pb-1 text-[0.65rem] font-extrabold uppercase tracking-widest text-textMuted font-nunito">Lenguajes</p>
+          <a class="flex items-center gap-3 rounded-xl border-2 border-border bg-white px-3 py-2.5 font-nunito font-bold text-textPrimary no-underline shadow-neo transition-all hover:-translate-y-0.5 hover:bg-tertiary/30" href="/course/pseint/">
+            <img class="h-3 w-3 shrink-0 rounded-sm object-contain" src={logoPseint.src} alt="" />
+            <span class="flex-1 text-sm">PSeInt</span>
+            {pseintCourse?.communityReleaseYear != null && (
+              <span class="text-[0.6rem] font-bold text-textMuted">{pseintCourse.communityReleaseYear}</span>
+            )}
+            <span class="text-textMuted text-sm">→</span>
+          </a>
+          {menuLanguageCourses.map((c) => (
+            <a class="flex items-center gap-3 rounded-xl border-2 border-border bg-white px-3 py-2.5 font-nunito font-bold text-textPrimary no-underline shadow-neo transition-all hover:-translate-y-0.5 hover:bg-tertiary/30" href={courseHomePath(c.slug)}>
+              <span class="h-3 w-3 shrink-0 rounded-full" style={`background:${c.color}`}></span>
+              <span class="flex-1 text-sm" style={`color:${c.color}`}>{c.name}</span>
+              {c.communityReleaseYear != null && (
+                <span class="text-[0.6rem] font-bold text-textMuted">{c.communityReleaseYear}</span>
+              )}
+              <span class="text-textMuted text-sm">→</span>
+            </a>
+          ))}
 
-          <div>
-            <h4 class="text-xs font-extrabold uppercase tracking-widest text-textSecondary mb-3 font-nunito ml-1">Test</h4>
-            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#0891b2] shadow-neo hover:-translate-y-0.5 transition-transform" href="/course/javaunit/">JUnit</a>
-            </div>
-          </div>
+          <!-- Test -->
+          <p class="px-2 pt-3 pb-1 text-[0.65rem] font-extrabold uppercase tracking-widest text-textMuted font-nunito">Test</p>
+          <a class="flex items-center gap-3 rounded-xl border-2 border-border bg-white px-3 py-2.5 font-nunito font-bold text-textPrimary no-underline shadow-neo transition-all hover:-translate-y-0.5 hover:bg-tertiary/30" href="/course/javaunit/">
+            <span class="h-3 w-3 shrink-0 rounded-full" style="background:#0891b2"></span>
+            <span class="flex-1 text-sm" style="color:#0891b2">JUnit</span>
+            <span class="text-textMuted text-sm">→</span>
+          </a>
 
-          <div>
-            <h4 class="text-xs font-extrabold uppercase tracking-widest text-textSecondary mb-3 font-nunito ml-1">Frontend</h4>
-            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#ff4d00] shadow-neo hover:-translate-y-0.5 transition-transform" href="/course/html/">HTML5</a>
-              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#264de4] shadow-neo hover:-translate-y-0.5 transition-transform" href="/course/css/">CSS3</a>
-              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#F7DF1E] shadow-neo hover:-translate-y-0.5 transition-transform" href="/course/javascript/">JavaScript</a>
-            </div>
-          </div>
+          <!-- Frontend -->
+          <p class="px-2 pt-3 pb-1 text-[0.65rem] font-extrabold uppercase tracking-widest text-textMuted font-nunito">Frontend (web)</p>
+          <a class="flex items-center gap-3 rounded-xl border-2 border-border bg-white px-3 py-2.5 font-nunito font-bold text-textPrimary no-underline shadow-neo transition-all hover:-translate-y-0.5 hover:bg-tertiary/30" href="/course/html/">
+            <span class="h-3 w-3 shrink-0 rounded-full" style="background:#ff4d00"></span>
+            <span class="flex-1 text-sm" style="color:#ff4d00">HTML5</span>
+            <span class="text-textMuted text-sm">→</span>
+          </a>
+          <a class="flex items-center gap-3 rounded-xl border-2 border-border bg-white px-3 py-2.5 font-nunito font-bold text-textPrimary no-underline shadow-neo transition-all hover:-translate-y-0.5 hover:bg-tertiary/30" href="/course/css/">
+            <span class="h-3 w-3 shrink-0 rounded-full" style="background:#264de4"></span>
+            <span class="flex-1 text-sm" style="color:#264de4">CSS3</span>
+            <span class="text-textMuted text-sm">→</span>
+          </a>
+          <a class="flex items-center gap-3 rounded-xl border-2 border-border bg-white px-3 py-2.5 font-nunito font-bold text-textPrimary no-underline shadow-neo transition-all hover:-translate-y-0.5 hover:bg-tertiary/30" href="/course/javascript/">
+            <span class="h-3 w-3 shrink-0 rounded-full" style="background:#f1c40f"></span>
+            <span class="flex-1 text-sm" style="color:#c8a000">JavaScript</span>
+            <span class="text-textMuted text-sm">→</span>
+          </a>
 
-          <div>
-            <h4 class="text-xs font-extrabold uppercase tracking-widest text-textSecondary mb-3 font-nunito ml-1">Ingeniería y Calidad</h4>
-            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#475569] shadow-neo hover:-translate-y-0.5 transition-transform" href="/course/arch/">Ark (4+1)</a>
-              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#1a5ebd] shadow-neo hover:-translate-y-0.5 transition-transform" href="/course/c4/">🔒 Modelo C4</a>
-              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#8b5cf6] shadow-neo hover:-translate-y-0.5 transition-transform" href="/course/vision-producto/">Visión Producto</a>
-              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#3b82f6] shadow-neo hover:-translate-y-0.5 transition-transform" href="/course/analisis-backlog/">Análisis Backlog</a>
-              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#10b981] shadow-neo hover:-translate-y-0.5 transition-transform" href="/course/scrum-prototipado/">Scrum</a>
-            </div>
-          </div>
+          <!-- Ingeniería -->
+          <p class="px-2 pt-3 pb-1 text-[0.65rem] font-extrabold uppercase tracking-widest text-textMuted font-nunito">Ingeniería y calidad</p>
+          <a class="flex items-center gap-3 rounded-xl border-2 border-border bg-white px-3 py-2.5 font-nunito font-bold text-textPrimary no-underline shadow-neo transition-all hover:-translate-y-0.5 hover:bg-tertiary/30" href="/course/arch/">
+            <span class="h-3 w-3 shrink-0 rounded-full" style="background:#475569"></span>
+            <span class="flex-1 text-sm" style="color:#475569">Ark (4+1)</span>
+            <span class="text-textMuted text-sm">→</span>
+          </a>
+          <a class="flex items-center gap-3 rounded-xl border-2 border-border bg-white px-3 py-2.5 font-nunito font-bold text-textPrimary no-underline shadow-neo transition-all hover:-translate-y-0.5 hover:bg-tertiary/30" href="/course/c4/">
+            <span class="h-3 w-3 shrink-0 rounded-full" style="background:#1a5ebd"></span>
+            <span class="flex-1 text-sm" style="color:#1a5ebd">🔒 Modelo C4</span>
+            <span class="text-textMuted text-sm">→</span>
+          </a>
+          <a class="flex items-center gap-3 rounded-xl border-2 border-border bg-white px-3 py-2.5 font-nunito font-bold text-textPrimary no-underline shadow-neo transition-all hover:-translate-y-0.5 hover:bg-tertiary/30" href="/course/vision-producto/">
+            <span class="h-3 w-3 shrink-0 rounded-full" style="background:#8b5cf6"></span>
+            <span class="flex-1 text-sm" style="color:#8b5cf6">Visión Producto</span>
+            <span class="text-textMuted text-sm">→</span>
+          </a>
+          <a class="flex items-center gap-3 rounded-xl border-2 border-border bg-white px-3 py-2.5 font-nunito font-bold text-textPrimary no-underline shadow-neo transition-all hover:-translate-y-0.5 hover:bg-tertiary/30" href="/course/analisis-backlog/">
+            <span class="h-3 w-3 shrink-0 rounded-full" style="background:#3b82f6"></span>
+            <span class="flex-1 text-sm" style="color:#3b82f6">Análisis Backlog</span>
+            <span class="text-textMuted text-sm">→</span>
+          </a>
+          <a class="flex items-center gap-3 rounded-xl border-2 border-border bg-white px-3 py-2.5 font-nunito font-bold text-textPrimary no-underline shadow-neo transition-all hover:-translate-y-0.5 hover:bg-tertiary/30" href="/course/scrum-prototipado/">
+            <span class="h-3 w-3 shrink-0 rounded-full" style="background:#10b981"></span>
+            <span class="flex-1 text-sm" style="color:#10b981">Scrum y Prototipado</span>
+            <span class="text-textMuted text-sm">→</span>
+          </a>
 
-          <div>
-            <h4 class="text-xs font-extrabold uppercase tracking-widest text-textSecondary mb-3 font-nunito ml-1">Base de Datos</h4>
-            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#16a085] shadow-neo hover:-translate-y-0.5 transition-transform" href="/course/modelamiento-db/">Modelamiento</a>
-              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#2980b9] shadow-neo hover:-translate-y-0.5 transition-transform" href="/course/consultas-sql/">Consultas SQL</a>
-              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#13aa52] shadow-neo hover:-translate-y-0.5 transition-transform" href="/course/nosql/">NoSQL</a>
-              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#e67e22] shadow-neo hover:-translate-y-0.5 transition-transform" href="/course/programacion-db/">🔒 PL/SQL</a>
-            </div>
-          </div>
+          <!-- Bases de datos -->
+          <p class="px-2 pt-3 pb-1 text-[0.65rem] font-extrabold uppercase tracking-widest text-textMuted font-nunito">Bases de datos</p>
+          <a class="flex items-center gap-3 rounded-xl border-2 border-border bg-white px-3 py-2.5 font-nunito font-bold text-textPrimary no-underline shadow-neo transition-all hover:-translate-y-0.5 hover:bg-tertiary/30" href="/course/modelamiento-db/">
+            <span class="h-3 w-3 shrink-0 rounded-full" style="background:#16a085"></span>
+            <span class="flex-1 text-sm" style="color:#16a085">Modelamiento de Datos</span>
+            <span class="text-textMuted text-sm">→</span>
+          </a>
+          <a class="flex items-center gap-3 rounded-xl border-2 border-border bg-white px-3 py-2.5 font-nunito font-bold text-textPrimary no-underline shadow-neo transition-all hover:-translate-y-0.5 hover:bg-tertiary/30" href="/course/consultas-sql/">
+            <span class="h-3 w-3 shrink-0 rounded-full" style="background:#2980b9"></span>
+            <span class="flex-1 text-sm" style="color:#2980b9">Consultas SQL</span>
+            <span class="text-textMuted text-sm">→</span>
+          </a>
+          <a class="flex items-center gap-3 rounded-xl border-2 border-border bg-white px-3 py-2.5 font-nunito font-bold text-textPrimary no-underline shadow-neo transition-all hover:-translate-y-0.5 hover:bg-tertiary/30" href="/course/nosql/">
+            <span class="h-3 w-3 shrink-0 rounded-full" style="background:#13aa52"></span>
+            <span class="flex-1 text-sm" style="color:#13aa52">NoSQL: MongoDB y Firebase</span>
+            <span class="text-textMuted text-sm">→</span>
+          </a>
+          <a class="flex items-center gap-3 rounded-xl border-2 border-border bg-white px-3 py-2.5 font-nunito font-bold text-textPrimary no-underline shadow-neo transition-all hover:-translate-y-0.5 hover:bg-tertiary/30" href="/course/programacion-db/">
+            <span class="h-3 w-3 shrink-0 rounded-full" style="background:#e67e22"></span>
+            <span class="flex-1 text-sm" style="color:#e67e22">🔒 Programación PL/SQL</span>
+            <span class="text-textMuted text-sm">→</span>
+          </a>
 
-          <div class="pb-24 sm:pb-2">
-            <h4 class="text-xs font-extrabold uppercase tracking-widest text-textSecondary mb-3 font-nunito ml-1">Herramientas</h4>
-            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-textPrimary shadow-neo hover:-translate-y-0.5 transition-transform" href="/course/terminal/">Terminal</a>
-              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#f59e0b] shadow-neo hover:-translate-y-0.5 transition-transform" href="/course/linux-distros/">Linux</a>
-              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#f05032] shadow-neo hover:-translate-y-0.5 transition-transform" href="/course/git/">Git / GitHub</a>
-            </div>
-          </div>
+          <!-- Herramientas -->
+          <p class="px-2 pt-3 pb-1 text-[0.65rem] font-extrabold uppercase tracking-widest text-textMuted font-nunito">Herramientas</p>
+          <a class="flex items-center gap-3 rounded-xl border-2 border-border bg-white px-3 py-2.5 font-nunito font-bold text-textPrimary no-underline shadow-neo transition-all hover:-translate-y-0.5 hover:bg-tertiary/30" href="/course/terminal/">
+            <span class="h-3 w-3 shrink-0 rounded-full" style="background:#1a1a1b"></span>
+            <span class="flex-1 text-sm">Terminal Unix</span>
+            <span class="text-textMuted text-sm">→</span>
+          </a>
+          <a class="flex items-center gap-3 rounded-xl border-2 border-border bg-white px-3 py-2.5 font-nunito font-bold text-textPrimary no-underline shadow-neo transition-all hover:-translate-y-0.5 hover:bg-tertiary/30" href="/course/linux-distros/">
+            <span class="h-3 w-3 shrink-0 rounded-full" style="background:#f59e0b"></span>
+            <span class="flex-1 text-sm" style="color:#c07a00">Sistemas Linux</span>
+            <span class="text-textMuted text-sm">→</span>
+          </a>
+          <a class="flex items-center gap-3 rounded-xl border-2 border-border bg-white px-3 py-2.5 font-nunito font-bold text-textPrimary no-underline shadow-neo transition-all hover:-translate-y-0.5 hover:bg-tertiary/30" href="/course/git/">
+            <span class="h-3 w-3 shrink-0 rounded-full" style="background:#f05032"></span>
+            <span class="flex-1 text-sm" style="color:#f05032">Git &amp; Control de Versiones</span>
+            <span class="text-textMuted text-sm">→</span>
+          </a>
+          <a class="flex items-center gap-3 rounded-xl border-2 border-border bg-white px-3 py-2.5 font-nunito font-bold text-textPrimary no-underline shadow-neo transition-all hover:-translate-y-0.5 hover:bg-tertiary/30" href="/course/excel/">
+            <span class="h-3 w-3 shrink-0 rounded-full" style="background:#107c41"></span>
+            <span class="flex-1 text-sm" style="color:#107c41">Excel Básico</span>
+            <span class="text-textMuted text-sm">→</span>
+          </a>
 
-          <div class="pb-24 sm:pb-2">
-            <h4 class="text-xs font-extrabold uppercase tracking-widest text-textSecondary mb-3 font-nunito ml-1">Motor de Videojuegos</h4>
-            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-              <a class="inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-4 border-border bg-tertiary font-nunito font-black text-[#000000] shadow-neo hover:-translate-y-0.5 transition-transform" href="/course/unity-prototipado/">Unity</a>
-            </div>
-          </div>
+          <!-- Videojuegos -->
+          <p class="px-2 pt-3 pb-1 text-[0.65rem] font-extrabold uppercase tracking-widest text-textMuted font-nunito">Videojuegos</p>
+          <a class="mb-6 sm:mb-2 flex items-center gap-3 rounded-xl border-2 border-border bg-white px-3 py-2.5 font-nunito font-bold text-textPrimary no-underline shadow-neo transition-all hover:-translate-y-0.5 hover:bg-tertiary/30" href="/course/unity-prototipado/">
+            <span class="h-3 w-3 shrink-0 rounded-full bg-[#1a1a1b]"></span>
+            <span class="flex-1 text-sm">Unity Ágil</span>
+            <span class="text-textMuted text-sm">→</span>
+          </a>
 
         </div>
       </div>
@@ -589,22 +644,21 @@ const showLanguageCuriosity =
             <span class="text-[10px] font-nunito font-extrabold tracking-wide">Aprende</span>
           </button>
 
-          <!-- Botón central destacado → abre modal Ko-fi -->
+          <!-- Botón central destacado → Café del día -->
           <div class="flex items-center justify-center flex-1">
-            <button
-              type="button"
-              id="btnKofiModal"
-              class="flex flex-col items-center justify-center w-14 h-14 -mt-5 rounded-full bg-[#FF5E5B] border-[3px] border-[#1E1210] shadow-[0_4px_0px_#1E1210] hover:-translate-y-1 transition-transform active:translate-y-0 active:shadow-none cursor-pointer"
-              aria-label="Apóyanos en Ko-fi"
+            <a
+              href="/cafe-del-dia/"
+              class="flex flex-col items-center justify-center w-14 h-14 -mt-5 rounded-full bg-[#2b1d1b] border-[3px] border-[#1E1210] shadow-[0_4px_0px_#1E1210] hover:-translate-y-1 transition-transform active:translate-y-0 active:shadow-none no-underline"
+              aria-label="Café del día"
             >
-              <img src={kofiLogo.src} alt="Ko-fi" class="w-8 h-8 object-contain rounded-full" />
-            </button>
+              <span class="text-[26px] leading-none">☕</span>
+            </a>
           </div>
 
-          <!-- Tema de Código -->
-          <button type="button" id="mbnTheme" class="mobile-nav-item flex flex-col items-center justify-center gap-0.5 flex-1 text-[#4A3A37] hover:text-[#06D6A0] transition-colors bg-transparent border-none cursor-pointer" aria-label="Temas" onclick="document.getElementById('theme-menu-toggle')?.click()">
-            <span class="text-[22px] leading-none">🎨</span>
-            <span class="text-[10px] font-nunito font-extrabold tracking-wide">Temas</span>
+          <!-- Ko-fi -->
+          <button type="button" id="btnKofiModal" class="mobile-nav-item flex flex-col items-center justify-center gap-0.5 flex-1 text-[#FF5E5B] hover:text-[#d94343] transition-colors bg-transparent border-none cursor-pointer" aria-label="Apóyanos en Ko-fi">
+            <img src={kofiLogo.src} alt="" class="w-[22px] h-[22px] object-contain rounded-full" />
+            <span class="text-[10px] font-nunito font-extrabold tracking-wide">Ko-fi</span>
           </button>
 
           <MobileNavProfile client:load />
@@ -729,5 +783,8 @@ const showLanguageCuriosity =
         document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
       })();
     </script>
+
+    {/* Widget flotante del temporizador del café */}
+    <CoffeeTimerWidget client:load />
   </body>
 </html>

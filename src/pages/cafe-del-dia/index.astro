@@ -1,0 +1,28 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import CoffeeSimulatorPage, { CoffeeHistorySection } from '../../components/CoffeeSimulatorPage';
+---
+
+<Layout
+  title="Café del día — Café y Código"
+  description="Armá tu café del día: elegí la bebida, el tipo de leche y la temperatura. Guía de gramos, agua y pasos de preparación."
+>
+  <div class="mx-auto max-w-3xl px-4 pb-16 pt-6 sm:px-6">
+    <!-- Encabezado de página -->
+    <div class="mb-8 text-center">
+      <h1 class="font-nunito font-black text-4xl sm:text-5xl text-textPrimary mb-3">
+        ☕ Café del día
+      </h1>
+      <p class="font-nunito font-[650] text-textSecondary max-w-xl mx-auto text-base sm:text-lg">
+        Antes de arrancar con el código, ¿cómo querés el café?
+        Elegí tu bebida, el tipo de leche y la temperatura — cuando esté listo, te mostramos todos los pasos para prepararlo.
+      </p>
+    </div>
+
+    <!-- Simulador -->
+    <CoffeeSimulatorPage client:load />
+
+    <!-- Historial -->
+    <CoffeeHistorySection client:load />
+  </div>
+</Layout>

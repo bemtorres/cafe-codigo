@@ -23,6 +23,16 @@ export type LessonBookmarkRow = {
   created_at: string;
 };
 
+export type CoffeeHistoryRow = {
+  id: string;
+  user_id: string;
+  coffee_id: string;
+  milk_id: string | null;
+  temp_mode: 'hot' | 'iced';
+  prepared_at: string;
+  finished_at: string;
+};
+
 let browserClient: SupabaseClient | null = null;
 
 function supabaseUrl(): string | undefined {

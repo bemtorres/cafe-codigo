@@ -719,27 +719,73 @@ export default function UserPanel() {
         </p>
 
         <div className="mt-6 space-y-4">
+          {/* Listado visual de cursos agrupados */}
           <div>
-            <label htmlFor="favorite-course" className="mb-2 block font-nunito text-sm font-extrabold text-textSecondary">
+            <p className="mb-3 font-nunito text-sm font-extrabold text-textSecondary">
               Curso favorito
-            </label>
-            <select
-              id="favorite-course"
-              value={favoriteSlug}
-              onChange={(e) => setFavoriteSlug(e.target.value)}
-              className="w-full max-w-2xl rounded-2xl border-[3px] border-border bg-white px-4 py-3.5 font-nunito font-bold shadow-[3px_3px_0px_#1E1210] focus:border-info focus:outline-none"
-            >
-              <option value="">— Ninguno —</option>
+              {favoriteSlug && (
+                <button
+                  type="button"
+                  onClick={() => setFavoriteSlug('')}
+                  className="ml-3 font-nunito text-xs font-bold text-textMuted underline hover:text-textPrimary"
+                >
+                  Quitar selección
+                </button>
+              )}
+            </p>
+            <div className="max-h-[420px] overflow-y-auto rounded-2xl border-[3px] border-border bg-white shadow-[3px_3px_0px_#1E1210]">
+              {/* Opción ninguno */}
+              <button
+                type="button"
+                onClick={() => setFavoriteSlug('')}
+                className={`flex w-full items-center gap-3 border-b-2 border-border/40 px-4 py-2.5 text-left transition-colors hover:bg-tertiary/30 ${
+                  favoriteSlug === '' ? 'bg-info/10 font-extrabold text-info' : 'text-textMuted'
+                }`}
+              >
+                <span className="inline-block h-3 w-3 shrink-0 rounded-full border-2 border-border bg-white" />
+                <span className="font-nunito text-sm font-bold">— Ninguno —</span>
+                {favoriteSlug === '' && <span className="ml-auto text-info" aria-hidden>✓</span>}
+              </button>
+
               {grouped.map(({ cat, label, items }) => (
-                <optgroup key={cat} label={label}>
-                  {items.map((c) => (
-                    <option key={c.slug} value={c.slug}>
-                      {c.name}
-                    </option>
-                  ))}
-                </optgroup>
+                <div key={cat}>
+                  <p className="m-0 border-b-2 border-t-2 border-border/30 bg-tertiary/50 px-4 py-1.5 font-nunito text-[0.65rem] font-extrabold uppercase tracking-widest text-textMuted">
+                    {label}
+                  </p>
+                  {items.map((c) => {
+                    const isSelected = favoriteSlug === c.slug;
+                    return (
+                      <button
+                        key={c.slug}
+                        type="button"
+                        onClick={() => setFavoriteSlug(c.slug)}
+                        className={`flex w-full items-center gap-3 border-b border-border/20 px-4 py-2.5 text-left transition-colors last:border-b-0 hover:bg-tertiary/30 ${
+                          isSelected ? 'bg-info/8' : ''
+                        }`}
+                      >
+                        <span
+                          className="inline-block h-3 w-3 shrink-0 rounded-full border-2 border-border"
+                          style={{ backgroundColor: c.color }}
+                          aria-hidden
+                        />
+                        <span className={`flex-1 font-nunito text-sm ${isSelected ? 'font-extrabold text-info' : 'font-bold text-textPrimary'}`}>
+                          {c.name}
+                        </span>
+                        {c.requiresPassword && (
+                          <span className="shrink-0 font-nunito text-[0.6rem] font-extrabold text-textMuted">🔒</span>
+                        )}
+                        {c.lessons?.length && (
+                          <span className="shrink-0 font-nunito text-[0.65rem] font-bold text-textMuted">
+                            {c.lessons.length} lec.
+                          </span>
+                        )}
+                        {isSelected && <span className="shrink-0 text-info" aria-hidden>✓</span>}
+                      </button>
+                    );
+                  })}
+                </div>
               ))}
-            </select>
+            </div>
           </div>
 
           {err && <p className="font-nunito text-sm font-bold text-red-600">{err}</p>}

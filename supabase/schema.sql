@@ -387,3 +387,32 @@ create policy "Marcadores: docente ve alumnos"
         and sec.teacher_id = auth.uid()
     )
   );
+
+-- ── Historial de cafés consumidos ────────────────────────────────────────────
+
+create table public.coffee_history (
+  id           uuid        primary key default gen_random_uuid(),
+  user_id      uuid        not null references auth.users (id) on delete cascade,
+  coffee_id    text        not null,
+  milk_id      text,
+  temp_mode    text        not null default 'hot',
+  prepared_at  timestamptz not null,
+  finished_at  timestamptz not null default now()
+);
+
+create index coffee_history_user_finished
+  on public.coffee_history (user_id, finished_at desc);
+
+alter table public.coffee_history enable row level security;
+
+create policy "Ver propio historial"
+  on public.coffee_history for select
+  using (auth.uid() = user_id);
+
+create policy "Insertar propio historial"
+  on public.coffee_history for insert
+  with check (auth.uid() = user_id);
+
+create policy "Borrar propio historial"
+  on public.coffee_history for delete
+  using (auth.uid() = user_id);
