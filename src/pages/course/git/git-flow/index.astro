@@ -1,0 +1,151 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import GitQuizModal from '../../../../components/GitQuizModal.astro';
+---
+
+<Layout
+  title="Git Flow: el modelo de ramas para equipos"
+  description="Aprende Git Flow en profundidad: ramas main, develop, feature, release y hotfix con un ejemplo real de equipo de desarrollo."
+  courseSlug="git"
+>
+  <article class="content-section">
+    <h1>7. Git Flow: orden cuando el equipo crece</h1>
+
+    <section class="mb-10">
+      <h2>¿Qué es Git Flow?</h2>
+      <p>
+        Ya sabés usar ramas y Pull Requests. <strong>Git Flow</strong> es un <em>modelo de ramificación</em> propuesto por
+        Vincent Driessen en 2010: no es un comando de Git, sino una <strong>convención de nombres y reglas</strong> sobre qué
+        rama existe para qué propósito. Muchos equipos lo adoptan (o lo adaptan) para que todo el mundo hable el mismo idioma:
+        dónde vive el código estable, dónde se integran features y cómo salen los parches urgentes.
+      </p>
+      <p>
+        Si tu proyecto es pequeño, a veces solo usás <code>main</code> y ramas cortas; Git Flow entra con fuerza cuando
+        necesitás <strong>separar claramente</strong> "lo que ya salió al mundo" de "lo que estamos armando para la próxima
+        versión", o cuando el equipo tiene roles definidos y procesos de aprobación.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Las dos ramas largas</h2>
+      <p>En Git Flow hay dos ramas que nunca se borran — son la columna vertebral del modelo:</p>
+      <ul class="list-disc pl-5 my-6">
+        <li>
+          <strong><code>main</code> (o <code>master</code>):</strong> refleja <strong>producción</strong>. Solo recibe merges
+          desde <code>release</code> o <code>hotfix</code>. Cada vez que llega un merge se etiqueta con el número de versión
+          (<code>v2.4.0</code>). Nadie hace commits directos aquí.
+        </li>
+        <li>
+          <strong><code>develop</code>:</strong> la línea de <strong>integración</strong> del próximo release. Las features
+          terminadas aterrizan aquí. Cuando el equipo decide que <code>develop</code> está lista para salir a producción, se
+          abre una rama <code>release</code>.
+        </li>
+      </ul>
+    </section>
+
+    <section class="mb-10">
+      <h2>Ramas de apoyo (con prefijos)</h2>
+      <p>Estas ramas son temporales: nacen con un propósito y se fusionan y borran al terminar.</p>
+      <ul class="list-disc pl-5 my-6">
+        <li>
+          <strong><code>feature/nombre</code>:</strong> sale de <code>develop</code>, implementa una historia de usuario o
+          tarea, y vuelve a <code>develop</code> vía Pull Request. Ejemplo: <code>feature/login-oauth</code> o
+          <code>feature/carrito-compras</code>. Nunca toca <code>main</code> directamente.
+        </li>
+        <li>
+          <strong><code>release/x.y.z</code>:</strong> se corta desde <code>develop</code> cuando la versión está casi lista.
+          En esa rama <em>solo entran correcciones de último momento</em> (bump de versión, ajuste de changelog, un bug de
+          borde). Al terminar, se fusiona a <code>main</code> <em>y también de vuelta</em> a <code>develop</code>, y se
+          etiqueta el commit en <code>main</code> (<code>v2.4.0</code>).
+        </li>
+        <li>
+          <strong><code>hotfix/x.y.z</code>:</strong> parche urgente en producción. Part de <code>main</code>, se corrige el
+          bug, se fusiona a <code>main</code> (nuevo tag) <em>y también a <code>develop</code></em> para que el arreglo no se
+          pierda en la línea de desarrollo activa.
+        </li>
+      </ul>
+    </section>
+
+    <section class="mb-10">
+      <h2>Ejemplo real: el equipo "Café API"</h2>
+      <p>
+        Imaginá la empresa <strong>"Café API"</strong>, con un backend en Node y una app web en React. Despliegan cada vez que
+        etiquetan una versión en <code>main</code>. El equipo tiene roles claros:
+      </p>
+      <ul class="list-disc pl-5 my-6">
+        <li><strong>Lucía (tech lead):</strong> define prioridades, revisa PRs críticos y aprueba los merges a <code>main</code> — desde <code>release</code> o <code>hotfix</code>.</li>
+        <li><strong>Mateo y Sofía (desarrollo):</strong> trabajan en historias del sprint en <code>feature/pagos-stripe</code> y <code>feature/notificaciones-push</code>, abriendo PR hacia <code>develop</code>.</li>
+        <li><strong>Diego (QA):</strong> prueba el entorno de staging que refleja <code>develop</code>; cuando se congela una versión, valida la rama <code>release/2.4.0</code>.</li>
+        <li><strong>Valentina (DevOps):</strong> el pipeline despliega <code>main</code> a producción y mantiene el changelog alineado con los tags.</li>
+      </ul>
+
+      <div class="my-6 rounded-2xl border-[3px] border-border bg-white p-5 shadow-neo">
+        <p class="m-0 mb-1 font-nunito text-xs font-extrabold uppercase tracking-widest text-textMuted">Semana tipo</p>
+        <ul class="mt-3 space-y-3 font-nunito font-[650] leading-relaxed text-textSecondary">
+          <li><span class="mr-2 inline-block rounded-lg bg-[#e8f4fc] px-2 py-0.5 font-extrabold text-[#118AB2]">Lun–Mié</span> Mateo y Sofía hacen commits en sus features e integran en <code>develop</code> tras revisión. <code>develop</code> es la "foto" de la próxima versión.</li>
+          <li><span class="mr-2 inline-block rounded-lg bg-amber-50 px-2 py-0.5 font-extrabold text-amber-700">Jue</span> Producto decide congelar la <code>2.4.0</code>. Se abre <code>release/2.4.0</code> desde <code>develop</code>. Solo entran correcciones de borde. Diego prueba ese build.</li>
+          <li><span class="mr-2 inline-block rounded-lg bg-emerald-50 px-2 py-0.5 font-extrabold text-emerald-700">Vie</span> Se fusiona <code>release/2.4.0</code> → <code>main</code> (tag <code>v2.4.0</code>) y de vuelta a <code>develop</code>. Valentina dispara el deploy.</li>
+          <li><span class="mr-2 inline-block rounded-lg bg-red-50 px-2 py-0.5 font-extrabold text-red-700">Lun (urgencia)</span> Bug de facturación en prod. Lucía abre <code>hotfix/2.4.1</code> desde <code>main</code>, Mateo sube el parche, merge → <code>main</code> (tag <code>v2.4.1</code>) y el mismo fix se integra en <code>develop</code>.</li>
+        </ul>
+      </div>
+
+      <p class="font-nunito font-bold text-textSecondary">
+        En resumen: <strong>features aterrizan en <code>develop</code></strong>; <strong>versiones estables salen por
+        <code>release</code> → <code>main</code></strong>; <strong>urgencias en prod van por <code>hotfix</code></strong>.
+        El equipo comparte un lenguaje de ramas sin mezclar "código en progreso" con "código desplegado".
+      </p>
+    </section>
+
+    <div class="card my-8" style="background: #fff5f2; border: 3px solid #f05032; border-radius: 20px; padding: 1.5rem;">
+      <h3 style="color: #f05032;">🌿 ¿Y el plugin <code>git-flow</code>?</h3>
+      <p>
+        Existe una extensión de línea de comandos que automatiza crear y fusionar estas ramas con un solo comando. No es
+        obligatoria; podés seguir el mismo modelo con <code>git branch</code>, <code>git merge</code> y PRs. Pero si el
+        equipo ya adoptó el modelo, el plugin elimina pasos manuales.
+      </p>
+      <CodeBlock
+        lang="bash"
+        code={`# Iniciar el modelo en el repo
+git flow init
+
+# Crear una feature (sale de develop)
+git flow feature start carrito-compras
+# ... commits ...
+git flow feature finish carrito-compras  # merge a develop, borra la rama
+
+# Preparar un release
+git flow release start 2.4.0
+# ... ajustes de changelog, bump de versión ...
+git flow release finish 2.4.0  # merge a main + develop, crea el tag v2.4.0
+
+# Parche urgente desde producción
+git flow hotfix start 2.4.1
+# ... fix del bug ...
+git flow hotfix finish 2.4.1  # merge a main + develop, crea el tag v2.4.1`}
+        title="git-flow-cli"
+      />
+    </div>
+
+    <section class="mb-10">
+      <h2>Cómo encajan las Pull Requests</h2>
+      <p>
+        Las <strong>Pull Requests</strong> siguen siendo el mecanismo de revisión de código: una <code>feature</code> termina
+        en un PR hacia <code>develop</code>; un <code>hotfix</code> en un PR hacia <code>main</code>. Git Flow define
+        <em>qué ramas existen y qué tocan</em>; el PR define <em>cómo revisamos y aprobamos</em> cada fusión. Ambos conceptos
+        se complementan — no se reemplazan.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Quiz: Git Flow</h2>
+      <p>Comprobá que dominás las ramas, los prefijos y el flujo del equipo antes de continuar.</p>
+      <GitQuizModal quizKey="git-flow" description="Repasá ramas de Git Flow: main, develop, feature/*, release/* y hotfix/*." />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/git/pull-requests/" class="prev">← Colaboración y conflictos</a>
+      <a href="/course/git/trunk-based/" class="next">Siguiente: Trunk-Based →</a>
+    </nav>
+  </article>
+</Layout>

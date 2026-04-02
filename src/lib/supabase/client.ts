@@ -55,5 +55,11 @@ export function getSupabaseBrowser(): SupabaseClient | null {
       storage: typeof localStorage !== 'undefined' ? localStorage : undefined,
     },
   });
+  /** El enlace de recuperación puede disparar PASSWORD_RECOVERY antes de que React monte el listener. */
+  browserClient.auth.onAuthStateChange((event) => {
+    if (event === 'PASSWORD_RECOVERY' && typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('supabase-password-recovery'));
+    }
+  });
   return browserClient;
 }

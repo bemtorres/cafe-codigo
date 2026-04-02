@@ -3,9 +3,10 @@ import { gitQuizBank } from '../data/gitQuizBank';
 
 type Props = {
   quizKey: string;
+  description?: string;
 };
 
-const { quizKey } = Astro.props as Props;
+const { quizKey, description } = Astro.props as Props;
 const quiz = gitQuizBank[quizKey];
 
 if (!quiz) {
@@ -47,7 +48,7 @@ const radiosNamePrefix = `git_quiz_${quizKey}_q_`;
 
       <div class="git-quiz__body">
         <p class="git-quiz__intro">
-          Repasa los comandos y el flujo de trabajo de Git. Son <strong>{quiz.questions.length}</strong> preguntas.
+          {description ?? 'Repasa los comandos y el flujo de trabajo de Git.'} Son <strong>{quiz.questions.length}</strong> preguntas.
         </p>
 
         <form class="git-quiz__form" onsubmit="return false;">

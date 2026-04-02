@@ -76,9 +76,23 @@
 
     if (!modal) return;
 
-    // Mostrar modal solo si no se ha configurado el nombre
+    // Si hay sesión activa de Supabase no molestamos al usuario con el modal
+    function hasSupabaseSession() {
+      try {
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          if (key && /^sb-.+-auth-token$/.test(key)) {
+            const val = JSON.parse(localStorage.getItem(key) || '{}');
+            if (val && val.access_token) return true;
+          }
+        }
+      } catch (_) {}
+      return false;
+    }
+
+    // Mostrar modal solo si no hay nombre guardado Y no hay sesión activa
     const storedName = localStorage.getItem('user.name');
-    if (!storedName) {
+    if (!storedName && !hasSupabaseSession()) {
       modal.classList.remove('hidden');
       setTimeout(() => input && input.focus(), 120);
     }

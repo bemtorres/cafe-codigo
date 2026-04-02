@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 import { getSupabaseBrowser } from '../../lib/supabase/client';
 import { tryUnlockWithSecret } from '../../lib/courseUnlock';
 
@@ -77,6 +77,35 @@ export default function AuthForms() {
   const [error, setError] = useState<string | null>(null);
   const [unlockMsg, setUnlockMsg] = useState<string | null>(null);
 
+  /** Tras abrir el enlace del correo de Supabase (sesión temporal de recuperación). */
+  const [recoveryMode, setRecoveryMode] = useState(false);
+  const [recoveryPw, setRecoveryPw] = useState('');
+  const [recoveryPw2, setRecoveryPw2] = useState('');
+  const [recoveryLoading, setRecoveryLoading] = useState(false);
+  const [recoveryError, setRecoveryError] = useState<string | null>(null);
+
+  useLayoutEffect(() => {
+    if (typeof window !== 'undefined' && window.__SUPABASE_RECOVERY_PENDING__) {
+      setRecoveryMode(true);
+      window.__SUPABASE_RECOVERY_PENDING__ = undefined;
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!supabase) return;
+    const onRecovery = () => setRecoveryMode(true);
+    window.addEventListener('supabase-password-recovery', onRecovery);
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event) => {
+      if (event === 'PASSWORD_RECOVERY') setRecoveryMode(true);
+    });
+    return () => {
+      window.removeEventListener('supabase-password-recovery', onRecovery);
+      subscription.unsubscribe();
+    };
+  }, [supabase]);
+
   if (!clientReady) {
     return (
       <div className="overflow-hidden rounded-3xl border-[3px] border-border bg-white shadow-neo-lg" aria-hidden>
@@ -95,6 +124,128 @@ export default function AuthForms() {
       <div className="rounded-3xl border-[3px] border-border bg-amber-50 px-5 py-5 font-nunito font-bold text-textSecondary shadow-neo">
         Falta configurar Supabase: creá un archivo <code className="text-sm">.env</code> con{' '}
         <code className="text-sm">PUBLIC_SUPABASE_URL</code> y <code className="text-sm">PUBLIC_SUPABASE_ANON_KEY</code>.
+      </div>
+    );
+  }
+
+  const handleRecoveryPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setRecoveryError(null);
+    if (!supabase) return;
+    if (recoveryPw.length < 6) {
+      setRecoveryError('La nueva contraseña debe tener al menos 6 caracteres.');
+      return;
+    }
+    if (recoveryPw !== recoveryPw2) {
+      setRecoveryError('Las contraseñas no coinciden.');
+      return;
+    }
+    setRecoveryLoading(true);
+    try {
+      const { error: err } = await supabase.auth.updateUser({ password: recoveryPw });
+      if (err) throw err;
+      window.location.href = '/panel/';
+    } catch (err: unknown) {
+      setRecoveryError(err instanceof Error ? mapAuthError(err) : 'No se pudo actualizar la contraseña.');
+    } finally {
+      setRecoveryLoading(false);
+    }
+  };
+
+  if (recoveryMode) {
+    const pwdHintRec = passwordHint(recoveryPw.length);
+    return (
+      <div className="mx-auto w-full max-w-md">
+        <div className="overflow-hidden rounded-3xl border-[3px] border-border bg-white shadow-neo-lg">
+          <div className="border-b-[3px] border-border bg-tertiary/35 px-6 py-4 text-center">
+            <p className="m-0 font-nunito text-sm font-extrabold uppercase tracking-[0.15em] text-textMuted">Recuperación</p>
+            <h2 className="m-0 mt-2 font-nunito text-xl font-black text-textPrimary sm:text-2xl">Nueva contraseña</h2>
+            <p className="mx-auto mt-2 max-w-sm font-nunito text-sm font-[650] leading-relaxed text-textSecondary">
+              Elegí una contraseña nueva para tu cuenta. Después te llevamos al panel.
+            </p>
+          </div>
+          <form onSubmit={(ev) => void handleRecoveryPassword(ev)} className="flex flex-col gap-5 p-6 md:p-8">
+            <div>
+              <label htmlFor="recovery-pw" className="mb-1.5 block font-nunito text-sm font-extrabold text-textSecondary">
+                Nueva contraseña
+              </label>
+              <input
+                id="recovery-pw"
+                type="password"
+                required
+                autoComplete="new-password"
+                minLength={6}
+                value={recoveryPw}
+                onChange={(e) => {
+                  setRecoveryPw(e.target.value);
+                  setRecoveryError(null);
+                }}
+                className="w-full rounded-2xl border-[3px] border-border bg-white px-4 py-3.5 font-nunito font-bold shadow-neo transition-shadow focus:border-info focus:outline-none focus:ring-2 focus:ring-info/30"
+                placeholder="Mínimo 6 caracteres"
+              />
+              {pwdHintRec && (
+                <p className={`mt-1.5 font-nunito text-xs font-bold ${pwdHintRec.className}`}>{pwdHintRec.label}</p>
+              )}
+            </div>
+            <div>
+              <label htmlFor="recovery-pw2" className="mb-1.5 block font-nunito text-sm font-extrabold text-textSecondary">
+                Repetir contraseña
+              </label>
+              <input
+                id="recovery-pw2"
+                type="password"
+                required
+                autoComplete="new-password"
+                minLength={6}
+                value={recoveryPw2}
+                onChange={(e) => {
+                  setRecoveryPw2(e.target.value);
+                  setRecoveryError(null);
+                }}
+                className="w-full rounded-2xl border-[3px] border-border bg-white px-4 py-3.5 font-nunito font-bold shadow-neo transition-shadow focus:border-info focus:outline-none focus:ring-2 focus:ring-info/30"
+                placeholder="Igual que arriba"
+              />
+            </div>
+            {recoveryError && (
+              <div
+                role="alert"
+                className="rounded-2xl border-2 border-red-200 bg-red-50 px-4 py-3 font-nunito text-sm font-bold text-red-800"
+              >
+                {recoveryError}
+              </div>
+            )}
+            <button
+              type="submit"
+              disabled={recoveryLoading}
+              className="flex w-full items-center justify-center gap-2 rounded-2xl border-[3px] border-border bg-success py-4 font-nunito text-lg font-black text-border shadow-neo transition-all hover:-translate-y-0.5 disabled:translate-y-0 disabled:opacity-60"
+            >
+              {recoveryLoading ? (
+                <>
+                  <span
+                    className="inline-block h-5 w-5 animate-spin rounded-full border-2 border-border border-t-transparent"
+                    aria-hidden
+                  />
+                  Guardando…
+                </>
+              ) : (
+                'Guardar y entrar al panel'
+              )}
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                void supabase.auth.signOut();
+                setRecoveryMode(false);
+                setRecoveryPw('');
+                setRecoveryPw2('');
+                setRecoveryError(null);
+              }}
+              className="w-full rounded-2xl border-[3px] border-border bg-white py-3 font-nunito font-extrabold text-textSecondary shadow-neo hover:bg-tertiary"
+            >
+              Cancelar e ir a iniciar sesión
+            </button>
+          </form>
+        </div>
       </div>
     );
   }

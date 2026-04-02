@@ -1,0 +1,159 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import GitQuizModal from '../../../../components/GitQuizModal.astro';
+---
+
+<Layout
+  title="Git Flow vs Trunk-Based: comparación y cuándo elegir cada uno"
+  description="Comparación completa entre Git Flow y Trunk-Based Development: ventajas, desventajas y guía para elegir el modelo adecuado para tu equipo."
+  courseSlug="git"
+>
+  <article class="content-section">
+    <h1>9. Comparación y conclusión: Git Flow vs Trunk-Based</h1>
+
+    <section class="mb-10">
+      <h2>Dos modelos, dos filosofías</h2>
+      <p>
+        En los módulos anteriores exploraste cada modelo en detalle. Ahora que tenés ambos claros, vale la pena ponerlos
+        frente a frente y entender cuándo conviene cada uno — porque la respuesta no es única: depende del equipo, el
+        tipo de producto y la madurez del proceso de entrega.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Tabla comparativa</h2>
+
+      <div class="my-6 overflow-x-auto rounded-2xl border-[3px] border-border bg-white shadow-neo">
+        <table class="w-full min-w-[280px] border-collapse font-nunito text-sm md:text-base">
+          <thead>
+            <tr class="border-b-[3px] border-border bg-tertiary/40">
+              <th class="p-3 text-left font-black text-textPrimary">Criterio</th>
+              <th class="p-3 text-left font-black text-[#f05032]">Git Flow</th>
+              <th class="p-3 text-left font-black text-[#118AB2]">Trunk-Based</th>
+            </tr>
+          </thead>
+          <tbody class="text-textSecondary font-[650]">
+            <tr class="border-b-2 border-border/70">
+              <td class="p-3 font-extrabold text-textPrimary">Ramas activas</td>
+              <td class="p-3">Varias en paralelo: <code>main</code>, <code>develop</code>, <code>feature/*</code>, <code>release/*</code>, <code>hotfix/*</code>.</td>
+              <td class="p-3">Solo el trunk (<code>main</code>) y ramas cortas de trabajo que viven horas o pocos días.</td>
+            </tr>
+            <tr class="border-b-2 border-border/70">
+              <td class="p-3 font-extrabold text-textPrimary">Frecuencia de integración</td>
+              <td class="p-3">Features pueden vivir días o semanas en <code>develop</code> antes de llegar a producción.</td>
+              <td class="p-3">Varias integraciones al día; el trunk refleja casi siempre el estado más reciente.</td>
+            </tr>
+            <tr class="border-b-2 border-border/70">
+              <td class="p-3 font-extrabold text-textPrimary">Mejor para</td>
+              <td class="p-3">Releases versionados (semestral, instalables, contratos), equipos que necesitan congelar versiones.</td>
+              <td class="p-3">Despliegue continuo (SaaS, microservicios), equipos con CI/CD maduro que liberan frecuente.</td>
+            </tr>
+            <tr class="border-b-2 border-border/70">
+              <td class="p-3 font-extrabold text-textPrimary">Riesgo de divergencia</td>
+              <td class="p-3">Alto si las features viven mucho en <code>develop</code> sin integrarse: el merge final puede ser doloroso.</td>
+              <td class="p-3">Bajo si el equipo mergea seguido; el conflicto se detecta antes porque las ramas son pequeñas.</td>
+            </tr>
+            <tr class="border-b-2 border-border/70">
+              <td class="p-3 font-extrabold text-textPrimary">Hotfixes</td>
+              <td class="p-3">Camino explícito: <code>hotfix/*</code> desde <code>main</code> → <code>main</code> + <code>develop</code>.</td>
+              <td class="p-3">El parche va al trunk; puede usar feature flags para apagar la funcionalidad afectada de inmediato.</td>
+            </tr>
+            <tr class="border-b-2 border-border/70">
+              <td class="p-3 font-extrabold text-textPrimary">Curva de aprendizaje</td>
+              <td class="p-3">Media-alta: hay que aprender las reglas de cada tipo de rama y cuándo crearla.</td>
+              <td class="p-3">Baja en teoría ("todo va a main"), pero exige disciplina real y herramientas maduras.</td>
+            </tr>
+            <tr>
+              <td class="p-3 font-extrabold text-textPrimary">Coste oculto</td>
+              <td class="p-3">Mantenimiento de ramas largas, merges entre <code>release</code>, <code>develop</code> y <code>main</code>, y coordinación de versiones.</td>
+              <td class="p-3">Exige tests confiables, revisión ágil y, a menudo, infraestructura de feature flags. Sin eso, <code>main</code> se vuelve frágil.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2>¿Y qué es GitHub Flow?</h2>
+      <p>
+        Entre los dos extremos existe un modelo muy popular en equipos medianos: <strong>GitHub Flow</strong>. Su
+        idea es simple: <code>main</code> siempre está desplegable, y cualquier cambio nuevo pasa por una rama de
+        feature corta + Pull Request hacia <code>main</code>. No hay <code>develop</code> permanente ni ciclos de
+        <code>release</code> formales. Esencialmente es un <strong>punto intermedio</strong> —
+        más estructura que TBD puro, mucho más simple que Git Flow clásico — y funciona muy bien para equipos web
+        que despliegan con frecuencia pero no tienen CI/CD completamente automatizado.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Guía rápida para elegir</h2>
+
+      <div class="my-6 grid gap-4 sm:grid-cols-3">
+        <div class="rounded-2xl border-[3px] border-[#f05032] bg-white p-4 shadow-neo">
+          <p class="m-0 mb-2 font-nunito text-xs font-extrabold uppercase tracking-widest text-[#f05032]">Elegí Git Flow si…</p>
+          <ul class="m-0 list-disc pl-4 font-nunito text-sm font-[650] leading-relaxed text-textSecondary space-y-1">
+            <li>Publicás versiones numeradas con ciclos de lanzamiento formales.</li>
+            <li>Necesitás mantener varias versiones activas en paralelo (v2.x y v3.x).</li>
+            <li>El equipo tiene roles definidos y procesos de aprobación por versión.</li>
+            <li>El cliente o el contrato exige releases etiquetadas y auditables.</li>
+          </ul>
+        </div>
+        <div class="rounded-2xl border-[3px] border-[#118AB2] bg-white p-4 shadow-neo">
+          <p class="m-0 mb-2 font-nunito text-xs font-extrabold uppercase tracking-widest text-[#118AB2]">Elegí Trunk-Based si…</p>
+          <ul class="m-0 list-disc pl-4 font-nunito text-sm font-[650] leading-relaxed text-textSecondary space-y-1">
+            <li>Tenés CI/CD maduro y buscás desplegar varias veces al día.</li>
+            <li>El producto es SaaS o web con una sola versión en producción.</li>
+            <li>El equipo revisa PRs rápido y tiene tests confiables.</li>
+            <li>Querés minimizar el riesgo de "merge conflicts gigantes".</li>
+          </ul>
+        </div>
+        <div class="rounded-2xl border-[3px] border-border bg-white p-4 shadow-neo">
+          <p class="m-0 mb-2 font-nunito text-xs font-extrabold uppercase tracking-widest text-textMuted">Considerá GitHub Flow si…</p>
+          <ul class="m-0 list-disc pl-4 font-nunito text-sm font-[650] leading-relaxed text-textSecondary space-y-1">
+            <li>Sos un equipo pequeño o mediano con despliegue frecuente.</li>
+            <li>No necesitás congelar versiones pero tampoco tenés CI completo.</li>
+            <li>Querés más simplicidad que Git Flow sin depender de feature flags.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2>Conclusión: no hay un ganador universal</h2>
+      <p>
+        Git Flow y Trunk-Based no son rivales — son herramientas diseñadas para contextos distintos. Un equipo que
+        publica firmware embedded con ciclos de seis meses y validación regulatoria tiene necesidades completamente
+        diferentes a una startup de SaaS que despliega cada hora.
+      </p>
+      <p>
+        Lo que sí es universal: <strong>el modelo que elijas debe ser conocido y aplicado de forma consistente por
+        todo el equipo</strong>. Un Git Flow aplicado a medias es peor que GitHub Flow bien ejecutado. La mejor
+        estrategia de ramas es la que tu equipo entiende, mantiene y puede explicarle a un desarrollador nuevo en
+        diez minutos.
+      </p>
+      <p>
+        Con esto cerrás el curso de Git: desde entender qué es un commit hasta los modelos de ramificación que usan
+        los equipos profesionales. El siguiente paso es la práctica: abrí un repo, definí el modelo con tu equipo, y
+        empezá a iterar.
+      </p>
+
+      <div class="my-6 rounded-2xl border-[3px] border-success bg-emerald-50 p-5 shadow-neo">
+        <p class="m-0 font-nunito font-extrabold text-emerald-800">
+          🎓 ¡Curso completo! Dominás el control de versiones con Git: desde <code>git init</code> hasta modelos de
+          colaboración profesional con Git Flow y Trunk-Based.
+        </p>
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2>Quiz final: Git Flow vs Trunk-Based</h2>
+      <p>Último repaso antes de cerrar el curso: comparación, casos de uso y GitHub Flow.</p>
+      <GitQuizModal quizKey="flujos-comparacion" description="Compará Git Flow y Trunk-Based: ventajas, desventajas y cuándo elegir cada modelo." />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/git/trunk-based/" class="prev">← Trunk-Based Development</a>
+      <a href="/course/git/" class="next">Ir al índice del curso →</a>
+    </nav>
+  </article>
+</Layout>

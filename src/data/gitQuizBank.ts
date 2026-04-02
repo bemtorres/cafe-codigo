@@ -196,5 +196,183 @@ export const gitQuizBank: Record<string, GitQuizDefinition> = {
         correctIndex: 1
       }
     ]
-  }
+  },
+  'git-flow': {
+    key: 'git-flow',
+    title: 'Quiz: Git Flow',
+    questions: [
+      {
+        prompt: "¿Qué es Git Flow en la práctica?",
+        options: [
+          "Un comando obligatorio de Git llamado git flow",
+          "Un modelo de convenciones sobre ramas (main, develop, feature, release, hotfix)",
+          "Lo mismo que GitHub Flow",
+          "Solo sirve para proyectos en Bitbucket",
+        ],
+        correctIndex: 1,
+      },
+      {
+        prompt: "En Git Flow, ¿qué rama representa el código en producción?",
+        options: ["develop", "feature/main", "main (o master)", "hotfix"],
+        correctIndex: 2,
+      },
+      {
+        prompt: "¿Desde qué rama parten las ramas feature/*?",
+        options: ["main", "hotfix", "develop", "release"],
+        correctIndex: 2,
+      },
+      {
+        prompt: "¿Para qué sirve una rama release/*?",
+        options: [
+          "Para borrar el historial",
+          "Para preparar una versión (ajustes finales antes de etiquetar y fusionar a main)",
+          "Para guardar secretos del equipo",
+          "Para reemplazar a develop",
+        ],
+        correctIndex: 1,
+      },
+      {
+        prompt: "¿Qué es un hotfix en Git Flow?",
+        options: [
+          "Un merge sin revisión de código",
+          "Una rama de corrección urgente que parte de main y se integra en main y develop al terminar",
+          "Un commit sin mensaje descriptivo",
+          "Una rama exclusiva de GitLab",
+        ],
+        correctIndex: 1,
+      },
+      {
+        prompt: "En el ejemplo del equipo «Café API», ¿quién aprueba los merges a main?",
+        options: [
+          "Mateo (desarrollador)",
+          "Diego (QA)",
+          "Lucía (tech lead)",
+          "Valentina (DevOps)",
+        ],
+        correctIndex: 2,
+      },
+    ],
+  },
+  'trunk-based': {
+    key: 'trunk-based',
+    title: 'Quiz: Trunk-Based Development',
+    questions: [
+      {
+        prompt: "En Trunk-Based Development, ¿qué es el trunk?",
+        options: [
+          "Una rama de respaldo que nadie modifica",
+          "La rama principal (casi siempre main) donde todos integran con alta frecuencia",
+          "Lo mismo que develop en Git Flow",
+          "Solo la rama de documentación",
+        ],
+        correctIndex: 1,
+      },
+      {
+        prompt: "¿Cada cuánto tiempo suelen mergearse los cambios en Trunk-Based?",
+        options: [
+          "Una vez al mes, en una reunión formal",
+          "Una o varias veces al día; ramas muy cortas (horas a pocos días)",
+          "Solo al final del sprint de dos semanas",
+          "Cada vez que el cliente aprueba",
+        ],
+        correctIndex: 1,
+      },
+      {
+        prompt: "¿Qué técnica se usa en TBD para incluir código nuevo en main sin activarlo en producción todavía?",
+        options: [
+          "Abrir una rama develop larga",
+          "Feature flags: el código está presente pero desactivado hasta que se decida encenderlo",
+          "Crear un hotfix preventivo",
+          "Subir el código solo a staging para siempre",
+        ],
+        correctIndex: 1,
+      },
+      {
+        prompt: "¿Qué requisito es fundamental para que Trunk-Based funcione bien?",
+        options: [
+          "Tener muchos desarrolladores en la oficina",
+          "Una suite de tests automáticos sólida y CI que corre en cada cambio",
+          "Prohibir los Pull Requests",
+          "Usar solo un lenguaje de programación",
+        ],
+        correctIndex: 1,
+      },
+      {
+        prompt: "¿Cómo se manejan habitualmente los hotfixes en Trunk-Based?",
+        options: [
+          "Se abren ramas hotfix largas igual que en Git Flow",
+          "El parche va directamente al trunk y se despliega; puede usarse feature flags o pipelines rápidos",
+          "Se espera al próximo release mensual",
+          "Solo el CEO puede aprobar un hotfix",
+        ],
+        correctIndex: 1,
+      },
+    ],
+  },
+  'flujos-comparacion': {
+    key: 'flujos-comparacion',
+    title: 'Quiz: Git Flow vs Trunk-Based',
+    questions: [
+      {
+        prompt: "¿Cuál de los dos modelos suele tener más tipos de ramas activas a la vez?",
+        options: [
+          "Trunk-Based, porque hay una rama por cada desarrollador",
+          "Git Flow, por las ramas develop, feature/*, release/* y hotfix/*",
+          "Ambos tienen exactamente las mismas ramas",
+          "Ninguno usa ramas",
+        ],
+        correctIndex: 1,
+      },
+      {
+        prompt: "Un equipo publica una aplicación de escritorio instalable con versiones numeradas (v2.4, v3.0). ¿Qué modelo encaja mejor?",
+        options: [
+          "Trunk-Based puro, porque despliegan muchas veces al día",
+          "Git Flow, porque permite congelar una versión en release mientras develop sigue avanzando",
+          "Ambos son equivalentes para este caso",
+          "Ninguno; ese equipo debería usar SVN",
+        ],
+        correctIndex: 1,
+      },
+      {
+        prompt: "Una startup de SaaS despliega a producción varias veces al día con CI/CD completo. ¿Qué modelo se adapta mejor?",
+        options: [
+          "Git Flow, por su estructura formal de ramas",
+          "Trunk-Based, porque favorece integración frecuente y despliegue continuo",
+          "Ambos son igual de adecuados",
+          "Ninguno, deben usar FTP manual",
+        ],
+        correctIndex: 1,
+      },
+      {
+        prompt: "¿Qué es GitHub Flow?",
+        options: [
+          "Exactamente lo mismo que Git Flow clásico con develop y release",
+          "Un modelo intermedio: main + ramas de feature cortas, sin develop permanente",
+          "Trunk-Based con feature flags obligatorios",
+          "Solo sirve para repositorios de GitHub de pago",
+        ],
+        correctIndex: 1,
+      },
+      {
+        prompt: "¿Cuál es el mayor coste oculto de Trunk-Based si no hay disciplina?",
+        options: [
+          "Tener demasiados tags de versión",
+          "Que main se vuelva frágil por integraciones sin tests ni revisión adecuada",
+          "Tener que pagar por GitHub Actions",
+          "Que develop quede desactualizada",
+        ],
+        correctIndex: 1,
+      },
+      {
+        prompt: "¿Es posible combinar ideas de Git Flow y Trunk-Based en un mismo equipo?",
+        options: [
+          "No, son modelos incompatibles por definición",
+          "Sí, muchos equipos adaptan los modelos (por ejemplo ramas feature cortas + rama release opcional)",
+          "Solo si el equipo tiene más de 50 personas",
+          "Solo en repositorios privados",
+        ],
+        correctIndex: 1,
+      },
+    ],
+  },
 };

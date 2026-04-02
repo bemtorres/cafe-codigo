@@ -4,6 +4,15 @@ import AuthForms from '../../components/auth/AuthForms';
 ---
 
 <Layout title="Cuenta" description="Iniciá sesión o creá tu cuenta en café y código. Registro con onboarding opcional y recuperación de contraseña.">
+  {/* Antes de que el cliente Supabase consuma el fragmento (#…type=recovery), marcamos recuperación para la UI. */}
+  <script is:inline>
+    try {
+      var h = typeof location !== 'undefined' ? location.hash : '';
+      if (h.includes('type=recovery') || h.includes('type%3Drecovery')) {
+        window.__SUPABASE_RECOVERY_PENDING__ = true;
+      }
+    } catch (_) {}
+  </script>
   <div class="mx-auto max-w-6xl px-4 pb-12 pt-2 sm:px-6">
     <div class="mx-auto max-w-xl">
       <header class="mb-8 text-center md:mb-10">

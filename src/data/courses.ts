@@ -301,6 +301,9 @@ export const courses: Course[] = [
       { slug: 'github-nube', title: '4. GitHub y la Nube', href: '/course/git/github-nube/' },
       { slug: 'alternativas-git', title: '5. GitLab y Bitbucket', href: '/course/git/alternativas-git/' },
       { slug: 'pull-requests', title: '6. Colaboración y Conflictos', href: '/course/git/pull-requests/' },
+      { slug: 'git-flow', title: '7. Git Flow', href: '/course/git/git-flow/' },
+      { slug: 'trunk-based', title: '8. Trunk-Based Development', href: '/course/git/trunk-based/' },
+      { slug: 'flujos-comparacion', title: '9. Comparación y conclusión', href: '/course/git/flujos-comparacion/' },
     ],
   },
   {

@@ -10,3 +10,8 @@ interface ImportMetaEnv {
 interface ImportMeta {
   readonly env: ImportMetaEnv;
 }
+
+interface Window {
+  /** Marcado en /cuenta/ antes de que el cliente Supabase consuma el hash de recuperación. */
+  __SUPABASE_RECOVERY_PENDING__?: boolean;
+}
