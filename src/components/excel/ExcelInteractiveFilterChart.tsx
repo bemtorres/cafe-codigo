@@ -534,7 +534,7 @@ export function ExcelInteractiveFilterChart(props: ExcelInteractiveFilterChartPr
     }
     if (chartKind === 'bar') {
       if (visibleSimple.length === 0) return emptyChart();
-      const fmt = (props as Extract<ExcelInteractiveFilterChartProps, { chartKind: 'bar' }>).valueFormat;
+      const fmt = (props as { valueFormat?: ValueFormat }).valueFormat ?? 'number';
       return (
         <Bar
           data={{
@@ -570,7 +570,7 @@ export function ExcelInteractiveFilterChart(props: ExcelInteractiveFilterChartPr
     }
     if (chartKind === 'horizontalBar') {
       if (visibleSimple.length === 0) return emptyChart();
-      const fmt = (props as Extract<ExcelInteractiveFilterChartProps, { chartKind: 'horizontalBar' }>).valueFormat;
+      const fmt = (props as { valueFormat?: ValueFormat }).valueFormat ?? 'number';
       return (
         <Bar
           data={{
@@ -603,7 +603,7 @@ export function ExcelInteractiveFilterChart(props: ExcelInteractiveFilterChartPr
     }
     if (chartKind === 'line') {
       if (visibleSimple.length === 0) return emptyChart();
-      const fmt = (props as Extract<ExcelInteractiveFilterChartProps, { chartKind: 'line' }>).valueFormat;
+      const fmt = (props as { valueFormat?: ValueFormat }).valueFormat ?? 'number';
       return (
         <Line
           data={{
@@ -637,7 +637,7 @@ export function ExcelInteractiveFilterChart(props: ExcelInteractiveFilterChartPr
     }
     if (chartKind === 'pie') {
       if (visibleSimple.length === 0) return emptyChart();
-      const fmt = (props as Extract<ExcelInteractiveFilterChartProps, { chartKind: 'pie' }>).valueFormat;
+      const fmt = (props as { valueFormat?: ValueFormat }).valueFormat ?? 'number';
       return (
         <Pie
           data={{

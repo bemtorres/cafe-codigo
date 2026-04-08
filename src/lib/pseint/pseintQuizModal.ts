@@ -54,7 +54,7 @@ function gradeModal(modal: Element): { score: number; total: number } {
   qEls.forEach((qEl) => {
     const correct = Number(qEl.getAttribute('data-correct-index'));
     const feedbackEl = qEl.querySelector('[data-pseint-quiz-feedback]');
-    const selected = qEl.querySelector('input[type="radio"]:checked');
+    const selected = qEl.querySelector('input[type="radio"]:checked') as HTMLInputElement | null;
     const idx = selected ? Number(selected.value) : null;
 
     const correctInput = qEl.querySelector(`input[type="radio"][value="${correct}"]`);

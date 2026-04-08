@@ -4,6 +4,7 @@ import imagen1 from '../assets/images/imagen1.png';
 import TestimonialsSlider from '../components/TestimonialsSlider';
 import HomeMusicPlayer from '../components/music/HomeMusicPlayer';
 import { getHomeMusicTracks } from '../lib/homeMusicPlaylist';
+import type { TestimonialItem } from '../components/TestimonialsSlider';
 
 const KO_FI_URL = 'https://ko-fi.com/cafeycodigo';
 const homeMusicTracks = getHomeMusicTracks();
@@ -101,7 +102,7 @@ const testimonials = [
     role: 'Estudiante universitaria',
     carita: 'wave',
   },
-];
+] satisfies TestimonialItem[];
 
 const faqItems = [
   {

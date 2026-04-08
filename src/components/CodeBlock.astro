@@ -94,8 +94,8 @@ function escape(s: string) {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
-// Utilidad: tokenizador simple preservando strings y comentarios
-function tokenize(line: string, rules: Array<{ re: RegExp; cls: string }>) {
+// Utilidad (legacy): tokenizador simple preservando strings y comentarios
+function tokenizeLegacy(line: string, rules: Array<{ re: RegExp; cls: string }>) {
   let result = '';
   let i = 0;
   const src = line;
@@ -349,7 +349,7 @@ const encodedCode = encodeURIComponent(safeCode);
 
 <script>
   // Copy button logic — aplica a todos los bloques de código
-  document.querySelectorAll('.copy-btn').forEach(btn => {
+  document.querySelectorAll('.copy-btn').forEach((btn) => {
     btn.addEventListener('click', async () => {
       const encoded = btn.getAttribute('data-copy-code') ?? '';
       let text = '';
@@ -372,10 +372,10 @@ const encodedCode = encodeURIComponent(safeCode);
 
       // Feedback visual
       if (label) label.textContent = '¡Copiado!';
-      btn.style.color = '#06D6A0';
+      (btn as HTMLElement).style.color = '#06D6A0';
       setTimeout(() => {
         if (label) label.textContent = 'Copiar';
-        btn.style.color = '';
+        (btn as HTMLElement).style.color = '';
       }, 1800);
     });
   });

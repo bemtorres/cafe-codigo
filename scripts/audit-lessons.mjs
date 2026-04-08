@@ -1,5 +1,5 @@
 /**
- * Auditoría heurística de lecciones bajo src/pages/course/*/…/index.astro
+ * Auditoría heurística de lecciones bajo src/pages/course/[course]/[lesson]/index.astro
  * frente a las convenciones del README (CodeBlock, quiz, sección "Ponte a prueba").
  *
  * Uso: node scripts/audit-lessons.mjs
@@ -59,7 +59,7 @@ function main() {
   const missingQuiz = rows.filter((r) => !r.quiz);
   const missingPonte = rows.filter((r) => !r.ponte);
 
-  console.log(`Lecciones analizadas (excl. portadas */index.astro): ${rows.length}\n`);
+  console.log(`Lecciones analizadas (excl. portadas /index.astro): ${rows.length}\n`);
   console.log('--- Resumen ---');
   console.log(`Sin referencia a CodeBlock:     ${missingCode.length}`);
   console.log(`Sin quiz (quizKey / QuizModal): ${missingQuiz.length}`);

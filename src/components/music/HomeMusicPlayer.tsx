@@ -21,7 +21,7 @@ type LevelsCanvasProps = {
 function MusicLevelsCanvas({ playing, analyser, fakeMode }: LevelsCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const phaseRef = useRef(0);
-  const dataRef = useRef<Uint8Array | null>(null);
+  const dataRef = useRef<Uint8Array<ArrayBuffer> | null>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -55,7 +55,7 @@ function MusicLevelsCanvas({ playing, analyser, fakeMode }: LevelsCanvasProps) {
       let levels: number[] = [];
       if (playing && analyser && !fakeMode) {
         if (!dataRef.current || dataRef.current.length !== analyser.frequencyBinCount) {
-          dataRef.current = new Uint8Array(analyser.frequencyBinCount);
+          dataRef.current = new Uint8Array(new ArrayBuffer(analyser.frequencyBinCount));
         }
         const data = dataRef.current;
         analyser.getByteFrequencyData(data);

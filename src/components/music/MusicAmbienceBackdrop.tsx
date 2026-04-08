@@ -18,7 +18,7 @@ export default function MusicAmbienceBackdrop({ playing, analyser, fakeMode }: P
   const glowBRef = useRef<HTMLDivElement>(null);
   const smoothRef = useRef(0);
   const phaseRef = useRef(0);
-  const dataRef = useRef<Uint8Array | null>(null);
+  const dataRef = useRef<Uint8Array<ArrayBuffer> | null>(null);
 
   useEffect(() => {
     let raf = 0;
@@ -37,7 +37,7 @@ export default function MusicAmbienceBackdrop({ playing, analyser, fakeMode }: P
           energy = 0.14;
         } else if (analyser && !fakeMode) {
           if (!dataRef.current || dataRef.current.length !== analyser.frequencyBinCount) {
-            dataRef.current = new Uint8Array(analyser.frequencyBinCount);
+            dataRef.current = new Uint8Array(new ArrayBuffer(analyser.frequencyBinCount));
           }
           analyser.getByteFrequencyData(dataRef.current);
           const d = dataRef.current;

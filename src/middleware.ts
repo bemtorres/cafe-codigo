@@ -13,5 +13,5 @@ export const onRequest = defineMiddleware((context, next) => {
   if (!first || !COURSE_SLUGS.has(first)) return next();
   const dest = new URL(context.url);
   dest.pathname = `/course${path === '/' ? '' : path}`;
-  return context.redirect(dest, 301);
+  return context.redirect(dest.toString(), 301);
 });
