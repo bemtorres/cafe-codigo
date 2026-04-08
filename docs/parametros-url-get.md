@@ -17,7 +17,7 @@ Estos parámetros aplican a rutas que usan el layout de cursos (por ejemplo `/co
 | `name` | texto | Solo con `embed=true`: **nombre del estudiante** en la tarjeta de la barra embed. |
 | `email` | texto | Solo con `embed=true`: **correo del estudiante** bajo el nombre en la barra embed (y `title` en el contenedor para tooltip). |
 | `logo` | url | Solo con `logo=`: **logo de la institución** en la barra embed. |
-| `background` | url | Solo con `background=`: **background de la institución** en la barra embed. |
+| `background` | url o color CSS (`#hex`, `rgb()`, etc.) | Solo con `background=`: **background de la institución** en la barra embed. |
 | `color` | color CSS (`#hex`, `rgb()`, etc.) | Solo con `color=`: cambia **solo el color de la cabecera embed** (`#embedBar`). No modifica el fondo del sitio. |
 
 ### Combinaciones habituales
