@@ -38,6 +38,31 @@ Para mantener la coherencia y garantizar la mejor experiencia de aprendizaje gam
 
 Referencia de query string (`?embed=true`, `?pdf=true`, etc.): [docs/parametros-url-get.md](docs/parametros-url-get.md).
 
+Ejemplos rápidos:
+
+```text
+# Incrustar una lección sin chrome del sitio
+/course/python/introduccion/?embed=true
+
+# Igual, sin quiz (LMS que no quiere el test en el iframe)
+/course/python/introduccion/?embed=true&quiz=false
+
+# Modo PDF/impresión (fondo blanco solo al imprimir; en pantalla mantiene el fondo normal)
+/course/python/introduccion/?pdf=true
+/course/python/introduccion/?embed=true&pdf=true
+
+# Embed con datos (institución / alumno)
+/course/python/introduccion/?embed=true&title=INSTITUCI%C3%93N&name=NOMBRE&email=CORREO
+
+# Personalizar cabecera embed: logo + fondo (URL) + color base (solo cabecera)
+/course/python/introduccion/?embed=true&title=INSTITUCI%C3%93N&logo=https%3A%2F%2Fejemplo.com%2Flogo.png&background=https%3A%2F%2Fejemplo.com%2Ffondo.jpg&color=%232b1d1b
+
+# background también puede ser color (recordá URL-encode de '#')
+/course/python/introduccion/?embed=true&title=INSTITUCI%C3%93N&background=%23f3f3f3
+```
+
+Nota: si usás `title`, `name` o `email` con espacios/tildes, generá la URL con `encodeURIComponent`.
+
 ## Acerca de los Componentes Universales
 
 - **`<Layout>`**: Envuelve a cada lección para inyectar los metadatos SEO, el menú lateral y la lógica de estado local.
