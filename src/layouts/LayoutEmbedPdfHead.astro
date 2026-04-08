@@ -83,16 +83,20 @@
           const logoEl = document.getElementById('embedBarLogo');
           const emojiEl = document.getElementById('embedBarIconEmoji');
           const iconEl = document.getElementById('embedBarIcon');
+          if (iconEl) iconEl.style.display = 'flex';
           if (logoEl) {
+            // Fallback robusto: mostrar emoji hasta que el logo cargue.
+            if (emojiEl) emojiEl.style.display = '';
+            logoEl.style.display = 'none';
+            logoEl.onload = () => {
+              logoEl.style.display = 'block';
+              if (emojiEl) emojiEl.style.display = 'none';
+            };
+            logoEl.onerror = () => {
+              logoEl.style.display = 'none';
+              if (emojiEl) emojiEl.style.display = '';
+            };
             logoEl.src = logoUrl;
-            logoEl.style.display = 'block';
-          }
-          if (emojiEl) emojiEl.style.display = 'none';
-          if (iconEl) {
-            iconEl.style.display = 'flex';
-            // Un poco más grande para que se aprecie mejor
-            iconEl.style.width = '2rem';
-            iconEl.style.height = '2rem';
           }
         }
 
