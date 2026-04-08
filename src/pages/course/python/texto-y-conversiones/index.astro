@@ -1,0 +1,266 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import PythonQuizModal from '../../../../components/PythonQuizModal.astro';
+---
+
+<Layout
+  title="str, int, bool y métodos de texto en Python"
+  description="Conversiones con str(), int(), bool() y los métodos de cadena más usados: upper, strip, split y más."
+  courseSlug="python"
+>
+  <article class="content-section">
+    <h1>3. Texto y tipos básicos: str(), int(), bool() y métodos de <code>str</code></h1>
+
+    <section class="mb-10">
+      <h2>No son “propiedades”: son <strong>constructores</strong> (funciones incorporadas)</h2>
+      <p>
+        En Python vas a ver cosas como <code>str("13")</code>, <code>int("123")</code> o <code>bool(1)</code>.
+        El nombre técnico suele ser <strong>constructor</strong> o simplemente <strong>función incorporada</strong> que devuelve un valor de ese tipo
+        (a veces <strong>convirtiendo</strong> lo que le pasás).
+      </p>
+      <ul class="mb-4">
+        <li><code>str(x)</code> → intenta representar <code>x</code> como texto.</li>
+        <li><code>int(x)</code> → intenta interpretar <code>x</code> como entero (si no puede, lanza error).</li>
+        <li><code>float(x)</code> → igual, pero número decimal.</li>
+        <li><code>bool(x)</code> → devuelve <code>True</code> o <code>False</code> según las reglas de “verdadero / falso” en Python.</li>
+      </ul>
+      <CodeBlock
+        lang="python"
+        title="conversiones-basicas.py"
+        code={`# De texto a número (muy común después de input())
+n = int("123")
+print(n + 1)  # 124
+
+# De número a texto (por ejemplo para concatenar con +)
+s = str(13)
+print("Código: " + s)
+
+# bool: casos típicos
+print(bool(0))       # False
+print(bool(""))     # False (cadena vacía)
+print(bool("no"))   # True (cualquier texto no vacío)
+print(bool(99))     # True`}
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2><code>type()</code>: saber qué tenés en la mano</h2>
+      <p>
+        Cuando dudás si algo es texto o número, <code>type()</code> te lo dice. Esto conecta directo con la lección de variables e <code>input()</code>.
+      </p>
+      <CodeBlock
+        lang="python"
+        title="type.py"
+        code={`dato = input("Escribí un número: ")
+print(type(dato))  # <class 'str'> siempre con input()
+
+numero = int(dato)
+print(type(numero))  # <class 'int'>`}
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2><code>len()</code>, posición con <code>[ ]</code> y rebanadas <code>[:]</code></h2>
+      <p>
+        Un <code>str</code> es una secuencia de caracteres. Podés saber <strong>cuántos</strong> tiene, leer <strong>uno por posición</strong>
+        y <strong>cortar pedazos</strong> (slicing). Los índices empiezan en <strong>0</strong> (el primer carácter es el índice 0).
+      </p>
+
+      <h3 class="mt-6"><code>len(cadena)</code> — cuántos caracteres</h3>
+      <p>
+        <code>len</code> cuenta letras, números, espacios y símbolos: cada “unidad” visible cuenta como uno (en textos simples, un carácter).
+      </p>
+      <CodeBlock
+        lang="python"
+        title="str-len.py"
+        code={`usuario = "Ana"
+clave = "hola123"
+print(len(usuario))   # 3
+print(len(clave))     # 7
+print(len(""))        # 0 cadena vacía`}
+      />
+
+      <h3 class="mt-6"><code>[0]</code> y <code>[-1]</code> — primer y último carácter</h3>
+      <p>
+        Con corchetes accedés a <strong>una</strong> posición. <code>[0]</code> es siempre el primero.
+        Los índices negativos cuentan desde el final: <code>[-1]</code> es el último, <code>[-2]</code> el anterior, y así.
+      </p>
+      <CodeBlock
+        lang="python"
+        title="str-indices.py"
+        code={`s = "Python"
+print(s[0])    # 'P'   primera letra
+print(s[1])    # 'y'   segunda
+print(s[-1])   # 'n'   última
+print(s[-2])   # 'o'   penúltima
+
+# Ojo: si el string está vacío, s[0] da error (no hay posición 0)`}
+      />
+
+      <h3 class="mt-6"><code>[:3]</code> — las primeras tres letras (o las que indiques)</h3>
+      <p>
+        La notación <code>inicio:fin</code> en corchetes devuelve un <strong>tramo</strong>: desde <code>inicio</code> hasta <strong>antes</strong> de <code>fin</code>.
+        Si omitís el inicio, empieza en 0. Por eso <code>[:3]</code> son los índices 0, 1 y 2 (tres caracteres).
+      </p>
+      <CodeBlock
+        lang="python"
+        title="str-slice-inicio.py"
+        code={`codigo = "PY-4821"
+prefijo = codigo[:2]      # 'PY'  (posiciones 0 y 1)
+tres = codigo[:3]         # 'PY-'  primeros tres
+
+nick = "superuser"
+print(nick[:5])           # 'super'  primeros cinco`}
+      />
+
+      <h3 class="mt-6"><code>[2:len(variable)]</code> — del índice 2 hasta el final</h3>
+      <p>
+        El segundo número del slicing es <strong>exclusivo</strong>: <code>variable[2:len(variable)]</code> toma desde el índice 2
+        hasta el último carácter incluido, porque <code>len(variable)</code> apunta “una posición después del último”, que es cómo Python cierra el tramo.
+        Es equivalente a escribir <code>variable[2:]</code> (omitir el fin = hasta el final), pero usar <code>len</code> deja explícito
+        que estás pensando en “desde 2 hasta la longitud total”.
+      </p>
+      <CodeBlock
+        lang="python"
+        title="str-slice-len.py"
+        code={`variable = "Python"
+# Desde el índice 2 hasta el final (mismas letras que variable[2:])
+print(variable[2:len(variable)])   # 'thon'
+
+# Otro ejemplo: quitar los dos primeros símbolos de un código
+sku = "AB-999"
+resto = sku[2:len(sku)]           # '-999'
+
+# Combinando: todo menos el primero y el último (índice 1 hasta len-1)
+palabra = "abcdef"
+print(palabra[1:len(palabra) - 1])  # 'bcde'  (sin 'a' ni 'f')`}
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Cadenas (<code>str</code>): métodos que vas a usar todo el tiempo</h2>
+      <p>
+        Los textos en Python son objetos de tipo <code>str</code>. No “propiedades para setear” como en otros lenguajes: en general usás
+        <strong>métodos</strong> que devuelven un <strong>texto nuevo</strong> (las cadenas son <strong>inmutables</strong>).
+      </p>
+
+      <h3 class="mt-6"><code>upper()</code>, <code>lower()</code>, <code>capitalize()</code> y <code>title()</code></h3>
+      <p>
+        <code>upper()</code> y <code>lower()</code> cambian todo el texto. <code>capitalize()</code> deja en mayúscula solo la <strong>primera</strong> letra del string
+        y el resto en minúsculas (ideal para un nombre solo o una frase corta). <code>title()</code> hace eso en <strong>cada palabra</strong> separada por espacios.
+      </p>
+      <CodeBlock
+        lang="python"
+        title="str-mayusculas.py"
+        code={`t = "Café y Código"
+print(t.upper())         # CAFÉ Y CÓDIGO
+print(t.lower())         # café y código
+print(t.title())         # Café Y Código (cada palabra con mayúscula inicial)
+
+raw = "bEnJaMín"
+print(raw.capitalize())  # 'Benjamín'  primera mayúscula, resto minúsculas
+
+# Comparar sin importar mayúsculas (muy común)
+respuesta = "SÍ"
+if respuesta.lower() == "sí":
+    print("Ok")`}
+      />
+
+      <h3 class="mt-6"><code>strip()</code>, <code>lstrip()</code>, <code>rstrip()</code> — sacar espacios</h3>
+      <p>Ideal para limpiar lo que escribe el usuario (espacios al inicio o al final).</p>
+      <CodeBlock
+        lang="python"
+        title="str-strip.py"
+        code={`s = "   hola   "
+print(s.strip())   # "hola"
+
+# Podés indicar qué caracteres quitar (no solo espacios)
+codigo = "...123..."
+print(codigo.strip("."))  # "123"`}
+      />
+
+      <h3 class="mt-6"><code>split()</code> y <code>join()</code> — trocear y unir</h3>
+      <CodeBlock
+        lang="python"
+        title="str-split-join.py"
+        code={`csv = "ana,lucas,diego"
+nombres = csv.split(",")
+print(nombres)  # ['ana', 'lucas', 'diego']
+
+# join: el string "pegamento" une una lista de strings
+frase = " | ".join(nombres)
+print(frase)  # ana | lucas | diego`}
+      />
+
+      <h3 class="mt-6"><code>replace()</code>, <code>startswith()</code>, <code>endswith()</code></h3>
+      <CodeBlock
+        lang="python"
+        title="str-replace-start.py"
+        code={`url = "http://ejemplo.com"
+print(url.replace("http://", "https://"))
+
+archivo = "foto.PNG"
+print(archivo.lower().endswith(".png"))  # True (normalizamos antes)`}
+      />
+
+      <h3 class="mt-6"><code>find()</code>, <code>count()</code>, <code>in</code></h3>
+      <CodeBlock
+        lang="python"
+        title="str-buscar.py"
+        code={`texto = "python es python"
+print(texto.find("py"))   # 0 (índice de la primera aparición, o -1 si no está)
+print(texto.count("py"))  # 2
+print("es" in texto)    # True`}
+      />
+
+      <h3 class="mt-6">¿Es un número en texto? <code>isdigit()</code> y amigos</h3>
+      <p>
+        <code>isdigit()</code> sirve para saber si todos los caracteres son dígitos (ojo: no valida floats con punto; para eso hay otras estrategias).
+      </p>
+      <CodeBlock
+        lang="python"
+        title="str-isdigit.py"
+        code={`print("123".isdigit())   # True
+print("12.3".isdigit())  # False (el punto no cuenta como dígito)
+
+entrada = input("Edad: ").strip()
+if entrada.isdigit():
+    edad = int(entrada)
+    print("Edad numérica:", edad)
+else:
+    print("Eso no parece un entero.")`}
+      />
+    </section>
+
+    <div class="ejercicio" style="background: #FFF8E1;">
+      <h3>💻 Misión: normalizar un comando</h3>
+      <p class="enunciado">
+        Pedí al usuario una palabra. Mostrá en pantalla la misma palabra en minúsculas, sin espacios alrededor, y decí con <code>True</code>/<code>False</code>
+        si empieza con la letra <code>"p"</code> (después de normalizar).
+      </p>
+
+      <details>
+        <summary>👁️ Ver solución sugerida</summary>
+        <CodeBlock
+          lang="python"
+          title="Python"
+          code={`raw = input("Palabra: ")
+s = raw.strip().lower()
+print("Normalizada:", s)
+print("¿Empieza con 'p'?", s.startswith("p"))`}
+        />
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Prueba rápida</h2>
+      <PythonQuizModal quizKey="texto-y-conversiones" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/python/variables/" class="prev">← Inputs y Variables</a>
+      <a href="/course/python/condicionales/" class="next">Lógica (If) →</a>
+    </nav>
+  </article>
+</Layout>

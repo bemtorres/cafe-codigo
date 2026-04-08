@@ -50,6 +50,59 @@ nivel = 42
 print(f"Estado Actual: {perfil} (Nvl. {nivel})")`}
         title="formateo.py"
       />
+
+      <h3 class="mt-6">Formas de usar <code>print()</code> para mostrar variables</h3>
+      <p>
+        En Python vas a ver varias maneras. Funcionan, pero no todas son igual de claras o cómodas cuando crece el texto.
+        Acá tenés las más comunes:
+      </p>
+      <CodeBlock
+        lang="python"
+        title="print-formas.py"
+        code={`nombre = "Ana"
+edad = 19
+
+# 1) Con comas (print separa con espacios)
+print("Hola", nombre, "tenés", edad, "años")
+
+# 2) Concatenando con + (solo strings: hay que convertir números)
+print("Hola " + nombre + ", tenés " + str(edad) + " años")
+
+# 3) f-strings (recomendado en la mayoría de casos)
+print(f"Hola {nombre}, tenés {edad} años")
+
+# 4) .format() (útil si no podés/querés usar f-strings)
+print("Hola {}, tenés {} años".format(nombre, edad))
+
+# 5) join (cuando armás listas de textos)
+partes = ["Hola", nombre, "tenés", str(edad), "años"]
+print(" ".join(partes))`}
+      />
+
+      <h3 class="mt-6">¿Cuál es mejor? (y por qué f-strings suele ganar)</h3>
+      <ul class="mb-4">
+        <li>
+          <strong>Con comas (<code>print("a", x, "b")</code>)</strong>: es simple y rápido, pero el espaciado lo decide <code>print</code>
+          (mete espacios entre argumentos) y el resultado a veces queda “raro” si querés control fino.
+        </li>
+        <li>
+          <strong>Con <code>+</code></strong>: te da control del texto, pero es <strong>frágil</strong> (si algo no es string rompe) y se vuelve difícil de leer
+          cuando concatenás mucho.
+        </li>
+        <li>
+          <strong>Con f-strings</strong>: es <strong>más legible</strong>, no te obliga a convertir manualmente todo a string, y te permite formateo claro:
+          <code>&#123;precio:.2f&#125;</code>, <code>&#123;porcentaje:.0%&#125;</code>, <code>&#123;fecha:%Y-%m-%d&#125;</code>.
+        </li>
+      </ul>
+      <CodeBlock
+        lang="python"
+        title="fstring-formato.py"
+        code={`precio = 12.5
+progreso = 0.8321
+
+print(f"Precio: {precio:.2f} USD")   # 2 decimales
+print(f"Progreso: {progreso:.0%}")  # porcentaje sin decimales`}
+      />
     </section>
 
     <div class="ejercicio" style="background: #E3F2FD;">
@@ -71,7 +124,7 @@ print(f"Tienes o cumplirás {edad_actual} años")`} title="Python" />
 
     <nav class="nav-bottom">
       <a href="/course/python/introduccion/" class="prev">← El comienzo</a>
-      <a href="/course/python/listas/" class="next">Listas y Tuplas →</a>
+      <a href="/course/python/texto-y-conversiones/" class="next">Texto y tipos (str, int, bool) →</a>
     </nav>
   </article>
 </Layout>

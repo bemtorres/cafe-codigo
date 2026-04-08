@@ -7,7 +7,8 @@ export type EmbedParams = {
   email?: string;
   logo?: string;
   background?: string; // url o color css
-  color?: string; // solo cabecera embed
+  color?: string; // fondo cabecera embed
+  text?: string; // color de texto en cabecera embed
 };
 
 function addParam(sp: URLSearchParams, key: string, value: string | undefined) {
@@ -31,6 +32,7 @@ export function buildEmbedQuery(params: EmbedParams): string {
   addParam(sp, 'logo', params.logo ? encodeURIComponent(params.logo) : undefined);
   addParam(sp, 'background', params.background ? encodeURIComponent(params.background) : undefined);
   addParam(sp, 'color', params.color ? encodeURIComponent(params.color) : undefined);
+  addParam(sp, 'text', params.text ? encodeURIComponent(params.text) : undefined);
 
   // Nota: ya vienen encodeados los valores; URLSearchParams no debe re-encodear.
   // Para evitar doble encoding, reconstruimos manualmente.

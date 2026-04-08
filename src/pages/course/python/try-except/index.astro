@@ -1,0 +1,144 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import PythonQuizModal from '../../../../components/PythonQuizModal.astro';
+---
+
+<Layout
+  title="try / except en Python"
+  description="Maneja errores sin que el programa se caiga: excepciones, else, finally y raise."
+  courseSlug="python"
+>
+  <article class="content-section">
+    <h1>9. Errores controlados: <code>try</code> y <code>except</code> 🛡️</h1>
+
+    <section class="mb-10">
+      <h2>¿Para qué sirve?</h2>
+      <p>
+        A veces el código falla: el usuario escribe letras cuando esperás un número, un archivo no existe, una clave no está en un diccionario.
+        Sin manejo de errores, Python muestra un <strong>traceback</strong> y el programa termina. Con <code>try</code> / <code>except</code> podés
+        <strong>atrapar</strong> ese fallo, mostrar un mensaje claro y seguir (o salir de forma ordenada).
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Lo esencial: <code>try</code> … <code>except</code></h2>
+      <p>
+        El bloque <code>try</code> es “intentá esto”. Si ocurre un error del tipo que indicás en <code>except</code>, se ejecuta ese bloque en lugar de romper todo.
+      </p>
+      <CodeBlock
+        lang="python"
+        title="try-basico.py"
+        code={`try:
+    valor = int(input("Edad (número): "))
+    print(f"El próximo año tendrás {valor + 1}")
+except ValueError:
+    print("Eso no es un número entero válido.")`}
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Varios tipos de error</h2>
+      <p>
+        Podés encadenar varios <code>except</code> para reaccionar distinto según el problema. Es buena práctica ser <strong>específico</strong>
+        (por ejemplo <code>ValueError</code>) antes que un <code>except Exception:</code> muy genérico.
+      </p>
+      <CodeBlock
+        lang="python"
+        title="try-varios.py"
+        code={`datos = {"oro": 100}
+
+try:
+    clave = input("Recurso: ")
+    cantidad = datos[clave]
+    print(f"Tenés {cantidad}")
+except KeyError:
+    print("No conozco ese recurso.")
+except KeyboardInterrupt:
+    print("Cancelado.")`}
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2><code>else</code> y <code>finally</code></h2>
+      <ul class="mb-4">
+        <li>
+          <code>else</code>: se ejecuta si el <code>try</code> <strong>terminó sin excepción</strong> (útil para código que solo debe correr cuando todo salió bien).
+        </li>
+        <li>
+          <code>finally</code>: se ejecuta <strong>siempre</strong> (haya error o no): ideal para cerrar archivos, liberar recursos o dejar un mensaje de cierre.
+        </li>
+      </ul>
+      <CodeBlock
+        lang="python"
+        title="try-else-finally.py"
+        code={`def dividir(a, b):
+    try:
+        r = a / b
+    except ZeroDivisionError:
+        print("No se puede dividir por cero.")
+        return None
+    else:
+        print("División OK.")
+        return r
+    finally:
+        print("Fin del intento de división.")
+
+dividir(10, 2)
+dividir(10, 0)`}
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Lanzar errores con <code>raise</code></h2>
+      <p>
+        Cuando una regla de negocio falla (por ejemplo “edad negativa”), podés disparar vos mismo una excepción para que quien llama a la función la maneje con <code>try</code>/<code>except</code>.
+      </p>
+      <CodeBlock
+        lang="python"
+        title="raise.py"
+        code={`def set_edad(e):
+    if e < 0:
+        raise ValueError("La edad no puede ser negativa")
+    return e
+
+try:
+    set_edad(-5)
+except ValueError as err:
+    print(err)`}
+      />
+    </section>
+
+    <div class="ejercicio" style="background: #F3E5F5;">
+      <h3>🐍 Desafío: número seguro</h3>
+      <p class="enunciado">
+        Pedí un texto al usuario, convertilo a entero con <code>int()</code> dentro de un <code>try</code>. Si falla, mostrá
+        “Ingresá solo dígitos” y no intentes usar el número.
+      </p>
+
+      <details>
+        <summary>👁️ Ver solución sugerida</summary>
+        <CodeBlock
+          lang="python"
+          title="Python"
+          code={`raw = input("Número entero: ")
+try:
+    n = int(raw)
+    print("Correcto:", n)
+except ValueError:
+    print("Ingresá solo dígitos")`}
+        />
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Quiz: try / except</h2>
+      <PythonQuizModal quizKey="try-except" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/python/funciones/" class="prev">← Funciones</a>
+      <a href="/course/python/list-comprehension/" class="next">List Comprehension →</a>
+    </nav>
+  </article>
+</Layout>

@@ -1,350 +1,283 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { courses } from '../../data/courses';
+
+import adminEmbedClientUrl from '../../lib/embed/adminEmbedClient.ts?url';
 ---
 
-<Layout title="Admin · Embed builder" description="Generador interno de URLs de embed (GET params)." >
-  <article class="content-section">
-    <h1>/admin/embed</h1>
-    <p class="text-textSecondary font-[650] leading-relaxed">
-      Panel interno (oculto por URL) para armar enlaces de embed por lección con parámetros GET.
-    </p>
+<Layout title="Admin · Embed builder" description="Generador interno de URLs de embed (GET params).">
+  <article class="content-section admin-embed w-full max-w-full min-w-0">
+    <header class="admin-embed-head mb-3">
+      <h1 class="!mb-0 !text-xl sm:!text-2xl">/admin/embed</h1>
+      <p class="!mb-0 !mt-1 !text-xs sm:!text-sm !leading-snug text-textSecondary font-[650]">
+        Parámetros GET + tabla de URLs por lección (ancho completo abajo).
+      </p>
+    </header>
 
-    <section class="mb-10">
-      <h2>Listado de lecciones</h2>
-      <div class="grid gap-3 sm:grid-cols-2">
-        <label class="flex flex-col gap-1">
-          <span class="font-nunito font-black text-textPrimary">Filtrar por curso (opcional)</span>
-          <select id="embCourse" class="rounded-xl border-2 border-border bg-white px-3 py-2 font-nunito font-bold">
-            <option value="">Todos los cursos</option>
-            {courses
-              .filter((c) => (c.lessons?.length ?? 0) > 0)
-              .map((c) => (
-                <option value={c.slug}>{c.name}</option>
-              ))}
-          </select>
+    <!-- Formulario compacto (una sola tarjeta) -->
+    <div
+      class="admin-embed-form rounded-xl border-2 border-border bg-primary/15 p-2 sm:p-3 shadow-[3px_3px_0_var(--border)] space-y-2"
+    >
+      <!-- Filtros + presets -->
+      <div class="flex flex-col gap-2 lg:flex-row lg:items-end lg:gap-3">
+        <div class="grid min-w-0 flex-1 grid-cols-1 gap-2 sm:grid-cols-2">
+          <label class="ae-field">
+            <span class="ae-lbl">Curso</span>
+            <select id="embCourse" class="ae-input">
+              <option value="">Todos</option>
+              {courses
+                .filter((c) => (c.lessons?.length ?? 0) > 0)
+                .map((c) => (
+                  <option value={c.slug}>{c.name}</option>
+                ))}
+            </select>
+          </label>
+          <label class="ae-field">
+            <span class="ae-lbl">Buscar</span>
+            <input id="embSearch" class="ae-input" placeholder="slug, título, ruta…" />
+          </label>
+        </div>
+        <div class="flex flex-wrap gap-1 lg:shrink-0 lg:justify-end">
+          <button type="button" class="ae-chip" data-preset="clean">Limpio</button>
+          <button type="button" class="ae-chip" data-preset="noquiz">Sin quiz</button>
+          <button type="button" class="ae-chip" data-preset="pdf">PDF</button>
+          <button type="button" class="ae-chip" data-preset="student">+ alumno</button>
+        </div>
+      </div>
+
+      <!-- Flags en línea -->
+      <div class="ae-divider flex flex-wrap items-center gap-x-4 gap-y-1 pt-1">
+        <span class="ae-lbl !mb-0 w-full sm:w-auto">Flags</span>
+        <label class="ae-inline">
+          <input id="pEmbed" type="checkbox" class="ae-cb" checked />
+          <span>embed</span>
         </label>
-        <label class="flex flex-col gap-1">
-          <span class="font-nunito font-black text-textPrimary">Buscar (opcional)</span>
-          <input
-            id="embSearch"
-            class="rounded-xl border-2 border-border bg-white px-3 py-2 font-nunito font-bold"
-            placeholder="python, joins, introducción…"
-          />
+        <label class="ae-inline">
+          <input id="pQuiz" type="checkbox" class="ae-cb" checked />
+          <span>quiz</span>
+        </label>
+        <label class="ae-inline">
+          <input id="pPdf" type="checkbox" class="ae-cb" />
+          <span>pdf</span>
+        </label>
+        <span class="text-[10px] font-bold text-textMuted">quiz off = <code class="rounded bg-black/5 px-1">quiz=false</code></span>
+      </div>
+
+      <!-- Cabecera embed: title, name, email -->
+      <div class="grid grid-cols-1 gap-2 md:grid-cols-3">
+        <label class="ae-field">
+          <span class="ae-lbl">title</span>
+          <input id="pTitle" class="ae-input" placeholder="Institución" />
+        </label>
+        <label class="ae-field">
+          <span class="ae-lbl">name</span>
+          <input id="pName" class="ae-input" placeholder="Alumno" />
+        </label>
+        <label class="ae-field">
+          <span class="ae-lbl">email</span>
+          <input id="pEmail" class="ae-input" placeholder="correo" />
         </label>
       </div>
-    </section>
 
-    <section class="mb-10">
-      <h2>Parámetros (GET)</h2>
-
-      <div class="flex flex-wrap gap-2 mb-4">
-        <button type="button" class="rounded-xl border-2 border-border bg-white px-3 py-1.5 font-nunito font-black shadow-neo hover:-translate-y-0.5 transition-transform" data-preset="clean">Embed limpio</button>
-        <button type="button" class="rounded-xl border-2 border-border bg-white px-3 py-1.5 font-nunito font-black shadow-neo hover:-translate-y-0.5 transition-transform" data-preset="noquiz">Embed sin quiz</button>
-        <button type="button" class="rounded-xl border-2 border-border bg-white px-3 py-1.5 font-nunito font-black shadow-neo hover:-translate-y-0.5 transition-transform" data-preset="pdf">Embed PDF</button>
-        <button type="button" class="rounded-xl border-2 border-border bg-white px-3 py-1.5 font-nunito font-black shadow-neo hover:-translate-y-0.5 transition-transform" data-preset="student">Embed con datos alumno</button>
-      </div>
-
-      <div class="grid gap-4 lg:grid-cols-2">
-        <div class="rounded-2xl border-2 border-border bg-white p-4 shadow-[4px_4px_0_var(--border)]">
-          <h3 class="font-nunito font-black text-lg m-0 mb-3">Flags</h3>
-          <label class="flex items-center justify-between gap-3 py-2">
-            <span class="font-nunito font-extrabold">embed</span>
-            <input id="pEmbed" type="checkbox" class="h-5 w-5" checked />
-          </label>
-          <label class="flex items-center justify-between gap-3 py-2">
-            <span class="font-nunito font-extrabold">quiz</span>
-            <span class="text-textMuted font-nunito font-bold text-sm">desmarcar → quiz=false</span>
-            <input id="pQuiz" type="checkbox" class="h-5 w-5" checked />
-          </label>
-          <label class="flex items-center justify-between gap-3 py-2">
-            <span class="font-nunito font-extrabold">pdf</span>
-            <input id="pPdf" type="checkbox" class="h-5 w-5" />
-          </label>
-        </div>
-
-        <div class="rounded-2xl border-2 border-border bg-white p-4 shadow-[4px_4px_0_var(--border)]">
-          <h3 class="font-nunito font-black text-lg m-0 mb-3">Datos</h3>
-          <div class="grid gap-3">
-            <label class="flex flex-col gap-1">
-              <span class="font-nunito font-extrabold">title (institución)</span>
-              <input id="pTitle" class="rounded-xl border-2 border-border bg-white px-3 py-2 font-nunito font-bold" placeholder="Institución…" />
+      <!-- Branding -->
+      <div class="grid grid-cols-1 gap-2 lg:grid-cols-4">
+        <label class="ae-field">
+          <span class="ae-lbl">logo</span>
+          <input id="pLogo" class="ae-input" placeholder="https://…/logo.png" />
+        </label>
+        <div class="ae-field">
+          <span class="ae-lbl">background (fondo página)</span>
+          <input id="pBackground" type="hidden" />
+          <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
+            <label class="ae-field !m-0">
+              <span class="sr-only">Background URL</span>
+              <input id="pBackgroundUrl" class="ae-input" placeholder="URL imagen…" />
             </label>
-            <label class="flex flex-col gap-1">
-              <span class="font-nunito font-extrabold">name (alumno)</span>
-              <input id="pName" class="rounded-xl border-2 border-border bg-white px-3 py-2 font-nunito font-bold" placeholder="Nombre…" />
-            </label>
-            <label class="flex flex-col gap-1">
-              <span class="font-nunito font-extrabold">email (alumno)</span>
-              <input id="pEmail" class="rounded-xl border-2 border-border bg-white px-3 py-2 font-nunito font-bold" placeholder="correo@…" />
-            </label>
-          </div>
-        </div>
-      </div>
-
-      <div class="grid gap-4 mt-4 lg:grid-cols-2">
-        <div class="rounded-2xl border-2 border-border bg-white p-4 shadow-[4px_4px_0_var(--border)]">
-          <h3 class="font-nunito font-black text-lg m-0 mb-3">Branding (cabecera embed)</h3>
-          <div class="grid gap-3">
-            <label class="flex flex-col gap-1">
-              <span class="font-nunito font-extrabold">logo (url)</span>
-              <input id="pLogo" class="rounded-xl border-2 border-border bg-white px-3 py-2 font-nunito font-bold" placeholder="https://…/logo.png" />
-            </label>
-            <label class="flex flex-col gap-1">
-              <span class="font-nunito font-extrabold">background (url o color)</span>
-              <input id="pBackground" class="rounded-xl border-2 border-border bg-white px-3 py-2 font-nunito font-bold" placeholder="#f3f3f3 o https://…/bg.jpg" />
-            </label>
-            <label class="flex flex-col gap-1">
-              <span class="font-nunito font-extrabold">color (solo cabecera)</span>
-              <input id="pColor" class="rounded-xl border-2 border-border bg-white px-3 py-2 font-nunito font-bold" placeholder="#2b1d1b" />
-            </label>
-          </div>
-
-          <div class="mt-4 grid gap-3 sm:grid-cols-2">
-            <div>
-              <div class="font-nunito font-black text-sm text-textMuted mb-1">Preview logo</div>
-              <div class="rounded-xl border-2 border-border bg-primary p-3 flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl border border-border bg-white/80 flex items-center justify-center overflow-hidden shadow-neo">
-                  <img id="logoPrev" alt="" class="w-full h-full object-contain p-1 hidden" />
-                  <span id="logoPrevFallback">🏫</span>
-                </div>
-                <div class="min-w-0">
-                  <div class="font-nunito font-black truncate">Institución</div>
-                  <div class="font-nunito font-bold text-textMuted text-sm truncate">Título de lección</div>
-                </div>
+            <label class="ae-field !m-0">
+              <span class="sr-only">Background color</span>
+              <div class="flex items-center gap-2">
+                <input type="color" id="pBackgroundColor" class="ae-color" value="#ffffff" title="Color de fondo (background=)" />
+                <span id="pBackgroundHex" class="font-mono text-[10px] font-bold text-textMuted" aria-live="polite">#ffffff</span>
               </div>
+            </label>
+          </div>
+        </div>
+        <label class="ae-field">
+          <span class="ae-lbl">cabecera (fondo)</span>
+          <div class="flex items-center gap-2">
+            <input
+              type="color"
+              id="pColor"
+              class="ae-color"
+              value="#2b1d1b"
+              title="Color de fondo de la cabecera embed (?color=)"
+            />
+            <span id="pColorHex" class="font-mono text-[10px] font-bold text-textMuted" aria-live="polite">#2b1d1b</span>
+          </div>
+        </label>
+        <label class="ae-field">
+          <span class="ae-lbl">cabecera (texto)</span>
+          <div class="flex items-center gap-2">
+            <input
+              type="color"
+              id="pText"
+              class="ae-color"
+              value="#fdf6e9"
+              title="Color de texto de la cabecera embed (?text=)"
+            />
+            <span id="pTextHex" class="font-mono text-[10px] font-bold text-textMuted" aria-live="polite">#fdf6e9</span>
+          </div>
+        </label>
+      </div>
+
+      <!-- Preview mini -->
+      <div class="ae-divider grid grid-cols-1 gap-2 pt-1 sm:grid-cols-3">
+        <div>
+          <span class="ae-lbl mb-1 block">Preview logo</span>
+          <div class="flex items-center gap-2 rounded-lg border border-border bg-white px-2 py-1.5">
+            <div class="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-border bg-primary/30">
+              <img id="logoPrev" alt="" class="hidden h-full w-full object-contain p-0.5" />
+              <span id="logoPrevFallback" class="text-sm">🏫</span>
             </div>
-            <div>
-              <div class="font-nunito font-black text-sm text-textMuted mb-1">Preview background</div>
-              <div id="bgPrev" class="rounded-xl border-2 border-border p-4 shadow-neo-lg bg-[#2b1d1b] text-white font-nunito font-black">
-                Cabecera embed
-              </div>
+            <div class="min-w-0 text-[11px] leading-tight">
+              <div class="truncate font-black">Institución</div>
+              <div class="truncate font-bold text-textMuted">Lección</div>
             </div>
           </div>
         </div>
-
-        <div class="rounded-2xl border-2 border-border bg-white p-4 shadow-[4px_4px_0_var(--border)]">
-          <h3 class="font-nunito font-black text-lg m-0 mb-3">Enlaces listos para copiar</h3>
-          <div id="listMeta" class="text-textMuted font-nunito text-xs font-bold mb-3"></div>
-          <div id="lessonsList" class="space-y-3"></div>
-          <p class="mt-4 mb-0 text-textMuted font-nunito text-xs font-bold">
-            Nota: esta ruta no es segura (solo “oculta” por URL).
-          </p>
+        <div>
+          <span class="ae-lbl mb-1 block">Preview cabecera</span>
+          <div id="headerPrev" class="rounded-lg border border-border px-3 py-2 text-[11px] font-black shadow-neo bg-[#2b1d1b]" style="color:#fdf6e9">
+            Cabecera embed
+          </div>
+        </div>
+        <div>
+          <span class="ae-lbl mb-1 block">Preview fondo página</span>
+          <div id="pageBgPrev" class="rounded-lg border border-border px-3 py-2 text-[11px] font-black text-textPrimary shadow-neo bg-white">
+            Fondo de página
+          </div>
         </div>
       </div>
+    </div>
+
+    <!-- Listado col-12: ancho completo del contenedor -->
+    <section class="admin-embed-table-section mt-4 w-full min-w-0" aria-label="Tabla de URLs">
+      <div class="mb-2 flex flex-wrap items-baseline justify-between gap-2">
+        <h2 class="!m-0 !text-sm font-nunito font-black text-textPrimary">URLs por lección</h2>
+        <span id="listMeta" class="font-nunito text-[11px] font-bold text-textMuted"></span>
+      </div>
+      <div class="w-full min-w-0 overflow-x-auto rounded-lg border-2 border-border bg-white">
+        <table class="admin-embed-table w-full min-w-0 table-fixed border-collapse text-left">
+          <colgroup>
+            <col class="w-[14%]" />
+            <col class="w-[20%]" />
+            <col />
+            <col class="w-[5.5rem]" />
+          </colgroup>
+          <thead class="bg-primary/40">
+            <tr>
+              <th class="ae-th">Curso</th>
+              <th class="ae-th">Lección</th>
+              <th class="ae-th">URL</th>
+              <th class="ae-th">Acción</th>
+            </tr>
+          </thead>
+          <tbody id="lessonsList"></tbody>
+        </table>
+      </div>
+      <p class="!mb-0 !mt-2 !text-[10px] font-bold text-textMuted">
+        Ruta interna; no es autenticación real.
+      </p>
     </section>
   </article>
 
-  <script type="module" is:inline>
-    import { buildEmbedUrl } from '../../lib/embed/buildEmbedUrl';
+  <script type="module" src={adminEmbedClientUrl}></script>
 
-    const courses = /** @type {const} */ (JSON.parse(document.getElementById('coursesJson').textContent));
-
-    const $ = (id) => /** @type {HTMLElement} */ (document.getElementById(id));
-
-    const courseSel = /** @type {HTMLSelectElement} */ ($('embCourse'));
-    const searchInp = /** @type {HTMLInputElement} */ ($('embSearch'));
-
-    const pEmbed = /** @type {HTMLInputElement} */ ($('pEmbed'));
-    const pQuiz = /** @type {HTMLInputElement} */ ($('pQuiz'));
-    const pPdf = /** @type {HTMLInputElement} */ ($('pPdf'));
-    const pTitle = /** @type {HTMLInputElement} */ ($('pTitle'));
-    const pName = /** @type {HTMLInputElement} */ ($('pName'));
-    const pEmail = /** @type {HTMLInputElement} */ ($('pEmail'));
-    const pLogo = /** @type {HTMLInputElement} */ ($('pLogo'));
-    const pBackground = /** @type {HTMLInputElement} */ ($('pBackground'));
-    const pColor = /** @type {HTMLInputElement} */ ($('pColor'));
-
-    const lessonsList = $('lessonsList');
-    const listMeta = $('listMeta');
-
-    const logoPrev = /** @type {HTMLImageElement} */ ($('logoPrev'));
-    const logoPrevFallback = $('logoPrevFallback');
-    const bgPrev = $('bgPrev');
-
-    function norm(s) {
-      return String(s || '')
-        .normalize('NFD')
-        .replace(/\\p{M}/gu, '')
-        .toLowerCase();
+  <style is:inline>
+    .admin-embed h1 {
+      margin-bottom: 0.25rem;
     }
-
-    function applyPreview() {
-      const logo = pLogo.value.trim();
-      if (logo) {
-        logoPrev.classList.add('hidden');
-        if (logoPrevFallback) logoPrevFallback.textContent = '🏫';
-        logoPrev.onload = () => {
-          logoPrev.classList.remove('hidden');
-          if (logoPrevFallback) logoPrevFallback.textContent = '';
-        };
-        logoPrev.onerror = () => {
-          logoPrev.classList.add('hidden');
-          if (logoPrevFallback) logoPrevFallback.textContent = '🏫';
-        };
-        logoPrev.src = logo;
-      } else {
-        logoPrev.classList.add('hidden');
-        if (logoPrevFallback) logoPrevFallback.textContent = '🏫';
-      }
-
-      const bg = pBackground.value.trim();
-      const color = pColor.value.trim();
-      bgPrev.style.backgroundImage = '';
-      bgPrev.style.backgroundColor = '';
-
-      if (color) bgPrev.style.backgroundColor = color;
-      if (bg) {
-        const isColor = /^#([0-9a-fA-F]{3,8})$/.test(bg) || /^rgba?\(/i.test(bg) || /^hsla?\(/i.test(bg);
-        if (isColor) {
-          bgPrev.style.backgroundColor = bg;
-        } else {
-          bgPrev.style.backgroundImage = `url(\"${bg}\")`;
-          bgPrev.style.backgroundSize = 'cover';
-          bgPrev.style.backgroundPosition = 'center';
-          bgPrev.style.backgroundRepeat = 'no-repeat';
-        }
-      }
+    .admin-embed .ae-lbl {
+      display: block;
+      font-size: 0.65rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-muted, #6b7280);
+      margin-bottom: 0.2rem;
     }
-
-    function buildParams() {
-      return {
-        embed: pEmbed.checked,
-        quiz: pQuiz.checked,
-        pdf: pPdf.checked,
-        title: pTitle.value,
-        name: pName.value,
-        email: pEmail.value,
-        logo: pLogo.value,
-        background: pBackground.value,
-        color: pColor.value,
-      };
+    .admin-embed .ae-input,
+    .admin-embed .ae-field select {
+      width: 100%;
+      border-radius: 0.5rem;
+      border: 2px solid var(--border);
+      background: #fff;
+      padding: 0.28rem 0.45rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      font-family: ui-sans-serif, system-ui, sans-serif;
     }
-
-    function escapeAttr(s) {
-      return String(s).replace(/&/g, '&amp;').replace(/\"/g, '&quot;').replace(/</g, '&lt;');
+    .admin-embed input[type='color'].ae-color {
+      height: 2rem;
+      width: 2.75rem;
+      padding: 0.15rem;
+      border-radius: 0.5rem;
+      border: 2px solid var(--border);
+      background: #fff;
+      cursor: pointer;
     }
-
-    function renderList() {
-      const origin = window.location.origin;
-      const params = buildParams();
-      const courseFilter = courseSel.value || '';
-      const q = norm(searchInp.value || '');
-
-      lessonsList.innerHTML = '';
-      let count = 0;
-
-      for (const c of courses) {
-        if (courseFilter && c.slug !== courseFilter) continue;
-        const lessons = Array.isArray(c.lessons) ? c.lessons : [];
-        const rows = [];
-
-        for (const l of lessons) {
-          const hay = norm(`${c.slug} ${c.name} ${l.title} ${l.href}`);
-          if (q && !hay.includes(q)) continue;
-          const url = buildEmbedUrl(origin, l.href, params);
-          rows.push({ title: l.title, href: l.href, url });
-        }
-
-        if (rows.length === 0) continue;
-
-        const header = document.createElement('div');
-        header.className = 'rounded-xl border-2 border-border bg-primary px-3 py-2 shadow-neo';
-        header.innerHTML = `<div class=\"font-nunito font-black text-textPrimary\">${escapeAttr(c.name)} <span class=\"text-textMuted font-extrabold text-xs\">(${escapeAttr(c.slug)})</span></div>`;
-        lessonsList.appendChild(header);
-
-        for (const row of rows) {
-          count++;
-          const wrap = document.createElement('div');
-          wrap.className = 'rounded-xl border-2 border-border bg-white p-3 shadow-[3px_3px_0_var(--border)]';
-          wrap.innerHTML = `
-            <div class=\"flex flex-col gap-2\">
-              <div class=\"flex items-start justify-between gap-3\">
-                <div class=\"min-w-0\">
-                  <div class=\"font-nunito font-black text-textPrimary truncate\">${escapeAttr(row.title)}</div>
-                  <div class=\"font-nunito font-bold text-textMuted text-xs truncate\">${escapeAttr(row.href)}</div>
-                </div>
-                <button
-                  type=\"button\"
-                  class=\"copyRowBtn shrink-0 rounded-xl border-2 border-border bg-success text-white px-3 py-1.5 font-nunito font-black shadow-neo hover:-translate-y-0.5 transition-transform\"
-                  data-copy=\"${escapeAttr(row.url)}\"
-                >Copiar</button>
-              </div>
-              <input class=\"w-full rounded-lg border-2 border-border bg-white px-2.5 py-2 font-mono text-[12px]\" value=\"${escapeAttr(row.url)}\" readonly />
-            </div>
-          `;
-          lessonsList.appendChild(wrap);
-        }
-      }
-
-      listMeta.textContent = count ? `${count} enlace(s) generado(s).` : 'No hay lecciones para ese filtro.';
+    .admin-embed input[type='color'].ae-color::-webkit-color-swatch-wrapper {
+      padding: 0;
     }
-
-    function setPreset(kind) {
-      // defaults
-      pEmbed.checked = true;
-      pQuiz.checked = true;
-      pPdf.checked = false;
-      if (kind === 'noquiz') pQuiz.checked = false;
-      if (kind === 'pdf') pPdf.checked = true;
-      if (kind === 'student') {
-        pTitle.value ||= 'INSTITUCIÓN';
-        pName.value ||= 'NOMBRE';
-        pEmail.value ||= 'CORREO';
-      }
+    .admin-embed input[type='color'].ae-color::-webkit-color-swatch {
+      border-radius: 0.25rem;
+      border: none;
     }
+    .admin-embed .ae-chip {
+      border-radius: 0.5rem;
+      border: 2px solid var(--border);
+      background: #fff;
+      padding: 0.2rem 0.45rem;
+      font-size: 0.65rem;
+      font-weight: 900;
+      line-height: 1.2;
+      box-shadow: 2px 2px 0 var(--border);
+    }
+    .admin-embed .ae-chip:hover {
+      transform: translateY(-1px);
+    }
+    .admin-embed .ae-divider {
+      border-top: 1px solid rgba(30, 18, 16, 0.12);
+    }
+    .admin-embed .ae-inline {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.7rem;
+      font-weight: 800;
+    }
+    .admin-embed .ae-cb {
+      height: 0.95rem;
+      width: 0.95rem;
+    }
+    .admin-embed .ae-th {
+      padding: 0.35rem 0.5rem;
+      font-size: 0.65rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-muted, #6b7280);
+      border-bottom: 2px solid var(--border);
+    }
+    .admin-embed-table-section {
+      grid-column: 1 / -1;
+    }
+  </style>
 
-    document.addEventListener('click', (e) => {
-      const b = e.target.closest('[data-preset]');
-      if (!b) return;
-      setPreset(b.getAttribute('data-preset'));
-      applyPreview();
-      renderList();
-    });
-
-    courseSel.addEventListener('change', renderList);
-    searchInp.addEventListener('input', renderList);
-
-    [pEmbed, pQuiz, pPdf, pTitle, pName, pEmail, pLogo, pBackground, pColor].forEach((el) => {
-      el.addEventListener('input', () => {
-        applyPreview();
-        renderList();
-      });
-      el.addEventListener('change', () => {
-        applyPreview();
-        renderList();
-      });
-    });
-
-    document.addEventListener('click', async (e) => {
-      const btn = e.target.closest('.copyRowBtn');
-      if (!btn) return;
-      const text = btn.getAttribute('data-copy') || '';
-      if (!text) return;
-      try {
-        await navigator.clipboard.writeText(text);
-        btn.textContent = 'Copiado';
-      } catch {
-        const ta = document.createElement('textarea');
-        ta.value = text;
-        ta.style.position = 'fixed';
-        ta.style.opacity = '0';
-        document.body.appendChild(ta);
-        ta.select();
-        document.execCommand('copy');
-        ta.remove();
-        btn.textContent = 'Copiado';
-      }
-      setTimeout(() => (btn.textContent = 'Copiar'), 900);
-    });
-
-    // init
-    applyPreview();
-    renderList();
-  </script>
-
-  <script type="application/json" id="coursesJson" is:inline>
-    {JSON.stringify(courses.map((c) => ({ slug: c.slug, name: c.name, lessons: c.lessons ?? [] })))}
-  </script>
+  <script
+    type="application/json"
+    id="coursesJson"
+    is:inline
+    set:html={JSON.stringify(courses.map((c) => ({ slug: c.slug, name: c.name, lessons: c.lessons ?? [] })))}
+  />
 </Layout>
-

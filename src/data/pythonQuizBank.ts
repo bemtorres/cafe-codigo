@@ -73,6 +73,42 @@ export const pythonQuizBank: Record<string, PythonQuizDefinition> = {
       }
     ]
   },
+  'texto-y-conversiones': {
+    key: 'texto-y-conversiones',
+    title: 'Quiz: Texto y conversiones (str, int, bool)',
+    questions: [
+      {
+        prompt: "¿Qué devuelve int('42') en Python?",
+        options: ["El texto '42'", "El entero 42", "Un error siempre", "El float 42.0"],
+        correctIndex: 1,
+      },
+      {
+        prompt: "¿Cuál es el resultado de str(3.14)?",
+        options: ["314", "3.14 como número", "La cadena '3.14'", "None"],
+        correctIndex: 2,
+      },
+      {
+        prompt: "¿Qué imprime: print(bool('')) ?",
+        options: ["True", "False", "None", "Error"],
+        correctIndex: 1,
+      },
+      {
+        prompt: "¿Qué método de str quita espacios al inicio y al final?",
+        options: [".trim()", ".strip()", ".clean()", ".remove_spaces()"],
+        correctIndex: 1,
+      },
+      {
+        prompt: "Si s = 'a,b,c', ¿qué devuelve s.split(',')?",
+        options: [
+          "Un string 'abc'",
+          "La lista ['a', 'b', 'c']",
+          "Una tupla ('a', 'b', 'c')",
+          "Error",
+        ],
+        correctIndex: 1,
+      },
+    ],
+  },
   'listas': {
     key: 'listas',
     title: 'Quiz: Listas y Tuplas',
@@ -227,6 +263,47 @@ export const pythonQuizBank: Record<string, PythonQuizDefinition> = {
         correctIndex: 2
       }
     ]
+  },
+  'try-except': {
+    key: 'try-except',
+    title: 'Quiz: try / except',
+    questions: [
+      {
+        prompt: "¿Qué palabras clave se usan para capturar errores en Python?",
+        options: ["catch / throw", "try / except", "begin / rescue", "do / done"],
+        correctIndex: 1,
+      },
+      {
+        prompt: "Si int('hola') falla, ¿qué tipo de excepción es lo más típico?",
+        options: ["KeyError", "TypeError", "ValueError", "SyntaxError"],
+        correctIndex: 2,
+      },
+      {
+        prompt: "El bloque `else` en try/except se ejecuta cuando…",
+        options: [
+          "Siempre, al final",
+          "Solo si hubo una excepción",
+          "Solo si el try terminó sin excepción",
+          "Nunca existe en Python",
+        ],
+        correctIndex: 2,
+      },
+      {
+        prompt: "¿Para qué sirve `finally`?",
+        options: [
+          "Solo para cerrar el programa",
+          "Se ejecuta siempre (haya error o no), al salir del try/except",
+          "Es sinónimo de except",
+          "Solo se usa en bucles",
+        ],
+        correctIndex: 1,
+      },
+      {
+        prompt: "¿Cómo lanzás vos una excepción explícitamente?",
+        options: ["throw Error()", "raise ValueError('mensaje')", "except up", "panic()"],
+        correctIndex: 1,
+      },
+    ],
   },
   'list-comprehension': {
     key: 'list-comprehension',

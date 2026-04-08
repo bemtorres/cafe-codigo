@@ -35,6 +35,7 @@
         const logoUrl = params.get('logo') || '';
         const background = params.get('background') || '';
         const color = params.get('color') || '';
+        const text = params.get('text') || '';
 
         const rawTitle = document.title || '';
         const lessonTitle = rawTitle.replace(/\s*\|.*$/, '').trim();
@@ -42,28 +43,49 @@
         const lessonEl = document.getElementById('embedBarLesson');
         if (lessonEl) lessonEl.textContent = lessonTitle;
 
-        // Estilos de cabecera embed (color y background)
+        // Estilos de cabecera embed (color + text) + fondo de página (background)
         const embedBar = document.getElementById('embedBar');
         if (embedBar) {
           if (color) {
             // Solo cabecera: cambia el fondo del header, no el fondo del sitio.
             embedBar.style.backgroundColor = color;
           }
-          if (background) {
-            const isColor =
-              /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/.test(background) ||
-              /^rgba?\(/i.test(background) ||
-              /^hsla?\(/i.test(background);
-
-            if (isColor) {
-              embedBar.style.backgroundImage = '';
-              embedBar.style.backgroundColor = background;
-            } else {
-              embedBar.style.backgroundImage = `url("${background}")`;
-              embedBar.style.backgroundSize = 'cover';
-              embedBar.style.backgroundPosition = 'center';
-              embedBar.style.backgroundRepeat = 'no-repeat';
+          if (text) {
+            embedBar.style.color = text;
+            const ids = [
+              'embedBarInstitution',
+              'embedBarLesson',
+              'embedBarStudentName',
+              'embedBarStudentEmail',
+            ];
+            for (const id of ids) {
+              const el = document.getElementById(id);
+              if (el) el.style.color = text;
             }
+            const emailEl = document.getElementById('embedBarStudentEmail');
+            if (emailEl) emailEl.style.opacity = '0.75';
+            const instEl = document.getElementById('embedBarInstitution');
+            if (instEl) instEl.style.opacity = '0.75';
+          }
+        }
+
+        // background: cambia el fondo de la página (no el de la cabecera)
+        if (background) {
+          const isColor =
+            /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/.test(background) ||
+            /^rgba?\(/i.test(background) ||
+            /^hsla?\(/i.test(background);
+
+          const target = document.body;
+          if (isColor) {
+            target.style.backgroundImage = '';
+            target.style.backgroundColor = background;
+          } else {
+            target.style.backgroundImage = `url("${background}")`;
+            target.style.backgroundSize = 'cover';
+            target.style.backgroundPosition = 'center';
+            target.style.backgroundRepeat = 'no-repeat';
+            target.style.backgroundAttachment = 'fixed';
           }
         }
 

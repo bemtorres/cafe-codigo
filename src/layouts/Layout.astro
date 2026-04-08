@@ -2,7 +2,6 @@
 import '../styles/global.css';
 import '../styles/code-themes.css';
 import CodeThemeSelector from '../components/CodeThemeSelector.astro';
-import WelcomeModal from '../components/WelcomeModal.astro';
 import PasswordProtect from '../components/PasswordProtect.astro';
 import { courses } from '../data/courses';
 import { COURSE_PATH_PREFIX, courseHomePath } from '../lib/coursePaths';
@@ -120,8 +119,6 @@ const showLanguageCuriosity =
       </div>
     )}
 
-    <!-- Modal de bienvenida -->
-    <div class="pdf-hide"><WelcomeModal /></div>
     {currentCourse?.requiresPassword && (
       <>
         <PasswordProtect courseSlug={currentCourse.slug} />
@@ -437,9 +434,9 @@ const showLanguageCuriosity =
         <span
           id="embedBarIcon"
           style="display:none"
-          class="shrink-0 w-8 h-8 rounded-xl bg-white/10 border border-white/15 flex items-center justify-center overflow-hidden shadow-[2px_2px_0_rgba(0,0,0,0.25)]"
+          class="shrink-0 w-10 h-10 rounded-2xl bg-white/10 border border-white/15 flex items-center justify-center overflow-hidden shadow-[2px_2px_0_rgba(0,0,0,0.25)]"
         >
-          <img id="embedBarLogo" alt="" style="display:none" class="w-full h-full object-contain p-1" />
+          <img id="embedBarLogo" alt="" style="display:none" class="w-full h-full object-contain p-0.5" />
           <span id="embedBarIconEmoji" class="text-[0.7rem]">🏫</span>
         </span>
         <div class="flex flex-col min-w-0">
@@ -469,7 +466,7 @@ const showLanguageCuriosity =
           title="Abre el diálogo de impresión (podés guardar como PDF)"
           onclick="window.print()"
         >
-          Imprimir
+          PDF
         </button>
       </div>
     </div>
