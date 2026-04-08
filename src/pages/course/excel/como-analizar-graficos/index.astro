@@ -1,0 +1,154 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+---
+
+<Layout
+  title="10. ¿Cómo analizar gráficos?"
+  description="Marco de trabajo: análisis descriptivo, diagnóstico, predictivo y prescriptivo antes de interpretar gráficos en Excel."
+  courseSlug="excel"
+>
+  <article class="content-section">
+    <h1>10. ¿Cómo analizar gráficos?</h1>
+
+    <p class="text-gray-700 mb-6 leading-relaxed">
+      Antes de elegir tipos de gráfico o sacar conclusiones, conviene tener una <strong>secuencia clara</strong> y
+      <strong>definiciones precisas</strong> para no mezclar etapas. Este módulo es el marco profesional que aplicás cuando
+      mirás o presentás visualizaciones: primero describís, después interpretás con evidencia, luego proyectás (si aplica) y al final decidís.
+    </p>
+
+    <section class="mb-10">
+      <h2>1. Análisis descriptivo (punto de partida)</h2>
+      <p class="font-semibold text-gray-800">Definición</p>
+      <p class="text-gray-700 mb-4">
+        Proceso de organizar, resumir y visualizar datos para mostrar <strong>qué ocurrió</strong>, sin interpretar causas.
+      </p>
+      <p class="font-semibold text-gray-800">Qué hacés aquí</p>
+      <ul class="list-disc pl-6 text-gray-700 mb-4 space-y-1">
+        <li>Limpiar datos (errores, duplicados).</li>
+        <li>Crear gráficos y tablas.</li>
+        <li>Identificar patrones visibles.</li>
+      </ul>
+      <p class="font-semibold text-gray-800">Ejemplos</p>
+      <ul class="list-disc pl-6 text-gray-700 mb-4 space-y-1">
+        <li>«Las ventas subieron 12&nbsp;% en Q1».</li>
+        <li>«El tráfico cae los fines de semana».</li>
+      </ul>
+      <p class="text-gray-800 font-semibold">Pregunta clave: <span class="italic font-normal text-gray-700">¿Qué está pasando?</span></p>
+    </section>
+
+    <section class="mb-10">
+      <h2>2. Análisis diagnóstico (interpretación controlada)</h2>
+      <p class="font-semibold text-gray-800">Definición</p>
+      <p class="text-gray-700 mb-4">
+        Proceso de explorar los datos para entender <strong>por qué ocurrió algo</strong>, usando evidencia.
+      </p>
+      <p class="font-semibold text-gray-800">Qué hacés aquí</p>
+      <ul class="list-disc pl-6 text-gray-700 mb-4 space-y-1">
+        <li>Comparaciones (antes vs después).</li>
+        <li>Segmentación (por región, canal, producto).</li>
+        <li>Buscar correlaciones (con cuidado: correlación no siempre es causa).</li>
+      </ul>
+      <p class="font-semibold text-gray-800">Ejemplos</p>
+      <ul class="list-disc pl-6 text-gray-700 mb-4 space-y-1">
+        <li>«La caída ocurre solo en mobile».</li>
+        <li>«El aumento coincide con una campaña».</li>
+      </ul>
+      <p class="text-gray-800 font-semibold mb-2">Pregunta clave: <span class="italic font-normal text-gray-700">¿Por qué está pasando?</span></p>
+      <p class="text-gray-700 text-sm border-l-4 border-amber-400 pl-4 py-2 bg-amber-50/80 rounded-r">
+        <strong>Importante:</strong> acá ya empezás a interpretar, pero con respaldo en datos.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>3. Análisis predictivo (proyección)</h2>
+      <p class="font-semibold text-gray-800">Definición</p>
+      <p class="text-gray-700 mb-4">
+        Uso de datos históricos para estimar <strong>qué podría pasar en el futuro</strong>.
+      </p>
+      <p class="font-semibold text-gray-800">Qué hacés aquí</p>
+      <ul class="list-disc pl-6 text-gray-700 mb-4 space-y-1">
+        <li>Identificar tendencias.</li>
+        <li>Modelos simples o avanzados.</li>
+        <li>Forecast (proyecciones).</li>
+      </ul>
+      <p class="font-semibold text-gray-800">Ejemplos</p>
+      <ul class="list-disc pl-6 text-gray-700 mb-4 space-y-1">
+        <li>«Si sigue la tendencia, creceremos 8&nbsp;%».</li>
+        <li>«Se espera caída en temporada baja».</li>
+      </ul>
+      <p class="text-gray-800 font-semibold">Pregunta clave: <span class="italic font-normal text-gray-700">¿Qué podría pasar?</span></p>
+    </section>
+
+    <section class="mb-10">
+      <h2>4. Análisis prescriptivo (decisión)</h2>
+      <p class="font-semibold text-gray-800">Definición</p>
+      <p class="text-gray-700 mb-4">
+        Uso de datos para recomendar <strong>qué acciones tomar</strong>.
+      </p>
+      <p class="font-semibold text-gray-800">Qué hacés aquí</p>
+      <ul class="list-disc pl-6 text-gray-700 mb-4 space-y-1">
+        <li>Evaluar opciones.</li>
+        <li>Sugerir estrategias.</li>
+        <li>Optimizar decisiones.</li>
+      </ul>
+      <p class="font-semibold text-gray-800">Ejemplos</p>
+      <ul class="list-disc pl-6 text-gray-700 mb-4 space-y-1">
+        <li>«Invertir más en canal X».</li>
+        <li>«Reducir gasto en Y».</li>
+      </ul>
+      <p class="text-gray-800 font-semibold">Pregunta clave: <span class="italic font-normal text-gray-700">¿Qué deberíamos hacer?</span></p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Cómo usarlos en orden</h2>
+      <ol class="list-decimal pl-6 text-gray-700 space-y-2">
+        <li><strong>Primero describís</strong> (sin opinar sobre causas).</li>
+        <li><strong>Luego analizás causas</strong> (con evidencia).</li>
+        <li><strong>Después proyectás</strong> (si aplica al caso).</li>
+        <li><strong>Finalmente decidís</strong> (acciones concretas).</li>
+      </ol>
+    </section>
+
+    <section class="mb-10">
+      <h2>Error común (evitar)</h2>
+      <p class="text-gray-700 mb-3">
+        Saltar directo a frases del tipo «Esto pasó por X» sin haber pasado por:
+      </p>
+      <ul class="list-disc pl-6 text-gray-700 mb-4 space-y-1">
+        <li>una <strong>descripción clara</strong> de lo que muestran los datos y el gráfico;</li>
+        <li>la <strong>validación</strong> de datos (calidad, duplicados, filtros, definiciones).</li>
+      </ul>
+    </section>
+
+    <section class="mb-10">
+      <h2>Enfoque profesional (roles)</h2>
+      <blockquote class="border-l-4 border-[#107c41] pl-4 py-2 text-gray-700 italic bg-gray-50 rounded-r">
+        Mi rol principal puede ser el <strong>análisis descriptivo</strong>: presentar los datos de forma objetiva. Las conclusiones fuertes o las decisiones
+        se construyen después, en etapas de <strong>análisis diagnóstico</strong> o <strong>estratégico</strong>, con el respaldo adecuado.
+      </blockquote>
+    </section>
+
+    <section class="mb-10">
+      <h2>Plantilla mental para un informe</h2>
+      <p class="text-gray-700 mb-3">
+        Cuando armes un reporte o comentés un gráfico en Excel, podés seguir este esquema tipo analista BI:
+      </p>
+      <ul class="list-disc pl-6 text-gray-700 space-y-2">
+        <li><strong>Contexto y datos:</strong> qué período, qué filtros, qué definición de métrica.</li>
+        <li><strong>Descripción:</strong> qué se ve (picos, caídas, reparto, tendencia).</li>
+        <li><strong>Diagnóstico (opcional):</strong> hipótesis o segmentos que explican el patrón, con datos.</li>
+        <li><strong>Predicción (opcional):</strong> si proyectás, indicá supuestos y incertidumbre.</li>
+        <li><strong>Recomendación (opcional):</strong> acciones concretas y qué medirías para ver si funcionaron.</li>
+      </ul>
+    </section>
+
+    <p class="text-gray-700 mb-8">
+      En la siguiente lección aplicás estos criterios al construir e interpretar <strong>gráficos en Excel</strong> (tipos, datos y buenas prácticas).
+    </p>
+
+    <nav class="nav-bottom">
+      <a href="/course/excel/tablas-dinamicas/" class="prev">← Tablas Dinámicas</a>
+      <a href="/course/excel/graficos/" class="next">11. Gráficos y visualización →</a>
+    </nav>
+  </article>
+</Layout>

@@ -447,7 +447,12 @@ export const courses: Course[] = [
       { slug: 'funciones-fechas', title: '7. Funciones de Fechas', href: '/course/excel/funciones-fechas/' },
       { slug: 'analisis-celdas', title: '8. Análisis de Celdas', href: '/course/excel/analisis-celdas/' },
       { slug: 'tablas-dinamicas', title: '9. Tablas Dinámicas y Gráficos', href: '/course/excel/tablas-dinamicas/' },
-      { slug: 'graficos', title: '10. Gráficos y visualización profesional', href: '/course/excel/graficos/' },
+      {
+        slug: 'como-analizar-graficos',
+        title: '10. ¿Cómo analizar gráficos?',
+        href: '/course/excel/como-analizar-graficos/',
+      },
+      { slug: 'graficos', title: '11. Gráficos y visualización profesional', href: '/course/excel/graficos/' },
     ],
   },
 ];
