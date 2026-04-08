@@ -8,16 +8,15 @@ import { courses } from '../../data/courses';
     <h1>/admin/embed</h1>
     <p class="text-textSecondary font-[650] leading-relaxed">
       Panel interno (oculto por URL) para armar enlaces de embed por lección con parámetros GET.
-      Referencia: <a class="font-black text-info underline decoration-2 underline-offset-2" href="/docs/parametros-url-get.md" target="_blank" rel="noreferrer">docs/parametros-url-get.md</a>.
     </p>
 
     <section class="mb-10">
-      <h2>Seleccionar curso y lección</h2>
+      <h2>Listado de lecciones</h2>
       <div class="grid gap-3 sm:grid-cols-2">
         <label class="flex flex-col gap-1">
-          <span class="font-nunito font-black text-textPrimary">Curso</span>
+          <span class="font-nunito font-black text-textPrimary">Filtrar por curso (opcional)</span>
           <select id="embCourse" class="rounded-xl border-2 border-border bg-white px-3 py-2 font-nunito font-bold">
-            <option value="">Seleccioná un curso…</option>
+            <option value="">Todos los cursos</option>
             {courses
               .filter((c) => (c.lessons?.length ?? 0) > 0)
               .map((c) => (
@@ -26,10 +25,12 @@ import { courses } from '../../data/courses';
           </select>
         </label>
         <label class="flex flex-col gap-1">
-          <span class="font-nunito font-black text-textPrimary">Lección</span>
-          <select id="embLesson" class="rounded-xl border-2 border-border bg-white px-3 py-2 font-nunito font-bold" disabled>
-            <option value="">Primero elegí un curso…</option>
-          </select>
+          <span class="font-nunito font-black text-textPrimary">Buscar (opcional)</span>
+          <input
+            id="embSearch"
+            class="rounded-xl border-2 border-border bg-white px-3 py-2 font-nunito font-bold"
+            placeholder="python, joins, introducción…"
+          />
         </label>
       </div>
     </section>
@@ -123,18 +124,10 @@ import { courses } from '../../data/courses';
         </div>
 
         <div class="rounded-2xl border-2 border-border bg-white p-4 shadow-[4px_4px_0_var(--border)]">
-          <h3 class="font-nunito font-black text-lg m-0 mb-3">URL resultante</h3>
-          <label class="flex flex-col gap-1">
-            <span class="font-nunito font-extrabold">URL</span>
-            <textarea id="outUrl" class="min-h-[110px] rounded-xl border-2 border-border bg-white px-3 py-2 font-mono text-sm" readonly></textarea>
-          </label>
-          <div class="mt-3 flex flex-wrap items-center gap-2">
-            <button id="copyBtn" type="button" class="rounded-xl border-2 border-border bg-success text-white px-4 py-2 font-nunito font-black shadow-neo hover:-translate-y-0.5 transition-transform">
-              Copiar
-            </button>
-            <span id="copyMsg" class="font-nunito font-bold text-textMuted text-sm"></span>
-          </div>
-          <p class="mt-3 mb-0 text-textMuted font-nunito text-xs font-bold">
+          <h3 class="font-nunito font-black text-lg m-0 mb-3">Enlaces listos para copiar</h3>
+          <div id="listMeta" class="text-textMuted font-nunito text-xs font-bold mb-3"></div>
+          <div id="lessonsList" class="space-y-3"></div>
+          <p class="mt-4 mb-0 text-textMuted font-nunito text-xs font-bold">
             Nota: esta ruta no es segura (solo “oculta” por URL).
           </p>
         </div>
@@ -150,7 +143,7 @@ import { courses } from '../../data/courses';
     const $ = (id) => /** @type {HTMLElement} */ (document.getElementById(id));
 
     const courseSel = /** @type {HTMLSelectElement} */ ($('embCourse'));
-    const lessonSel = /** @type {HTMLSelectElement} */ ($('embLesson'));
+    const searchInp = /** @type {HTMLInputElement} */ ($('embSearch'));
 
     const pEmbed = /** @type {HTMLInputElement} */ ($('pEmbed'));
     const pQuiz = /** @type {HTMLInputElement} */ ($('pQuiz'));
@@ -162,40 +155,18 @@ import { courses } from '../../data/courses';
     const pBackground = /** @type {HTMLInputElement} */ ($('pBackground'));
     const pColor = /** @type {HTMLInputElement} */ ($('pColor'));
 
-    const outUrl = /** @type {HTMLTextAreaElement} */ ($('outUrl'));
-    const copyBtn = /** @type {HTMLButtonElement} */ ($('copyBtn'));
-    const copyMsg = $('copyMsg');
+    const lessonsList = $('lessonsList');
+    const listMeta = $('listMeta');
 
     const logoPrev = /** @type {HTMLImageElement} */ ($('logoPrev'));
     const logoPrevFallback = $('logoPrevFallback');
     const bgPrev = $('bgPrev');
 
-    function findCourse(slug) {
-      return courses.find((c) => c.slug === slug) || null;
-    }
-
-    function setLessonsForCourse(slug) {
-      const c = findCourse(slug);
-      lessonSel.innerHTML = '';
-      if (!c || !c.lessons || c.lessons.length === 0) {
-        lessonSel.disabled = true;
-        const opt = document.createElement('option');
-        opt.value = '';
-        opt.textContent = 'Primero elegí un curso…';
-        lessonSel.appendChild(opt);
-        return;
-      }
-      lessonSel.disabled = false;
-      const opt0 = document.createElement('option');
-      opt0.value = '';
-      opt0.textContent = 'Seleccioná una lección…';
-      lessonSel.appendChild(opt0);
-      for (const l of c.lessons) {
-        const opt = document.createElement('option');
-        opt.value = l.href;
-        opt.textContent = l.title;
-        lessonSel.appendChild(opt);
-      }
+    function norm(s) {
+      return String(s || '')
+        .normalize('NFD')
+        .replace(/\\p{M}/gu, '')
+        .toLowerCase();
     }
 
     function applyPreview() {
@@ -236,14 +207,8 @@ import { courses } from '../../data/courses';
       }
     }
 
-    function computeUrl() {
-      const href = lessonSel.value || '';
-      if (!href) {
-        outUrl.value = '';
-        return;
-      }
-      const origin = window.location.origin;
-      const url = buildEmbedUrl(origin, href, {
+    function buildParams() {
+      return {
         embed: pEmbed.checked,
         quiz: pQuiz.checked,
         pdf: pPdf.checked,
@@ -253,8 +218,66 @@ import { courses } from '../../data/courses';
         logo: pLogo.value,
         background: pBackground.value,
         color: pColor.value,
-      });
-      outUrl.value = url;
+      };
+    }
+
+    function escapeAttr(s) {
+      return String(s).replace(/&/g, '&amp;').replace(/\"/g, '&quot;').replace(/</g, '&lt;');
+    }
+
+    function renderList() {
+      const origin = window.location.origin;
+      const params = buildParams();
+      const courseFilter = courseSel.value || '';
+      const q = norm(searchInp.value || '');
+
+      lessonsList.innerHTML = '';
+      let count = 0;
+
+      for (const c of courses) {
+        if (courseFilter && c.slug !== courseFilter) continue;
+        const lessons = Array.isArray(c.lessons) ? c.lessons : [];
+        const rows = [];
+
+        for (const l of lessons) {
+          const hay = norm(`${c.slug} ${c.name} ${l.title} ${l.href}`);
+          if (q && !hay.includes(q)) continue;
+          const url = buildEmbedUrl(origin, l.href, params);
+          rows.push({ title: l.title, href: l.href, url });
+        }
+
+        if (rows.length === 0) continue;
+
+        const header = document.createElement('div');
+        header.className = 'rounded-xl border-2 border-border bg-primary px-3 py-2 shadow-neo';
+        header.innerHTML = `<div class=\"font-nunito font-black text-textPrimary\">${escapeAttr(c.name)} <span class=\"text-textMuted font-extrabold text-xs\">(${escapeAttr(c.slug)})</span></div>`;
+        lessonsList.appendChild(header);
+
+        for (const row of rows) {
+          count++;
+          const wrap = document.createElement('div');
+          wrap.className = 'rounded-xl border-2 border-border bg-white p-3 shadow-[3px_3px_0_var(--border)]';
+          wrap.innerHTML = `
+            <div class=\"flex flex-col gap-2\">
+              <div class=\"flex items-start justify-between gap-3\">
+                <div class=\"min-w-0\">
+                  <div class=\"font-nunito font-black text-textPrimary truncate\">${escapeAttr(row.title)}</div>
+                  <div class=\"font-nunito font-bold text-textMuted text-xs truncate\">${escapeAttr(row.href)}</div>
+                </div>
+                <button
+                  type=\"button\"
+                  class=\"copyRowBtn shrink-0 rounded-xl border-2 border-border bg-success text-white px-3 py-1.5 font-nunito font-black shadow-neo hover:-translate-y-0.5 transition-transform\"
+                  data-copy=\"${escapeAttr(row.url)}\"
+                >Copiar</button>
+              </div>
+              <input class=\"w-full rounded-lg border-2 border-border bg-white px-2.5 py-2 font-mono text-[12px]\" value=\"${escapeAttr(row.url)}\" readonly />
+            </div>
+          `;
+          lessonsList.appendChild(wrap);
+        }
+      }
+
+      listMeta.textContent = count ? `${count} enlace(s) generado(s).` : 'No hay lecciones para ese filtro.';
     }
 
     function setPreset(kind) {
@@ -276,33 +299,31 @@ import { courses } from '../../data/courses';
       if (!b) return;
       setPreset(b.getAttribute('data-preset'));
       applyPreview();
-      computeUrl();
+      renderList();
     });
 
-    courseSel.addEventListener('change', () => {
-      setLessonsForCourse(courseSel.value);
-      computeUrl();
-    });
-    lessonSel.addEventListener('change', computeUrl);
+    courseSel.addEventListener('change', renderList);
+    searchInp.addEventListener('input', renderList);
 
     [pEmbed, pQuiz, pPdf, pTitle, pName, pEmail, pLogo, pBackground, pColor].forEach((el) => {
       el.addEventListener('input', () => {
         applyPreview();
-        computeUrl();
+        renderList();
       });
       el.addEventListener('change', () => {
         applyPreview();
-        computeUrl();
+        renderList();
       });
     });
 
-    copyBtn.addEventListener('click', async () => {
-      const text = outUrl.value || '';
+    document.addEventListener('click', async (e) => {
+      const btn = e.target.closest('.copyRowBtn');
+      if (!btn) return;
+      const text = btn.getAttribute('data-copy') || '';
       if (!text) return;
-      copyMsg.textContent = '';
       try {
         await navigator.clipboard.writeText(text);
-        copyMsg.textContent = 'Copiado.';
+        btn.textContent = 'Copiado';
       } catch {
         const ta = document.createElement('textarea');
         ta.value = text;
@@ -312,15 +333,14 @@ import { courses } from '../../data/courses';
         ta.select();
         document.execCommand('copy');
         ta.remove();
-        copyMsg.textContent = 'Copiado.';
+        btn.textContent = 'Copiado';
       }
-      setTimeout(() => (copyMsg.textContent = ''), 1500);
+      setTimeout(() => (btn.textContent = 'Copiar'), 900);
     });
 
     // init
-    setLessonsForCourse('');
     applyPreview();
-    computeUrl();
+    renderList();
   </script>
 
   <script type="application/json" id="coursesJson" is:inline>
