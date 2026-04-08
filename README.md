@@ -32,6 +32,11 @@ Para mantener la coherencia y garantizar la mejor experiencia de aprendizaje gam
    - Para que la sección interactiva funcione, cada curso **debe tener su propio archivo de banco de preguntas** en la carpeta `src/data/` (por ejemplo: `pseintQuizBank.ts` o `csharpQuizBank.ts`).
    - Allí residen objetos de preguntas de opción múltiple, con propiedades `prompt`, arreglo `options` y un `correctIndex`.
    - Se debe invocar su componente Modal correspondiente (p.e: `<CsharpQuizModal />`) importándolo en la parte superior del archivo `.astro`.
+   - Auditoría local: `npm run audit:lessons` lista lecciones que podrían faltar `CodeBlock`, quiz o la mención «Ponte a prueba» (revisar manualmente los casos límite).
+
+## Parámetros de URL (embed, PDF, quiz)
+
+Referencia de query string (`?embed=true`, `?pdf=true`, etc.): [docs/parametros-url-get.md](docs/parametros-url-get.md).
 
 ## Acerca de los Componentes Universales
 

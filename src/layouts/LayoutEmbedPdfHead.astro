@@ -1,0 +1,147 @@
+---
+/**
+ * Scripts y estilos inline para modos embed, quiz=false y PDF (?pdf=true).
+ * Extraído de Layout.astro para mantener el layout principal más legible.
+ */
+---
+<!-- Detección de parámetros de URL temprana — evita flash -->
+<script is:inline>
+  (function () {
+    try {
+      const params = new URLSearchParams(window.location.search);
+
+      if (params.get('embed') === 'true') {
+        document.documentElement.dataset.embed = 'true';
+      }
+      if (params.get('quiz') === 'false') {
+        document.documentElement.dataset.quiz = 'false';
+      }
+      if (params.get('pdf') === 'true') {
+        document.documentElement.dataset.pdf = 'true';
+      }
+    } catch {}
+  })();
+</script>
+<!-- Poblar la barra embed con datos del alumno e institución -->
+<script is:inline>
+  (function () {
+    function run() {
+      if (document.documentElement.dataset.embed !== 'true') return;
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const institution = params.get('title') || '';
+        const studentName = params.get('name') || '';
+        const studentEmail = params.get('email') || '';
+
+        const rawTitle = document.title || '';
+        const lessonTitle = rawTitle.replace(/\s*\|.*$/, '').trim();
+
+        const lessonEl = document.getElementById('embedBarLesson');
+        if (lessonEl) lessonEl.textContent = lessonTitle;
+
+        if (institution) {
+          const instEl = document.getElementById('embedBarInstitution');
+          const iconEl = document.getElementById('embedBarIcon');
+          if (instEl) {
+            instEl.textContent = institution;
+            instEl.style.display = 'block';
+          }
+          if (iconEl) iconEl.style.display = 'flex';
+        }
+
+        if (studentName) {
+          const stuWrap = document.getElementById('embedBarStudent');
+          const stuName = document.getElementById('embedBarStudentName');
+          const stuEmail = document.getElementById('embedBarStudentEmail');
+          if (stuName) stuName.textContent = studentName;
+          if (stuWrap) {
+            stuWrap.style.display = 'flex';
+            if (stuEmail) stuEmail.textContent = studentEmail;
+            if (studentEmail) stuWrap.setAttribute('title', studentEmail);
+          }
+        }
+      } catch {}
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', run, { once: true });
+    } else {
+      run();
+    }
+  })();
+</script>
+<!-- Título en franja superior cuando solo ?pdf=true (sin embed) -->
+<script is:inline>
+  (function () {
+    function fill() {
+      if (document.documentElement.dataset.pdf !== 'true') return;
+      if (document.documentElement.dataset.embed === 'true') return;
+      const el = document.getElementById('pdfTopOnlyTitle');
+      if (el) el.textContent = (document.title || '').replace(/\s*\|.*$/, '').trim();
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', fill, { once: true });
+    } else {
+      fill();
+    }
+  })();
+</script>
+<style is:inline>
+  /* ── Modo embed: ocultar chrome de navegación ─────────────── */
+  html[data-embed="true"] .embed-hide { display: none !important; }
+  html[data-embed="true"] .embed-show { display: flex !important; }
+  html[data-embed="true"] .main-content-wrapper { padding-top: 0.5rem; }
+  @media (max-width: 639px) {
+    html[data-embed="true"] .main-content-wrapper { padding-bottom: 1rem; }
+  }
+
+  /* ── ?quiz=false: ocultar todos los quizzes ────────────────── */
+  html[data-quiz="false"] [class$="-quiz"] { display: none !important; }
+  html[data-pdf="true"] [class$="-quiz"] { display: block !important; }
+
+  html[data-embed="true"] .nav-bottom { display: none !important; }
+
+  /* ── Modo PDF (?pdf=true): layout limpio + print-friendly ──── */
+  html[data-pdf="true"] .pdf-hide { display: none !important; }
+  html[data-pdf="true"] body { background: white !important; background-image: none !important; }
+  html[data-pdf="true"][data-embed="true"] .embed-pdf-print { display: inline-flex !important; }
+  html[data-pdf="true"]:not([data-embed="true"]) .pdf-top-only { display: flex !important; }
+  html[data-pdf="true"] .main-content-wrapper { max-width: 920px; margin: 0 auto; padding-top: 1rem; padding-bottom: 1rem; }
+  html[data-pdf="true"] .content-section {
+    border: 3px solid var(--border) !important;
+    box-shadow: 6px 6px 0 var(--border) !important;
+  }
+  html[data-pdf="true"] pre, html[data-pdf="true"] code { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+
+  @media print {
+    #embedBar,
+    #pdfTopOnlyBar {
+      display: none !important;
+    }
+    .embed-hide,
+    .pdf-hide {
+      display: none !important;
+    }
+    body {
+      background: white !important;
+      background-image: none !important;
+    }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+    html[data-pdf="true"] .main-content-wrapper {
+      max-width: 100% !important;
+      width: 100% !important;
+      margin: 0 !important;
+      padding: 0 8mm !important;
+    }
+    html[data-pdf="true"] main {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+    @page {
+      margin: 12mm;
+    }
+  }
+</style>

@@ -86,19 +86,10 @@ export const courses: Course[] = [
       { slug: 'poo-pilares', title: '10. Herencia y polimorfismo', href: '/course/cpp/poo-pilares/' },
     ],
   },
-  // {
-  //   slug: 'ejercicios',
-  //   name: 'Ejercicios para programar',
-  //   description: 'Colección de ejercicios por unidades para practicar lógica y decisiones (con checklist de progreso local).',
-  //   status: 'available',
-  //   color: '#EF476F',
-  //   lessons: [
-  //     { slug: 'unidad-1', title: 'Unidad 1 (EPS)', href: '/course/ejercicios/unidad-1/' },
-  //     { slug: 'unidad-2', title: 'Unidad 2 (Si)', href: '/course/ejercicios/unidad-2/' },
-  //     { slug: 'unidad-3', title: 'Unidad 3 (Avanzados)', href: '/course/ejercicios/unidad-3/' },
-  //     { slug: 'unidad-4', title: 'Unidad 4 (Guía)', href: '/course/ejercicios/unidad-4/' },
-  //   ],
-  // },
+  // Ejercicios por unidades: NO listar aquí con slug `ejercicios`. Las rutas reales son `/ejercicios/…`
+  // (src/pages/ejercicios/). Si `ejercicios` estuviera en `courses`, el middleware redirigiría
+  // `/ejercicios/unidad-1/` → `/course/ejercicios/unidad-1/` y rompería esas páginas.
+  // Enlace desde el catálogo: [/cursos](/cursos/) → bloque «Práctica guiada».
   {
     slug: 'csharp',
     name: 'C#',

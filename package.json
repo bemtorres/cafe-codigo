@@ -10,6 +10,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
+    "check": "astro check",
+    "audit:lessons": "node scripts/audit-lessons.mjs",
     "astro": "astro",
     "db:fresh": "node scripts/db-fresh.mjs",
     "fresh": "node scripts/db-fresh.mjs"

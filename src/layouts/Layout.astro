@@ -20,6 +20,7 @@ import LessonBookmarkToggle from '../components/auth/LessonBookmarkToggle';
 import CourseFavoriteButton from '../components/auth/CourseFavoriteButton';
 import CourseLoginUnlock from '../components/auth/CourseLoginUnlock';
 import LanguageCuriosity from '../components/LanguageCuriosity.astro';
+import LayoutEmbedPdfHead from './LayoutEmbedPdfHead.astro';
 
 const KO_FI_URL = 'https://ko-fi.com/cafeycodigo';
 
@@ -97,87 +98,7 @@ const showLanguageCuriosity =
         if (t) document.documentElement.dataset.theme = t;
       } catch {}
     </script>
-    <!-- Detección de parámetros de URL temprana — evita flash -->
-    <script is:inline>
-      (function () {
-        try {
-          const params = new URLSearchParams(window.location.search);
-
-          if (params.get('embed') === 'true') {
-            document.documentElement.dataset.embed = 'true';
-          }
-          if (params.get('quiz') === 'false') {
-            document.documentElement.dataset.quiz = 'false';
-          }
-        } catch {}
-      })();
-    </script>
-    <!-- Poblar la barra embed con datos del alumno e institución -->
-    <script is:inline>
-      (function () {
-        function run() {
-          if (document.documentElement.dataset.embed !== 'true') return;
-          try {
-            const params = new URLSearchParams(window.location.search);
-            const institution = params.get('title') || '';
-            const studentName = params.get('name') || '';
-            const studentEmail = params.get('email') || '';
-
-            // Título de la lección: sacarlo del <title> de la página, quitando el sufijo
-            const rawTitle = document.title || '';
-            const lessonTitle = rawTitle.replace(/\s*\|.*$/, '').trim();
-
-            // Rellenar título de la lección
-            const lessonEl = document.getElementById('embedBarLesson');
-            if (lessonEl) lessonEl.textContent = lessonTitle;
-
-            // Institución
-            if (institution) {
-              const instEl = document.getElementById('embedBarInstitution');
-              const iconEl = document.getElementById('embedBarIcon');
-              if (instEl) {
-                instEl.textContent = institution;
-                instEl.style.display = 'block';
-              }
-              if (iconEl) iconEl.style.display = 'flex';
-            }
-
-            // Alumno
-            if (studentName) {
-              const stuWrap = document.getElementById('embedBarStudent');
-              const stuName = document.getElementById('embedBarStudentName');
-              if (stuName) stuName.textContent = studentName;
-              if (stuWrap) {
-                stuWrap.style.display = 'flex';
-                if (studentEmail) stuWrap.setAttribute('title', studentEmail);
-              }
-            }
-          } catch {}
-        }
-
-        if (document.readyState === 'loading') {
-          document.addEventListener('DOMContentLoaded', run, { once: true });
-        } else {
-          run();
-        }
-      })();
-    </script>
-    <style is:inline>
-      /* ── Modo embed: ocultar chrome de navegación ─────────────── */
-      html[data-embed="true"] .embed-hide { display: none !important; }
-      html[data-embed="true"] .embed-show { display: flex !important; }
-      html[data-embed="true"] .main-content-wrapper { padding-top: 0.5rem; }
-      @media (max-width: 639px) {
-        html[data-embed="true"] .main-content-wrapper { padding-bottom: 1rem; }
-      }
-
-      /* ── ?quiz=false: ocultar todos los quizzes ────────────────── */
-      /* Cubre git-quiz, python-quiz, js-quiz, c4-quiz, etc.          */
-      html[data-quiz="false"] [class$="-quiz"] { display: none !important; }
-
-      /* ── Modo embed: ocultar navegación prev/next de lecciones ─── */
-      html[data-embed="true"] .nav-bottom { display: none !important; }
-    </style>
+    <LayoutEmbedPdfHead />
   </head>
   <body
     class="min-h-screen text-textPrimary font-quicksand antialiased"
@@ -200,7 +121,7 @@ const showLanguageCuriosity =
     )}
 
     <!-- Modal de bienvenida -->
-    <WelcomeModal />
+    <div class="pdf-hide"><WelcomeModal /></div>
     {currentCourse?.requiresPassword && (
       <>
         <PasswordProtect courseSlug={currentCourse.slug} />
@@ -209,7 +130,7 @@ const showLanguageCuriosity =
     )}
     
     <!-- Mini header solo mobile -->
-    <header class="embed-hide sm:hidden sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b-2 border-[#1E1210]/10 px-4 py-3 flex items-center justify-between gap-3">
+    <header class="embed-hide pdf-hide sm:hidden sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b-2 border-[#1E1210]/10 px-4 py-3 flex items-center justify-between gap-3">
       <a href="/" class="flex items-center gap-2 no-underline shrink-0">
         <img src={logoCafeycodigo.src} alt="" class="w-8 h-8 object-contain rounded-lg" />
         <span class="font-nunito font-black text-[1.1rem] text-[#EF476F] leading-none">Café y Código</span>
@@ -230,7 +151,7 @@ const showLanguageCuriosity =
 
     <!-- Modal de lecciones (mobile) -->
     {currentCourse?.lessons?.length && (
-      <div id="mobileContentsModal" class="embed-hide fixed inset-0 z-[1100] hidden [&.is-open]:flex flex-col" role="dialog" aria-modal="true" aria-hidden="true">
+      <div id="mobileContentsModal" class="embed-hide pdf-hide fixed inset-0 z-[1100] hidden [&.is-open]:flex flex-col" role="dialog" aria-modal="true" aria-hidden="true">
         <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" id="mobileContentsOverlay"></div>
         <div class="relative mt-auto w-full bg-white rounded-t-3xl border-t-4 border-[#1E1210] shadow-[0_-8px_32px_rgba(30,18,16,0.2)] max-h-[80vh] flex flex-col">
           <!-- Handle + header -->
@@ -282,7 +203,7 @@ const showLanguageCuriosity =
     </script>
 
     <!-- Header completo (solo desktop) -->
-    <header class="embed-hide hidden sm:block sticky top-2 z-50 mx-4">
+    <header class="embed-hide pdf-hide hidden sm:block sticky top-2 z-50 mx-4">
       <nav class="max-w-7xl mx-auto px-4 py-3 bg-white/85 border border-black/15 rounded-full shadow-[0_16px_40px_rgba(30,18,16,0.1)] backdrop-blur-md grid grid-cols-[1fr_auto] sm:grid-cols-[auto_1fr_auto] gap-4 items-center">
         
         <div class="flex items-center gap-4">
@@ -343,7 +264,7 @@ const showLanguageCuriosity =
     </header>
 
     <!-- Modal de lenguajes -->
-    <div id="langsModal" class="embed-hide fixed inset-0 z-[1000] hidden [&.is-open]:flex flex-col items-end sm:items-start justify-end sm:justify-center sm:pt-[6vh]" role="dialog" aria-modal="true" aria-hidden="true">
+    <div id="langsModal" class="embed-hide pdf-hide fixed inset-0 z-[1000] hidden [&.is-open]:flex flex-col items-end sm:items-start justify-end sm:justify-center sm:pt-[6vh]" role="dialog" aria-modal="true" aria-hidden="true">
       <!-- Overlay -->
       <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" data-close-modal="langs"></div>
 
@@ -522,29 +443,50 @@ const showLanguageCuriosity =
         </div>
       </div>
 
-      <!-- Lado derecho: alumno + enlace -->
-      <div class="flex items-center gap-3 shrink-0">
-        <!-- Nombre del alumno (?name=) -->
-        <span id="embedBarStudent" style="display:none" class="items-center gap-1.5 font-nunito font-extrabold text-[0.7rem] text-[#e8d5c4]/80">
-          <span aria-hidden>👤</span>
-          <span id="embedBarStudentName"></span>
-        </span>
-        <a
-          id="embedBarLink"
-          href={`/course/${courseSlug ?? ''}/`}
-          target="_blank"
-          rel="noreferrer"
-          class="font-nunito font-black text-[0.68rem] text-[#e8d5c4]/60 underline underline-offset-2 hover:text-[#e8d5c4] transition-colors whitespace-nowrap"
+      <!-- Lado derecho: alumno + Imprimir (solo visible en embed + pdf) -->
+      <div class="flex items-center gap-2 shrink-0 flex-wrap justify-end">
+        <div
+          id="embedBarStudent"
+          style="display:none"
+          class="flex items-center gap-2 font-nunito text-[#fdf6e9] rounded-xl border border-white/10 bg-white/5 px-2.5 py-1.5 min-w-0 max-w-[min(100%,14rem)] sm:max-w-[20rem]"
         >
-          cafeycodigo.com ↗
-        </a>
+          <span aria-hidden class="shrink-0">👤</span>
+          <div class="flex flex-col leading-tight min-w-0 flex-1">
+            <span id="embedBarStudentName" class="font-black text-[0.78rem] text-[#fdf6e9] truncate"></span>
+            <span id="embedBarStudentEmail" class="font-extrabold text-[0.65rem] text-[#e8d5c4]/70 truncate"></span>
+          </div>
+        </div>
+        <button
+          type="button"
+          class="embed-pdf-print hidden shrink-0 items-center rounded-xl border-2 border-white/30 bg-white/10 px-3 py-1.5 font-nunito font-black text-[0.7rem] uppercase tracking-wide text-[#fdf6e9] shadow-[2px_2px_0_rgba(0,0,0,0.35)] hover:bg-white/20 active:translate-x-px active:translate-y-px active:shadow-none"
+          title="Abre el diálogo de impresión (podés guardar como PDF)"
+          onclick="window.print()"
+        >
+          Imprimir
+        </button>
       </div>
+    </div>
+
+    <!-- Solo ?pdf=true sin embed: franja oscura con título + Imprimir -->
+    <div
+      id="pdfTopOnlyBar"
+      class="pdf-top-only hidden w-full bg-[#2b1d1b] px-3 py-2 items-center justify-between gap-3 flex-wrap border-b-2 border-black/30"
+    >
+      <span id="pdfTopOnlyTitle" class="font-nunito font-extrabold text-[0.78rem] text-[#fdf6e9] truncate min-w-0 flex-1"></span>
+      <button
+        type="button"
+        class="shrink-0 rounded-xl border-2 border-white/30 bg-white/10 px-3 py-1.5 font-nunito font-black text-[0.7rem] uppercase tracking-wide text-[#fdf6e9] shadow-[2px_2px_0_rgba(0,0,0,0.35)] hover:bg-white/20"
+        title="Abre el diálogo de impresión (podés guardar como PDF)"
+        onclick="window.print()"
+      >
+        Imprimir
+      </button>
     </div>
 
     <div class="main-content-wrapper max-w-[1400px] mx-auto flex flex-col lg:flex-row gap-8 px-4 py-8 items-start">
       <!-- SIDEBAR LATERAL -->
       {currentCourse?.lessons?.length && (
-        <aside class="embed-hide hidden lg:block w-full lg:w-[250px] flex-shrink-0">
+        <aside class="embed-hide pdf-hide hidden lg:block w-full lg:w-[250px] flex-shrink-0">
           <div class="sticky top-[6.5rem] bg-white border-[3px] border-border rounded-xl p-6 shadow-neo">
             <h3 class="flex items-center gap-2 text-[1.2rem] text-info font-nunito font-black mb-4 pb-2 border-b-2 border-dashed border-border">
               {currentCourse.slug === 'pseint' ? (
@@ -608,7 +550,7 @@ const showLanguageCuriosity =
       </main>
     </div>
 
-    <section class="embed-hide relative z-[12] max-w-[1400px] mx-auto mt-10 mb-8 px-4" aria-label="Donaciones">
+    <section class="embed-hide pdf-hide relative z-[12] max-w-[1400px] mx-auto mt-10 mb-8 px-4" aria-label="Donaciones">
       <div class="bg-white/80 border border-black/10 rounded-3xl p-6 shadow-[0_18px_44px_rgba(30,18,16,0.08)] flex flex-col md:flex-row gap-4 items-center justify-between">
         <div class="flex items-center gap-4">
           <img class="w-12 h-12 object-contain rounded-xl border border-black/10 bg-white" src={kofiLogo.src} alt="Ko-fi" loading="lazy" decoding="async" />
@@ -707,7 +649,7 @@ const showLanguageCuriosity =
     <!-- ══════════════════════════════════════
          BARRA DE NAVEGACIÓN INFERIOR (solo mobile) — oculta en embed
          ══════════════════════════════════════ -->
-    <nav id="mobileBottomNav" class="embed-hide sm:hidden fixed bottom-0 left-0 right-0 z-[900] bg-white/95 backdrop-blur-md border-t-[3px] border-[#1E1210] shadow-[0_-4px_24px_rgba(30,18,16,0.12)]" style="padding-bottom: env(safe-area-inset-bottom, 0px);">
+    <nav id="mobileBottomNav" class="embed-hide pdf-hide sm:hidden fixed bottom-0 left-0 right-0 z-[900] bg-white/95 backdrop-blur-md border-t-[3px] border-[#1E1210] shadow-[0_-4px_24px_rgba(30,18,16,0.12)]" style="padding-bottom: env(safe-area-inset-bottom, 0px);">
 
       {isInsideLesson ? (
         /* ── Modo LECCIÓN: navegación anterior / siguiente ── */
@@ -808,7 +750,7 @@ const showLanguageCuriosity =
       aria-modal="true"
       aria-labelledby="kofiModalTitle"
       aria-hidden="true"
-      class="embed-hide fixed inset-0 z-[9999] flex items-end justify-center pointer-events-none opacity-0 transition-opacity duration-300"
+      class="embed-hide pdf-hide fixed inset-0 z-[9999] flex items-end justify-center pointer-events-none opacity-0 transition-opacity duration-300"
     >
       <!-- Overlay -->
       <div id="kofiModalOverlay" class="absolute inset-0 bg-black/50 backdrop-blur-sm" data-close-kofi></div>
@@ -917,6 +859,6 @@ const showLanguageCuriosity =
     </script>
 
     {/* Widget flotante del temporizador del café */}
-    <div class="embed-hide"><CoffeeTimerWidget client:load /></div>
+    <div class="embed-hide pdf-hide"><CoffeeTimerWidget client:load /></div>
   </body>
 </html>
