@@ -38,6 +38,8 @@ Para mantener la coherencia y garantizar la mejor experiencia de aprendizaje gam
 
 Referencia de query string (`?embed=true`, `?pdf=true`, etc.): [docs/parametros-url-get.md](docs/parametros-url-get.md).
 
+Herramienta interna: `/admin/embed` (solo “oculta” por URL) permite seleccionar una lección y generar enlaces de embed con los parámetros GET soportados.
+
 Ejemplos rápidos:
 
 ```text

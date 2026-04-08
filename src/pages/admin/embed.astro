@@ -1,0 +1,330 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { courses } from '../../data/courses';
+---
+
+<Layout title="Admin · Embed builder" description="Generador interno de URLs de embed (GET params)." >
+  <article class="content-section">
+    <h1>/admin/embed</h1>
+    <p class="text-textSecondary font-[650] leading-relaxed">
+      Panel interno (oculto por URL) para armar enlaces de embed por lección con parámetros GET.
+      Referencia: <a class="font-black text-info underline decoration-2 underline-offset-2" href="/docs/parametros-url-get.md" target="_blank" rel="noreferrer">docs/parametros-url-get.md</a>.
+    </p>
+
+    <section class="mb-10">
+      <h2>Seleccionar curso y lección</h2>
+      <div class="grid gap-3 sm:grid-cols-2">
+        <label class="flex flex-col gap-1">
+          <span class="font-nunito font-black text-textPrimary">Curso</span>
+          <select id="embCourse" class="rounded-xl border-2 border-border bg-white px-3 py-2 font-nunito font-bold">
+            <option value="">Seleccioná un curso…</option>
+            {courses
+              .filter((c) => (c.lessons?.length ?? 0) > 0)
+              .map((c) => (
+                <option value={c.slug}>{c.name}</option>
+              ))}
+          </select>
+        </label>
+        <label class="flex flex-col gap-1">
+          <span class="font-nunito font-black text-textPrimary">Lección</span>
+          <select id="embLesson" class="rounded-xl border-2 border-border bg-white px-3 py-2 font-nunito font-bold" disabled>
+            <option value="">Primero elegí un curso…</option>
+          </select>
+        </label>
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2>Parámetros (GET)</h2>
+
+      <div class="flex flex-wrap gap-2 mb-4">
+        <button type="button" class="rounded-xl border-2 border-border bg-white px-3 py-1.5 font-nunito font-black shadow-neo hover:-translate-y-0.5 transition-transform" data-preset="clean">Embed limpio</button>
+        <button type="button" class="rounded-xl border-2 border-border bg-white px-3 py-1.5 font-nunito font-black shadow-neo hover:-translate-y-0.5 transition-transform" data-preset="noquiz">Embed sin quiz</button>
+        <button type="button" class="rounded-xl border-2 border-border bg-white px-3 py-1.5 font-nunito font-black shadow-neo hover:-translate-y-0.5 transition-transform" data-preset="pdf">Embed PDF</button>
+        <button type="button" class="rounded-xl border-2 border-border bg-white px-3 py-1.5 font-nunito font-black shadow-neo hover:-translate-y-0.5 transition-transform" data-preset="student">Embed con datos alumno</button>
+      </div>
+
+      <div class="grid gap-4 lg:grid-cols-2">
+        <div class="rounded-2xl border-2 border-border bg-white p-4 shadow-[4px_4px_0_var(--border)]">
+          <h3 class="font-nunito font-black text-lg m-0 mb-3">Flags</h3>
+          <label class="flex items-center justify-between gap-3 py-2">
+            <span class="font-nunito font-extrabold">embed</span>
+            <input id="pEmbed" type="checkbox" class="h-5 w-5" checked />
+          </label>
+          <label class="flex items-center justify-between gap-3 py-2">
+            <span class="font-nunito font-extrabold">quiz</span>
+            <span class="text-textMuted font-nunito font-bold text-sm">desmarcar → quiz=false</span>
+            <input id="pQuiz" type="checkbox" class="h-5 w-5" checked />
+          </label>
+          <label class="flex items-center justify-between gap-3 py-2">
+            <span class="font-nunito font-extrabold">pdf</span>
+            <input id="pPdf" type="checkbox" class="h-5 w-5" />
+          </label>
+        </div>
+
+        <div class="rounded-2xl border-2 border-border bg-white p-4 shadow-[4px_4px_0_var(--border)]">
+          <h3 class="font-nunito font-black text-lg m-0 mb-3">Datos</h3>
+          <div class="grid gap-3">
+            <label class="flex flex-col gap-1">
+              <span class="font-nunito font-extrabold">title (institución)</span>
+              <input id="pTitle" class="rounded-xl border-2 border-border bg-white px-3 py-2 font-nunito font-bold" placeholder="Institución…" />
+            </label>
+            <label class="flex flex-col gap-1">
+              <span class="font-nunito font-extrabold">name (alumno)</span>
+              <input id="pName" class="rounded-xl border-2 border-border bg-white px-3 py-2 font-nunito font-bold" placeholder="Nombre…" />
+            </label>
+            <label class="flex flex-col gap-1">
+              <span class="font-nunito font-extrabold">email (alumno)</span>
+              <input id="pEmail" class="rounded-xl border-2 border-border bg-white px-3 py-2 font-nunito font-bold" placeholder="correo@…" />
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid gap-4 mt-4 lg:grid-cols-2">
+        <div class="rounded-2xl border-2 border-border bg-white p-4 shadow-[4px_4px_0_var(--border)]">
+          <h3 class="font-nunito font-black text-lg m-0 mb-3">Branding (cabecera embed)</h3>
+          <div class="grid gap-3">
+            <label class="flex flex-col gap-1">
+              <span class="font-nunito font-extrabold">logo (url)</span>
+              <input id="pLogo" class="rounded-xl border-2 border-border bg-white px-3 py-2 font-nunito font-bold" placeholder="https://…/logo.png" />
+            </label>
+            <label class="flex flex-col gap-1">
+              <span class="font-nunito font-extrabold">background (url o color)</span>
+              <input id="pBackground" class="rounded-xl border-2 border-border bg-white px-3 py-2 font-nunito font-bold" placeholder="#f3f3f3 o https://…/bg.jpg" />
+            </label>
+            <label class="flex flex-col gap-1">
+              <span class="font-nunito font-extrabold">color (solo cabecera)</span>
+              <input id="pColor" class="rounded-xl border-2 border-border bg-white px-3 py-2 font-nunito font-bold" placeholder="#2b1d1b" />
+            </label>
+          </div>
+
+          <div class="mt-4 grid gap-3 sm:grid-cols-2">
+            <div>
+              <div class="font-nunito font-black text-sm text-textMuted mb-1">Preview logo</div>
+              <div class="rounded-xl border-2 border-border bg-primary p-3 flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl border border-border bg-white/80 flex items-center justify-center overflow-hidden shadow-neo">
+                  <img id="logoPrev" alt="" class="w-full h-full object-contain p-1 hidden" />
+                  <span id="logoPrevFallback">🏫</span>
+                </div>
+                <div class="min-w-0">
+                  <div class="font-nunito font-black truncate">Institución</div>
+                  <div class="font-nunito font-bold text-textMuted text-sm truncate">Título de lección</div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="font-nunito font-black text-sm text-textMuted mb-1">Preview background</div>
+              <div id="bgPrev" class="rounded-xl border-2 border-border p-4 shadow-neo-lg bg-[#2b1d1b] text-white font-nunito font-black">
+                Cabecera embed
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="rounded-2xl border-2 border-border bg-white p-4 shadow-[4px_4px_0_var(--border)]">
+          <h3 class="font-nunito font-black text-lg m-0 mb-3">URL resultante</h3>
+          <label class="flex flex-col gap-1">
+            <span class="font-nunito font-extrabold">URL</span>
+            <textarea id="outUrl" class="min-h-[110px] rounded-xl border-2 border-border bg-white px-3 py-2 font-mono text-sm" readonly></textarea>
+          </label>
+          <div class="mt-3 flex flex-wrap items-center gap-2">
+            <button id="copyBtn" type="button" class="rounded-xl border-2 border-border bg-success text-white px-4 py-2 font-nunito font-black shadow-neo hover:-translate-y-0.5 transition-transform">
+              Copiar
+            </button>
+            <span id="copyMsg" class="font-nunito font-bold text-textMuted text-sm"></span>
+          </div>
+          <p class="mt-3 mb-0 text-textMuted font-nunito text-xs font-bold">
+            Nota: esta ruta no es segura (solo “oculta” por URL).
+          </p>
+        </div>
+      </div>
+    </section>
+  </article>
+
+  <script type="module" is:inline>
+    import { buildEmbedUrl } from '../../lib/embed/buildEmbedUrl';
+
+    const courses = /** @type {const} */ (JSON.parse(document.getElementById('coursesJson').textContent));
+
+    const $ = (id) => /** @type {HTMLElement} */ (document.getElementById(id));
+
+    const courseSel = /** @type {HTMLSelectElement} */ ($('embCourse'));
+    const lessonSel = /** @type {HTMLSelectElement} */ ($('embLesson'));
+
+    const pEmbed = /** @type {HTMLInputElement} */ ($('pEmbed'));
+    const pQuiz = /** @type {HTMLInputElement} */ ($('pQuiz'));
+    const pPdf = /** @type {HTMLInputElement} */ ($('pPdf'));
+    const pTitle = /** @type {HTMLInputElement} */ ($('pTitle'));
+    const pName = /** @type {HTMLInputElement} */ ($('pName'));
+    const pEmail = /** @type {HTMLInputElement} */ ($('pEmail'));
+    const pLogo = /** @type {HTMLInputElement} */ ($('pLogo'));
+    const pBackground = /** @type {HTMLInputElement} */ ($('pBackground'));
+    const pColor = /** @type {HTMLInputElement} */ ($('pColor'));
+
+    const outUrl = /** @type {HTMLTextAreaElement} */ ($('outUrl'));
+    const copyBtn = /** @type {HTMLButtonElement} */ ($('copyBtn'));
+    const copyMsg = $('copyMsg');
+
+    const logoPrev = /** @type {HTMLImageElement} */ ($('logoPrev'));
+    const logoPrevFallback = $('logoPrevFallback');
+    const bgPrev = $('bgPrev');
+
+    function findCourse(slug) {
+      return courses.find((c) => c.slug === slug) || null;
+    }
+
+    function setLessonsForCourse(slug) {
+      const c = findCourse(slug);
+      lessonSel.innerHTML = '';
+      if (!c || !c.lessons || c.lessons.length === 0) {
+        lessonSel.disabled = true;
+        const opt = document.createElement('option');
+        opt.value = '';
+        opt.textContent = 'Primero elegí un curso…';
+        lessonSel.appendChild(opt);
+        return;
+      }
+      lessonSel.disabled = false;
+      const opt0 = document.createElement('option');
+      opt0.value = '';
+      opt0.textContent = 'Seleccioná una lección…';
+      lessonSel.appendChild(opt0);
+      for (const l of c.lessons) {
+        const opt = document.createElement('option');
+        opt.value = l.href;
+        opt.textContent = l.title;
+        lessonSel.appendChild(opt);
+      }
+    }
+
+    function applyPreview() {
+      const logo = pLogo.value.trim();
+      if (logo) {
+        logoPrev.classList.add('hidden');
+        if (logoPrevFallback) logoPrevFallback.textContent = '🏫';
+        logoPrev.onload = () => {
+          logoPrev.classList.remove('hidden');
+          if (logoPrevFallback) logoPrevFallback.textContent = '';
+        };
+        logoPrev.onerror = () => {
+          logoPrev.classList.add('hidden');
+          if (logoPrevFallback) logoPrevFallback.textContent = '🏫';
+        };
+        logoPrev.src = logo;
+      } else {
+        logoPrev.classList.add('hidden');
+        if (logoPrevFallback) logoPrevFallback.textContent = '🏫';
+      }
+
+      const bg = pBackground.value.trim();
+      const color = pColor.value.trim();
+      bgPrev.style.backgroundImage = '';
+      bgPrev.style.backgroundColor = '';
+
+      if (color) bgPrev.style.backgroundColor = color;
+      if (bg) {
+        const isColor = /^#([0-9a-fA-F]{3,8})$/.test(bg) || /^rgba?\(/i.test(bg) || /^hsla?\(/i.test(bg);
+        if (isColor) {
+          bgPrev.style.backgroundColor = bg;
+        } else {
+          bgPrev.style.backgroundImage = `url(\"${bg}\")`;
+          bgPrev.style.backgroundSize = 'cover';
+          bgPrev.style.backgroundPosition = 'center';
+          bgPrev.style.backgroundRepeat = 'no-repeat';
+        }
+      }
+    }
+
+    function computeUrl() {
+      const href = lessonSel.value || '';
+      if (!href) {
+        outUrl.value = '';
+        return;
+      }
+      const origin = window.location.origin;
+      const url = buildEmbedUrl(origin, href, {
+        embed: pEmbed.checked,
+        quiz: pQuiz.checked,
+        pdf: pPdf.checked,
+        title: pTitle.value,
+        name: pName.value,
+        email: pEmail.value,
+        logo: pLogo.value,
+        background: pBackground.value,
+        color: pColor.value,
+      });
+      outUrl.value = url;
+    }
+
+    function setPreset(kind) {
+      // defaults
+      pEmbed.checked = true;
+      pQuiz.checked = true;
+      pPdf.checked = false;
+      if (kind === 'noquiz') pQuiz.checked = false;
+      if (kind === 'pdf') pPdf.checked = true;
+      if (kind === 'student') {
+        pTitle.value ||= 'INSTITUCIÓN';
+        pName.value ||= 'NOMBRE';
+        pEmail.value ||= 'CORREO';
+      }
+    }
+
+    document.addEventListener('click', (e) => {
+      const b = e.target.closest('[data-preset]');
+      if (!b) return;
+      setPreset(b.getAttribute('data-preset'));
+      applyPreview();
+      computeUrl();
+    });
+
+    courseSel.addEventListener('change', () => {
+      setLessonsForCourse(courseSel.value);
+      computeUrl();
+    });
+    lessonSel.addEventListener('change', computeUrl);
+
+    [pEmbed, pQuiz, pPdf, pTitle, pName, pEmail, pLogo, pBackground, pColor].forEach((el) => {
+      el.addEventListener('input', () => {
+        applyPreview();
+        computeUrl();
+      });
+      el.addEventListener('change', () => {
+        applyPreview();
+        computeUrl();
+      });
+    });
+
+    copyBtn.addEventListener('click', async () => {
+      const text = outUrl.value || '';
+      if (!text) return;
+      copyMsg.textContent = '';
+      try {
+        await navigator.clipboard.writeText(text);
+        copyMsg.textContent = 'Copiado.';
+      } catch {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        ta.remove();
+        copyMsg.textContent = 'Copiado.';
+      }
+      setTimeout(() => (copyMsg.textContent = ''), 1500);
+    });
+
+    // init
+    setLessonsForCourse('');
+    applyPreview();
+    computeUrl();
+  </script>
+
+  <script type="application/json" id="coursesJson" is:inline>
+    {JSON.stringify(courses.map((c) => ({ slug: c.slug, name: c.name, lessons: c.lessons ?? [] })))}
+  </script>
+</Layout>
+
