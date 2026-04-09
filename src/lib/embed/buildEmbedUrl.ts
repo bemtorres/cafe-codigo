@@ -2,6 +2,8 @@ export type EmbedParams = {
   embed?: boolean;
   quiz?: boolean; // true = show, false = quiz=false
   pdf?: boolean;
+  /** Primera carga: la página sustituye la query por ?code=jwt (oculta datos en la barra de direcciones). */
+  encrypt?: boolean;
   title?: string;
   name?: string;
   email?: string;
@@ -24,6 +26,7 @@ export function buildEmbedQuery(params: EmbedParams): string {
   if (params.embed) sp.set('embed', 'true');
   if (params.quiz === false) sp.set('quiz', 'false');
   if (params.pdf) sp.set('pdf', 'true');
+  if (params.encrypt) sp.set('encrypt', 'true');
 
   addParam(sp, 'title', params.title ? encodeURIComponent(params.title) : undefined);
   addParam(sp, 'name', params.name ? encodeURIComponent(params.name) : undefined);

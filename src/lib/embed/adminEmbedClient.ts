@@ -31,6 +31,7 @@ const searchInp = $('embSearch') as HTMLInputElement;
 const pEmbed = $('pEmbed') as HTMLInputElement;
 const pQuiz = $('pQuiz') as HTMLInputElement;
 const pPdf = $('pPdf') as HTMLInputElement;
+const pEncrypt = $('pEncrypt') as HTMLInputElement;
 const pTitle = $('pTitle') as HTMLInputElement;
 const pName = $('pName') as HTMLInputElement;
 const pEmail = $('pEmail') as HTMLInputElement;
@@ -120,6 +121,7 @@ function buildParams() {
     embed: pEmbed.checked,
     quiz: pQuiz.checked,
     pdf: pPdf.checked,
+    encrypt: pEmbed.checked && pEncrypt.checked,
     title: pTitle.value,
     name: pName.value,
     email: pEmail.value,
@@ -184,6 +186,7 @@ function setPreset(kind: string | null) {
   pEmbed.checked = true;
   pQuiz.checked = true;
   pPdf.checked = false;
+  if (kind === 'clean') pEncrypt.checked = false;
   if (kind === 'noquiz') pQuiz.checked = false;
   if (kind === 'pdf') pPdf.checked = true;
   if (kind === 'student') {
@@ -208,6 +211,7 @@ searchInp.addEventListener('input', renderList);
   pEmbed,
   pQuiz,
   pPdf,
+  pEncrypt,
   pTitle,
   pName,
   pEmail,
@@ -223,6 +227,7 @@ searchInp.addEventListener('input', renderList);
     renderList();
   });
   el.addEventListener('change', () => {
+    if (el === pEmbed && !pEmbed.checked) pEncrypt.checked = false;
     applyPreview();
     renderList();
   });

@@ -8,7 +8,36 @@
 <script is:inline>
   (function () {
     try {
-      const params = new URLSearchParams(window.location.search);
+      /** Debe coincidir con decodeEmbedJwtPayloadSync (src/lib/embed/embedJwt.ts). */
+      function jwtPayloadFromToken(token) {
+        try {
+          var parts = String(token).split('.');
+          if (parts.length !== 3) return null;
+          var s = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+          while (s.length % 4) s += '=';
+          var bin = atob(s);
+          var bytes = new Uint8Array(bin.length);
+          for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+          var p = JSON.parse(new TextDecoder().decode(bytes));
+          if (p.v !== 1 || p.e !== 1) return null;
+          return p;
+        } catch (e) {
+          return null;
+        }
+      }
+
+      var params = new URLSearchParams(window.location.search);
+      var code = params.get('code');
+      if (code) {
+        var pl = jwtPayloadFromToken(decodeURIComponent(code));
+        if (pl) {
+          window.__embedJwtPayload = pl;
+          document.documentElement.dataset.embed = 'true';
+          if (pl.q === 0) document.documentElement.dataset.quiz = 'false';
+          if (pl.p) document.documentElement.dataset.pdf = 'true';
+        }
+        return;
+      }
 
       if (params.get('embed') === 'true') {
         document.documentElement.dataset.embed = 'true';
@@ -29,13 +58,14 @@
       if (document.documentElement.dataset.embed !== 'true') return;
       try {
         const params = new URLSearchParams(window.location.search);
-        const institution = params.get('title') || '';
-        const studentName = params.get('name') || '';
-        const studentEmail = params.get('email') || '';
-        const logoUrl = params.get('logo') || '';
-        const background = params.get('background') || '';
-        const color = params.get('color') || '';
-        const text = params.get('text') || '';
+        const pl = window.__embedJwtPayload;
+        const institution = (pl && pl.t) || params.get('title') || '';
+        const studentName = (pl && pl.n) || params.get('name') || '';
+        const studentEmail = (pl && pl.m) || params.get('email') || '';
+        const logoUrl = (pl && pl.l) || params.get('logo') || '';
+        const background = (pl && pl.b) || params.get('background') || '';
+        const color = (pl && pl.c) || params.get('color') || '';
+        const text = (pl && pl.x) || params.get('text') || '';
 
         const rawTitle = document.title || '';
         const lessonTitle = rawTitle.replace(/\s*\|.*$/, '').trim();
@@ -217,3 +247,6 @@
     }
   }
 </style>
+<script>
+  import '../lib/embed/embedUrlBootstrap.ts';
+</script>
