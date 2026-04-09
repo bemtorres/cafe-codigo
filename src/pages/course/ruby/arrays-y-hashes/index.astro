@@ -1,0 +1,63 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+---
+
+<Layout title="Arrays y Hashes en Ruby" description="Colecciones básicas: listas y diccionarios en Ruby." courseSlug="ruby">
+  <article class="content-section">
+    <h1>7. Arrays y Hashes</h1>
+
+    <section class="mb-10">
+      <h2>Arrays</h2>
+      <CodeBlock
+        lang="ruby"
+        title="arrays.rb"
+        code={`nums = [10, 20, 30]
+nums << 40
+
+puts nums[0]
+puts nums.last
+puts nums.inspect`}
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Hashes</h2>
+      <p>Un Hash es como un diccionario: clave → valor.</p>
+      <CodeBlock
+        lang="ruby"
+        title="hashes.rb"
+        code={`user = { name: "Ada", email: "ada@ejemplo.com" }
+puts user[:name]
+
+user[:level] = 3
+puts user.inspect`}
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Iterar un Hash</h2>
+      <CodeBlock
+        lang="ruby"
+        title="hash_each.rb"
+        code={`prices = { coffee: 2.5, tea: 1.8 }
+
+prices.each do |k, v|
+  puts "#{k} cuesta #{v}"
+end`}
+      />
+    </section>
+
+    <div class="ejercicio" style="background:#FFF9C4;">
+      <h3>💻 Misión final (mini)</h3>
+      <p class="enunciado">
+        Crea un Hash <code>product</code> con <code>name</code>, <code>price</code> y <code>stock</code>, e imprime un resumen.
+      </p>
+    </div>
+
+    <nav class="nav-bottom">
+      <a href="/course/ruby/metodos/" class="prev">← Métodos</a>
+      <a href="/course/ruby/" class="next">Índice de Ruby →</a>
+    </nav>
+  </article>
+</Layout>

@@ -1,6 +1,8 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { courses } from '../../data/courses';
+import { COURSES_CANONICAL_FILE, getCoursesForEmbed } from '../../lib/courseRegistry';
+
+const embedCoursesData = getCoursesForEmbed();
 ---
 
 <Layout title="Admin · Embed builder" description="Generador interno de URLs de embed (GET params).">
@@ -8,7 +10,9 @@ import { courses } from '../../data/courses';
     <header class="admin-embed-head mb-3">
       <h1 class="!mb-0 !text-xl sm:!text-2xl">/admin/embed</h1>
       <p class="!mb-0 !mt-1 !text-xs sm:!text-sm !leading-snug text-textSecondary font-[650]">
-        Parámetros GET + tabla de URLs por lección (ancho completo abajo).
+        Parámetros GET + tabla de URLs por lección (ancho completo abajo). Cursos y lecciones:{' '}
+        <code class="rounded bg-black/5 px-1">{COURSES_CANONICAL_FILE}</code> (array <code class="rounded bg-black/5 px-1">courses</code>
+        ); no dupliques listas en otros archivos.
       </p>
     </header>
 
@@ -23,7 +27,7 @@ import { courses } from '../../data/courses';
             <span class="ae-lbl">Curso</span>
             <select id="embCourse" class="ae-input">
               <option value="">Todos</option>
-              {courses
+              {embedCoursesData
                 .filter((c) => (c.lessons?.length ?? 0) > 0)
                 .map((c) => (
                   <option value={c.slug}>{c.name}</option>
@@ -193,8 +197,27 @@ import { courses } from '../../data/courses';
     </section>
   </article>
 
+  <!-- JSON primero: el bundle (import) va aparte para que el navegador ejecute siempre un módulo ES válido -->
+  <script
+    type="application/json"
+    id="adminEmbedCoursesJson"
+    is:inline
+    set:html={JSON.stringify(embedCoursesData).replace(/</g, '\\u003c')}
+  />
   <script>
-    import '../../lib/embed/adminEmbedClient.ts';
+    import { initAdminEmbed } from '../../lib/embed/adminEmbedClient';
+    import type { EmbedCoursePayload } from '../../lib/courseRegistry';
+
+    const el = document.getElementById('adminEmbedCoursesJson');
+    let data: EmbedCoursePayload[] = [];
+    if (el?.textContent) {
+      try {
+        data = JSON.parse(el.textContent) as EmbedCoursePayload[];
+      } catch {
+        data = [];
+      }
+    }
+    initAdminEmbed(Array.isArray(data) ? data : []);
   </script>
 
   <style is:inline>
@@ -278,10 +301,4 @@ import { courses } from '../../data/courses';
     }
   </style>
 
-  <script
-    type="application/json"
-    id="coursesJson"
-    is:inline
-    set:html={JSON.stringify(courses.map((c) => ({ slug: c.slug, name: c.name, lessons: c.lessons ?? [] })))}
-  />
 </Layout>

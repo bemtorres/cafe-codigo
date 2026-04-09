@@ -1,0 +1,70 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+---
+
+<Layout title="Condicionales en Ruby" description="if/elsif/else, unless y case." courseSlug="ruby">
+  <article class="content-section">
+    <h1>4. Condicionales (if / unless / case)</h1>
+
+    <section class="mb-10">
+      <h2>If y elsif</h2>
+      <CodeBlock
+        lang="ruby"
+        title="if.rb"
+        code={`age = 17
+
+if age >= 18
+  puts "Mayor de edad"
+elsif age >= 13
+  puts "Adolescente"
+else
+  puts "Niñez"
+end`}
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Unless (cuando es más claro al revés)</h2>
+      <CodeBlock
+        lang="ruby"
+        title="unless.rb"
+        code={`logged_in = false
+
+unless logged_in
+  puts "Inicia sesión"
+end`}
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Case</h2>
+      <CodeBlock
+        lang="ruby"
+        title="case.rb"
+        code={`role = "admin"
+
+case role
+when "admin"
+  puts "Acceso total"
+when "editor"
+  puts "Puede editar"
+else
+  puts "Lectura"
+end`}
+      />
+    </section>
+
+    <div class="ejercicio" style="background:#FFF9C4;">
+      <h3>🧩 Reto</h3>
+      <p class="enunciado">
+        Crea una variable <code>score</code> (0 a 100) y muestra “A/B/C/D/F” usando <code>case</code> o <code>if</code>.
+      </p>
+    </div>
+
+    <nav class="nav-bottom">
+      <a href="/course/ruby/strings/" class="prev">← Strings</a>
+      <a href="/course/ruby/bucles/" class="next">Bucles →</a>
+    </nav>
+  </article>
+</Layout>

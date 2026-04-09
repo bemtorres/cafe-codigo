@@ -16,23 +16,6 @@ import CoursesCatalog from '../../components/courses/CoursesCatalog';
         preferencia de vista se guarda en este navegador.
       </p>
     </header>
-    <aside
-      class="mb-8 rounded-2xl border-2 border-border bg-white/90 px-4 py-4 shadow-[4px_4px_0_var(--border)] sm:px-5"
-      aria-label="Práctica guiada"
-    >
-      <p class="m-0 font-nunito text-[0.65rem] font-extrabold uppercase tracking-[0.18em] text-textMuted">
-        Práctica guiada
-      </p>
-      <h2 class="!mt-1 font-nunito text-lg font-black text-textPrimary sm:text-xl">
-        <a href="/ejercicios/" class="text-inherit underline decoration-2 underline-offset-2 hover:text-[#EF476F]"
-          >Ejercicios por unidades</a
-        >
-      </h2>
-      <p class="mt-2 mb-0 max-w-2xl font-nunito text-sm font-[650] leading-relaxed text-textSecondary">
-        Retos de lógica con checklist local (EPS, condicionales, avanzados y guía). No forma parte del listado de cursos
-        porque vive en rutas propias <code class="rounded bg-black/5 px-1 py-0.5 text-[0.85em]">/ejercicios/</code>.
-      </p>
-    </aside>
     <CoursesCatalog client:load />
   </div>
 </Layout>

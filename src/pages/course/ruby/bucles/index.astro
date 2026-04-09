@@ -1,0 +1,56 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+---
+
+<Layout title="Bucles en Ruby" description="while, times, each y map." courseSlug="ruby">
+  <article class="content-section">
+    <h1>5. Bucles e iteradores</h1>
+
+    <section class="mb-10">
+      <h2>While</h2>
+      <CodeBlock
+        lang="ruby"
+        title="while.rb"
+        code={`i = 1
+while i <= 3
+  puts "i = #{i}"
+  i += 1
+end`}
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>times (muy Ruby)</h2>
+      <CodeBlock lang="ruby" title="times.rb" code={`3.times do |n|\n  puts "vuelta #{n}"\nend`} />
+    </section>
+
+    <section class="mb-10">
+      <h2>each y map</h2>
+      <CodeBlock
+        lang="ruby"
+        title="each_map.rb"
+        code={`nums = [1, 2, 3, 4]
+
+nums.each do |x|
+  puts x * 2
+end
+
+sq = nums.map { |x| x * x }
+puts sq.inspect`}
+      />
+    </section>
+
+    <div class="ejercicio" style="background:#E3F2FD;">
+      <h3>💻 Misión</h3>
+      <p class="enunciado">
+        Dada una lista de precios, crea una nueva lista con el IVA (por ejemplo 19%) usando <code>map</code>.
+      </p>
+    </div>
+
+    <nav class="nav-bottom">
+      <a href="/course/ruby/condicionales/" class="prev">← Condicionales</a>
+      <a href="/course/ruby/metodos/" class="next">Métodos →</a>
+    </nav>
+  </article>
+</Layout>

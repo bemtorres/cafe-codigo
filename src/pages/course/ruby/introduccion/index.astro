@@ -1,0 +1,65 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+---
+
+<Layout title="Introducción a Ruby" description="Qué es Ruby, cómo se escribe y tu primer script." courseSlug="ruby">
+  <article class="content-section">
+    <h1>1. Introducción: Ruby en 10 minutos 💎</h1>
+
+    <section class="mb-10">
+      <h2>¿Qué es Ruby?</h2>
+      <p>
+        Ruby es un lenguaje pensado para que programar se sienta <strong>natural</strong>: expresivo, legible y muy agradable
+        para construir scripts y aplicaciones web (Ruby on Rails).
+      </p>
+      <blockquote>
+        “Programmer happiness” (la felicidad del programador) es una idea central de Ruby.
+      </blockquote>
+    </section>
+
+    <section class="mb-10">
+      <h2>Tu primer script</h2>
+      <p>En Ruby, imprimir texto es directo con <code>puts</code>:</p>
+      <CodeBlock lang="ruby" title="hola.rb" code={`puts "Hola Ruby 💎"`} />
+      <p class="mt-4">
+        Si tenés Ruby instalado, corrés el archivo así: <code>ruby hola.rb</code>.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Todo es un objeto</h2>
+      <p>
+        En Ruby, casi todo es un objeto, incluso números y strings. Eso te permite llamar métodos de forma muy consistente.
+      </p>
+      <CodeBlock
+        lang="ruby"
+        title="objetos.rb"
+        code={`puts 5.even?
+puts "ruby".upcase
+puts [1, 2, 3].length`}
+      />
+    </section>
+
+    <div class="ejercicio" style="background: #FFF9C4;">
+      <h3>💻 Misión</h3>
+      <p class="enunciado">
+        Escribe un script que imprima tu nombre y una meta para este mes. (Dos <code>puts</code>).
+      </p>
+      <details>
+        <summary>👁️ Ver solución sugerida</summary>
+        <CodeBlock
+          lang="ruby"
+          title="mision.rb"
+          code={`puts "Hola, soy Benjamín"
+puts "Este mes voy a terminar el curso de Ruby"`}
+        />
+      </details>
+    </div>
+
+    <nav class="nav-bottom">
+      <a href="/course/ruby/" class="prev">← Índice de Ruby</a>
+      <a href="/course/ruby/variables-y-tipos/" class="next">Variables y tipos →</a>
+    </nav>
+  </article>
+</Layout>

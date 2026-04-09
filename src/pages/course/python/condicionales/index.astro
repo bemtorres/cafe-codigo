@@ -4,42 +4,340 @@ import CodeBlock from '../../../../components/CodeBlock.astro';
 import PythonQuizModal from '../../../../components/PythonQuizModal.astro';
 ---
 
-<Layout title="Condicionales (If / Else)" description="Toma caminos distintos en tu código Python." courseSlug="python">
+<Layout title="Condicionales (If / Else)" description="Toma caminos distintos en tu código Python: if, else, elif, and, or, not y None." courseSlug="python">
   <article class="content-section">
     <h1>4. Condicionales: Tomando Decisiones 🚦</h1>
 
     <section class="mb-10">
-      <h2>El flujo lógico (If / Else)</h2>
-      <p>Python toma decisiones basándose en la luz del semáforo. Solo avanzas si la luz es verde (o si la condición es <code>True</code>). ¡Cuidado con la indentación!</p>
-      <CodeBlock lang="python" code={`edad = 18
+      <p>
+        Las condiciones son el corazón de la lógica: el programa <strong>elige</strong> qué hacer según si algo es
+        verdadero (<code>True</code>) o falso (<code>False</code>). En Python la indentación (espacios) marca qué código
+        “pertenece” a cada <code>if</code>.
+      </p>
+    </section>
 
+    <!-- ========== SOLO IF ========== -->
+    <section class="mb-10">
+      <h2>1) Solo <code>if</code> — cinco mini ejemplos</h2>
+      <p>
+        Si la condición es cierta, se ejecuta el bloque indentado. Si no, Python <strong>sigue después del if</strong>
+        sin imprimir nada de ese bloque (no hay <code>else</code>).
+      </p>
+      <CodeBlock
+        lang="python"
+        title="cinco_solo_if.py"
+        code={`# --- 1) Comparación numérica ---
+temp = 32
+if temp > 30:
+    print("Hace mucho calor")
+
+# --- 2) Igualdad ---
+codigo = "OK"
+if codigo == "OK":
+    print("Operación aceptada")
+
+# --- 3) Cadena vacía (falsy) ---
+mensaje = ""
+if mensaje:
+    print("Hay texto")
+# No imprime: "" se evalúa como False en un if
+
+# --- 4) Lista con elementos ---
+carrito = ["pan", "leche"]
+if len(carrito) > 0:
+    print("Hay productos en el carrito")
+
+# --- 5) Porcentaje aprobado ---
+nota = 85
+if nota >= 70:
+    print("Aprobado")`}
+      />
+    </section>
+
+    <!-- ========== IF ELSE ========== -->
+    <section class="mb-10">
+      <h2>2) <code>if</code> … <code>else</code> — cinco ejemplos</h2>
+      <p>Dos caminos: si la condición es verdadera, un bloque; si no, el otro.</p>
+      <CodeBlock
+        lang="python"
+        title="cinco_if_else.py"
+        code={`# --- 1) Mayoría de edad ---
+edad = 16
 if edad >= 18:
-    print("¡Eres mayor de edad! Bienvenido al club.")
+    print("Mayor de edad")
 else:
-    print("Lo siento, eres menor de edad.")`}
-        title="seguridad.py"
+    print("Menor de edad")
+
+# --- 2) Par o impar ---
+n = 7
+if n % 2 == 0:
+    print("Es par")
+else:
+    print("Es impar")
+
+# --- 3) Acceso por contraseña ---
+clave = "python123"
+if clave == "python123":
+    print("Acceso permitido")
+else:
+    print("Contraseña incorrecta")
+
+# --- 4) Stock mínimo ---
+stock = 3
+if stock >= 5:
+    print("Hay suficiente stock")
+else:
+    print("Reponer pronto")
+
+# --- 5) Descuento simple ---
+precio = 100
+if precio > 50:
+    print("Aplica envío gratis")
+else:
+    print("Paga envío")`}
       />
     </section>
 
+    <!-- ========== IF ELIF ELSE ========== -->
     <section class="mb-10">
-      <h2>Varias condiciones: Elif</h2>
-      <p>Cuando tienes más de dos opciones, puedes encadenar reglas con <code>elif</code>.</p>
-      <CodeBlock lang="python" code={`hora = 14
-
+      <h2>3) <code>if</code> … <code>elif</code> … <code>else</code> — cinco ejemplos</h2>
+      <p>
+        Varias condiciones en cascada: Python evalúa de arriba abajo y ejecuta el <strong>primer</strong> bloque cuya
+        condición sea <code>True</code>. Si ninguna coincide, va al <code>else</code> (si existe).
+      </p>
+      <CodeBlock
+        lang="python"
+        title="cinco_if_elif_else.py"
+        code={`# --- 1) Saludo por hora ---
+hora = 15
 if hora < 12:
-    print("¡Buenos días!")
+    print("Buenos días")
 elif hora < 20:
-    print("¡Buenas tardes!")
+    print("Buenas tardes")
 else:
-    print("¡Buenas noches!")`}
-        title="saludo.py"
+    print("Buenas noches")
+
+# --- 2) Calificación por nota ---
+nota = 82
+if nota >= 90:
+    print("A")
+elif nota >= 80:
+    print("B")
+elif nota >= 70:
+    print("C")
+else:
+    print("Necesitas repasar")
+
+# --- 3) Tamaño de pizza ---
+tam = "M"
+if tam == "S":
+    print("Pequeña")
+elif tam == "M":
+    print("Mediana")
+elif tam == "L":
+    print("Grande")
+else:
+    print("Tamaño no válido")
+
+# --- 4) Día laborable ---
+dia = "sábado"
+if dia in ("lunes", "martes", "miércoles", "jueves", "viernes"):
+    print("Día laboral")
+elif dia in ("sábado", "domingo"):
+    print("Fin de semana")
+else:
+    print("Día desconocido")
+
+# --- 5) IMC simplificado (solo categoría) ---
+peso_kg = 70
+altura_m = 1.75
+imc = peso_kg / (altura_m ** 2)
+if imc < 18.5:
+    print("Bajo peso")
+elif imc < 25:
+    print("Normal")
+elif imc < 30:
+    print("Sobrepeso")
+else:
+    print("Obesidad")`}
+      />
+    </section>
+
+    <!-- ========== AND ========== -->
+    <section class="mb-10">
+      <h2>4) Cinco ejemplos con <code>and</code> (Y)</h2>
+      <p><strong><code>and</code></strong>: todas las condiciones unidas deben ser verdaderas a la vez.</p>
+      <CodeBlock
+        lang="python"
+        title="cinco_and.py"
+        code={`# --- 1) Edad y permiso ---
+edad = 17
+con_permiso = True
+if edad >= 18 and con_permiso:
+    print("Conduce solo")
+else:
+    print("No cumple ambas condiciones")
+
+# --- 2) Usuario y contraseña ---
+user = "ana"
+pwd = "secreto"
+if user == "ana" and pwd == "secreto":
+    print("Login OK")
+
+# --- 3) Rango numérico (entre dos valores) ---
+x = 15
+if x >= 10 and x <= 20:
+    print("x está entre 10 y 20")
+
+# --- 4) Lista no vacía y primer elemento ---
+nums = [3, 1, 4]
+if len(nums) > 0 and nums[0] > 0:
+    print("Hay números y el primero es positivo")
+
+# --- 5) String no vacío y longitud mínima ---
+nick = "pythonista"
+if nick and len(nick) >= 5:
+    print("Nick válido (no vacío y 5+ caracteres)")`}
+      />
+    </section>
+
+    <!-- ========== OR ========== -->
+    <section class="mb-10">
+      <h2>5) Cinco ejemplos con <code>or</code> (O)</h2>
+      <p><strong><code>or</code></strong>: si <strong>al menos una</strong> condición es verdadera, el resultado es verdadero.</p>
+      <CodeBlock
+        lang="python"
+        title="cinco_or.py"
+        code={`# --- 1) Fin de semana ---
+dia = "sábado"
+if dia == "sábado" or dia == "domingo":
+    print("Es fin de semana")
+
+# --- 2) Descuento: estudiante o jubilado ---
+es_estudiante = True
+es_jubilado = False
+if es_estudiante or es_jubilado:
+    print("Aplica descuento")
+
+# --- 3) Transporte: bici o caminar ---
+tiene_bici = False
+puede_caminar = True
+if tiene_bici or puede_caminar:
+    print("Puede ir al parque")
+
+# --- 4) Código de error aceptable ---
+codigo = 404
+if codigo == 200 or codigo == 201:
+    print("Petición exitosa")
+else:
+    print("Revisar respuesta del servidor")
+
+# --- 5) Idioma soportado ---
+lang = "es"
+if lang == "es" or lang == "en" or lang == "pt":
+    print("Idioma disponible en la app")`}
       />
     </section>
 
     <section class="mb-10">
-      <h2>Lógica de pertenencia: in</h2>
-      <p>Python tiene un operador muy "humano" para saber si un elemento está dentro de una lista o un texto.</p>
-      <CodeBlock lang="python" code={`fruta = "manzana"
+      <h2>6) Combinados: <code>and</code>, <code>or</code> y paréntesis</h2>
+      <p>
+        Python evalúa <code>and</code> antes que <code>or</code> en expresiones largas. Si no estás seguro, usá
+        paréntesis para que el lector (y vos) entienda el orden.
+      </p>
+      <CodeBlock
+        lang="python"
+        title="combinados.py"
+        code={`pago_ok = True
+stock = 4
+es_vip = False
+
+# VIP puede comprar aunque stock sea bajo, o si hay stock y pagó:
+if es_vip or (stock >= 1 and pago_ok):
+    print("Venta autorizada")
+
+# Rango: número entre 1 y 10, pero no el 7
+n = 5
+if (n >= 1 and n <= 10) and n != 7:
+    print("Válido y distinto de 7")
+
+# Login: usuario correcto Y (email verificado O es cuenta antigua)
+usuario_ok = True
+email_verificado = False
+cuenta_antigua = True
+if usuario_ok and (email_verificado or cuenta_antigua):
+    print("Acceso concedido")`}
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>7) <code>None</code> y <code>not</code> — varios ejemplos</h2>
+      <p>
+        <code>None</code> significa “sin valor”. Para comparar con <code>None</code> usá <code>is None</code> o
+        <code>is not None</code> (es el estilo recomendado en Python). <code>not</code> invierte:
+        <code>not True</code> → <code>False</code>.
+      </p>
+      <CodeBlock
+        lang="python"
+        title="none_y_not.py"
+        code={`# --- None (1): variable aún sin asignar resultado ---
+respuesta = None
+if respuesta is None:
+    print("Aún no hay respuesta del servidor")
+
+# --- None (2): clave opcional en diccionario ---
+config = {"tema": "oscuro"}
+if config.get("idioma") is None:
+    print("Idioma por defecto: español")
+
+# --- None (3): función sin return explícito devuelve None ---
+def buscar_usuario(id):
+    if id < 0:
+        return None
+    return {"id": id, "nombre": "Ana"}
+
+u = buscar_usuario(-1)
+if u is None:
+    print("Usuario no encontrado")
+
+# --- not (1): booleano en False ---
+logueado = False
+if not logueado:
+    print("Iniciá sesión para continuar")
+
+# --- not (2): lista vacía (falsy) ---
+carrito = []
+if not carrito:
+    print("El carrito está vacío")
+
+# --- not (3): negar una comparación ---
+edad = 15
+if not (edad >= 18):
+    print("Menor de edad (equivalente a edad < 18)")
+
+# --- not (4): evitar doble negación confusa; a veces es más claro invertir la lógica ---
+bloqueado = True
+if not bloqueado:
+    print("Puedes escribir en el muro")
+else:
+    print("Cuenta bloqueada")
+
+# --- Combinación: None + not ---
+opcional = None
+if opcional is not None:
+    print("Hay valor:", opcional)
+else:
+    print("Sin valor (None)")`}
+      />
+    </section>
+
+    <!-- ========== CONTENIDO QUE YA TENÍAS (resumido / útil) ========== -->
+    <section class="mb-10">
+      <h2>8) Pertenencia: <code>in</code></h2>
+      <p>Comprueba si un valor está dentro de una lista, tupla, string, etc.</p>
+      <CodeBlock
+        lang="python"
+        code={`fruta = "manzana"
 carrito = ["peras", "manzanas", "uvas"]
 
 if fruta in carrito:
@@ -51,38 +349,151 @@ else:
     </section>
 
     <section class="mb-10">
-      <h2>Operador Ternario (If en una línea)</h2>
-      <p>Para decisiones muy simples de "esto o aquello", Python ofrece una sintaxis ultrarrápida.</p>
+      <h2>9) Expresión condicional (if en una línea)</h2>
+      <p>Para asignar un valor u otro según una condición simple.</p>
       <CodeBlock lang="python" code={`edad = 18
 estado = "Adulto" if edad >= 18 else "Menor"
-print(estado)`}
-        title="ternario.py"
+print(estado)`} title="ternario.py" />
+    </section>
+
+    <section class="mb-10">
+      <h2>10) Menú de opciones en consola</h2>
+      <p>
+        Un patrón muy común es <strong>mostrar opciones</strong> con <code>print()</code>, leer la elección con
+        <code>input()</code> y usar una cadena de <code>if</code> / <code>elif</code> / <code>else</code>. Así el
+        usuario “navega” por tu programa sin interfaz gráfica.
+      </p>
+      <CodeBlock
+        lang="python"
+        title="menu_opciones.py"
+        code={`print("=== CAFETERÍA ===")
+print("1) Café")
+print("2) Té")
+print("3) Jugo")
+print("4) Salir")
+
+opcion = input("Elegí un número (1-4): ").strip()
+
+if opcion == "1":
+    print("Preparando café ☕")
+elif opcion == "2":
+    print("Preparando té 🍵")
+elif opcion == "3":
+    print("Sirviendo jugo 🧃")
+elif opcion == "4":
+    print("¡Hasta luego!")
+else:
+    print("Opción no válida. Probá de nuevo con 1, 2, 3 o 4.")`}
       />
+      <p class="mt-4">
+        <strong>Tip:</strong> <code>input()</code> siempre devuelve <strong>texto</strong> (<code>str</code>). Por eso
+        comparamos con <code>"1"</code> y no con <code>1</code>. Si querés número, usá
+        <code>int(input("..."))</code> dentro de un <code>try</code>/<code>except</code> (lo verás más adelante con
+        errores).
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>11) Ejemplo: máquina dispensadora</h2>
+      <p>
+        Igual idea que el menú, pero con <strong>precios</strong>, <strong>stock</strong> y comprobaciones: ¿alcanza el
+        dinero?, ¿hay producto?, ¿código válido? Todo encadenado con condicionales.
+      </p>
+      <CodeBlock
+        lang="python"
+        title="dispensadora.py"
+        code={`# Precios en monedas (ejemplo simple)
+PRECIO_AGUA = 100
+PRECIO_SNACK = 250
+PRECIO_GASEOSA = 300
+
+stock_agua = 3
+stock_snack = 1
+stock_gaseosa = 0  # agotado
+
+print("=== DISPENSADORA ===")
+print("A) Agua    — $", PRECIO_AGUA, "  (stock:", stock_agua, ")")
+print("B) Snack   — $", PRECIO_SNACK, " (stock:", stock_snack, ")")
+print("C) Gaseosa — $", PRECIO_GASEOSA, "(stock:", stock_gaseosa, ")")
+
+eleccion = input("Elegí A, B o C: ").strip().upper()
+dinero = int(input("¿Cuánto dinero insertás? "))
+
+if eleccion == "A":
+    if stock_agua <= 0:
+        print("No hay agua. Elegí otra opción.")
+    elif dinero < PRECIO_AGUA:
+        print("Falta dinero. Necesitás al menos $", PRECIO_AGUA, sep="")
+    else:
+        print("¡Toma tu agua! 💧")
+        vuelto = dinero - PRECIO_AGUA
+        if vuelto > 0:
+            print("Tu vuelto: $", vuelto, sep="")
+elif eleccion == "B":
+    if stock_snack <= 0:
+        print("No hay snacks.")
+    elif dinero < PRECIO_SNACK:
+        print("Falta dinero. Necesitás al menos $", PRECIO_SNACK, sep="")
+    else:
+        print("¡Snack entregado! 🍫")
+elif eleccion == "C":
+    if stock_gaseosa <= 0:
+        print("Gaseosa agotada.")
+    elif dinero < PRECIO_GASEOSA:
+        print("Falta dinero. Necesitás al menos $", PRECIO_GASEOSA, sep="")
+    else:
+        print("¡Gaseosa fría! 🥤")
+else:
+    print("Letra inválida. Usá A, B o C.")`}
+      />
+      <p class="mt-4">
+        Fijate cómo el <code>if</code> exterior elige el producto y el <strong>interior</strong> responde a tres
+        preguntas: ¿hay stock?, ¿alcanza el dinero?, si todo ok → entregar (y opcionalmente calcular vuelto). Podés
+        extenderlo con un bucle <code>while</code> para que la máquina no termine tras una sola compra (lo harás en la
+        lección de bucles).
+      </p>
+    </section>
+
+    <section class="mb-10 rounded-xl border-2 border-border bg-primary/10 p-4">
+      <h2 class="mt-0 text-base">Siguiente paso: <code>match</code> / <code>case</code></h2>
+      <p class="mb-0 text-sm leading-snug text-textSecondary font-[650]">
+        Para ramificar como un <code>switch</code> de otros lenguajes (Python 3.10+), tenés la lección dedicada:
+        <a href="/course/python/match-case/" class="font-black text-[#3776ab] underline decoration-2 underline-offset-2">5. match / case →</a>
+      </p>
     </section>
 
     <div class="ejercicio" style="background: #F8BBD0;">
       <h3>🐍 Desafío: El portero de la disco PRO</h3>
-      <p class="enunciado">Crea una variable <code>tengo_entrada</code> (True/False) y otra variable <code>edad</code>. Escribe un if que diga "Pasa" solo si eres mayor de 18 y además tienes entrada (usa <code>and</code>).</p>
-      
+      <p class="enunciado">
+        Crea una variable <code>tengo_entrada</code> (True/False) y otra variable <code>edad</code>. Escribe un if que
+        diga "Pasa" solo si eres mayor de 18 y además tienes entrada (usa <code>and</code>).
+      </p>
+
       <details>
         <summary>👁️ Ver solución sugerida</summary>
-        <CodeBlock lang="python" code={`edad = 20
+        <CodeBlock
+          lang="python"
+          code={`edad = 20
 tengo_entrada = True
 
 if edad >= 18 and tengo_entrada:
     print("Adelante, ¡pasa!")
 else:
-    print("No puedes entrar.")`} title="Python" />
+    print("No puedes entrar.")`}
+          title="portero.py"
+        />
       </details>
     </div>
 
     <section class="mb-10">
+      <h2>Pon a prueba lo aprendido</h2>
+      <p>Responde el quiz cuando te sientas cómodo con <code>if</code>, <code>else</code>, <code>elif</code>, <code>and</code> y <code>or</code>.</p>
       <PythonQuizModal quizKey="condicionales" />
     </section>
 
     <nav class="nav-bottom">
       <a href="/course/python/texto-y-conversiones/" class="prev">← Texto y tipos</a>
-      <a href="/course/python/bucles/" class="next">Bucles →</a>
+      <a href="/course/python/match-case/" class="next">match / case →</a>
     </nav>
   </article>
 </Layout>

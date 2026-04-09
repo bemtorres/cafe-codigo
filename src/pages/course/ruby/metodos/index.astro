@@ -1,0 +1,69 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+---
+
+<Layout title="Métodos en Ruby" description="Definir métodos, argumentos y valores por defecto." courseSlug="ruby">
+  <article class="content-section">
+    <h1>6. Métodos y parámetros</h1>
+
+    <section class="mb-10">
+      <h2>Definir y llamar</h2>
+      <CodeBlock
+        lang="ruby"
+        title="metodos.rb"
+        code={`def greet(name)
+  "Hola, #{name}"
+end
+
+puts greet("Ada")`}
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Valores por defecto</h2>
+      <CodeBlock
+        lang="ruby"
+        title="defaults.rb"
+        code={`def price_with_tax(price, tax = 0.19)
+  (price * (1 + tax)).round(2)
+end
+
+puts price_with_tax(100)
+puts price_with_tax(100, 0.07)`}
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Retorno</h2>
+      <p>
+        Ruby retorna la última expresión evaluada (no necesitás <code>return</code> salvo casos especiales).
+      </p>
+      <CodeBlock
+        lang="ruby"
+        title="return.rb"
+        code={`def abs(x)
+  if x >= 0
+    x
+  else
+    -x
+  end
+end
+
+puts abs(-5)`}
+      />
+    </section>
+
+    <div class="ejercicio" style="background:#F3E8FF;">
+      <h3>🧩 Reto</h3>
+      <p class="enunciado">
+        Crea un método <code>full_name(first, last)</code> que retorne el nombre completo con interpolación.
+      </p>
+    </div>
+
+    <nav class="nav-bottom">
+      <a href="/course/ruby/bucles/" class="prev">← Bucles</a>
+      <a href="/course/ruby/arrays-y-hashes/" class="next">Arrays y Hashes →</a>
+    </nav>
+  </article>
+</Layout>

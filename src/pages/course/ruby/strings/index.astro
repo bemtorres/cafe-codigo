@@ -1,0 +1,54 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+---
+
+<Layout title="Strings en Ruby" description="Concatenación, interpolación y métodos útiles." courseSlug="ruby">
+  <article class="content-section">
+    <h1>3. Strings e interpolación</h1>
+
+    <section class="mb-10">
+      <h2>Comillas y concatenación</h2>
+      <p>
+        Podés usar comillas dobles o simples. Para interpolar variables, usá comillas dobles.
+      </p>
+      <CodeBlock
+        lang="ruby"
+        title="strings.rb"
+        code={`name = "Matz"
+lang = 'Ruby'
+
+puts "Hola, #{name}. Bienvenido a #{lang}."
+puts "2 + 2 = #{2 + 2}"
+
+greet = "Hola " + "mundo"
+puts greet`}
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Métodos útiles</h2>
+      <CodeBlock
+        lang="ruby"
+        title="metodos_string.rb"
+        code={`s = "  ruby es genial  "
+puts s.strip
+puts s.upcase
+puts s.downcase
+puts s.include?("genial")`}
+      />
+    </section>
+
+    <div class="ejercicio" style="background:#F3E8FF;">
+      <h3>💻 Misión</h3>
+      <p class="enunciado">
+        Crea una variable <code>first</code> y <code>last</code> y muestra tu nombre completo usando interpolación.
+      </p>
+    </div>
+
+    <nav class="nav-bottom">
+      <a href="/course/ruby/variables-y-tipos/" class="prev">← Variables y tipos</a>
+      <a href="/course/ruby/condicionales/" class="next">Condicionales →</a>
+    </nav>
+  </article>
+</Layout>

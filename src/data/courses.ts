@@ -27,6 +27,7 @@ export interface Course {
   communityReleaseYear?: number;
 }
 
+/** Catálogo canónico del sitio. Para embed y listados derivados usá `getCoursesForEmbed()` en `src/lib/courseRegistry.ts`. */
 export const courses: Course[] = [
   {
     slug: 'ecosistemas',
@@ -128,14 +129,15 @@ export const courses: Course[] = [
         href: '/course/python/texto-y-conversiones/',
       },
       { slug: 'condicionales', title: '4. Lógica (If)', href: '/course/python/condicionales/' },
-      { slug: 'bucles', title: '5. Bucles (For/While)', href: '/course/python/bucles/' },
-      { slug: 'listas', title: '6. Listas y Tuplas', href: '/course/python/listas/' },
-      { slug: 'diccionarios', title: '7. Diccionarios', href: '/course/python/diccionarios/' },
-      { slug: 'funciones', title: '8. Funciones', href: '/course/python/funciones/' },
-      { slug: 'try-except', title: '9. Errores (try / except)', href: '/course/python/try-except/' },
-      { slug: 'list-comprehension', title: '10. List Comprehension', href: '/course/python/list-comprehension/' },
-      { slug: 'poo', title: '11. Clases y Objetos', href: '/course/python/poo/' },
-      { slug: 'modulos', title: '12. Módulos y PIP', href: '/course/python/modulos/' },
+      { slug: 'match-case', title: '5. match / case', href: '/course/python/match-case/' },
+      { slug: 'bucles', title: '6. Bucles (For/While)', href: '/course/python/bucles/' },
+      { slug: 'listas', title: '7. Listas y Tuplas', href: '/course/python/listas/' },
+      { slug: 'diccionarios', title: '8. Diccionarios', href: '/course/python/diccionarios/' },
+      { slug: 'funciones', title: '9. Funciones', href: '/course/python/funciones/' },
+      { slug: 'try-except', title: '10. Errores (try / except)', href: '/course/python/try-except/' },
+      { slug: 'list-comprehension', title: '11. List Comprehension', href: '/course/python/list-comprehension/' },
+      { slug: 'poo', title: '12. Clases y Objetos', href: '/course/python/poo/' },
+      { slug: 'modulos', title: '13. Módulos y PIP', href: '/course/python/modulos/' },
     ],
   },
   {
@@ -367,6 +369,25 @@ export const courses: Course[] = [
       { slug: 'dom', title: '8. Manipular el DOM', href: '/course/javascript/dom/' },
       { slug: 'eventos', title: '9. Eventos y Click', href: '/course/javascript/eventos/' },
       { slug: 'async', title: '10. Fetch y Promesas', href: '/course/javascript/async/' },
+    ],
+  },
+  {
+    slug: 'ruby',
+    name: 'Ruby',
+    description:
+      'Aprende Ruby desde cero: sintaxis elegante, scripts prácticos y bases sólidas para web con Ruby on Rails.',
+    category: 'language',
+    status: 'available',
+    color: '#CC342D',
+    communityReleaseYear: 1995,
+    lessons: [
+      { slug: 'introduccion', title: '1. Introducción (Ruby en 10 min)', href: '/course/ruby/introduccion/' },
+      { slug: 'variables-y-tipos', title: '2. Variables y tipos', href: '/course/ruby/variables-y-tipos/' },
+      { slug: 'strings', title: '3. Strings e interpolación', href: '/course/ruby/strings/' },
+      { slug: 'condicionales', title: '4. Condicionales (if/unless/case)', href: '/course/ruby/condicionales/' },
+      { slug: 'bucles', title: '5. Bucles e iteradores', href: '/course/ruby/bucles/' },
+      { slug: 'metodos', title: '6. Métodos y parámetros', href: '/course/ruby/metodos/' },
+      { slug: 'arrays-y-hashes', title: '7. Arrays y Hashes', href: '/course/ruby/arrays-y-hashes/' },
     ],
   },
   {

@@ -254,6 +254,160 @@ print("¿Empieza con 'p'?", s.startswith("p"))`}
     </div>
 
     <section class="mb-10">
+      <h2>Práctica: correo corporativo @cafeycodigo.org</h2>
+      <p>
+        En todos los casos el correo institucional sigue la misma regla:{' '}
+        <strong>3 primeras letras del nombre</strong> + <strong>2 últimas del apellido</strong> + <code>.</code> +{' '}
+        <strong>año de nacimiento</strong> + <code>@cafeycodigo.org</code> (sin espacios). También pedís{' '}
+        <strong>correo personal</strong> y <strong>edad</strong> como parte del enunciado (aunque en algún ejercicio el año nazca de otra forma).
+      </p>
+
+      <div class="ejercicio mt-6" style="background: #E8F5E9;">
+        <h3>💻 1. Ficha de ingreso</h3>
+        <p class="enunciado">
+          Solicitá <strong>nombre</strong>, <strong>apellido</strong>, <strong>correo personal</strong> y <strong>edad</strong> (entero). Calculá el año de nacimiento como{' '}
+          <code>año actual − edad</code> usando <code>datetime.date.today().year</code>. Armá el correo corporativo con la regla de arriba (normalizá nombre y apellido en{' '}
+          <strong>minúsculas</strong> y sin espacios al inicio/fin). Mostrá el correo personal y el corporativo en dos líneas claras.
+        </p>
+        <details>
+          <summary>👁️ Ver solución sugerida</summary>
+          <CodeBlock
+            lang="python"
+            title="correo-ficha.py"
+            code={`from datetime import date
+
+nombre = input("Nombre: ").strip().lower()
+apellido = input("Apellido: ").strip().lower()
+correo_personal = input("Correo personal: ").strip()
+edad = int(input("Edad: ").strip())
+
+anio_nac = date.today().year - edad
+usuario = f"{nombre[:3]}{apellido[-2:]}.{anio_nac}"
+correo_corp = usuario + "@cafeycodigo.org"
+
+print("Correo personal:", correo_personal)
+print("Correo corporativo:", correo_corp)`}
+          />
+        </details>
+      </div>
+
+      <div class="ejercicio mt-6" style="background: #E3F2FD;">
+        <h3>💻 2. Validá la edad antes de convertir</h3>
+        <p class="enunciado">
+          Mismos datos que el ejercicio 1. Antes de hacer <code>int(edad)</code>, leé la edad como texto y comprobá con <code>isdigit()</code>. Si no es un entero válido, mostrá un mensaje de error y no generes el correo. Si es válido, calculá el año de nacimiento y el correo corporativo con la misma regla (nombre/apellido en minúsculas).
+        </p>
+        <details>
+          <summary>👁️ Ver solución sugerida</summary>
+          <CodeBlock
+            lang="python"
+            title="correo-validar-edad.py"
+            code={`from datetime import date
+
+nombre = input("Nombre: ").strip().lower()
+apellido = input("Apellido: ").strip().lower()
+correo_personal = input("Correo personal: ").strip()
+edad_txt = input("Edad: ").strip()
+
+if not edad_txt.isdigit():
+    print("Error: la edad debe ser un número entero (solo dígitos).")
+else:
+    edad = int(edad_txt)
+    anio_nac = date.today().year - edad
+    correo_corp = f"{nombre[:3]}{apellido[-2:]}.{anio_nac}@cafeycodigo.org"
+    print("Correo personal:", correo_personal)
+    print("Correo corporativo:", correo_corp)`}
+          />
+        </details>
+      </div>
+
+      <div class="ejercicio mt-6" style="background: #F3E5F5;">
+        <h3>💻 3. Año de nacimiento explícito</h3>
+        <p class="enunciado">
+          Pedí nombre, apellido, correo personal, edad <strong>y además el año de nacimiento en cuatro dígitos</strong> (por ejemplo <code>2008</code>). Para el correo corporativo usá <strong>ese año ingresado</strong>, no el calculado desde la edad (así practicás otro <code>int()</code>). Al final mostrá una línea que diga si la edad coincide aproximadamente con el año (opcional: compará <code>date.today().year - edad</code> con el año ingresado).
+        </p>
+        <details>
+          <summary>👁️ Ver solución sugerida</summary>
+          <CodeBlock
+            lang="python"
+            title="correo-anio-explicito.py"
+            code={`from datetime import date
+
+nombre = input("Nombre: ").strip().lower()
+apellido = input("Apellido: ").strip().lower()
+correo_personal = input("Correo personal: ").strip()
+edad = int(input("Edad: ").strip())
+anio_nac = int(input("Año de nacimiento (aaaa): ").strip())
+
+correo_corp = f"{nombre[:3]}{apellido[-2:]}.{anio_nac}@cafeycodigo.org"
+print("Correo personal:", correo_personal)
+print("Correo corporativo:", correo_corp)
+
+calculado = date.today().year - edad
+print("¿Coincide el año con la edad?", calculado == anio_nac)`}
+          />
+        </details>
+      </div>
+
+      <div class="ejercicio mt-6" style="background: #FFF3E0;">
+        <h3>💻 4. Nombre compuesto: solo la primera palabra</h3>
+        <p class="enunciado">
+          Pedí los mismos cuatro datos. Si el usuario escribe un nombre compuesto (ej. <code>"María Laura"</code>), tomá <strong>solo la primera palabra</strong> para las tres letras iniciales (usá <code>split()</code>). El apellido sigue entero para las dos últimas letras. El año de nacimiento sale de <code>año actual − edad</code>. Mostrá el correo corporativo con <code>f"..."</code>.
+        </p>
+        <details>
+          <summary>👁️ Ver solución sugerida</summary>
+          <CodeBlock
+            lang="python"
+            title="correo-nombre-compuesto.py"
+            code={`from datetime import date
+
+nombre_raw = input("Nombre: ").strip().lower()
+apellido = input("Apellido: ").strip().lower()
+correo_personal = input("Correo personal: ").strip()
+edad = int(input("Edad: ").strip())
+
+primer_nombre = nombre_raw.split()[0]
+anio_nac = date.today().year - edad
+correo_corp = f"{primer_nombre[:3]}{apellido[-2:]}.{anio_nac}@cafeycodigo.org"
+
+print("Correo personal:", correo_personal)
+print("Correo corporativo:", correo_corp)`}
+          />
+        </details>
+      </div>
+
+      <div class="ejercicio mt-6" style="background: #ECEFF1;">
+        <h3>💻 5. Comprobá el correo personal</h3>
+        <p class="enunciado">
+          Pedí nombre, apellido, correo personal y edad. Generá el correo corporativo como en el ejercicio 1. Además, sin usar regex avanzada, indicá con <code>True</code>/<code>False</code> si el correo personal <strong>contiene</strong> el carácter <code>@</code> y si <strong>termina</strong> en <code>.org</code>, <code>.com</code> o <code>.edu</code> (usá <code>in</code> y <code>endswith()</code> en minúsculas). Mostrá el corporativo y esas dos comprobaciones.
+        </p>
+        <details>
+          <summary>👁️ Ver solución sugerida</summary>
+          <CodeBlock
+            lang="python"
+            title="correo-comprobar-personal.py"
+            code={`from datetime import date
+
+nombre = input("Nombre: ").strip().lower()
+apellido = input("Apellido: ").strip().lower()
+correo_personal = input("Correo personal: ").strip()
+edad = int(input("Edad: ").strip())
+
+anio_nac = date.today().year - edad
+correo_corp = f"{nombre[:3]}{apellido[-2:]}.{anio_nac}@cafeycodigo.org"
+
+cp = correo_personal.lower()
+tiene_arroba = "@" in cp
+termina_ok = cp.endswith(".org") or cp.endswith(".com") or cp.endswith(".edu")
+
+print("Correo corporativo:", correo_corp)
+print("¿Tiene @?", tiene_arroba)
+print("¿Termina en .org, .com o .edu?", termina_ok)`}
+          />
+        </details>
+      </div>
+    </section>
+
+    <section class="mb-10">
       <h2>Prueba rápida</h2>
       <PythonQuizModal quizKey="texto-y-conversiones" />
     </section>

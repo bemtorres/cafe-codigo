@@ -1,0 +1,59 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+---
+
+<Layout title="Variables y tipos en Ruby" description="Variables, números, booleanos y nil en Ruby." courseSlug="ruby">
+  <article class="content-section">
+    <h1>2. Variables y tipos</h1>
+
+    <section class="mb-10">
+      <h2>Variables (sin declarar tipo)</h2>
+      <p>
+        Ruby es dinámico: no declarás el tipo. Solo asignás con <code>=</code>.
+      </p>
+      <CodeBlock
+        lang="ruby"
+        title="variables.rb"
+        code={`name = "Ada"
+age = 20
+price = 19.99
+active = true
+nothing = nil
+
+puts name
+puts age
+puts price
+puts active
+puts nothing`}
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Conversión simple</h2>
+      <p>Ruby tiene métodos como <code>to_i</code>, <code>to_f</code>, <code>to_s</code>.</p>
+      <CodeBlock
+        lang="ruby"
+        title="conversion.rb"
+        code={`x = "42"
+puts x.to_i + 8
+
+y = 3.5
+puts y.to_i
+puts y.to_s`}
+      />
+    </section>
+
+    <div class="ejercicio" style="background:#E3F2FD;">
+      <h3>🧩 Reto</h3>
+      <p class="enunciado">
+        Crea variables <code>city</code>, <code>year</code> y <code>likes_ruby</code>, e imprímelas.
+      </p>
+    </div>
+
+    <nav class="nav-bottom">
+      <a href="/course/ruby/introduccion/" class="prev">← Introducción</a>
+      <a href="/course/ruby/strings/" class="next">Strings →</a>
+    </nav>
+  </article>
+</Layout>

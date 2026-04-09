@@ -1,0 +1,162 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+---
+
+<Layout
+  title="match / case en Python"
+  description="Patrón estructural match/case (Python 3.10+): el equivalente al switch, con ejemplos prácticos."
+  courseSlug="python"
+>
+  <article class="content-section">
+    <h1>5. <code>match</code> / <code>case</code>: ramificar como con <code>switch</code> 🔀</h1>
+
+    <section class="mb-10">
+      <p>
+        En muchos lenguajes existe <code>switch</code>: mirás <strong>una expresión</strong> y ejecutás el bloque que
+        coincida. En Python <strong>no hay</strong> la palabra <code>switch</code>; desde <strong>Python 3.10</strong>
+        el mecanismo equivalente (y más potente) es <code>match</code> seguido de varios <code>case</code>.
+      </p>
+      <p>
+        <strong>¿Para qué sirve?</strong> Para elegir un camino entre <strong>muchas alternativas</strong> sobre el
+        mismo valor, con código que se lee como una tabla: primero encaja un <code>case</code>, se ejecuta su bloque y
+        <strong>no</strong> se siguen probando los demás (salvo que uses bloques vacíos con
+        <code>fall-through</code>, que en Python no es el estilo habitual).
+      </p>
+      <p class="rounded-lg border-2 border-border bg-amber-50 px-3 py-2 text-sm font-bold text-[#5c4a3a]">
+        Necesitás <strong>Python 3.10 o superior</strong>. Con una versión anterior, usá
+        <a href="/course/python/condicionales/" class="text-[#3776ab] underline">if / elif / else</a> como en la lección
+        4.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Sintaxis mínima</h2>
+      <CodeBlock
+        lang="python"
+        title="esqueleto.py"
+        code={`valor = "b"
+match valor:
+    case "a":
+        print("Opción A")
+    case "b":
+        print("Opción B")
+    case _:
+        print("Cualquier otra cosa (_ = default)")`}
+      />
+      <ul class="mt-4 list-disc space-y-1 pl-5 text-[0.95rem] font-[650] text-textSecondary">
+        <li><code>match valor:</code> — qué vas a comparar.</li>
+        <li><code>case patrón:</code> — si encaja, entra al bloque indentado.</li>
+        <li><code>case _:</code> — “resto” (como <code>default</code> en <code>switch</code>).</li>
+      </ul>
+    </section>
+
+    <section class="mb-10">
+      <h2>Cinco ejemplos guiados</h2>
+      <p class="text-textSecondary font-[650]">
+        Los comentarios marcan cada caso; podés copiar el archivo y ejecutarlo por partes.
+      </p>
+      <CodeBlock
+        lang="python"
+        title="match_case_cinco_ejemplos.py"
+        code={`# ========== 1) Comandos de texto (estilo switch clásico) ==========
+comando = "ayuda"
+match comando:
+    case "iniciar":
+        print("Arrancando…")
+    case "detener":
+        print("Deteniendo…")
+    case "ayuda":
+        print("Comandos: iniciar, detener, ayuda")
+    case _:
+        print("Comando desconocido")
+
+# ========== 2) Día de la semana como número (1=lunes … 7=domingo) ==========
+dia = 3
+match dia:
+    case 1:
+        print("Lunes")
+    case 2:
+        print("Martes")
+    case 3:
+        print("Miércoles")
+    case 4 | 5:
+        print("Jueves o viernes")
+    case 6 | 7:
+        print("Fin de semana")
+    case _:
+        print("Día no válido (usá 1-7)")
+
+# ========== 3) Código HTTP: varios valores en un solo case (| = “o”) ==========
+codigo = 404
+match codigo:
+    case 200 | 201:
+        print("OK")
+    case 400:
+        print("Pedido mal formado")
+    case 401 | 403:
+        print("Problema de permisos")
+    case 404:
+        print("No encontrado")
+    case _:
+        print("Otro código")
+
+# ========== 4) Guarda: case x if condición ==========
+n = -5
+match n:
+    case x if x < 0:
+        print("Es negativo:", x)
+    case 0:
+        print("Es cero")
+    case x if x > 0:
+        print("Es positivo:", x)
+
+# ========== 5) Menú por consola (misma idea que if/elif, con match) ==========
+opcion = input("1=café 2=té 3=salir: ").strip()
+match opcion:
+    case "1":
+        print("Café ☕")
+    case "2":
+        print("Té 🍵")
+    case "3":
+        print("Chau 👋")
+    case _:
+        print("Opción inválida")`}
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Trucos que conviene recordar</h2>
+      <ul class="list-disc space-y-2 pl-5 font-[650] text-textSecondary">
+        <li>
+          <code>case 4 | 5:</code> — unifica varios valores en un solo bloque (OR entre patrones).
+        </li>
+        <li>
+          <code>case _:</code> — siempre al final como “else”; atrapa lo que no encajó antes.
+        </li>
+        <li>
+          <code>case x if x &lt; 0:</code> — guarda: primero se liga (o compara) y además debe cumplirse la
+          <code>if</code>.
+        </li>
+        <li>
+          El <code>match</code> de Python también permite patrones con tuplas, listas y clases; eso se profundiza cuando
+          domines listas y objetos en las próximas lecciones.
+        </li>
+      </ul>
+    </section>
+
+    <div class="ejercicio" style="background: #e8f4fc;">
+      <h3>🐍 Práctica rápida</h3>
+      <p class="enunciado">
+        Escribí un <code>match</code> sobre una variable <code>mes</code> (<code>"ene"</code>, <code>"feb"</code>, …) que
+        imprima si es “estación cálida”, “fría” o “intermedia” (agrupá meses como prefieras) y un <code>case _:</code>
+        para mes inválido.
+      </p>
+    </div>
+
+    <nav class="nav-bottom">
+      <a href="/course/python/condicionales/" class="prev">← Condicionales (If)</a>
+      <a href="/course/python/bucles/" class="next">Bucles →</a>
+    </nav>
+  </article>
+</Layout>
