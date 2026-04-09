@@ -1,8 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { courses } from '../../data/courses';
-
-import adminEmbedClientUrl from '../../lib/embed/adminEmbedClient.ts?url';
 ---
 
 <Layout title="Admin · Embed builder" description="Generador interno de URLs de embed (GET params).">
@@ -191,7 +189,9 @@ import adminEmbedClientUrl from '../../lib/embed/adminEmbedClient.ts?url';
     </section>
   </article>
 
-  <script type="module" src={adminEmbedClientUrl}></script>
+  <script>
+    import '../../lib/embed/adminEmbedClient.ts';
+  </script>
 
   <style is:inline>
     .admin-embed h1 {
