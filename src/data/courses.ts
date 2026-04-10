@@ -5,6 +5,7 @@ export type CourseStyleMode = 'gold' | 'emerald' | 'platinum' | 'ruby';
 
 export type CourseCategory =
   | 'language'
+  | 'advanced'
   | 'testing'
   | 'engineering'
   | 'tools'
@@ -166,7 +167,7 @@ export const courses: Course[] = [
     name: 'Estructuras de datos',
     description:
       'Desde el nodo y las referencias en Java hasta listas, pilas, árboles, tablas hash y grafos: implementación manual, Big O y visualización con herramientas como Visualgo.',
-    category: 'language',
+    category: 'advanced',
     status: 'available',
     color: '#0d9488',
     lessons: [
@@ -204,7 +205,7 @@ export const courses: Course[] = [
     name: 'Patrones de diseño',
     description:
       'Soluciones habituales a problemas recurrentes: patrones creacionales, estructurales y de comportamiento, con ejemplos en varios lenguajes y enlaces al catálogo de Refactoring.Guru.',
-    category: 'engineering',
+    category: 'advanced',
     status: 'available',
     color: '#7c3aed',
     lessons: [

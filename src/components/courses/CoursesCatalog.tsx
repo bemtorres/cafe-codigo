@@ -7,6 +7,7 @@ const VIEW_STORAGE_KEY = 'aprende_courses_catalog_view';
 const categoryOrder: CourseCategory[] = [
   'foundations',
   'language',
+  'advanced',
   'testing',
   'frontend',
   'engineering',
@@ -18,6 +19,7 @@ const categoryOrder: CourseCategory[] = [
 const categoryLabel: Record<CourseCategory, string> = {
   foundations: 'Conceptos base',
   language: 'Lenguajes',
+  advanced: 'Programación avanzada',
   testing: 'Test',
   frontend: 'Frontend (web)',
   engineering: 'Ingeniería y calidad',
