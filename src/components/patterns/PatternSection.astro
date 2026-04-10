@@ -1,0 +1,32 @@
+---
+import CodeBlockMulti from '../CodeBlockMulti.astro';
+import {
+  type PatternMeta,
+  patronEjemploTabs,
+  refactoringGuruPatternUrl,
+} from '../../data/designPatterns';
+
+interface Props {
+  pattern: PatternMeta;
+}
+
+const { pattern } = Astro.props;
+const docUrl = refactoringGuruPatternUrl(pattern.slug);
+const tabs = patronEjemploTabs[pattern.slug];
+---
+
+<section class="mb-14 scroll-mt-28" id={pattern.slug}>
+  <h3 class="text-xl font-black mb-2 font-nunito">
+    <a
+      href={docUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="text-[var(--text-primary)] underline decoration-[3px] underline-offset-4 hover:opacity-80"
+    >
+      {pattern.title}
+    </a>
+    <span class="text-sm font-bold text-[var(--text-secondary)] ml-2">(Refactoring.Guru ↗)</span>
+  </h3>
+  <p class="text-[var(--text-secondary)] mb-4 leading-relaxed font-bold">{pattern.blurb}</p>
+  {tabs && <CodeBlockMulti title={`Ejemplo ilustrativo — ${pattern.title}`} tabs={tabs} />}
+</section>

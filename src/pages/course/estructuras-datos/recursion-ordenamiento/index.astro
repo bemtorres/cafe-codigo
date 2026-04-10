@@ -1,0 +1,127 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import VisualgoHint from '../../../../components/VisualgoHint.astro';
+---
+
+<Layout
+  title="Recursividad y ordenamiento en Java"
+  description="Pensamiento recursivo, Merge Sort y Quick Sort con análisis de complejidad."
+  courseSlug="estructuras-datos"
+>
+  <article class="content-section">
+    <h1>3. Recursividad y ordenamiento</h1>
+
+    <p class="lead">
+      La recursión aparece en árboles, divide y vencerás y muchos algoritmos de ordenamiento. Dominar el
+      <strong>caso base</strong> y el <strong>caso recursivo</strong> es clave antes de BST o merges en listas.
+    </p>
+
+    <VisualgoHint
+      href="https://visualgo.net/en/recursion"
+      hint="Visualizá el árbol de llamadas: cada nivel es un subproblema más pequeño."
+    />
+
+    <section class="mb-10">
+      <h2>Patrón recursivo</h2>
+      <CodeBlock
+        lang="java"
+        title="Factorial — caso base + paso recursivo"
+        code={`public static long factorial(int n) {
+    if (n <= 1) {
+        return 1;           // caso base
+    }
+    return n * factorial(n - 1); // hacia el base
+}`}
+      />
+      <p>
+        <strong>Pila de llamadas:</strong> cada invocación consume marco de pila; si <code>n</code> es enorme, podés desbordar la pila
+        (<code>StackOverflowError</code>). Por eso algunos algoritmos se reescriben iterativos o con cola explícita.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Merge Sort — divide y vencerás</h2>
+      <p>
+        Partís el arreglo por la mitad, ordenás recursivamente cada mitad y <strong>fusionás</strong> dos secuencias ordenadas en O(n).
+        Tiempo típico <strong>O(n log n)</strong>, espacio extra O(n) para el buffer de fusión.
+      </p>
+      <div class="ascii-viz" aria-label="Merge sort divide">
+        <pre class="ascii-pre">{`        [ 3, 1, 4, 2 ]
+              │
+       ┌──────┴──────┐
+    [3, 1]          [4, 2]
+      │                │
+   ┌──┴──┐          ┌──┴──┐
+  [3]  [1]        [4]  [2]
+      merge           merge
+        │                │
+     [1,3]            [2,4]
+           merge
+              │
+         [1, 2, 3, 4]`}</pre>
+      </div>
+      <VisualgoHint href="https://visualgo.net/en/sorting" hint="Elegí Merge Sort en el menú y seguí el puntero i/j en la fusión." />
+    </section>
+
+    <section class="mb-10">
+      <h2>Quick Sort — pivote y partición</h2>
+      <p>
+        Elegís un <strong>pivote</strong>, particionás «menores» y «mayores», y ordenás recursivamente los subarreglos. Promedio
+        <strong>O(n log n)</strong>; peor caso O(n²) si el pivote es siempre el mínimo o el máximo (arreglo ya ordenado con pivote malo).
+      </p>
+      <CodeBlock
+        lang="java"
+        title="Esquema de partición (Lomuto, idea)"
+        code={`// Después de particionar, el pivote queda en su posición final
+// quickSort(arr, lo, pi - 1);
+// quickSort(arr, pi + 1, hi);`}
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Propuesta de laboratorio</h2>
+      <ol class="lab-list">
+        <li>Implementá merge sort sobre <code>int[]</code> y contá comparaciones.</li>
+        <li>Medí tiempos con <code>n = 10_000, 100_000</code> vs un O(n²) simple (solo para contrastar).</li>
+        <li>Anotá Big O de tu partición y de la fusión en comentarios.</li>
+      </ol>
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/estructuras-datos/lineales-nodos/" class="prev">← Lineales y nodos</a>
+      <a href="/course/estructuras-datos/arboles/" class="next">Árboles jerárquicos →</a>
+    </nav>
+  </article>
+</Layout>
+
+<style>
+  .lead {
+    font-size: 1.1rem;
+    font-weight: 700;
+    line-height: 1.55;
+    margin-bottom: 2rem;
+    color: var(--text-secondary);
+  }
+  .ascii-viz {
+    margin: 1.25rem 0;
+    padding: 1rem 1.25rem;
+    border: 3px solid var(--border);
+    border-radius: 16px;
+    background: #fafafa;
+    overflow-x: auto;
+    box-shadow: 4px 4px 0 var(--border);
+  }
+  .ascii-pre {
+    margin: 0;
+    font-family: ui-monospace, monospace;
+    font-size: 0.78rem;
+    line-height: 1.4;
+    color: #134e4a;
+  }
+  .lab-list {
+    font-weight: 700;
+    line-height: 1.7;
+    padding-left: 1.25rem;
+  }
+</style>

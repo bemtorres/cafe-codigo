@@ -1,0 +1,121 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlockMulti from '../../../../components/CodeBlockMulti.astro';
+import {
+  REFACTORING_GURU_DESIGN_PATTERNS_ES,
+  patronEjemploTabs,
+  patronesComportamiento,
+  patronesCreacionales,
+  patronesEstructurales,
+  refactoringGuruPatternUrl,
+} from '../../../../data/designPatterns';
+---
+
+<Layout
+  title="¿Qué son los patrones de diseño?"
+  description="Introducción al catálogo clásico de patrones y enlaces a Refactoring.Guru."
+  courseSlug="patrones-diseno"
+>
+  <article class="content-section">
+    <h1>1. ¿Qué son los patrones de diseño?</h1>
+
+    <section class="mb-10">
+      <p>
+        Los <strong>patrones de diseño</strong> son soluciones <em>reutilizables</em> a problemas que aparecen una y otra vez al
+        modelar software orientado a objetos. No son librerías ni código copiable tal cual: son <strong>plantillas</strong> que
+        adaptás a tu dominio, lenguaje y restricciones.
+      </p>
+      <p>
+        El catálogo más citado proviene del libro <cite>Design Patterns</cite> (Gamma, Helm, Johnson, Vlissides, 1994), conocido
+        como la “banda de los cuatro” o <strong>GoF</strong>. Desde entonces la comunidad ha ampliado el vocabulario, pero los
+        <strong>22 patrones clásicos</strong> siguen siendo el mapa de referencia.
+      </p>
+      <p>
+        Una guía visual y didáctica en español —con diagramas y matices de cada patrón— está en
+        <a href={REFACTORING_GURU_DESIGN_PATTERNS_ES} target="_blank" rel="noopener noreferrer">Refactoring.Guru — Patrones de diseño</a>.
+        En este curso, cada patrón enlaza a su ficha correspondiente para que profundices cuando quieras.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Tres familias</h2>
+      <ul class="list-disc pl-6 space-y-2 font-bold text-[var(--text-secondary)]">
+        <li>
+          <strong class="text-[var(--text-primary)]">Creacionales:</strong> flexibilizan <em>cómo</em> se crean objetos sin acoplar
+          el cliente a clases concretas. →
+          <a href="/course/patrones-diseno/creacionales/">módulo 2</a>
+        </li>
+        <li>
+          <strong class="text-[var(--text-primary)]">Estructurales:</strong> componen clases y objetos en estructuras mayores sin
+          perder claridad. →
+          <a href="/course/patrones-diseno/estructurales/">módulo 3</a>
+        </li>
+        <li>
+          <strong class="text-[var(--text-primary)]">Comportamiento:</strong> distribuyen responsabilidades y algoritmos entre
+          objetos. →
+          <a href="/course/patrones-diseno/comportamiento/">módulo 4</a>
+        </li>
+      </ul>
+    </section>
+
+    <section class="mb-10">
+      <h2>Ejemplo multilenguaje: Strategy</h2>
+      <p>
+        El patrón <strong>Strategy</strong> encapsula una familia de algoritmos intercambiables. Cambiás la estrategia en tiempo
+        de ejecución sin llenar el cliente de <code>if</code>. Usá las pestañas para comparar Java, Python y TypeScript.
+      </p>
+      <CodeBlockMulti title="Strategy — esbozo en tres lenguajes" tabs={patronEjemploTabs.strategy} />
+      <p class="mt-4 text-sm font-bold text-[var(--text-secondary)]">
+        Ficha detallada:
+        <a href={refactoringGuruPatternUrl('strategy')} target="_blank" rel="noopener noreferrer">Strategy en Refactoring.Guru</a>
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Índice rápido (enlaces a Guru)</h2>
+      <div class="grid gap-8 md:grid-cols-3">
+        <div>
+          <h3 class="font-black mb-2">Creacionales</h3>
+          <ul class="space-y-1 text-sm font-bold">
+            {patronesCreacionales.map((p) => (
+              <li>
+                <a href={refactoringGuruPatternUrl(p.slug)} target="_blank" rel="noopener noreferrer">
+                  {p.title}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div>
+          <h3 class="font-black mb-2">Estructurales</h3>
+          <ul class="space-y-1 text-sm font-bold">
+            {patronesEstructurales.map((p) => (
+              <li>
+                <a href={refactoringGuruPatternUrl(p.slug)} target="_blank" rel="noopener noreferrer">
+                  {p.title}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div>
+          <h3 class="font-black mb-2">Comportamiento</h3>
+          <ul class="space-y-1 text-sm font-bold">
+            {patronesComportamiento.map((p) => (
+              <li>
+                <a href={refactoringGuruPatternUrl(p.slug)} target="_blank" rel="noopener noreferrer">
+                  {p.title}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/patrones-diseno/" class="prev">← Curso</a>
+      <a href="/course/patrones-diseno/creacionales/" class="next">Patrones creacionales →</a>
+    </nav>
+  </article>
+</Layout>

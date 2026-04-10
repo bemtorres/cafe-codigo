@@ -162,6 +162,23 @@ export const courses: Course[] = [
     ],
   },
   {
+    slug: 'estructuras-datos',
+    name: 'Estructuras de datos',
+    description:
+      'Desde el nodo y las referencias en Java hasta listas, pilas, árboles, tablas hash y grafos: implementación manual, Big O y visualización con herramientas como Visualgo.',
+    category: 'language',
+    status: 'available',
+    color: '#0d9488',
+    lessons: [
+      { slug: 'salto-ingeniero', title: '1. De programador a ingeniero', href: '/course/estructuras-datos/salto-ingeniero/' },
+      { slug: 'lineales-nodos', title: '2. Lineales y nodos', href: '/course/estructuras-datos/lineales-nodos/' },
+      { slug: 'recursion-ordenamiento', title: '3. Recursividad y ordenamiento', href: '/course/estructuras-datos/recursion-ordenamiento/' },
+      { slug: 'arboles', title: '4. Árboles jerárquicos', href: '/course/estructuras-datos/arboles/' },
+      { slug: 'hashing-mapas', title: '5. Hashing y mapas', href: '/course/estructuras-datos/hashing-mapas/' },
+      { slug: 'grafos', title: '6. Grafos', href: '/course/estructuras-datos/grafos/' },
+    ],
+  },
+  {
     slug: 'javaunit',
     name: 'JUnit',
     description: 'Pruebas unitarias en Java con JUnit 5: AAA, assertions, mocks y calidad de código.',
@@ -178,7 +195,23 @@ export const courses: Course[] = [
       { slug: 'herencia-test', title: '7. Herencia', href: '/course/javaunit/herencia-test/' },
       { slug: 'interfaces-test', title: '8. Interfaces', href: '/course/javaunit/interfaces-test/' },
       { slug: 'intro-mocks', title: '9. Intro a Mocks', href: '/course/javaunit/intro-mocks/' },
-      { slug: 'proyecto-final', title: '10. Proyecto Final', href: '/course/javaunit/proyecto-final/' },
+      { slug: 'desarrollo-tests-bd', title: '10. Tests y base de datos', href: '/course/javaunit/desarrollo-tests-bd/' },
+      { slug: 'proyecto-final', title: '11. Proyecto Final', href: '/course/javaunit/proyecto-final/' },
+    ],
+  },
+  {
+    slug: 'patrones-diseno',
+    name: 'Patrones de diseño',
+    description:
+      'Soluciones habituales a problemas recurrentes: patrones creacionales, estructurales y de comportamiento, con ejemplos en varios lenguajes y enlaces al catálogo de Refactoring.Guru.',
+    category: 'engineering',
+    status: 'available',
+    color: '#7c3aed',
+    lessons: [
+      { slug: 'introduccion', title: '1. ¿Qué son los patrones?', href: '/course/patrones-diseno/introduccion/' },
+      { slug: 'creacionales', title: '2. Patrones creacionales', href: '/course/patrones-diseno/creacionales/' },
+      { slug: 'estructurales', title: '3. Patrones estructurales', href: '/course/patrones-diseno/estructurales/' },
+      { slug: 'comportamiento', title: '4. Patrones de comportamiento', href: '/course/patrones-diseno/comportamiento/' },
     ],
   },
   {

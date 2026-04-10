@@ -1,0 +1,158 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import VisualgoHint from '../../../../components/VisualgoHint.astro';
+---
+
+<Layout
+  title="Estructuras lineales y nodos en Java"
+  description="Arreglos, listas enlazadas, pilas y colas implementadas con referencias entre nodos."
+  courseSlug="estructuras-datos"
+>
+  <article class="content-section">
+    <h1>2. Estructuras lineales (hechas por vos)</h1>
+
+    <p class="lead">
+      El objetivo es <strong>no depender solo</strong> de <code>ArrayList</code> o <code>LinkedList</code> del JDK: programar vos mismo
+      para ver cómo se enlazan los <strong>nodos</strong> en memoria.
+    </p>
+
+    <section class="mb-10">
+      <h2>Referencia = «puntero» en Java</h2>
+      <p>
+        <code>nodo.siguiente = nuevoNodo;</code> no copia un objeto entero: asigna una <strong>referencia</strong>. Dos variables pueden
+        apuntar al mismo objeto; si mutás por una, la otra «ve» el cambio.
+      </p>
+      <div class="ascii-viz" aria-label="Lista enlazada simple">
+        <pre class="ascii-pre">{`cabecera
+   │
+   ▼
+┌──────┐    ┌──────┐    ┌──────┐
+│  3   │───▶│  7   │───▶│  1   │───▶ null
+└──────┘    └──────┘    └──────┘`}</pre>
+      </div>
+      <VisualgoHint
+        href="https://visualgo.net/en/list"
+        hint="Compará la lista enlazada simple y doble: observá cómo se mueve la cabeza y los enlaces."
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Arreglos estáticos y dinámicos</h2>
+      <p>
+        Un <code>T[]</code> tiene tamaño fijo al crearlo. Un arreglo <strong>dinámico</strong> (como el corazón de <code>ArrayList</code>)
+        mantiene capacidad y, al llenarse, <strong>copia</strong> a otro bloque más grande (coste amortizado O(1) por inserción al final).
+      </p>
+      <CodeBlock
+        lang="java"
+        title="Idea de crecimiento (esquema)"
+        code={`// Pseudocódigo conceptual
+void add(T x) {
+    if (size == capacity) {
+        capacity *= 2;
+        elementos = Arrays.copyOf(elementos, capacity);
+    }
+    elementos[size++] = x;
+}`}
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Lista enlazada: clase <code>Nodo</code></h2>
+      <CodeBlock
+        lang="java"
+        title="Lista simplemente enlazada (enteros)"
+        code={`public class Nodo {
+    int valor;
+    Nodo siguiente;
+
+    public Nodo(int valor) {
+        this.valor = valor;
+    }
+}
+
+public class ListaEnlazada {
+    private Nodo cabeza;
+
+    public void agregarAlFinal(int v) {
+        Nodo n = new Nodo(v);
+        if (cabeza == null) {
+            cabeza = n;
+            return;
+        }
+        Nodo cur = cabeza;
+        while (cur.siguiente != null) {
+            cur = cur.siguiente;
+        }
+        cur.siguiente = n;
+    }
+}`}
+      />
+      <p>
+        <strong>Diseño visual:</strong> dibujá en papel la cabeza y cada flecha antes de depurar; cuando el depurador muestre
+        <code>cabeza → Nodo@1a2b</code>, es exactamente ese grafo de referencias.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Pila (<code>Stack</code>) y cola (<code>Queue</code>)</h2>
+      <div class="ascii-viz" aria-label="Pila LIFO">
+        <pre class="ascii-pre">{`PILA (LIFO)          push 5    push 2    pop → 2
+        ┌───┐     ┌───┐     ┌───┐
+        │   │     │ 5 │     │ 5 │
+        └───┘     └───┘     └───┘`}</pre>
+      </div>
+      <p>
+        Pila: <strong>LIFO</strong> — último en entrar, primero en salir. Cola: <strong>FIFO</strong>. Podés implementarlas con nodos
+        y punteros a cabeza/cola; documentá qué pasa en estructura vacía (<code>EmptyStackException</code>,
+        <code>NoSuchElementException</code> o valores opcionales).
+      </p>
+      <VisualgoHint
+        href="https://visualgo.net/en/list"
+        label="Visualgo — estructuras lineales"
+        hint="Explorá stack y queue en la misma familia de animaciones."
+      />
+      <CodeBlock
+        lang="java"
+        title="Interfaz mínima (contrato)"
+        code={`public interface Pila<T> {
+    void push(T item);
+    T pop();
+    T peek();
+    boolean isEmpty();
+}`}
+      />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/estructuras-datos/salto-ingeniero/" class="prev">← Módulo 1</a>
+      <a href="/course/estructuras-datos/recursion-ordenamiento/" class="next">Recursividad y ordenamiento →</a>
+    </nav>
+  </article>
+</Layout>
+
+<style>
+  .lead {
+    font-size: 1.1rem;
+    font-weight: 700;
+    line-height: 1.55;
+    margin-bottom: 2rem;
+    color: var(--text-secondary);
+  }
+  .ascii-viz {
+    margin: 1.25rem 0;
+    padding: 1rem 1.25rem;
+    border: 3px solid var(--border);
+    border-radius: 16px;
+    background: #fafafa;
+    overflow-x: auto;
+    box-shadow: 4px 4px 0 var(--border);
+  }
+  .ascii-pre {
+    margin: 0;
+    font-family: ui-monospace, monospace;
+    font-size: 0.82rem;
+    line-height: 1.35;
+    color: #134e4a;
+  }
+</style>

@@ -1,0 +1,62 @@
+---
+interface Props {
+  href: string;
+  /** Texto del enlace (por defecto: Visualgo) */
+  label?: string;
+  /** Una línea opcional sobre qué animación ver */
+  hint?: string;
+}
+
+const { href, label = 'Visualgo — animación interactiva', hint } = Astro.props;
+---
+
+<aside class="viz-hint">
+  <span class="viz-hint__icon" aria-hidden="true">◉</span>
+  <div>
+    <strong class="viz-hint__title">Visualización</strong>
+    {hint && <p class="viz-hint__text">{hint}</p>}
+    <a href={href} target="_blank" rel="noopener noreferrer" class="viz-hint__link">{label} ↗</a>
+  </div>
+</aside>
+
+<style>
+  .viz-hint {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+    margin: 1.25rem 0;
+    padding: 1rem 1.25rem;
+    border: 3px solid var(--border);
+    border-radius: 16px;
+    background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+    box-shadow: 4px 4px 0 var(--border);
+  }
+  .viz-hint__icon {
+    font-size: 1.25rem;
+    line-height: 1;
+    color: #0d9488;
+  }
+  .viz-hint__title {
+    display: block;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.95rem;
+    margin-bottom: 0.25rem;
+  }
+  .viz-hint__text {
+    margin: 0 0 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    line-height: 1.4;
+  }
+  .viz-hint__link {
+    font-weight: 800;
+    font-size: 0.9rem;
+    color: #0f766e;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .viz-hint__link:hover {
+    color: #115e59;
+  }
+</style>

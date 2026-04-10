@@ -1,0 +1,160 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import VisualgoHint from '../../../../components/VisualgoHint.astro';
+---
+
+<Layout
+  title="Grafos en Java — representación y algoritmos"
+  description="Matrices y listas de adyacencia, BFS, DFS y camino mínimo (Dijkstra)."
+  courseSlug="estructuras-datos"
+>
+  <article class="content-section">
+    <h1>6. Grafos</h1>
+
+    <p class="lead">
+      Un grafo es <strong>vértices</strong> y <strong>aristas</strong>. Los nodos de listas enlazadas son un caso degenerado (cadena);
+      acá cada vértice puede tener muchas aristas salientes.
+    </p>
+
+    <VisualgoHint
+      href="https://visualgo.net/en/graphds"
+      hint="Alterná entre matriz y lista de adyacencia y fijate en memoria vs velocidad de consulta."
+    />
+
+    <section class="mb-10">
+      <h2>Representación</h2>
+      <div class="two-col">
+        <div class="ascii-viz" aria-label="Matriz de adyacencia">
+          <strong class="block mb-2">Matriz (n×n)</strong>
+          <pre class="ascii-pre">{`     0  1  2  3
+ 0 [ 0  1  0  1 ]
+ 1 [ 1  0  1  0 ]
+ 2 [ 0  1  0  1 ]
+ 3 [ 1  0  1  0 ]
+
+Consulta "¿hay arista i→j?": O(1)
+Memoria: O(n²)`}</pre>
+        </div>
+        <div class="ascii-viz" aria-label="Lista de adyacencia">
+          <strong class="block mb-2">Lista por vértice</strong>
+          <pre class="ascii-pre">{`0: → 1 → 3
+1: → 0 → 2
+2: → 1 → 3
+3: → 0 → 2
+
+Vecinos de v: O(grado(v))
+Memoria: O(V + E)`}</pre>
+        </div>
+      </div>
+      <p>
+        En Java, <code>List&lt;List&lt;Integer&gt;&gt; ady</code> o <code>Map&lt;V, List&lt;V&gt;&gt;</code> son patrones habituales. Para
+        pesos: <code>List&lt;Arista&gt;</code> o mapa de listas de pares <code>(vecino, peso)</code>.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>BFS y DFS</h2>
+      <p>
+        <strong>BFS</strong> (cola): capas por distancia en grafos no ponderados — útil para el camino mínimo en número de aristas.
+        <strong>DFS</strong> (pila o recursión): explora hondo; base para detectar ciclos, componentes conexas, orden topológico.
+      </p>
+      <VisualgoHint
+        href="https://visualgo.net/en/bfsdfs"
+        hint="Paso a paso: la frontera de BFS se ve como un «anillo»; DFS como un túnel."
+      />
+      <CodeBlock
+        lang="java"
+        title="Esquema BFS (pseudocódigo Java)"
+        code={`Queue<Integer> q = new ArrayDeque<>();
+boolean[] visitado = new boolean[n];
+q.add(origen);
+visitado[origen] = true;
+while (!q.isEmpty()) {
+    int v = q.poll();
+    for (int w : ady.get(v)) {
+        if (!visitado[w]) {
+            visitado[w] = true;
+            q.add(w);
+        }
+    }
+}`}
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Camino mínimo con pesos: Dijkstra</h2>
+      <p>
+        Aristas con peso no negativo; mantiene distancias provisorias y va «relajando» con una cola de prioridad. Complejidad típica
+        O((V + E) log V) con binary heap.
+      </p>
+      <VisualgoHint href="https://visualgo.net/en/sssp" hint="Single-source shortest path: seguí la distancia tentative en cada vértice." />
+      <div class="ascii-viz" aria-label="Relajación">
+        <pre class="ascii-pre">{`dist[s] = 0, resto = ∞
+Extraer vértice u con menor dist provisoria
+Para cada arista u→v con peso w:
+    si dist[u] + w < dist[v]  →  dist[v] = dist[u] + w  (relajar)`}</pre>
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2>Herramientas que usarás en Java (resumen del curso)</h2>
+      <ul class="tight-list">
+        <li><strong>Clases y objetos:</strong> cada nodo, vértice o entrada de tabla es un objeto.</li>
+        <li><strong>Interfaces:</strong> contratos <code>insertar</code>, <code>relajar</code>, <code>vecinos</code>, etc.</li>
+        <li><strong>Visualgo.net</strong> para anclar la intuición mientras depurás referencias en el IDE.</li>
+      </ul>
+      <p>
+        Recordá: en Java no hay punteros explícitos; las variables de tipo referencia <em>son</em> el enlace entre nodos en memoria.
+      </p>
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/estructuras-datos/hashing-mapas/" class="prev">← Hashing</a>
+      <a href="/course/estructuras-datos/" class="next">Volver al curso →</a>
+    </nav>
+  </article>
+</Layout>
+
+<style>
+  .lead {
+    font-size: 1.1rem;
+    font-weight: 700;
+    line-height: 1.55;
+    margin-bottom: 2rem;
+    color: var(--text-secondary);
+  }
+  .two-col {
+    display: grid;
+    gap: 1rem;
+    margin: 1rem 0;
+  }
+  @media (min-width: 768px) {
+    .two-col {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  .ascii-viz {
+    margin: 0;
+    padding: 1rem 1.25rem;
+    border: 3px solid var(--border);
+    border-radius: 16px;
+    background: #fafafa;
+    overflow-x: auto;
+    box-shadow: 4px 4px 0 var(--border);
+  }
+  .ascii-pre {
+    margin: 0;
+    font-family: ui-monospace, monospace;
+    font-size: 0.72rem;
+    line-height: 1.35;
+    color: #134e4a;
+  }
+  .block {
+    display: block;
+  }
+  .tight-list {
+    font-weight: 700;
+    line-height: 1.65;
+  }
+</style>

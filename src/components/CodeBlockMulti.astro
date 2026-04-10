@@ -1,0 +1,335 @@
+---
+import { highlightLine, idePalettes, langColors, resolveFinalLang } from '../lib/codeHighlight';
+
+interface CodeTab {
+  /** Texto de la pestaña (p. ej. Java, Python) */
+  label: string;
+  code: string;
+  lang?: string;
+}
+
+interface Props {
+  title?: string;
+  tabs: CodeTab[];
+}
+
+const { title, tabs } = Astro.props;
+
+if (!tabs?.length) {
+  throw new Error('CodeBlockMulti: la prop `tabs` debe tener al menos un elemento.');
+}
+
+type PreparedTab = {
+  label: string;
+  lang: string;
+  lines: string[];
+  badgeColor: string;
+  ideStyles: string;
+  encoded: string;
+};
+
+const prepared: PreparedTab[] = tabs.map((t) => {
+  const lng = resolveFinalLang(t.lang, t.code, false);
+  const safe = String(t.code ?? '');
+  const lines = safe.replace(/\r\n/g, '\n').split('\n');
+  const badgeColor = langColors[lng.toLowerCase()] || '#1E1210';
+  const ide = idePalettes[lng.toLowerCase()] || idePalettes.python;
+  const ideStyles = `--ide-bg:${ide.bg};--ide-txt:${ide.txt};--ide-kw:${ide.kw};--ide-str:${ide.str};--ide-func:${ide.func};--ide-type:${ide.type};--ide-op:${ide.op};`;
+  return {
+    label: t.label,
+    lang: lng,
+    lines,
+    badgeColor,
+    ideStyles,
+    encoded: encodeURIComponent(safe),
+  };
+});
+
+let hash = 0;
+const join = prepared.map((p) => p.encoded + p.lang).join('');
+for (let i = 0; i < join.length; i++) hash = (hash * 31 + join.charCodeAt(i)) | 0;
+const rootId = `cbmulti_${Math.abs(hash)}`;
+
+const defaultAccent = prepared[0].badgeColor;
+const showTitleBar = Boolean(title);
+const payload = JSON.stringify(
+  prepared.map((p) => ({
+    encoded: p.encoded,
+    badgeColor: p.badgeColor,
+    lang: p.lang,
+    label: p.label,
+  })),
+);
+---
+
+<div
+  id={rootId}
+  class="cb-multi-root my-8 border-[3px] rounded-2xl overflow-hidden shadow-[4px_4px_0px_var(--hl-badge)]"
+  style={`--hl-badge: ${defaultAccent}; border-color: ${defaultAccent};`}
+  data-cbm-payload={payload}
+>
+  <div
+    class:list={[
+      'flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3 px-3 py-2.5 bg-[#FAFAFA] border-b-[3px] cb-multi-topbar',
+      showTitleBar ? 'sm:justify-between' : 'sm:justify-end',
+    ]}
+    style={`border-bottom-color: ${defaultAccent};`}
+  >
+    <span
+      class={`text-[0.95rem] text-[#111] font-nunito font-extrabold min-w-0 sm:pr-2 sm:max-w-[55%] ${title ? '' : 'sr-only'}`}
+    >
+      {title || 'Código'}
+    </span>
+
+    <!-- Pestañas + copiar + badge, arriba a la derecha (misma fila en desktop) -->
+    <div class="flex w-full flex-wrap items-center justify-end gap-1 sm:w-auto sm:gap-0 sm:shrink-0 sm:ml-auto">
+      <div
+        class="flex flex-wrap items-center justify-end gap-1 pr-1 sm:pr-2 sm:border-r-2 sm:mr-0"
+        style={`border-right-color: ${defaultAccent};`}
+        role="tablist"
+        aria-label="Lenguaje del ejemplo"
+      >
+        {
+          prepared.map((p, i) => (
+            <button
+              type="button"
+              role="tab"
+              class:list={[
+                'cb-multi-tab px-3 py-1.5 rounded-lg text-[0.78rem] font-nunito font-extrabold border-2 transition-colors cursor-pointer',
+                i === 0
+                  ? 'cb-multi-tab--active bg-black text-white border-black'
+                  : 'bg-white text-[#444] border-[#ccc] hover:border-black/40',
+              ]}
+              style={i === 0 ? `border-color: ${p.badgeColor}; background-color: ${p.badgeColor}; color: white;` : undefined}
+              data-cbm-tab={i}
+              aria-selected={i === 0 ? 'true' : 'false'}
+            >
+              {p.label}
+            </button>
+          ))
+        }
+      </div>
+
+      <div class="flex items-center gap-0">
+        <button
+          type="button"
+          class="copy-btn group flex items-center gap-1.5 px-3 py-2 text-[0.78rem] font-nunito font-extrabold text-[#555] hover:text-[#111] hover:bg-black/5 transition-all border-r-2 cursor-pointer border-none bg-transparent"
+          style={`border-right-color: ${defaultAccent};`}
+          data-copy-code={prepared[0].encoded}
+          data-cbm-copy
+          aria-label="Copiar código del lenguaje seleccionado"
+          title="Copiar código"
+        >
+          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="9" width="13" height="13" rx="2" />
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+          </svg>
+          <span class="copy-label hidden sm:inline">Copiar</span>
+        </button>
+        <span
+          data-cbm-badge
+          class="text-[0.8rem] text-white px-3 py-1.5 font-mono font-extrabold rounded-bl-xl border-l-[3px] border-l-black/10"
+          style={`background-color: ${prepared[0].badgeColor}; color: ${prepared[0].lang === 'javascript' ? '#1E1210' : 'white'};`}
+        >
+          {prepared[0].lang.toUpperCase()}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  {
+    prepared.map((p, i) => (
+      <div
+        class="cb-multi-panel"
+        role="tabpanel"
+        data-cbm-panel={i}
+        hidden={i !== 0}
+        style={p.ideStyles}
+      >
+        <div
+          class="code-viewer overflow-x-auto py-4 m-0 w-full font-mono"
+          aria-label={`Código ${p.lang.toUpperCase()} (solo lectura)`}
+          data-lang={p.lang}
+        >
+          {p.lines.map((line, idx) => (
+            <div class="code-line flex px-2 leading-[1.65] text-[0.93rem] hover:bg-white/5 min-w-max">
+              <span class="line-num text-right select-none min-w-[2.2rem] pr-3 mr-3 opacity-40 shrink-0 border-r border-white/10">
+                {idx + 1}
+              </span>
+              <span class="whitespace-pre" set:html={highlightLine(line === '' ? ' ' : line, p.lang)} />
+            </div>
+          ))}
+        </div>
+      </div>
+    ))
+  }
+</div>
+
+<script define:vars={{ rootId }}>
+  function initMulti(root) {
+    const payloadRaw = root.getAttribute('data-cbm-payload');
+    if (!payloadRaw) return;
+    let meta;
+    try {
+      meta = JSON.parse(payloadRaw);
+    } catch {
+      return;
+    }
+    const tabs = root.querySelectorAll('[data-cbm-tab]');
+    const panels = root.querySelectorAll('[data-cbm-panel]');
+    const copyBtn = root.querySelector('[data-cbm-copy]');
+    const badge = root.querySelector('[data-cbm-badge]');
+    const topbar = root.querySelector('.cb-multi-topbar');
+
+    function paintAccent(hex) {
+      root.style.setProperty('--hl-badge', hex);
+      root.style.borderColor = hex;
+      if (topbar) topbar.style.borderBottomColor = hex;
+      if (copyBtn) copyBtn.style.borderRightColor = hex;
+    }
+
+    function select(idx) {
+      const m = meta[idx];
+      if (!m) return;
+      tabs.forEach((btn, j) => {
+        const on = j === idx;
+        btn.setAttribute('aria-selected', on ? 'true' : 'false');
+        btn.classList.toggle('cb-multi-tab--active', on);
+        if (on) {
+          btn.style.borderColor = m.badgeColor;
+          btn.style.backgroundColor = m.badgeColor;
+          btn.style.color = 'white';
+        } else {
+          btn.style.borderColor = '';
+          btn.style.backgroundColor = '';
+          btn.style.color = '';
+        }
+      });
+      panels.forEach((panel, j) => {
+        if (j === idx) panel.removeAttribute('hidden');
+        else panel.setAttribute('hidden', '');
+      });
+      if (copyBtn) copyBtn.setAttribute('data-copy-code', m.encoded);
+      if (badge) {
+        badge.textContent = m.lang.toUpperCase();
+        badge.style.backgroundColor = m.badgeColor;
+        badge.style.color = m.lang === 'javascript' ? '#1E1210' : 'white';
+      }
+      paintAccent(m.badgeColor);
+    }
+
+    tabs.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const i = Number(btn.getAttribute('data-cbm-tab'));
+        if (!Number.isNaN(i)) select(i);
+      });
+    });
+  }
+
+  const el = document.getElementById(rootId);
+  if (el) initMulti(el);
+</script>
+
+<style>
+  .cb-multi-root .code-viewer {
+    background-color: var(--shiki-color-background, #1e1e1e);
+    color: var(--shiki-color-text, #d4d4d4);
+    transition: background-color 0.3s, color 0.3s;
+    font-variant-ligatures: none;
+    font-feature-settings: 'liga' 0, 'calt' 0, 'dlig' 0;
+  }
+
+  .cb-multi-root .code-viewer[data-lang='cpp'] {
+    background-color: var(--ide-bg);
+    color: var(--ide-txt);
+    --shiki-color-background: var(--ide-bg);
+    --shiki-color-text: var(--ide-txt);
+    --shiki-token-keyword: var(--ide-kw);
+    --shiki-token-string: var(--ide-str);
+    --shiki-token-string-expression: var(--ide-str);
+    --shiki-token-function: var(--ide-func);
+    --shiki-token-type: var(--ide-type);
+    --shiki-token-comment: #7a9ab8;
+    --shiki-token-constant: var(--ide-type);
+    --shiki-token-parameter: var(--ide-txt);
+    --shiki-token-operator: var(--ide-op);
+    --shiki-token-variable: var(--ide-txt);
+    --shiki-token-punctuation: var(--ide-op);
+  }
+
+  .cb-multi-root .code-viewer[data-lang='ruby'] {
+    background-color: var(--ide-bg);
+    color: var(--ide-txt);
+    --shiki-color-background: var(--ide-bg);
+    --shiki-color-text: var(--ide-txt);
+    --shiki-token-keyword: var(--ide-kw);
+    --shiki-token-string: var(--ide-str);
+    --shiki-token-string-expression: var(--ide-str);
+    --shiki-token-function: var(--ide-func);
+    --shiki-token-type: var(--ide-type);
+    --shiki-token-comment: #9a8a7a;
+    --shiki-token-constant: var(--ide-type);
+    --shiki-token-parameter: var(--ide-txt);
+    --shiki-token-operator: var(--ide-op);
+    --shiki-token-variable: var(--ide-txt);
+    --shiki-token-punctuation: var(--ide-op);
+  }
+
+  .cb-multi-root .code-viewer :global(.code-line),
+  .cb-multi-root .code-viewer :global(.whitespace-pre) {
+    font-variant-ligatures: none;
+    font-feature-settings: 'liga' 0, 'calt' 0, 'dlig' 0;
+  }
+
+  .cb-multi-root :global(.hl-kw) {
+    color: var(--shiki-token-keyword);
+    font-weight: 700;
+  }
+  .cb-multi-root :global(.hl-str) {
+    color: var(--shiki-token-string);
+  }
+  .cb-multi-root :global(.hl-func) {
+    color: var(--shiki-token-function);
+  }
+  .cb-multi-root :global(.hl-func-call) {
+    color: var(--shiki-token-function);
+  }
+  .cb-multi-root :global(.hl-type) {
+    color: var(--shiki-token-type);
+  }
+  .cb-multi-root :global(.hl-num) {
+    color: var(--shiki-token-constant);
+  }
+  .cb-multi-root :global(.hl-comment) {
+    color: var(--shiki-token-comment);
+    font-style: italic;
+    opacity: 0.75;
+  }
+  .cb-multi-root :global(.hl-annotation) {
+    color: var(--shiki-token-parameter);
+    font-weight: 700;
+  }
+  .cb-multi-root :global(.hl-attr) {
+    color: var(--shiki-token-parameter);
+  }
+  .cb-multi-root :global(.hl-tag) {
+    color: var(--shiki-token-keyword);
+  }
+
+  .cb-multi-root .line-num {
+    color: var(--shiki-token-comment, #555);
+  }
+
+  .cb-multi-root .code-line:hover {
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  .cb-multi-tab:not(.cb-multi-tab--active) {
+    border-color: #ccc !important;
+    background-color: white !important;
+    color: #444 !important;
+  }
+  .cb-multi-tab:not(.cb-multi-tab--active):hover {
+    border-color: rgba(0, 0, 0, 0.35) !important;
+  }
+</style>

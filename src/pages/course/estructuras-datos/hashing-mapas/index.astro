@@ -1,0 +1,127 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import VisualgoHint from '../../../../components/VisualgoHint.astro';
+---
+
+<Layout
+  title="Hashing, tablas hash y mapas en Java"
+  description="Funciones hash, colisiones, encadenamiento vs direccionamiento abierto y HashMap/HashSet."
+  courseSlug="estructuras-datos"
+>
+  <article class="content-section">
+    <h1>5. Mapas y conjuntos (hashing)</h1>
+
+    <p class="lead">
+      Un <strong>mapa</strong> asocia clave → valor en tiempo casi constante <strong>O(1)</strong> promedio gracias a una función
+      <strong>hash</strong> que proyecta la clave a un índice de cubeta.
+    </p>
+
+    <VisualgoHint
+      href="https://visualgo.net/en/hashtable"
+      hint="Probá insertar con colisiones: compará lista enlazada en la cubeta vs linear probing."
+    />
+
+    <section class="mb-10">
+      <h2>Función hash</h2>
+      <p>
+        Debe ser <strong>determinística</strong>, repartir bien los valores y ser barata de calcular. En Java,
+        <code>Object.hashCode()</code> y <code>Objects.hash(...)</code> alimentan a <code>HashMap</code>. Dos objetos iguales por
+        <code>equals</code> deben tener el mismo <code>hashCode</code>.
+      </p>
+      <CodeBlock
+        lang="java"
+        title="Índice de cubeta (idea)"
+        code={`int cubeta = Math.floorMod(clave.hashCode(), numeroDeCubetas);
+// floorMod evita índices negativos con hashCode() negativo`}
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Colisiones</h2>
+      <p>Dos claves distintas pueden caer en la misma cubeta.</p>
+      <div class="ascii-viz" aria-label="Encadenamiento">
+        <pre class="ascii-pre">{`Encadenamiento (cada cubeta es una lista de entradas)
+
+  índice 0    1      2           3
+        ┌──┐ ┌──┐   ┌──┐        ┌──┐
+        │  │ │  │   │▶│k1,v1│──▶│k5,v5│──▶ null
+        └──┘ └──┘   └──┘        └──┘
+                         k1 y k5 colisionan`}</pre>
+      </div>
+      <div class="ascii-viz" aria-label="Direccionamiento abierto">
+        <pre class="ascii-pre">{`Direccionamiento abierto (linear probing)
+
+  [ . ][ A ][ B ][ . ][ . ]
+          ↑ intentamos C con misma cubeta que B
+                → probamos siguiente celda libre`}</pre>
+      </div>
+      <ul class="tight-list">
+        <li><strong>Encadenamiento:</strong> más simple de razonar; la lista puede crecer.</li>
+        <li><strong>Abierto:</strong> sin punteros extra; riesgo de clustering; requiere buen factor de carga y rehashing.</li>
+      </ul>
+    </section>
+
+    <section class="mb-10">
+      <h2><code>HashMap</code> y <code>HashSet</code></h2>
+      <p>
+        <code>HashSet</code> es un mapa «sin valor»: solo claves únicas. Por dentro, JDK usa tablas hash optimizadas (árboles en cubetas
+        muy pobladas desde Java 8). No dependas del orden de iteración.
+      </p>
+      <CodeBlock
+        lang="java"
+        title="API típica"
+        code={`Map<String, Integer> edad = new HashMap<>();
+edad.put("Ana", 30);
+edad.get("Ana");
+
+Set<String> tags = new HashSet<>();
+tags.add("java");
+tags.add("java"); // sin duplicado`}
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Propuesta de diseño</h2>
+      <p>
+        Implementá una mini <code>MiMapa&lt;K,V&gt;</code> con arreglo de listas enlazadas de entradas, factor de carga 0.75 y
+        duplicar capacidad al superarlo. Compará tiempos con <code>HashMap</code> del JDK para validar tu intuición Big O.
+      </p>
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/estructuras-datos/arboles/" class="prev">← Árboles</a>
+      <a href="/course/estructuras-datos/grafos/" class="next">Grafos →</a>
+    </nav>
+  </article>
+</Layout>
+
+<style>
+  .lead {
+    font-size: 1.1rem;
+    font-weight: 700;
+    line-height: 1.55;
+    margin-bottom: 2rem;
+    color: var(--text-secondary);
+  }
+  .ascii-viz {
+    margin: 1.25rem 0;
+    padding: 1rem 1.25rem;
+    border: 3px solid var(--border);
+    border-radius: 16px;
+    background: #fafafa;
+    overflow-x: auto;
+    box-shadow: 4px 4px 0 var(--border);
+  }
+  .ascii-pre {
+    margin: 0;
+    font-family: ui-monospace, monospace;
+    font-size: 0.78rem;
+    line-height: 1.35;
+    color: #134e4a;
+  }
+  .tight-list {
+    font-weight: 700;
+    line-height: 1.65;
+  }
+</style>

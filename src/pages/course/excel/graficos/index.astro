@@ -88,6 +88,7 @@ const grafHistoMin = [
     <p class="font-semibold text-gray-800 mb-2">En esta lección aprenderás a:</p>
     <ul class="list-disc pl-6 text-gray-700 mb-8 space-y-1">
       <li>Elegir el <strong>tipo de gráfico</strong> adecuado según la pregunta de negocio y la forma de los datos.</li>
+      <li>Usar <strong>gráficos recomendados</strong> (sugerencias de Excel) y distinguirlos de <strong>SmartArt</strong> para diagramas conceptuales.</li>
       <li><strong>Construir e interpretar</strong> columnas, barras, líneas, circular, áreas, dispersión, combinados e histogramas.</li>
       <li><strong>Organizar tablas</strong> para que Excel entienda categorías y series sin errores comunes.</li>
       <li><strong>Personalizar</strong> títulos, ejes y estilo con criterio profesional y contar una historia con datos.</li>
@@ -352,6 +353,64 @@ const grafHistoMin = [
       </ol>
       <p><strong>Interpretación:</strong> la mayoría de valores agrupados entre 5–10 min con cola hacia tiempos mayores.</p>
       <p><strong>Frase:</strong> «La distribución muestra concentración en la franja baja de minutos, con una cola que indica algunos casos lentos a revisar como outliers operativos.»</p>
+
+      <!-- Gráficos recomendados + SmartArt -->
+      <h3 class="text-xl font-black text-[#107c41] mt-10 mb-3">2.9 Gráficos recomendados («smart») y SmartArt</h3>
+      <p>
+        Excel ofrece dos ayudas distintas que a veces se confunden: una sirve para <strong>datos numéricos</strong> (gráficos) y otra para
+        <strong>ideas y procesos</strong> (diagramas con texto).
+      </p>
+
+      <h4 class="text-base font-bold text-gray-900 mt-6 mb-2">Gráficos recomendados</h4>
+      <p>
+        Tras seleccionar un rango con datos (idealmente con <strong>fila de encabezados</strong>), en la cinta
+        <strong>Insertar</strong> podés abrir <strong>Gráficos recomendados</strong> (icono con sugerencias o el botón junto a los tipos de
+        gráfico; el nombre exacto varía un poco según versión e idioma de Microsoft 365 o Excel de escritorio).
+      </p>
+      <ul class="list-disc pl-6 text-gray-700 space-y-2">
+        <li>
+          <strong>Qué hace:</strong> analiza la forma del rango (texto vs números, una o varias series) y propone <em>vistas previas</em> de
+          tipos habituales: columnas, líneas, barras, dispersión, etc.
+        </li>
+        <li>
+          <strong>Ventaja:</strong> ahorra tiempo cuando recién empezás o tenés una tabla estándar; ves al instante si una línea o columnas
+          comunican mejor.
+        </li>
+        <li>
+          <strong>Cuidado:</strong> la sugerencia no conoce tu <em>pregunta de negocio</em>. Siempre preguntate: ¿comparo categorías, partes
+          de un todo, tendencia en el tiempo o relación X–Y? Si la propuesta no encaja, elegí el tipo manualmente (como en los apartados 2.1–2.8).
+        </li>
+        <li>
+          <strong>En Microsoft 365</strong> a veces aparece además <strong>Ideas</strong> (análisis rápidos y gráficos sugeridos desde la
+          pestaña Inicio): útil para explorar, pero revisá títulos, ejes y que no se filtre información sensible al compartir.
+        </li>
+      </ul>
+      <p class="text-gray-700 font-semibold mt-4">Pasos típicos</p>
+      <ol class="list-decimal pl-6 space-y-1 text-gray-700">
+        <li>Seleccioná solo el bloque de datos (sin filas vacías intermedias).</li>
+        <li><strong>Insertar &gt; Gráficos recomendados</strong> (o equivalente).</li>
+        <li>Recorré las pestañas <em>Recomendados</em> / <em>Todos los gráficos</em> y elegí una vista previa.</li>
+        <li>Ajustá título, ejes y leyenda como en la sección 4; no te quedes con el estilo por defecto si el informe es para cliente o dirección.</li>
+      </ol>
+
+      <h4 class="text-base font-bold text-gray-900 mt-8 mb-2">SmartArt (diagramas inteligentes)</h4>
+      <p>
+        <strong>Insertar &gt; SmartArt</strong> abre galerías de <strong>procesos, ciclos, jerarquías, relaciones</strong>, etc. No sustituye
+        un gráfico de datos: sirve para mostrar <em>flujos</em> (ej. captura → calificación → cierre), <em>organigramas</em> o etapas de un
+        proyecto en una hoja o al copiar a PowerPoint.
+      </p>
+      <ul class="list-disc pl-6 text-gray-700 space-y-2">
+        <li><strong>Cuándo usarlo:</strong> comunicar un modelo o proceso con pocas palabras por caja; combinarlo con un gráfico real al lado.</li>
+        <li><strong>Cuándo no:</strong> para magnitudes o tendencias: ahí usá columnas, líneas o tablas dinámicas.</li>
+        <li>
+          <strong>Datos vinculados:</strong> algunos diseños permiten enlazar a celdas; si no, el texto es manual: actualizá SmartArt cuando cambien
+          los nombres de etapas o responsables.
+        </li>
+      </ul>
+      <p class="text-gray-700 mt-4">
+        <strong>Propuesta de práctica:</strong> con la misma tabla de ventas por región, abrí <strong>Gráficos recomendados</strong>, elegí una
+        sugerencia y comparala con el gráfico de columnas que diseñarías vos según la sección 2.1. Escribí en una frase por qué coinciden o no.
+      </p>
     </section>
 
     <!-- 3. Estructura de datos -->

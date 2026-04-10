@@ -1,0 +1,41 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import PatternSection from '../../../../components/patterns/PatternSection.astro';
+import {
+  REFACTORING_GURU_DESIGN_PATTERNS_ES,
+  patronesCreacionales,
+} from '../../../../data/designPatterns';
+---
+
+<Layout
+  title="Patrones creacionales"
+  description="Factory Method, Abstract Factory, Builder, Prototype y Singleton con ejemplos multilenguaje."
+  courseSlug="patrones-diseno"
+>
+  <article class="content-section">
+    <h1>2. Patrones creacionales</h1>
+
+    <section class="mb-10">
+      <p>
+        Estos patrones ofrecen <strong>mecanismos de creación</strong> que hacen el sistema más flexible: encapsulan quién crea
+        qué, cuándo y cómo, para que el resto del código dependa de abstracciones y no de <code>new</code> dispersos.
+      </p>
+      <p class="font-bold text-[var(--text-secondary)]">
+        Referencia general:
+        <a href={REFACTORING_GURU_DESIGN_PATTERNS_ES} target="_blank" rel="noopener noreferrer">
+          Catálogo — Refactoring.Guru
+        </a>
+        (navegación por categorías dentro del sitio).
+      </p>
+    </section>
+
+    {patronesCreacionales.map((p) => (
+      <PatternSection pattern={p} />
+    ))}
+
+    <nav class="nav-bottom">
+      <a href="/course/patrones-diseno/introduccion/" class="prev">← Introducción</a>
+      <a href="/course/patrones-diseno/estructurales/" class="next">Patrones estructurales →</a>
+    </nav>
+  </article>
+</Layout>

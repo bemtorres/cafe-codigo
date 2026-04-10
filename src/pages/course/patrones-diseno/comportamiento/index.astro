@@ -1,0 +1,36 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import PatternSection from '../../../../components/patterns/PatternSection.astro';
+import { REFACTORING_GURU_DESIGN_PATTERNS_ES, patronesComportamiento } from '../../../../data/designPatterns';
+---
+
+<Layout
+  title="Patrones de comportamiento"
+  description="Chain of Responsibility, Command, Iterator, Mediator, Memento, Observer, State, Strategy, Template Method y Visitor."
+  courseSlug="patrones-diseno"
+>
+  <article class="content-section">
+    <h1>4. Patrones de comportamiento</h1>
+
+    <section class="mb-10">
+      <p>
+        Tratan la <strong>asignación de responsabilidades</strong> y los algoritmos entre objetos: comunicación, estados,
+        notificaciones, recorridos, deshacer, variaciones de lógica sin herencia rígida, etc.
+      </p>
+      <p class="font-bold text-[var(--text-secondary)]">
+        <a href={REFACTORING_GURU_DESIGN_PATTERNS_ES} target="_blank" rel="noopener noreferrer">
+          Catálogo en Refactoring.Guru ↗
+        </a>
+      </p>
+    </section>
+
+    {patronesComportamiento.map((p) => (
+      <PatternSection pattern={p} />
+    ))}
+
+    <nav class="nav-bottom">
+      <a href="/course/patrones-diseno/estructurales/" class="prev">← Estructurales</a>
+      <a href="/course/patrones-diseno/" class="next">Volver al curso →</a>
+    </nav>
+  </article>
+</Layout>

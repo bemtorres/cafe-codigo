@@ -1,0 +1,160 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+---
+
+<Layout
+  title="De programador a ingeniero — Java"
+  description="Wrappers, genéricos y complejidad Big O antes de implementar estructuras de datos."
+  courseSlug="estructuras-datos"
+>
+  <article class="content-section">
+    <h1>1. El salto de «programador» a «ingeniero»</h1>
+
+    <p class="lead">
+      Antes de implementar listas o árboles a mano, necesitás el <strong>vocabulario de análisis</strong> de Java: tipos primitivos vs
+      objetos, genéricos para reutilizar estructuras, y Big O para razonar sobre tiempo y memoria.
+    </p>
+
+    <section class="mb-10">
+      <h2>Tipos primitivos y wrappers (<code>int</code> vs <code>Integer</code>)</h2>
+      <p>
+        <code>int</code>, <code>double</code>, <code>boolean</code>… viven en la pila y no son objetos. <code>Integer</code>,
+        <code>Double</code>, <code>Boolean</code> son <strong>clases envoltorio</strong>: encapsulan el valor y pueden ser
+        <code>null</code> y usarse en colecciones genéricas que exigen referencias.
+      </p>
+      <CodeBlock
+        lang="java"
+        title="Primitivo vs wrapper"
+        code={`int a = 5;
+Integer b = Integer.valueOf(5); // preferible a new Integer(5)
+Integer c = null;              // solo referencias permiten null
+
+// Autoboxing / unboxing
+Integer x = 10;   // boxing
+int y = x;        // unboxing — cuidado si x fuera null (NPE)`}
+      />
+      <p>
+        En estructuras propias, si el <strong>nodo</strong> guarda un dato genérico, casi siempre modelarás el contenido como tipo
+        referencia (<code>T</code>) o usarás wrappers cuando necesites <code>null</code> como «hueco».
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Genéricos (<code>Generics</code>)</h2>
+      <p>
+        Sin genéricos, todo sería <code>Object</code> y perderías seguridad de tipos. Con <code>&lt;T&gt;</code>, una misma clase
+        <code>Nodo&lt;T&gt;</code> sirve para <code>String</code>, <code>Persona</code>, etc.
+      </p>
+      <CodeBlock
+        lang="java"
+        title="Nodo genérico (idea central del curso)"
+        code={`public class Nodo<T> {
+    private final T dato;
+    private Nodo<T> siguiente;
+
+    public Nodo(T dato) {
+        this.dato = dato;
+    }
+    public T getDato() { return dato; }
+    public Nodo<T> getSiguiente() { return siguiente; }
+    public void setSiguiente(Nodo<T> siguiente) { this.siguiente = siguiente; }
+}`}
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Complejidad algorítmica (Big O)</h2>
+      <p>
+        Medís <strong>tiempo</strong> y <strong>espacio</strong> en función del tamaño de la entrada <code>n</code>. No hace falta
+        contar milisegundos: comparás órdenes de crecimiento.
+      </p>
+      <div class="ascii-viz" aria-label="Tabla Big O común">
+        <table class="big-o-table">
+          <thead>
+            <tr>
+              <th>Notación</th>
+              <th>Nombre</th>
+              <th>Ejemplo típico</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>O(1)</code></td>
+              <td>Constante</td>
+              <td>Acceso por índice en arreglo, <code>peek</code> en pila</td>
+            </tr>
+            <tr>
+              <td><code>O(log n)</code></td>
+              <td>Logarítmica</td>
+              <td>Búsqueda en BST equilibrado, heap</td>
+            </tr>
+            <tr>
+              <td><code>O(n)</code></td>
+              <td>Lineal</td>
+              <td>Recorrer lista enlazada, un solo bucle sobre <code>n</code></td>
+            </tr>
+            <tr>
+              <td><code>O(n log n)</code></td>
+              <td>Casi lineal</td>
+              <td>Merge sort, quick sort promedio</td>
+            </tr>
+            <tr>
+              <td><code>O(n²)</code></td>
+              <td>Cuadrática</td>
+              <td>Bucles anidados sobre el mismo <code>n</code> (p. ej. burbuja ingenua)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        <strong>Propuesta de práctica:</strong> para cada método que escribas (<code>insertar</code>, <code>buscar</code>), anotá en un
+        comentario <code>// tiempo: O(?), espacio: O(?)</code> y justificá con un argumento corto.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Interfaces como contrato</h2>
+      <p>
+        Antes de codificar, definí qué operaciones expone tu estructura: <code>void insertar(T x)</code>,
+        <code>T eliminar()</code>, <code>boolean contiene(T x)</code>, etc. Las interfaces en Java te obligan a pensar el
+        <strong>qué</strong> antes del <strong>cómo</strong> — coherente con el rol de ingeniero.
+      </p>
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/estructuras-datos/" class="prev">← Curso</a>
+      <a href="/course/estructuras-datos/lineales-nodos/" class="next">Lineales y nodos →</a>
+    </nav>
+  </article>
+</Layout>
+
+<style>
+  .lead {
+    font-size: 1.1rem;
+    font-weight: 700;
+    line-height: 1.55;
+    margin-bottom: 2rem;
+    color: var(--text-secondary);
+  }
+  .big-o-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+  .big-o-table th,
+  .big-o-table td {
+    border: 2px solid var(--border);
+    padding: 0.6rem 0.75rem;
+    text-align: left;
+  }
+  .big-o-table th {
+    background: #f0fdfa;
+    font-family: 'Nunito', sans-serif;
+  }
+  .ascii-viz {
+    margin: 1rem 0;
+    overflow-x: auto;
+  }
+</style>

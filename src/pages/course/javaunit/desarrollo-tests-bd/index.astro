@@ -1,0 +1,142 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+---
+
+<Layout
+  title="Tests con base de datos en Java (JUnit)"
+  description="Cómo preparar la BD antes de los tests: H2 en memoria, dependencias Maven y arranque con @BeforeAll."
+  courseSlug="javaunit"
+>
+  <article class="content-section">
+    <h1>10. Desarrollo de tests con base de datos</h1>
+
+    <section class="mb-10">
+      <h2>El problema: MySQL en producción, ¿y en los tests?</h2>
+      <p>
+        En un sistema real suele usarse <strong>MySQL</strong> (u otro motor). Los tests no deberían depender de que alguien haya
+        <em>“levantado MySQL a mano”</em> antes de pulsar <em>Run</em>: eso es frágil y rompe la CI.
+      </p>
+      <p>
+        La <strong>propuesta habitual</strong> es declarar en el propio test <strong>qué base necesitas</strong> y
+        <strong>crearla o conectarla al inicio</strong> de la clase de test (por ejemplo con <code>@BeforeAll</code>). Así el
+        contrato queda claro: antes de ejecutar cualquier <code>@Test</code>, el esquema existe y está en un estado conocido.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Opción práctica: H2 en memoria (tests rápidos)</h2>
+      <p>
+        <strong>H2</strong> es una base embebida que puede ejecutarse <strong>en memoria</strong>. No sustituye por completo a MySQL
+        (el SQL puede diferir), pero es ideal para probar DAOs y JDBC sin Docker.
+      </p>
+      <p>
+        En <code>@BeforeAll</code> abres la URL JDBC, ejecutas tu script <code>.sql</code> (o migraciones) y recién entonces
+        construyes el objeto que usa <code>Connection</code> (por ejemplo un <code>UsuarioDAO</code>).
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Dependencias Maven (solo para <code>test</code>)</h2>
+      <p>
+        JUnit 5, AssertJ (assertions legibles) y H2 suelen declararse con <code>&lt;scope&gt;test&lt;/scope&gt;</code> para no
+        mezclarlas con el código de producción.
+      </p>
+      <CodeBlock
+        lang="xml"
+        code={`<!-- pom.xml (fragmento) -->
+<dependencies>
+    <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-api</artifactId>
+        <version>5.10.0</version>
+        <scope>test</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.assertj</groupId>
+        <artifactId>assertj-core</artifactId>
+        <version>3.24.2</version>
+        <scope>test</scope>
+    </dependency>
+    <dependency>
+        <groupId>com.h2database</groupId>
+        <artifactId>h2</artifactId>
+        <version>2.2.224</version>
+        <scope>test</scope>
+    </dependency>
+</dependencies>`}
+        title="pom.xml"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Ejemplo: arranque en <code>@BeforeAll</code></h2>
+      <p>
+        <code>DB_CLOSE_DELAY=-1</code> evita que H2 cierre la base en memoria en cuanto se libera la última conexión (útil si
+        varios tests comparten la misma JVM). En un escenario real, aquí ejecutarías el DDL o cargarías un <code>schema.sql</code>.
+      </p>
+      <CodeBlock
+        lang="java"
+        code={`import org.junit.jupiter.api.*;
+import static org.assertj.core.api.Assertions.*;
+
+class UsuarioDAOTest {
+
+    private static UsuarioDAO usuarioDAO;
+    private static java.sql.Connection connection;
+
+    @BeforeAll
+    static void setup() throws Exception {
+        connection = java.sql.DriverManager.getConnection(
+            "jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1", "sa", "");
+        // Ejecutar aquí script SQL: CREATE TABLE ...
+        usuarioDAO = new UsuarioDAO(connection);
+    }
+
+    @AfterAll
+    static void teardown() throws Exception {
+        if (connection != null && !connection.isClosed()) {
+            connection.close();
+        }
+    }
+
+    @Test
+    @DisplayName("Debería insertar y recuperar un usuario correctamente")
+    void debeInsertarUsuario() {
+        Usuario nuevo = new Usuario("Leo", "leo@example.com");
+        usuarioDAO.guardar(nuevo);
+        Usuario resultado = usuarioDAO.buscarPorEmail("leo@example.com");
+        assertThat(resultado).isNotNull();
+        assertThat(resultado.getNombre()).isEqualTo("Leo");
+    }
+}`}
+        title="UsuarioDAOTest.java"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Cuando necesitas MySQL de verdad</h2>
+      <p>
+        Si el SQL es muy específico de MySQL, muchos equipos usan <strong>Testcontainers</strong>: un contenedor MySQL se levanta
+        desde el test, obtienes la URL JDBC y ejecutas migraciones. Requiere Docker en la máquina o en CI. Otra opción es un
+        servicio MySQL en el pipeline (GitHub Actions <code>services</code>, etc.) y variables de entorno para la URL de test.
+      </p>
+    </section>
+
+    <div class="ejercicio" style="background: #E0F2F1;">
+      <h3>Ejercicio práctico</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> Contrato explícito
+      </div>
+      <p class="enunciado">
+        Escribe en comentarios al inicio de tu clase de test <strong>tres cosas</strong>: qué motor usas en test (H2/MySQL),
+        cómo se crea el esquema (script, Flyway, etc.) y si los tests pueden ejecutarse en paralelo o deben ser secuenciales.
+      </p>
+    </div>
+
+    <nav class="nav-bottom">
+      <a href="/course/javaunit/intro-mocks/" class="prev">← Intro a Mocks</a>
+      <a href="/course/javaunit/proyecto-final/" class="next">Proyecto Final →</a>
+    </nav>
+  </article>
+</Layout>
