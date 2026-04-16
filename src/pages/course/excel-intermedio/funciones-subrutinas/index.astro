@@ -1,0 +1,388 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import ExcelQuizModal from '../../../../components/ExcelQuizModal.astro';
+import ExcelSheetTable from '../../../../components/ExcelSheetTable.astro';
+import ExcelPracticeBlock from '../../../../components/ExcelPracticeBlock.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+---
+
+<Layout title="5. Subrutinas y Funciones Propias" description="Aprende la diferencia entre Sub y Function en VBA, cómo pasar parámetros y crear funciones usables en celdas." courseSlug="excel-intermedio">
+  <article class="content-section">
+    <h1>5. Subrutinas y Funciones Propias</h1>
+
+    <p class="font-semibold text-gray-800 mb-2">En esta lección aprenderás a:</p>
+    <ul class="list-disc pl-6 text-gray-700 mb-8 space-y-1">
+      <li>Distinguir <code>Sub</code> (sin retorno) de <code>Function</code> (con retorno).</li>
+      <li>Pasar parámetros con <code>ByVal</code> y <code>ByRef</code>.</li>
+      <li>Llamar un <code>Sub</code> desde otro procedimiento.</li>
+      <li>Crear funciones personalizadas (<strong>UDF</strong>) usables directamente en celdas.</li>
+    </ul>
+
+    <section class="mb-10">
+      <h2>Sub vs Function</h2>
+      <ExcelSheetTable
+        tableId="tabla-subvsfunc"
+        tableLabel="Diferencias clave entre Sub y Function"
+        variant="resumen"
+        columns={['A', 'B', 'C']}
+        headers={['', 'Sub', 'Function']}
+        rows={[
+          ['Devuelve un valor', 'No', 'Sí'],
+          ['Se puede usar en celdas de Excel', 'No', 'Sí (UDF)'],
+          ['Se puede llamar desde código', 'Sí', 'Sí'],
+          ['Aparece en Alt+F8 (lista de macros)', 'Sí', 'No'],
+          ['Sintaxis de cierre', 'End Sub', 'End Function'],
+        ]}
+        hint="Una Sub automatiza acciones. Una Function calcula y devuelve un resultado."
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Sub con parámetros — ByVal</h2>
+      <CodeBlock lang="vba" title="Saludos.bas" code={`Sub MostrarSaludo(ByVal nombre As String)
+    MsgBox "Hola, " & nombre & "!"
+End Sub
+
+Sub EjecutarSaludo()
+    Call MostrarSaludo("Ana")
+    Call MostrarSaludo("Carlos")
+End Sub`} />
+    </section>
+
+    <section class="mb-10">
+      <h2>ByVal vs ByRef</h2>
+      <CodeBlock lang="vba" title="ByValVsRef.bas" code={`Sub DoblarByVal(ByVal numero As Double)
+    numero = numero * 2
+    Debug.Print "Dentro ByVal: " & numero
+End Sub
+
+Sub DoblarByRef(ByRef numero As Double)
+    numero = numero * 2
+End Sub
+
+Sub Prueba()
+    Dim x As Double
+    x = 5
+    DoblarByVal x
+    Debug.Print "ByVal — x sigue siendo: " & x   ' → 5
+    DoblarByRef x
+    Debug.Print "ByRef — x ahora es: " & x        ' → 10
+End Sub`} />
+    </section>
+
+    <section class="mb-10">
+      <h2>Function — crear funciones personalizadas (UDF)</h2>
+      <CodeBlock lang="vba" title="UDFs.bas" code={`Function PrecioConIVA(ByVal precio As Double) As Double
+    PrecioConIVA = precio * 1.19
+End Function
+
+' En una celda de Excel escribe:
+' =PrecioConIVA(B2)
+
+Function ClasificarEdad(ByVal edad As Integer) As String
+    If edad < 18 Then
+        ClasificarEdad = "Menor de edad"
+    ElseIf edad < 65 Then
+        ClasificarEdad = "Adulto"
+    Else
+        ClasificarEdad = "Adulto mayor"
+    End If
+End Function`} />
+    </section>
+
+    <ExcelPracticeBlock
+      steps={[
+        'Crea MostrarSaludo() y llámala desde EjecutarSaludo() con dos nombres distintos.',
+        'Ejecuta la Sub Prueba() y verifica en la ventana Inmediata la diferencia entre ByVal y ByRef.',
+        'Escribe PrecioConIVA() en el módulo y úsala desde una celda con =PrecioConIVA(1000).',
+        'Crea ClasificarEdad() y aplícala en una columna de edades.',
+      ]}
+    />
+
+    <section class="mb-10">
+      <h2>Ejercicios de práctica</h2>
+
+      <div class="ejercicio" style="background: #E8F5E9;">
+        <h3>Ejercicio 1 — Sub que limpia un rango</h3>
+        <p class="enunciado">Crea una Sub <code>LimpiarHoja</code> que borre el contenido de <code>A1:Z100</code> de la hoja activa. Llámala desde otra Sub para probarla.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="LimpiarHoja.bas" code={`Sub LimpiarHoja()
+    Range("A1:Z100").ClearContents
+    MsgBox "Hoja limpiada."
+End Sub
+
+Sub PruebaLimpiar()
+    Call LimpiarHoja
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #E8F5E9;">
+        <h3>Ejercicio 2 — Function: es positivo?</h3>
+        <p class="enunciado">Crea una <code>Function EsPositivo(n As Double) As Boolean</code> que devuelva <code>True</code> si el número es mayor que 0. Úsala en una Sub que lea A1 y muestre el resultado con <code>MsgBox</code>.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="EsPositivo.bas" code={`Function EsPositivo(n As Double) As Boolean
+    EsPositivo = (n > 0)
+End Function
+
+Sub PruebaEsPositivo()
+    Dim val As Double
+    val = Range("A1").Value
+    If EsPositivo(val) Then
+        MsgBox val & " es positivo."
+    Else
+        MsgBox val & " NO es positivo."
+    End If
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #E8F5E9;">
+        <h3>Ejercicio 3 — UDF: Celsius a Fahrenheit</h3>
+        <p class="enunciado">Crea una UDF <code>CelsiusAFahrenheit(c As Double) As Double</code>. La fórmula es <code>(c × 9/5) + 32</code>. Úsala en una celda con <code>=CelsiusAFahrenheit(A1)</code>.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="Temperatura.bas" code={`Function CelsiusAFahrenheit(c As Double) As Double
+    CelsiusAFahrenheit = (c * 9 / 5) + 32
+End Function`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #E8F5E9;">
+        <h3>Ejercicio 4 — Sub con parámetro de encabezado</h3>
+        <p class="enunciado">Crea una Sub <code>LlenarEncabezado(ByVal columnas As Integer)</code> que escriba "Columna 1", "Columna 2", … hasta el número de columnas indicado, en la fila 1. Llámala con <code>LlenarEncabezado 5</code>.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="LlenarEncabezado.bas" code={`Sub LlenarEncabezado(ByVal columnas As Integer)
+    Dim i As Integer
+    For i = 1 To columnas
+        Cells(1, i).Value = "Columna " & i
+    Next i
+End Sub
+
+Sub PruebaEncabezado()
+    LlenarEncabezado 5
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #E8F5E9;">
+        <h3>Ejercicio 5 — Function: promedio de tres</h3>
+        <p class="enunciado">Crea una Function <code>Promedio3(a As Double, b As Double, c As Double) As Double</code> y úsala en una Sub que lea tres celdas y muestre el promedio.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="Promedio3.bas" code={`Function Promedio3(a As Double, b As Double, c As Double) As Double
+    Promedio3 = (a + b + c) / 3
+End Function
+
+Sub PruebaPromedio3()
+    Dim resultado As Double
+    resultado = Promedio3(Range("A1").Value, Range("B1").Value, Range("C1").Value)
+    MsgBox "Promedio: " & resultado
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FFF8E1;">
+        <h3>Ejercicio 6 — Sub organizada en dos partes ⭐⭐</h3>
+        <p class="enunciado">Crea una Sub principal <code>PrepararReporte</code> que llame a dos Sub auxiliares: <code>LimpiarZona</code> (borra A1:E20) y <code>EscribirEncabezados</code> (escribe títulos en la fila 1). Organiza el código en tres procedimientos separados.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="Reporte.bas" code={`Sub PrepararReporte()
+    LimpiarZona
+    EscribirEncabezados
+    MsgBox "Reporte preparado."
+End Sub
+
+Sub LimpiarZona()
+    Range("A1:E20").ClearContents
+End Sub
+
+Sub EscribirEncabezados()
+    Range("A1").Value = "Producto"
+    Range("B1").Value = "Precio"
+    Range("C1").Value = "Cantidad"
+    Range("D1").Value = "Subtotal"
+    Range("E1").Value = "Con IVA"
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FFF8E1;">
+        <h3>Ejercicio 7 — UDF: comisión de ventas ⭐⭐</h3>
+        <p class="enunciado">Crea una UDF <code>CalcularComision(ventas As Double, porcentaje As Double) As Double</code>. Úsala en celdas con <code>=CalcularComision(A1, 0.08)</code> para calcular el 8% de comisión.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="Comision.bas" code={`Function CalcularComision(ventas As Double, porcentaje As Double) As Double
+    CalcularComision = ventas * porcentaje
+End Function`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FFF8E1;">
+        <h3>Ejercicio 8 — ByRef en práctica ⭐⭐</h3>
+        <p class="enunciado">Crea una Sub <code>AgregarIVA(ByRef precio As Double)</code> que multiplique el precio por 1.19 modificando la variable original. Comprueba que después de llamarla, la variable del llamador tiene el nuevo valor.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="AgregarIVA.bas" code={`Sub AgregarIVA(ByRef precio As Double)
+    precio = precio * 1.19
+End Sub
+
+Sub PruebaIVA()
+    Dim p As Double
+    p = 100
+    AgregarIVA p
+    Debug.Print "Precio con IVA: " & p   ' → 119
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FFF8E1;">
+        <h3>Ejercicio 9 — UDF: ¿Es fin de semana? ⭐⭐</h3>
+        <p class="enunciado">Crea una UDF <code>EsWeekend(fecha As Date) As Boolean</code> que devuelva <code>True</code> si la fecha cae en sábado (7) o domingo (1) usando <code>Weekday()</code>. Úsala en una celda.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="EsWeekend.bas" code={`Function EsWeekend(fecha As Date) As Boolean
+    Dim dia As Integer
+    dia = Weekday(fecha)
+    EsWeekend = (dia = 1 Or dia = 7)
+End Function`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FFF8E1;">
+        <h3>Ejercicio 10 — Parámetro opcional ⭐⭐</h3>
+        <p class="enunciado">Crea una Sub <code>MostrarMensaje(ByVal texto As String, Optional titulo As String = "Aviso")</code>. Si se pasa el segundo argumento usa ese título; si no, usa "Aviso" como predeterminado. Pruébala con y sin el segundo argumento.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="MensajeOpcional.bas" code={`Sub MostrarMensaje(ByVal texto As String, Optional titulo As String = "Aviso")
+    MsgBox texto, vbInformation, titulo
+End Sub
+
+Sub PruebaOpcional()
+    MostrarMensaje "Operación exitosa."
+    MostrarMensaje "¡Error crítico!", "ERROR"
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FBE9E7;">
+        <h3>Ejercicio 11 — Function que cuenta no vacías ⭐⭐⭐</h3>
+        <p class="enunciado">Crea una Function <code>ContarNoVacias(rango As Range) As Integer</code> que cuente las celdas con contenido en el rango dado. Úsala en una Sub pasando <code>Range("A1:A20")</code>.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="ContarNoVacias.bas" code={`Function ContarNoVacias(rango As Range) As Integer
+    Dim celda As Range
+    Dim c     As Integer
+    c = 0
+    For Each celda In rango
+        If celda.Value <> "" Then c = c + 1
+    Next celda
+    ContarNoVacias = c
+End Function
+
+Sub PruebaContar()
+    MsgBox "No vacías: " & ContarNoVacias(Range("A1:A20"))
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FBE9E7;">
+        <h3>Ejercicio 12 — UDF: clasificar venta ⭐⭐⭐</h3>
+        <p class="enunciado">Crea una UDF <code>ClasificarVenta(monto As Double) As String</code> que devuelva "Baja" (menor de 1000), "Media" (1000–9999) o "Alta" (10000 o más). Aplícala en una columna de montos.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="ClasificarVenta.bas" code={`Function ClasificarVenta(monto As Double) As String
+    If monto < 1000 Then
+        ClasificarVenta = "Baja"
+    ElseIf monto < 10000 Then
+        ClasificarVenta = "Media"
+    Else
+        ClasificarVenta = "Alta"
+    End If
+End Function`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FBE9E7;">
+        <h3>Ejercicio 13 — Extraer solo letras ⭐⭐⭐</h3>
+        <p class="enunciado">Crea una Function <code>SoloLetras(texto As String) As String</code> que recorra el texto carácter por carácter con <code>Mid()</code> y devuelva solo las letras (A-Z, a-z) eliminando números y espacios.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="SoloLetras.bas" code={`Function SoloLetras(texto As String) As String
+    Dim resultado As String
+    Dim i         As Integer
+    Dim c         As String
+    resultado = ""
+    For i = 1 To Len(texto)
+        c = Mid(texto, i, 1)
+        If (c >= "A" And c <= "Z") Or (c >= "a" And c <= "z") Then
+            resultado = resultado & c
+        End If
+    Next i
+    SoloLetras = resultado
+End Function`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FBE9E7;">
+        <h3>Ejercicio 14 — Exit Function ⭐⭐⭐</h3>
+        <p class="enunciado">Crea una Function <code>DividirSeguro(a As Double, b As Double) As Variant</code> que devuelva el resultado de a/b. Si b es 0, usa <code>Exit Function</code> después de asignar <code>DividirSeguro = "Error: división por cero"</code>.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="DividirSeguro.bas" code={`Function DividirSeguro(a As Double, b As Double) As Variant
+    If b = 0 Then
+        DividirSeguro = "Error: división por cero"
+        Exit Function
+    End If
+    DividirSeguro = a / b
+End Function`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FBE9E7;">
+        <h3>Ejercicio 15 — Pipeline de funciones ⭐⭐⭐</h3>
+        <p class="enunciado">Crea tres funciones: <code>BaseImponible(precio, cantidad)</code>, <code>CalcularIVA(base)</code> y <code>TotalFactura(precio, cantidad)</code> que llame a las dos anteriores. Escribe en celdas A1=precio, B1=cantidad y ejecuta una Sub que llene C1=base, D1=IVA y E1=total.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="Pipeline.bas" code={`Function BaseImponible(precio As Double, cantidad As Integer) As Double
+    BaseImponible = precio * cantidad
+End Function
+
+Function CalcularIVA(base As Double) As Double
+    CalcularIVA = base * 0.19
+End Function
+
+Function TotalFactura(precio As Double, cantidad As Integer) As Double
+    Dim base As Double
+    base = BaseImponible(precio, cantidad)
+    TotalFactura = base + CalcularIVA(base)
+End Function
+
+Sub LlenarFactura()
+    Dim precio   As Double
+    Dim cantidad As Integer
+    precio   = Range("A1").Value
+    cantidad = CInt(Range("B1").Value)
+
+    Range("C1").Value = BaseImponible(precio, cantidad)
+    Range("D1").Value = CalcularIVA(BaseImponible(precio, cantidad))
+    Range("E1").Value = TotalFactura(precio, cantidad)
+End Sub`} />
+        </details>
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2>Pon a prueba tus conocimientos</h2>
+      <ExcelQuizModal quizKey="funciones-subrutinas" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/excel-intermedio/bucles-vba/" class="prev">← 4. Bucles</a>
+      <a href="/course/excel-intermedio/rangos-celdas/" class="next">6. Rangos y Celdas →</a>
+    </nav>
+  </article>
+</Layout>

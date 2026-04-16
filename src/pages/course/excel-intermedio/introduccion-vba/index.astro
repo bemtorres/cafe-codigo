@@ -1,0 +1,279 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import ExcelQuizModal from '../../../../components/ExcelQuizModal.astro';
+import ExcelSheetTable from '../../../../components/ExcelSheetTable.astro';
+import ExcelPracticeBlock from '../../../../components/ExcelPracticeBlock.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+---
+
+<Layout title="1. Introducción a VBA y el Editor" description="Aprende qué es VBA, cómo abrir el editor y escribe tu primera macro en Excel." courseSlug="excel-intermedio">
+  <article class="content-section">
+    <h1>1. Introducción a VBA y el Editor</h1>
+
+    <p class="font-semibold text-gray-800 mb-2">En esta lección aprenderás a:</p>
+    <ul class="list-disc pl-6 text-gray-700 mb-8 space-y-1">
+      <li>Entender qué es <strong>VBA</strong> y por qué es útil para automatizar Excel.</li>
+      <li>Abrir el <strong>Editor de Visual Basic</strong> de tres formas distintas.</li>
+      <li>Insertar un <strong>módulo estándar</strong> y escribir tu primera <code>Sub</code>.</li>
+      <li>Usar <code>MsgBox</code> y la <strong>ventana Inmediata</strong> con <code>Debug.Print</code>.</li>
+    </ul>
+
+    <section class="mb-10">
+      <h2>¿Qué es VBA?</h2>
+      <p>
+        <strong>VBA</strong> (Visual Basic for Applications) es el lenguaje de programación integrado en Excel y en toda la suite de Office. Con VBA puedes automatizar tareas repetitivas, crear informes con un clic, construir funciones personalizadas e interactuar con el usuario mediante cuadros de diálogo.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Abrir el Editor de VBA</h2>
+      <ExcelSheetTable
+        tableId="tabla-formas-abrir"
+        tableLabel="Tres formas de abrir el Editor VBA"
+        variant="resumen"
+        columns={['A', 'B', 'C']}
+        headers={['Forma', 'Cómo', 'Cuándo usarla']}
+        rows={[
+          ['Atajo de teclado', 'Alt + F11', 'La más rápida; abre el editor en cualquier momento'],
+          ['Pestaña Desarrollador', 'Desarrollador → Visual Basic', 'Visual y fácil de encontrar; actívala en Archivo → Opciones → Personalizar cinta *'],
+          ['Clic derecho en hoja', 'Clic derecho en pestaña de hoja → Ver código', 'Abre directo el módulo de esa hoja'],
+        ]}
+        hint="* Para mostrar la pestaña Desarrollador: Archivo → Opciones → Personalizar cinta de opciones → activa 'Desarrollador'."
+      />
+      <ExcelSheetTable
+        tableId="tabla-vbe"
+        tableLabel="Zonas del Editor VBA (VBE)"
+        variant="resumen"
+        columns={['A', 'B']}
+        headers={['Zona del editor', 'Para qué sirve']}
+        rows={[
+          ['Explorador de proyectos (izquierda)', 'Lista todos los libros abiertos, hojas y módulos'],
+          ['Ventana de código (centro)', 'Aquí escribes el código VBA'],
+          ['Ventana Inmediata (Ctrl + G)', 'Muestra Debug.Print y permite ejecutar líneas sueltas'],
+          ['Insert → Module (menú)', 'Inserta un módulo estándar para macros generales'],
+        ]}
+        hint="Si no ves la ventana Inmediata pulsa Ctrl + G o View → Immediate Window."
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Tu primera Sub — MsgBox</h2>
+      <p>Una <strong>subrutina</strong> (<code>Sub</code>) es el bloque básico de código. Coloca el cursor dentro y pulsa <strong>F5</strong> para ejecutarla:</p>
+      <CodeBlock lang="vba" title="Saludo.bas" code={`Sub Saludo()
+    MsgBox "¡Hola desde VBA!"
+End Sub`} />
+    </section>
+
+    <section class="mb-10">
+      <h2>Debug.Print — la ventana Inmediata</h2>
+      <p><code>Debug.Print</code> envía texto a la ventana Inmediata sin interrumpir el programa. Ideal para inspeccionar valores:</p>
+      <CodeBlock lang="vba" title="MostrarInfo.bas" code={`Sub MostrarInfo()
+    Dim nombre As String
+    nombre = "Excel"
+    Debug.Print "Curso de: " & nombre
+    Debug.Print "Año: " & 2024
+End Sub`} />
+      <p class="mt-2">El operador <code>&amp;</code> une textos y números. Ejecuta la Sub y revisa la ventana Inmediata.</p>
+    </section>
+
+    <ExcelPracticeBlock
+      steps={[
+        'Abre Excel y pulsa Alt + F11 para abrir el editor VBA.',
+        'Ve a Insert → Module para insertar un módulo estándar.',
+        'Escribe la Sub Saludo() con MsgBox y ejecútala con F5.',
+        'Prueba abrir el editor con la pestaña Desarrollador y con clic derecho en la pestaña de Hoja1.',
+        'Abre la ventana Inmediata (Ctrl + G), escribe la Sub MostrarInfo() y ejecútala.',
+      ]}
+    />
+
+    <section class="mb-10">
+      <h2>Ejercicios de práctica</h2>
+
+      <div class="ejercicio" style="background: #E8F5E9;">
+        <h3>Ejercicio 1 — Tu primer MsgBox</h3>
+        <p class="enunciado">Crea una Sub llamada <code>Presentacion</code> que muestre tu nombre completo con <code>MsgBox</code>.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="Presentacion.bas" code={`Sub Presentacion()
+    MsgBox "Mi nombre es: Ana García"
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #E8F5E9;">
+        <h3>Ejercicio 2 — Concatenar con &amp;</h3>
+        <p class="enunciado">Crea una Sub que construya la frase <em>"Hola, [nombre]. Bienvenido a VBA."</em> usando el operador <code>&amp;</code> y la muestre con <code>MsgBox</code>.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="Bienvenida.bas" code={`Sub Bienvenida()
+    Dim nombre As String
+    nombre = "Carlos"
+    MsgBox "Hola, " & nombre & ". Bienvenido a VBA."
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #E8F5E9;">
+        <h3>Ejercicio 3 — Debug.Print con números</h3>
+        <p class="enunciado">Usa <code>Debug.Print</code> para mostrar en la ventana Inmediata el resultado de <code>250 * 0.19</code> con el texto <em>"IVA (19%):"</em> antes del número.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="CalculoIVA.bas" code={`Sub CalculoIVA()
+    Debug.Print "IVA (19%): " & 250 * 0.19
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #E8F5E9;">
+        <h3>Ejercicio 4 — Tres mensajes seguidos</h3>
+        <p class="enunciado">Escribe una Sub que muestre tres <code>MsgBox</code> en secuencia: primero "Paso 1: Inicio", luego "Paso 2: Procesando..." y finalmente "Paso 3: ¡Listo!".</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="TresPasos.bas" code={`Sub TresPasos()
+    MsgBox "Paso 1: Inicio"
+    MsgBox "Paso 2: Procesando..."
+    MsgBox "Paso 3: ¡Listo!"
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #E8F5E9;">
+        <h3>Ejercicio 5 — Escribir en una celda</h3>
+        <p class="enunciado">Crea una Sub que escriba el texto <em>"¡VBA funciona!"</em> en la celda <strong>A1</strong> de la hoja activa.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="EscribirCelda.bas" code={`Sub EscribirCelda()
+    Range("A1").Value = "¡VBA funciona!"
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FFF8E1;">
+        <h3>Ejercicio 6 — InputBox interactivo ⭐⭐</h3>
+        <p class="enunciado">Usa <code>InputBox</code> para pedir al usuario su nombre. Luego muestra con <code>MsgBox</code> el mensaje <em>"¡Hola, [nombre]! Estás aprendiendo VBA."</em></p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="SaludoInteractivo.bas" code={`Sub SaludoInteractivo()
+    Dim nombre As String
+    nombre = InputBox("¿Cómo te llamas?")
+    MsgBox "¡Hola, " & nombre & "! Estás aprendiendo VBA."
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FFF8E1;">
+        <h3>Ejercicio 7 — Nombre del libro activo ⭐⭐</h3>
+        <p class="enunciado">Crea una Sub que muestre con <code>MsgBox</code> el nombre del libro de Excel que está actualmente abierto. Usa <code>ThisWorkbook.Name</code>.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="NombreLibro.bas" code={`Sub NombreLibro()
+    MsgBox "El libro activo se llama: " & ThisWorkbook.Name
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FFF8E1;">
+        <h3>Ejercicio 8 — Contar hojas ⭐⭐</h3>
+        <p class="enunciado">Escribe una Sub que cuente cuántas hojas tiene el libro activo y lo muestre con <code>Debug.Print</code>. Usa <code>ThisWorkbook.Sheets.Count</code>.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="ContarHojas.bas" code={`Sub ContarHojas()
+    Debug.Print "Número de hojas: " & ThisWorkbook.Sheets.Count
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FFF8E1;">
+        <h3>Ejercicio 9 — Fecha y hora actual ⭐⭐</h3>
+        <p class="enunciado">Usa <code>Debug.Print</code> para mostrar la fecha y hora actuales con el texto <em>"Ahora es:"</em> antes. Usa la función <code>Now()</code>.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="FechaActual.bas" code={`Sub FechaActual()
+    Debug.Print "Ahora es: " & Now()
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FFF8E1;">
+        <h3>Ejercicio 10 — Escribir en varias celdas ⭐⭐</h3>
+        <p class="enunciado">Crea una Sub que escriba en A1 tu nombre, en B1 tu edad y en C1 el texto "¡Aprendiendo VBA!". Ejecuta y verifica los valores en la hoja.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="LlenarCeldas.bas" code={`Sub LlenarCeldas()
+    Range("A1").Value = "Ana García"
+    Range("B1").Value = 25
+    Range("C1").Value = "¡Aprendiendo VBA!"
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FBE9E7;">
+        <h3>Ejercicio 11 — Versión de Excel ⭐⭐⭐</h3>
+        <p class="enunciado">Muestra con <code>MsgBox</code> la versión de Excel instalada y el sistema operativo. Usa <code>Application.Version</code> y <code>Application.OperatingSystem</code>.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="InfoSistema.bas" code={`Sub InfoSistema()
+    MsgBox "Excel versión: " & Application.Version & Chr(13) & _
+           "Sistema: " & Application.OperatingSystem
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FBE9E7;">
+        <h3>Ejercicio 12 — Macro con comentarios ⭐⭐⭐</h3>
+        <p class="enunciado">Reescribe la Sub <code>MostrarInfo</code> añadiendo al menos 4 comentarios explicativos con <code>'</code>. Documenta el propósito de la Sub, cada variable y cada instrucción principal.</p>
+      </div>
+
+      <div class="ejercicio" style="background: #FBE9E7;">
+        <h3>Ejercicio 13 — Macro de inicio y fin ⭐⭐⭐</h3>
+        <p class="enunciado">Crea una Sub <code>ProcesoCompleto</code> que: (1) muestre "Iniciando proceso..." con MsgBox, (2) escriba "Proceso activo" en A1, (3) muestre "Proceso finalizado. Revisa A1." con MsgBox al terminar.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="ProcesoCompleto.bas" code={`Sub ProcesoCompleto()
+    MsgBox "Iniciando proceso..."
+    Range("A1").Value = "Proceso activo"
+    MsgBox "Proceso finalizado. Revisa A1."
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FBE9E7;">
+        <h3>Ejercicio 14 — Hoja activa ⭐⭐⭐</h3>
+        <p class="enunciado">Escribe una Sub que muestre con <code>MsgBox</code> el nombre de la hoja activa y el número de fila y columna de la celda actualmente seleccionada. Usa <code>ActiveSheet.Name</code>, <code>ActiveCell.Row</code> y <code>ActiveCell.Column</code>.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="InfoCeldaActual.bas" code={`Sub InfoCeldaActual()
+    MsgBox "Hoja: " & ActiveSheet.Name & Chr(13) & _
+           "Fila: " & ActiveCell.Row & Chr(13) & _
+           "Columna: " & ActiveCell.Column
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FBE9E7;">
+        <h3>Ejercicio 15 — Calculadora básica ⭐⭐⭐</h3>
+        <p class="enunciado">Crea una Sub <code>Calculadora</code> que use dos <code>InputBox</code> para pedir dos números al usuario, sume los valores y muestre el resultado con <code>MsgBox</code>. Usa <code>CDbl()</code> para convertir el texto del InputBox a número.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="Calculadora.bas" code={`Sub Calculadora()
+    Dim num1 As Double
+    Dim num2 As Double
+    num1 = CDbl(InputBox("Ingresa el primer número:"))
+    num2 = CDbl(InputBox("Ingresa el segundo número:"))
+    MsgBox "La suma es: " & num1 + num2
+End Sub`} />
+        </details>
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2>Pon a prueba tus conocimientos</h2>
+      <ExcelQuizModal quizKey="introduccion-vba" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/excel-intermedio/" class="prev">← Índice del curso</a>
+      <a href="/course/excel-intermedio/variables-tipos/" class="next">2. Variables y Tipos de Datos →</a>
+    </nav>
+  </article>
+</Layout>

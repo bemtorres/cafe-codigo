@@ -1,0 +1,380 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import ExcelQuizModal from '../../../../components/ExcelQuizModal.astro';
+import ExcelSheetTable from '../../../../components/ExcelSheetTable.astro';
+import ExcelPracticeBlock from '../../../../components/ExcelPracticeBlock.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+---
+
+<Layout title="6. Rangos y Celdas con VBA" description="Aprende a leer, escribir y dar formato a celdas y rangos de Excel mediante código VBA." courseSlug="excel-intermedio">
+  <article class="content-section">
+    <h1>6. Rangos y Celdas con VBA</h1>
+
+    <p class="font-semibold text-gray-800 mb-2">En esta lección aprenderás a:</p>
+    <ul class="list-disc pl-6 text-gray-700 mb-8 space-y-1">
+      <li>Referenciar celdas con <code>Range("A1")</code> y <code>Cells(fila, col)</code>.</li>
+      <li>Leer y escribir con <code>.Value</code>, insertar fórmulas con <code>.Formula</code>.</li>
+      <li>Cambiar colores con <code>.Interior.Color</code> y <code>RGB()</code>.</li>
+      <li>Detectar la última fila con datos usando <code>End(xlUp)</code>.</li>
+    </ul>
+
+    <section class="mb-10">
+      <h2>Range vs Cells</h2>
+      <ExcelSheetTable
+        tableId="tabla-range-cells"
+        tableLabel="Formas de referenciar celdas"
+        variant="resumen"
+        columns={['A', 'B', 'C']}
+        headers={['Forma', 'Ejemplo', 'Cuándo usarla']}
+        rows={[
+          ['Range("dirección")', 'Range("B3")', 'Cuando la dirección es fija o conocida'],
+          ['Range("rango")', 'Range("A1:C10")', 'Para operar sobre un bloque de celdas'],
+          ['Cells(fila, col)', 'Cells(3, 2)', 'En bucles donde fila o columna varían'],
+          ['Sheets("Hoja").Range()', 'Sheets("Ventas").Range("A1")', 'Para acceder a una hoja específica'],
+        ]}
+        hint={"Cells(3, 2) y Range(\"B3\") apuntan exactamente a la misma celda B3."}
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Leer y escribir: .Value, .Formula, .Text</h2>
+      <CodeBlock lang="vba" title="PropiedadesCelda.bas" code={`Range("A1").Value = 500           ' escribe el número 500
+Range("B1").Value = "Laptop"      ' escribe texto
+Range("C1").Formula = "=A1*1.19"  ' inserta una fórmula
+
+Dim precio As Double
+precio = Range("A1").Value         ' lee el valor numérico
+
+' .Text lee el texto formateado visible (ej. "$500.00")
+Dim texto As String
+texto = Range("A1").Text`} />
+    </section>
+
+    <section class="mb-10">
+      <h2>Formato: colores, negrita, alineación</h2>
+      <CodeBlock lang="vba" title="FormatearEncabezado.bas" code={`Sub FormatearEncabezado()
+    With Range("A1:D1")
+        .Interior.Color = RGB(29, 107, 68)
+        .Font.Color = RGB(255, 255, 255)
+        .Font.Bold = True
+        .Font.Size = 12
+        .HorizontalAlignment = xlCenter
+    End With
+End Sub`} />
+    </section>
+
+    <section class="mb-10">
+      <h2>Última fila con datos — End(xlUp)</h2>
+      <CodeBlock lang="vba" title="ProcesarTabla.bas" code={`Sub ProcesarTabla()
+    Dim ultimaFila As Long
+    Dim i As Long
+    ultimaFila = Cells(Rows.Count, 1).End(xlUp).Row
+
+    For i = 2 To ultimaFila
+        Cells(i, 3).Value = Cells(i, 1).Value & " - " & Cells(i, 2).Value
+    Next i
+End Sub`} />
+    </section>
+
+    <section class="mb-10">
+      <h2>Limpiar un rango</h2>
+      <ExcelSheetTable
+        tableId="tabla-clear"
+        tableLabel="Métodos para limpiar celdas"
+        variant="resumen"
+        columns={['A', 'B']}
+        headers={['Método', 'Qué hace']}
+        rows={[
+          ['Range("A1:C10").ClearContents', 'Borra el contenido pero conserva el formato'],
+          ['Range("A1:C10").ClearFormats', 'Borra el formato pero conserva el contenido'],
+          ['Range("A1:C10").Clear', 'Borra contenido Y formato completamente'],
+          ['Range("A1:C10").Delete', 'Elimina las celdas y desplaza filas/columnas'],
+        ]}
+        hint="Usa ClearContents antes de re-generar un reporte para evitar datos residuales."
+      />
+    </section>
+
+    <ExcelPracticeBlock
+      steps={[
+        'Escribe nombres en A2:A10 y números en B2:B10. Ejecuta ProcesarTabla() y verifica C.',
+        'Agrega FormatearEncabezado() y ejecútala.',
+        'Borra valores del medio y vuelve a ejecutar ProcesarTabla() — debe detenerse en la última fila con datos.',
+        'Usa ClearContents en A1:C20 y vuelve a ejecutar.',
+      ]}
+    />
+
+    <section class="mb-10">
+      <h2>Ejercicios de práctica</h2>
+
+      <div class="ejercicio" style="background: #E8F5E9;">
+        <h3>Ejercicio 1 — Escribir en celda específica</h3>
+        <p class="enunciado">Crea una Sub que escriba el texto <em>"¡Hola desde VBA!"</em> en la celda <strong>D5</strong> usando <code>Range</code>, y el número <strong>42</strong> en <strong>E5</strong> usando <code>Cells</code>.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="EscribirCeldas.bas" code={`Sub EscribirCeldas()
+    Range("D5").Value = "¡Hola desde VBA!"
+    Cells(5, 5).Value = 42
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #E8F5E9;">
+        <h3>Ejercicio 2 — Fórmula con .Formula</h3>
+        <p class="enunciado">Escribe números en B2:B10. Usa <code>.Formula</code> para insertar la fórmula <code>=SUMA(B2:B10)</code> en la celda B11 y <code>=PROMEDIO(B2:B10)</code> en B12.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="InsertarFormulas.bas" code={`Sub InsertarFormulas()
+    Range("B11").Formula = "=SUM(B2:B10)"
+    Range("B12").Formula = "=AVERAGE(B2:B10)"
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #E8F5E9;">
+        <h3>Ejercicio 3 — Formatear encabezado azul</h3>
+        <p class="enunciado">Crea una Sub que formatee A1:E1 con fondo azul oscuro (<code>RGB(13, 71, 161)</code>), letra blanca, negrita y alineación centrada usando <code>With</code>.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="EncabezadoAzul.bas" code={`Sub EncabezadoAzul()
+    With Range("A1:E1")
+        .Interior.Color = RGB(13, 71, 161)
+        .Font.Color = RGB(255, 255, 255)
+        .Font.Bold = True
+        .HorizontalAlignment = xlCenter
+    End With
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #E8F5E9;">
+        <h3>Ejercicio 4 — Última fila de la col B</h3>
+        <p class="enunciado">Crea una Sub que encuentre la última fila con datos en la columna B usando <code>End(xlUp)</code> y muestre el número de fila con <code>MsgBox</code>.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="UltilaFila.bas" code={`Sub UltimaFilaB()
+    Dim uf As Long
+    uf = Cells(Rows.Count, 2).End(xlUp).Row
+    MsgBox "Última fila con datos en col B: " & uf
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #E8F5E9;">
+        <h3>Ejercicio 5 — Limpiar y llenar</h3>
+        <p class="enunciado">Crea una Sub que: (1) limpie el rango A1:C10 con <code>ClearContents</code>, (2) escriba "Producto", "Precio", "Stock" como encabezados en la fila 1.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="LimpiarYLlenar.bas" code={`Sub LimpiarYLlenar()
+    Range("A1:C10").ClearContents
+    Range("A1").Value = "Producto"
+    Range("B1").Value = "Precio"
+    Range("C1").Value = "Stock"
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FFF8E1;">
+        <h3>Ejercicio 6 — Copiar valor a rango ⭐⭐</h3>
+        <p class="enunciado">Escribe un valor en A1. Usa un bucle <code>For i = 2 To 10</code> para copiar ese mismo valor en A2:A10.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="CopiarValor.bas" code={`Sub CopiarValor()
+    Dim valor As Variant
+    Dim i     As Integer
+    valor = Range("A1").Value
+    For i = 2 To 10
+        Cells(i, 1).Value = valor
+    Next i
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FFF8E1;">
+        <h3>Ejercicio 7 — Formato de moneda ⭐⭐</h3>
+        <p class="enunciado">Escribe números en B2:B20. Crea una Sub que aplique el formato de moneda <code>"$#,##0.00"</code> a ese rango usando <code>NumberFormat</code>.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="FormatoMoneda.bas" code={`Sub FormatoMoneda()
+    Range("B2:B20").NumberFormat = "$#,##0.00"
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FFF8E1;">
+        <h3>Ejercicio 8 — Verificar si tiene fórmula ⭐⭐</h3>
+        <p class="enunciado">Selecciona una celda antes de ejecutar la macro. Crea una Sub que use <code>ActiveCell.HasFormula</code> para verificar si la celda activa contiene una fórmula y muestre el resultado con <code>MsgBox</code>.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="TieneFormula.bas" code={`Sub TieneFormula()
+    If ActiveCell.HasFormula Then
+        MsgBox "La celda " & ActiveCell.Address & " contiene una fórmula."
+    Else
+        MsgBox "La celda " & ActiveCell.Address & " NO tiene fórmula."
+    End If
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FFF8E1;">
+        <h3>Ejercicio 9 — Longitud de texto en col B ⭐⭐</h3>
+        <p class="enunciado">Escribe textos en A1:A15. Usa un bucle <code>For</code> para escribir en B la longitud (<code>Len()</code>) de cada texto de la columna A.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="LongitudTexto.bas" code={`Sub LongitudTexto()
+    Dim i As Integer
+    For i = 1 To 15
+        If Cells(i, 1).Value <> "" Then
+            Cells(i, 2).Value = Len(Cells(i, 1).Value)
+        End If
+    Next i
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FFF8E1;">
+        <h3>Ejercicio 10 — Usar Offset ⭐⭐</h3>
+        <p class="enunciado">Selecciona cualquier celda antes de ejecutar. Crea una Sub que use <code>ActiveCell.Offset(0, 1)</code> para escribir "Celda vecina" en la celda a la derecha de la activa, y <code>Offset(1, 0)</code> para escribir "Celda abajo" en la celda debajo.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="UsarOffset.bas" code={`Sub UsarOffset()
+    ActiveCell.Offset(0, 1).Value = "Celda vecina"
+    ActiveCell.Offset(1, 0).Value = "Celda abajo"
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FBE9E7;">
+        <h3>Ejercicio 11 — Ocultar filas ⭐⭐⭐</h3>
+        <p class="enunciado">Crea una Sub que oculte las filas 3, 5 y 7 usando <code>Rows("3:3").Hidden = True</code>. Crea otra Sub <code>MostrarFilas</code> que las vuelva a mostrar con <code>Hidden = False</code>.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="OcultarFilas.bas" code={`Sub OcultarFilas()
+    Rows("3:3").Hidden = True
+    Rows("5:5").Hidden = True
+    Rows("7:7").Hidden = True
+End Sub
+
+Sub MostrarFilas()
+    Rows("3:3").Hidden = False
+    Rows("5:5").Hidden = False
+    Rows("7:7").Hidden = False
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FBE9E7;">
+        <h3>Ejercicio 12 — Resaltar duplicados ⭐⭐⭐</h3>
+        <p class="enunciado">Escribe nombres en A1:A20 con algunos repetidos. Usa dos bucles <code>For</code> anidados para comparar cada celda con las demás; si encuentra un duplicado, colorea ambas en amarillo.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="ResaltarDuplicados.bas" code={`Sub ResaltarDuplicados()
+    Dim i As Integer
+    Dim j As Integer
+    For i = 1 To 20
+        For j = i + 1 To 20
+            If Cells(i, 1).Value <> "" And _
+               Cells(i, 1).Value = Cells(j, 1).Value Then
+                Cells(i, 1).Interior.Color = RGB(255, 255, 150)
+                Cells(j, 1).Interior.Color = RGB(255, 255, 150)
+            End If
+        Next j
+    Next i
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FBE9E7;">
+        <h3>Ejercicio 13 — Ancho de columna automático ⭐⭐⭐</h3>
+        <p class="enunciado">Escribe datos en A1:E10. Crea una Sub que ajuste automáticamente el ancho de las columnas A a E usando <code>Columns("A:E").AutoFit</code>. Luego establece un ancho mínimo de 15 con <code>ColumnWidth</code> para cualquier columna más angosta.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="AjustarColumnas.bas" code={`Sub AjustarColumnas()
+    Dim i As Integer
+    Columns("A:E").AutoFit
+    For i = 1 To 5
+        If Columns(i).ColumnWidth < 15 Then
+            Columns(i).ColumnWidth = 15
+        End If
+    Next i
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FBE9E7;">
+        <h3>Ejercicio 14 — Buscar y marcar ⭐⭐⭐</h3>
+        <p class="enunciado">Escribe productos en A1:A20. Pide al usuario con <code>InputBox</code> el nombre de un producto a buscar. Recorre con <code>For Each</code> y si lo encuentra, colorea la celda en verde y muestra la dirección; si no existe, muestra "No encontrado".</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="BuscarYMarcar.bas" code={`Sub BuscarYMarcar()
+    Dim buscar    As String
+    Dim celda     As Range
+    Dim encontrado As Boolean
+    buscar     = InputBox("¿Qué producto buscas?")
+    encontrado = False
+
+    For Each celda In Range("A1:A20")
+        If LCase(celda.Value) = LCase(buscar) Then
+            celda.Interior.Color = RGB(150, 255, 150)
+            encontrado = True
+        End If
+    Next celda
+
+    If Not encontrado Then
+        MsgBox "Producto '" & buscar & "' no encontrado."
+    End If
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FBE9E7;">
+        <h3>Ejercicio 15 — Tabla con formato completo ⭐⭐⭐</h3>
+        <p class="enunciado">Crea una Sub <code>GenerarTablaFormateada</code> que: (1) limpie A1:C11, (2) escriba encabezados en A1:C1 con fondo oscuro y letra blanca, (3) llene 10 filas con datos de ejemplo, (4) aplique bordes a toda la tabla con <code>Borders(xlEdgeBottom).LineStyle = xlContinuous</code>, y (5) ajuste el ancho de columnas con AutoFit.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="TablaFormateada.bas" code={`Sub GenerarTablaFormateada()
+    ' 1. Limpiar
+    Range("A1:C11").Clear
+
+    ' 2. Encabezados
+    With Range("A1:C1")
+        .Value = Array("Producto", "Precio", "Stock")   ' truco: asignar array
+        .Interior.Color = RGB(29, 107, 68)
+        .Font.Color = RGB(255, 255, 255)
+        .Font.Bold = True
+    End With
+    Range("A1").Value = "Producto"
+    Range("B1").Value = "Precio"
+    Range("C1").Value = "Stock"
+
+    ' 3. Datos de ejemplo
+    Dim i As Integer
+    For i = 2 To 11
+        Cells(i, 1).Value = "Producto " & (i - 1)
+        Cells(i, 2).Value = (i - 1) * 10.5
+        Cells(i, 3).Value = (i - 1) * 5
+    Next i
+
+    ' 4. Bordes
+    With Range("A1:C11").Borders
+        .LineStyle = xlContinuous
+        .Weight = xlThin
+    End With
+
+    ' 5. AutoFit
+    Columns("A:C").AutoFit
+End Sub`} />
+        </details>
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2>Pon a prueba tus conocimientos</h2>
+      <ExcelQuizModal quizKey="rangos-celdas" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/excel-intermedio/funciones-subrutinas/" class="prev">← 5. Subrutinas y Funciones</a>
+      <a href="/course/excel-intermedio/eventos-hojas/" class="next">7. Eventos de Hoja →</a>
+    </nav>
+  </article>
+</Layout>

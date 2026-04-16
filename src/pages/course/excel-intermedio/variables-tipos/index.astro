@@ -1,0 +1,401 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import ExcelQuizModal from '../../../../components/ExcelQuizModal.astro';
+import ExcelSheetTable from '../../../../components/ExcelSheetTable.astro';
+import ExcelPracticeBlock from '../../../../components/ExcelPracticeBlock.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+---
+
+<Layout title="2. Variables y Tipos de Datos" description="Aprende a declarar variables con Dim en VBA y cuándo usar Integer, String, Double, Boolean y más." courseSlug="excel-intermedio">
+  <article class="content-section">
+    <h1>2. Variables y Tipos de Datos</h1>
+
+    <p class="font-semibold text-gray-800 mb-2">En esta lección aprenderás a:</p>
+    <ul class="list-disc pl-6 text-gray-700 mb-8 space-y-1">
+      <li>Declarar variables con <code>Dim</code> y entender por qué es buena práctica.</li>
+      <li>Elegir el tipo correcto: <code>Integer</code>, <code>Long</code>, <code>Double</code>, <code>String</code>, <code>Boolean</code>.</li>
+      <li>Activar <code>Option Explicit</code> para evitar errores silenciosos.</li>
+      <li>Leer y escribir valores de celdas usando variables.</li>
+    </ul>
+
+    <section class="mb-10">
+      <h2>¿Por qué usar variables?</h2>
+      <p>Una <strong>variable</strong> guarda un dato en memoria con un nombre descriptivo. <code>Dim</code> la declara y le asigna un tipo:</p>
+      <CodeBlock lang="vba" title="declaraciones.bas" code={`Dim precio    As Double   ' número decimal
+Dim cantidad  As Integer  ' número entero pequeño
+Dim cliente   As String   ' texto
+Dim activo    As Boolean  ' verdadero / falso`} />
+    </section>
+
+    <section class="mb-10">
+      <h2>Tipos de datos más usados</h2>
+      <ExcelSheetTable
+        tableId="tabla-tipos"
+        tableLabel="Tipos de datos en VBA"
+        variant="resumen"
+        columns={['A', 'B', 'C']}
+        headers={['Tipo', 'Rango / Descripción', 'Cuándo usarlo']}
+        rows={[
+          ['Integer', '−32 768 a 32 767', 'Contadores pequeños, índices de bucles'],
+          ['Long', '−2 mil millones a 2 mil millones', 'Números de fila grandes, cantidades sin decimal'],
+          ['Double', 'Decimal de doble precisión', 'Precios, porcentajes, cálculos financieros'],
+          ['String', 'Texto de cualquier longitud', 'Nombres, categorías, mensajes'],
+          ['Boolean', 'True o False', 'Banderas, resultados de condiciones'],
+          ['Date', 'Fechas y horas', 'Trabajar con Now(), cálculos de días'],
+          ['Variant', 'Cualquier tipo (menos eficiente)', 'Solo cuando el tipo es desconocido'],
+        ]}
+        hint="Evita Variant salvo que sea necesario: consume más memoria y puede ocultar errores de tipo."
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Option Explicit</h2>
+      <p>Escribe <code>Option Explicit</code> en la primera línea del módulo para que VBA exija declarar cada variable antes de usarla:</p>
+      <CodeBlock lang="vba" title="CalcularDescuento.bas" code={`Option Explicit
+
+Sub CalcularDescuento()
+    Dim precio    As Double
+    Dim descuento As Double
+    Dim total     As Double
+
+    precio    = Range("B2").Value
+    descuento = 0.15   ' 15%
+    total     = precio * (1 - descuento)
+
+    MsgBox "Total con descuento: " & total
+End Sub`} />
+    </section>
+
+    <section class="mb-10">
+      <h2>Leer y escribir valores de celdas</h2>
+      <CodeBlock lang="vba" title="TransferirDato.bas" code={`Sub TransferirDato()
+    Dim origen As String
+    Dim valor  As Double
+
+    origen = Range("A1").Value   ' lee el texto de A1
+    valor  = Range("B1").Value   ' lee el número de B1
+
+    Range("C1").Value = origen & " — " & valor
+End Sub`} />
+    </section>
+
+    <ExcelPracticeBlock
+      steps={[
+        'Abre el editor VBA (Alt + F11) y escribe Option Explicit al inicio del módulo.',
+        'Declara variables de tipo Double, String y Boolean y asígnales valores con Debug.Print.',
+        'Escribe la Sub CalcularDescuento() con un precio en B2 y ejecútala.',
+        'Intenta usar una variable sin declararla con Option Explicit activo y observa el error.',
+        'Crea la Sub TransferirDato() y verifica que C1 combina los valores de A1 y B1.',
+      ]}
+    />
+
+    <section class="mb-10">
+      <h2>Ejercicios de práctica</h2>
+
+      <div class="ejercicio" style="background: #E8F5E9;">
+        <h3>Ejercicio 1 — Tipos básicos</h3>
+        <p class="enunciado">Declara una variable de cada tipo (<code>Integer</code>, <code>Double</code>, <code>String</code>, <code>Boolean</code>), asígnales un valor y muéstralos todos con <code>Debug.Print</code>.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="TiposBasicos.bas" code={`Sub TiposBasicos()
+    Dim edad     As Integer
+    Dim precio   As Double
+    Dim nombre   As String
+    Dim activo   As Boolean
+
+    edad   = 30
+    precio = 99.99
+    nombre = "Laptop"
+    activo = True
+
+    Debug.Print "Edad: "   & edad
+    Debug.Print "Precio: " & precio
+    Debug.Print "Nombre: " & nombre
+    Debug.Print "Activo: " & activo
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #E8F5E9;">
+        <h3>Ejercicio 2 — Área de un rectángulo</h3>
+        <p class="enunciado">Declara variables <code>Double</code> para base y altura. Asígnales valores 12 y 7.5. Calcula el área y muéstrala con <code>MsgBox</code>.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="AreaRectangulo.bas" code={`Sub AreaRectangulo()
+    Dim base   As Double
+    Dim altura As Double
+    Dim area   As Double
+
+    base   = 12
+    altura = 7.5
+    area   = base * altura
+
+    MsgBox "Área: " & area & " cm²"
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #E8F5E9;">
+        <h3>Ejercicio 3 — Nombre completo</h3>
+        <p class="enunciado">Declara variables <code>String</code> para nombre y apellido. Asígnales tus datos. Concatena ambas en una tercera variable y muéstrala.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="NombreCompleto.bas" code={`Sub NombreCompleto()
+    Dim nombre    As String
+    Dim apellido  As String
+    Dim completo  As String
+
+    nombre   = "María"
+    apellido = "López"
+    completo = nombre & " " & apellido
+
+    MsgBox "Nombre completo: " & completo
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #E8F5E9;">
+        <h3>Ejercicio 4 — Leer precio de celda y calcular IVA</h3>
+        <p class="enunciado">Escribe un precio en <strong>B2</strong>. Crea una Sub que lea ese valor, calcule el IVA (19%) y escriba el total con IVA en <strong>C2</strong>.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="PrecioConIVA.bas" code={`Sub PrecioConIVA()
+    Dim precio As Double
+    Dim total  As Double
+
+    precio = Range("B2").Value
+    total  = precio * 1.19
+
+    Range("C2").Value = total
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #E8F5E9;">
+        <h3>Ejercicio 5 — Variable Boolean como bandera</h3>
+        <p class="enunciado">Declara una variable <code>Boolean</code> llamada <code>esMayor</code>. Asígnale <code>True</code>. Muestra con <code>MsgBox</code>: si es True, "Acceso permitido"; si es False, "Acceso denegado".</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="ControlAcceso.bas" code={`Sub ControlAcceso()
+    Dim esMayor As Boolean
+    esMayor = True
+
+    If esMayor Then
+        MsgBox "Acceso permitido"
+    Else
+        MsgBox "Acceso denegado"
+    End If
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FFF8E1;">
+        <h3>Ejercicio 6 — Constante de tasa ⭐⭐</h3>
+        <p class="enunciado">Declara una <strong>constante</strong> con <code>Const TASA_IVA As Double = 0.19</code>. Úsala para calcular el precio con IVA de tres artículos de distintos precios y muestra cada resultado con <code>Debug.Print</code>.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="ConstanteTasa.bas" code={`Sub ConstanteTasa()
+    Const TASA_IVA As Double = 0.19
+
+    Debug.Print "Laptop: "  & 800 * (1 + TASA_IVA)
+    Debug.Print "Teclado: " & 45  * (1 + TASA_IVA)
+    Debug.Print "Monitor: " & 350 * (1 + TASA_IVA)
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FFF8E1;">
+        <h3>Ejercicio 7 — Conversión de tipos ⭐⭐</h3>
+        <p class="enunciado">Escribe el número <strong>42</strong> en A1. Léelo con una variable <code>String</code> usando <code>CStr()</code>. Luego escribe el texto <strong>"100"</strong> en B1, léelo con <code>CInt()</code> y multiplícalo por 3. Muestra ambos resultados.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="Conversiones.bas" code={`Sub Conversiones()
+    Range("A1").Value = 42
+    Range("B1").Value = "100"
+
+    Dim comoTexto   As String
+    Dim comoNumero  As Integer
+
+    comoTexto  = CStr(Range("A1").Value)
+    comoNumero = CInt(Range("B1").Value)
+
+    Debug.Print "A1 como texto: " & comoTexto & " (longitud " & Len(comoTexto) & ")"
+    Debug.Print "B1 x 3: " & comoNumero * 3
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FFF8E1;">
+        <h3>Ejercicio 8 — Cuál es mayor ⭐⭐</h3>
+        <p class="enunciado">Escribe dos números en A1 y B1. Declara dos variables, léelas y muestra con <code>MsgBox</code> cuál de las dos es mayor (o si son iguales).</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="CualEsMayor.bas" code={`Sub CualEsMayor()
+    Dim a As Double
+    Dim b As Double
+
+    a = Range("A1").Value
+    b = Range("B1").Value
+
+    If a > b Then
+        MsgBox "A1 es mayor: " & a
+    ElseIf b > a Then
+        MsgBox "B1 es mayor: " & b
+    Else
+        MsgBox "Son iguales: " & a
+    End If
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FFF8E1;">
+        <h3>Ejercicio 9 — Suma de tres celdas ⭐⭐</h3>
+        <p class="enunciado">Escribe números en A1, B1 y C1. Crea una Sub que los lea en tres variables <code>Double</code>, los sume en una cuarta variable y escriba el resultado en D1.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="SumaTresCeldas.bas" code={`Sub SumaTresCeldas()
+    Dim v1    As Double
+    Dim v2    As Double
+    Dim v3    As Double
+    Dim total As Double
+
+    v1    = Range("A1").Value
+    v2    = Range("B1").Value
+    v3    = Range("C1").Value
+    total = v1 + v2 + v3
+
+    Range("D1").Value = total
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FFF8E1;">
+        <h3>Ejercicio 10 — Variable Long para número de fila ⭐⭐</h3>
+        <p class="enunciado">Declara una variable <code>Long</code> y asígnale el valor <strong>1048576</strong> (la cantidad máxima de filas de Excel). Muéstrala con <code>Debug.Print</code>. Intenta lo mismo con <code>Integer</code> y observa el error.</p>
+      </div>
+
+      <div class="ejercicio" style="background: #FBE9E7;">
+        <h3>Ejercicio 11 — Calculadora con variables ⭐⭐⭐</h3>
+        <p class="enunciado">Escribe en A1 un precio unitario y en B1 una cantidad. Crea una Sub que calcule: subtotal, descuento del 10% si la cantidad es ≥ 5 (usa If simple por ahora), y total. Escribe los tres resultados en C1, D1 y E1 respectivamente.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="CalculadoraVentas.bas" code={`Sub CalculadoraVentas()
+    Dim precioUnit As Double
+    Dim cantidad   As Integer
+    Dim subtotal   As Double
+    Dim descuento  As Double
+    Dim total      As Double
+
+    precioUnit = Range("A1").Value
+    cantidad   = CInt(Range("B1").Value)
+    subtotal   = precioUnit * cantidad
+
+    If cantidad >= 5 Then
+        descuento = subtotal * 0.1
+    Else
+        descuento = 0
+    End If
+
+    total = subtotal - descuento
+
+    Range("C1").Value = subtotal
+    Range("D1").Value = descuento
+    Range("E1").Value = total
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FBE9E7;">
+        <h3>Ejercicio 12 — Variable Date ⭐⭐⭐</h3>
+        <p class="enunciado">Declara una variable <code>Date</code>, asígnale la fecha de hoy con <code>Now()</code> y calcula en otra variable cuántos días faltan para el 31 de diciembre del año actual. Muestra el resultado.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="DiasRestantes.bas" code={`Sub DiasRestantes()
+    Dim hoy        As Date
+    Dim finDeAno   As Date
+    Dim diasRestantes As Long
+
+    hoy        = Now()
+    finDeAno   = DateSerial(Year(Now()), 12, 31)
+    diasRestantes = DateDiff("d", hoy, finDeAno)
+
+    MsgBox "Faltan " & diasRestantes & " días para fin de año."
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FBE9E7;">
+        <h3>Ejercicio 13 — Detectar tipo de variable ⭐⭐⭐</h3>
+        <p class="enunciado">Escribe valores distintos en A1 (número), A2 (texto), A3 (fecha). Crea una Sub que lea cada celda y use <code>IsNumeric()</code>, <code>IsDate()</code> para detectar el tipo y mostrarlo con <code>Debug.Print</code>.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="DetectarTipo.bas" code={`Sub DetectarTipo()
+    Dim val As Variant
+
+    val = Range("A1").Value
+    If IsNumeric(val) Then Debug.Print "A1 es numérico: " & val
+
+    val = Range("A2").Value
+    If Not IsNumeric(val) And Not IsDate(val) Then _
+        Debug.Print "A2 es texto: " & val
+
+    val = Range("A3").Value
+    If IsDate(val) Then Debug.Print "A3 es fecha: " & val
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FBE9E7;">
+        <h3>Ejercicio 14 — Intercambiar dos variables ⭐⭐⭐</h3>
+        <p class="enunciado">Escribe valores en A1 y B1. Crea una Sub que intercambie los valores de esas dos celdas usando una variable temporal <code>temp</code>. Después de ejecutarla, A1 debe tener el valor original de B1 y viceversa.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="IntercambiarValores.bas" code={`Sub IntercambiarValores()
+    Dim temp As Variant
+    temp             = Range("A1").Value
+    Range("A1").Value = Range("B1").Value
+    Range("B1").Value = temp
+    MsgBox "¡Valores intercambiados!"
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FBE9E7;">
+        <h3>Ejercicio 15 — Reporte de variables ⭐⭐⭐</h3>
+        <p class="enunciado">Crea una Sub que llene las celdas A1:B5 con un mini reporte: en la columna A los nombres de 5 variables ("Precio", "Cantidad", "Subtotal", "Descuento", "Total") y en la columna B sus valores calculados usando variables intermedias.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="MiniReporte.bas" code={`Sub MiniReporte()
+    Dim precio    As Double
+    Dim cantidad  As Integer
+    Dim subtotal  As Double
+    Dim descuento As Double
+    Dim total     As Double
+
+    precio    = 50
+    cantidad  = 8
+    subtotal  = precio * cantidad
+    descuento = subtotal * 0.05
+    total     = subtotal - descuento
+
+    Range("A1").Value = "Precio":    Range("B1").Value = precio
+    Range("A2").Value = "Cantidad":  Range("B2").Value = cantidad
+    Range("A3").Value = "Subtotal":  Range("B3").Value = subtotal
+    Range("A4").Value = "Descuento": Range("B4").Value = descuento
+    Range("A5").Value = "Total":     Range("B5").Value = total
+End Sub`} />
+        </details>
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2>Pon a prueba tus conocimientos</h2>
+      <ExcelQuizModal quizKey="variables-tipos" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/excel-intermedio/introduccion-vba/" class="prev">← 1. Introducción a VBA</a>
+      <a href="/course/excel-intermedio/condicionales-vba/" class="next">3. Condicionales →</a>
+    </nav>
+  </article>
+</Layout>

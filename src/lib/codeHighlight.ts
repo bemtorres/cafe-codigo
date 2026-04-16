@@ -50,6 +50,7 @@ export function detectLang(src: string) {
   if (/\bmatch\b/.test(s) && /\bcase\s/.test(s)) return 'python';
 
   if (/\bdef \w+\(/.test(s) || (/\bimport \w/.test(s) && /\bprint\(/.test(s))) return 'python';
+  if (/\bEnd Sub\b/.test(s) || (/\bDim \w+ As \b/.test(s) && /\bSub \b/.test(s))) return 'vba';
   if (/\b(SELECT|INSERT|UPDATE|DELETE|CREATE|ALTER|DROP|FROM|WHERE|JOIN)\b/i.test(s)) return 'sql';
   if (/<\/?[a-z][a-z0-9]*[\s>]/i.test(s) && /<!DOCTYPE|<html|<div|<p |<h[1-6]|<span/i.test(s)) return 'html';
   if (/\{[\s\S]*?:[\s\S]*?\}/.test(s) && /[.#]?\w+\s*\{/.test(s)) return 'css';
@@ -74,6 +75,7 @@ export const langColors: Record<string, string> = {
   sql: '#2980b9',
   cmd: '#888888',
   json: '#13aa52',
+  vba:  '#2E75B6',
 };
 
 export const idePalettes: Record<string, { bg: string; txt: string; kw: string; str: string; func: string; type: string; op: string }> = {
@@ -82,6 +84,7 @@ export const idePalettes: Record<string, { bg: string; txt: string; kw: string; 
   python: { bg: '#282c34', txt: '#abb2bf', kw: '#c678dd', str: '#98c379', func: '#61afef', type: '#e5c07b', op: '#c678dd' },
   javascript: { bg: '#1e1e1e', txt: '#9cdcfe', kw: '#569cd6', str: '#ce9178', func: '#dcdcaa', type: '#4ec9b0', op: '#d4d4d4' },
   json: { bg: '#1e1e1e', txt: '#d4d4d4', kw: '#569cd6', str: '#ce9178', func: '#4ec9b0', type: '#569cd6', op: '#d4d4d4' },
+  vba:  { bg: '#1a1b26', txt: '#c0caf5', kw: '#7aa2f7', str: '#9ece6a', func: '#e0af68', type: '#bb9af7', op: '#c0caf5' },
   typescript: { bg: '#1e1e1e', txt: '#9cdcfe', kw: '#569cd6', str: '#ce9178', func: '#dcdcaa', type: '#4ec9b0', op: '#d4d4d4' },
   sql: { bg: '#1e1e1e', txt: '#d4d4d4', kw: '#569cd6', str: '#ce9178', func: '#dcdcaa', type: '#4ec9b0', op: '#d4d4d4' },
   html: { bg: '#1e1e1e', txt: '#d4d4d4', kw: '#569cd6', str: '#ce9178', func: '#dcdcaa', type: '#4ec9b0', op: '#d4d4d4' },
@@ -278,6 +281,29 @@ function highlightJson(line: string): string {
   ]);
 }
 
+function highlightVba(line: string): string {
+  return tokenize(line, [
+    { re: /'.*/, cls: 'hl-comment' },
+    { re: /"[^"]*"/, cls: 'hl-str' },
+    {
+      re: /\b(Sub|Function|If|Then|ElseIf|Else|End|For|Each|Next|Do|While|Loop|Until|In|Select|Case|With|Exit|Return|Call|Set|New|Dim|Public|Private|Static|Const|Option|Explicit|ByVal|ByRef|As|And|Or|Not|Is|To|Step)\b/,
+      cls: 'hl-kw',
+    },
+    { re: /\b(True|False|Nothing|Empty|Null)\b/, cls: 'hl-type' },
+    {
+      re: /\b(Integer|Long|Double|Single|String|Boolean|Date|Variant|Object|Range|Worksheet|Workbook)\b/,
+      cls: 'hl-type',
+    },
+    {
+      re: /\b(MsgBox|InputBox|Debug|Application|ActiveSheet|ActiveWorkbook|ThisWorkbook|Rows|Columns|Cells|Sheets|Worksheets|UCase|LCase|Trim|Len|Left|Right|Mid|InStr|Val|CStr|CInt|CLng|CDbl|CDate|Now|RGB|Environ)\b/,
+      cls: 'hl-func',
+    },
+    { re: /\b\w+(?=\s*\()/, cls: 'hl-func-call' },
+    { re: /\.\w+/, cls: 'hl-attr' },
+    { re: /\b\d+\.?\d*\b/, cls: 'hl-num' },
+  ]);
+}
+
 function highlightCss(line: string): string {
   return tokenize(line, [
     { re: /\/\*[\s\S]*?\*\//, cls: 'hl-comment' },
@@ -316,6 +342,8 @@ export function highlightLine(line: string, lang: string): string {
       return highlightHtml(line);
     case 'css':
       return highlightCss(line);
+    case 'vba':
+      return highlightVba(line);
     default:
       return escape(line);
   }

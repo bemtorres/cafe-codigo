@@ -510,4 +510,22 @@ export const courses: Course[] = [
       { slug: 'graficos', title: '11. Gráficos y visualización profesional', href: '/course/excel/graficos/' },
     ],
   },
+  {
+    slug: 'excel-intermedio',
+    name: 'Excel Intermedio: Programación VBA',
+    description: 'Aprende a automatizar Excel con VBA: macros, variables, condicionales, bucles, manejo de rangos, eventos y un proyecto integrador real.',
+    category: 'tools',
+    status: 'available',
+    color: '#1d6b44',
+    lessons: [
+      { slug: 'introduccion-vba', title: '1. Introducción a VBA y el Editor', href: '/course/excel-intermedio/introduccion-vba/' },
+      { slug: 'variables-tipos', title: '2. Variables y Tipos de Datos', href: '/course/excel-intermedio/variables-tipos/' },
+      { slug: 'condicionales-vba', title: '3. Condicionales: If y Select Case', href: '/course/excel-intermedio/condicionales-vba/' },
+      { slug: 'bucles-vba', title: '4. Bucles: For Next y Do While', href: '/course/excel-intermedio/bucles-vba/' },
+      { slug: 'funciones-subrutinas', title: '5. Subrutinas y Funciones Propias', href: '/course/excel-intermedio/funciones-subrutinas/' },
+      { slug: 'rangos-celdas', title: '6. Rangos y Celdas con VBA', href: '/course/excel-intermedio/rangos-celdas/' },
+      { slug: 'eventos-hojas', title: '7. Eventos de Hoja y Libro', href: '/course/excel-intermedio/eventos-hojas/' },
+      { slug: 'proyecto-automatizacion', title: '8. Proyecto: Automatizar un Reporte', href: '/course/excel-intermedio/proyecto-automatizacion/' },
+    ],
+  },
 ];

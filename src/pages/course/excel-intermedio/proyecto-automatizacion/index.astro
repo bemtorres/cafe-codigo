@@ -1,0 +1,145 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import ExcelQuizModal from '../../../../components/ExcelQuizModal.astro';
+import ExcelSheetTable from '../../../../components/ExcelSheetTable.astro';
+import ExcelPracticeBlock from '../../../../components/ExcelPracticeBlock.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+---
+
+<Layout title="8. Proyecto: Automatizar un Reporte" description="Integra todo lo aprendido en VBA para construir una macro completa que genera un reporte de ventas por categoría." courseSlug="excel-intermedio">
+  <article class="content-section">
+    <h1>8. Proyecto: Automatizar un Reporte</h1>
+
+    <p class="font-semibold text-gray-800 mb-2">En este proyecto integrador:</p>
+    <ul class="list-disc pl-6 text-gray-700 mb-8 space-y-1">
+      <li>Construirás una macro que lee una tabla de ventas y genera un resumen por categoría.</li>
+      <li>Usarás <strong>variables</strong>, <strong>bucles</strong>, <strong>condicionales</strong>, <strong>rangos</strong> y una <strong>función auxiliar</strong>.</li>
+      <li>Aplicarás buenas prácticas: <code>ScreenUpdating</code>, limpieza previa y estructura en Sub separadas.</li>
+    </ul>
+
+    <section class="mb-10">
+      <h2>Estructura del libro de trabajo</h2>
+      <p>Crea un archivo <code>.xlsm</code> con dos hojas:</p>
+      <ExcelSheetTable
+        tableId="tabla-hojas"
+        tableLabel="Estructura del libro"
+        variant="resumen"
+        columns={['A', 'B']}
+        headers={['Nombre de la hoja', 'Contenido']}
+        rows={[
+          ['Ventas', 'Tabla de datos fuente (columnas: Fecha | Producto | Categoría | Monto)'],
+          ['Resumen', 'Aquí la macro escribirá los totales por categoría'],
+        ]}
+        hint="Nombra las hojas exactamente 'Ventas' y 'Resumen' para que el código funcione sin modificaciones."
+      />
+      <p class="mt-3">Datos de ejemplo para la hoja <strong>Ventas</strong> (copia desde la fila 1):</p>
+      <ExcelSheetTable
+        tableId="tabla-ventas"
+        tableLabel="Tabla fuente: hoja Ventas"
+        variant="maestro"
+        columns={['A', 'B', 'C', 'D']}
+        headers={['Fecha', 'Producto', 'Categoría', 'Monto']}
+        rows={[
+          ['2024-01-05', 'Laptop Pro', 'Electrónica', '1200.00'],
+          ['2024-01-07', 'Teclado', 'Electrónica', '85.00'],
+          ['2024-01-08', 'Silla ergonómica', 'Muebles', '340.00'],
+          ['2024-01-10', 'Monitor 27"', 'Electrónica', '450.00'],
+          ['2024-01-12', 'Escritorio', 'Muebles', '220.00'],
+          ['2024-01-14', 'Mouse inalámbrico', 'Electrónica', '45.00'],
+          ['2024-01-15', 'Lámpara LED', 'Muebles', '60.00'],
+          ['2024-01-18', 'Audífonos', 'Electrónica', '130.00'],
+          ['2024-01-20', 'Estante', 'Muebles', '95.00'],
+          ['2024-01-22', 'Webcam HD', 'Electrónica', '75.00'],
+        ]}
+        hint="La categoría está en la columna C (índice 3). La macro agrupará los montos por ese valor."
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Función auxiliar: SumarPorCategoria</h2>
+      <p>Primero creamos una función que suma todos los montos de una categoría dada:</p>
+      <CodeBlock lang="vba" title="Modulo1.bas — función auxiliar" code={`Function SumarPorCategoria(ByVal categoria As String) As Double
+    Dim hVentas    As Worksheet
+    Dim ultimaFila As Long
+    Dim i          As Long
+    Dim total      As Double
+
+    Set hVentas = ThisWorkbook.Sheets("Ventas")
+    ultimaFila = hVentas.Cells(hVentas.Rows.Count, 1).End(xlUp).Row
+    total = 0
+
+    For i = 2 To ultimaFila
+        If hVentas.Cells(i, 3).Value = categoria Then
+            total = total + hVentas.Cells(i, 4).Value
+        End If
+    Next i
+
+    SumarPorCategoria = total
+End Function`} />
+    </section>
+
+    <section class="mb-10">
+      <h2>Sub principal: GenerarReporte</h2>
+      <CodeBlock lang="vba" title="Modulo1.bas — sub principal" code={`Sub GenerarReporte()
+    Dim hResumen   As Worksheet
+    Dim categorias(1 To 2) As String
+    Dim i As Integer
+
+    ' Configuración inicial
+    Application.ScreenUpdating = False
+    Set hResumen = ThisWorkbook.Sheets("Resumen")
+
+    ' Limpiar resultados anteriores
+    hResumen.Range("A1:B100").ClearContents
+
+    ' Escribir encabezados
+    hResumen.Range("A1").Value = "Categoría"
+    hResumen.Range("B1").Value = "Total Ventas"
+
+    ' Lista de categorías a resumir
+    categorias(1) = "Electrónica"
+    categorias(2) = "Muebles"
+
+    ' Escribir totales por categoría
+    For i = 1 To 2
+        hResumen.Cells(i + 1, 1).Value = categorias(i)
+        hResumen.Cells(i + 1, 2).Value = SumarPorCategoria(categorias(i))
+    Next i
+
+    ' Formatear encabezado
+    With hResumen.Range("A1:B1")
+        .Font.Bold = True
+        .Interior.Color = RGB(29, 107, 68)
+        .Font.Color = RGB(255, 255, 255)
+    End With
+
+    hResumen.Activate
+    Application.ScreenUpdating = True
+    MsgBox "¡Reporte generado correctamente!"
+End Sub`} />
+      <p class="mt-2"><code>Application.ScreenUpdating = False</code> oculta los cambios visuales mientras la macro corre, acelerando la ejecución. Siempre restáuralo a <code>True</code> al terminar.</p>
+    </section>
+
+    <ExcelPracticeBlock
+      steps={[
+        'Crea el archivo .xlsm con las hojas "Ventas" y "Resumen".',
+        'Copia la tabla de datos de ejemplo en la hoja Ventas (desde A1).',
+        'Abre el editor VBA (Alt+F11), inserta un módulo y pega ambos procedimientos.',
+        'Ejecuta GenerarReporte() desde Alt+F8 → GenerarReporte.',
+        'Verifica que la hoja Resumen muestra los totales de Electrónica y Muebles con encabezado verde.',
+        'Agrega 3 filas más a Ventas con una nueva categoría "Papelería", añádela al array y al bucle.',
+        'Vuelve a ejecutar y confirma que el resumen incluye Papelería.',
+      ]}
+    />
+
+    <section class="mb-10">
+      <h2>Pon a prueba tus conocimientos</h2>
+      <ExcelQuizModal quizKey="proyecto-automatizacion" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/excel-intermedio/eventos-hojas/" class="prev">← 7. Eventos de Hoja</a>
+      <a href="/course/excel-intermedio/" class="next">Índice del curso →</a>
+    </nav>
+  </article>
+</Layout>

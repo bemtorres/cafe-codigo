@@ -1,0 +1,420 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import ExcelQuizModal from '../../../../components/ExcelQuizModal.astro';
+import ExcelSheetTable from '../../../../components/ExcelSheetTable.astro';
+import ExcelPracticeBlock from '../../../../components/ExcelPracticeBlock.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+---
+
+<Layout title="3. Condicionales: If y Select Case" description="Aprende a tomar decisiones en VBA con If...Then...Else y Select Case, leyendo valores de celdas." courseSlug="excel-intermedio">
+  <article class="content-section">
+    <h1>3. Condicionales: If y Select Case</h1>
+
+    <p class="font-semibold text-gray-800 mb-2">En esta lección aprenderás a:</p>
+    <ul class="list-disc pl-6 text-gray-700 mb-8 space-y-1">
+      <li>Tomar decisiones con <code>If … Then … Else … End If</code>.</li>
+      <li>Encadenar condiciones con <code>ElseIf</code>.</li>
+      <li>Simplificar comparaciones múltiples con <code>Select Case</code>.</li>
+      <li>Leer el valor de una celda y ejecutar código según su contenido.</li>
+    </ul>
+
+    <section class="mb-10">
+      <h2>If … Then … Else</h2>
+      <CodeBlock lang="vba" title="ClasificarNota.bas" code={`Sub ClasificarNota()
+    Dim nota As Integer
+    nota = Range("B2").Value
+
+    If nota >= 60 Then
+        MsgBox "Aprobado"
+    Else
+        MsgBox "Reprobado"
+    End If
+End Sub`} />
+    </section>
+
+    <section class="mb-10">
+      <h2>ElseIf — múltiples condiciones</h2>
+      <CodeBlock lang="vba" title="CalificarNota.bas" code={`Sub CalificarNota()
+    Dim nota As Integer
+    nota = Range("B2").Value
+
+    If nota >= 90 Then
+        Range("C2").Value = "Sobresaliente"
+    ElseIf nota >= 75 Then
+        Range("C2").Value = "Bueno"
+    ElseIf nota >= 60 Then
+        Range("C2").Value = "Aprobado"
+    Else
+        Range("C2").Value = "Reprobado"
+    End If
+End Sub`} />
+    </section>
+
+    <section class="mb-10">
+      <h2>Select Case — comparar contra varios valores</h2>
+      <CodeBlock lang="vba" title="MostrarDepartamento.bas" code={`Sub MostrarDepartamento()
+    Dim codigo As String
+    codigo = Range("A2").Value
+
+    Select Case codigo
+        Case "VEN"
+            MsgBox "Ventas"
+        Case "ADM"
+            MsgBox "Administración"
+        Case "TEC"
+            MsgBox "Tecnología"
+        Case Else
+            MsgBox "Departamento desconocido"
+    End Select
+End Sub`} />
+    </section>
+
+    <section class="mb-10">
+      <h2>Operadores lógicos: And, Or, Not</h2>
+      <ExcelSheetTable
+        tableId="tabla-operadores"
+        tableLabel="Combinar condiciones en VBA"
+        variant="resumen"
+        columns={['A', 'B', 'C']}
+        headers={['Operador', 'Significado', 'Ejemplo']}
+        rows={[
+          ['And', 'Ambas condiciones deben ser True', 'If edad >= 18 And pais = "MX" Then'],
+          ['Or', 'Al menos una condición debe ser True', 'If rol = "Admin" Or rol = "Super" Then'],
+          ['Not', 'Invierte el resultado', 'If Not activo Then'],
+          ['<>', 'Distinto de', 'If nombre <> "" Then'],
+        ]}
+        hint="Los paréntesis ayudan a agrupar condiciones complejas: If (a > 0 And b > 0) Or c = True Then"
+      />
+    </section>
+
+    <ExcelPracticeBlock
+      steps={[
+        'Escribe un valor numérico en B2 y ejecuta CalificarNota() con distintos valores.',
+        'Agrega un código de departamento en A2 ("VEN", "ADM", "TEC") y ejecuta MostrarDepartamento().',
+        'Añade un Case "MKT" para Marketing en el Select Case.',
+        'Crea una Sub que use And para verificar que dos celdas tengan valores mayores que 0.',
+        'Prueba IsNumeric() en una condición If para validar que A1 tenga un número antes de procesar.',
+      ]}
+    />
+
+    <section class="mb-10">
+      <h2>Ejercicios de práctica</h2>
+
+      <div class="ejercicio" style="background: #E8F5E9;">
+        <h3>Ejercicio 1 — Par o Impar</h3>
+        <p class="enunciado">Escribe un número en A1. Crea una Sub que lo lea y escriba en B1 <em>"Par"</em> si es divisible por 2 (<code>Mod 2 = 0</code>), o <em>"Impar"</em> en caso contrario.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="ParImpar.bas" code={`Sub ParImpar()
+    Dim n As Long
+    n = Range("A1").Value
+    If n Mod 2 = 0 Then
+        Range("B1").Value = "Par"
+    Else
+        Range("B1").Value = "Impar"
+    End If
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #E8F5E9;">
+        <h3>Ejercicio 2 — Temperatura</h3>
+        <p class="enunciado">Lee una temperatura de B1. Escribe en C1: <em>"Calor"</em> si supera 30°C, <em>"Frío"</em> si es menor de 10°C, y <em>"Templado"</em> en cualquier otro caso.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="ClasificarTemp.bas" code={`Sub ClasificarTemp()
+    Dim temp As Double
+    temp = Range("B1").Value
+
+    If temp > 30 Then
+        Range("C1").Value = "Calor"
+    ElseIf temp < 10 Then
+        Range("C1").Value = "Frío"
+    Else
+        Range("C1").Value = "Templado"
+    End If
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #E8F5E9;">
+        <h3>Ejercicio 3 — Celda vacía</h3>
+        <p class="enunciado">Crea una Sub que verifique si A1 está vacía (<code>Range("A1").Value = ""</code>) y muestre un aviso con <code>MsgBox</code> pidiendo que se complete ese campo.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="ValidarCelda.bas" code={`Sub ValidarCelda()
+    If Range("A1").Value = "" Then
+        MsgBox "La celda A1 no puede estar vacía. Por favor complétala."
+    Else
+        MsgBox "A1 tiene valor: " & Range("A1").Value
+    End If
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #E8F5E9;">
+        <h3>Ejercicio 4 — Signo del número</h3>
+        <p class="enunciado">Escribe un número en A1. Crea una Sub que verifique si es positivo, negativo o cero, y escriba el resultado en B1.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="SignoNumero.bas" code={`Sub SignoNumero()
+    Dim n As Double
+    n = Range("A1").Value
+    If n > 0 Then
+        Range("B1").Value = "Positivo"
+    ElseIf n < 0 Then
+        Range("B1").Value = "Negativo"
+    Else
+        Range("B1").Value = "Cero"
+    End If
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #E8F5E9;">
+        <h3>Ejercicio 5 — Clasificador por código</h3>
+        <p class="enunciado">Escribe un código de producto en A1. Usa <code>Select Case</code>: <em>"P"</em> → "Perecedero", <em>"D"</em> → "Duradero", <em>"E"</em> → "Electrónico". Cualquier otro → "Sin clasificar". Escribe el resultado en B1.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="ClasificarProducto.bas" code={`Sub ClasificarProducto()
+    Select Case Range("A1").Value
+        Case "P"
+            Range("B1").Value = "Perecedero"
+        Case "D"
+            Range("B1").Value = "Duradero"
+        Case "E"
+            Range("B1").Value = "Electrónico"
+        Case Else
+            Range("B1").Value = "Sin clasificar"
+    End Select
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FFF8E1;">
+        <h3>Ejercicio 6 — Rango de notas con letras ⭐⭐</h3>
+        <p class="enunciado">Escribe una nota (0–100) en A1. Clasifícala con <code>ElseIf</code>: A (90–100), B (80–89), C (70–79), D (60–69), F (menor de 60). Escribe la letra en B1.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="NotaLetra.bas" code={`Sub NotaLetra()
+    Dim nota As Integer
+    nota = CInt(Range("A1").Value)
+
+    If nota >= 90 Then
+        Range("B1").Value = "A"
+    ElseIf nota >= 80 Then
+        Range("B1").Value = "B"
+    ElseIf nota >= 70 Then
+        Range("B1").Value = "C"
+    ElseIf nota >= 60 Then
+        Range("B1").Value = "D"
+    Else
+        Range("B1").Value = "F"
+    End If
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FFF8E1;">
+        <h3>Ejercicio 7 — Comparar A1 y B1 ⭐⭐</h3>
+        <p class="enunciado">Lee los valores de A1 y B1. Escribe en C1: <em>"A1 mayor"</em>, <em>"B1 mayor"</em> o <em>"Iguales"</em> según corresponda.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="CompararCeldas.bas" code={`Sub CompararCeldas()
+    Dim a As Double
+    Dim b As Double
+    a = Range("A1").Value
+    b = Range("B1").Value
+
+    If a > b Then
+        Range("C1").Value = "A1 mayor"
+    ElseIf b > a Then
+        Range("C1").Value = "B1 mayor"
+    Else
+        Range("C1").Value = "Iguales"
+    End If
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FFF8E1;">
+        <h3>Ejercicio 8 — Validar con And ⭐⭐</h3>
+        <p class="enunciado">Escribe dos valores en A1 y B1. Crea una Sub que use <code>And</code> para verificar que ambos sean mayores que 0. Si lo son, escribe el producto en C1; si no, muestra un error con <code>MsgBox</code>.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="ValidarYCalcular.bas" code={`Sub ValidarYCalcular()
+    Dim a As Double
+    Dim b As Double
+    a = Range("A1").Value
+    b = Range("B1").Value
+
+    If a > 0 And b > 0 Then
+        Range("C1").Value = a * b
+    Else
+        MsgBox "Ambos valores deben ser mayores que 0."
+    End If
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FFF8E1;">
+        <h3>Ejercicio 9 — Clasificador de edades ⭐⭐</h3>
+        <p class="enunciado">Escribe una edad en A1. Clasifícala: menor de 18 → "Menor de edad", 18–25 → "Joven", 26–60 → "Adulto", mayor de 60 → "Senior". Escribe el resultado en B1.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="ClasificarEdad.bas" code={`Sub ClasificarEdad()
+    Dim edad As Integer
+    edad = CInt(Range("A1").Value)
+
+    If edad < 18 Then
+        Range("B1").Value = "Menor de edad"
+    ElseIf edad <= 25 Then
+        Range("B1").Value = "Joven"
+    ElseIf edad <= 60 Then
+        Range("B1").Value = "Adulto"
+    Else
+        Range("B1").Value = "Senior"
+    End If
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FFF8E1;">
+        <h3>Ejercicio 10 — Select Case con rangos ⭐⭐</h3>
+        <p class="enunciado">Escribe un mes (1–12) en A1. Usa <code>Select Case</code> con rangos (<code>Case 12, 1, 2</code>) para clasificarlo como: "Invierno" (12,1,2), "Primavera" (3,4,5), "Verano" (6,7,8) u "Otoño" (9,10,11).</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="Estacion.bas" code={`Sub Estacion()
+    Select Case CInt(Range("A1").Value)
+        Case 12, 1, 2
+            Range("B1").Value = "Invierno"
+        Case 3, 4, 5
+            Range("B1").Value = "Primavera"
+        Case 6, 7, 8
+            Range("B1").Value = "Verano"
+        Case 9, 10, 11
+            Range("B1").Value = "Otoño"
+        Case Else
+            Range("B1").Value = "Mes inválido"
+    End Select
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FBE9E7;">
+        <h3>Ejercicio 11 — IsNumeric como validación ⭐⭐⭐</h3>
+        <p class="enunciado">Escribe texto o número en A1. Crea una Sub que use <code>IsNumeric()</code> para verificar si el contenido es numérico. Si lo es, calcula su raíz cuadrada (<code>Sqr()</code>); si no, muestra un error amigable.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="RaizCuadrada.bas" code={`Sub RaizCuadrada()
+    If IsNumeric(Range("A1").Value) Then
+        Range("B1").Value = Sqr(CDbl(Range("A1").Value))
+    Else
+        MsgBox "A1 no contiene un número válido."
+    End If
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FBE9E7;">
+        <h3>Ejercicio 12 — Clasificar ventas ⭐⭐⭐</h3>
+        <p class="enunciado">Escribe un monto en A1. Crea un clasificador: menor de 1 000 → "Venta baja", 1 000–9 999 → "Venta media", 10 000 o más → "Venta alta". Muéstralo en B1 y además cambia el fondo de B1 al color correspondiente (rojo/amarillo/verde).</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="ClasificarVenta.bas" code={`Sub ClasificarVenta()
+    Dim monto As Double
+    monto = Range("A1").Value
+
+    If monto < 1000 Then
+        Range("B1").Value = "Venta baja"
+        Range("B1").Interior.Color = RGB(255, 180, 180)
+    ElseIf monto < 10000 Then
+        Range("B1").Value = "Venta media"
+        Range("B1").Interior.Color = RGB(255, 255, 150)
+    Else
+        Range("B1").Value = "Venta alta"
+        Range("B1").Interior.Color = RGB(180, 255, 180)
+    End If
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FBE9E7;">
+        <h3>Ejercicio 13 — Día de la semana ⭐⭐⭐</h3>
+        <p class="enunciado">Usa <code>Weekday(Now())</code> para obtener el número del día actual (1=Dom … 7=Sáb). Con <code>Select Case</code>, muestra el nombre del día en español y si es día laboral o fin de semana.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="DiaSemana.bas" code={`Sub DiaSemana()
+    Dim dia As Integer
+    Dim nombre As String
+    Dim tipo As String
+    dia = Weekday(Now())
+
+    Select Case dia
+        Case 1: nombre = "Domingo":  tipo = "Fin de semana"
+        Case 2: nombre = "Lunes":    tipo = "Día laboral"
+        Case 3: nombre = "Martes":   tipo = "Día laboral"
+        Case 4: nombre = "Miércoles": tipo = "Día laboral"
+        Case 5: nombre = "Jueves":   tipo = "Día laboral"
+        Case 6: nombre = "Viernes":  tipo = "Día laboral"
+        Case 7: nombre = "Sábado":   tipo = "Fin de semana"
+    End Select
+
+    MsgBox "Hoy es " & nombre & " — " & tipo
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FBE9E7;">
+        <h3>Ejercicio 14 — Validar rango con And ⭐⭐⭐</h3>
+        <p class="enunciado">Escribe un número en A1. Crea una Sub que verifique que está <strong>entre 1 y 100 inclusive</strong> usando <code>And</code>. Si está en rango, calcula su porcentaje sobre 100 y escríbelo en B1. Si no, muestra un error.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="ValidarRango.bas" code={`Sub ValidarRango()
+    Dim n As Integer
+    n = CInt(Range("A1").Value)
+
+    If n >= 1 And n <= 100 Then
+        Range("B1").Value = n & "% de 100"
+    Else
+        MsgBox "El valor debe estar entre 1 y 100."
+    End If
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FBE9E7;">
+        <h3>Ejercicio 15 — Semáforo de indicador ⭐⭐⭐</h3>
+        <p class="enunciado">Escribe un porcentaje en A1. Colorea la celda B1: rojo si el porcentaje es menor de 40, amarillo si está entre 40 y 74, verde si es 75 o más. Además escribe el texto "Crítico", "En proceso" o "Logrado" en B1.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="Semaforo.bas" code={`Sub Semaforo()
+    Dim pct As Double
+    pct = Range("A1").Value
+
+    If pct < 40 Then
+        Range("B1").Value = "Crítico"
+        Range("B1").Interior.Color = RGB(255, 100, 100)
+    ElseIf pct < 75 Then
+        Range("B1").Value = "En proceso"
+        Range("B1").Interior.Color = RGB(255, 220, 80)
+    Else
+        Range("B1").Value = "Logrado"
+        Range("B1").Interior.Color = RGB(100, 200, 100)
+    End If
+End Sub`} />
+        </details>
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2>Pon a prueba tus conocimientos</h2>
+      <ExcelQuizModal quizKey="condicionales-vba" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/excel-intermedio/variables-tipos/" class="prev">← 2. Variables y Tipos</a>
+      <a href="/course/excel-intermedio/bucles-vba/" class="next">4. Bucles →</a>
+    </nav>
+  </article>
+</Layout>

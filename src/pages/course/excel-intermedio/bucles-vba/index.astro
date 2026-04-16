@@ -1,0 +1,388 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import ExcelQuizModal from '../../../../components/ExcelQuizModal.astro';
+import ExcelSheetTable from '../../../../components/ExcelSheetTable.astro';
+import ExcelPracticeBlock from '../../../../components/ExcelPracticeBlock.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+---
+
+<Layout title="4. Bucles: For Next y Do While" description="Aprende a repetir acciones en VBA con For Next, Do While y For Each para recorrer rangos de celdas." courseSlug="excel-intermedio">
+  <article class="content-section">
+    <h1>4. Bucles: For Next y Do While</h1>
+
+    <p class="font-semibold text-gray-800 mb-2">En esta lección aprenderás a:</p>
+    <ul class="list-disc pl-6 text-gray-700 mb-8 space-y-1">
+      <li>Repetir código un número exacto de veces con <code>For i = 1 To N … Next i</code>.</li>
+      <li>Repetir mientras se cumpla una condición con <code>Do While … Loop</code>.</li>
+      <li>Recorrer cada celda de un rango con <code>For Each … In … Next</code>.</li>
+      <li>Salir anticipadamente de un bucle con <code>Exit For</code>.</li>
+    </ul>
+
+    <section class="mb-10">
+      <h2>For Next — número fijo de repeticiones</h2>
+      <CodeBlock lang="vba" title="NumerarFilas.bas" code={`Sub NumerarFilas()
+    Dim i As Integer
+
+    For i = 1 To 10
+        Cells(i, 1).Value = "Fila " & i
+    Next i
+End Sub`} />
+      <ExcelSheetTable
+        tableId="tabla-step"
+        tableLabel="Ejemplos de Step"
+        variant="resumen"
+        columns={['A', 'B']}
+        headers={['Código', 'Resultado']}
+        rows={[
+          ['For i = 10 To 1 Step -1', 'Cuenta de 10 hasta 1'],
+          ['For i = 0 To 100 Step 10', 'Cuenta 0, 10, 20, … 100'],
+          ['For i = 2 To 20 Step 2', 'Solo números pares: 2, 4, 6…'],
+        ]}
+        hint="Si omites Step el incremento por defecto es 1."
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Do While — repetir mientras una condición sea verdadera</h2>
+      <CodeBlock lang="vba" title="RecorrerHastaVacio.bas" code={`Sub RecorrerHastaVacio()
+    Dim fila As Long
+    fila = 2
+
+    Do While Cells(fila, 1).Value <> ""
+        Cells(fila, 3).Value = Cells(fila, 2).Value * 1.19
+        fila = fila + 1
+    Loop
+End Sub`} />
+    </section>
+
+    <section class="mb-10">
+      <h2>For Each — recorrer una colección</h2>
+      <CodeBlock lang="vba" title="ColorearNegativos.bas" code={`Sub ColorearNegativos()
+    Dim celda As Range
+
+    For Each celda In Range("B2:B20")
+        If celda.Value < 0 Then
+            celda.Interior.Color = RGB(255, 200, 200)
+        End If
+    Next celda
+End Sub`} />
+    </section>
+
+    <section class="mb-10">
+      <h2>Exit For — salir antes de tiempo</h2>
+      <CodeBlock lang="vba" title="BuscarProducto.bas" code={`Sub BuscarProducto()
+    Dim i      As Long
+    Dim buscar As String
+    buscar = "Laptop"
+
+    For i = 2 To 100
+        If Cells(i, 1).Value = buscar Then
+            MsgBox "Encontrado en fila " & i
+            Exit For
+        End If
+    Next i
+End Sub`} />
+    </section>
+
+    <ExcelPracticeBlock
+      steps={[
+        'Crea NumerarFilas() y verifica que A1:A10 queda numerado. Modifica el For para numerar de la fila 5 a la 15.',
+        'Escribe datos en A2:A8 y números en B2:B8. Ejecuta RecorrerHastaVacio() y verifica C.',
+        'Agrega valores negativos en B2:B20 y ejecuta ColorearNegativos(). Modifica para que positivos queden en verde.',
+        'Escribe "Laptop" en alguna fila de la col A y ejecuta BuscarProducto().',
+      ]}
+    />
+
+    <section class="mb-10">
+      <h2>Ejercicios de práctica</h2>
+
+      <div class="ejercicio" style="background: #E8F5E9;">
+        <h3>Ejercicio 1 — Números del 1 al 20</h3>
+        <p class="enunciado">Escribe los números del 1 al 20 en la columna A usando <code>For i = 1 To 20</code>.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="Del1Al20.bas" code={`Sub Del1Al20()
+    Dim i As Integer
+    For i = 1 To 20
+        Cells(i, 1).Value = i
+    Next i
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #E8F5E9;">
+        <h3>Ejercicio 2 — Múltiplos de 5</h3>
+        <p class="enunciado">Usa <code>Step 5</code> para escribir en la columna A los múltiplos de 5 desde 5 hasta 100.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="MultiplosDe5.bas" code={`Sub MultiplosDe5()
+    Dim i As Integer
+    Dim fila As Integer
+    fila = 1
+    For i = 5 To 100 Step 5
+        Cells(fila, 1).Value = i
+        fila = fila + 1
+    Next i
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #E8F5E9;">
+        <h3>Ejercicio 3 — Tabla de multiplicar</h3>
+        <p class="enunciado">Escribe la tabla de multiplicar del 7 en la columna A (7×1=7, 7×2=14, … 7×12=84) usando un bucle <code>For</code>.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="TablaDelSiete.bas" code={`Sub TablaDelSiete()
+    Dim i As Integer
+    For i = 1 To 12
+        Cells(i, 1).Value = "7 x " & i & " = " & 7 * i
+    Next i
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #E8F5E9;">
+        <h3>Ejercicio 4 — Suma de un rango</h3>
+        <p class="enunciado">Escribe 10 números en B1:B10. Usa <code>For Each</code> para sumarlos en una variable y mostrar el total con <code>MsgBox</code>.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="SumaRango.bas" code={`Sub SumaRango()
+    Dim celda As Range
+    Dim suma  As Double
+    suma = 0
+
+    For Each celda In Range("B1:B10")
+        suma = suma + celda.Value
+    Next celda
+
+    MsgBox "Total: " & suma
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #E8F5E9;">
+        <h3>Ejercicio 5 — Cuenta atrás</h3>
+        <p class="enunciado">Usa <code>For i = 10 To 1 Step -1</code> para escribir "10, 9, 8... 1" en A1:A10 y en A11 escribe "¡Despegue!".</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="CuentaAtras.bas" code={`Sub CuentaAtras()
+    Dim i As Integer
+    For i = 10 To 1 Step -1
+        Cells(11 - i, 1).Value = i
+    Next i
+    Cells(11, 1).Value = "¡Despegue!"
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FFF8E1;">
+        <h3>Ejercicio 6 — Contar celdas no vacías ⭐⭐</h3>
+        <p class="enunciado">Escribe datos en algunas celdas de A1:A20 (deja otras vacías). Usa <code>For Each</code> y un contador para contar cuántas tienen contenido. Muestra el resultado con <code>MsgBox</code>.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="ContarNoVacias.bas" code={`Sub ContarNoVacias()
+    Dim celda   As Range
+    Dim contador As Integer
+    contador = 0
+
+    For Each celda In Range("A1:A20")
+        If celda.Value <> "" Then
+            contador = contador + 1
+        End If
+    Next celda
+
+    MsgBox "Celdas con contenido: " & contador
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FFF8E1;">
+        <h3>Ejercicio 7 — Cuadrados ⭐⭐</h3>
+        <p class="enunciado">Escribe números en A1:A10. Usa un bucle <code>For</code> para escribir en la columna B el cuadrado de cada número de la columna A.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="Cuadrados.bas" code={`Sub Cuadrados()
+    Dim i As Integer
+    For i = 1 To 10
+        Cells(i, 2).Value = Cells(i, 1).Value ^ 2
+    Next i
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FFF8E1;">
+        <h3>Ejercicio 8 — Máximo sin función ⭐⭐</h3>
+        <p class="enunciado">Escribe 10 números en B1:B10. Usa <code>For Each</code> para encontrar el valor máximo <strong>sin usar la función Max de VBA</strong>. Muéstralo con <code>MsgBox</code>.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="MaximoManual.bas" code={`Sub MaximoManual()
+    Dim celda  As Range
+    Dim maximo As Double
+    maximo = Cells(1, 2).Value
+
+    For Each celda In Range("B1:B10")
+        If celda.Value > maximo Then
+            maximo = celda.Value
+        End If
+    Next celda
+
+    MsgBox "Máximo: " & maximo
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FFF8E1;">
+        <h3>Ejercicio 9 — Do While hasta "FIN" ⭐⭐</h3>
+        <p class="enunciado">Escribe nombres en A2:A8 y en A9 escribe "FIN". Usa <code>Do While</code> para leer y mostrar en <code>Debug.Print</code> cada nombre hasta encontrar "FIN".</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="LeerHastaFin.bas" code={`Sub LeerHastaFin()
+    Dim fila As Long
+    fila = 2
+
+    Do While Cells(fila, 1).Value <> "FIN"
+        Debug.Print Cells(fila, 1).Value
+        fila = fila + 1
+    Loop
+    Debug.Print "Fin de la lista."
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FFF8E1;">
+        <h3>Ejercicio 10 — Todas las hojas ⭐⭐</h3>
+        <p class="enunciado">Usa <code>For Each hoja In Worksheets</code> para recorrer todas las hojas del libro y mostrar sus nombres en la ventana Inmediata con <code>Debug.Print</code>.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="ListarHojas.bas" code={`Sub ListarHojas()
+    Dim hoja As Worksheet
+    For Each hoja In Worksheets
+        Debug.Print hoja.Name
+    Next hoja
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FBE9E7;">
+        <h3>Ejercicio 11 — Contar valores mayores que 100 ⭐⭐⭐</h3>
+        <p class="enunciado">Escribe 15 números en B1:B15 (mezcla valores menores y mayores que 100). Usa <code>For Each</code> para contar cuántos son mayores que 100 y escribe ese conteo en D1.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="ContarMayores.bas" code={`Sub ContarMayores()
+    Dim celda    As Range
+    Dim contador As Integer
+    contador = 0
+
+    For Each celda In Range("B1:B15")
+        If celda.Value > 100 Then
+            contador = contador + 1
+        End If
+    Next celda
+
+    Range("D1").Value = contador
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FBE9E7;">
+        <h3>Ejercicio 12 — Colorear urgentes ⭐⭐⭐</h3>
+        <p class="enunciado">Escribe textos en A1:A15, algunos de ellos conteniendo la palabra "urgente". Usa <code>For Each</code> e <code>InStr()</code> para colorear en rojo las celdas que contengan esa palabra (sin importar mayúsculas).</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="ColorearUrgentes.bas" code={`Sub ColorearUrgentes()
+    Dim celda As Range
+    For Each celda In Range("A1:A15")
+        If InStr(LCase(celda.Value), "urgente") > 0 Then
+            celda.Interior.Color = RGB(255, 150, 150)
+        Else
+            celda.Interior.Color = xlNone
+        End If
+    Next celda
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FBE9E7;">
+        <h3>Ejercicio 13 — Primer negativo con Exit For ⭐⭐⭐</h3>
+        <p class="enunciado">Escribe números en B1:B20 (algunos negativos). Usa <code>For i</code> con <code>Exit For</code> para encontrar la primera celda con valor negativo y mostrar su fila con <code>MsgBox</code>.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="PrimerNegativo.bas" code={`Sub PrimerNegativo()
+    Dim i      As Long
+    Dim fila   As Long
+    fila = 0
+
+    For i = 1 To 20
+        If Cells(i, 2).Value < 0 Then
+            fila = i
+            Exit For
+        End If
+    Next i
+
+    If fila > 0 Then
+        MsgBox "Primer negativo en fila: " & fila
+    Else
+        MsgBox "No hay valores negativos."
+    End If
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FBE9E7;">
+        <h3>Ejercicio 14 — Promedio excluyendo ceros ⭐⭐⭐</h3>
+        <p class="enunciado">Escribe números en C1:C20 (algunos son 0). Usa <code>For Each</code> para calcular el promedio de los valores que NO sean 0. Escribe el resultado en D1.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="PromedioSinCeros.bas" code={`Sub PromedioSinCeros()
+    Dim celda    As Range
+    Dim suma     As Double
+    Dim contador As Integer
+    suma = 0
+    contador = 0
+
+    For Each celda In Range("C1:C20")
+        If celda.Value <> 0 Then
+            suma = suma + celda.Value
+            contador = contador + 1
+        End If
+    Next celda
+
+    If contador > 0 Then
+        Range("D1").Value = suma / contador
+    Else
+        Range("D1").Value = "Sin datos"
+    End If
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FBE9E7;">
+        <h3>Ejercicio 15 — Llenar tablero de multiplicar ⭐⭐⭐</h3>
+        <p class="enunciado">Usa dos bucles <code>For</code> anidados para llenar un tablero de multiplicar del 1 al 10 en el rango A1:J10. <code>Cells(fila, col).Value = fila * col</code>.</p>
+        <details>
+          <summary>Ver solución sugerida</summary>
+          <CodeBlock lang="vba" title="TablaMultiplicar.bas" code={`Sub TablaMultiplicar()
+    Dim fila As Integer
+    Dim col  As Integer
+
+    For fila = 1 To 10
+        For col = 1 To 10
+            Cells(fila, col).Value = fila * col
+        Next col
+    Next fila
+End Sub`} />
+        </details>
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2>Pon a prueba tus conocimientos</h2>
+      <ExcelQuizModal quizKey="bucles-vba" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/excel-intermedio/condicionales-vba/" class="prev">← 3. Condicionales</a>
+      <a href="/course/excel-intermedio/funciones-subrutinas/" class="next">5. Subrutinas y Funciones →</a>
+    </nav>
+  </article>
+</Layout>
