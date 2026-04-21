@@ -1,0 +1,86 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import PythonTestingQuizModal from '../../../../components/PythonTestingQuizModal.astro';
+---
+
+<Layout
+  title="Excepciones esperadas en pytest"
+  description="pytest.raises, match en el mensaje y pruebas de errores negativos."
+  courseSlug="python-testing"
+>
+  <article class="content-section">
+    <h1>8. Excepciones esperadas</h1>
+
+    <section class="mb-10">
+      <h2>Probar que algo <em>debe</em> fallar</h2>
+      <p>Cuando una API promete lanzar <code>ValueError</code> ante datos inválidos, el test debe comprobarlo explícitamente.</p>
+      <CodeBlock
+        lang="python"
+        code={`import pytest
+
+def dividir(a, b):
+    if b == 0:
+        raise ValueError("divisor cero")
+    return a / b
+
+def test_division_por_cero():
+    with pytest.raises(ValueError, match="divisor"):
+        dividir(1, 0)`}
+        title="pytest.raises"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Acceder a la excepción</h2>
+      <CodeBlock
+        lang="python"
+        code={`def test_exc_info():
+    with pytest.raises(ValueError) as info:
+        int("no-es-numero")
+    assert "invalid literal" in str(info.value)`}
+        title="info.value"
+      />
+    </section>
+
+    <div class="ejercicio" style="background: #E3F2FD;">
+      <h3>Ejercicio 1</h3>
+      <p class="enunciado">Escribí una función <code>primer_elemento(seq)</code> que lance <code>IndexError</code> si la secuencia está vacía, y un test con <code>pytest.raises(IndexError)</code>.</p>
+      <details>
+        <summary>Ver solución propuesta</summary>
+        <CodeBlock
+          lang="python"
+          code={`import pytest
+
+def primer_elemento(seq):
+    if not seq:
+        raise IndexError("vacío")
+    return seq[0]
+
+def test_vacio():
+    with pytest.raises(IndexError):
+        primer_elemento([])`}
+        />
+      </details>
+    </div>
+
+    <div class="ejercicio" style="background: #E3F2FD;">
+      <h3>Ejercicio 2</h3>
+      <p class="enunciado">¿Qué diferencia hay entre un test que espera una excepción y un test que deja pasar un bug no controlado?</p>
+      <details>
+        <summary>Ver idea guía</summary>
+        <p>El primero documenta un contrato (entrada inválida → error controlado). El segundo hace fallar el suite por un comportamiento no previsto.</p>
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <PythonTestingQuizModal quizKey="excepciones-pytest" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/python-testing/mocks-python/" class="prev">← Mocks</a>
+      <a href="/course/python-testing/cobertura/" class="next">Cobertura →</a>
+    </nav>
+  </article>
+</Layout>

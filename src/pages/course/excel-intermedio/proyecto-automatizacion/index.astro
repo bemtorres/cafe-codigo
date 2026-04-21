@@ -133,6 +133,310 @@ End Sub`} />
     />
 
     <section class="mb-10">
+      <h2>Ejercicios prácticos</h2>
+      <p class="text-gray-600 mb-6">15 ejercicios para ampliar y personalizar el proyecto de automatización de reportes.</p>
+
+      <h3 class="text-lg font-semibold text-green-800 mb-3">Básico</h3>
+
+      <div class="ejercicio">
+        <h4>1. Ejecutar y verificar</h4>
+        <p>Crea el libro con las hojas "Ventas" y "Resumen", copia los datos de ejemplo y ejecuta <code>GenerarReporte</code>. Verifica que Electrónica suma <strong>1985</strong> y Muebles suma <strong>715</strong>.</p>
+        <details>
+          <summary>Ver solución</summary>
+          <p>Electrónica: 1200 + 85 + 450 + 45 + 130 + 75 = <strong>1985</strong><br/>Muebles: 340 + 220 + 60 + 95 = <strong>715</strong></p>
+          <p>Si los números coinciden, la macro funciona correctamente.</p>
+        </details>
+      </div>
+
+      <div class="ejercicio">
+        <h4>2. Agregar categoría Papelería</h4>
+        <p>Añade 3 filas con categoría "Papelería" (montos: 30, 55, 80) a la hoja Ventas. Modifica el array <code>categorias</code> y el bucle para incluir esta nueva categoría en el reporte.</p>
+        <details>
+          <summary>Ver solución</summary>
+          <CodeBlock lang="vba" title="GenerarReporte — array ampliado" code={`Dim categorias(1 To 3) As String
+categorias(1) = "Electrónica"
+categorias(2) = "Muebles"
+categorias(3) = "Papelería"
+' El bucle For i = 1 To 3 ya lo cubre automáticamente`} />
+        </details>
+      </div>
+
+      <div class="ejercicio">
+        <h4>3. Cambiar color del encabezado</h4>
+        <p>Modifica el bloque <code>With hResumen.Range("A1:B1")</code> para que el encabezado tenga fondo <strong>azul marino</strong> (<code>RGB(0, 32, 96)</code>) con texto blanco.</p>
+        <details>
+          <summary>Ver solución</summary>
+          <CodeBlock lang="vba" title="Fragmento de GenerarReporte" code={`With hResumen.Range("A1:B1")
+    .Font.Bold = True
+    .Interior.Color = RGB(0, 32, 96)
+    .Font.Color = RGB(255, 255, 255)
+End With`} />
+        </details>
+      </div>
+
+      <div class="ejercicio">
+        <h4>4. Mostrar total general</h4>
+        <p>Después de escribir los totales por categoría, agrega una fila de <strong>Total General</strong> que sume todos los montos de la columna B en la hoja Resumen.</p>
+        <details>
+          <summary>Ver solución</summary>
+          <CodeBlock lang="vba" title="Al final de GenerarReporte" code={`Dim filaTotal As Long
+filaTotal = 2 + UBound(categorias)
+hResumen.Cells(filaTotal, 1).Value = "TOTAL"
+hResumen.Cells(filaTotal, 2).Formula = "=SUM(B2:B" & (filaTotal - 1) & ")"
+hResumen.Cells(filaTotal, 1).Font.Bold = True
+hResumen.Cells(filaTotal, 2).Font.Bold = True`} />
+        </details>
+      </div>
+
+      <div class="ejercicio">
+        <h4>5. Ancho de columnas automático</h4>
+        <p>Al final de <code>GenerarReporte</code>, ajusta automáticamente el ancho de las columnas A y B de la hoja Resumen con <code>AutoFit</code>.</p>
+        <details>
+          <summary>Ver solución</summary>
+          <CodeBlock lang="vba" title="Final de GenerarReporte" code={`hResumen.Columns("A:B").AutoFit`} />
+        </details>
+      </div>
+
+      <h3 class="text-lg font-semibold text-yellow-700 mb-3 mt-8">Intermedio</h3>
+
+      <div class="ejercicio">
+        <h4>6. Categorías dinámicas</h4>
+        <p>En lugar de declarar el array con categorías fijas, reescribe la lógica para que la macro detecte automáticamente todas las categorías únicas de la columna C y las use en el reporte.</p>
+        <details>
+          <summary>Ver solución</summary>
+          <CodeBlock lang="vba" title="Modulo1 — categorías dinámicas" code={`Sub GenerarReporteDinamico()
+    Dim hVentas As Worksheet, hResumen As Worksheet
+    Dim ultimaFila As Long, i As Long, j As Long
+    Dim categorias() As String
+    Dim numCats As Integer
+    Dim catActual As String, yaExiste As Boolean
+
+    Set hVentas = ThisWorkbook.Sheets("Ventas")
+    Set hResumen = ThisWorkbook.Sheets("Resumen")
+    Application.ScreenUpdating = False
+    hResumen.Range("A1:B200").ClearContents
+
+    ultimaFila = hVentas.Cells(hVentas.Rows.Count, 1).End(xlUp).Row
+    numCats = 0
+    ReDim categorias(1 To 1)
+
+    For i = 2 To ultimaFila
+        catActual = hVentas.Cells(i, 3).Value
+        yaExiste = False
+        For j = 1 To numCats
+            If categorias(j) = catActual Then yaExiste = True: Exit For
+        Next j
+        If Not yaExiste Then
+            numCats = numCats + 1
+            ReDim Preserve categorias(1 To numCats)
+            categorias(numCats) = catActual
+        End If
+    Next i
+
+    hResumen.Range("A1").Value = "Categoría"
+    hResumen.Range("B1").Value = "Total"
+    For i = 1 To numCats
+        hResumen.Cells(i + 1, 1).Value = categorias(i)
+        hResumen.Cells(i + 1, 2).Value = SumarPorCategoria(categorias(i))
+    Next i
+
+    hResumen.Columns("A:B").AutoFit
+    Application.ScreenUpdating = True
+    MsgBox "Reporte con " & numCats & " categorías generado."
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio">
+        <h4>7. Filtrar por mes</h4>
+        <p>Agrega un parámetro <code>mesFiltro As Integer</code> a <code>SumarPorCategoria</code> para que solo sume ventas del mes indicado (usa <code>Month(Cells(i,1).Value)</code>).</p>
+        <details>
+          <summary>Ver solución</summary>
+          <CodeBlock lang="vba" title="Modulo1" code={`Function SumarPorCategoriaYMes(ByVal categoria As String, ByVal mesFiltro As Integer) As Double
+    Dim hVentas As Worksheet
+    Dim ultimaFila As Long, i As Long, total As Double
+    Set hVentas = ThisWorkbook.Sheets("Ventas")
+    ultimaFila = hVentas.Cells(hVentas.Rows.Count, 1).End(xlUp).Row
+    total = 0
+    For i = 2 To ultimaFila
+        If hVentas.Cells(i, 3).Value = categoria Then
+            If Month(hVentas.Cells(i, 1).Value) = mesFiltro Then
+                total = total + hVentas.Cells(i, 4).Value
+            End If
+        End If
+    Next i
+    SumarPorCategoriaYMes = total
+End Function`} />
+        </details>
+      </div>
+
+      <div class="ejercicio">
+        <h4>8. Contar ventas por categoría</h4>
+        <p>Agrega una columna C "Cantidad" al reporte que muestre cuántas ventas (filas) tiene cada categoría, no el monto total.</p>
+        <details>
+          <summary>Ver solución</summary>
+          <CodeBlock lang="vba" title="Función auxiliar" code={`Function ContarPorCategoria(ByVal categoria As String) As Long
+    Dim hVentas As Worksheet
+    Dim ultimaFila As Long, i As Long, cuenta As Long
+    Set hVentas = ThisWorkbook.Sheets("Ventas")
+    ultimaFila = hVentas.Cells(hVentas.Rows.Count, 1).End(xlUp).Row
+    cuenta = 0
+    For i = 2 To ultimaFila
+        If hVentas.Cells(i, 3).Value = categoria Then cuenta = cuenta + 1
+    Next i
+    ContarPorCategoria = cuenta
+End Function`} />
+          <p>En GenerarReporte, agrega <code>hResumen.Range("C1").Value = "Cantidad"</code> y <code>hResumen.Cells(i+1, 3).Value = ContarPorCategoria(categorias(i))</code>.</p>
+        </details>
+      </div>
+
+      <div class="ejercicio">
+        <h4>9. Ordenar el reporte por total descendente</h4>
+        <p>Después de escribir todos los datos en la hoja Resumen, ordena el rango de datos (sin encabezado) por la columna B de mayor a menor usando el método <code>Sort</code>.</p>
+        <details>
+          <summary>Ver solución</summary>
+          <CodeBlock lang="vba" title="Al final de GenerarReporte" code={`Dim rngDatos As Range
+Dim filaFin As Long
+filaFin = 1 + UBound(categorias)
+Set rngDatos = hResumen.Range("A2:B" & filaFin)
+rngDatos.Sort Key1:=hResumen.Range("B2"), Order1:=xlDescending, Header:=xlNo`} />
+        </details>
+      </div>
+
+      <div class="ejercicio">
+        <h4>10. Botón para ejecutar la macro</h4>
+        <p>En la hoja Resumen, inserta una <strong>forma</strong> (rectángulo redondeado) con el texto "Generar Reporte" y asígnale la macro <code>GenerarReporte</code>. Indica los pasos en el editor VBA y en Excel.</p>
+        <details>
+          <summary>Ver solución</summary>
+          <p><strong>Pasos:</strong></p>
+          <ol class="list-decimal pl-5 space-y-1 text-sm">
+            <li>En la hoja Resumen, ve a <em>Insertar → Formas → Rectángulo redondeado</em>.</li>
+            <li>Dibuja la forma y escribe el texto "Generar Reporte".</li>
+            <li>Haz clic derecho sobre la forma → <em>Asignar macro</em>.</li>
+            <li>Selecciona <code>GenerarReporte</code> y acepta.</li>
+          </ol>
+          <p class="mt-2">También puedes hacer esto desde VBA:</p>
+          <CodeBlock lang="vba" title="Crear botón por código" code={`Sub AgregarBoton()
+    Dim ws As Worksheet
+    Dim btn As Shape
+    Set ws = ThisWorkbook.Sheets("Resumen")
+    Set btn = ws.Shapes.AddShape(msoShapeRoundedRectangle, 10, 10, 150, 40)
+    btn.TextFrame.Characters.Text = "Generar Reporte"
+    btn.OnAction = "GenerarReporte"
+End Sub`} />
+        </details>
+      </div>
+
+      <h3 class="text-lg font-semibold text-red-700 mb-3 mt-8">Avanzado</h3>
+
+      <div class="ejercicio">
+        <h4>11. Calcular ticket promedio</h4>
+        <p>Agrega una columna D "Promedio" al reporte que muestre el monto promedio por venta de cada categoría (total / cantidad). Formatea las celdas con 2 decimales.</p>
+        <details>
+          <summary>Ver solución</summary>
+          <CodeBlock lang="vba" title="En GenerarReporte" code={`' Encabezado
+hResumen.Range("D1").Value = "Promedio"
+' Dentro del bucle For i = 1 To numCats:
+Dim total As Double, cantidad As Long
+total = SumarPorCategoria(categorias(i))
+cantidad = ContarPorCategoria(categorias(i))
+If cantidad > 0 Then
+    hResumen.Cells(i + 1, 4).Value = total / cantidad
+Else
+    hResumen.Cells(i + 1, 4).Value = 0
+End If
+hResumen.Cells(i + 1, 4).NumberFormat = "0.00"`} />
+        </details>
+      </div>
+
+      <div class="ejercicio">
+        <h4>12. Exportar resumen a hoja nueva</h4>
+        <p>Al final de <code>GenerarReporte</code>, copia el rango de la hoja Resumen a una hoja nueva llamada <code>"Reporte_YYYYMMDD"</code> (con la fecha de hoy en el nombre) para conservar un histórico.</p>
+        <details>
+          <summary>Ver solución</summary>
+          <CodeBlock lang="vba" title="Final de GenerarReporte" code={`Dim nombreHoja As String
+Dim wsHistorico As Worksheet
+nombreHoja = "Reporte_" & Format(Date, "YYYYMMDD")
+
+' Eliminar hoja previa del mismo día si existe
+On Error Resume Next
+Application.DisplayAlerts = False
+ThisWorkbook.Sheets(nombreHoja).Delete
+Application.DisplayAlerts = True
+On Error GoTo 0
+
+Set wsHistorico = ThisWorkbook.Sheets.Add(After:=ThisWorkbook.Sheets(ThisWorkbook.Sheets.Count))
+wsHistorico.Name = nombreHoja
+hResumen.UsedRange.Copy wsHistorico.Range("A1")
+MsgBox "Histórico guardado en hoja: " & nombreHoja`} />
+        </details>
+      </div>
+
+      <div class="ejercicio">
+        <h4>13. Insertar gráfico de barras</h4>
+        <p>Después de generar el resumen, crea un gráfico de barras (<code>xlBarClustered</code>) en la hoja Resumen que muestre las categorías y sus totales.</p>
+        <details>
+          <summary>Ver solución</summary>
+          <CodeBlock lang="vba" title="Agregar gráfico al reporte" code={`Sub AgregarGrafico()
+    Dim hResumen As Worksheet
+    Dim cht As ChartObject
+    Dim filaFin As Long
+
+    Set hResumen = ThisWorkbook.Sheets("Resumen")
+    filaFin = hResumen.Cells(hResumen.Rows.Count, 1).End(xlUp).Row
+
+    ' Eliminar gráfico previo si existe
+    Dim co As ChartObject
+    For Each co In hResumen.ChartObjects
+        co.Delete
+    Next co
+
+    Set cht = hResumen.ChartObjects.Add(Left:=200, Top:=10, Width:=350, Height:=220)
+    With cht.Chart
+        .SetSourceData hResumen.Range("A1:B" & filaFin)
+        .ChartType = xlBarClustered
+        .HasTitle = True
+        .ChartTitle.Text = "Ventas por Categoría"
+        .SeriesCollection(1).Name = "Total"
+    End With
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio">
+        <h4>14. Progreso con barra de estado</h4>
+        <p>Cuando la macro procese muchas categorías, muestra el progreso en la barra de estado de Excel (<code>Application.StatusBar</code>) con el formato <strong>"Procesando: Electrónica (1/5)…"</strong>. Al terminar, restaura <code>Application.StatusBar = False</code>.</p>
+        <details>
+          <summary>Ver solución</summary>
+          <CodeBlock lang="vba" title="Dentro del bucle For i" code={`Application.StatusBar = "Procesando: " & categorias(i) & " (" & i & "/" & numCats & ")..."
+' ... resto del código del bucle
+
+' Al salir del bucle:
+Application.StatusBar = False`} />
+        </details>
+      </div>
+
+      <div class="ejercicio">
+        <h4>15. Reporte con evento automático</h4>
+        <p>Combina todo: usa un evento <code>Worksheet_Change</code> en la hoja Ventas para que, cada vez que se agregue un valor en la columna D (Monto), se ejecute automáticamente <code>GenerarReporteDinamico</code> y actualice el resumen en tiempo real.</p>
+        <details>
+          <summary>Ver solución</summary>
+          <CodeBlock lang="vba" title="Módulo de hoja Ventas" code={`Private Sub Worksheet_Change(ByVal Target As Range)
+    ' Solo reaccionar si se edita la columna D (Monto)
+    If Target.Column = 4 Then
+        Application.EnableEvents = False
+        Application.ScreenUpdating = False
+        Call GenerarReporteDinamico
+        Application.ScreenUpdating = True
+        Application.EnableEvents = True
+    End If
+End Sub`} />
+          <p class="text-sm text-gray-500 mt-2">Nota: asegúrate de que <code>GenerarReporteDinamico</code> también tenga <code>ScreenUpdating</code> y <code>EnableEvents</code> desactivados internamente, o usa la versión simplificada sin esos controles para evitar conflictos.</p>
+        </details>
+      </div>
+    </section>
+
+    <section class="mb-10">
       <h2>Pon a prueba tus conocimientos</h2>
       <ExcelQuizModal quizKey="proyecto-automatizacion" />
     </section>

@@ -1,0 +1,84 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import PythonTestingQuizModal from '../../../../components/PythonTestingQuizModal.astro';
+---
+
+<Layout
+  title="Aserciones en pytest"
+  description="assert, mensajes de error, comparaciones y comprobaciones comunes en Python."
+  courseSlug="python-testing"
+>
+  <article class="content-section">
+    <h1>3. Aserciones</h1>
+
+    <section class="mb-10">
+      <h2><code>assert</code> en pytest</h2>
+      <p>
+        pytest reutiliza la palabra clave <code>assert</code> de Python. Si la expresión es falsa, el test falla y pytest intenta mostrar valores intermedios de forma legible.
+      </p>
+      <CodeBlock
+        lang="python"
+        code={`def test_texto():
+    esperado = "pytest"
+    obtenido = "py" + "test"
+    assert esperado == obtenido, "el mensaje opcional ayuda cuando falla"`}
+        title="assert con mensaje"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Igualdad e identidad</h2>
+      <ul class="mb-4">
+        <li><code>==</code> compara <strong>valor</strong> (muy usado).</li>
+        <li><code>is</code> compara <strong>identidad</strong> (mismo objeto en memoria); usalo con <code>None</code>, <code>True</code>, <code>False</code> cuando corresponda.</li>
+      </ul>
+      <CodeBlock lang="python" code={`def test_none():
+    x = None
+    assert x is None`} title="is None" />
+    </section>
+
+    <section class="mb-10">
+      <h2>Contenidos y colecciones</h2>
+      <CodeBlock
+        lang="python"
+        code={`def test_lista_y_substring():
+    assert "hola" in "hola mundo"
+    assert 3 in [1, 2, 3]
+    assert {"a": 1} == {"a": 1}`}
+        title="membership y dict"
+      />
+    </section>
+
+    <div class="ejercicio" style="background: #E3F2FD;">
+      <h3>Ejercicio 1</h3>
+      <p class="enunciado">Escribí un test que falle a propósito con un mensaje claro: compará <code>1 + 1</code> con <code>3</code> y pasá un segundo argumento a <code>assert</code>.</p>
+      <details>
+        <summary>Ver solución propuesta</summary>
+        <CodeBlock lang="python" code={`def test_falla_docente():
+    assert 1 + 1 == 3, "sabemos que 1+1 no es 3; este test demuestra el mensaje"`} />
+      </details>
+    </div>
+
+    <div class="ejercicio" style="background: #E3F2FD;">
+      <h3>Ejercicio 2</h3>
+      <p class="enunciado">Usá <code>assert all(x &gt; 0 for x in [1, 2, 3])</code> o una aserción equivalente para comprobar que todos los números son positivos.</p>
+      <details>
+        <summary>Ver solución propuesta</summary>
+        <CodeBlock lang="python" code={`def test_todos_positivos():
+    nums = [1, 2, 3]
+    assert all(n > 0 for n in nums)`} />
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <PythonTestingQuizModal quizKey="assertions-pytest" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/python-testing/patron-aaa-python/" class="prev">← Patrón AAA</a>
+      <a href="/course/python-testing/organizar-tests/" class="next">Organizar tests →</a>
+    </nav>
+  </article>
+</Layout>

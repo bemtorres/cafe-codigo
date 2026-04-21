@@ -1,0 +1,83 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import PythonTestingQuizModal from '../../../../components/PythonTestingQuizModal.astro';
+---
+
+<Layout
+  title="Patrón AAA en tests con Python"
+  description="Arrange, Act y Assert: estructura clara para pruebas legibles con pytest."
+  courseSlug="python-testing"
+>
+  <article class="content-section">
+    <h1>2. Patrón AAA (Arrange, Act, Assert)</h1>
+
+    <section class="mb-10">
+      <h2>Tres pasos</h2>
+      <ul class="mb-4">
+        <li><strong>Arrange:</strong> preparás datos, objetos o dependencias.</li>
+        <li><strong>Act:</strong> ejecutás <em>una</em> acción que querés verificar (una llamada a función suele bastar).</li>
+        <li><strong>Assert:</strong> comprobás el resultado o efecto observado.</li>
+      </ul>
+      <CodeBlock
+        lang="python"
+        code={`def aplicar_descuento(precio: float, porcentaje: float) -> float:
+    return precio * (1 - porcentaje / 100)
+
+def test_descuento_del_20():
+    # Arrange
+    precio = 100.0
+    pct = 20.0
+    # Act
+    resultado = aplicar_descuento(precio, pct)
+    # Assert
+    assert resultado == 80.0`}
+        title="test_descuento.py"
+      />
+    </section>
+
+    <div class="ejercicio" style="background: #E3F2FD;">
+      <h3>Ejercicio 1</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> Etiquetar fases
+      </div>
+      <p class="enunciado">En un comentario por línea, marcá Arrange / Act / Assert en un test que cree una lista <code>[1, 2]</code>, llame a <code>sum()</code> y compare con <code>3</code>.</p>
+      <details>
+        <summary>Ver solución propuesta</summary>
+        <CodeBlock
+          lang="python"
+          code={`def test_suma_lista():
+    nums = [1, 2]  # Arrange
+    total = sum(nums)  # Act
+    assert total == 3  # Assert`}
+        />
+      </details>
+    </div>
+
+    <div class="ejercicio" style="background: #E3F2FD;">
+      <h3>Ejercicio 2</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> Un solo Act
+      </div>
+      <p class="enunciado">
+        Explicá en una frase por qué conviene que <strong>Act</strong> suela ser una sola llamada o expresión enfocada.
+      </p>
+      <details>
+        <summary>Ver idea guía</summary>
+        <p>
+          Así, si el test falla, sabés exactamente qué comportamiento estabas ejercitando; mezclar varias acciones en Act vuelve el fallo ambiguo.
+        </p>
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <PythonTestingQuizModal quizKey="patron-aaa-python" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/python-testing/intro-pytest/" class="prev">← Introducción</a>
+      <a href="/course/python-testing/assertions-pytest/" class="next">Aserciones →</a>
+    </nav>
+  </article>
+</Layout>

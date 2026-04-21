@@ -1,0 +1,85 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import PythonTestingQuizModal from '../../../../components/PythonTestingQuizModal.astro';
+---
+
+<Layout
+  title="Parametrización en pytest"
+  description="@pytest.mark.parametrize: un solo test, muchos casos con datos distintos."
+  courseSlug="python-testing"
+>
+  <article class="content-section">
+    <h1>6. Parametrización</h1>
+
+    <section class="mb-10">
+      <h2>Un test, varios escenarios</h2>
+      <p><code>@pytest.mark.parametrize</code> evita copiar y pegar el mismo test con distintos valores.</p>
+      <CodeBlock
+        lang="python"
+        code={`import pytest
+
+def doble(x: int) -> int:
+    return x * 2
+
+@pytest.mark.parametrize("entrada,esperado", [(0, 0), (1, 2), (-3, -6)])
+def test_doble(entrada, esperado):
+    assert doble(entrada) == esperado`}
+        title="test_doble.py"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>IDs legibles</h2>
+      <CodeBlock
+        lang="python"
+        code={`@pytest.mark.parametrize(
+    "n",
+    [1, 2, 10],
+    ids=["uno", "dos", "diez"],
+)
+def test_positivo(n):
+    assert n > 0`}
+        title="ids en la salida"
+      />
+    </section>
+
+    <div class="ejercicio" style="background: #E3F2FD;">
+      <h3>Ejercicio 1</h3>
+      <p class="enunciado">Parametrizá un test para la función <code>abs_valor(x)</code> que devuelva el valor absoluto, con al menos tres pares <code>(entrada, esperado)</code>.</p>
+      <details>
+        <summary>Ver solución propuesta</summary>
+        <CodeBlock
+          lang="python"
+          code={`import pytest
+
+def abs_valor(x: float) -> float:
+    return x if x >= 0 else -x
+
+@pytest.mark.parametrize("x,e", [(0, 0), (5, 5), (-4, 4)])
+def test_abs_valor(x, e):
+    assert abs_valor(x) == e`}
+        />
+      </details>
+    </div>
+
+    <div class="ejercicio" style="background: #E3F2FD;">
+      <h3>Ejercicio 2</h3>
+      <p class="enunciado">Explicá en una frase por qué parametrizar reduce duplicación sin perder claridad.</p>
+      <details>
+        <summary>Ver idea guía</summary>
+        <p>Centralizás la lógica del assert y solo variás los datos; la tabla de casos documenta los escenarios de un vistazo.</p>
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <PythonTestingQuizModal quizKey="parametrizacion" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/python-testing/fixtures-pytest/" class="prev">← Fixtures</a>
+      <a href="/course/python-testing/mocks-python/" class="next">Mocks y patch →</a>
+    </nav>
+  </article>
+</Layout>

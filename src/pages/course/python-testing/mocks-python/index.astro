@@ -1,0 +1,93 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import PythonTestingQuizModal from '../../../../components/PythonTestingQuizModal.astro';
+---
+
+<Layout
+  title="Mocks y patch en Python"
+  description="unittest.mock: aislar dependencias y comprobar llamadas en tests unitarios."
+  courseSlug="python-testing"
+>
+  <article class="content-section">
+    <h1>7. Mocks y patch</h1>
+
+    <section class="mb-10">
+      <h2>¿Por qué mockear?</h2>
+      <p>
+        En una <strong>prueba unitaria</strong> querés controlar el entorno: sin red, sin base de datos real y sin tiempos aleatorios. <code>unittest.mock</code> ofrece objetos falsos y registros de llamadas.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Mock y MagicMock</h2>
+      <CodeBlock
+        lang="python"
+        code={`from unittest.mock import Mock
+
+api = Mock()
+api.fetch.return_value = {"ok": True}
+assert api.fetch("/users")["ok"] is True
+api.fetch.assert_called_once()`}
+        title="mock básico"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>patch: reemplazar donde se usa</h2>
+      <p>
+        <code>unittest.mock.patch</code> reemplaza un nombre en el módulo bajo prueba. La regla de oro: parcheá el camino <strong>donde se busca el símbolo al importar/usar</strong>, no solo donde está definido el original.
+      </p>
+      <CodeBlock
+        lang="python"
+        code={`from unittest.mock import Mock
+
+def calcular_total(fetch):
+    data = fetch()
+    return sum(data)
+
+def test_total_con_mock():
+    fetch_mock = Mock(return_value=[10, 20])
+    assert calcular_total(fetch_mock) == 30
+    fetch_mock.assert_called_once()`}
+        title="inyectar un Mock como dependencia"
+      />
+    </section>
+
+    <div class="ejercicio" style="background: #E3F2FD;">
+      <h3>Ejercicio 1</h3>
+      <p class="enunciado">Creá un <code>Mock()</code> llamado <code>logger</code> y hacé que <code>logger.info("hola")</code> pueda llamarse; luego <code>assert logger.info.called</code>.</p>
+      <details>
+        <summary>Ver solución propuesta</summary>
+        <CodeBlock
+          lang="python"
+          code={`from unittest.mock import Mock
+
+def test_logger_llamado():
+    logger = Mock()
+    logger.info("hola")
+    assert logger.info.called`}
+        />
+      </details>
+    </div>
+
+    <div class="ejercicio" style="background: #E3F2FD;">
+      <h3>Ejercicio 2</h3>
+      <p class="enunciado">¿Por qué mockear una API HTTP en un unit test en lugar de pegarle a la red real?</p>
+      <details>
+        <summary>Ver idea guía</summary>
+        <p>Velocidad, determinismo (sin fallos por red) y no depender de servicios externos para validar tu lógica.</p>
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <PythonTestingQuizModal quizKey="mocks-python" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/python-testing/parametrizacion/" class="prev">← Parametrización</a>
+      <a href="/course/python-testing/excepciones-pytest/" class="next">Excepciones esperadas →</a>
+    </nav>
+  </article>
+</Layout>

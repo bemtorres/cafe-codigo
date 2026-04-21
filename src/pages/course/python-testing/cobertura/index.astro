@@ -1,0 +1,70 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import PythonTestingQuizModal from '../../../../components/PythonTestingQuizModal.astro';
+---
+
+<Layout
+  title="Cobertura de código en Python"
+  description="coverage.py y pytest-cov: medir qué líneas ejecutan tus tests y sus límites."
+  courseSlug="python-testing"
+>
+  <article class="content-section">
+    <h1>9. Cobertura</h1>
+
+    <section class="mb-10">
+      <h2>¿Qué mide la cobertura?</h2>
+      <p>
+        Herramientas como <strong>coverage.py</strong> (a menudo vía <strong>pytest-cov</strong>) indican qué líneas o ramas ejecutaron tus tests. Es una guía, no una prueba de ausencia de bugs: podés tener 100% de líneas y seguir sin probar casos límite importantes.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Comando típico</h2>
+      <CodeBlock
+        lang="bash"
+        code={`pip install pytest pytest-cov
+pytest --cov=mi_paquete --cov-report=term-missing`}
+        title="Terminal"
+      />
+      <p>Reemplazá <code>mi_paquete</code> por el nombre del paquete o carpeta fuente que querés medir.</p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Buenas prácticas</h2>
+      <ul class="mb-4">
+        <li>Perseguir cobertura sin calidad de asserts genera tests frágiles o inútiles.</li>
+        <li>Revisá ramas <code>if/else</code> no cubiertas: suelen esconder errores silenciosos.</li>
+        <li>En CI, combiná umbral razonable con revisión humana.</li>
+      </ul>
+    </section>
+
+    <div class="ejercicio" style="background: #E3F2FD;">
+      <h3>Ejercicio 1</h3>
+      <p class="enunciado">Explicá por qué “100% coverage” no implica software libre de defectos.</p>
+      <details>
+        <summary>Ver idea guía</summary>
+        <p>Solo indica que el código fue ejecutado; no valida que los asserts cubran reglas de negocio, datos extremos o concurrencia.</p>
+      </details>
+    </div>
+
+    <div class="ejercicio" style="background: #E3F2FD;">
+      <h3>Ejercicio 2</h3>
+      <p class="enunciado">En un proyecto local, ejecutá <code>pytest --cov</code> en un paquete pequeño y leé la sección “missing” del informe.</p>
+      <details>
+        <summary>Ver idea guía</summary>
+        <p>Anotá qué líneas faltan: ¿son ramas de error, código muerto o casos que deberías testear?</p>
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <PythonTestingQuizModal quizKey="cobertura" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/python-testing/excepciones-pytest/" class="prev">← Excepciones</a>
+      <a href="/course/python-testing/proyecto-final/" class="next">Proyecto final →</a>
+    </nav>
+  </article>
+</Layout>

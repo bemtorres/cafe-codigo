@@ -1,0 +1,85 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import PythonTestingQuizModal from '../../../../components/PythonTestingQuizModal.astro';
+---
+
+<Layout
+  title="Proyecto final: testing en Python"
+  description="TDD, checklist de calidad y cierre del curso de pytest."
+  courseSlug="python-testing"
+>
+  <article class="content-section">
+    <h1>10. Proyecto final</h1>
+
+    <section class="mb-10">
+      <h2>TDD en pocas palabras</h2>
+      <p>
+        <strong>Test-Driven Development</strong>: escribís un test que falla (rojo), implementás lo mínimo para pasar (verde) y mejorás el diseño con la suite en verde (refactor). No es obligatorio en todos los equipos, pero entenderlo te ayuda a priorizar contratos claros.
+      </p>
+      <CodeBlock
+        lang="python"
+        code={`# 1) Test primero: falla hasta que exista la función
+def test_password_minima_longitud():
+    assert es_password_segura("12345") is False  # define es_password_segura después
+
+# 2) Implementación mínima
+def es_password_segura(pw: str) -> bool:
+    return len(pw) >= 8`}
+        title="Ejemplo mínimo"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Checklist de cierre</h2>
+      <ul class="mb-4">
+        <li>Tests rápidos y deterministas (mockear IO cuando el objetivo es lógica pura).</li>
+        <li>Nombres de test que expliquen el comportamiento esperado.</li>
+        <li>Mezcla de casos felices, bordes y errores esperados (<code>raises</code>).</li>
+        <li>Suite en CI para cada push o pull request.</li>
+      </ul>
+    </section>
+
+    <div class="ejercicio" style="background: #E3F2FD;">
+      <h3>Desafío integrador</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> Validador de rangos
+      </div>
+      <p class="enunciado">
+        Implementá <code>en_rango(x, a, b)</code> que devuelva <code>True</code> si <code>a &lt;= x &lt;= b</code>. Escribí al menos: un test parametrizado con varios valores, un test de <code>pytest.raises</code> si exigís <code>a &lt;= b</code> (o documentá que asumís <code>a &lt;= b</code> sin excepción) y un mock solo si inyectás una dependencia.
+      </p>
+      <details>
+        <summary>Ver posible enfoque (una de muchas)</summary>
+        <CodeBlock
+          lang="python"
+          code={`import pytest
+
+def en_rango(x, a, b):
+    if a > b:
+        raise ValueError("a debe ser <= b")
+    return a <= x <= b
+
+@pytest.mark.parametrize("x,a,b,ok", [(2, 1, 3, True), (0, 0, 0, True), (5, 1, 4, False)])
+def test_casos(x, a, b, ok):
+    assert en_rango(x, a, b) is ok
+
+def test_rango_invertido():
+    with pytest.raises(ValueError):
+        en_rango(1, 5, 2)`}
+        title="ejemplo compacto"
+        />
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Examen final</h2>
+      <p>Demostrá que dominás los conceptos del curso.</p>
+      <PythonTestingQuizModal quizKey="proyecto-final" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/python-testing/cobertura/" class="prev">← Cobertura</a>
+      <a href="/course/python-testing/" class="next">Cerrar curso →</a>
+    </nav>
+  </article>
+</Layout>

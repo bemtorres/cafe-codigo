@@ -1,0 +1,95 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import PythonTestingQuizModal from '../../../../components/PythonTestingQuizModal.astro';
+---
+
+<Layout
+  title="Fixtures en pytest"
+  description="Reutilizar datos y teardown con @pytest.fixture, scopes y autouse."
+  courseSlug="python-testing"
+>
+  <article class="content-section">
+    <h1>5. Fixtures</h1>
+
+    <section class="mb-10">
+      <h2>Fixture básica</h2>
+      <p>Una función decorada con <code>@pytest.fixture</code> provee un valor a los tests que la declaran como argumento.</p>
+      <CodeBlock
+        lang="python"
+        code={`import pytest
+
+@pytest.fixture
+def usuario_demo():
+    return {"nombre": "Luis", "rol": "admin"}
+
+def test_rol(usuario_demo):
+    assert usuario_demo["rol"] == "admin"`}
+        title="test_usuario.py"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Yield y limpieza</h2>
+      <p>Después de <code>yield</code>, el código corre como teardown (útil para archivos temporales, conexiones, etc.).</p>
+      <CodeBlock
+        lang="python"
+        code={`@pytest.fixture
+def contador():
+    estado = {"n": 0}
+    yield estado
+    # aquí podrías cerrar recursos
+    estado.clear()`}
+        title="fixture con yield"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Scope</h2>
+      <ul class="mb-4">
+        <li><code>scope="function"</code> (default): una vez por test.</li>
+        <li><code>scope="module"</code>: compartida en el módulo.</li>
+        <li><code>scope="session"</code>: una vez por ejecución de pytest.</li>
+      </ul>
+    </section>
+
+    <div class="ejercicio" style="background: #E3F2FD;">
+      <h3>Ejercicio 1</h3>
+      <p class="enunciado">Definí una fixture <code>lista_vacia</code> que devuelva <code>[]</code> y un test que haga <code>append(1)</code> y compruebe longitud 1.</p>
+      <details>
+        <summary>Ver solución propuesta</summary>
+        <CodeBlock
+          lang="python"
+          code={`import pytest
+
+@pytest.fixture
+def lista_vacia():
+    return []
+
+def test_append(lista_vacia):
+    lista_vacia.append(1)
+    assert len(lista_vacia) == 1`}
+        />
+      </details>
+    </div>
+
+    <div class="ejercicio" style="background: #E3F2FD;">
+      <h3>Ejercicio 2</h3>
+      <p class="enunciado">¿Cuándo elegirías <code>scope="module"</code> para una fixture costosa de crear?</p>
+      <details>
+        <summary>Ver idea guía</summary>
+        <p>Cuando el recurso es seguro de compartir entre tests del mismo archivo y crearlo en cada función sería lento (p. ej. cargar un modelo grande en memoria).</p>
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <PythonTestingQuizModal quizKey="fixtures-pytest" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/python-testing/organizar-tests/" class="prev">← Organizar tests</a>
+      <a href="/course/python-testing/parametrizacion/" class="next">Parametrización →</a>
+    </nav>
+  </article>
+</Layout>

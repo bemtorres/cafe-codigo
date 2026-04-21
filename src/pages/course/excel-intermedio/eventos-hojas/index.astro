@@ -96,6 +96,272 @@ End Sub`} />
     />
 
     <section class="mb-10">
+      <h2>Ejercicios prácticos</h2>
+      <p class="text-gray-600 mb-6">15 ejercicios organizados por dificultad para consolidar el manejo de eventos VBA.</p>
+
+      <h3 class="text-lg font-semibold text-green-800 mb-3">Básico</h3>
+
+      <div class="ejercicio">
+        <h4>1. Saludo al abrir</h4>
+        <p>Escribe en <code>ThisWorkbook</code> un evento <code>Workbook_Open</code> que muestre el mensaje <strong>"¡Bienvenido! Hoy es: "</strong> seguido de la fecha actual (<code>Date</code>).</p>
+        <details>
+          <summary>Ver solución</summary>
+          <CodeBlock lang="vba" title="ThisWorkbook" code={`Private Sub Workbook_Open()
+    MsgBox "¡Bienvenido! Hoy es: " & Date
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio">
+        <h4>2. Detectar cambio en celda A1</h4>
+        <p>En el módulo de Hoja1, escribe un <code>Worksheet_Change</code> que muestre un <code>MsgBox</code> solo cuando se edite la celda <strong>A1</strong>.</p>
+        <details>
+          <summary>Ver solución</summary>
+          <CodeBlock lang="vba" title="Hoja1" code={`Private Sub Worksheet_Change(ByVal Target As Range)
+    If Target.Address = "$A$1" Then
+        MsgBox "Cambiaste A1 a: " & Target.Value
+    End If
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio">
+        <h4>3. Activar hoja con mensaje</h4>
+        <p>Escribe un evento <code>Worksheet_Activate</code> que muestre el nombre de la hoja activa cuando el usuario haga clic en ella.</p>
+        <details>
+          <summary>Ver solución</summary>
+          <CodeBlock lang="vba" title="Hoja1" code={`Private Sub Worksheet_Activate()
+    MsgBox "Activaste la hoja: " & Me.Name
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio">
+        <h4>4. Timestamp automático</h4>
+        <p>Cuando se edite cualquier celda de la columna B, escribe en la columna C de la misma fila la hora actual (<code>Now</code>).</p>
+        <details>
+          <summary>Ver solución</summary>
+          <CodeBlock lang="vba" title="Hoja1" code={`Private Sub Worksheet_Change(ByVal Target As Range)
+    Application.EnableEvents = False
+    If Target.Column = 2 Then
+        Target.Offset(0, 1).Value = Now
+    End If
+    Application.EnableEvents = True
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio">
+        <h4>5. Aviso antes de guardar</h4>
+        <p>En <code>ThisWorkbook</code>, escribe un evento <code>Workbook_BeforeSave</code> que muestre <strong>"¿Seguro que quieres guardar?"</strong> antes de proceder.</p>
+        <details>
+          <summary>Ver solución</summary>
+          <CodeBlock lang="vba" title="ThisWorkbook" code={`Private Sub Workbook_BeforeSave(ByVal SaveAsUI As Boolean, Cancel As Boolean)
+    MsgBox "¿Seguro que quieres guardar?"
+End Sub`} />
+        </details>
+      </div>
+
+      <h3 class="text-lg font-semibold text-yellow-700 mb-3 mt-8">Intermedio</h3>
+
+      <div class="ejercicio">
+        <h4>6. Colorear celda editada</h4>
+        <p>Cuando se edite cualquier celda de la columna A, colorea el fondo de esa celda en amarillo (<code>RGB(255, 255, 0)</code>). Usa <code>EnableEvents</code> para evitar recursividad.</p>
+        <details>
+          <summary>Ver solución</summary>
+          <CodeBlock lang="vba" title="Hoja1" code={`Private Sub Worksheet_Change(ByVal Target As Range)
+    Application.EnableEvents = False
+    If Target.Column = 1 Then
+        Target.Interior.Color = RGB(255, 255, 0)
+    End If
+    Application.EnableEvents = True
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio">
+        <h4>7. Validar celda no vacía</h4>
+        <p>Si el usuario deja vacía la celda B2, cancela el cambio restaurando el valor anterior y muestra un aviso. (Pista: guarda el valor anterior en una variable de módulo antes del cambio.)</p>
+        <details>
+          <summary>Ver solución</summary>
+          <CodeBlock lang="vba" title="Hoja1" code={`Dim valorAnterior As String
+
+Private Sub Worksheet_SelectionChange(ByVal Target As Range)
+    If Target.Address = "$B$2" Then
+        valorAnterior = Target.Value
+    End If
+End Sub
+
+Private Sub Worksheet_Change(ByVal Target As Range)
+    If Target.Address = "$B$2" Then
+        If Target.Value = "" Then
+            Application.EnableEvents = False
+            Target.Value = valorAnterior
+            Application.EnableEvents = True
+            MsgBox "B2 no puede quedar vacía."
+        End If
+    End If
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio">
+        <h4>8. Convertir a mayúsculas automáticamente</h4>
+        <p>Cada vez que el usuario edite una celda de la columna C, convierte automáticamente el texto a mayúsculas usando <code>UCase</code>.</p>
+        <details>
+          <summary>Ver solución</summary>
+          <CodeBlock lang="vba" title="Hoja1" code={`Private Sub Worksheet_Change(ByVal Target As Range)
+    Application.EnableEvents = False
+    If Target.Column = 3 Then
+        Target.Value = UCase(Target.Value)
+    End If
+    Application.EnableEvents = True
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio">
+        <h4>9. Redirigir al usuario al abrir</h4>
+        <p>En <code>Workbook_Open</code>, activa la hoja llamada "Panel" y selecciona la celda A1. Si la hoja no existe, muestra un aviso y no hagas nada.</p>
+        <details>
+          <summary>Ver solución</summary>
+          <CodeBlock lang="vba" title="ThisWorkbook" code={`Private Sub Workbook_Open()
+    Dim ws As Worksheet
+    On Error Resume Next
+    Set ws = ThisWorkbook.Sheets("Panel")
+    On Error GoTo 0
+    If ws Is Nothing Then
+        MsgBox "La hoja 'Panel' no existe."
+    Else
+        ws.Activate
+        ws.Range("A1").Select
+    End If
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio">
+        <h4>10. Contador de cambios</h4>
+        <p>Declara una variable de módulo <code>contadorCambios</code>. Con cada edición de cualquier celda, incrementa el contador y muestra en la celda F1 cuántas veces se ha editado la hoja.</p>
+        <details>
+          <summary>Ver solución</summary>
+          <CodeBlock lang="vba" title="Hoja1" code={`Dim contadorCambios As Long
+
+Private Sub Worksheet_Change(ByVal Target As Range)
+    Application.EnableEvents = False
+    contadorCambios = contadorCambios + 1
+    Me.Range("F1").Value = contadorCambios
+    Application.EnableEvents = True
+End Sub`} />
+        </details>
+      </div>
+
+      <h3 class="text-lg font-semibold text-red-700 mb-3 mt-8">Avanzado</h3>
+
+      <div class="ejercicio">
+        <h4>11. Rango de intersección</h4>
+        <p>Usa <code>Application.Intersect</code> para detectar si el usuario editó alguna celda dentro del rango <code>B2:D10</code>. Solo en ese caso, muestra en una <code>MsgBox</code> la dirección y el nuevo valor.</p>
+        <details>
+          <summary>Ver solución</summary>
+          <CodeBlock lang="vba" title="Hoja1" code={`Private Sub Worksheet_Change(ByVal Target As Range)
+    Dim zonaVigilada As Range
+    Set zonaVigilada = Me.Range("B2:D10")
+    If Not Application.Intersect(Target, zonaVigilada) Is Nothing Then
+        MsgBox "Celda editada: " & Target.Address & " → " & Target.Value
+    End If
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio">
+        <h4>12. Bloquear cierre sin contraseña</h4>
+        <p>En <code>Workbook_BeforeClose</code>, pide al usuario una contraseña con <code>InputBox</code>. Si no escribe <strong>"admin123"</strong>, cancela el cierre poniendo <code>Cancel = True</code>.</p>
+        <details>
+          <summary>Ver solución</summary>
+          <CodeBlock lang="vba" title="ThisWorkbook" code={`Private Sub Workbook_BeforeClose(Cancel As Boolean)
+    Dim clave As String
+    clave = InputBox("Introduce la contraseña para cerrar:", "Acceso")
+    If clave <> "admin123" Then
+        MsgBox "Contraseña incorrecta. No se puede cerrar."
+        Cancel = True
+    End If
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio">
+        <h4>13. Evento en múltiples hojas</h4>
+        <p>Desde <code>ThisWorkbook</code>, usa el evento <code>Workbook_SheetChange</code> (que se dispara en cualquier hoja) para registrar en la hoja "Log" (créala) cada cambio: fila, columna, hoja y valor nuevo.</p>
+        <details>
+          <summary>Ver solución</summary>
+          <CodeBlock lang="vba" title="ThisWorkbook" code={`Private Sub Workbook_SheetChange(ByVal Sh As Object, ByVal Target As Range)
+    Dim wsLog As Worksheet
+    Dim sig As Long
+    Application.EnableEvents = False
+    On Error Resume Next
+    Set wsLog = ThisWorkbook.Sheets("Log")
+    On Error GoTo 0
+    If wsLog Is Nothing Then
+        Set wsLog = ThisWorkbook.Sheets.Add
+        wsLog.Name = "Log"
+    End If
+    sig = wsLog.Cells(wsLog.Rows.Count, 1).End(xlUp).Row + 1
+    wsLog.Cells(sig, 1).Value = Sh.Name
+    wsLog.Cells(sig, 2).Value = Target.Address
+    wsLog.Cells(sig, 3).Value = Target.Value
+    wsLog.Cells(sig, 4).Value = Now
+    Application.EnableEvents = True
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio">
+        <h4>14. Semáforo de stock</h4>
+        <p>La columna D tiene cantidades de stock. Cuando el usuario edite un valor en D, colorea la celda: <strong>rojo</strong> si es menor a 5, <strong>amarillo</strong> si está entre 5 y 10, <strong>verde</strong> si es mayor a 10.</p>
+        <details>
+          <summary>Ver solución</summary>
+          <CodeBlock lang="vba" title="Hoja1" code={`Private Sub Worksheet_Change(ByVal Target As Range)
+    Application.EnableEvents = False
+    If Target.Column = 4 And IsNumeric(Target.Value) Then
+        Select Case CDbl(Target.Value)
+            Case Is < 5
+                Target.Interior.Color = RGB(255, 100, 100)
+            Case 5 To 10
+                Target.Interior.Color = RGB(255, 255, 0)
+            Case Else
+                Target.Interior.Color = RGB(100, 220, 100)
+        End Select
+    End If
+    Application.EnableEvents = True
+End Sub`} />
+        </details>
+      </div>
+
+      <div class="ejercicio">
+        <h4>15. Desactivar eventos temporalmente desde otro módulo</h4>
+        <p>Crea una macro <code>CargarDatos</code> en un módulo estándar que escriba 50 valores en la columna A desactivando los eventos antes de empezar y reactivándolos al terminar, evitando que el evento <code>Worksheet_Change</code> se dispare 50 veces.</p>
+        <details>
+          <summary>Ver solución</summary>
+          <CodeBlock lang="vba" title="Modulo1" code={`Sub CargarDatos()
+    Dim i As Long
+    Application.EnableEvents = False
+    Application.ScreenUpdating = False
+
+    With ThisWorkbook.Sheets("Hoja1")
+        For i = 1 To 50
+            .Cells(i, 1).Value = i * 10
+        Next i
+    End With
+
+    Application.ScreenUpdating = True
+    Application.EnableEvents = True
+    MsgBox "50 valores cargados sin disparar eventos."
+End Sub`} />
+        </details>
+      </div>
+    </section>
+
+    <section class="mb-10">
       <h2>Pon a prueba tus conocimientos</h2>
       <ExcelQuizModal quizKey="eventos-hojas" />
     </section>

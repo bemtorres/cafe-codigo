@@ -201,6 +201,27 @@ export const courses: Course[] = [
     ],
   },
   {
+    slug: 'python-testing',
+    name: 'Testing con Python',
+    description:
+      'pytest, aserciones, fixtures, parametrización, mocks con unittest.mock y cobertura: prueba tu código Python como en producción.',
+    category: 'testing',
+    status: 'available',
+    color: '#306998',
+    lessons: [
+      { slug: 'intro-pytest', title: '1. Introducción y pytest', href: '/course/python-testing/intro-pytest/' },
+      { slug: 'patron-aaa-python', title: '2. Patrón AAA', href: '/course/python-testing/patron-aaa-python/' },
+      { slug: 'assertions-pytest', title: '3. Aserciones', href: '/course/python-testing/assertions-pytest/' },
+      { slug: 'organizar-tests', title: '4. Organizar tests', href: '/course/python-testing/organizar-tests/' },
+      { slug: 'fixtures-pytest', title: '5. Fixtures', href: '/course/python-testing/fixtures-pytest/' },
+      { slug: 'parametrizacion', title: '6. Parametrización', href: '/course/python-testing/parametrizacion/' },
+      { slug: 'mocks-python', title: '7. Mocks y patch', href: '/course/python-testing/mocks-python/' },
+      { slug: 'excepciones-pytest', title: '8. Excepciones esperadas', href: '/course/python-testing/excepciones-pytest/' },
+      { slug: 'cobertura', title: '9. Cobertura', href: '/course/python-testing/cobertura/' },
+      { slug: 'proyecto-final', title: '10. Proyecto final', href: '/course/python-testing/proyecto-final/' },
+    ],
+  },
+  {
     slug: 'patrones-diseno',
     name: 'Patrones de diseño',
     description:

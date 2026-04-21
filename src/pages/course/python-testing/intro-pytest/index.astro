@@ -1,0 +1,108 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import PythonTestingQuizModal from '../../../../components/PythonTestingQuizModal.astro';
+
+const codeSaludoEjercicio = [
+  'def saludo(nombre: str) -> str:',
+  '    return f"Hola, {nombre}"',
+  '',
+  'def test_saludo():',
+  '    assert saludo("Ana") == "Hola, Ana"',
+].join('\n');
+---
+
+<Layout
+  title="Introducción al testing en Python"
+  description="Qué son las pruebas automatizadas, la pirámide de testing e instalación de pytest."
+  courseSlug="python-testing"
+>
+  <article class="content-section">
+    <h1>1. Introducción y pytest</h1>
+
+    <section class="mb-10">
+      <h2>¿Por qué testear código Python?</h2>
+      <p>
+        Escribir <strong>tests automatizados</strong> es documentar el comportamiento esperado y obtener una red de seguridad cada vez que cambias el código. En Python, el ecosistema más usado para esto es <strong>pytest</strong>: descubre tests por convención, muestra fallos legibles y se integra con plugins (cobertura, asyncio, etc.).
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Pirámide de pruebas (idea rápida)</h2>
+      <ul class="mb-4">
+        <li><strong>Base:</strong> muchas <strong>pruebas unitarias</strong> (rápidas, sin red ni disco si se puede).</li>
+        <li><strong>Medio:</strong> pruebas de integración (varios módulos juntos, APIs reales o de prueba).</li>
+        <li><strong>Cima:</strong> pocos <strong>end-to-end</strong> (flujo completo; más lentos y frágiles).</li>
+      </ul>
+      <p>Este curso se centra sobre todo en la base: unidades aisladas y buenas prácticas con pytest.</p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Instalación</h2>
+      <p>En un entorno virtual (recomendado):</p>
+      <CodeBlock
+        lang="bash"
+        code={`python -m venv .venv
+# Windows: .venv\\Scripts\\activate
+# macOS/Linux: source .venv/bin/activate
+pip install pytest`}
+        title="Terminal"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Tu primer test</h2>
+      <p>Guardá algo como <code>test_suma.py</code> y ejecutá <code>pytest</code> en esa carpeta:</p>
+      <CodeBlock
+        lang="python"
+        code={`def suma(a, b):
+    return a + b
+
+def test_suma_basica():
+    assert suma(2, 3) == 5`}
+        title="test_suma.py"
+      />
+      <p>
+        La función de test empieza por <code>test_</code> y usa <code>assert</code>. Si la condición es falsa, pytest marca el test en rojo y muestra el valor obtenido.
+      </p>
+    </section>
+
+    <div class="ejercicio" style="background: #E3F2FD;">
+      <h3>Ejercicio 1</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> Saludo estable
+      </div>
+      <p class="enunciado">
+        Creá <code>saludo(nombre)</code> que devuelva <code>{'f"Hola, {nombre}"'}</code> y un test <code>test_saludo</code> que compruebe el resultado para <code>"Ana"</code>.
+      </p>
+      <details>
+        <summary>Ver solución propuesta</summary>
+        <CodeBlock lang="python" code={codeSaludoEjercicio} title="test_saludo.py" />
+      </details>
+    </div>
+
+    <div class="ejercicio" style="background: #E3F2FD;">
+      <h3>Ejercicio 2</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> Fallo explícito
+      </div>
+      <p class="enunciado">Escribí un test que use <code>assert</code> para comprobar que <code>bool([])</code> es <code>False</code>.</p>
+      <details>
+        <summary>Ver solución propuesta</summary>
+        <CodeBlock lang="python" code={`def test_lista_vacia_es_falsy():
+    assert bool([]) is False`} />
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>Comprobá que tenés claro el rol de pytest y las convenciones básicas.</p>
+      <PythonTestingQuizModal quizKey="intro-pytest" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/python-testing/" class="prev">← Curso Testing Python</a>
+      <a href="/course/python-testing/patron-aaa-python/" class="next">Patrón AAA →</a>
+    </nav>
+  </article>
+</Layout>
