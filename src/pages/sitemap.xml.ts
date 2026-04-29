@@ -6,6 +6,7 @@ const SITE = 'https://cafeycodigo.org';
 // Páginas estáticas públicas (excluye /admin, /panel, /cuenta)
 const STATIC_PAGES: { path: string; priority: string; changefreq: string }[] = [
   { path: '/',                    priority: '1.0', changefreq: 'daily'   },
+  // { path: '/oldhome/',            priority: '0.3', changefreq: 'monthly' },
   { path: '/cursos/',             priority: '0.9', changefreq: 'weekly'  },
   { path: '/academia/',           priority: '0.8', changefreq: 'monthly' },
   { path: '/cafe-del-dia/',       priority: '0.7', changefreq: 'daily'   },
