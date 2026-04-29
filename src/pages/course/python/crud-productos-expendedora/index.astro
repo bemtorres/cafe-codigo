@@ -1,0 +1,254 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+---
+
+<Layout
+  title="CRUD con listas y diccionarios en Python"
+  description="Productos y precios: operaciones CRUD, agregaciones (máximo, mínimo, suma) y una máquina expendedora."
+  courseSlug="python"
+>
+  <article class="content-section">
+    <h1>13. CRUD con listas y diccionarios: productos y expendedora 🛒</h1>
+
+    <section class="mb-10">
+      <h2>¿Qué es un CRUD?</h2>
+      <p>
+        Es el conjunto de operaciones típicas sobre datos: <strong>C</strong>rear (altas), <strong>R</strong>ead
+        (leer / listar), <strong>U</strong>pdate (modificar) y <strong>D</strong>elete (borrar). Aquí lo practicas
+        primero guardando cada producto como una <strong>fila</strong> <code>[nombre, precio]</code> dentro de una
+        lista, y después con un <strong>diccionario</strong> indexado por código (ideal para códigos de máquina
+        expendedora).
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>1. Lista de productos: CRUD y cálculos</h2>
+      <p>
+        Cada elemento es <code>[nombre, precio]</code>. Los precios son números (por ejemplo <code>float</code>).
+      </p>
+      <CodeBlock
+        lang="python"
+        code={`# Estado: lista de filas [nombre, precio]
+productos = [
+    ["Agua", 1.0],
+    ["Galletas", 2.5],
+    ["Chocolate", 3.2],
+]
+
+# --- CREATE ---
+def agregar_producto(lista, nombre, precio):
+    lista.append([nombre.strip(), float(precio)])
+
+# --- READ (listar) ---
+def listar(lista):
+    if not lista:
+        print("(Sin productos)")
+        return
+    for nombre, precio in lista:
+        print(f"  • {nombre}: {precio}")
+
+# --- READ (buscar por nombre exacto) ---
+def buscar_indice_por_nombre(lista, nombre):
+    nombre = nombre.strip().lower()
+    for i, fila in enumerate(lista):
+        if fila[0].lower() == nombre:
+            return i
+    return None
+
+# --- UPDATE ---
+def actualizar_precio(lista, nombre, nuevo_precio):
+    i = buscar_indice_por_nombre(lista, nombre)
+    if i is None:
+        print("Producto no encontrado.")
+        return
+    lista[i][1] = float(nuevo_precio)
+    print("Precio actualizado.")
+
+# --- DELETE ---
+def eliminar_por_nombre(lista, nombre):
+    i = buscar_indice_por_nombre(lista, nombre)
+    if i is None:
+        print("Producto no encontrado.")
+        return
+    eliminado = lista.pop(i)
+    print(f"Eliminado: {eliminado[0]}")
+
+# --- Cálculos sobre precios ---
+def producto_mas_caro(lista):
+    if not lista:
+        return None
+    return max(lista, key=lambda fila: fila[1])
+
+def producto_mas_barato(lista):
+    if not lista:
+        return None
+    return min(lista, key=lambda fila: fila[1])
+
+def suma_precios(lista):
+    return sum(fila[1] for fila in lista)
+
+# Ejemplo de uso
+listar(productos)
+caro = producto_mas_caro(productos)
+barato = producto_mas_barato(productos)
+if caro:
+    print("¿Cuál es el mayor (más caro)?", caro[0], "→", caro[1])
+if barato:
+    print("¿Cuál es el menor (más barato)?", barato[0], "→", barato[1])
+print("Suma de todos los precios:", suma_precios(productos))`}
+        title="crud_lista.py"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>2. Mismo problema con diccionario (código → producto)</h2>
+      <p>
+        La clave puede ser el código de la repisa (<code>"A1"</code>, <code>"B2"</code>…). El valor es un pequeño
+        registro con nombre y precio. El CRUD usa <code>dict[key]</code>, <code>del</code>, comprobar
+        <code>key in dict</code>, etc.
+      </p>
+      <CodeBlock
+        lang="python"
+        code={`catalogo = {
+    "A1": {"nombre": "Agua", "precio": 1.0},
+    "A2": {"nombre": "Galletas", "precio": 2.5},
+    "B1": {"nombre": "Chocolate", "precio": 3.2},
+}
+
+def listar_catalogo(cat):
+    for codigo in sorted(cat.keys()):
+        p = cat[codigo]
+        print(f"  {codigo}: {p['nombre']} — {p['precio']}")
+
+def agregar_o_reemplazar(cat, codigo, nombre, precio):
+    cat[codigo.strip().upper()] = {"nombre": nombre.strip(), "precio": float(precio)}
+
+def actualizar_precio_cat(cat, codigo, nuevo_precio):
+    codigo = codigo.strip().upper()
+    if codigo not in cat:
+        print("Código no existe.")
+        return
+    cat[codigo]["precio"] = float(nuevo_precio)
+
+def eliminar_codigo(cat, codigo):
+    codigo = codigo.strip().upper()
+    if codigo not in cat:
+        print("Código no existe.")
+        return
+    del cat[codigo]
+    print("Eliminado.")
+
+def producto_mas_caro_cat(cat):
+    if not cat:
+        return None
+    # devuelve (codigo, datos)
+    return max(cat.items(), key=lambda item: item[1]["precio"])
+
+def producto_mas_barato_cat(cat):
+    if not cat:
+        return None
+    return min(cat.items(), key=lambda item: item[1]["precio"])
+
+def suma_precios_cat(cat):
+    return sum(p["precio"] for p in cat.values())
+
+listar_catalogo(catalogo)
+codigo_caro, datos_caro = producto_mas_caro_cat(catalogo)
+print("Mayor precio:", datos_caro["nombre"], datos_caro["precio"])
+codigo_barato, datos_barato = producto_mas_barato_cat(catalogo)
+print("Menor precio:", datos_barato["nombre"], datos_barato["precio"])
+print("Suma de precios:", suma_precios_cat(catalogo))`}
+        title="crud_dict.py"
+      />
+    </section>
+
+    <div class="ejercicio" style="background: #FFF8E1;">
+      <h3>🐍 Reto rápido</h3>
+      <p class="enunciado">
+        Partiendo del ejemplo en lista, añade una función que devuelva el <strong>precio medio</strong> de todos los
+        productos (suma de precios / cantidad). Evita división por cero si la lista está vacía.
+      </p>
+      <details>
+        <summary>👁️ Pista</summary>
+        <p>
+          Usa <code>suma_precios(lista) / len(lista)</code> solo cuando la lista no esté vacía (por ejemplo
+          <code>if lista:</code> antes de dividir).
+        </p>
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>3. Máquina expendedora: comprar con saldo y stock</h2>
+      <p>
+        Combinas catálogo (código → nombre y precio) con otro diccionario de <strong>stock</strong> por código. El
+        usuario ve el menú, introduce dinero y el código; restas stock y cobras el precio. Incluye validaciones
+        básicas y <code>try</code>/<code>except</code> al leer números.
+      </p>
+      <CodeBlock
+        lang="python"
+        code={`def pedir_float(mensaje):
+    while True:
+        try:
+            return float(input(mensaje))
+        except ValueError:
+            print("Introduce un número válido.")
+
+def mostrar_maquina(catalogo, stock):
+    print("\\n--- Máquina expendedora ---")
+    for codigo in sorted(catalogo.keys()):
+        p = catalogo[codigo]
+        disp = stock.get(codigo, 0)
+        estado = f"(quedan {disp})" if disp > 0 else "(agotado)"
+        print(f"  {codigo}: {p['nombre']} — {p['precio']} {estado}")
+
+def comprar(catalogo, stock, saldo):
+    codigo = input("Código del producto: ").strip().upper()
+    if codigo not in catalogo:
+        print("Código inválido.")
+        return saldo, False
+    if stock.get(codigo, 0) < 1:
+        print("Producto agotado.")
+        return saldo, False
+    precio = catalogo[codigo]["precio"]
+    if saldo < precio:
+        print(f"Saldo insuficiente. Necesitas {precio}, tienes {saldo}.")
+        return saldo, False
+    stock[codigo] -= 1
+    saldo -= precio
+    print(f"¡Toma tu {catalogo[codigo]['nombre']}! Saldo restante: {round(saldo, 2)}")
+    return saldo, True
+
+def main():
+    catalogo = {
+        "A1": {"nombre": "Agua", "precio": 1.0},
+        "A2": {"nombre": "Galletas", "precio": 2.5},
+        "B1": {"nombre": "Chocolate", "precio": 3.2},
+    }
+    stock = {"A1": 5, "A2": 3, "B1": 2}
+    saldo = pedir_float("Inserta dinero (saldo inicial): ")
+    while True:
+        mostrar_maquina(catalogo, stock)
+        print("\\n[s] Seguir comprando  [r] Recargar saldo  [x] Salir")
+        op = input("Opción: ").strip().lower()
+        if op == "x":
+            print(f"Devolvemos cambio: {round(saldo, 2)}. ¡Gracias!")
+            break
+        if op == "r":
+            saldo += pedir_float("Cuánto añades: ")
+            continue
+        if op == "s" or op == "":
+            saldo, _ = comprar(catalogo, stock, saldo)
+
+if __name__ == "__main__":
+    main()`}
+        title="expendedora.py"
+      />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/python/practica-registros-cine/" class="prev">← Listas, registros y proyecto cine</a>
+      <a href="/course/python/poo/" class="next">Clases y Objetos →</a>
+    </nav>
+  </article>
+</Layout>

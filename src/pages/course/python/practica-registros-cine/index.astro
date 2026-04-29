@@ -1,0 +1,204 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+---
+
+<Layout
+  title="Listas como registros y proyecto cine en Python"
+  description="Practica búsqueda en listas, registros tipo fila y un menú completo con bucles y validaciones."
+  courseSlug="python"
+>
+  <article class="content-section">
+    <h1>12. Listas como registros (matriz de datos) y proyecto cine 🎬</h1>
+
+    <section class="mb-10">
+      <h2>De la lista simple a la “tabla”</h2>
+      <p>
+        Ya viste listas de números o de textos. Cuando cada elemento es a su vez una lista con varios campos en el
+        <strong>mismo orden</strong>, tienes una <strong>lista de filas</strong>: parecido a una tabla o a una
+        <strong>matriz</strong> donde cada fila es un registro (por ejemplo, un usuario).
+      </p>
+      <p>
+        Convención clara: defines qué significa cada índice (0 = nombre, 1 = email, 2 = edad) y lo respetas en todas
+        las filas.
+      </p>
+      <CodeBlock
+        lang="python"
+        code={`# Cada fila: [nombre, email, edad]
+usuarios = [
+    ["Ana", "ana@mail.com", 28],
+    ["Luis", "luis@mail.com", 34],
+    ["Marta", "marta@mail.com", 22],
+]
+
+# Leer un campo de la primera fila
+primera = usuarios[0]
+print(primera[0])  # nombre: Ana
+print(primera[2])  # edad: 28`}
+        title="registros.py"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Buscar y extraer información</h2>
+      <p>
+        Para localizar un registro (por nombre) recorres la lista con un bucle, comparas el campo que te interesa y,
+        si coincide, lees el resto de columnas.
+      </p>
+      <CodeBlock
+        lang="python"
+        code={`def buscar_email_por_nombre(tabla, nombre_buscado):
+    nombre_buscado = nombre_buscado.strip().lower()
+    for fila in tabla:
+        nombre, email, edad = fila[0], fila[1], fila[2]
+        if nombre.lower() == nombre_buscado:
+            return email
+    return None
+
+email = buscar_email_por_nombre(usuarios, "  luis  ")
+print(email)  # luis@mail.com`}
+        title="buscar.py"
+      />
+    </section>
+
+    <div class="ejercicio" style="background: #E8F5E9;">
+      <h3>🐍 Ejercicio: persona y nota</h3>
+      <p class="enunciado">
+        Crea una lista vacía <code>calificaciones</code>. En un bucle, pide el nombre de una persona y su nota (usa
+        <code>try</code>/<code>except</code> para asegurarte de que la nota sea un número). Guarda cada registro como
+        <code>[nombre, nota]</code> con <code>append</code>. Termina cuando el nombre esté vacío. Al final, imprime
+        todos los registros y la nota media del grupo.
+      </p>
+      <details>
+        <summary>👁️ Ver solución sugerida</summary>
+        <CodeBlock
+          lang="python"
+          code={`calificaciones = []
+
+while True:
+    nombre = input("Nombre (vacío para terminar): ").strip()
+    if nombre == "":
+        break
+    try:
+        nota = float(input("Nota: "))
+    except ValueError:
+        print("La nota debe ser un número. Intenta de nuevo.")
+        continue
+    calificaciones.append([nombre, nota])
+
+for fila in calificaciones:
+    print(f"{fila[0]}: {fila[1]}")
+
+if calificaciones:
+    media = sum(fila[1] for fila in calificaciones) / len(calificaciones)
+    print("Nota media:", round(media, 2))`}
+          title="notas.py"
+        />
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Proyecto integrador: entradas al cine</h2>
+      <p>
+        Este programa junta <strong>menú</strong> con <code>while</code>, <strong>listas como registros</strong>,
+        <strong>condicionales</strong>, <strong>funciones</strong> y <strong>validación con
+        <code>try</code>/<code>except</code></strong>. Cada venta se guarda como una fila:
+        <code>[nombre_cliente, película, boletos, total_pagado]</code>.
+      </p>
+      <p>
+        Precio fijo por boleto (ejemplo): 50 (ajusta el número a tu moneda). El menú ofrece registrar una venta, listar
+        ventas, buscar por nombre de cliente y salir.
+      </p>
+      <CodeBlock
+        lang="python"
+        code={`PRECIO_BOLETO = 50
+
+def pedir_entero_positivo(mensaje):
+    while True:
+        try:
+            n = int(input(mensaje))
+            if n < 1:
+                print("Debe ser al menos 1.")
+                continue
+            return n
+        except ValueError:
+            print("Escribe un número entero válido.")
+
+def mostrar_menu():
+    print("\\n--- Cine Python ---")
+    print("1. Registrar entrada")
+    print("2. Listar todas las ventas")
+    print("3. Buscar ventas por nombre de cliente")
+    print("4. Total recaudado")
+    print("0. Salir")
+
+def registrar_venta(ventas):
+    nombre = input("Nombre del cliente: ").strip()
+    if not nombre:
+        print("El nombre no puede estar vacío.")
+        return
+    pelicula = input("Película: ").strip()
+    if not pelicula:
+        print("Indica una película.")
+        return
+    boletos = pedir_entero_positivo("Número de boletos: ")
+    total = boletos * PRECIO_BOLETO
+    ventas.append([nombre, pelicula, boletos, total])
+    print(f"Registrado: {boletos} boleto(s) para '{pelicula}' — total {total}")
+
+def listar_ventas(ventas):
+    if not ventas:
+        print("No hay ventas todavía.")
+        return
+    for i, fila in enumerate(ventas, start=1):
+        nombre, peli, boletos, total = fila
+        print(f"{i}. {nombre} | {peli} | {boletos} boletos | {total}")
+
+def buscar_por_cliente(ventas):
+    clave = input("Nombre (o parte) a buscar: ").strip().lower()
+    if not clave:
+        print("Escribe algo para buscar.")
+        return
+    hallados = [f for f in ventas if clave in f[0].lower()]
+    if not hallados:
+        print("No hay coincidencias.")
+        return
+    for fila in hallados:
+        print(f"  → {fila[0]} | {fila[1]} | {fila[2]} boletos | {fila[3]}")
+
+def main():
+    ventas = []
+    while True:
+        mostrar_menu()
+        op = input("Opción: ").strip()
+        if op == "1":
+            registrar_venta(ventas)
+        elif op == "2":
+            listar_ventas(ventas)
+        elif op == "3":
+            buscar_por_cliente(ventas)
+        elif op == "4":
+            recaudado = sum(fila[3] for fila in ventas)
+            print(f"Total recaudado: {recaudado}")
+        elif op == "0":
+            print("¡Hasta la próxima!")
+            break
+        else:
+            print("Opción no válida.")
+
+if __name__ == "__main__":
+    main()`}
+        title="cine.py"
+      />
+      <p>
+        Puedes extenderlo con límites de aforo, descuentos con <code>if</code>, o guardar las ventas en un fichero
+        cuando veas manejo de archivos; la base ya repasa la materia vista hasta aquí.
+      </p>
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/python/list-comprehension/" class="prev">← List Comprehension</a>
+      <a href="/course/python/crud-productos-expendedora/" class="next">CRUD: listas, dicts y expendedora →</a>
+    </nav>
+  </article>
+</Layout>
