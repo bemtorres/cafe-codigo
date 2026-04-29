@@ -58,16 +58,115 @@ print("¡Cansado! A descansar.")`}
       />
     </section>
 
+    <section class="mb-10">
+      <h2>For... else: ¿Sabías que los bucles tienen cláusula else?</h2>
+      <p>En Python, el bloque <code>else</code> de un bucle se ejecuta si el bucle termina <strong>sin haber usado break</strong>.</p>
+      <CodeBlock lang="python" code={`# Ejemplo: buscar un número
+numeros = [1, 2, 3, 4, 5]
+buscar = 6
+
+for n in numeros:
+    if n == buscar:
+        print(f"¡Encontré el {buscar}!")
+        break
+else:
+    print(f"No se encontró el {buscar} en la lista.")`}
+        title="for-else.py"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Continue: Saltar una vuelta</h2>
+      <p>La instrucción <code>continue</code> salta el resto del código en la vuelta actual y pasa a la siguiente iteración.</p>
+      <CodeBlock lang="python" code={`# Imprimir solo los números impares del 1 al 10
+for i in range(1, 11):
+    if i % 2 == 0:
+        continue  # Salta los pares
+    print(f"Impar: {i}")`}
+        title="continue.py"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Bucles anidados</h2>
+      <p>Puedes poner un bucle dentro de otro. Útil para trabajar con tablas, matrices o combinaciones.</p>
+      <CodeBlock lang="python" code={`# Tabla de multiplicar del 1 al 3 (hasta 3)
+for i in range(1, 4):
+    for j in range(1, 4):
+        print(f"{i} x {j} = {i*j}")
+    print("---")`}
+        title="anidados.py"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Enumerate: Obtener índice y valor</h2>
+      <p>En lugar de usar <code>range(len(lista))</code>, usa <code>enumerate</code> para obtener el índice y el valor en cada vuelta.</p>
+      <CodeBlock lang="python" code={`lenguajes = ["Python", "JavaScript", "Java", "C++"]
+
+for indice, lenguaje in enumerate(lenguajes):
+    print(f"{indice + 1}. {lenguaje}")`}
+        title="enumerate.py"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>While con entrada de usuario</h2>
+      <p>Los bucles <code>while</code> son útiles para pedir input repetidamente hasta que el usuario ingrese algo válido.</p>
+      <CodeBlock lang="python" code={`# Pedir nombre hasta que no esté vacío
+while True:
+    nombre = input("Ingresa tu nombre: ").strip()
+    if nombre:
+        print(f"¡Hola, {nombre}!")
+        break
+    else:
+        print("El nombre no puede estar vacío.")`}
+        title="while-input.py"
+      />
+    </section>
+
     <div class="ejercicio" style="background: #E8F5E9;">
       <h3>🐍 Desafío: La tabla del 2</h3>
       <p class="enunciado">Usa un bucle <code>for</code> que recorra un <code>range</code> de 1 a 10 y para cada número imprima el resultado de multiplicarlo por 2.</p>
-      
       <details>
         <summary>👁️ Ver solución sugerida</summary>
         <CodeBlock lang="python" code={`for i in range(1, 11):
     print(i * 2)`} title="Python" />
       </details>
     </div>
+
+   
+
+    <section class="mb-10">
+      <h2>🏆 Regla de Oro: Validación de entrada en menús</h2>
+      <p>Cuando creas menús con opciones numéricas, esta estructura es una <strong>regla de oro</strong> para evitar errores y asegurar que el usuario ingrese una opción válida.</p>
+      <p class="text-[#6B5B58] text-[0.95rem] font-[650]">
+        Combina un bucle <code>while</code> con manejo de errores. Si aún no viste <code>try/except</code>, podés verlo en profundidad en la lección <a href="/course/python/try-except/" class="text-info underline decoration-2 underline-offset-2 font-bold hover:text-accent">Try / Except</a>, que viene después de esta.
+      </p>
+      <p>Combina tres elementos clave:</p>
+      <ul class="list-disc pl-5 mb-4 text-[#5a4a47] font-[650]">
+        <li><code>while True</code>: Repite el menú indefinidamente hasta que la opción sea válida.</li>
+        <li><code>try/except ValueError</code>: Captura errores si el usuario ingresa algo que no es un número.</li>
+        <li><code>if/break</code>: Sale del bucle solo si la opción está entre las permitidas.</li>
+      </ul>
+      <CodeBlock lang="python" code={`print("[1] uno")
+print("[2] dos")
+print("[3] tres")
+
+# regla de oro
+while True:
+    try: # cualquier solicitud de numero
+        opc = int(input("ingrese una opc: "))
+        if opc == 1 or opc == 2 or opc == 3:
+            break
+        else:
+            print("ingrese la alternativa correcta.")
+    except ValueError:
+        print("error, ingrese nuevamente")`}
+        title="regla-de-oro.py"
+      />
+      <p class="text-[#5a4a47] font-[650] mt-4">Esta estructura evita que tu programa se caiga si el usuario ingresa texto en lugar de un número, y garantiza que solo se acepten las opciones 1, 2 o 3.</p>
+    </section>
 
     <section class="mb-10">
       <h2>Quiz de Bucles</h2>
