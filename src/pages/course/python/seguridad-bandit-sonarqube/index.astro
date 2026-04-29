@@ -1,0 +1,138 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+---
+
+<Layout
+  title="Seguridad y calidad en Python: Bandit y SonarQube"
+  description="Último módulo: análisis estático de seguridad con Bandit y mejora continua de calidad con SonarQube."
+  courseSlug="python"
+>
+  <article class="content-section">
+    <h1>16. Seguridad y calidad: Bandit + SonarQube 🛡️</h1>
+
+    <section class="mb-10">
+      <h2>Propósito del módulo final</h2>
+      <p>
+        En este cierre del curso trabajas una ruta profesional de revisión de código Python: primero detectas
+        vulnerabilidades puntuales con <strong>Bandit</strong>, luego amplías el análisis con <strong>SonarQube</strong>
+        para ver calidad, mantenibilidad y mejoras continuas.
+      </p>
+      <p>
+        La idea es comparar ambas herramientas sobre un mismo script para entender qué detecta cada una y cómo se
+        complementan.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Clase 1: Bandit (seguridad específica en Python)</h2>
+      <p>
+        Bandit es un analizador estático orientado a riesgos típicos en Python: uso inseguro de <code>eval</code>,
+        secretos embebidos, deserialización peligrosa y otros patrones.
+      </p>
+      <CodeBlock
+        lang="bash"
+        code={`pip install bandit
+bandit --version
+bandit app.py
+bandit -r proyecto/`}
+        title="comandos_bandit.sh"
+      />
+      <CodeBlock
+        lang="python"
+        code={`# app.py (inseguro)
+import pickle
+
+password = "123456"
+
+def ejecutar(texto):
+    return eval(texto)
+
+def cargar(datos):
+    return pickle.loads(datos)`}
+        title="app_insegura.py"
+      />
+      <CodeBlock
+        lang="python"
+        code={`# app.py (corregido)
+import json
+import os
+
+password = os.getenv("APP_PASSWORD", "")
+
+def ejecutar_operacion(texto):
+    if not texto.isdigit():
+        raise ValueError("Entrada no válida")
+    return int(texto)
+
+def cargar(datos):
+    return json.loads(datos)`}
+        title="app_corregida.py"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Clase 2: SonarQube (calidad global del proyecto)</h2>
+      <p>
+        SonarQube permite revisar bugs, vulnerabilidades, complejidad, duplicación y code smells. Si Bandit te da
+        alertas concretas de seguridad Python, SonarQube te da una visión más completa del estado del proyecto.
+      </p>
+      <CodeBlock
+        lang="python"
+        code={`# versión inicial
+def total_productos(productos):
+    total = 0
+    for p in productos:
+        total += p["cantidad"]
+    return total`}
+        title="inventario_inicial.py"
+      />
+      <CodeBlock
+        lang="python"
+        code={`# versión mejorada
+def total_productos(productos):
+    total = 0
+    for producto in productos:
+        cantidad = producto.get("cantidad", 0)
+        if not isinstance(cantidad, int) or cantidad < 0:
+            raise ValueError("Cantidad inválida")
+        total += cantidad
+    return total`}
+        title="inventario_mejorado.py"
+      />
+    </section>
+
+    <div class="ejercicio" style="background: #E3F2FD;">
+      <h3>🐍 Actividad integradora final</h3>
+      <p class="enunciado">
+        Usa el mismo script de inventario o ventas que construiste en módulos anteriores:
+      </p>
+      <ol>
+        <li>Ejecuta Bandit y anota al menos dos hallazgos.</li>
+        <li>Corrige el código y vuelve a ejecutar Bandit.</li>
+        <li>Analiza el proyecto en SonarQube (o revisa un reporte preparado por el docente).</li>
+        <li>Compara: ¿qué detecta Bandit y qué detecta SonarQube que Bandit no muestra?</li>
+      </ol>
+      <p>
+        Evidencia esperada: breve reporte con hallazgos, correcciones aplicadas y conclusión de mejora continua.
+      </p>
+    </div>
+
+    <section class="mb-10">
+      <h2>Diferencia clave entre ambas herramientas</h2>
+      <p>
+        <strong>Bandit:</strong> ideal para comenzar con seguridad en Python porque entrega resultados rápidos y
+        accionables.
+      </p>
+      <p>
+        <strong>SonarQube:</strong> ideal para una segunda etapa, cuando quieres evaluar salud general del código y
+        sostener una mejora continua de calidad.
+      </p>
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/python/modulos/" class="prev">← Módulos y PIP</a>
+      <a href="/course/python/" class="next">Finalizar Curso de Python 🏆</a>
+    </nav>
+  </article>
+</Layout>

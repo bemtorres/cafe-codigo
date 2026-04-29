@@ -102,9 +102,12 @@ const showLanguageCuriosity =
   <body
     class="min-h-screen text-textPrimary font-quicksand antialiased"
     data-course={courseSlug}
+    data-course-home={isCourseHome ? 'true' : undefined}
     style={courseSlug === 'arch'
       ? `background-color: #F4EBD0; --arch-bg: url('${arkBg.src}');`
-      : `background-color: var(--bg-primary); background-image: url('/images/fondo2.png'); background-repeat: repeat;`
+      : courseSlug === 'python'
+        ? 'background-color: #264b6e; background-image: none;'
+        : `background-color: var(--bg-primary); background-image: url('/images/fondo2.png'); background-repeat: repeat;`
     }
   >
     {showHomeCoffeeBanner && (
@@ -487,9 +490,16 @@ const showLanguageCuriosity =
       </button>
     </div>
 
-    <div class="main-content-wrapper max-w-[1400px] mx-auto flex flex-col lg:flex-row gap-8 px-4 py-8 items-start">
-      <!-- SIDEBAR LATERAL -->
-      {currentCourse?.lessons?.length && (
+    <div
+      class:list={[
+        'main-content-wrapper mx-auto flex flex-col gap-8 px-4 py-8 items-start',
+        isCourseHome
+          ? 'max-w-[min(100%,1520px)] lg:flex-row lg:justify-center'
+          : 'max-w-[1400px] lg:flex-row',
+      ]}
+    >
+      <!-- SIDEBAR LATERAL (oculto en la portada del curso: el índice va en el centro) -->
+      {currentCourse?.lessons?.length && !isCourseHome && (
         <aside class="embed-hide pdf-hide hidden lg:block w-full lg:w-[250px] flex-shrink-0">
           <div class="sticky top-[6.5rem] bg-white border-[3px] border-border rounded-xl p-6 shadow-neo">
             <h3 class="flex items-center gap-2 text-[1.2rem] text-info font-nunito font-black mb-4 pb-2 border-b-2 border-dashed border-border">
@@ -644,9 +654,182 @@ const showLanguageCuriosity =
       body[data-course="arch"] ::-webkit-scrollbar-track { background: #E9D5A2; }
       body[data-course="arch"] ::-webkit-scrollbar-thumb { background: #C5A059; border: 2px solid #F4EBD0; }
 
+      /* --- Skin estilo python.org (solo curso Python + entrenamiento) --- */
+      body[data-course="python"] {
+        --py-yellow: #ffd343;
+        --py-bg: #264b6e;
+        --py-blue: #264b6e;
+        --py-blue-mid: #3d6a8c;
+        --py-navy: #1a3349;
+        color: #e8eef4;
+      }
+
+      body[data-course="python"] .content-section {
+        background: #f5f8fc;
+        border-color: var(--py-navy);
+        box-shadow: 6px 6px 0 var(--py-navy), 0 0 0 1px rgba(255, 211, 67, 0.35);
+      }
+
+      body[data-course="python"] .content-section h1 {
+        color: var(--py-blue);
+        text-shadow: 2px 2px 0 var(--py-yellow);
+      }
+
+      body[data-course="python"] .content-section h2 {
+        color: #1a2f44;
+      }
+
+      body[data-course="python"] .content-section h3 {
+        color: #b8860b;
+      }
+
+      body[data-course="python"] .content-section p,
+      body[data-course="python"] .content-section li {
+        color: #2d3d4d;
+      }
+
+      body[data-course="python"] aside .sticky {
+        border-color: var(--py-navy);
+        box-shadow: 4px 4px 0 var(--py-navy);
+        background: linear-gradient(180deg, #ffffff 0%, #eef4fb 100%);
+      }
+
+      body[data-course="python"] aside .sticky h3 {
+        color: var(--py-blue);
+      }
+
+      body[data-course="python"] aside a.rounded-xl.border-2 {
+        border-color: var(--py-navy) !important;
+      }
+
+      body[data-course="python"] aside a.rounded-xl.border-2:hover {
+        border-color: var(--py-yellow) !important;
+        background: rgba(255, 211, 67, 0.2) !important;
+      }
+
+      body[data-course="python"] .course-container {
+        color: #e8eef4;
+      }
+
+      body[data-course="python"] .course-big-title {
+        color: var(--py-yellow);
+        text-shadow: 2px 2px 0 rgba(26, 51, 73, 0.35);
+        font-weight: 900;
+      }
+
+      body[data-course="python"] .course-description {
+        color: rgba(232, 238, 244, 0.9);
+        font-size: 1rem;
+        font-weight: 650;
+        line-height: 1.55;
+      }
+
+      body[data-course="python"] .lesson-card {
+        background: #f4f7fb;
+        border: 2px solid var(--py-yellow);
+        border-radius: 20px;
+        box-shadow:
+          0 4px 18px rgba(26, 51, 73, 0.14),
+          0 2px 4px rgba(26, 51, 73, 0.06);
+        padding: 1.1rem 1.2rem;
+        gap: 1rem;
+        transition:
+          transform 0.22s ease,
+          box-shadow 0.22s ease,
+          border-color 0.22s ease;
+      }
+
+      body[data-course="python"] .lesson-card:hover {
+        transform: translateY(-3px);
+        border-color: #ffe066;
+        box-shadow:
+          0 10px 28px rgba(26, 51, 73, 0.16),
+          0 4px 10px rgba(26, 51, 73, 0.08);
+      }
+
+      body[data-course="python"] .lesson-card__number {
+        font-size: 1.85rem;
+        font-weight: 800;
+        opacity: 0.1;
+      }
+
+      body[data-course="python"] .lesson-card__title {
+        font-size: 1.05rem;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+      }
+
+      body[data-course="python"] .lesson-card:hover .lesson-card__title {
+        color: #2d5a82;
+      }
+
+      body[data-course="python"] .lesson-card__cta {
+        color: #2d5a82;
+        font-size: 0.78rem;
+        font-weight: 700;
+      }
+
+      /* Enlaces brand #3776ab → paleta python.org */
+      body[data-course="python"] .content-section [class*='border-[#3776ab]'] {
+        border-color: rgba(255, 211, 67, 0.55) !important;
+      }
+
+      body[data-course="python"] .content-section [class*='bg-[#3776ab]/08'] {
+        background: rgba(255, 211, 67, 0.14) !important;
+      }
+
+      body[data-course="python"] .content-section [class*='text-[#3776ab]'] {
+        color: var(--py-blue) !important;
+      }
+
+      body[data-course="python"] .content-section a[class*='text-[#3776ab]'] {
+        color: #c9a010 !important;
+        text-decoration-color: var(--py-yellow);
+      }
+
+      body[data-course="python"] .content-section a[class*='text-[#3776ab]']:hover {
+        color: var(--py-yellow) !important;
+      }
+
+      body[data-course="python"] .nav-bottom a {
+        border-color: var(--py-navy);
+      }
+
+      body[data-course="python"] .nav-bottom .prev {
+        background: #f5f8fc;
+        color: var(--py-navy);
+      }
+
+      body[data-course="python"] .nav-bottom .next {
+        background: var(--py-blue-mid);
+        color: #fff;
+      }
+
+      body[data-course="python"] ::-webkit-scrollbar-track {
+        background: #1a3349;
+      }
+
+      body[data-course="python"] ::-webkit-scrollbar-thumb {
+        background: var(--py-yellow);
+        border: 2px solid #1a3349;
+      }
+
       /* Espacio extra en mobile para que el contenido no quede tapado por la nav bar */
       @media (max-width: 639px) {
         .main-content-wrapper { padding-bottom: 5rem; }
+      }
+
+      /* Portada de curso (desktop): sin TOC lateral, bloque central ancho, 5 módulos por fila */
+      @media (min-width: 1024px) {
+        body[data-course-home='true'] main .course-container {
+          max-width: min(100%, 1360px) !important;
+          margin-left: auto;
+          margin-right: auto;
+        }
+        body[data-course-home='true'] main .cards-grid {
+          grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+          gap: 1.25rem;
+        }
       }
     </style>
 

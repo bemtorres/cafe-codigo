@@ -137,8 +137,23 @@ export const courses: Course[] = [
       { slug: 'funciones', title: '9. Funciones', href: '/course/python/funciones/' },
       { slug: 'try-except', title: '10. Errores (try / except)', href: '/course/python/try-except/' },
       { slug: 'list-comprehension', title: '11. List Comprehension', href: '/course/python/list-comprehension/' },
-      { slug: 'poo', title: '12. Clases y Objetos', href: '/course/python/poo/' },
-      { slug: 'modulos', title: '13. Módulos y PIP', href: '/course/python/modulos/' },
+      {
+        slug: 'practica-registros-cine',
+        title: '12. Proyecto - Salas de Cine 🍿',
+        href: '/course/python/practica-registros-cine/',
+      },
+      {
+        slug: 'crud-productos-expendedora',
+        title: '13. Proyecto - Mantenedor de Productos 🍫',
+        href: '/course/python/crud-productos-expendedora/',
+      },
+      { slug: 'poo', title: '14. Clases y Objetos', href: '/course/python/poo/' },
+      { slug: 'modulos', title: '15. Módulos y PIP', href: '/course/python/modulos/' },
+      {
+        slug: 'seguridad-bandit-sonarqube',
+        title: '16. Seguridad y calidad: Bandit + SonarQube',
+        href: '/course/python/seguridad-bandit-sonarqube/',
+      },
     ],
   },
   {
