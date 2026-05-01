@@ -12,6 +12,7 @@ create table public.profiles (
   display_name text,
   favorite_course_slug text,
   is_academy boolean not null default false,
+  is_super_admin boolean not null default false,
   -- Colaborador (Ko-fi): insignia, muro y zona exclusiva; is_sponsor solo desde SQL en Supabase.
   is_sponsor boolean not null default false,
   sponsor_since timestamptz,

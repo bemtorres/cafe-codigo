@@ -1,4 +1,5 @@
 import { getSupabaseBrowser } from './client';
+import { checkAndAwardBadges } from '../badges';
 
 export type QuizProgressRow = {
   id: string;
@@ -96,5 +97,9 @@ export async function saveQuizAttempt(
   );
 
   if (error) return { ok: false, error: error.message };
+  
+  // Check and award badges after successful quiz save
+  void checkAndAwardBadges();
+  
   return { ok: true };
 }

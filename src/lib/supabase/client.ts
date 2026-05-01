@@ -6,6 +6,8 @@ export type ProfileRow = {
   favorite_course_slug: string | null;
   /** Privilegio docente (modo academia); solo administración DB o servicio. */
   is_academy?: boolean | null;
+  /** Super admin: gestión de insignias (badge_definitions) en la app; solo SQL en Supabase. */
+  is_super_admin?: boolean | null;
   /** Donante reconocido; solo se asigna desde SQL en Supabase. */
   is_sponsor?: boolean | null;
   sponsor_since?: string | null;

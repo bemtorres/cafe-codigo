@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <circle cx="64" cy="64" r="60" fill="#e8fcf5" stroke="#1E1210" stroke-width="4"/>
+  <text x="64" y="45" font-size="30" text-anchor="middle" fill="#1E1210" font-family="Arial" font-weight="bold">🔀</text>
+  <text x="64" y="75" font-size="12" text-anchor="middle" fill="#1E1210" font-family="Arial" font-weight="bold">GIT &amp;</text>
+  <text x="64" y="92" font-size="12" text-anchor="middle" fill="#1E1210" font-family="Arial" font-weight="bold">TERMINAL</text>
+</svg>

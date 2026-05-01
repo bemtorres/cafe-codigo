@@ -1,0 +1,24 @@
+---
+import AdminSuperLayout from '../../layouts/AdminSuperLayout.astro';
+import AdminBadgesManager from '../../components/admin/AdminBadgesManager';
+import { courses } from '../../data/courses';
+
+const coursesData = courses
+  .filter((c) => (c.lessons?.length ?? 0) > 0)
+  .map((c) => ({
+    slug: c.slug,
+    name: c.name,
+    lessons: (c.lessons ?? []).map((l) => ({ slug: l.slug, title: l.title })),
+  }));
+---
+
+<AdminSuperLayout title="Admin · Insignias" description="Insignias y diseñador SVG" current="badges">
+  <header class="mb-6">
+    <h1 class="mb-2 text-2xl font-black">Insignias</h1>
+    <p class="m-0 text-sm text-gray-600">
+      Crear definiciones, requisitos por curso/módulo y diseño SVG. Solo <strong>super admin</strong>.
+    </p>
+  </header>
+
+  <AdminBadgesManager client:load initialCourses={coursesData} />
+</AdminSuperLayout>

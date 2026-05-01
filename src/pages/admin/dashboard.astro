@@ -1,0 +1,8 @@
+---
+import AdminSuperLayout from '../../layouts/AdminSuperLayout.astro';
+import AdminDashboard from '../../components/admin/AdminDashboard';
+---
+
+<AdminSuperLayout title="Admin · Panel" description="Panel super administrador" current="dashboard">
+  <AdminDashboard client:load />
+</AdminSuperLayout>

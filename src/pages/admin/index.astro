@@ -1,0 +1,13 @@
+---
+import AdminSuperLayout from '../../layouts/AdminSuperLayout.astro';
+---
+
+<AdminSuperLayout title="Admin" description="Redirección al panel" current="dashboard">
+  <p class="m-0 text-sm font-[650] text-textSecondary">
+    Si no te llevó automáticamente, abrí{' '}
+    <a href="/admin/dashboard" class="font-black text-[#b45309] underline-offset-2 hover:underline">/admin/dashboard</a>.
+  </p>
+  <script is:inline>
+    if (typeof window !== 'undefined') window.location.replace('/admin/dashboard');
+  </script>
+</AdminSuperLayout>

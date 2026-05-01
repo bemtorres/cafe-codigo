@@ -1,0 +1,45 @@
+---
+import Layout from './Layout.astro';
+
+type NavKey = 'dashboard' | 'users' | 'badges';
+
+type Props = {
+  title: string;
+  description?: string;
+  current: NavKey;
+};
+
+const { title, description, current } = Astro.props;
+
+const items: { href: string; key: NavKey; label: string }[] = [
+  { href: '/admin/dashboard', key: 'dashboard', label: 'Panel' },
+  { href: '/admin/users', key: 'users', label: 'Usuarios' },
+  { href: '/admin/badges', key: 'badges', label: 'Insignias' },
+];
+---
+
+<Layout title={title} description={description ?? 'Super administración'}>
+  <div class="admin-super-root w-full max-w-full min-w-0 font-nunito">
+    <nav
+      class="mb-6 flex flex-wrap gap-2 border-b-[3px] border-border pb-4"
+      aria-label="Administración super admin"
+    >
+      {
+        items.map((item) => (
+          <a
+            href={item.href}
+            class:list={[
+              'rounded-xl border-[3px] border-border px-4 py-2 text-sm font-black no-underline transition-colors',
+              current === item.key
+                ? 'bg-[#fde68a] text-[#1E1210] shadow-[3px_3px_0_var(--border)]'
+                : 'bg-white text-textPrimary hover:bg-gray-50',
+            ]}
+          >
+            {item.label}
+          </a>
+        ))
+      }
+    </nav>
+    <slot />
+  </div>
+</Layout>
