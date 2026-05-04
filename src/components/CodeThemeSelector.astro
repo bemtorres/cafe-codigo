@@ -48,11 +48,18 @@ const themes = [
     const dropdown = document.getElementById('theme-dropdown');
     const options = document.querySelectorAll('.theme-option');
 
-    // Cargar preferencia (si tenía ide guardado, pasar a one-dark)
-    const raw = localStorage.getItem('code-theme') || 'one-dark';
-    const savedTheme = raw === 'ide' ? 'one-dark' : raw;
+    // Si está en iframe (embebido), el default es one-light; si no, one-dark
+    const isEmbedded = window.self !== window.top;
+    const defaultTheme = isEmbedded ? 'one-light' : 'one-dark';
+
+    // localStorage puede lanzar error en iframes cross-origin
+    let stored = null;
+    try { stored = localStorage.getItem('code-theme'); } catch (e) {}
+
+    const raw = stored || defaultTheme;
+    const savedTheme = raw === 'ide' ? defaultTheme : raw;
     document.documentElement.setAttribute('data-code-theme', savedTheme);
-    if (raw === 'ide') localStorage.setItem('code-theme', 'one-dark');
+    try { if (raw === 'ide') localStorage.setItem('code-theme', defaultTheme); } catch (e) {}
     setActive(savedTheme);
 
     toggle?.addEventListener('click', (e) => {
@@ -64,7 +71,7 @@ const themes = [
       opt.addEventListener('click', () => {
         const id = opt.getAttribute('data-theme-id');
         document.documentElement.setAttribute('data-code-theme', id);
-        localStorage.setItem('code-theme', id);
+        try { localStorage.setItem('code-theme', id); } catch (e) {}
         setActive(id);
         dropdown?.classList.remove('is-visible');
       });
