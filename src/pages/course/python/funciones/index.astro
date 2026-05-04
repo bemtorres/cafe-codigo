@@ -1,4 +1,4 @@
-﻿---
+---
 import Layout from '../../../../layouts/Layout.astro';
 import CodeBlock from '../../../../components/CodeBlock.astro';
 import PythonQuizModal from '../../../../components/PythonQuizModal.astro';
@@ -6,47 +6,524 @@ import PythonQuizModal from '../../../../components/PythonQuizModal.astro';
 
 <Layout title="Funciones en Python" description="El corazón de la programación moderna: DRY." courseSlug="python">
   <article class="content-section">
-    <h1>9. Funciones: Tu Caja de Herramientas 🧰</h1>
+    <h1>9. Funciones: Tu Caja de Herramientas</h1>
 
+    <!-- ¿QUÉ ES UNA FUNCIÓN? -->
     <section class="mb-10">
-      <h2>Escribir código una sola vez</h2>
-      <p>Una función es un bloque de código que puedes <strong>llamar muchas veces</strong>. ¡No te repitas! (D.R.Y - Don't Repeat Yourself).</p>
-      <CodeBlock lang="python" code={`def saludar(nombre, mensaje="Bienvenido"):
-    return f"¡Hola {nombre}! {mensaje}"
+      <h2>¿Qué es una función?</h2>
+      <p>
+        Una función es un <strong>bloque de código con nombre</strong> que puedes ejecutar cada vez que lo necesites.
+        En lugar de escribir el mismo código una y otra vez, lo encierras en una función y simplemente la <em>llamas</em>.
+      </p>
+      <p>La estructura básica es siempre la misma:</p>
+      <CodeBlock lang="python" code={`def nombre_funcion(parametro1, parametro2):
+    # código que ejecuta la función
+    # ...`}
+        title="estructura.py"
+      />
+      <ul>
+        <li><code>def</code> — palabra clave que le dice a Python "esto es una función".</li>
+        <li><code>nombre_funcion</code> — el nombre que tú eliges para llamarla después.</li>
+        <li><code>parametro1, parametro2</code> — datos que le puedes pasar (pueden ser 0 o más).</li>
+        <li>El cuerpo va <strong>indentado</strong> (4 espacios o un tab).</li>
+      </ul>
+    </section>
 
-# Llamada normal
-print(saludar("Benjamín"))
+    <!-- FUNCIÓN SIN RETORNO -->
+    <section class="mb-10">
+      <h2>Funciones sin retorno</h2>
+      <p>
+        Una función <strong>sin retorno</strong> realiza una acción pero <em>no devuelve ningún valor</em>.
+        Su trabajo es hacer algo: mostrar texto, guardar un archivo, enviar un mensaje… y listo.
+      </p>
+      <p>
+        El ejemplo más conocido es <code>print()</code>. Cuando escribes <code>print("Hola")</code>,
+        Python muestra el texto en pantalla — eso es su "acción" — pero <code>print()</code> en sí no te
+        entrega ningún valor de vuelta. Si intentas capturar su resultado, obtendrás <code>None</code>:
+      </p>
+      <CodeBlock lang="python" code={`resultado = print("Hola mundo")
+print(resultado)   # None  ← print no devuelve nada`}
+        title="print_none.py"
+      />
+      <p>Cuando tú creas una función sin escribir <code>return</code>, funciona exactamente igual:</p>
+      <CodeBlock lang="python" code={`def mostrar_bienvenida(nombre):
+    print("---------------------------")
+    print(f"  Bienvenido, {nombre}!")
+    print("---------------------------")
 
-# Llamada con parámetros específicos
-print(saludar("Juan", "Gusto en verte"))
+# Solo llamas la función — no hay valor de retorno
+mostrar_bienvenida("Benjamín")
+mostrar_bienvenida("Ana")
+mostrar_bienvenida("Luis")`}
+        title="sin_retorno.py"
+      />
+      <p>Salida:</p>
+      <CodeBlock lang="text" code={`---------------------------
+  Bienvenido, Benjamín!
+---------------------------
+---------------------------
+  Bienvenido, Ana!
+---------------------------
+---------------------------
+  Bienvenido, Luis!
+---------------------------`}
+        title="salida"
+      />
+      <p>
+        Nota cómo llamamos la función <strong>tres veces</strong> sin repetir el código del recuadro.
+        Eso es el principio <strong>DRY</strong> (Don't Repeat Yourself) en acción.
+      </p>
+    </section>
 
-# Argumentos con nombre (puedes cambiar el orden)
-print(saludar(mensaje="¿Cómo estás?", nombre="Ana"))`}
-        title="saludos.py"
+    <!-- FUNCIÓN CON RETORNO -->
+    <section class="mb-10">
+      <h2>Funciones con retorno</h2>
+      <p>
+        Una función <strong>con retorno</strong> calcula o produce algo y te lo <em>entrega de vuelta</em>
+        usando la palabra clave <code>return</code>. Puedes guardar ese valor en una variable o usarlo directamente.
+      </p>
+      <p>
+        Un ejemplo que ya conoces es <code>input()</code>. Esta función muestra un mensaje en pantalla
+        y <em>espera a que el usuario escriba algo</em>. Cuando el usuario presiona Enter,
+        <code>input()</code> te <strong>devuelve</strong> lo que escribió como texto (<code>str</code>):
+      </p>
+      <CodeBlock lang="python" code={`nombre = input("¿Cuál es tu nombre? ")
+# Aquí 'nombre' guarda el texto que el usuario escribió
+print(f"Hola, {nombre}!")`}
+        title="input_ejemplo.py"
+      />
+      <p>Cuando tú creas una función con <code>return</code>, haces lo mismo:</p>
+      <CodeBlock lang="python" code={`def sumar(a, b):
+    resultado = a + b
+    return resultado        # ← entregamos el valor
+
+# Capturamos lo que devuelve la función
+total = sumar(10, 5)
+print(total)                # 15
+
+# También podemos usarlo directamente
+print(sumar(3, 7))          # 10
+print(sumar(100, 200))      # 300`}
+        title="con_retorno.py"
+      />
+      <p>Un ejemplo más completo que combina lógica dentro de la función:</p>
+      <CodeBlock lang="python" code={`def calcular_descuento(precio, porcentaje):
+    descuento = precio * (porcentaje / 100)
+    precio_final = precio - descuento
+    return precio_final
+
+zapatos = calcular_descuento(150, 20)   # 20% de descuento
+camisa  = calcular_descuento(80, 10)    # 10% de descuento
+
+print(f"Zapatos: S/ {zapatos}")   # Zapatos: S/ 120.0
+print(f"Camisa:  S/ {camisa}")    # Camisa:  S/ 72.0`}
+        title="descuentos.py"
       />
     </section>
 
+    <!-- PARÁMETROS AVANZADOS -->
+    <section class="mb-10">
+      <h2>Parámetros: valores por defecto y argumentos con nombre</h2>
+      <p>
+        Puedes darle a un parámetro un <strong>valor por defecto</strong>. Si el llamador no lo pasa,
+        se usa ese valor automáticamente.
+      </p>
+      <CodeBlock lang="python" code={`def saludar(nombre, mensaje="Bienvenido"):
+    return f"¡Hola {nombre}! {mensaje}"
+
+print(saludar("Benjamín"))                         # usa el mensaje por defecto
+print(saludar("Juan", "Gusto en verte"))           # sobreescribe el mensaje
+print(saludar(mensaje="¿Cómo estás?", nombre="Ana"))  # argumentos con nombre (puedes cambiar el orden)`}
+        title="parametros.py"
+      />
+    </section>
+
+    <!-- LAMBDA -->
     <section class="mb-10">
       <h2>Funciones Lambda (Anónimas)</h2>
-      <p>Para lógica muy corta que se resuelve en una sola línea, puedes usar lambdas.</p>
-      <CodeBlock lang="python" code={`# Lambda que suma 10 a un número
-sumar_diez = lambda x : x + 10
-print(sumar_diez(5)) # 15`}
+      <p>
+        Para lógica <em>muy corta</em> que cabe en una línea, Python tiene las funciones <strong>lambda</strong>.
+        Son útiles cuando necesitas una función rápida sin darle nombre formal.
+      </p>
+      <CodeBlock lang="python" code={`# Función normal
+def cuadrado(x):
+    return x * x
+
+# La misma función como lambda
+cuadrado = lambda x: x * x
+
+print(cuadrado(5))    # 25
+print(cuadrado(9))    # 81
+
+# Lambda con dos parámetros
+area = lambda base, altura: (base * altura) / 2
+print(area(10, 4))    # 20.0`}
         title="lambda.py"
       />
     </section>
 
-    <div class="ejercicio" style="background: #FFF9C4;">
-      <h3>🐍 Desafío: La máquina de calcular</h3>
-      <p class="enunciado">Crea una función llamada <code>multiplicar</code> que reciba dos números y retorne su resultado.</p>
-      <details>
-        <summary>👁️ Ver solución sugerida</summary>
-        <CodeBlock lang="python" code={`def multiplicar(a, b):
+    <!-- EJEMPLO COMPLETO -->
+    <section class="mb-10">
+      <h2>Ejemplo completo: Calculadora con menú</h2>
+      <p>
+        Aquí vemos cómo dividir un programa real en <strong>mini funciones</strong>, cada una con una sola responsabilidad.
+        La función <code>pedir_opcion()</code> usa un <code>while</code> + <code>try/except</code> para
+        repetir la pregunta si el usuario escribe algo incorrecto.
+      </p>
+
+      <p><strong>Paso 1 — Las operaciones (funciones con retorno):</strong></p>
+      <CodeBlock lang="python" code={`def sumar(a, b):
+    return a + b
+
+def restar(a, b):
+    return a - b
+
+def multiplicar(a, b):
     return a * b
 
-print(multiplicar(5, 4)) # 20`} title="Python" />
-      </details>
-    </div>
+def dividir(a, b):
+    if b == 0:
+        return "Error: no se puede dividir entre cero"
+    return a / b`}
+        title="calculadora.py — operaciones"
+      />
+
+      <p><strong>Paso 2 — Función para mostrar el menú (sin retorno):</strong></p>
+      <CodeBlock lang="python" code={`def mostrar_menu():
+    print("\\n=== CALCULADORA ===")
+    print("1. Sumar")
+    print("2. Restar")
+    print("3. Multiplicar")
+    print("4. Dividir")
+    print("0. Salir")`}
+        title="calculadora.py — menú"
+      />
+
+      <p>
+        <strong>Paso 3 — Función para pedir un número (con retorno + while + try/except):</strong>
+      </p>
+      <p>
+        Esta función es clave: usa un <code>while True</code> para seguir preguntando
+        hasta que el usuario escriba un número válido. Si escribe texto o lo deja vacío,
+        el <code>except</code> atrapa el error y vuelve a intentar.
+      </p>
+      <CodeBlock lang="python" code={`def pedir_numero(mensaje):
+    while True:
+        try:
+            numero = float(input(mensaje))
+            return numero
+        except ValueError:
+            print("  ⚠ Eso no es un número. Intenta de nuevo.")`}
+        title="calculadora.py — pedir número"
+      />
+
+      <p>
+        <strong>Paso 4 — Función para pedir la opción del menú (con retorno + while + try/except):</strong>
+      </p>
+      <p>
+        Igual que <code>pedir_numero()</code>, pero valida que la opción esté entre 0 y 4.
+        Si el usuario escribe "abc" o "9", le avisa y repite.
+      </p>
+      <CodeBlock lang="python" code={`def pedir_opcion():
+    while True:
+        try:
+            opcion = int(input("\\nElige una opción (0-4): "))
+            if opcion not in [0, 1, 2, 3, 4]:
+                print("  ⚠ Opción inválida. Elige entre 0 y 4.")
+            else:
+                return opcion
+        except ValueError:
+            print("  ⚠ Debes escribir un número, no letras.")`}
+        title="calculadora.py — pedir opción"
+      />
+
+      <p><strong>Paso 5 — El programa principal que une todo:</strong></p>
+      <CodeBlock lang="python" code={`def main():
+    while True:
+        mostrar_menu()
+        opcion = pedir_opcion()
+
+        if opcion == 0:
+            print("¡Hasta luego!")
+            break
+
+        a = pedir_numero("Primer número: ")
+        b = pedir_numero("Segundo número: ")
+
+        if opcion == 1:
+            resultado = sumar(a, b)
+        elif opcion == 2:
+            resultado = restar(a, b)
+        elif opcion == 3:
+            resultado = multiplicar(a, b)
+        elif opcion == 4:
+            resultado = dividir(a, b)
+
+        print(f"\\n  Resultado: {resultado}")
+
+main()`}
+        title="calculadora.py — main"
+      />
+
+      <p><strong>Código completo junto:</strong></p>
+      <CodeBlock lang="python" code={`# --- Operaciones ---
+def sumar(a, b):
+    return a + b
+
+def restar(a, b):
+    return a - b
+
+def multiplicar(a, b):
+    return a * b
+
+def dividir(a, b):
+    if b == 0:
+        return "Error: no se puede dividir entre cero"
+    return a / b
+
+# --- Interfaz ---
+def mostrar_menu():
+    print("\\n=== CALCULADORA ===")
+    print("1. Sumar")
+    print("2. Restar")
+    print("3. Multiplicar")
+    print("4. Dividir")
+    print("0. Salir")
+
+def pedir_numero(mensaje):
+    while True:
+        try:
+            numero = float(input(mensaje))
+            return numero
+        except ValueError:
+            print("  ⚠ Eso no es un número. Intenta de nuevo.")
+
+def pedir_opcion():
+    while True:
+        try:
+            opcion = int(input("\\nElige una opción (0-4): "))
+            if opcion not in [0, 1, 2, 3, 4]:
+                print("  ⚠ Opción inválida. Elige entre 0 y 4.")
+            else:
+                return opcion
+        except ValueError:
+            print("  ⚠ Debes escribir un número, no letras.")
+
+# --- Programa principal ---
+def main():
+    while True:
+        mostrar_menu()
+        opcion = pedir_opcion()
+
+        if opcion == 0:
+            print("¡Hasta luego!")
+            break
+
+        a = pedir_numero("Primer número: ")
+        b = pedir_numero("Segundo número: ")
+
+        if opcion == 1:
+            resultado = sumar(a, b)
+        elif opcion == 2:
+            resultado = restar(a, b)
+        elif opcion == 3:
+            resultado = multiplicar(a, b)
+        elif opcion == 4:
+            resultado = dividir(a, b)
+
+        print(f"\\n  Resultado: {resultado}")
+
+main()`}
+        title="calculadora.py — completo"
+      />
+
+      <p>Ejemplo de ejecución con errores del usuario:</p>
+      <CodeBlock lang="text" code={`=== CALCULADORA ===
+1. Sumar
+2. Restar
+3. Multiplicar
+4. Dividir
+0. Salir
+
+Elige una opción (0-4): abc
+  ⚠ Debes escribir un número, no letras.
+
+Elige una opción (0-4): 9
+  ⚠ Opción inválida. Elige entre 0 y 4.
+
+Elige una opción (0-4): 1
+Primer número: hola
+  ⚠ Eso no es un número. Intenta de nuevo.
+Primer número: 15
+Segundo número: 7
+
+  Resultado: 22.0`}
+        title="ejecución"
+      />
+    </section>
+
+    <!-- EJERCICIOS -->
+    <section class="mb-10">
+      <h2>Ejercicios prácticos</h2>
+
+      <div class="ejercicio" style="background: #FFF9C4;">
+        <h3>Ejercicio 1 — Multiplicar dos números</h3>
+        <p class="enunciado">Crea una función <code>multiplicar(a, b)</code> que reciba dos números y retorne su producto.</p>
+        <details>
+          <summary>👁️ Ver solución</summary>
+          <CodeBlock lang="python" code={`def multiplicar(a, b):
+    return a * b
+
+print(multiplicar(5, 4))    # 20
+print(multiplicar(3, 7))    # 21`} title="solucion_1.py" />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FFF9C4;">
+        <h3>Ejercicio 2 — Calcular el área de un rectángulo</h3>
+        <p class="enunciado">Crea una función <code>area_rectangulo(base, altura)</code> que retorne el área.</p>
+        <details>
+          <summary>👁️ Ver solución</summary>
+          <CodeBlock lang="python" code={`def area_rectangulo(base, altura):
+    return base * altura
+
+print(area_rectangulo(5, 3))    # 15
+print(area_rectangulo(10, 4))   # 40`} title="solucion_2.py" />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FFF9C4;">
+        <h3>Ejercicio 3 — Saludar con mayúsculas</h3>
+        <p class="enunciado">Crea una función <code>saludar(nombre)</code> que imprima el nombre en mayúsculas dentro de un saludo. La función NO debe retornar nada.</p>
+        <details>
+          <summary>👁️ Ver solución</summary>
+          <CodeBlock lang="python" code={`def saludar(nombre):
+    print(f"¡HOLA, {nombre.upper()}!")
+
+saludar("benjamín")   # ¡HOLA, BENJAMÍN!
+saludar("ana")        # ¡HOLA, ANA!`} title="solucion_3.py" />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FFF9C4;">
+        <h3>Ejercicio 4 — ¿Es par o impar?</h3>
+        <p class="enunciado">Crea una función <code>es_par(numero)</code> que retorne <code>True</code> si el número es par y <code>False</code> si es impar.</p>
+        <details>
+          <summary>👁️ Ver solución</summary>
+          <CodeBlock lang="python" code={`def es_par(numero):
+    return numero % 2 == 0
+
+print(es_par(4))    # True
+print(es_par(7))    # False
+print(es_par(10))   # True`} title="solucion_4.py" />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FFF9C4;">
+        <h3>Ejercicio 5 — Mayor de dos números</h3>
+        <p class="enunciado">Crea una función <code>mayor(a, b)</code> que retorne el número más grande de los dos.</p>
+        <details>
+          <summary>👁️ Ver solución</summary>
+          <CodeBlock lang="python" code={`def mayor(a, b):
+    if a > b:
+        return a
+    return b
+
+print(mayor(10, 5))    # 10
+print(mayor(3, 8))     # 8
+print(mayor(7, 7))     # 7`} title="solucion_5.py" />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FFF9C4;">
+        <h3>Ejercicio 6 — Contar letras</h3>
+        <p class="enunciado">Crea una función <code>contar_letras(texto)</code> que retorne cuántos caracteres tiene el texto (sin contar espacios).</p>
+        <details>
+          <summary>👁️ Ver solución</summary>
+          <CodeBlock lang="python" code={`def contar_letras(texto):
+    return len(texto.replace(" ", ""))
+
+print(contar_letras("hola mundo"))   # 9
+print(contar_letras("Python"))       # 6`} title="solucion_6.py" />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FFF9C4;">
+        <h3>Ejercicio 7 — Precio con IGV</h3>
+        <p class="enunciado">Crea una función <code>precio_con_igv(precio)</code> que retorne el precio con 18% de IGV incluido. El parámetro <code>igv</code> debe tener valor por defecto de <code>0.18</code>.</p>
+        <details>
+          <summary>👁️ Ver solución</summary>
+          <CodeBlock lang="python" code={`def precio_con_igv(precio, igv=0.18):
+    return precio * (1 + igv)
+
+print(precio_con_igv(100))         # 118.0
+print(precio_con_igv(200))         # 236.0
+print(precio_con_igv(100, 0.10))   # 110.0  (con IGV diferente)`} title="solucion_7.py" />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FFF9C4;">
+        <h3>Ejercicio 8 — Imprimir tabla de multiplicar</h3>
+        <p class="enunciado">Crea una función <code>tabla(numero)</code> que imprima la tabla de multiplicar del número del 1 al 10. La función no retorna nada.</p>
+        <details>
+          <summary>👁️ Ver solución</summary>
+          <CodeBlock lang="python" code={`def tabla(numero):
+    print(f"--- Tabla del {numero} ---")
+    for i in range(1, 11):
+        print(f"{numero} x {i} = {numero * i}")
+
+tabla(5)
+tabla(7)`} title="solucion_8.py" />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FFF9C4;">
+        <h3>Ejercicio 9 — Temperatura Celsius a Fahrenheit</h3>
+        <p class="enunciado">Crea una función <code>a_fahrenheit(celsius)</code> que convierta grados Celsius a Fahrenheit. La fórmula es: <code>(celsius * 9/5) + 32</code>.</p>
+        <details>
+          <summary>👁️ Ver solución</summary>
+          <CodeBlock lang="python" code={`def a_fahrenheit(celsius):
+    return (celsius * 9 / 5) + 32
+
+print(a_fahrenheit(0))     # 32.0   (punto de congelación)
+print(a_fahrenheit(100))   # 212.0  (punto de ebullición)
+print(a_fahrenheit(37))    # 98.6   (temperatura corporal)`} title="solucion_9.py" />
+        </details>
+      </div>
+
+      <div class="ejercicio" style="background: #FFF9C4;">
+        <h3>Ejercicio 10 — Calculadora completa</h3>
+        <p class="enunciado">
+          Crea una función <code>calcular(a, b, operacion)</code> que reciba dos números y una operación
+          (<code>"sumar"</code>, <code>"restar"</code>, <code>"multiplicar"</code>, <code>"dividir"</code>)
+          y retorne el resultado. Si la operación no existe, retorna <code>"Operación no válida"</code>.
+        </p>
+        <details>
+          <summary>👁️ Ver solución</summary>
+          <CodeBlock lang="python" code={`def calcular(a, b, operacion):
+    if operacion == "sumar":
+        return a + b
+    elif operacion == "restar":
+        return a - b
+    elif operacion == "multiplicar":
+        return a * b
+    elif operacion == "dividir":
+        if b == 0:
+            return "No se puede dividir entre cero"
+        return a / b
+    else:
+        return "Operación no válida"
+
+print(calcular(10, 5, "sumar"))        # 15
+print(calcular(10, 5, "restar"))       # 5
+print(calcular(10, 5, "multiplicar"))  # 50
+print(calcular(10, 5, "dividir"))      # 2.0
+print(calcular(10, 0, "dividir"))      # No se puede dividir entre cero
+print(calcular(10, 5, "potencia"))     # Operación no válida`} title="solucion_10.py" />
+        </details>
+      </div>
+
+    </section>
 
     <section class="mb-10">
       <h2>Prueba de Funciones</h2>
