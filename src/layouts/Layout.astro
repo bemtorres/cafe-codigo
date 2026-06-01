@@ -490,6 +490,18 @@ const showLanguageCuriosity =
       </button>
     </div>
 
+    <!-- Botón flotante para restaurar menú (visible si el menú está colapsado) -->
+    {currentCourse?.lessons?.length && !isCourseHome && (
+      <button
+        id="asideRestoreBtn"
+        type="button"
+        class="embed-hide pdf-hide hidden fixed left-4 top-[50%] -translate-y-1/2 z-[100] bg-white border-[3px] border-border rounded-2xl w-14 h-14 flex items-center justify-center font-extrabold text-2xl cursor-pointer hover:-translate-y-[calc(50%+4px)] hover:scale-105 active:scale-95 shadow-neo transition-all"
+        title="Mostrar índice de contenidos"
+      >
+        🎯
+      </button>
+    )}
+
     <div
       class:list={[
         'main-content-wrapper mx-auto flex flex-col gap-8 px-4 py-8 items-start',
@@ -502,15 +514,23 @@ const showLanguageCuriosity =
       {currentCourse?.lessons?.length && !isCourseHome && (
         <aside class="embed-hide pdf-hide hidden lg:block w-full lg:w-[250px] flex-shrink-0">
           <div class="sticky top-[6.5rem] bg-white border-[3px] border-border rounded-xl p-6 shadow-neo">
-            <h3 class="flex items-center gap-2 text-[1.2rem] text-info font-nunito font-black mb-4 pb-2 border-b-2 border-dashed border-border">
+            <h3 class="flex items-center text-[1.2rem] text-info font-nunito font-black mb-4 pb-2 border-b-2 border-dashed border-border justify-between w-full">
               {currentCourse.slug === 'pseint' ? (
-                <>
+                <div class="flex items-center gap-2">
                   <img class="shrink-0 w-8 h-8 object-contain rounded-lg" src={logoPseint.src} alt="" width="32" height="32" />
                   <span>Contenido</span>
-                </>
+                </div>
               ) : (
-                <>🎯 Contenido</>
+                <div class="flex items-center gap-2">🎯 Contenido</div>
               )}
+              <button
+                type="button"
+                id="asideCollapseBtn"
+                class="w-7 h-7 rounded-xl border-2 border-border bg-[#F5F5F5] text-textPrimary hover:bg-secondary cursor-pointer shadow-[1px_1px_0px_#1E1210] flex items-center justify-center font-extrabold text-xs hover:-translate-y-0.5 active:translate-y-px active:shadow-none transition-all"
+                title="Contraer índice lateral"
+              >
+                ◀
+              </button>
             </h3>
             <ul class="flex flex-row lg:flex-col flex-wrap gap-2.5 m-0 p-0 overflow-hidden">
               {currentCourse.lessons.filter(lesson => !lesson.href.includes('simulador')).map((lesson) => (
@@ -604,13 +624,51 @@ const showLanguageCuriosity =
       })();
 
       (function () {
+        const collapseBtn = document.getElementById('asideCollapseBtn');
+        const restoreBtn = document.getElementById('asideRestoreBtn');
+        const aside = document.querySelector('.main-content-wrapper aside');
+        if (!aside) return;
+
+        const updateState = (isCollapsed) => {
+          if (isCollapsed) {
+            aside.style.setProperty('display', 'none', 'important');
+            if (restoreBtn) {
+              restoreBtn.style.setProperty('display', 'flex', 'important');
+              restoreBtn.classList.remove('hidden');
+            }
+          } else {
+            aside.style.display = '';
+            if (restoreBtn) {
+              restoreBtn.style.setProperty('display', 'none', 'important');
+            }
+          }
+        };
+
+        // Cargar estado inicial
+        try {
+          const collapsed = localStorage.getItem('sidebar-collapsed') === 'true';
+          updateState(collapsed);
+        } catch (e) {}
+
+        collapseBtn?.addEventListener('click', () => {
+          updateState(true);
+          try { localStorage.setItem('sidebar-collapsed', 'true'); } catch (e) {}
+        });
+
+        restoreBtn?.addEventListener('click', () => {
+          updateState(false);
+          try { localStorage.setItem('sidebar-collapsed', 'false'); } catch (e) {}
+        });
+      })();
+
+      (function () {
         const modal = document.getElementById('langsModal');
         if (!modal) return;
         const closeBtns = modal.querySelectorAll('[data-close-modal="langs"]');
         const open = () => { modal.setAttribute('aria-hidden', 'false'); modal.classList.add('is-open'); document.documentElement.style.overflow = 'hidden'; };
         const close = () => { modal.setAttribute('aria-hidden', 'true'); modal.classList.remove('is-open'); document.documentElement.style.overflow = ''; };
 
-        // Event delegation: funciona sin importar cuándo se rendericen los botones
+        // Event delegation
         document.addEventListener('click', (e) => {
           if (e.target.closest('[data-open-modal="langs"]')) open();
         });

@@ -1,0 +1,161 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import PythonQuizModal from '../../../../components/PythonQuizModal.astro';
+
+const codeCrearVenv = `# 1. Navega a la carpeta de tu proyecto en la terminal
+# 2. Crea el entorno virtual en una carpeta llamada '.venv'
+python -m venv .venv`;
+
+const codeActivarWindowsPS = `# Activar en PowerShell (Windows)
+.venv\\Scripts\\Activate.ps1`;
+
+const codeActivarWindowsCmd = `# Activar en Símbolo del Sistema (cmd.exe)
+.venv\\Scripts\\activate.bat`;
+
+const codeActivarUnix = `# Activar en macOS y Linux (Bash / Zsh)
+source .venv/bin/activate`;
+
+const codeUsoVenv = `# 1. Instalar una librería aislada en el entorno activo
+(.venv) pip install requests
+
+# 2. Ver las librerías instaladas en ESTE entorno virtual únicamente
+(.venv) pip list
+
+# 3. Desactivar el entorno y volver a la terminal global
+(.venv) deactivate`;
+---
+
+<Layout
+  title="Entornos Virtuales en Python: Creación y Gestión con venv"
+  description="Aprende qué son los entornos virtuales, para qué sirven y cómo crearlos, activarlos y gestionarlos en Windows, macOS y Linux para evitar conflictos de librerías."
+  courseSlug="python"
+>
+  <article class="content-section">
+    <h1>16. Entornos Virtuales en Python: Tus Laboratorios Aislados 📦🧪</h1>
+
+    <section class="mb-10">
+      <h2>El Problema de la Contaminación Global</h2>
+      <p>
+        Cuando descargas una aplicación o librería usando <code>pip install</code>, por defecto Python la instala de forma **global** en todo tu sistema operativo. 
+      </p>
+      <p>
+        Imagina este escenario de catástrofe en la vida real:
+      </p>
+      <ul>
+        <li>El <strong>Proyecto A</strong> (un sistema antiguo de facturación) requiere usar la versión 1.0 de una librería.</li>
+        <li>El <strong>Proyecto B</strong> (tu nueva Cafetería Express) requiere usar la versión 3.0 de esa misma librería.</li>
+      </ul>
+      <p>
+        Si las instalas globalmente, **una versión sobreescribirá a la otra**, rompiendo inmediatamente uno de tus dos proyectos. 
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>La Solución: Entornos Virtuales 🌟</h2>
+      <p>
+        Un **Entorno Virtual** es una carpeta independiente dentro de tu proyecto que contiene su propia copia miniatura de Python y de PIP. 
+        Al activarlo, todo lo que instales se guardará **exclusivamente dentro de esa carpeta**, sin afectar a tu sistema global ni a otros proyectos.
+      </p>
+      
+      <div class="tip-box" style="background: #E8F5E9; border-left: 4px solid #4CAF50; padding: 15px; margin-bottom: 20px; border-radius: 4px; color: #1b5e20;">
+        <strong>💡 Analogía del Laboratorio Químico</strong><br />
+        Trabajar sin entornos virtuales es como mezclar reactivos químicos peligrosos sobre la mesa de tu cocina. Usar un entorno virtual es como tener cabinas de bioseguridad separadas para cada experimento. ¡Máximo aislamiento y seguridad!
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2>Paso 1: Crear el Entorno Virtual 🛠️</h2>
+      <p>
+        Python ya viene con una herramienta integrada para esto llamada <code>venv</code>. Para crear un entorno virtual, abre tu consola, navega a la carpeta de tu proyecto y ejecuta:
+      </p>
+      <CodeBlock
+        lang="bash"
+        code={codeCrearVenv}
+        title="Terminal"
+      />
+      <p class="mt-4">
+        Esto creará una carpeta llamada <code>.venv</code> en tu proyecto. Contiene una copia limpia de Python. **¡Nunca modifiques ni muevas los archivos dentro de esa carpeta manualmente!**
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Paso 2: Activar el Entorno Virtual ⚡</h2>
+      <p>
+        Para empezar a usar tu laboratorio aislado, debes **activarlo**. El comando varía según tu sistema operativo y consola:
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 my-6">
+        <div class="p-5 rounded-lg border border-gray-700 bg-gray-900/50">
+          <h4 class="text-blue-400 font-bold mb-2">🖥️ Windows (PowerShell)</h4>
+          <CodeBlock
+            lang="bash"
+            code={codeActivarWindowsPS}
+            title="PowerShell"
+          />
+        </div>
+        <div class="p-5 rounded-lg border border-gray-700 bg-gray-900/50">
+          <h4 class="text-teal-400 font-bold mb-2">⚙️ Windows (cmd.exe)</h4>
+          <CodeBlock
+            lang="bash"
+            code={codeActivarWindowsCmd}
+            title="CMD"
+          />
+        </div>
+        <div class="p-5 rounded-lg border border-gray-700 bg-gray-900/50">
+          <h4 class="text-purple-400 font-bold mb-2">🍎 macOS / 🐧 Linux</h4>
+          <CodeBlock
+            lang="bash"
+            code={codeActivarUnix}
+            title="Terminal Unix"
+          />
+        </div>
+      </div>
+
+      <div class="tip-box" style="background: #E3F2FD; border-left: 4px solid #2196F3; padding: 15px; margin-bottom: 20px; border-radius: 4px; color: #0d47a1;">
+        <strong>💡 ¿Cómo sé si está activo?</strong><br />
+        Sabrás que tu entorno virtual está activo porque al principio de tu consola aparecerá el nombre entre paréntesis: <code style="color: #0d47a1; background: #e0f2fe; padding: 2px 4px; border-radius: 3px;">(.venv)</code>.
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2>Paso 3: Instalar y Trabajar de Forma Aislada 📦</h2>
+      <p>
+        Una vez activo, cualquier comando <code>pip install</code> guardará la librería únicamente en tu carpeta local. Al terminar de programar, puedes desactivarlo escribiendo <code>deactivate</code>.
+      </p>
+      <CodeBlock
+        lang="bash"
+        code={codeUsoVenv}
+        title="Terminal Activa"
+      />
+    </section>
+
+    <div class="ejercicio" style="background: #FFFDE7; border-left: 4px solid #FBC02D; padding: 20px; border-radius: 6px; color: #5d4037; margin-bottom: 35px;">
+      <h3>☕ Ponte a prueba: Creando tu primer entorno</h3>
+      <p class="enunciado" style="color: #5d4037;">
+        Realiza la siguiente práctica guiada en tu computador:
+      </p>
+      <ol class="list-decimal pl-5 mb-4 text-sm text-gray-700" style="color: #5d4037;">
+        <li>Crea una nueva carpeta vacía en tu computadora llamada <code>proyecto_aislado</code>.</li>
+        <li>Abre la terminal en esa carpeta y ejecuta <code>python -m venv .venv</code>.</li>
+        <li>Activa el entorno virtual según tu sistema operativo. ¡Asegúrate de ver el <code>(.venv)</code> al principio de tu línea!</li>
+        <li>Escribe <code>pip list</code> y comprueba que está completamente limpio (solo debería mostrar <code>pip</code> y <code>setuptools</code>).</li>
+        <li>Instala requests con <code>pip install requests</code> y vuelve a escribir <code>pip list</code>. ¡Ahí está!</li>
+        <li>Finalmente, desactívalo escribiendo <code>deactivate</code>.</li>
+      </ol>
+    </div>
+
+    <section class="mb-10">
+      <h2>Prueba de Conocimientos 📝</h2>
+      <p>
+        Demuestra que dominas la creación y aislamiento de laboratorios de código:
+      </p>
+      <PythonQuizModal quizKey="entornos-virtuales" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/python/modulos/" class="prev">← Módulos y PIP</a>
+      <a href="/course/python/manejo-archivos/" class="next">Archivos: Cafetería →</a>
+    </nav>
+  </article>
+</Layout>

@@ -1,0 +1,411 @@
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import PythonQuizModal from '../../../../components/PythonQuizModal.astro';
+
+const codePersistenciaBasica = `# Estructura básica para escribir (w = write)
+with open("saludo.txt", "w", encoding="utf-8") as archivo:
+    archivo.write("¡Bienvenidos a la Cafetería Python!\\n")
+
+# Estructura básica para leer (r = read)
+with open("saludo.txt", "r", encoding="utf-8") as archivo:
+    contenido = archivo.read()
+    print(contenido)`;
+
+const codeCatalogoCsv = `import csv
+
+# Nuestros productos de la cafetería representados como [[codigo, nombre, precio]]
+productos = [
+    ["C001", "Café Expreso", 1500],
+    ["C002", "Capuchino Italiano", 2200],
+    ["C003", "Medialuna Dulce", 800],
+    ["C004", "Tarta de Arándanos", 2500]
+]
+
+# 1. Guardar a CSV usando PUNTO Y COMA (;) como delimitador
+with open("productos.csv", "w", newline="", encoding="utf-8") as archivo:
+    # Pasamos delimiter=";" para cambiar el delimitador
+    escritor = csv.writer(archivo, delimiter=";")
+    escritor.writerows(productos)
+print("¡Catálogo guardado con éxito en productos.csv!")
+
+# 2. Importar/Leer desde el archivo CSV con delimitador ";"
+productos_importados = []
+with open("productos.csv", "r", encoding="utf-8") as archivo:
+    lector = csv.reader(archivo, delimiter=";")
+    for fila in lector:
+        if fila:  # Evitar líneas vacías
+            codigo = fila[0]
+            nombre = fila[1]
+            precio = int(fila[2])  # Convertimos a entero para poder operar
+            productos_importados.append([codigo, nombre, precio])
+
+print("Productos cargados:", productos_importados)`;
+
+const codeVouchersTxt = `import datetime
+
+# Generar un voucher de entrega (Boleta) para un cliente
+def guardar_boleta(cliente, productos_comprados, total):
+    fecha_hora = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    nombre_archivo = f"boleta_{cliente.lower().replace(' ', '_')}.txt"
+    
+    with open(nombre_archivo, "w", encoding="utf-8") as boleta:
+        boleta.write("========================================\\n")
+        boleta.write("         CAFETERÍA PYTHON EXPRESS        \\n")
+        boleta.write("========================================\\n")
+        boleta.write(f"Cliente: {cliente}\\n")
+        boleta.write(f"Fecha: {fecha_hora}\\n")
+        boleta.write("----------------------------------------\\n")
+        for prod, cant, subtotal in productos_comprados:
+            boleta.write(f"{prod:<22} x{cant:<3} \${subtotal:>8}\\n")
+        boleta.write("----------------------------------------\\n")
+        boleta.write(f"TOTAL PAGADO:                 \${total:>8}\\n")
+        boleta.write("========================================\\n")
+        boleta.write("      ¡Gracias por su preferencia!      \\n")
+        boleta.write("========================================\\n")
+    print(f"Boleta guardada como: {nombre_archivo}")
+
+# Guardar o actualizar el reporte acumulado del día (reporte_caja.txt)
+def registrar_en_reporte_diario(cliente, total_venta):
+    fecha_hora = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    # Usamos "a" para añadir datos sin sobreescribir el reporte existente
+    with open("reporte_caja.txt", "a", encoding="utf-8") as reporte:
+        reporte.write(f"[{fecha_hora}] Venta a {cliente} por un total de: \${total_venta}\\n")
+
+# Simulamos una venta
+compra = [
+    ["Café Expreso", 2, 3000],
+    ["Medialuna Dulce", 3, 2400]
+]
+guardar_boleta("Benjamín Torres", compra, 5400)
+registrar_en_reporte_diario("Benjamín Torres", 5400)`;
+
+const codeInventarioJson = `import json
+
+# Estructura del menú con stock y categoría utilizando diccionarios
+inventario_completo = {
+    "C001": {"nombre": "Café Expreso", "precio": 1500, "stock": 50, "categoria": "Bebidas"},
+    "C002": {"nombre": "Capuchino Italiano", "precio": 2200, "stock": 30, "categoria": "Bebidas"},
+    "C003": {"nombre": "Medialuna Dulce", "precio": 800, "stock": 100, "categoria": "Pastelería"}
+}
+
+# 1. Guardar diccionario a JSON (Escribir con identación legible)
+with open("inventario.json", "w", encoding="utf-8") as archivo_json:
+    # indent=4 le da un formato visual ordenado y estructurado
+    # ensure_ascii=False respeta los acentos y caracteres del español
+    json.dump(inventario_completo, archivo_json, indent=4, ensure_ascii=False)
+print("Inventario JSON guardado.")
+
+# 2. Cargar/Importar diccionario desde JSON
+with open("inventario.json", "r", encoding="utf-8") as archivo_json:
+    datos_cargados = json.load(archivo_json)
+
+# Acceder de forma estructurada
+print("El precio del Capuchino es:", datos_cargados["C002"]["precio"])`;
+
+const codeDelimitadorPersonalizado = `# Creamos un archivo de prueba con delimitador personalizado '|'
+with open("pedidos.txt", "w", encoding="utf-8") as f:
+    f.write("Daniela|Café Cortado|2|3600\\n")
+    f.write("Andrés|Té Verde|1|1500\\n")
+    f.write("Sofía|Tarta de Manzana|2|4400\\n")
+
+# Leemos y procesamos usando split('|')
+with open("pedidos.txt", "r", encoding="utf-8") as f:
+    for linea in f:
+        linea = linea.strip()
+        if not linea:
+            continue
+        # Separamos usando nuestro delimitador vertical
+        cliente, producto, cant, total = linea.split("|")
+        print(f"El cliente {cliente} pidió {cant}x '{producto}' pagando \${total} en total.")`;
+
+const codeCafeteriaCompleta = `import csv
+import json
+import datetime
+import os
+
+# Base de datos en memoria (Lista de listas para productos)
+# Estructura: [codigo, nombre, precio, stock]
+catalogo = []
+
+# Cargar catálogo de ejemplo en CSV si no existe
+def inicializar_csv_si_no_existe():
+    if not os.path.exists("catalogo_inicial.csv"):
+        datos = [
+            ["C01", "Café Americano", 1200, 100],
+            ["C02", "Café Latte", 1800, 80],
+            ["C03", "Muffin de Chocolate", 1100, 50],
+            ["C04", "Jugo de Naranja Natural", 2000, 30]
+        ]
+        with open("catalogo_inicial.csv", "w", newline="", encoding="utf-8") as f:
+            escritor = csv.writer(f, delimiter=";")
+            escritor.writerows(datos)
+        print("-> Archivo 'catalogo_inicial.csv' de muestra creado.")
+
+# 1. IMPORTAR PRODUCTOS DESDE CSV
+def importar_catalogo_csv():
+    global catalogo
+    catalogo = []
+    try:
+        with open("catalogo_inicial.csv", "r", encoding="utf-8") as f:
+            lector = csv.reader(f, delimiter=";")
+            for fila in lector:
+                if fila:
+                    codigo = fila[0]
+                    nombre = fila[1]
+                    precio = int(fila[2])
+                    stock = int(fila[3])
+                    catalogo.append([codigo, nombre, precio, stock])
+        print(f"✔ Catálogo importado correctamente. {len(catalogo)} productos cargados.")
+    except FileNotFoundError:
+        print("❌ Error: No se encontró 'catalogo_inicial.csv'. Por favor, inicialízalo primero.")
+
+# 2. VENDER Y EMITIR BOLETA TXT
+def realizar_venta():
+    if not catalogo:
+        print("⚠ Primero debes importar el catálogo (Opción 1).")
+        return
+
+    print("\\n--- MENÚ DE PRODUCTOS ---")
+    for prod in catalogo:
+        print(f"Código: {prod[0]} | {prod[1]:<22} | Precio: \${prod[2]:>5} | Stock: {prod[3]}")
+    
+    cliente = input("\\nNombre del cliente: ").strip()
+    if not cliente:
+        print("❌ El nombre del cliente no puede estar vacío.")
+        return
+
+    productos_vendidos = []
+    total_venta = 0
+
+    while True:
+        codigo_buscado = input("Escribe el código del producto a comprar (o 'fin' para cobrar): ").strip().upper()
+        if codigo_buscado == "FIN":
+            break
+        
+        # Buscar producto
+        producto_encontrado = None
+        for prod in catalogo:
+            if prod[0] == codigo_buscado:
+                producto_encontrado = prod
+                break
+        
+        if not producto_encontrado:
+            print("❌ Código de producto no encontrado. Intenta nuevamente.")
+            continue
+        
+        # Validar stock
+        try:
+            cantidad = int(input(f"Cantidad de '{producto_encontrado[1]}' (Disponibles: {producto_encontrado[3]}): "))
+            if cantidad <= 0:
+                print("❌ La cantidad debe ser mayor que 0.")
+                continue
+            if cantidad > producto_encontrado[3]:
+                print("❌ No hay suficiente stock disponible.")
+                continue
+        except ValueError:
+            print("❌ Debes ingresar un número entero válido.")
+            continue
+
+        # Descontar stock y agregar a la venta
+        producto_encontrado[3] -= cantidad  # Descontamos stock del catálogo
+        subtotal = producto_encontrado[2] * cantidad
+        total_venta += subtotal
+        productos_vendidos.append([producto_encontrado[1], cantidad, subtotal])
+        print(f"✔ Agregado: {cantidad}x {producto_encontrado[1]} (\${subtotal})")
+
+    if not productos_vendidos:
+        print("⚠ No se realizó ninguna compra.")
+        return
+
+    # Guardar boleta en TXT
+    guardar_boleta_txt(cliente, productos_vendidos, total_venta)
+    # Registrar en bitácora de caja general en TXT
+    registrar_venta_caja_txt(cliente, total_venta)
+    
+    print(f"✔ ¡Venta finalizada con éxito! Total: \${total_venta}")
+
+def guardar_boleta_txt(cliente, items, total):
+    nombre_archivo = f"boleta_{cliente.lower().replace(' ', '_')}_{datetime.datetime.now().strftime('%H%M%S')}.txt"
+    with open(nombre_archivo, "w", encoding="utf-8") as f:
+        f.write("========================================\\n")
+        f.write("         CAFETERÍA PYTHON EXPRESS        \\n")
+        f.write("========================================\\n")
+        f.write(f"Cliente: {cliente}\\n")
+        f.write(f"Fecha: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\\n")
+        f.write("----------------------------------------\\n")
+        for nombre, cant, subtotal in items:
+            f.write(f"{nombre:<22} x{cant:<3} \${subtotal:>8}\\n")
+        f.write("----------------------------------------\\n")
+        f.write(f"TOTAL PAGADO:                 \${total:>8}\\n")
+        f.write("========================================\\n")
+    print(f"-> Boleta virtual TXT generada: {nombre_archivo}")
+
+def registrar_venta_caja_txt(cliente, total):
+    with open("reporte_caja_diaria.txt", "a", encoding="utf-8") as f:
+        f.write(f"[{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Cliente: {cliente} | Total: \${total}\\n")
+
+# 3. EXPORTAR CATÁLOGO ACTUALIZADO Y VENTAS A DICCIONARIO + JSON
+def exportar_estado_json():
+    if not catalogo:
+        print("⚠ No hay catálogo cargado para exportar.")
+        return
+
+    # Estructuramos en un diccionario robusto
+    datos_cierre = {
+        "fecha_cierre": datetime.datetime.now().strftime("%Y-%m-%d"),
+        "productos_actualizados": {}
+    }
+
+    for prod in catalogo:
+        codigo, nombre, precio, stock = prod
+        # Mezclamos lista de listas convirtiéndolo a un diccionario estructurado
+        datos_cierre["productos_actualizados"][codigo] = {
+            "nombre": nombre,
+            "precio": precio,
+            "stock_restante": stock
+        }
+
+    with open("cierre_caja.json", "w", encoding="utf-8") as f:
+        json.dump(datos_cierre, f, indent=4, ensure_ascii=False)
+    print("✔ Reporte de inventario final y cierre exportado con éxito a 'cierre_caja.json'.")
+
+# MENU PRINCIPAL DE LA CAFETERÍA
+def main():
+    inicializar_csv_si_no_existe()
+    while True:
+        print("\\n☕ === BIENVENIDO A CAFETERÍA PYTHON === ☕")
+        print("1. Importar Catálogo Inicial (CSV con delimitador ';')")
+        print("2. Realizar una Venta (Genera Boleta TXT y descuenta stock)")
+        print("3. Exportar Inventario Actualizado y Cierre de Caja (JSON)")
+        print("0. Salir del programa")
+        
+        opcion = input("Elige una opción: ").strip()
+        if opcion == "1":
+            importar_catalogo_csv()
+        elif opcion == "2":
+            realizar_venta()
+        elif opcion == "3":
+            exportar_estado_json()
+        elif opcion == "0":
+            print("¡Gracias por operar la cafetería! Buen día.")
+            break
+        else:
+            print("❌ Opción inválida, intenta de nuevo.")
+
+if __name__ == "__main__":
+    main()`;
+---
+
+<Layout
+  title="Lectura y Escritura de Archivos en Python: CSV, TXT y JSON"
+  description="Aprende a persistir datos en Python con archivos de texto, CSV (configurando delimitadores) y JSON para estructurar diccionarios, todo ambientado en una cafetería real."
+  courseSlug="python"
+>
+  <article class="content-section">
+    <h1>17. Persistencia de Datos: Lectura y Escritura de Archivos ☕</h1>
+
+    <section class="mb-10">
+      <h2>El poder de la Persistencia</h2>
+      <p>
+        Hasta ahora, cada vez que cerrabas tu programa de Python, todos los datos (productos, ventas, clientes) se borraban de la memoria RAM. 
+        Para construir aplicaciones reales, necesitas <strong>persistir</strong> la información. Es decir, guardarla en el disco duro para poder recuperarla después.
+      </p>
+      <p>
+        En Python, la forma más limpia y moderna de abrir y cerrar archivos es usando la instrucción <code>with open()</code>. Esta asegura que el archivo se cierre correctamente incluso si ocurre un error inesperado.
+      </p>
+      <CodeBlock
+        lang="python"
+        code={codePersistenciaBasica}
+        title="persistencia_basica.py"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>1. Archivos CSV con Lista de Listas 📊</h2>
+      <p>
+        Los archivos <strong>CSV</strong> (Valores Separados por Comas) son el estándar para guardar tablas de datos. En Python, los representamos de forma muy natural como una <strong>lista de listas</strong> (arreglo bidimensional): <code>[[codigo, nombre, precio]]</code>.
+      </p>
+      
+      <div class="tip-box" style="background: #E8F5E9; border-left: 4px solid #4CAF50; padding: 15px; margin-bottom: 20px; border-radius: 4px; color: #1b5e20;">
+        <strong>💡 Tip de Productividad: El Delimitador Personalizado</strong><br />
+        Por defecto, un archivo CSV separa los campos con comas (<code>,</code>). Sin embargo, en sistemas en español o cuando abres datos en Excel, la coma se usa como decimal. Por eso, <strong>es muy común cambiar el delimitador a punto y coma (<code>;</code>)</strong> usando el parámetro <code>delimiter</code>.
+      </div>
+
+      <CodeBlock
+        lang="python"
+        code={codeCatalogoCsv}
+        title="catalogo_csv.py"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>2. Archivos de Texto (TXT): Generando Boletas y Reportes 🧾</h2>
+      <p>
+        Cuando un cliente compra en nuestra cafetería, debemos imprimirle un <strong>voucher o boleta</strong> de venta. Además, al finalizar la jornada laboral, nos interesa registrar un <strong>reporte de caja</strong> acumulando el total vendido.
+      </p>
+      <p>
+        Para esto usamos el formato de texto plano (<code>.txt</code>) y el modo de apertura <code>"a"</code> (append / añadir al final), que nos permite registrar nuevas líneas sin borrar el contenido anterior.
+      </p>
+      <CodeBlock
+        lang="python"
+        code={codeVouchersTxt}
+        title="vouchers_txt.py"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>3. Estructuras de Diccionario y JSON 📦</h2>
+      <p>
+        Aunque el formato CSV es genial para listas sencillas, cuando queremos almacenar estructuras de datos más complejas (por ejemplo, productos que además tienen categorías, niveles de stock, descripción o propiedades anidadas), la mezcla de <strong>Diccionarios de Python y JSON</strong> es la mejor opción.
+      </p>
+      <CodeBlock
+        lang="python"
+        code={codeInventarioJson}
+        title="inventario_json.py"
+      />
+    </section>
+
+    <div class="ejercicio" style="background: #FFFDE7; border-left: 4px solid #FBC02D; padding: 15px; border-radius: 4px; margin-bottom: 30px;">
+      <h3>☕ Mini Desafío: Cambiar Delimitadores</h3>
+      <p class="enunciado">
+        Crea un pequeño script que lea un archivo llamado <code>pedidos.txt</code> que usa la barra vertical (<code>|</code>) como delimitador de datos en formato: <code>cliente|producto|cantidad|precio_total</code>. Haz que tu programa cargue la información de cada línea e imprima un resumen ordenado en la consola.
+      </p>
+      <details>
+        <summary>👁️ Ver solución recomendada</summary>
+        <CodeBlock
+          lang="python"
+          code={codeDelimitadorPersonalizado}
+          title="delimitador_personalizado.py"
+        />
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>4. Proyecto Integrador Final: Cafetería Express ☕🚀</h2>
+      <p>
+        Este proyecto une los tres tipos de persistencia estudiados. Permite gestionar una cafetería real con las siguientes funciones:
+      </p>
+      <ul>
+        <li><strong>Importar Catálogo (CSV):</strong> Carga los productos usando una lista de listas <code>[[codigo, nombre, precio]]</code> y delimitador <code>;</code>.</li>
+        <li><strong>Vender Productos:</strong> Pide código y cantidad, calcula el total, genera un archivo <code>TXT</code> con el voucher de la boleta y actualiza un reporte general de ventas.</li>
+        <li><strong>Exportar Estado (JSON + Diccionario):</strong> Guarda todas las estadísticas finales del negocio y los productos con su stock restante estructurados en un archivo JSON.</li>
+      </ul>
+
+      <CodeBlock
+        lang="python"
+        code={codeCafeteriaCompleta}
+        title="cafeteria_completa.py"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Prueba de Conocimientos 📝</h2>
+      <PythonQuizModal quizKey="manejo-archivos" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/python/entornos-virtuales/" class="prev">← Entornos Virtuales</a>
+      <a href="/course/python/seguridad-bandit-sonarqube/" class="next">Seguridad y calidad →</a>
+    </nav>
+  </article>
+</Layout>

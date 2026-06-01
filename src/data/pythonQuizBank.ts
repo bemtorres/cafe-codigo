@@ -382,5 +382,98 @@ export const pythonQuizBank: Record<string, PythonQuizDefinition> = {
         correctIndex: 2
       }
     ]
+  },
+  'manejo-archivos': {
+    key: 'manejo-archivos',
+    title: 'Quiz: Lectura y Escritura de Archivos',
+    questions: [
+      {
+        prompt: "¿Cuál es la ventaja principal de usar 'with open()' al manejar archivos?",
+        options: ["Hace que la lectura sea más rápida", "Cierra automáticamente el archivo, incluso si ocurre un error", "No requiere importar el módulo os", "Permite comprimir el archivo automáticamente"],
+        correctIndex: 1
+      },
+      {
+        prompt: "Si queremos AÑADIR texto al final de un archivo existente sin borrar su contenido, ¿qué modo usamos?",
+        options: ["'w' (write)", "'r' (read)", "'a' (append)", "'x' (exclusive)"],
+        correctIndex: 2
+      },
+      {
+        prompt: "En el módulo 'csv', ¿cómo configuramos un delimitador personalizado como punto y coma?",
+        options: ["csv.writer(f, split=';')", "csv.writer(f, separator=';')", "csv.writer(f, delimiter=';')", "csv.writer(f, symbol=';')"],
+        correctIndex: 2
+      },
+      {
+        prompt: "¿Qué formato es preferible para guardar configuraciones complejas o diccionarios anidados en Python?",
+        options: ["CSV", "TXT", "JSON", "XML"],
+        correctIndex: 2
+      },
+      {
+        prompt: "En el módulo 'json', ¿para qué sirve el parámetro 'indent=4' en json.dump()?",
+        options: ["Para comprimir el archivo", "Para dar un formato visual ordenado y legible con sangrías", "Para encriptar los datos", "Para limitar el número de claves"],
+        correctIndex: 1
+      }
+    ]
+  },
+  'seguridad-bandit-sonarqube': {
+    key: 'seguridad-bandit-sonarqube',
+    title: 'Quiz: Seguridad y Calidad con Bandit y SonarQube',
+    questions: [
+      {
+        prompt: "¿Cuál es el propósito principal de la herramienta Bandit?",
+        options: ["Optimizar la velocidad de ejecución de Python", "Encontrar vulnerabilidades de seguridad específicas en código Python", "Subir el código a producción automáticamente", "Dar formato al código según PEP 8"],
+        correctIndex: 1
+      },
+      {
+        prompt: "¿Qué tipo de error detectará preferentemente SonarQube pero que Bandit podría ignorar?",
+        options: ["Uso inseguro de eval()", "Contraseñas escritas en texto plano (hardcoded)", "Complejidad cognitiva alta y código duplicado (code smells)", "Deserialización peligrosa con pickle"],
+        correctIndex: 2
+      },
+      {
+        prompt: "Si Bandit encuentra un uso de 'eval()' en tu código, ¿cómo lo clasifica típicamente?",
+        options: ["Error de compilación", "Advertencia de baja prioridad", "Vulnerabilidad / Riesgo de seguridad (High Severity)", "Sugerencia estética"],
+        correctIndex: 2
+      },
+      {
+        prompt: "¿A qué se refiere el término 'Code Smell' (olor de código) en SonarQube?",
+        options: ["Código que produce errores de sintaxis", "Código que vulnera la seguridad del servidor", "Síntoma de mal diseño que dificulta el mantenimiento del software", "Código escrito en un idioma diferente"],
+        correctIndex: 2
+      },
+      {
+        prompt: "¿Cómo se complementan Bandit y SonarQube en un flujo profesional (CI/CD)?",
+        options: ["SonarQube reemplaza a Bandit por completo", "Bandit analiza vulnerabilidades rápidas de Python y SonarQube evalúa la calidad y salud global del repositorio", "Bandit compila el código y SonarQube lo ejecuta en producción", "No se pueden usar juntos porque causan conflictos de dependencias"],
+        correctIndex: 1
+      }
+    ]
+  },
+  'entornos-virtuales': {
+    key: 'entornos-virtuales',
+    title: 'Quiz: Entornos Virtuales en Python',
+    questions: [
+      {
+        prompt: "¿Cuál es el propósito principal de un entorno virtual en Python?",
+        options: ["Hacer que el código corra el doble de rápido", "Crear una copia del sistema operativo", "Aislar las librerías de un proyecto para evitar conflictos de versiones", "Ejecutar programas en la nube de forma gratuita"],
+        correctIndex: 2
+      },
+      {
+        prompt: "¿Qué comando estándar crea un entorno virtual llamado '.venv' en Python 3?",
+        options: ["python create venv .venv", "python -m venv .venv", "pip install virtualenv .venv", "venv make .venv"],
+        correctIndex: 1
+      },
+      {
+        prompt: "¿Cómo se activa un entorno virtual en Windows usando PowerShell?",
+        options: ["source .venv/bin/activate", ".venv\\Scripts\\Activate.ps1", "start .venv", "pip activate .venv"],
+        correctIndex: 1
+      },
+      {
+        prompt: "¿Qué sucede cuando instalas una librería con PIP mientras el entorno virtual está activo?",
+        options: ["Se instala en todo tu sistema operativo globalmente", "Se instala únicamente dentro de la carpeta del entorno virtual del proyecto", "Se sube directamente a internet", "Falla el comando porque requiere permisos de administrador"],
+        correctIndex: 1
+      },
+      {
+        prompt: "¿Cómo desactivas un entorno virtual activo de vuelta a tu terminal global?",
+        options: ["exit", "deactivate", "stop venv", "pip uninstall venv"],
+        correctIndex: 1
+      }
+    ]
   }
 };

@@ -150,8 +150,18 @@ export const courses: Course[] = [
       { slug: 'poo', title: '14. Clases y Objetos', href: '/course/python/poo/' },
       { slug: 'modulos', title: '15. Módulos y PIP', href: '/course/python/modulos/' },
       {
+        slug: 'entornos-virtuales',
+        title: '16. Entornos Virtuales 📦',
+        href: '/course/python/entornos-virtuales/',
+      },
+      {
+        slug: 'manejo-archivos',
+        title: '17. Archivos: Cafetería ☕',
+        href: '/course/python/manejo-archivos/',
+      },
+      {
         slug: 'seguridad-bandit-sonarqube',
-        title: '16. Seguridad y calidad: Bandit + SonarQube',
+        title: '18. Seguridad y calidad: Bandit + SonarQube',
         href: '/course/python/seguridad-bandit-sonarqube/',
       },
     ],

@@ -17,14 +17,14 @@
     "fresh": "node scripts/db-fresh.mjs"
   },
   "dependencies": {
-    "@astrojs/check": "^0.9.8",
-    "@astrojs/react": "^5.0.1",
+    "@astrojs/check": "^0.9.9",
+    "@astrojs/react": "^5.0.6",
     "@codesandbox/sandpack-react": "^2.20.0",
     "@supabase/supabase-js": "^2.100.1",
     "@tailwindcss/vite": "^4.2.2",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "astro": "^6.0.5",
+    "astro": "^6.4.2",
     "chart.js": "^4.5.1",
     "input-otp": "^1.4.2",
     "monaco-editor": "^0.55.1",

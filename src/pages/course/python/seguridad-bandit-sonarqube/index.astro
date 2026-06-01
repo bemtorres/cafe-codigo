@@ -1,137 +1,325 @@
 ---
 import Layout from '../../../../layouts/Layout.astro';
 import CodeBlock from '../../../../components/CodeBlock.astro';
+import PythonQuizModal from '../../../../components/PythonQuizModal.astro';
+
+const codeBanditInseguro = `# vulnerabilidades.py (CUIDADO: Código Inseguro)
+import pickle
+import os
+
+# ❌ Fallo 1: Contraseña hardcoded (expuesta directamente en código)
+ADMIN_PASSWORD = "SuperSecretPassword123"
+
+def autenticar(input_pass):
+    # Comparación de contraseña insegura
+    return input_pass == ADMIN_PASSWORD
+
+# ❌ Fallo 2: Uso de eval() permitiendo inyección de código
+def ejecutar_calculo(operacion_usuario):
+    # eval ejecuta CUALQUIER string de Python. Si el usuario escribe os.system('rm -rf /'), se ejecutará.
+    return eval(operacion_usuario)
+
+# ❌ Fallo 3: Deserialización peligrosa con pickle
+def deserializar_datos(datos_red):
+    # pickle.loads puede ejecutar código arbitrario incrustado en los bytes binarios
+    return pickle.loads(datos_red)`;
+
+const codeBanditCorregido = `# seguridad_corregida.py (Seguro y Aprobado)
+import json
+import os
+import secrets
+
+# ✔ Solución 1: Cargar secretos desde Variables de Entorno
+ADMIN_PASSWORD_HASH = os.getenv("APP_ADMIN_HASH", "")
+
+def autenticar_seguro(input_pass):
+    # Usar secrets para comparar en tiempo constante y evitar ataques de canal lateral
+    return secrets.compare_digest(input_pass, os.getenv("ADMIN_PASSWORD", ""))
+
+# ✔ Solución 2: Reemplazar eval() por evaluación segura o casteo estricto
+def ejecutar_calculo_seguro(operacion_usuario):
+    # Validamos estrictamente que la entrada contenga solo dígitos y operadores básicos
+    # O mejor aún, evitamos eval por completo usando un parser seguro
+    if not all(c.isdigit() or c in "+-*/. " for c in operacion_usuario):
+        raise ValueError("Entrada peligrosa detectada")
+    # Alternativa segura: usar una librería especializada como ast.literal_eval si es una estructura
+    return eval(operacion_usuario)
+
+# ✔ Solución 3: Usar JSON en lugar de Pickle para intercambiar datos en red
+def deserializar_datos_seguros(datos_json_red):
+    # JSON es solo texto estructurado, no puede ejecutar código al deserializar
+    return json.loads(datos_json_red)`;
+
+const codeSonarQubeInseguro = `# inventario.py (Código difícil de mantener - Spaguetti)
+def procesar_tienda(lista_productos, descuento_aplicar):
+    # ❌ Fallo 1: Alta Complejidad Cognitiva (Demasiados if anidados)
+    # ❌ Fallo 2: Variables mal nombradas (nombres sin significado claro)
+    # ❌ Fallo 3: Código duplicado
+    for p in lista_productos:
+        if p["activo"]:
+            if p["stock"] > 0:
+                if p["categoria"] == "Bebidas":
+                    p["precio"] = p["precio"] - (p["precio"] * descuento_aplicar)
+                    print("Descuento aplicado a " + p["nombre"])
+                else:
+                    if p["categoria"] == "Pastelería":
+                        p["precio"] = p["precio"] - (p["precio"] * (descuento_aplicar / 2))
+                        print("Descuento medio aplicado a " + p["nombre"])
+            else:
+                print("Sin stock: " + p["nombre"])
+        else:
+            print("Inactivo: " + p["nombre"])`;
+
+const codeSonarQubeCorregido = `# inventario_limpio.py (Limpio y Mantenible)
+# ✔ Solución: Separación de responsabilidades, nombres descriptivos y simplicidad
+
+def calcular_descuento(categoria: str, precio: float, tasa_base: float) -> float:
+    """Calcula el descuento según la categoría del producto de forma clara."""
+    if categoria == "Bebidas":
+        return precio * tasa_base
+    if categoria == "Pastelería":
+        return precio * (tasa_base / 2)
+    return 0.0
+
+def aplicar_descuentos_productos(productos: list, tasa_descuento: float):
+    """Procesa el inventario aplicando descuentos de forma legible."""
+    for producto in productos:
+        nombre = producto.get("nombre", "Sin Nombre")
+        
+        if not producto.get("activo", False):
+            print(f"Inactivo: {nombre}")
+            continue
+            
+        if producto.get("stock", 0) <= 0:
+            print(f"Sin stock: {nombre}")
+            continue
+            
+        descuento = calcular_descuento(producto.get("categoria", ""), producto.get("precio", 0.0), tasa_descuento)
+        producto["precio"] -= descuento
+        if descuento > 0:
+            print(f"Descuento aplicado a {nombre} (Guardado: \${descuento})")`;
+
+const codeRetoIntegrador = `# reto_calidad.py
+# Analiza este código. ¿Qué alertaría Bandit y qué alertaría SonarQube?
+import os
+
+def procesar_usuario(u, p):
+    # Secreto expuesto
+    key = "123456"
+    # Uso de eval riesgoso
+    x = eval(u)
+    # Código duplicado / spaghetti
+    if p == "admin":
+        if key == "123456":
+            print("Acceso total")
+            if x > 10:
+                print("Alerta")
+    else:
+        if p == "user":
+            print("Acceso limitado")
+            if x > 10:
+                print("Alerta")`;
 ---
 
 <Layout
-  title="Seguridad y calidad en Python: Bandit y SonarQube"
-  description="Último módulo: análisis estático de seguridad con Bandit y mejora continua de calidad con SonarQube."
+  title="Seguridad y Calidad en Python: Bandit y SonarQube"
+  description="Aprende a analizar tu código Python usando Bandit para auditorías de seguridad y SonarQube para medir la calidad de software y mantener buenas prácticas profesionales."
   courseSlug="python"
 >
   <article class="content-section">
-    <h1>16. Seguridad y calidad: Bandit + SonarQube 🛡️</h1>
+    <h1>18. Seguridad y Calidad de Software: Bandit + SonarQube 🛡️📈</h1>
 
     <section class="mb-10">
-      <h2>Propósito del módulo final</h2>
+      <h2>La Mentalidad de Producción</h2>
       <p>
-        En este cierre del curso trabajas una ruta profesional de revisión de código Python: primero detectas
-        vulnerabilidades puntuales con <strong>Bandit</strong>, luego amplías el análisis con <strong>SonarQube</strong>
-        para ver calidad, mantenibilidad y mejoras continuas.
+        Escribir código que "funcione" es solo el primer paso de un programador junior. Para convertirte en un **desarrollador profesional**, tu código debe cumplir con dos pilares obligatorios antes de subirse a servidores reales:
       </p>
-      <p>
-        La idea es comparar ambas herramientas sobre un mismo script para entender qué detecta cada una y cómo se
-        complementan.
-      </p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-6">
+        <div class="p-5 rounded-lg border border-red-200" style="background: rgba(239, 83, 80, 0.05);">
+          <h3 class="text-red-700 flex items-center gap-2">🛡️ 1. Seguridad (Security)</h3>
+          <p class="text-sm">
+            Evitar que hackers o usuarios maliciosos vulneren nuestro software mediante inyección de código, robo de datos o ejecución de comandos maliciosos.
+          </p>
+        </div>
+        <div class="p-5 rounded-lg border border-blue-200" style="background: rgba(33, 150, 243, 0.05);">
+          <h3 class="text-blue-700 flex items-center gap-2">📈 2. Calidad y Mantenibilidad (Quality)</h3>
+          <p class="text-sm">
+            Evitar el "código spaghetti", variables confusas, funciones demasiado complejas y código duplicado que impida a otros programadores modificar el software en el futuro.
+          </p>
+        </div>
+      </div>
     </section>
 
     <section class="mb-10">
-      <h2>Clase 1: Bandit (seguridad específica en Python)</h2>
+      <h2>Una Analogía Pedagógica 🧠</h2>
       <p>
-        Bandit es un analizador estático orientado a riesgos típicos en Python: uso inseguro de <code>eval</code>,
-        secretos embebidos, deserialización peligrosa y otros patrones.
+        Imagina que estás construyendo una sucursal física de tu **Cafetería Express**:
+      </p>
+      <ul>
+        <li>
+          <strong>Bandit es el Perro Guardián 🐕:</strong> Solo le importa la seguridad inmediata. Él huele el perímetro buscando agujeros en la cerca, puertas sin llave o explosivos. No le importa si las mesas están desordenadas o si el menú tiene faltas de ortografía; solo le interesa que nadie pueda asaltar la caja.
+        </li>
+        <li>
+          <strong>SonarQube es el Diseñador y Auditor de Procesos 📋:</strong> Él evalúa la experiencia general de la tienda. Revisa si los pasillos son cómodos, si el personal duplica tareas innecesariamente, si la cocina está ordenada y si la receta del café es clara para que cualquier barista nuevo la entienda. Le importa la excelencia, el orden y la eficiencia a largo plazo.
+        </li>
+      </ul>
+    </section>
+
+    <section class="mb-10">
+      <h2>Clase 1: Bandit — Auditoría de Seguridad en Python 🐍🔒</h2>
+      <p>
+        **Bandit** es una herramienta de *Análisis Estático de Seguridad (SAST)* dedicada exclusivamente a Python. Analiza el código buscando vulnerabilidades comunes (como uso de contraseñas expuestas directamente, uso de funciones de alto riesgo como <code>eval()</code>, o librerías inseguras como <code>pickle</code>).
+      </p>
+      <p>
+        Para instalar y ejecutar Bandit en tu proyecto, ejecutas en tu terminal:
       </p>
       <CodeBlock
         lang="bash"
         code={`pip install bandit
-bandit --version
+# Ejecutar en un archivo
 bandit app.py
-bandit -r proyecto/`}
-        title="comandos_bandit.sh"
+# Ejecutar recursivamente en toda una carpeta
+bandit -r mi_proyecto/`}
+        title="Terminal"
       />
-      <CodeBlock
-        lang="python"
-        code={`# app.py (inseguro)
-import pickle
 
-password = "123456"
-
-def ejecutar(texto):
-    return eval(texto)
-
-def cargar(datos):
-    return pickle.loads(datos)`}
-        title="app_insegura.py"
-      />
-      <CodeBlock
-        lang="python"
-        code={`# app.py (corregido)
-import json
-import os
-
-password = os.getenv("APP_PASSWORD", "")
-
-def ejecutar_operacion(texto):
-    if not texto.isdigit():
-        raise ValueError("Entrada no válida")
-    return int(texto)
-
-def cargar(datos):
-    return json.loads(datos)`}
-        title="app_corregida.py"
-      />
+      <h3>Caso Práctico: Detectando y Resolviendo con Bandit</h3>
+      <p>
+        Mira este ejemplo de código con tres fallas críticas de seguridad y cómo se resuelven correctamente:
+      </p>
+      
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 my-6">
+        <div>
+          <h4>🚨 Código Inseguro (Bandit Alertará)</h4>
+          <CodeBlock
+            lang="python"
+            code={codeBanditInseguro}
+            title="vulnerabilidades.py"
+          />
+        </div>
+        <div>
+          <h4>✔ Código Seguro y Corregido</h4>
+          <CodeBlock
+            lang="python"
+            code={codeBanditCorregido}
+            title="seguridad_corregida.py"
+          />
+        </div>
+      </div>
     </section>
 
     <section class="mb-10">
-      <h2>Clase 2: SonarQube (calidad global del proyecto)</h2>
+      <h2>Clase 2: SonarQube — El Guardián de la Calidad 📊✨</h2>
       <p>
-        SonarQube permite revisar bugs, vulnerabilidades, complejidad, duplicación y code smells. Si Bandit te da
-        alertas concretas de seguridad Python, SonarQube te da una visión más completa del estado del proyecto.
+        Mientras Bandit busca "cerrar la puerta a los hackers", **SonarQube** busca que tu código sea limpio y legible (lo que llamamos evitar los **Code Smells** u "olores de código" y la **Complejidad Cognitiva**).
       </p>
-      <CodeBlock
-        lang="python"
-        code={`# versión inicial
-def total_productos(productos):
-    total = 0
-    for p in productos:
-        total += p["cantidad"]
-    return total`}
-        title="inventario_inicial.py"
-      />
-      <CodeBlock
-        lang="python"
-        code={`# versión mejorada
-def total_productos(productos):
-    total = 0
-    for producto in productos:
-        cantidad = producto.get("cantidad", 0)
-        if not isinstance(cantidad, int) or cantidad < 0:
-            raise ValueError("Cantidad inválida")
-        total += cantidad
-    return total`}
-        title="inventario_mejorado.py"
-      />
+      <div class="tip-box" style="background: #E3F2FD; border-left: 4px solid #2196F3; padding: 15px; margin-bottom: 20px; border-radius: 4px; color: #0d47a1;">
+        <strong>💡 ¿Qué es la Complejidad Cognitiva?</strong><br />
+        Es una métrica que mide qué tan difícil es para un cerebro humano entender el flujo del código. Un código con muchos bucles e instrucciones <code>if</code> anidadas unas dentro de otras tiene una complejidad alta, lo que facilita que cometamos errores al modificarlo.
+      </div>
+
+      <h3>Caso Práctico: Refactorización por Calidad</h3>
+      <p>
+        A continuación, comparamos un código difícil de leer y duplicado con su versión limpia y aprobada por SonarQube:
+      </p>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 my-6">
+        <div>
+          <h4>🚨 Código Spaghetti (Complejo y Acoplado)</h4>
+          <CodeBlock
+            lang="python"
+            code={codeSonarQubeInseguro}
+            title="inventario.py"
+          />
+        </div>
+        <div>
+          <h4>✔ Código Limpio (Modular y Mantenible)</h4>
+          <CodeBlock
+            lang="python"
+            code={codeSonarQubeCorregido}
+            title="inventario_limpio.py"
+          />
+        </div>
+      </div>
     </section>
 
-    <div class="ejercicio" style="background: #E3F2FD;">
-      <h3>🐍 Actividad integradora final</h3>
-      <p class="enunciado">
-        Usa el mismo script de inventario o ventas que construiste en módulos anteriores:
-      </p>
-      <ol>
-        <li>Ejecuta Bandit y anota al menos dos hallazgos.</li>
-        <li>Corrige el código y vuelve a ejecutar Bandit.</li>
-        <li>Analiza el proyecto en SonarQube (o revisa un reporte preparado por el docente).</li>
-        <li>Compara: ¿qué detecta Bandit y qué detecta SonarQube que Bandit no muestra?</li>
-      </ol>
-      <p>
-        Evidencia esperada: breve reporte con hallazgos, correcciones aplicadas y conclusión de mejora continua.
-      </p>
-    </div>
+    <section class="mb-10">
+      <h2>Ponte a prueba: ¡El Desafío del Auditor! 🕵️‍♂️</h2>
+      <div class="ejercicio" style="background: #FFF8E1; border-left: 4px solid #FFB300; padding: 20px; border-radius: 6px;">
+        <h3>💻 Desafío: Encuentra y Resuelve</h3>
+        <p class="enunciado">
+          Analiza el siguiente fragmento de código. Escribe en un papel qué problemas específicos detectaría <strong>Bandit</strong> (vulnerabilidades) y cuáles detectaría <strong>SonarQube</strong> (calidad/mantenimiento/code smells). Luego, refactoriza el código para dejarlo impecable.
+        </p>
+        
+        <CodeBlock
+          lang="python"
+          code={codeRetoIntegrador}
+          title="reto_calidad.py"
+        />
+
+        <details class="mt-4">
+          <summary class="cursor-pointer font-bold text-amber-900">👁️ Ver Análisis de Auditoría y Solución</summary>
+          <div class="p-4 mt-2 bg-white rounded border border-amber-200">
+            <h5 class="font-bold text-red-700">🕵️‍♂️ Hallazgos de Bandit:</h5>
+            <ol class="list-decimal pl-5 mb-4 text-sm text-gray-700">
+              <li><strong>Secreto Expuesto:</strong> La clave <code>key = "123456"</code> está escrita directamente en el código (vulnerabilidad de severidad alta).</li>
+              <li><strong>Función Peligrosa:</strong> El uso de <code>eval(u)</code> permite al usuario inyectar y ejecutar cualquier código de Python en la máquina del servidor.</li>
+            </ol>
+
+            <h5 class="font-bold text-blue-700">📊 Hallazgos de SonarQube:</h5>
+            <ol class="list-decimal pl-5 mb-4 text-sm text-gray-700">
+              <li><strong>Código Duplicado / Code Smell:</strong> La línea <code>if x > 10: print("Alerta")</code> está repetida exactamente igual en ambos bloques <code>if/else</code>.</li>
+              <li><strong>Nombres de variables no descriptivos:</strong> Las variables <code>u</code>, <code>p</code> y <code>x</code> no indican qué tipo de datos almacenan.</li>
+              <li><strong>Complejidad Cognitiva Innecesaria:</strong> Estructura anidada profunda que se puede simplificar fácilmente.</li>
+            </ol>
+
+            <h5 class="font-bold text-green-700">✔ Código Solucionado e Impecable:</h5>
+            <CodeBlock
+              lang="python"
+              code={`import os
+
+# 1. Obtenemos la llave de acceso de forma segura desde el entorno
+ADMIN_SECRET_KEY = os.getenv("SECRET_KEY_AUDIT", "default_safe_key")
+
+def validar_nivel_alerta(valor: int):
+    """Encapsulamos la lógica duplicada en una función reutilizable."""
+    if valor > 10:
+        print("Alerta: Valor fuera de rango tolerado.")
+
+def procesar_usuario_seguro(nombre_usuario: str, rol_usuario: str):
+    # 2. Reemplazamos eval por un casteo numérico seguro con try-except
+    try:
+        valor_usuario = int(nombre_usuario)
+    except ValueError:
+        print("Entrada inválida. Se esperaba un número.")
+        return
+
+    # 3. Simplificamos la lógica anidada y eliminamos duplicidad
+    if rol_usuario == "admin" and ADMIN_SECRET_KEY == "123456":
+        print("Acceso de Administrador Autorizado.")
+        validar_nivel_alerta(valor_usuario)
+    elif rol_usuario == "user":
+        print("Acceso de Usuario Limitado.")
+        validar_nivel_alerta(valor_usuario)
+    else:
+        print("Acceso Denegado / Credenciales inválidas.")`}
+              title="reto_solucionado.py"
+            />
+          </div>
+        </details>
+      </div>
+    </section>
 
     <section class="mb-10">
-      <h2>Diferencia clave entre ambas herramientas</h2>
+      <h2>Prueba de Conocimientos Final 📝🏆</h2>
       <p>
-        <strong>Bandit:</strong> ideal para comenzar con seguridad en Python porque entrega resultados rápidos y
-        accionables.
+        Demuestra tus habilidades de auditoría completando el quiz oficial de cierre de módulo:
       </p>
-      <p>
-        <strong>SonarQube:</strong> ideal para una segunda etapa, cuando quieres evaluar salud general del código y
-        sostener una mejora continua de calidad.
-      </p>
+      <PythonQuizModal quizKey="seguridad-bandit-sonarqube" />
     </section>
 
     <nav class="nav-bottom">
-      <a href="/course/python/modulos/" class="prev">← Módulos y PIP</a>
+      <a href="/course/python/manejo-archivos/" class="prev">← Archivos: Cafetería</a>
       <a href="/course/python/" class="next">Finalizar Curso de Python 🏆</a>
     </nav>
   </article>

@@ -1,79 +1,554 @@
-﻿---
+---
 import Layout from '../../../../layouts/Layout.astro';
 import CodeBlock from '../../../../components/CodeBlock.astro';
 import PythonQuizModal from '../../../../components/PythonQuizModal.astro';
----
 
-<Layout title="Módulos y PIP: Librerías externas en Python" description="No reinventes la rueda: Aprende a usar librerías externas." courseSlug="python">
-  <article class="content-section">
-    <h1>15. Módulos y PIP: ¡El Universo Python! 🌌</h1>
-
-    <section class="mb-10">
-      <h2>Librerías estándar de Python</h2>
-      <p>Python viene con un montón de herramientas "incluidas en el precio". Puedes importarlas con la palabra clave <code>import</code>.</p>
-      <CodeBlock lang="python" code={`import math
+const codeLibreriaEstandar = `import math
 import random
 
-# Calcular raíz cuadrada
-print(math.sqrt(16)) # 4.0
+# Calcular raíz cuadrada usando math
+raiz = math.sqrt(16)
+print(f"La raíz cuadrada de 16 es: {raiz}")
 
-# Elegir un número al azar de 1 a 10
-print(random.randint(1, 10))`}
+# Elegir un número al azar del 1 al 10 usando random
+numero_suerte = random.randint(1, 10)
+print(f"Tu número de la suerte hoy es: {numero_suerte}")`;
+
+const codeModuloPropio = `# Archivo: utilidades_cafetera.py
+def calcular_total_con_iva(subtotal):
+    return subtotal * 1.19
+
+# Archivo: main.py
+from utilidades_cafetera import calcular_total_con_iva
+
+total = calcular_total_con_iva(1000)
+print(f"El total a pagar con IVA es: \${total}")`;
+
+const codeInstalarRequests = `# Escribe esto en tu consola o terminal (fuera de Python)
+pip install requests`;
+
+const codeRickAndMorty = `import requests
+
+# URL de la API pública para obtener al personaje ID 1 (Rick Sanchez)
+url = "https://rickandmortyapi.com/api/character/1"
+
+try:
+    # Realizamos la petición GET a la API
+    respuesta = requests.get(url)
+    
+    # Convertimos la respuesta JSON en un diccionario de Python
+    datos = respuesta.json()
+    
+    # Extraemos información de forma estructurada
+    nombre = datos.get("name")
+    estado = datos.get("status")
+    especie = datos.get("species")
+    origen = datos.get("origin", {}).get("name")
+    
+    print("========================================")
+    print("      FICHA DE PERSONAJE RICK & MORTY    ")
+    print("========================================")
+    print(f"Nombre:   {nombre}")
+    print(f"Estado:   {estado} (¡{'Vivo' if estado == 'Alive' else 'Muerto o Desconocido'}!)")
+    print(f"Especie:  {especie}")
+    print(f"Origen:   {origen}")
+    print("========================================")
+
+except requests.exceptions.RequestException as e:
+    print(f"❌ Error de conexión al servidor: {e}")`;
+
+const codeFlaskServer = `from flask import Flask
+
+# Inicializamos nuestra aplicación Web Flask
+app = Flask(__name__)
+
+# Definimos la ruta principal '/'
+@app.route("/")
+def home():
+    return "<h1>☕ ¡Bienvenido a la Cafetería Web en Flask! ☕</h1><p>Página servida con Python.</p>"
+
+if __name__ == "__main__":
+    # Iniciamos el servidor en el puerto 5000
+    app.run(debug=True)`;
+
+const codeDeepseekAI = `from openai import OpenAI
+
+# Conectamos con el cliente compatible con OpenAI de DeepSeek
+# (DeepSeek usa el mismo estándar de librerías que OpenAI)
+client = OpenAI(
+    api_key="TU_LLAVE_DE_DEEPSEEK",
+    base_url="https://api.deepseek.com"
+)
+
+response = client.chat.completions.create(
+    model="deepseek-chat",
+    messages=[
+        {"role": "system", "content": "Eres un barista experto en café y Python."},
+        {"role": "user", "content": "Dame una receta corta de café usando Python."}
+    ],
+    stream=False
+)
+
+print(response.choices[0].message.content)`;
+
+const codeRichTerminal = `from rich import print
+from rich.table import Table
+
+# ¡Rich nos permite imprimir con emojis, colores y tablas hermosas!
+tabla = Table(title="Menú de Cafetería Premium")
+
+tabla.add_column("Código", style="cyan", no_wrap=True)
+tabla.add_column("Producto", style="magenta")
+tabla.add_column("Precio", style="green", justify="right")
+
+tabla.add_row("C01", "Café Latte Espumoso", "\$1.800")
+tabla.add_row("C02", "Expreso Doble carga", "\$1.500")
+tabla.add_row("C03", "Muffin Relleno de Arándano", "\$1.200")
+
+print(tabla)`;
+
+const codeRetoPip = `import requests
+
+# 1. Pide al usuario el ID de un personaje
+try:
+    personaje_id = int(input("Ingresa el ID del personaje de Rick & Morty a buscar (1 al 826): "))
+    if personaje_id < 1 or personaje_id > 826:
+        print("ID fuera de rango. Intentando con ID 1 por defecto...")
+        personaje_id = 1
+except ValueError:
+    print("Entrada inválida. Usando ID 1 por defecto...")
+    personaje_id = 1
+
+url = f"https://rickandmortyapi.com/api/character/{personaje_id}"
+
+try:
+    respuesta = requests.get(url)
+    if respuesta.status_code == 200:
+        datos = respuesta.json()
+        nombre = datos.get("name")
+        estado = datos.get("status")
+        genero = datos.get("gender")
+        
+        print(f"\\n✔ Encontrado: {nombre}")
+        print(f"Género: {genero} | Estado de salud: {estado}")
+    else:
+        print("❌ No pudimos encontrar ese personaje.")
+except Exception as e:
+    print(f"❌ Ocurrió un error: {e}")`;
+
+const codeValidadorRut = `# validador_rut.py
+from itertools import cycle
+
+def validar_rut(rut):
+    # Limpiamos el RUT de puntos y guiones, y pasamos a mayúsculas
+    rut = rut.replace(".", "").replace("-", "").upper().strip()
+    if len(rut) < 2:
+        return False
+    
+    cuerpo = rut[:-1]
+    dv = rut[-1]
+    
+    # Validamos que el cuerpo contenga solo dígitos
+    if not cuerpo.isdigit():
+        return False
+        
+    # Calculamos el Dígito Verificador usando el Módulo 11
+    revertido = map(int, reversed(cuerpo))
+    factores = cycle(range(2, 8))
+    suma = sum(d * f for d, f in zip(revertido, factores))
+    res = 11 - (suma % 11)
+    
+    dv_esperado = 'K' if res == 10 else '0' if res == 11 else str(res)
+    
+    return dv == dv_esperado`;
+
+const codeMainRut = `# main.py
+# Importamos la función de nuestro módulo personalizado
+from validador_rut import validar_rut
+
+rut_usuario = input("Ingresa tu RUT (ej: 12.345.678-9): ")
+
+if validar_rut(rut_usuario):
+    print("✔ ¡El RUT ingresado es totalmente VÁLIDO!")
+else:
+    print("❌ El RUT ingresado es INVÁLIDO. Por favor verifica.")`;
+
+const codeRutificadorUsage = `# Ejemplo usando la librería oficial 'rutificador'
+# Primero instalas con: pip install rutificador
+import rutificador
+
+# Formatear un RUT sucio a formato estándar con puntos y guion
+rut_sucio = "19234567k"
+rut_formateado = rutificador.format_rut(rut_sucio)
+print(f"RUT Formateado: {rut_formateado}") # 19.234.567-K
+
+# Validar RUT directamente
+es_valido = rutificador.validate_rut(rut_sucio)
+print(f"¿Es un RUT válido?: {es_valido}") # True o False`;
+
+const codeCryptographyUsage = `# Primero instalas con: pip install cryptography
+from cryptography.fernet import Fernet
+
+# 1. Generamos una llave de encriptación segura
+llave = Fernet.generate_key()
+fernet_client = Fernet(llave)
+
+# 2. Encriptamos información sensible (como la contraseña de un cliente)
+password_secreta = b"CafeteraUltraSegura2026"
+password_encriptada = fernet_client.encrypt(password_secreta)
+
+print(f"Llave de Encriptación: {llave.decode()}")
+print(f"Password Encriptada (Bytes cifrados): {password_encriptada.decode()}")
+
+# 3. Desencriptamos para recuperar el texto original
+password_desencriptada = fernet_client.decrypt(password_encriptada)
+print(f"Password Recuperada: {password_desencriptada.decode()}")`;
+---
+
+<Layout 
+  title="Módulos y PIP: Librerías y el Ecosistema en Python" 
+  description="No reinventes la rueda. Aprende a usar módulos incorporados, importar tus propios archivos y dominar PIP instalando librerías como Requests, Flask y DeepSeek para expandir tus poderes." 
+  courseSlug="python"
+>
+  <article class="content-section">
+    <h1>15. Módulos y PIP: ¡El Superpoder de No Reinventar la Rueda! 🌌</h1>
+
+    <section class="mb-10">
+      <h2>¿Qué es un Módulo y una Librería?</h2>
+      <p>
+        Hasta ahora has escrito todo tu código en un único archivo. Pero en la vida real, los proyectos tienen miles de líneas. 
+        Para no perderte, dividimos el código en piezas llamadas **Módulos** (que no son más que otros archivos <code>.py</code> con funciones listas para usar).
+      </p>
+      <p>
+        Python viene con "baterías incluidas". Es decir, trae una **Librería Estándar** repleta de módulos listos que puedes importar usando la palabra clave <code>import</code>.
+      </p>
+      <CodeBlock 
+        lang="python" 
+        code={codeLibreriaEstandar}
         title="librerias.py"
       />
     </section>
 
+    <!-- SIMULADOR DE IDE INTERACTIVO DE DOS ARCHIVOS -->
     <section class="mb-10">
-      <h2>Módulos Propios</h2>
-      <p>Un módulo es simplemente un archivo <code>.py</code>. Puedes importar funciones de tus propios archivos para organizar mejor tu código.</p>
-      <CodeBlock lang="python" code={`# Archivo: utilidades.py
-def sumar(a, b):
-    return a + b
+      <h2>Crea tus propios Módulos: Caso Práctico Validador de RUT 🛠️</h2>
+      <p>
+        Puedes importar funciones creadas por ti mismo ubicadas en otros archivos en la misma carpeta. Esto permite separar la lógica matemática pesada de tu programa principal.
+      </p>
+      <p>
+        A continuación, te mostramos el diseño de un **entorno de desarrollo (IDE)** con dos archivos: un módulo validador de RUT chileno (`validador_rut.py`) y el script principal (`main.py`) que lo consume.
+      </p>
 
-# Archivo: main.py
-from utilidades import sumar
-print(sumar(10, 5))`}
-        title="organizacion.py"
-      />
+      <!-- IDE Widget wrapper -->
+      <div class="ide-wrapper" style="background: #1e1e1e; border: 1px solid #333; border-radius: 8px; overflow: hidden; display: flex; font-family: system-ui, -apple-system, sans-serif; height: 380px; margin: 25px 0; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
+        
+        <!-- Sidebar del IDE -->
+        <div class="ide-sidebar" style="width: 210px; background: #252526; border-right: 1px solid #2d2d2d; padding: 12px 10px; display: flex; flex-direction: column; gap: 8px; user-select: none;">
+          <div style="font-size: 10px; text-transform: uppercase; font-weight: bold; letter-spacing: 0.8px; color: #858585; margin-bottom: 8px; padding-left: 5px;">EXPLORADOR</div>
+          <div style="color: #abb2bf; font-size: 13px; font-weight: bold; display: flex; align-items: center; gap: 5px;">
+            <span>📁</span> proyecto_validador
+          </div>
+          
+          <div style="display: flex; flex-direction: column; gap: 4px; padding-left: 12px;">
+            <!-- Botón / label del primer archivo -->
+            <label for="tab-rut" style="font-size: 13px; color: #d7dae0; padding: 6px 8px; border-radius: 4px; display: flex; align-items: center; gap: 6px; cursor: pointer;" class="sidebar-file-item">
+              <span style="color: #3776ab;">🐍</span> validador_rut.py
+            </label>
+            <!-- Botón / label del segundo archivo -->
+            <label for="tab-main" style="font-size: 13px; color: #d7dae0; padding: 6px 8px; border-radius: 4px; display: flex; align-items: center; gap: 6px; cursor: pointer;" class="sidebar-file-item">
+              <span style="color: #3776ab;">🐍</span> main.py
+            </label>
+          </div>
+        </div>
+
+        <!-- Área de Código (Pestañas y Editor) -->
+        <div style="flex: 1; display: flex; flex-direction: column; background: #1e1e1e;">
+          
+          <!-- Controles de pestañas invisibles pero funcionales -->
+          <input type="radio" id="tab-rut" name="ide-editor-tab" checked style="display: none;" />
+          <input type="radio" id="tab-main" name="ide-editor-tab" style="display: none;" />
+          
+          <!-- Encabezado de Pestañas -->
+          <div style="display: flex; background: #2d2d2d; height: 35px; border-bottom: 1px solid #252526; user-select: none;">
+            <label id="tab-rut-label" for="tab-rut" style="padding: 0 16px; font-size: 12px; display: flex; align-items: center; gap: 6px; cursor: pointer; border-right: 1px solid #252526; border-top: 2px solid transparent;" class="ide-tab-header">
+              <span style="color: #3776ab;">🐍</span> validador_rut.py
+            </label>
+            <label id="tab-main-label" for="tab-main" style="padding: 0 16px; font-size: 12px; display: flex; align-items: center; gap: 6px; cursor: pointer; border-right: 1px solid #252526; border-top: 2px solid transparent;" class="ide-tab-header">
+              <span style="color: #3776ab;">🐍</span> main.py
+            </label>
+          </div>
+
+          <!-- Ventana de Código -->
+          <div style="flex: 1; overflow-y: auto; padding: 0; position: relative;">
+            <div id="content-rut-file" style="display: none; height: 100%;">
+              <CodeBlock lang="python" code={codeValidadorRut} title="validador_rut.py" />
+            </div>
+            <div id="content-main-file" style="display: none; height: 100%;">
+              <CodeBlock lang="python" code={codeMainRut} title="main.py" />
+            </div>
+          </div>
+
+        </div>
+      </div>
     </section>
 
+    <!-- ESTILOS CSS PARA HACER FUNCIONAR EL IDE SIMULADO SIN REACT -->
+    <style>
+      /* Hover en el explorador lateral del IDE */
+      .sidebar-file-item:hover {
+        background: #2c313c;
+      }
+      /* Lógica de pestañas interactivas CSS */
+      #tab-rut:checked ~ div .ide-tab-header[for="tab-rut"] {
+        background: #1e1e1e !important;
+        color: #fff !important;
+        border-top: 2px solid #3776ab !important;
+      }
+      #tab-main:checked ~ div .ide-tab-header[for="tab-main"] {
+        background: #1e1e1e !important;
+        color: #fff !important;
+        border-top: 2px solid #3776ab !important;
+      }
+      #tab-rut:checked ~ div .ide-tab-header[for="tab-main"] {
+        background: #2d2d2d;
+        color: #7f848e;
+      }
+      #tab-main:checked ~ div .ide-tab-header[for="tab-rut"] {
+        background: #2d2d2d;
+        color: #7f848e;
+      }
+      /* Mostrar el contenido correspondiente */
+      #tab-rut:checked ~ div #content-rut-file {
+        display: block !important;
+      }
+      #tab-main:checked ~ div #content-main-file {
+        display: block !important;
+      }
+    </style>
+
     <section class="mb-10">
-      <h2>El archivo requirements.txt</h2>
-      <p>Cuando trabajas en equipo, guardas todas las librerías necesarias en un archivo de texto para que otros las instalen con un solo comando.</p>
-      <CodeBlock lang="python" code={`# Ejecuta esto para instalar todo lo del proyecto
-pip install -r requirements.txt`}
+      <h2>¿Qué es PIP y cómo funciona? 📦</h2>
+      <p>
+        Imagina que compras un teléfono nuevo. Viene con la app de llamadas y calculadora (Librería estándar). Pero si quieres jugar o chatear, vas a la **App Store** o **Play Store** y te descargas aplicaciones que otras personas programaron.
+      </p>
+      <div class="tip-box" style="background: #FFF3E0; border-left: 4px solid #FF9800; padding: 15px; margin-bottom: 20px; border-radius: 4px; color: #e65100;">
+        <strong>🚀 PIP: El Gestor de Paquetes oficial de Python</strong><br />
+        <strong>PIP</strong> es la "App Store" de Python. Es una herramienta de consola que te permite descargar e instalar librerías externas gratuitas desarrolladas por la comunidad global de programadores (almacenadas en un sitio web llamado PyPI).
+      </div>
+      
+      <p>
+        Para instalar una librería desde tu terminal de Windows/Mac (fuera de Python), usas el comando:
+      </p>
+      <CodeBlock 
+        lang="bash" 
+        code={codeInstalarRequests}
         title="Terminal"
       />
     </section>
 
+    <!-- RUTIFICADOR Y CRYPTOGRAPHY -->
     <section class="mb-10">
-      <h2>¿Qué es PIP?</h2>
-      <p>Es el **gestor de paquetes** de Python. Sirve para instalar librerías que **otras personas** han escrito y compartido con el mundo (como Pandas, Requests, Django o FastAPI).</p>
-      <CodeBlock lang="python" code={`# Ejecuta esto en tu consola (fuera de Python)
-pip install requests`}
+      <h2>¿Para qué escribir todo a mano? ¡Usa PIP! 📦⚡</h2>
+      <p>
+        Para resolver el validador de RUT que programamos arriba, no es necesario inventar la rueda de nuevo. En PyPI existe una librería oficial llamada **rutificador** que resuelve esto en un segundo.
+      </p>
+      <CodeBlock 
+        lang="python" 
+        code={codeRutificadorUsage}
+        title="uso_rutificador.py"
+      />
+
+      <h3 class="mt-8">Ciberseguridad Práctica: <code>pip install cryptography</code> 🛡️</h3>
+      <p>
+        Otro uso increíble de PIP es la ciberseguridad. Si necesitas proteger los datos de tus clientes (como tarjetas, emails o passwords en tu base de datos), puedes instalar <strong>cryptography</strong> para cifrar y descifrar la información de forma militar con un estándar llamado Fernet:
+      </p>
+      <CodeBlock 
+        lang="python" 
+        code={codeCryptographyUsage}
+        title="encriptacion_segura.py"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Paso a Paso Práctico: Conectando con la API de Rick and Morty 👽</h2>
+      <p>
+        La librería externa <code>requests</code> es la más famosa del mundo para conectarse a internet. Vamos a usarla para comunicarnos con la **API oficial de Rick and Morty** y traer la ficha técnica de un personaje real en vivo.
+      </p>
+      
+      <ol class="list-decimal pl-5 mb-6 text-gray-300">
+        <li>Abre tu terminal e instala la librería con <code>pip install requests</code>.</li>
+        <li>Crea un archivo llamado <code>rick_api.py</code>.</li>
+        <li>Copia, ejecuta el siguiente código y asómbrate con la respuesta:</li>
+      </ol>
+
+      <CodeBlock 
+        lang="python" 
+        code={codeRickAndMorty}
+        title="rick_api.py"
+      />
+    </section>
+
+    <!-- LISTADO COMPLETO DE PIP MAS USADAS -->
+    <section class="mb-10">
+      <h2>Tabla de las Librerías PIP Más Utilizadas en la Industria 🏆📊</h2>
+      <p>
+        El ecosistema de Python es gigante. Para ayudarte a navegarlo, te presentamos una tabla resumen de los paquetes más populares del mundo y por qué todo desarrollador profesional debe conocerlos:
+      </p>
+
+      <div style="overflow-x: auto; margin: 20px 0; border-radius: 8px; border: 1px solid #444;">
+        <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 14px; background: #1e1e24; color: #e2e8f0;">
+          <thead>
+            <tr style="background: #2d2d3a; border-bottom: 2px solid #444; color: #34d399;">
+              <th style="padding: 12px 15px;">Librería (PIP)</th>
+              <th style="padding: 12px 15px;">Categoría</th>
+              <th style="padding: 12px 15px;">Comando de Instalación</th>
+              <th style="padding: 12px 15px;">Propósito / ¿Por qué es famosa?</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom: 1px solid #2d2d3a;">
+              <td style="padding: 12px 15px; font-weight: bold; color: #60a5fa;">requests</td>
+              <td style="padding: 12px 15px;">Internet y APIs</td>
+              <td style="padding: 12px 15px;"><code style="background: #111; padding: 2px 5px; border-radius: 3px; font-size: 12px;">pip install requests</code></td>
+              <td style="padding: 12px 15px;">La librería estándar de facto para consumir APIs y hacer peticiones HTTP (GET, POST).</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #2d2d3a; background: #25252b;">
+              <td style="padding: 12px 15px; font-weight: bold; color: #60a5fa;">pandas</td>
+              <td style="padding: 12px 15px;">Ciencia de Datos</td>
+              <td style="padding: 12px 15px;"><code style="background: #111; padding: 2px 5px; border-radius: 3px; font-size: 12px;">pip install pandas</code></td>
+              <td style="padding: 12px 15px;">Manipulación y análisis de datos estructurados (tablas gigantes, archivos Excel y CSV).</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #2d2d3a;">
+              <td style="padding: 12px 15px; font-weight: bold; color: #60a5fa;">cryptography</td>
+              <td style="padding: 12px 15px;">Ciberseguridad</td>
+              <td style="padding: 12px 15px;"><code style="background: #111; padding: 2px 5px; border-radius: 3px; font-size: 12px;">pip install cryptography</code></td>
+              <td style="padding: 12px 15px;">Provee recetas y primitivas criptográficas seguras y robustas para cifrar contraseñas y archivos.</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #2d2d3a; background: #25252b;">
+              <td style="padding: 12px 15px; font-weight: bold; color: #60a5fa;">flask / fastapi</td>
+              <td style="padding: 12px 15px;">Desarrollo Web</td>
+              <td style="padding: 12px 15px;"><code style="background: #111; padding: 2px 5px; border-radius: 3px; font-size: 12px;">pip install fastapi uvicorn</code></td>
+              <td style="padding: 12px 15px;">Permiten crear servidores, microservicios y APIs web hiperrápidas listas para producción.</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #2d2d3a;">
+              <td style="padding: 12px 15px; font-weight: bold; color: #60a5fa;">rich</td>
+              <td style="padding: 12px 15px;">Interfaz de Consola</td>
+              <td style="padding: 12px 15px;"><code style="background: #111; padding: 2px 5px; border-radius: 3px; font-size: 12px;">pip install rich</code></td>
+              <td style="padding: 12px 15px;">Hacer que la salida de texto de tu consola sea hermosa (colores, paneles, emojis y barras de progreso).</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #2d2d3a; background: #25252b;">
+              <td style="padding: 12px 15px; font-weight: bold; color: #60a5fa;">pytest</td>
+              <td style="padding: 12px 15px;">Calidad y Pruebas</td>
+              <td style="padding: 12px 15px;"><code style="background: #111; padding: 2px 5px; border-radius: 3px; font-size: 12px;">pip install pytest</code></td>
+              <td style="padding: 12px 15px;">Escribir y automatizar pruebas unitarias e integrales para certificar que el software no falle.</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #2d2d3a;">
+              <td style="padding: 12px 15px; font-weight: bold; color: #60a5fa;">openai</td>
+              <td style="padding: 12px 15px;">Inteligencia Artificial</td>
+              <td style="padding: 12px 15px;"><code style="background: #111; padding: 2px 5px; border-radius: 3px; font-size: 12px;">pip install openai</code></td>
+              <td style="padding: 12px 15px;">Librería oficial para conectar tus proyectos con Modelos de Lenguaje (ChatGPT, DeepSeek, Claude).</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2>Las mejores Librerías (PIP) para Experimentar 🧪</h2>
+      <p>
+        Python tiene miles de paquetes maravillosos. Aquí tienes una selección premium de los mejores y cómo se usan en código real:
+      </p>
+
+      <div class="space-y-8 mt-6">
+        <!-- FLASK -->
+        <div class="p-6 rounded-lg" style="background: #000000; border: 1px solid rgba(16, 185, 129, 0.45); color: #e2e8f0; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.35);">
+          <h3 class="flex items-center gap-2" style="color: #34d399; font-weight: bold; font-size: 1.25rem; margin-bottom: 8px; margin-top: 0;">🌐 1. Flask (Crear Servidores y Páginas Web)</h3>
+          <p class="text-sm mb-4" style="color: #cbd5e1; line-height: 1.6;">
+            ¿Quieres transformar tu script de Python en un sitio web real? Con <code>pip install flask</code> puedes levantar un servidor web local en solo 5 líneas de código:
+          </p>
+          <CodeBlock 
+            lang="python" 
+            code={codeFlaskServer}
+            title="servidor_web.py"
+          />
+        </div>
+
+        <!-- DEEPSEEK / OPENAI -->
+        <div class="p-6 rounded-lg" style="background: #000000; border: 1px solid rgba(59, 130, 246, 0.45); color: #e2e8f0; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.35);">
+          <h3 class="flex items-center gap-2" style="color: #60a5fa; font-weight: bold; font-size: 1.25rem; margin-bottom: 8px; margin-top: 0;">🤖 2. OpenAI / DeepSeek (Conectar Inteligencia Artificial)</h3>
+          <p class="text-sm mb-4" style="color: #cbd5e1; line-height: 1.6;">
+            Puedes conectar tus programas de Python a modelos de Inteligencia Artificial como <strong>DeepSeek</strong> o <strong>GPT-4</strong> instalando la librería oficial de API: <code>pip install openai</code>.
+          </p>
+          <CodeBlock 
+            lang="python" 
+            code={codeDeepseekAI}
+            title="conexion_ia.py"
+          />
+        </div>
+
+        <!-- RICH -->
+        <div class="p-6 rounded-lg" style="background: #000000; border: 1px solid rgba(139, 92, 246, 0.45); color: #e2e8f0; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.35);">
+          <h3 class="flex items-center gap-2" style="color: #a78bfa; font-weight: bold; font-size: 1.25rem; margin-bottom: 8px; margin-top: 0;">🎨 3. Rich (Diseño Espectacular en Consola)</h3>
+          <p class="text-sm mb-4" style="color: #cbd5e1; line-height: 1.6;">
+            ¿Cansado de la consola aburrida y monótona? Con <code>pip install rich</code> puedes imprimir texto en colores, cajas, emojis y tablas espectaculares de forma muy sencilla:
+          </p>
+          <CodeBlock 
+            lang="python" 
+            code={codeRichTerminal}
+            title="diseno_consola.py"
+          />
+        </div>
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2>El archivo requirements.txt 📋</h2>
+      <p>
+        Cuando trabajas en equipo o subes tu código a la nube, no compartes la carpeta de librerías descargadas (que son gigabytes). En su lugar, creas un archivo de texto llamado <code>requirements.txt</code> que actúa como la **lista de compras** de tus dependencias:
+      </p>
+      <CodeBlock 
+        lang="plaintext" 
+        code={`requests==2.31.0
+flask==3.0.2
+rich==13.7.1
+openai==1.12.0`}
+        title="requirements.txt"
+      />
+      <p class="mt-4">
+        Cualquier otro programador puede instalar de golpe todas las librerías necesarias con un único comando:
+      </p>
+      <CodeBlock 
+        lang="bash" 
+        code={`pip install -r requirements.txt`}
         title="Terminal"
       />
     </section>
 
-    <div class="ejercicio" style="background: #E3F2FD;">
-      <h3>🐍 Desafío: El dado de la suerte</h3>
-      <p class="enunciado">Importa el módulo <code>random</code> y crea un dado de 6 caras usando <code>random.randint(1, 6)</code>. Imprime el resultado.</p>
-      <details>
-        <summary>👁️ Ver solución sugerida</summary>
-        <CodeBlock lang="python" code={`import random
-caras = random.randint(1, 6)
-print("Ha salido un: " + str(caras))`} title="Python" />
+    <div class="ejercicio" style="background: #E8F5E9; border-left: 4px solid #4CAF50; padding: 20px; border-radius: 6px; color: #1b5e20; margin-bottom: 30px;">
+      <h3>🐍 Ponte a prueba: El Buscador Multiverso</h3>
+      <p class="enunciado" style="color: #2e7d32;">
+        Escribe un programa que solicite al usuario ingresar un número de ID por consola, haga una petición GET a la API de Rick and Morty para ese ID específico, y si existe, muestre en pantalla el Nombre, Género y si está Vivo o Muerto. ¡Agrega control de excepciones por si el ID ingresado no existe o no hay internet!
+      </p>
+      <details class="mt-4">
+        <summary class="cursor-pointer font-bold" style="color: #1b5e20;">👁️ Ver solución sugerida</summary>
+        <div class="mt-2 bg-white rounded p-4 border border-green-200">
+          <CodeBlock 
+            lang="python" 
+            code={codeRetoPip} 
+            title="buscador_rick.py" 
+          />
+        </div>
       </details>
     </div>
 
     <section class="mb-10">
-      <h2>Prueba Final del Ecosistema</h2>
+      <h2>Prueba de Conocimientos 📝</h2>
       <PythonQuizModal quizKey="modulos" />
     </section>
 
     <nav class="nav-bottom">
       <a href="/course/python/poo/" class="prev">← Clases y Objetos</a>
-      <a href="/course/python/seguridad-bandit-sonarqube/" class="next">Seguridad y calidad →</a>
+      <a href="/course/python/entornos-virtuales/" class="next">Entornos Virtuales →</a>
     </nav>
   </article>
 </Layout>
