@@ -34,6 +34,24 @@ Para mantener la coherencia y garantizar la mejor experiencia de aprendizaje gam
    - Se debe invocar su componente Modal correspondiente (p.e: `<CsharpQuizModal />`) importándolo en la parte superior del archivo `.astro`.
    - Auditoría local: `npm run audit:lessons` lista lecciones que podrían faltar `CodeBlock`, quiz o la mención «Ponte a prueba» (revisar manualmente los casos límite).
 
+## Rutas de Aprendizaje ("La Carta de Cafés") 🧭☕
+
+Para guiar mejor a los alumnos en su camino de aprendizaje, la plataforma incorpora un sistema interactivo de **Rutas de Aprendizaje** en la página del catálogo principal (`/cursos/`).
+
+### Estructura de las Rutas
+El catálogo está dividido en un selector de pestañas de estética neobrutalista:
+1. **🧭 Rutas de Aprendizaje (Activa por defecto)**: Presenta la "Carta de Cafés", cuatro caminos de especialización ordenados secuencialmente de inicio a fin:
+   - **Ruta del Expreso** ☕ (Lógica y Fundamentos): El punto de partida de absoluto cero. (`pseint`, `ecosistemas`, `terminal`, `git`)
+   - **Ruta del Capuchino** 🎨 (Desarrollo Frontend): Estructura, diseño e interactividad web. (`html`, `css`, `javascript`, `git`)
+   - **Ruta de la Prensa Francesa** 🐍 (Backend y Datos con Python): Python, testing y bases de datos relacionales/NoSQL. (`python`, `modelamiento-db`, `consultas-sql`, `python-testing`, `nosql`)
+   - **Ruta del Macchiato** 🏗️ (Ingeniería y Arquitectura): Arquitectura de software, agilidad y estructuras avanzadas. (`vision-producto`, `analisis-backlog`, `scrum-prototipado`, `estructuras-datos`, `patrones-diseno`, `c4`)
+2. **📚 Todos los Cursos**: Mantiene el catálogo completo con buscador en tiempo real y selector de vista en cuadrícula o lista.
+
+### Configuración y Visualizador
+Las rutas se definen dentro del componente [CoursesCatalog.tsx](file:///c:/Users/benja/Desktop/EDUCK%202026/aprende/src/components/courses/CoursesCatalog.tsx) mediante la constante `COFFEE_ROUTES`:
+- **Propiedades**: Cada ruta posee un `id`, `name`, `subtitle`, `emoji`, `description`, `color` (tono principal), `accent` (color de contraste para los nodos) y `courseSlugs` (un arreglo con la secuencia ordenada de los cursos que componen la ruta).
+- **El Camino de tu Café**: Cuando el usuario selecciona una ruta, se renderiza un visualizador de roadmap en formato de tubería vertical con conectores discontinuos de colores dinámicos y nodos interactivos numerados (`1`, `2`, `3`...) completamente responsivos que conducen a los cursos.
+
 ## Parámetros de URL (embed, PDF, quiz)
 
 Referencia de query string (`?embed=true`, `?pdf=true`, etc.): [docs/parametros-url-get.md](docs/parametros-url-get.md).
