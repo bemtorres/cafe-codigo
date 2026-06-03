@@ -1,0 +1,19 @@
+---
+import QuizModal from './QuizModal.astro';
+
+type Props = {
+  quizKey: string;
+};
+
+const { quizKey } = Astro.props as Props;
+---
+
+<QuizModal
+  courseSlug="php"
+  quizKey={quizKey}
+  title="PHP Quiz"
+  brandingColor="#777BB4"
+  brandingBg="#1a1a1b"
+  brandingText="#FFFFFF"
+  logo="🐘"
+/>

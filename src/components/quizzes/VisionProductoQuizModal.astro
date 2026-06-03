@@ -1,0 +1,19 @@
+---
+import QuizModal from './QuizModal.astro';
+
+type Props = {
+  quizKey: string;
+};
+
+const { quizKey } = Astro.props as Props;
+---
+
+<QuizModal
+  courseSlug="vision-producto"
+  quizKey={quizKey}
+  title="Visión Producto Quiz"
+  brandingColor="#8b5cf6"
+  brandingBg="#ffffff"
+  brandingText="#ffffff"
+  logo="👁️"
+/>

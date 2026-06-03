@@ -203,6 +203,9 @@ a { transition: transform 0.2s, color 0.2s; }
   font-weight: 500;
   font-size: 1rem;
 }
+.content-table td {
+  color: var(--text-primary);
+}
 .content-table th {
   background: var(--info);
   color: white;

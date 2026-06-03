@@ -111,32 +111,112 @@ export const pythonQuizBank: Record<string, PythonQuizDefinition> = {
   },
   'listas': {
     key: 'listas',
-    title: 'Quiz: Listas y Tuplas',
+    title: 'Quiz: Análisis de Listas y Tuplas',
     questions: [
       {
-        prompt: "¿Cuál es el método para añadir un nuevo elemento al final de una lista?",
-        options: ["list.add()", "list.push()", "list.append()", "list.insert_last()"],
-        correctIndex: 2
-      },
-      {
-        prompt: "¿Cuál es la diferencia principal entre una Lista [] y una Tupla () ?",
-        options: ["La lista es indexada, la tupla no", "La lista es mutable (se cambia), la tupla es inmutable (fija)", "Las tuplas solo aceptan números", "Las listas son infinitas, las tuplas no"],
+        prompt: "Si queremos acceder al precio del primer producto (Laptop) usando productos[0], ¿cuál expresión es la correcta?",
+        options: ["productos[0][1]", "productos[0][2]", "productos[0][3]", "productos[0][4]"],
         correctIndex: 1
       },
       {
-        prompt: "¿Qué comando eliminaría el último elemento de una lista de nombre 'items'?",
-        options: ["items.delete()", "items.remove_last()", "items.pop()", "del items[0]"],
+        prompt: "¿Qué índice de la tupla representa la categoría de un producto (ej: 'Electrónica')?",
+        options: ["1", "2", "3", "4"],
         correctIndex: 2
       },
       {
-        prompt: "¿Qué imprime: lista = [1, 2, 3]; print(lista[-1]) ?",
-        options: ["1", "3", "Error", "2"],
+        prompt: "¿Cuál es la categoría del producto productos[3] (Escritorio de Madera) en la lista?",
+        options: ["Electrónica", "Oficina", "Cocina", "Salud"],
         correctIndex: 1
       },
       {
-        prompt: "¿Cómo obtenemos la longitud (cantidad de elementos) de una lista x?",
-        options: ["x.size()", "x.length", "len(x)", "count(x)"],
+        prompt: "¿Qué retorna la expresión productos[-1][1] en la consola de Python?",
+        options: ["'Laptop'", "'Cafetera de Goteo'", "'Audífonos Bluetooth'", "Lanza un IndexError"],
+        correctIndex: 1
+      },
+      {
+        prompt: "Si ejecutas la instrucción: productos[2][4] = 60, ¿qué sucede?",
+        options: [
+          "El stock del Teclado Mecánico cambia exitosamente a 60",
+          "Se crea una nueva tupla en el inventario",
+          "Lanza un TypeError porque las tuplas son inmutables",
+          "Se elimina el producto de la lista"
+        ],
         correctIndex: 2
+      },
+      {
+        prompt: "¿Cómo obtenemos el stock de los 'Audífonos Bluetooth' (ubicados en el índice 4)?",
+        options: ["productos[4][2]", "productos[4][3]", "productos[4][4]", "productos[4][0]"],
+        correctIndex: 2
+      },
+      {
+        prompt: "¿Cuál es el código identificador (ID) del producto productos[1] (Silla Ergonómica)?",
+        options: ["'PROD01'", "'PROD02'", "'PROD03'", "'PROD04'"],
+        correctIndex: 1
+      },
+      {
+        prompt: "Para saber cuántos productos diferentes existen en la lista de inventario, ¿qué función usamos?",
+        options: ["size(productos)", "productos.length()", "len(productos)", "count(productos)"],
+        correctIndex: 2
+      },
+      {
+        prompt: "¿Cuál es el valor del primer elemento de la tupla productos[5]?",
+        options: ["'PROD06'", "'Cafetera de Goteo'", "60.00", "'Cocina'"],
+        correctIndex: 0
+      },
+      {
+        prompt: "¿Cuál de los productos del catálogo tiene el menor precio unitario (mas_barato)?",
+        options: ["Teclado Mecánico", "Escritorio de Madera", "Cafetera de Goteo", "Audífonos Bluetooth"],
+        correctIndex: 2
+      },
+      {
+        prompt: "¿Cuál es el precio unitario del producto más caro (Laptop) del catálogo?",
+        options: ["150.00", "250.00", "850.00", "120.00"],
+        correctIndex: 2
+      },
+      {
+        prompt: "Si sumamos el stock total de los productos de categoría 'Oficina' (25 de Silla y 10 de Escritorio), ¿cuál es el total?",
+        options: ["15", "25", "35", "50"],
+        correctIndex: 2
+      },
+      {
+        prompt: "Si la variable 'mas_barato' contiene la tupla de la Cafetera, ¿qué expresión nos devuelve su nombre?",
+        options: ["mas_barato[0]", "mas_barato[1]", "mas_barato[2]", "mas_barato[3]"],
+        correctIndex: 1
+      },
+      {
+        prompt: "¿Cuántos productos diferentes en el catálogo pertenecen a la categoría 'Electrónica'?",
+        options: ["2", "3", "4", "5"],
+        correctIndex: 1
+      },
+      {
+        prompt: "Si ejecutas productos.append(('PROD07', 'Mouse', 25.0, 'Electrónica', 100)), ¿cuál será el largo final de la lista?",
+        options: ["5", "6", "7", "8"],
+        correctIndex: 2
+      },
+      {
+        prompt: "¿Qué tipo de dato estructurado de Python es productos[0]?",
+        options: ["lista", "tupla", "diccionario", "conjunto"],
+        correctIndex: 1
+      },
+      {
+        prompt: "¿Qué tipo de dato es la variable contenedora 'productos'?",
+        options: ["lista", "tupla", "diccionario", "string"],
+        correctIndex: 0
+      },
+      {
+        prompt: "Si haces un slicing de la lista: recorte = productos[1:4], ¿cuántos elementos tendrá la nueva lista 'recorte'?",
+        options: ["2", "3", "4", "5"],
+        correctIndex: 1
+      },
+      {
+        prompt: "¿Cuál es el valor almacenado en productos[0][4] (stock de Laptop)?",
+        options: ["850.00", "15", "'PROD01'", "'Electrónica'"],
+        correctIndex: 1
+      },
+      {
+        prompt: "¿Qué string devuelve la expresión productos[3][1]?",
+        options: ["'Teclado Mecánico'", "'Escritorio de Madera'", "'Silla Ergonómica'", "'Cafetera de Goteo'"],
+        correctIndex: 1
       }
     ]
   },

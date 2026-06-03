@@ -1,0 +1,19 @@
+---
+import QuizModal from './QuizModal.astro';
+
+type Props = {
+  quizKey: string;
+};
+
+const { quizKey } = Astro.props as Props;
+---
+
+<QuizModal
+  courseSlug="python-testing"
+  quizKey={quizKey}
+  title="Testing Python Quiz"
+  brandingColor="#306998"
+  brandingBg="#ffffff"
+  brandingText="#ffffff"
+  logo="🧪"
+/>

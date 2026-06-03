@@ -1,0 +1,19 @@
+---
+import QuizModal from './QuizModal.astro';
+
+type Props = {
+  quizKey: string;
+};
+
+const { quizKey } = Astro.props as Props;
+---
+
+<QuizModal
+  courseSlug="excel"
+  quizKey={quizKey}
+  title="Excel Quiz"
+  brandingColor="#107c41"
+  brandingBg="#ffffff"
+  brandingText="#ffffff"
+  logo="📈"
+/>

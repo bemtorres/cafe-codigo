@@ -1,0 +1,130 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import { courses } from '../../../data/courses';
+
+const phpCourse = courses.find((c) => c.slug === 'php');
+if (!phpCourse) {
+  throw new Error("No se encontró el curso 'php' en el archivo de datos.");
+}
+---
+
+<Layout title="Curso de PHP Moderno: De Cero a Backend Developer" description="Domina el lenguaje que impulsa más del 70% de los sitios web de internet: sintaxis, arreglos asociativos, funciones y POO." courseSlug="php">
+  <div class="course-container">
+    <header class="course-index-header">
+      <h1 class="course-big-title">
+        <span class="elephant">🐘</span> 
+        {phpCourse.name}
+      </h1>
+      <p class="course-description">
+        {phpCourse.description}
+      </p>
+    </header>
+
+    <div class="cards-grid">
+      {phpCourse.lessons?.map((lesson, index) => (
+        <a href={lesson.href} class="lesson-card">
+          <div class="lesson-card__number">{index + 1}</div>
+          <div class="lesson-card__content">
+            <h3 class="lesson-card__title">{lesson.title}</h3>
+            <span class="lesson-card__cta">Abrir lección →</span>
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .course-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2.5rem 1.25rem;
+  }
+
+  .course-index-header {
+    text-align: center;
+    margin-bottom: 4rem;
+  }
+
+  .course-big-title {
+    font-size: clamp(1.65rem, 5.5vw, 2.75rem);
+    font-weight: 900;
+    color: #777BB4;
+    margin-bottom: 0.85rem;
+    line-height: 1.1;
+    font-family: 'Nunito', sans-serif;
+    text-shadow: 4px 4px 0px var(--border);
+  }
+
+  .course-description {
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    max-width: 650px;
+    margin: 0 auto;
+    font-weight: 750;
+    line-height: 1.55;
+  }
+
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .lesson-card {
+    display: flex;
+    gap: 1rem;
+    background: white;
+    border: 3.5px solid var(--border);
+    border-radius: 18px;
+    padding: 1.5rem;
+    text-decoration: none;
+    color: var(--text-primary);
+    box-shadow: 6px 6px 0px var(--border);
+    align-items: center;
+    transition:
+      transform 0.22s ease,
+      box-shadow 0.22s ease,
+      border-color 0.22s ease;
+  }
+
+  .lesson-card:hover {
+    transform: translate(-6px, -6px);
+    box-shadow: 12px 12px 0px var(--border);
+    border-color: #777BB4;
+    background: #fdfdfd;
+  }
+
+  .lesson-card__number {
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: var(--border);
+    opacity: 0.15;
+    line-height: 1;
+    font-family: 'JetBrains Mono', monospace;
+    flex-shrink: 0;
+  }
+
+  .lesson-card__content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .lesson-card__title {
+    font-size: 1.25rem;
+    font-weight: 950;
+    margin: 0 0 0.35rem;
+    color: #1a1a1b;
+  }
+
+  .lesson-card:hover .lesson-card__title {
+    color: #777BB4;
+  }
+
+  .lesson-card__cta {
+    font-size: 0.95rem;
+    font-weight: 900;
+    color: #777BB4;
+    font-family: 'JetBrains Mono', monospace;
+  }
+</style>

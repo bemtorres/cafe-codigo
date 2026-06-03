@@ -1,0 +1,19 @@
+---
+import QuizModal from './QuizModal.astro';
+
+type Props = {
+  quizKey: string;
+};
+
+const { quizKey } = Astro.props as Props;
+---
+
+<QuizModal
+  courseSlug="c4"
+  quizKey={quizKey}
+  title="Modelo C4 Quiz"
+  brandingColor="#1a5ebd"
+  brandingBg="#ffffff"
+  brandingText="#ffffff"
+  logo="🏗️"
+/>

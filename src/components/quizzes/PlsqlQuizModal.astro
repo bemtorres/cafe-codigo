@@ -1,0 +1,19 @@
+---
+import QuizModal from './QuizModal.astro';
+
+type Props = {
+  quizKey: string;
+};
+
+const { quizKey } = Astro.props as Props;
+---
+
+<QuizModal
+  courseSlug="plsql"
+  quizKey={quizKey}
+  title="Programación PL/SQL Quiz"
+  brandingColor="#e67e22"
+  brandingBg="#ffffff"
+  brandingText="#ffffff"
+  logo="🔥"
+/>

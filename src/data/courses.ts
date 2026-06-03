@@ -574,4 +574,19 @@ export const courses: Course[] = [
       { slug: 'proyecto-automatizacion', title: '8. Proyecto: Automatizar un Reporte', href: '/course/excel-intermedio/proyecto-automatizacion/' },
     ],
   },
+  {
+    slug: 'php',
+    name: 'PHP Moderno',
+    description: 'Domina el lenguaje que impulsa el 70% de la web: sintaxis moderna, arreglos asociativos, funciones y bases de POO con PHP 8+.',
+    category: 'language',
+    status: 'available',
+    color: '#777BB4',
+    communityReleaseYear: 1995,
+    lessons: [
+      { slug: 'introduccion', title: '1. Hola Elefante', href: '/course/php/introduccion/' },
+      { slug: 'variables', title: '2. Variables y Operadores', href: '/course/php/variables/' },
+      { slug: 'arrays', title: '3. Arrays y Funciones', href: '/course/php/arrays/' },
+      { slug: 'poo', title: '4. POO en PHP', href: '/course/php/poo/' },
+    ],
+  },
 ];

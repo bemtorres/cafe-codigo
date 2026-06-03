@@ -1,0 +1,103 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import PhpQuizModal from '../../../../components/quizzes/PhpQuizModal.astro';
+---
+
+<Layout title="Arrays y Funciones en PHP" description="Aprende cómo declarar arrays asociativos, recorrerlos con foreach y estructurar funciones en PHP." courseSlug="php">
+  <article class="content-section">
+    <h1>3. Arrays y Funciones 📦</h1>
+
+    <section class="mb-10">
+      <h2>Arrays Indexados (Numéricos)</h2>
+      <p>
+        Los arrays en PHP son sumamente flexibles. Un array indexado numérico se define fácilmente usando corchetes <code>[]</code>:
+      </p>
+      <CodeBlock lang="php" code={`<?php
+$cafes = ["Espresso", "Americano", "Capuccino"];
+echo $cafes[0]; // Imprime: Espresso`}
+        title="arrays_indexados.php"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Arrays Asociativos (Clave => Valor)</h2>
+      <p>
+        Los arrays asociativos te permiten asignar claves personalizadas (strings) a cada elemento en lugar de números. Se definen utilizando el operador flecha de asignación (<code>=&gt;</code>):
+      </p>
+      <CodeBlock lang="php" code={`<?php
+$precios = [
+    "Espresso" => 2.50,
+    "Capuccino" => 3.80,
+    "Latte" => 3.00
+];
+
+echo "El Capuccino cuesta: " . $precios["Capuccino"];`}
+        title="arrays_asociativos.php"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Recorrer Arrays con foreach</h2>
+      <p>
+        El bucle <code>foreach</code> es el estándar indiscutible en PHP para recorrer arreglos. Nos permite extraer tanto la clave como el valor de manera directa y limpia:
+      </p>
+      <CodeBlock lang="php" code={`<?php
+foreach ($precios as $cafe => $precio) {
+    echo "El café $cafe cuesta $$precio USD.\\n";
+}`}
+        title="bucle_foreach.php"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Funciones y Métodos Útiles</h2>
+      <p>
+        Las funciones se definen en PHP con la palabra clave <code>function</code>. Podemos usar la función nativa <code>count()</code> para saber cuántos elementos tiene un array:
+      </p>
+      <CodeBlock lang="php" code={`<?php
+function saludarEstudiante($nombre) {
+    return "¡Hola, $nombre! Que tengas un gran código.\\n";
+}
+
+echo saludarEstudiante("Benjamín");
+
+$totalCafes = count($cafes);
+echo "Tenemos $totalCafes cafés en el menú.";`}
+        title="funciones.php"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Reto de Arrays</h2>
+      <div class="ejercicio" style="background: #E3F2FD;">
+        <h3>💻 Misión: Diseña el Menú</h3>
+        <p class="enunciado">Crea un script con un array asociativo conteniendo productos y sus precios, recórrelo e imprime cada uno formateado.</p>
+        <details>
+          <summary>👁️ Ver solución sugerida</summary>
+          <CodeBlock lang="php" code={`<?php
+$menu = [
+    "Medialuna" => 1.50,
+    "Tostado" => 2.90,
+    "Muffin" => 2.00
+];
+
+foreach ($menu as $item => $precio) {
+    echo "• $item: $$precio USD\\n";
+}`} title="Solución" />
+        </details>
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2>Pon a prueba tu aprendizaje</h2>
+      <p>Responde las preguntas de esta lección para validar tu comprensión de arrays asociativos y bucles en PHP.</p>
+      <PhpQuizModal quizKey="arrays" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/php/variables/" class="prev">← Variables y Operadores</a>
+      <a href="/course/php/poo/" class="next">POO en PHP →</a>
+    </nav>
+  </article>
+</Layout>

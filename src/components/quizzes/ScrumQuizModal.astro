@@ -1,0 +1,19 @@
+---
+import QuizModal from './QuizModal.astro';
+
+type Props = {
+  quizKey: string;
+};
+
+const { quizKey } = Astro.props as Props;
+---
+
+<QuizModal
+  courseSlug="scrum"
+  quizKey={quizKey}
+  title="Scrum Quiz"
+  brandingColor="#10b981"
+  brandingBg="#ffffff"
+  brandingText="#ffffff"
+  logo="🏃"
+/>

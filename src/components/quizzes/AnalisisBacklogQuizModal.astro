@@ -1,0 +1,19 @@
+---
+import QuizModal from './QuizModal.astro';
+
+type Props = {
+  quizKey: string;
+};
+
+const { quizKey } = Astro.props as Props;
+---
+
+<QuizModal
+  courseSlug="analisis-backlog"
+  quizKey={quizKey}
+  title="Análisis Backlog Quiz"
+  brandingColor="#3b82f6"
+  brandingBg="#ffffff"
+  brandingText="#ffffff"
+  logo="📋"
+/>

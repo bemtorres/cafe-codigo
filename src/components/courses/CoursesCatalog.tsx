@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { courses, type Course, type CourseCategory } from '../../data/courses';
 import { courseHomePath } from '../../lib/coursePaths';
+import { getSupabaseBrowser } from '../../lib/supabase/client';
 
 const VIEW_STORAGE_KEY = 'aprende_courses_catalog_view';
 
@@ -141,9 +142,47 @@ export default function CoursesCatalog() {
   const [activeTab, setActiveTab] = useState<'routes' | 'all'>('routes');
   const [selectedRouteId, setSelectedRouteId] = useState<string>('expreso');
 
+  const [completedCourses, setCompletedCourses] = useState<Set<string>>(new Set());
+  const [inProgressCourses, setInProgressCourses] = useState<Set<string>>(new Set());
+
   useEffect(() => {
     setMounted(true);
     setView(readView());
+
+    async function fetchProgress() {
+      const supabase = getSupabaseBrowser();
+      if (!supabase) return;
+      
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data, error } = await supabase
+        .from('quiz_progress')
+        .select('course_slug, lesson_slug, correct_best, question_count, attempts')
+        .eq('user_id', user.id);
+
+      if (error || !data) return;
+
+      const completed = new Set<string>();
+      const inProgress = new Set<string>();
+
+      for (const row of data) {
+        const pct = row.question_count > 0 ? (row.correct_best * 100) / row.question_count : 0;
+        if (pct >= 60) {
+          completed.add(row.course_slug);
+        } else if (row.attempts > 0 || row.correct_best > 0) {
+          inProgress.add(row.course_slug);
+        }
+      }
+
+      for (const slug of completed) {
+        inProgress.delete(slug);
+      }
+
+      setCompletedCourses(completed);
+      setInProgressCourses(inProgress);
+    }
+    fetchProgress();
   }, []);
 
   const persistView = useCallback((v: ViewMode) => {
@@ -314,6 +353,11 @@ export default function CoursesCatalog() {
     .map((slug) => courses.find((c) => c.slug === slug))
     .filter((c): c is Course => !!c);
 
+  const completedRouteCoursesCount = selectedRouteCourses.filter((c) => completedCourses.has(c.slug)).length;
+  const routePercent = selectedRouteCourses.length > 0
+    ? Math.round((completedRouteCoursesCount * 100) / selectedRouteCourses.length)
+    : 0;
+
   return (
     <div>
       {/* Selector de pestañas premium */}
@@ -404,7 +448,7 @@ export default function CoursesCatalog() {
 
           {/* El Camino de tu Café / Visualizer */}
           <div className="rounded-3xl border-[3px] border-border bg-gradient-to-br from-[#fdfbf7] via-white to-[#faf7f2] p-6 shadow-[5px_5px_0px_#1E1210] md:p-8">
-            <header className="mb-8 border-b-2 border-dashed border-border/20 pb-4 flex flex-wrap gap-4 items-center justify-between">
+            <header className="mb-8 border-b-2 border-dashed border-border/20 pb-4 flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
               <div>
                 <p className="m-0 font-nunito text-[0.65rem] font-extrabold uppercase tracking-[0.2em]" style={{ color: selectedRoute.accent }}>
                   Ruta seleccionada
@@ -414,9 +458,34 @@ export default function CoursesCatalog() {
                   <span>{selectedRoute.name}</span>
                 </h3>
               </div>
-              <span className="rounded-2xl border-2 border-[#1E1210]/10 bg-white/70 backdrop-blur px-3.5 py-1.5 font-nunito text-xs font-bold text-textSecondary">
-                Estudiá a tu propio ritmo, sin presiones.
-              </span>
+              <div className="flex items-center gap-4 bg-white/80 border-2 border-border/40 rounded-2xl p-3 shadow-neo">
+                <div className="relative w-12 h-12 flex items-center justify-center">
+                  <svg width="42" height="42" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="overflow-visible">
+                    {/* Asa de la taza */}
+                    <path d="M68 35C78 35 84 41 84 50C84 59 78 65 68 65" stroke="#1E1210" strokeWidth="6" strokeLinecap="round" />
+                    {/* Cuerpo de la taza */}
+                    <path d="M16 28H72V52C72 67 60 79 44 79C28 79 16 67 16 52V28Z" fill="#F0ECE4" stroke="#1E1210" strokeWidth="6" strokeLinejoin="round" />
+                    {/* Máscara del líquido de café */}
+                    <clipPath id="coffeeClip">
+                      <path d="M19 31H69V52C69 65.5 58 76 44 76C30 76 19 65.5 19 52V31Z" />
+                    </clipPath>
+                    {/* Líquido de café animado */}
+                    <g clipPath="url(#coffeeClip)">
+                      <rect x="0" y={76 - (routePercent * 0.45)} width="100" height="80" fill="#6F4E37" className="transition-all duration-700 ease-out" />
+                    </g>
+                    {/* Borde superior */}
+                    <ellipse cx="44" cy="28" rx="28" ry="6" fill="#FFFFFF" stroke="#1E1210" strokeWidth="5" />
+                    {/* Vaporcito del café caliente si hay progreso */}
+                    {routePercent > 0 && (
+                      <path d="M34 16Q37 10 34 4M44 18Q47 8 44 2M54 16Q57 10 54 4" stroke="#B06D63" strokeWidth="3" strokeLinecap="round" className="animate-pulse" />
+                    )}
+                  </svg>
+                </div>
+                <div className="font-nunito">
+                  <p className="m-0 text-[0.6rem] font-black uppercase text-textMuted tracking-wider">Tu taza de aprendizaje</p>
+                  <p className="m-0 text-sm font-black text-textPrimary">{routePercent}% Servido ({completedRouteCoursesCount}/{selectedRouteCourses.length} Cursos)</p>
+                </div>
+              </div>
             </header>
 
             {/* Pipeline vertical responsivo y elegante */}
@@ -433,22 +502,45 @@ export default function CoursesCatalog() {
               {selectedRouteCourses.map((course, idx) => {
                 const isEven = idx % 2 === 0;
                 const cardBg = isEven ? 'bg-tertiary' : 'bg-secondary';
+                const isCompleted = completedCourses.has(course.slug);
+                const isInProgress = inProgressCourses.has(course.slug);
+
+                let indicatorBg = 'bg-white';
+                let indicatorTextColor = selectedRoute.accent;
+                let indicatorBorderColor = selectedRoute.accent;
+
+                if (isCompleted) {
+                  indicatorBg = 'bg-[#06D6A0]';
+                  indicatorTextColor = '#FFFFFF';
+                  indicatorBorderColor = '#1E1210';
+                } else if (isInProgress) {
+                  indicatorBg = 'bg-amber-50/90';
+                  indicatorTextColor = '#B06D63';
+                  indicatorBorderColor = '#B06D63';
+                }
+
                 return (
                   <div
                     key={course.slug}
                     className="relative flex items-start gap-4 sm:gap-6 group"
                   >
-                    {/* Indicador de número */}
+                    {/* Indicador de número / checkmark de progreso */}
                     <div
-                      className="relative z-10 flex h-12 w-12 sm:h-16 sm:w-16 shrink-0 items-center justify-center rounded-2xl border-[3px] border-border bg-white font-nunito font-black text-base sm:text-xl shadow-neo transition-transform group-hover:scale-105"
+                      className={`relative z-10 flex h-12 w-12 sm:h-16 sm:w-16 shrink-0 items-center justify-center rounded-2xl border-[3px] font-nunito font-black text-base sm:text-xl shadow-neo transition-transform group-hover:scale-105 ${indicatorBg}`}
                       style={{
-                        color: selectedRoute.accent,
-                        borderColor: selectedRoute.accent,
+                        color: indicatorTextColor,
+                        borderColor: indicatorBorderColor,
                       }}
                     >
-                      {idx + 1}
+                      {isCompleted ? '✓' : idx + 1}
+                      {isInProgress && (
+                        <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                          <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-red-500"></span>
+                        </span>
+                      )}
                     </div>
-
+ 
                     {/* Tarjeta del curso */}
                     <a
                       href={course.status === 'coming' ? '#' : courseHomePath(course.slug)}
@@ -464,8 +556,18 @@ export default function CoursesCatalog() {
                       <div className={`relative rounded-3xl border-[3px] border-border p-4 sm:p-5 shadow-neo transition-transform group-hover/card:-translate-y-0.5 ${cardBg}`}>
                         <div className="flex flex-wrap items-start justify-between gap-2">
                           <div>
-                            <h4 className="m-0 font-nunito text-base sm:text-lg font-black text-textPrimary leading-tight group-hover/card:text-info group-hover/card:underline">
-                              {course.name}
+                            <h4 className="m-0 font-nunito text-base sm:text-lg font-black text-textPrimary leading-tight group-hover/card:text-info group-hover/card:underline flex flex-wrap items-center gap-2">
+                              <span>{course.name}</span>
+                              {isCompleted && (
+                                <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2.5 py-0.5 font-nunito text-[0.65rem] font-extrabold text-emerald-600 border border-emerald-500/20">
+                                  ✓ Completado
+                                </span>
+                              )}
+                              {isInProgress && (
+                                <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 px-2.5 py-0.5 font-nunito text-[0.65rem] font-extrabold text-amber-600 border border-amber-500/20">
+                                  ● En curso
+                                </span>
+                              )}
                             </h4>
                             <p className="m-0 mt-0.5 font-nunito text-[0.7rem] font-bold uppercase tracking-wider text-textMuted">
                               {categoryLabel[course.category]}
@@ -482,7 +584,7 @@ export default function CoursesCatalog() {
                           </span>
                           {course.status !== 'coming' && (
                             <span className="flex items-center gap-1">
-                              Comenzar camino ➔
+                              {isCompleted ? 'Repasar curso ➔' : isInProgress ? 'Continuar camino ➔' : 'Comenzar camino ➔'}
                             </span>
                           )}
                         </div>

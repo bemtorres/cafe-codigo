@@ -1,67 +1,254 @@
-﻿---
+---
 import Layout from '../../../../layouts/Layout.astro';
 import CodeBlock from '../../../../components/CodeBlock.astro';
-import PythonQuizModal from '../../../../components/PythonQuizModal.astro';
+import PythonQuizModal from '../../../../components/quizzes/PythonQuizModal.astro';
 ---
 
-<Layout title="Listas y Tuplas en Python" description="Aprende a manejar colecciones de datos ordenadas." courseSlug="python">
+<Layout title="Listas y Tuplas en Python" description="Aprende a manejar colecciones de datos ordenadas en Python: métodos, slicing, inmutabilidad y casos de uso." courseSlug="python">
   <article class="content-section">
-    <h1>7. Listas y Tuplas: Colecciones de Datos 📦</h1>
+    <h1>7. Listas y Tuplas: Estructuras de Datos Ordenadas 📦</h1>
 
     <section class="mb-10">
-      <h2>Listas: Elásticas y flexibles</h2>
-      <p>Una lista es una colección <strong>mutable</strong> (puedes cambiar sus elementos) que se define con corchetes <code>[]</code>.</p>
-      <CodeBlock lang="python" code={`frutas = ["manzana", "platano", "cereza"]
-frutas.append("naranja") # Añadir al final
-frutas[0] = "kiwi" # Cambiar el primero (índice 0)
+      <h2>1. Listas: Colecciones Elásticas y Mutables</h2>
+      <p>
+        Una <strong>lista</strong> es una secuencia ordenada de elementos que se define utilizando corchetes <code>[]</code>. Las listas en Python son <strong>mutables</strong>, lo que significa que puedes añadir, quitar o modificar sus elementos después de haberlas creado.
+      </p>
+      <CodeBlock lang="python" code={`# Creación de una lista de compras
+compras = ["café", "pan", "leche"]
 
-# Ver la cantidad de elementos
-print(len(frutas)) # 4
-
-# Borrar un elemento específico
-frutas.remove("platano")
-
-# Conseguir el último elemento fácil
-ultimo = frutas[-1] 
-print(ultimo) # naranja`}
-        title="listas.py"
+# Acceso mediante índices (comienzan en 0)
+primero = compras[0]  # "café"
+ultimo = compras[-1]   # "leche" (índice negativo cuenta desde el final)`}
+        title="creacion_acceso.py"
       />
     </section>
 
     <section class="mb-10">
-      <h2>Slicing: Troceando la lista</h2>
-      <p>Python te permite sacar un "pedazo" de la lista indicando el rango.</p>
-      <CodeBlock lang="python" code={`# [inicio : fin] 
-numeros = [0, 1, 2, 3, 4, 5]
-recorte = numeros[1:4] 
-print(recorte) # [1, 2, 3]`}
-        title="slicing.py"
+      <h2>Operaciones y Métodos Esenciales de las Listas</h2>
+      <p>
+        Python ofrece un set de herramientas integradas muy potente para manipular listas:
+      </p>
+      
+      <div class="ejercicio" style="background: #FFF9C4; margin-bottom: 1.5rem;">
+        <h3>🛠️ Catálogo de Métodos</h3>
+        <ul style="margin: 0; padding-left: 1.25rem;">
+          <li><code>.append(item)</code>: Añade un elemento al final de la lista.</li>
+          <li><code>.insert(posicion, item)</code>: Inserta un elemento en un índice específico.</li>
+          <li><code>.remove(valor)</code>: Busca y elimina el primer elemento que coincida con el valor especificado.</li>
+          <li><code>.pop(indice)</code>: Elimina y retorna el elemento en el índice indicado (si no pasas índice, elimina el último).</li>
+          <li><code>.sort()</code>: Ordena los elementos de la lista (alfabéticamente o de menor a mayor).</li>
+          <li><code>.reverse()</code>: Invierte el orden actual de la lista.</li>
+        </ul>
+      </div>
+
+      <CodeBlock lang="python" code={`ingredientes = ["harina", "agua"]
+
+# 1. Agregar elementos
+ingredientes.append("sal")          # ["harina", "agua", "sal"]
+ingredientes.insert(1, "levadura")  # ["harina", "levadura", "agua", "sal"]
+
+# 2. Eliminar elementos
+eliminado = ingredientes.pop()      # Quita "sal" y lo guarda en la variable
+ingredientes.remove("agua")         # ["harina", "levadura"]
+
+# 3. Ordenar e invertir
+numeros = [5, 2, 9, 1]
+numeros.sort()                      # [1, 2, 5, 9]
+numeros.reverse()                   # [9, 5, 2, 1]`}
+        title="metodos_listas.py"
       />
     </section>
 
     <section class="mb-10">
-      <h2>Tuplas: Fijas e inmutables</h2>
-      <p>Las tuplas se definen con paréntesis <code>()</code>. Son ideales para datos que <strong>no deben cambiar</strong> (como coordenadas GPS o los meses del año).</p>
-      <CodeBlock lang="python" code={`coordenadas = (10.5, 20.3)
-# coordenadas[0] = 5.0 # ERROR: No se puede cambiar`}
-        title="tuplas.py"
+      <h2>2. Slicing Avanzado: Recortes de Listas</h2>
+      <p>
+        El <strong>slicing</strong> (rebanado) te permite extraer fragmentos de una lista utilizando la sintaxis <code>lista[inicio:fin:paso]</code>.
+      </p>
+      <ul>
+        <li><code>inicio</code>: El índice donde arranca el recorte (incluido).</li>
+        <li><code>fin</code>: El índice donde termina el recorte (<strong>excluido</strong>).</li>
+        <li><code>paso</code>: El intervalo de saltos (por defecto es 1).</li>
+      </ul>
+
+      <CodeBlock lang="python" code={`letras = ["a", "b", "c", "d", "e", "f", "g"]
+
+# Obtener desde el índice 1 al 4 (excluyendo el 4)
+sub_letras = letras[1:4]     # ["b", "c", "d"]
+
+# Si omites el inicio, arranca desde 0
+primeras_tres = letras[:3]   # ["a", "b", "c"]
+
+# Si omites el fin, va hasta el final de la lista
+desde_tercera = letras[2:]   # ["c", "d", "e", "f", "g"]
+
+# Usando el "paso" para saltar elementos
+saltando = letras[::2]       # ["a", "c", "e", "g"] (uno por medio)
+
+# Truco premium: Invertir una lista completa usando paso negativo
+invertida = letras[::-1]     # ["g", "f", "e", "d", "c", "b", "a"]`}
+        title="slicing_pro.py"
       />
     </section>
 
-    <div class="ejercicio" style="background: #E8F5E9;">
-      <h3>🐍 Desafío: El carrito de compras</h3>
-      <p class="enunciado">Crea una lista vacía llamada <code>carrito</code>, añade tres productos con <code>.append()</code> y luego quita el último con <code>.pop()</code>.</p>
+    <section class="mb-10">
+      <h2>3. Tuplas: Inmutabilidad y Desempaquetado</h2>
+      <p>
+        Una <strong>tupla</strong> se define utilizando paréntesis <code>()</code>. Su característica principal es que es <strong>inmutable</strong>: una vez que se crea, no puedes modificar, añadir ni remover ningún elemento.
+      </p>
+      <p>
+        <em>¿Por qué usar tuplas en lugar de listas?</em> Son más rápidas en memoria y protegen los datos contra modificaciones accidentales (ej. coordenadas geográficas, días de la semana, configuraciones fijas).
+      </p>
+      
+      <CodeBlock lang="python" code={`# Creación de una tupla
+gps = (40.7128, -74.0060)
+
+# gps[0] = 34.05  # ¡ERROR! Python lanzará un TypeError
+
+# OJO: Si quieres crear una tupla de un solo elemento, debes poner una coma al final
+tupla_un_elemento = (42,)`}
+        title="tuplas_inmutables.py"
+      />
+
+      <h3>Desempaquetado de Tuplas (Tuple Unpacking)</h3>
+      <p>
+        Python permite extraer los valores de una tupla directamente en variables individuales en una sola línea de código:
+      </p>
+      <CodeBlock lang="python" code={`coordenadas = (-33.4489, -70.6693)
+
+# Desempaquetando la tupla
+latitud, longitud = coordenadas
+
+print(f"Latitud: {latitud}")    # -33.4489
+print(f"Longitud: {longitud}")  # -70.6693`}
+        title="desempaquetado.py"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>4. Tabla Comparativa: Listas vs. Tuplas</h2>
+      <div class="table-container" style="overflow-x: auto; margin-bottom: 2rem;">
+        <table class="content-table">
+          <thead>
+            <tr>
+              <th>Característica</th>
+              <th>Lista <code class="mono">[]</code></th>
+              <th>Tupla <code class="mono">()</code></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="font-weight: bold;">Mutabilidad</td>
+              <td>Mutable (se puede modificar)</td>
+              <td>Inmutable (fija)</td>
+            </tr>
+            <tr>
+              <td style="font-weight: bold;">Rendimiento</td>
+              <td>Más lenta (reserva espacio extra)</td>
+              <td>Más rápida y ligera</td>
+            </tr>
+            <tr>
+              <td style="font-weight: bold;">Casos comunes</td>
+              <td>Listas dinámicas (Ej. carrito de compras)</td>
+              <td>Datos estructurados fijos (Ej. coordenadas GPS)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    <section class="mb-10">
+      <h2>5. Caso de Estudio: Análisis de un Mantenedor de Productos 🐘</h2>
+      <p>
+        En el mundo real, las listas y las tuplas suelen combinarse para representar bases de datos en memoria. A continuación, representaremos un catálogo de productos como una <strong>lista de tuplas</strong>, donde cada tupla representa un producto con la estructura: <code>(código, nombre, precio, categoría, stock)</code>.
+      </p>
+      
+      <CodeBlock lang="python" code={`productos = [
+    # (code, name, price, category, stock)
+    ("PROD01", "Laptop", 850.00, "Electrónica", 15),
+    ("PROD02", "Silla Ergonómica", 150.00, "Oficina", 25),
+    ("PROD03", "Teclado Mecánico", 80.00, "Electrónica", 50),
+    ("PROD04", "Escritorio de Madera", 250.00, "Oficina", 10),
+    ("PROD05", "Audífonos Bluetooth", 120.00, "Electrónica", 40),
+    ("PROD06", "Cafetera de Goteo", 60.00, "Cocina", 12)
+]`}
+        title="catalogo_productos.py"
+      />
+
+      <h3>Operación 1: Encontrar el producto más caro y el más barato</h3>
+      <p>
+        Para buscar extremos de valores en una lista de tuplas, podemos inicializar variables acumuladoras con el primer elemento de la lista e iterar comparando los precios (índice 2 de la tupla):
+      </p>
+      <CodeBlock lang="python" code={`mas_caro = productos[0]
+mas_barato = productos[0]
+
+for p in productos:
+    # Comparar precios (p[2])
+    if p[2] > mas_caro[2]:
+        mas_caro = p
+    if p[2] < mas_barato[2]:
+        mas_barato = p
+
+print(f"Más caro: {mas_caro[1]} (\${mas_caro[2]} USD)")     # Laptop ($850.00 USD)
+print(f"Más barato: {mas_barato[1]} (\${mas_barato[2]} USD)") # Cafetera de Goteo ($60.00 USD)`}
+        title="extremos.py"
+      />
+
+      <h3>Operación 2: Sumar el total de productos en inventario</h3>
+      <p>
+        Para saber la cantidad total de unidades físicas que tenemos almacenadas, sumamos el stock de cada tupla (índice 4):
+      </p>
+      <CodeBlock lang="python" code={`total_unidades = 0
+
+for p in productos:
+    total_unidades += p[4]  # p[4] representa el stock
+
+print(f"Total de unidades en stock: {total_unidades}")  # 152 unidades`}
+        title="total_stock.py"
+      />
+
+      <h3>Operación 3: Filtrar y contar productos de una categoría</h3>
+      <p>
+        Para saber cuántos productos diferentes pertenecen a la categoría "Electrónica" (índice 3), usamos un contador condicional:
+      </p>
+      <CodeBlock lang="python" code={`contador_electronica = 0
+
+for p in productos:
+    if p[3] == "Electrónica":
+        contador_electronica += 1
+
+print(f"Productos de categoría Electrónica: {contador_electronica}")  # 3`}
+        title="conteo_categoria.py"
+      />
+    </section>
+
+    <div class="ejercicio" style="background: #E8F5E9; margin-bottom: 2.5rem;">
+      <h3>🐍 Desafío: Gestión de Cafetería</h3>
+      <p class="enunciado">
+        Crea una lista llamada <code>pedido</code> con tres bebidas. Luego:
+        <br />1. Añade "latte" al final.
+        <br />2. Reemplaza la segunda bebida por "espresso".
+        <br />3. Elimina y guarda la primera bebida del pedido.
+        <br />4. Imprime el pedido restante y la bebida que eliminaste al revés.
+      </p>
       <details>
         <summary>👁️ Ver solución sugerida</summary>
-        <CodeBlock lang="python" code={`carrito = []
-carrito.append("Leche")
-carrito.append("Pan")
-carrito.append("Huevos")
-carrito.pop() # Quita Huevos`} title="Python" />
+        <CodeBlock lang="python" code={`# 1. Crear y añadir
+pedido = ["capuccino", "americano", "mocaccino"]
+pedido.append("latte")          # ["capuccino", "americano", "mocaccino", "latte"]
+
+# 2. Reemplazar
+pedido[1] = "espresso"          # ["capuccino", "espresso", "mocaccino", "latte"]
+
+# 3. Eliminar primera
+bebida_eliminada = pedido.pop(0) # ["espresso", "mocaccino", "latte"]
+
+# 4. Imprimir resultados
+print("Pedido restante:", pedido)
+print("Eliminada al revés:", bebida_eliminada[::-1]) # "onicupac"`} title="Solución" />
       </details>
     </div>
 
     <section class="mb-10">
+      <h2>Prueba tus conocimientos</h2>
+      <p>Responde las preguntas rápidas para validar que dominas la diferencia entre listas, tuplas y técnicas de corte.</p>
       <PythonQuizModal quizKey="listas" />
     </section>
 

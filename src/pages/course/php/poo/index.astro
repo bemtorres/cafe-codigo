@@ -1,0 +1,106 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import PhpQuizModal from '../../../../components/quizzes/PhpQuizModal.astro';
+---
+
+<Layout title="Programación Orientada a Objetos en PHP" description="Domina las clases, constructores, métodos y objetos en PHP moderno." courseSlug="php">
+  <article class="content-section">
+    <h1>4. Programación Orientada a Objetos 🏗️</h1>
+
+    <section class="mb-10">
+      <h2>Clases y Objetos en PHP</h2>
+      <p>
+        PHP moderno tiene un motor de Programación Orientada a Objetos (POO) sumamente robusto y similar al de Java o C#. Las clases se definen con la palabra clave <code>class</code> y las propiedades pueden tener tipos estrictos.
+      </p>
+      <CodeBlock lang="php" code={`<?php
+class Cafe {
+    public string $nombre;
+    public float $precio;
+
+    // El constructor se define usando __construct
+    public function __construct(string $nombre, float $precio) {
+        $this->nombre = $nombre;
+        $this->precio = $precio;
+    }
+
+    public function describir(): string {
+        return "El café {$this->nombre} tiene un costo de {$this->precio} USD.";
+    }
+}`}
+        title="Clase Cafe"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Instanciar un Objeto: la flecha (->)</h2>
+      <p>
+        Para instanciar un objeto usamos la palabra clave <code>new</code>. A diferencia de lenguajes que usan puntos (<code>.</code>), en PHP accedemos a las propiedades y métodos usando la flecha simple (<code>-&gt;</code>):
+      </p>
+      <CodeBlock lang="php" code={`<?php
+$miCafe = new Cafe("Espresso", 2.50);
+
+// Acceder a un método
+echo $miCafe->describir();`}
+        title="instanciar.php"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Constructor Parameter Promotion (PHP 8+)</h2>
+      <p>
+        En PHP moderno (versión 8 en adelante), puedes ahorrar muchísimo código usando la promoción de propiedades directamente en los argumentos del constructor. Esto define la propiedad, su visibilidad y la asigna automáticamente:
+      </p>
+      <CodeBlock lang="php" code={`<?php
+class Cafetera {
+    // Al colocar 'public' en el constructor, se definen y asignan solas
+    public function __construct(
+        public string $modelo,
+        public int $capacidadTazas
+    ) {}
+
+    public function encender(): string {
+        return "Cafetera {$this->modelo} lista para preparar {$this->capacidadTazas} tazas.";
+    }
+}`}
+        title="Constructor promocionado"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Misión: Crea una Clase</h2>
+      <div class="ejercicio" style="background: #FFF9C4;">
+        <h3>🐍 Reto: El Tostado de Especialidad</h3>
+        <p class="enunciado">Crea una clase llamada <code>Tostado</code> con propiedades públicas (nombre y precio) y un método que retorne la descripción. Instáncialo e imprímelo en pantalla.</p>
+        <details>
+          <summary>👁️ Ver solución sugerida</summary>
+          <CodeBlock lang="php" code={`<?php
+class Tostado {
+    public function __construct(
+        public string $nombre,
+        public float $precio
+    ) {}
+
+    public function obtenerFicha(): string {
+        return "Tostado {$this->nombre}: $$this->precio USD\\n";
+    }
+}
+
+$miTostado = new Tostado("Jamón y Queso", 4.20);
+echo $miTostado->obtenerFicha();`} title="Solución" />
+        </details>
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2>Pon a prueba tu conocimiento de POO</h2>
+      <p>Responde las preguntas de esta última lección para consolidar tu conocimiento sobre clases y objetos en PHP.</p>
+      <PhpQuizModal quizKey="poo" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/php/arrays/" class="prev">← Arrays y Funciones</a>
+      <a href="/course/php/" class="next">Índice del Curso PHP →</a>
+    </nav>
+  </article>
+</Layout>

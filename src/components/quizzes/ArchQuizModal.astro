@@ -1,0 +1,19 @@
+---
+import QuizModal from './QuizModal.astro';
+
+type Props = {
+  quizKey: string;
+};
+
+const { quizKey } = Astro.props as Props;
+---
+
+<QuizModal
+  courseSlug="arch"
+  quizKey={quizKey}
+  title="Arquitectura Quiz"
+  brandingColor="#475569"
+  brandingBg="#ffffff"
+  brandingText="#ffffff"
+  logo="🏛️"
+/>

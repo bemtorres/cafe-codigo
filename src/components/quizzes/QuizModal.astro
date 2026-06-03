@@ -1,0 +1,549 @@
+---
+import { pythonQuizBank } from '../../data/pythonQuizBank';
+import { pseintQuizBank } from '../../data/pseintQuizBank';
+import { sqlQuizBank } from '../../data/sqlQuizBank';
+import { excelQuizBank } from '../../data/excelQuizBank';
+import { gitQuizBank } from '../../data/gitQuizBank';
+import { htmlQuizBank } from '../../data/htmlQuizBank';
+import { cssQuizBank } from '../../data/cssQuizBank';
+import { javascriptQuizBank } from '../../data/javascriptQuizBank';
+import { javaQuizBank } from '../../data/javaQuizBank';
+import { csharpQuizBank } from '../../data/csharpQuizBank';
+import { terminalQuizBank } from '../../data/terminalQuizBank';
+import { c4QuizBank } from '../../data/c4QuizBank';
+import { archQuizBank } from '../../data/archQuizBank';
+import { visionProductoQuizBank } from '../../data/visionProductoQuizBank';
+import { analisisBacklogQuizBank } from '../../data/analisisBacklogQuizBank';
+import { scrumQuizBank } from '../../data/scrumQuizBank';
+import { pythonTestingQuizBank } from '../../data/pythonTestingQuizBank';
+import { javaUnitQuizBank } from '../../data/javaUnitQuizBank';
+import { linuxDistrosQuizBank } from '../../data/linuxDistrosQuizBank';
+import { modelamientoDbQuizBank } from '../../data/modelamientoDbQuizBank';
+import { plsqlQuizBank } from '../../data/plsqlQuizBank';
+import { unityQuizBank } from '../../data/unityQuizBank';
+import { ecosystemsQuizBank } from '../../data/ecosystemsQuizBank';
+import { phpQuizBank } from '../../data/phpQuizBank';
+
+const QUIZ_BANKS: Record<string, any> = {
+  python: pythonQuizBank,
+  pseint: pseintQuizBank,
+  sql: sqlQuizBank,
+  excel: excelQuizBank,
+  git: gitQuizBank,
+  html: htmlQuizBank,
+  css: cssQuizBank,
+  javascript: javascriptQuizBank,
+  java: javaQuizBank,
+  csharp: csharpQuizBank,
+  terminal: terminalQuizBank,
+  c4: c4QuizBank,
+  arch: archQuizBank,
+  'vision-producto': visionProductoQuizBank,
+  'analisis-backlog': analisisBacklogQuizBank,
+  scrum: scrumQuizBank,
+  'python-testing': pythonTestingQuizBank,
+  javaunit: javaUnitQuizBank,
+  'linux-distros': linuxDistrosQuizBank,
+  modelamiento: modelamientoDbQuizBank,
+  plsql: plsqlQuizBank,
+  unity: unityQuizBank,
+  ecosistemas: ecosystemsQuizBank,
+  php: phpQuizBank
+};
+
+type Props = {
+  courseSlug: string;
+  quizKey: string;
+  title?: string;
+  titleBadge?: string;
+  brandingColor?: string;
+  brandingBg?: string;
+  brandingText?: string;
+  logo?: string;
+  shuffleQuestions?: boolean;
+  description?: string;
+};
+
+const {
+  courseSlug,
+  quizKey,
+  title,
+  titleBadge = 'Quiz',
+  brandingColor,
+  brandingBg,
+  brandingText,
+  logo,
+  shuffleQuestions = true,
+  description
+} = Astro.props as Props;
+
+const bank = QUIZ_BANKS[courseSlug];
+if (!bank) {
+  throw new Error(`QuizModal: no existe bank para "${courseSlug}".`);
+}
+
+const quiz = bank[quizKey];
+if (!quiz) {
+  throw new Error(`QuizModal: no existe quizKey "${quizKey}" en el banco de "${courseSlug}".`);
+}
+
+const modalId = `universal-quiz-modal-${courseSlug}-${quizKey}`;
+const openBtnId = `universal-quiz-open-${courseSlug}-${quizKey}`;
+const closeBtnId = `universal-quiz-close-${courseSlug}-${quizKey}`;
+const resultId = `universal-quiz-result-${courseSlug}-${quizKey}`;
+const radiosNamePrefix = `universal_quiz_${courseSlug}_${quizKey}_q_`;
+---
+
+<div
+  class="universal-quiz"
+  data-course-slug={courseSlug}
+  data-quiz-key={quizKey}
+  data-shuffle={shuffleQuestions ? 'true' : 'false'}
+  style={`--quiz-brand: ${brandingColor || '#118AB2'}; --quiz-brand-bg: ${brandingBg || '#ffffff'}; --quiz-brand-text: ${brandingText || '#1e1210'};`}
+>
+  <p class="universal-quiz__hint" data-quiz-hint></p>
+  <button id={openBtnId} type="button" class="universal-quiz__start">
+    {logo && <span class="universal-quiz__logo mr-2">{logo}</span>} Comenzar {title || `Quiz ${courseSlug.toUpperCase()}`}
+  </button>
+
+  <div id={modalId} class="universal-quiz__modal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="universal-quiz__overlay" data-quiz-close></div>
+
+    <div class="universal-quiz__panel">
+      <div class="universal-quiz__header">
+        <div class="universal-quiz__title">
+          <span class="universal-quiz__title-badge">{titleBadge}</span>
+          <span>{quiz.title}</span>
+        </div>
+
+        <button
+          id={closeBtnId}
+          type="button"
+          class="universal-quiz__close"
+          data-quiz-close
+          aria-label="Cerrar"
+        >
+          ✕
+        </button>
+      </div>
+
+      <div class="universal-quiz__body">
+        <p class="universal-quiz__intro">
+          Son <strong>{quiz.questions.length}</strong> preguntas de opción múltiple sobre esta lección. ¡Evalúa tus conocimientos!
+        </p>
+
+        <form class="universal-quiz__form" onsubmit="return false;">
+          {quiz.questions.map((q: any, i: number) => (
+            <section
+              class="universal-quiz__q"
+              data-quiz-q={i}
+              data-correct-index={q.correctIndex}
+            >
+              <h4 class="universal-quiz__q-title">
+                <span class="universal-quiz__q-num">{i + 1}</span>. {q.prompt}
+              </h4>
+
+              <div class="universal-quiz__options">
+                {q.options.map((opt: string, idx: number) => {
+                  const name = `${radiosNamePrefix}${i}`;
+                  const value = String(idx);
+                  const id = `${radiosNamePrefix}${i}_${idx}`;
+                  return (
+                    <label class="universal-quiz__opt" for={id}>
+                      <input
+                        id={id}
+                        type="radio"
+                        name={name}
+                        value={value}
+                        data-quiz-answer={i}
+                      />
+                      <span>{opt}</span>
+                    </label>
+                  );
+                })}
+              </div>
+
+              <div
+                class="universal-quiz__feedback"
+                data-quiz-feedback={i}
+                aria-live="polite"
+              ></div>
+            </section>
+          ))}
+        </form>
+      </div>
+
+      <div class="universal-quiz__footer">
+        <div id={resultId} class="universal-quiz__result" aria-live="polite"></div>
+        <p class="universal-quiz__sync" data-quiz-sync></p>
+        <div class="universal-quiz__actions">
+          <button type="button" class="universal-quiz__submit" data-quiz-submit>
+            Finalizar y Guardar
+          </button>
+          <button type="button" class="universal-quiz__restart" data-quiz-restart>
+            Reintentar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { getSupabaseBrowser } from '../../lib/supabase/client';
+  import { quizProgressHint, saveQuizAttempt } from '../../lib/supabase/quizProgress';
+
+  const DELEGATED_KEY = '__universalQuizDelegated__';
+
+  function closeModal(modal: Element | null) {
+    if (!modal) return;
+    modal.setAttribute('aria-hidden', 'true');
+    modal.classList.remove('is-open');
+    document.documentElement.style.overflow = '';
+  }
+
+  function openModal(modal: Element | null) {
+    if (!modal) return;
+    const resultEl = modal.querySelector('.universal-quiz__result');
+    if (resultEl) resultEl.textContent = '';
+    modal.querySelectorAll('[data-quiz-feedback]').forEach((el) => {
+      el.textContent = '';
+    });
+    const syncEl = modal.closest('.universal-quiz')?.querySelector('[data-quiz-sync]');
+    if (syncEl) syncEl.textContent = '';
+    modal.setAttribute('aria-hidden', 'false');
+    modal.classList.add('is-open');
+    document.documentElement.style.overflow = 'hidden';
+  }
+
+  function shuffleQuestions(modal: Element) {
+    const root = modal.closest('.universal-quiz');
+    const isShuffle = root?.getAttribute('data-shuffle') === 'true';
+    if (!isShuffle) return;
+    const form = modal.querySelector('.universal-quiz__form');
+    const qEls = Array.from(modal.querySelectorAll('[data-quiz-q]'));
+    if (!form || qEls.length < 2) return;
+
+    for (let i = qEls.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      const tmp = qEls[i];
+      qEls[i] = qEls[j];
+      qEls[j] = tmp;
+    }
+
+    qEls.forEach((el) => form.appendChild(el));
+    qEls.forEach((qEl, idx) => {
+      const numEl = qEl.querySelector('.universal-quiz__q-num');
+      if (numEl) numEl.textContent = String(idx + 1);
+    });
+  }
+
+  function gradeModal(modal: Element): { score: number; total: number } {
+    const resultEl = modal.querySelector('.universal-quiz__result');
+    if (!resultEl) return { score: 0, total: 0 };
+
+    const qEls = modal.querySelectorAll('[data-quiz-q]');
+    let score = 0;
+
+    qEls.forEach((qEl) => {
+      const correct = Number(qEl.getAttribute('data-correct-index'));
+      const feedbackEl = qEl.querySelector('[data-quiz-feedback]');
+      const selected = qEl.querySelector('input[type="radio"]:checked') as HTMLInputElement | null;
+      const idx = selected ? Number(selected.value) : null;
+
+      const correctInput = qEl.querySelector(`input[type="radio"][value="${correct}"]`);
+      const correctText = correctInput?.parentElement?.querySelector('span')?.textContent ?? '';
+      const selectedText = selected?.parentElement?.querySelector('span')?.textContent ?? '';
+
+      const isCorrect = idx === correct;
+      if (isCorrect) score++;
+
+      if (feedbackEl) {
+        if (isCorrect) {
+          feedbackEl.innerHTML = '<span style="color:#2ecc71;">✓ Correcto</span>';
+        } else {
+          feedbackEl.innerHTML = `<span style="color:#e67e22;">✗ Incorrecto. Respuesta: "${correctText}"</span>`;
+        }
+      }
+    });
+
+    const total = qEls.length;
+    resultEl.innerHTML = `Puntaje Final: ${score}/${total}.`;
+
+    return { score, total };
+  }
+
+  async function refreshHint(root: HTMLElement) {
+    const hintEl = root.querySelector('[data-quiz-hint]');
+    if (!hintEl) return;
+    const course = root.getAttribute('data-course-slug') ?? '';
+    const lesson = root.getAttribute('data-quiz-key') ?? '';
+    if (!course || !lesson) return;
+    hintEl.textContent = await quizProgressHint(course, lesson);
+  }
+
+  async function persistAttempt(root: HTMLElement, score: number, total: number) {
+    const syncEl = root.querySelector('[data-quiz-sync]');
+    const course = root.getAttribute('data-course-slug') ?? '';
+    const lesson = root.getAttribute('data-quiz-key') ?? '';
+    if (!course || !lesson) return;
+
+    const { ok, error } = await saveQuizAttempt(course, lesson, score, total);
+    if (syncEl) {
+      if (ok) {
+        syncEl.textContent = '✓ Progreso guardado en tu cuenta.';
+        syncEl.classList.remove('universal-quiz__sync--err');
+      } else if (error === 'Sin sesión') {
+        syncEl.textContent = 'Iniciá sesión para guardar este resultado.';
+        syncEl.classList.add('universal-quiz__sync--err');
+      } else {
+        syncEl.textContent = error ? `No se pudo guardar: ${error}` : 'No se pudo guardar.';
+        syncEl.classList.add('universal-quiz__sync--err');
+      }
+    }
+    await refreshHint(root);
+  }
+
+  function initUniversalQuizModals() {
+    if (typeof window === 'undefined') return;
+    const w = window as unknown as Record<string, boolean>;
+    if (w[DELEGATED_KEY]) return;
+    w[DELEGATED_KEY] = true;
+
+    document.addEventListener('click', (e) => {
+      const target = e.target;
+      if (!(target instanceof Element)) return;
+
+      const startBtn = target.closest('.universal-quiz__start');
+      if (startBtn) {
+        const root = startBtn.closest('.universal-quiz') as HTMLElement | null;
+        const modal = root?.querySelector('.universal-quiz__modal') ?? null;
+        openModal(modal);
+        if (modal) shuffleQuestions(modal);
+        return;
+      }
+
+      const closeBtn = target.closest('[data-quiz-close]');
+      if (closeBtn) {
+        const root = closeBtn.closest('.universal-quiz');
+        const modal = root?.querySelector('.universal-quiz__modal') ?? null;
+        closeModal(modal);
+        return;
+      }
+
+      const submitBtn = target.closest('[data-quiz-submit]');
+      if (submitBtn) {
+        const root = submitBtn.closest('.universal-quiz') as HTMLElement | null;
+        const modal = root?.querySelector('.universal-quiz__modal') ?? null;
+        if (modal && root) {
+          const { score, total } = gradeModal(modal);
+          void persistAttempt(root, score, total);
+        }
+        return;
+      }
+
+      const restartBtn = target.closest('[data-quiz-restart]');
+      if (restartBtn) {
+        const root = restartBtn.closest('.universal-quiz');
+        const modal = root?.querySelector('.universal-quiz__modal') ?? null;
+        if (!modal) return;
+        const resultEl = modal.querySelector('.universal-quiz__result');
+        if (resultEl) resultEl.textContent = '';
+        modal.querySelectorAll('input[type="radio"]').forEach((r) => {
+          (r as HTMLInputElement).checked = false;
+        });
+        modal.querySelectorAll('[data-quiz-feedback]').forEach((el) => {
+          el.textContent = '';
+        });
+        const syncEl = root?.querySelector('[data-quiz-sync]');
+        if (syncEl) syncEl.textContent = '';
+        return;
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        document.querySelectorAll('.universal-quiz__modal.is-open').forEach((m) => closeModal(m));
+      }
+    });
+
+    // Cargar estados iniciales
+    document.querySelectorAll('.universal-quiz[data-quiz-key]').forEach((el) => {
+      void refreshHint(el as HTMLElement);
+    });
+
+    getSupabaseBrowser()?.auth.onAuthStateChange(() => {
+      document.querySelectorAll('.universal-quiz[data-quiz-key]').forEach((el) => {
+        void refreshHint(el as HTMLElement);
+      });
+    });
+  }
+
+  // Inicializar al cargar
+  initUniversalQuizModals();
+</script>
+
+<style>
+  .universal-quiz { margin: 2rem 0; font-family: 'Nunito', 'Quicksand', system-ui, sans-serif; }
+  .universal-quiz__hint { margin: 0 0 0.75rem; font-size: 0.88rem; font-weight: 800; color: var(--text-secondary, #3D2B1F); min-height: 1.25rem; }
+  .universal-quiz__sync { margin: 0 0 0.65rem; font-size: 0.82rem; font-weight: 800; color: #06D6A0; min-height: 1rem; }
+  .universal-quiz__sync.universal-quiz__sync--err { color: #b91c1c; }
+  .universal-quiz__start {
+    width: 100%;
+    max-width: 420px;
+    padding: 0.9rem 1.1rem;
+    border-radius: 18px;
+    border: 3px solid var(--border, #1E1210);
+    background: var(--quiz-brand);
+    color: var(--quiz-brand-text, white);
+    font-weight: 900;
+    font-size: 1.1rem;
+    cursor: pointer;
+    box-shadow: 5px 5px 0px var(--border, #1E1210);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    transition: transform 0.1s, box-shadow 0.1s;
+  }
+  .universal-quiz__start:hover { transform: translateY(-2px); box-shadow: 7px 7px 0px var(--border, #1E1210); }
+  .universal-quiz__start:active { transform: translateY(2px); box-shadow: 3px 3px 0px var(--border, #1E1210); }
+
+  .universal-quiz__modal {
+    position: fixed;
+    inset: 0;
+    z-index: 3000;
+    display: none;
+  }
+  .universal-quiz__modal.is-open { display: block; }
+  .universal-quiz__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    backdrop-filter: blur(5px);
+  }
+  .universal-quiz__panel {
+    position: relative;
+    max-width: 800px;
+    margin: 6vh auto 0;
+    background: white;
+    border: 3px solid var(--border, #1E1210);
+    border-radius: 24px;
+    box-shadow: 0 30px 90px rgba(30,18,16,0.35);
+    overflow: hidden;
+    color: #1e1210;
+  }
+  .universal-quiz__header {
+    background: var(--quiz-brand);
+    color: var(--quiz-brand-text, white);
+    padding: 1.1rem 1.4rem;
+    border-bottom: 3px solid var(--border, #1E1210);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .universal-quiz__title {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    font-weight: 900;
+    font-size: 1.15rem;
+  }
+  .universal-quiz__title-badge {
+    background: var(--quiz-brand-bg, #ffffff);
+    color: var(--quiz-brand);
+    border: 2px solid var(--border, #1E1210);
+    padding: 0.25rem 0.7rem;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 900;
+    box-shadow: 2px 2px 0px var(--border, #1E1210);
+  }
+  .universal-quiz__close {
+    background: white;
+    border: 2px solid var(--border, #1E1210);
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-weight: 900;
+    color: var(--quiz-brand);
+  }
+  .universal-quiz__body {
+    padding: 1.5rem;
+    max-height: 66vh;
+    overflow-y: auto;
+  }
+  .universal-quiz__intro { margin: 0 0 1.25rem; font-weight: 700; color: #4a3a37; }
+  .universal-quiz__q {
+    background: #faf8f5;
+    border: 2px solid var(--border, #1E1210);
+    border-radius: 16px;
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
+    box-shadow: 4px 4px 0px rgba(30,18,16,0.06);
+  }
+  .universal-quiz__q-title { margin: 0 0 0.85rem; font-weight: 900; }
+  .universal-quiz__options { display: grid; grid-template-columns: 1fr; gap: 0.6rem; }
+  .universal-quiz__opt {
+    display: flex;
+    gap: 0.6rem;
+    align-items: flex-start;
+    cursor: pointer;
+    font-weight: 700;
+    color: #4a3a37;
+    line-height: 1.4;
+  }
+  .universal-quiz__opt input {
+    margin-top: 3px;
+    width: 18px;
+    height: 18px;
+    accent-color: var(--quiz-brand);
+  }
+  .universal-quiz__feedback { margin-top: 0.75rem; font-weight: 800; font-size: 0.92rem; }
+  .universal-quiz__footer {
+    padding: 1.25rem 1.5rem;
+    border-top: 3px solid var(--border, #1E1210);
+    background: rgba(255, 255, 255, 0.95);
+  }
+  .universal-quiz__result { font-weight: 900; font-size: 1.15rem; color: var(--quiz-brand); margin-bottom: 0.5rem; min-height: 1.5rem; }
+  .universal-quiz__actions { display: flex; gap: 1rem; justify-content: flex-end; }
+  .universal-quiz__submit {
+    background: var(--quiz-brand);
+    color: var(--quiz-brand-text, white);
+    border: 3px solid var(--border, #1E1210);
+    padding: 0.65rem 1.2rem;
+    border-radius: 14px;
+    font-weight: 900;
+    cursor: pointer;
+    box-shadow: 4px 4px 0px var(--border, #1E1210);
+  }
+  .universal-quiz__restart {
+    background: white;
+    color: #1e1210;
+    border: 3px solid var(--border, #1E1210);
+    padding: 0.65rem 1.2rem;
+    border-radius: 14px;
+    font-weight: 900;
+    cursor: pointer;
+    box-shadow: 4px 4px 0px var(--border, #1E1210);
+  }
+
+  @media (max-width: 650px) {
+    .universal-quiz__panel {
+      margin-top: 4vh;
+      width: calc(100% - 1.2rem);
+    }
+    .universal-quiz__actions {
+      flex-direction: column;
+    }
+    .universal-quiz__submit,
+    .universal-quiz__restart {
+      width: 100%;
+      text-align: center;
+    }
+  }
+</style>

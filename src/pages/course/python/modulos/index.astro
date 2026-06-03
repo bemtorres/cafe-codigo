@@ -1,7 +1,7 @@
 ---
 import Layout from '../../../../layouts/Layout.astro';
 import CodeBlock from '../../../../components/CodeBlock.astro';
-import PythonQuizModal from '../../../../components/PythonQuizModal.astro';
+import PythonQuizModal from '../../../../components/quizzes/PythonQuizModal.astro';
 
 const codeLibreriaEstandar = `import math
 import random
@@ -203,6 +203,85 @@ print(f"Password Encriptada (Bytes cifrados): {password_encriptada.decode()}")
 # 3. Desencriptamos para recuperar el texto original
 password_desencriptada = fernet_client.decrypt(password_encriptada)
 print(f"Password Recuperada: {password_desencriptada.decode()}")`;
+
+const codePokemonAPI = `import requests
+
+# Buscamos al pokemon Ditto en la API pública de Pokémon
+pokemon = "ditto"
+url = f"https://pokeapi.co/api/v2/pokemon/{pokemon}"
+
+try:
+    respuesta = requests.get(url)
+    if respuesta.status_code == 200:
+        datos = respuesta.json()
+        nombre = datos.get("name").capitalize()
+        peso = datos.get("weight") / 10 # Convertimos de hectogramos a kilogramos
+        
+        # Extraemos las habilidades del Pokémon
+        habilidades = [h.get("ability").get("name") for h in datos.get("abilities", [])]
+        
+        print("=============================")
+        print(f"   DATOS DE POKÉMON: {nombre} 🐹")
+        print("=============================")
+        print(f"Nombre:      {nombre}")
+        print(f"Peso:        {peso} kg")
+        print(f"Habilidades: {', '.join(habilidades)}")
+        print("=============================")
+    else:
+        print("❌ No pudimos encontrar ese Pokémon.")
+except requests.exceptions.RequestException as e:
+    print(f"❌ Error de conexión al servidor: {e}")`;
+
+const codeSqliteSqlalchemy = `# Instalación previa: pip install sqlalchemy
+from sqlalchemy import create_engine, Column, Integer, String, Float
+from sqlalchemy.orm import declarative_base, sessionmaker
+
+# 1. Creamos la conexión al motor de base de datos local SQLite (archivo local)
+engine = create_engine("sqlite:///cafeteria.db", echo=False)
+Base = declarative_base()
+
+# 2. Definimos la estructura de nuestra tabla 'productos' usando clases (ORM)
+class Producto(Base):
+    __tablename__ = "productos"
+    id = Column(Integer, primary_key=True)
+    nombre = Column(String(50), nullable=False)
+    precio = Column(Float, nullable=False)
+
+# Creamos físicamente la tabla y el archivo .db si no existen
+Base.metadata.create_all(engine)
+
+# 3. Configuramos la sesión de transacciones
+Session = sessionmaker(bind=engine)
+session = Session()
+
+# --- OPERACIONES CRUD ---
+
+# C - CREATE: Insertamos dos nuevos productos
+p1 = Producto(nombre="Café Americano", precio=2.50)
+p2 = Producto(nombre="Muffin de Chocolate", precio=1.80)
+session.add_all([p1, p2])
+session.commit()
+print("✔ Productos guardados con éxito en SQLite.")
+
+# R - READ: Consultamos todos los productos de la base de datos
+todos = session.query(Producto).all()
+print("\\n--- Catálogo de Productos ---")
+for p in todos:
+    print(f"[{p.id}] {p.nombre} - \${p.precio} USD")
+
+# U - UPDATE: Actualizamos el precio del Café Americano
+americano = session.query(Producto).filter_by(nombre="Café Americano").first()
+if americano:
+    americano.precio = 2.80
+    session.commit()
+    print("\\n✔ Precio del Café Americano actualizado.")
+
+# D - DELETE: Eliminamos el Muffin de Chocolate
+muffin = session.query(Producto).filter_by(nombre="Muffin de Chocolate").first()
+if muffin:
+    session.delete(muffin)
+    session.commit()
+    print("✔ Muffin eliminado del catálogo.")`;
 ---
 
 <Layout 
@@ -388,6 +467,18 @@ print(f"Password Recuperada: {password_desencriptada.decode()}")`;
       />
     </section>
 
+    <section class="mb-10">
+      <h2>Conectando con la API de Pokémon (PokéAPI) 🐹</h2>
+      <p>
+        ¡Intentémoslo ahora con otra API sumamente popular! Usaremos la **PokéAPI** para consultar información detallada de cualquier Pokémon (como sus habilidades y peso) usando el mismo paquete <code>requests</code>.
+      </p>
+      <CodeBlock 
+        lang="python" 
+        code={codePokemonAPI}
+        title="pokemon_api.py"
+      />
+    </section>
+
     <!-- LISTADO COMPLETO DE PIP MAS USADAS -->
     <section class="mb-10">
       <h2>Tabla de las Librerías PIP Más Utilizadas en la Industria 🏆📊</h2>
@@ -499,6 +590,31 @@ print(f"Password Recuperada: {password_desencriptada.decode()}")`;
           />
         </div>
       </div>
+    </section>
+
+    <section class="mb-10">
+      <h2>Bases de Datos Locales: SQLite3 y SQLAlchemy (CRUD completo) 🗄️</h2>
+      <p>
+        Cuando necesitas almacenar información de manera persistente (por ejemplo, el menú o los clientes de tu cafetería), las bases de datos son tus mejores aliadas.
+      </p>
+      <p>
+        Python incluye por defecto la librería <code>sqlite3</code>, una base de datos ligera que se guarda en un solo archivo local. Sin embargo, en el mundo profesional es muy común utilizar un **ORM (Object-Relational Mapping)** como <strong>SQLAlchemy</strong>. Un ORM te permite interactuar con la base de datos usando clases y objetos de Python en lugar de escribir consultas SQL a mano.
+      </p>
+      
+      <div class="tip-box" style="background: #E0F2FE; border-left: 4px solid #0284c7; padding: 15px; margin-bottom: 20px; border-radius: 4px; color: #0369a1;">
+        <strong>💡 ¿Qué es CRUD?</strong><br />
+        Es el acrónimo para las cuatro operaciones fundamentales de una base de datos: <strong>C</strong>reate (Crear/Insertar), <strong>R</strong>ead (Leer/Consultar), <strong>U</strong>pdate (Actualizar) y <strong>D</strong>elete (Eliminar).
+      </div>
+
+      <p>
+        Para este ejemplo, primero instala SQLAlchemy con <code>pip install sqlalchemy</code> y luego ejecuta el siguiente código para ver un CRUD completo automatizado:
+      </p>
+
+      <CodeBlock 
+        lang="python" 
+        code={codeSqliteSqlalchemy}
+        title="db_crud.py"
+      />
     </section>
 
     <section class="mb-10">

@@ -1,0 +1,21 @@
+---
+import QuizModal from './QuizModal.astro';
+
+type Props = {
+  quizKey: string;
+  description?: string;
+};
+
+const { quizKey, description } = Astro.props as Props;
+---
+
+<QuizModal
+  courseSlug="git"
+  quizKey={quizKey}
+  title="Git Quiz"
+  brandingColor="#f05032"
+  brandingBg="#ffffff"
+  brandingText="#ffffff"
+  logo="🐙"
+  description={description}
+/>

@@ -1,0 +1,65 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import PhpQuizModal from '../../../../components/quizzes/PhpQuizModal.astro';
+---
+
+<Layout title="Introducción a PHP" description="Primeros pasos en PHP: historia, sintaxis básica y tu primer script." courseSlug="php">
+  <article class="content-section">
+    <h1>1. El comienzo: ¡Hola, Elefante! 🐘</h1>
+
+    <section class="mb-10">
+      <h2>¿Por qué PHP?</h2>
+      <p>
+        PHP (Hypertext Preprocessor) es uno de los lenguajes más populares de la web. ¿Su secreto? Está diseñado específicamente para la web, se ejecuta en el servidor y da vida a herramientas gigantescas como <strong>WordPress, Wikipedia y Facebook</strong>.
+      </p>
+      <blockquote>
+        "PHP corre en silencio en el servidor, transformando código lógico en el HTML que ve el usuario."
+      </blockquote>
+    </section>
+
+    <section class="mb-10">
+      <h2>Origen del Lenguaje</h2>
+      <p>
+        Fue creado en 1994 por <strong>Rasmus Lerdorf</strong> originalmente como un conjunto de scripts en C para mantener su página web personal (de ahí su nombre inicial: <em>Personal Home Page</em>). Con el tiempo, evolucionó en un lenguaje completo, rápido y extremadamente dinámico.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>La Etiqueta Sagrada: &lt;?php</h2>
+      <p>
+        Para que el servidor sepa que debe interpretar código PHP, debemos meter nuestras instrucciones dentro de las etiquetas de apertura y cierre:
+      </p>
+      <CodeBlock lang="php" code={`<?php
+echo "¡Hola Elefante! 🐘";
+// El código PHP termina con la etiqueta de cierre (opcional si el archivo solo contiene PHP)
+?>`}
+        title="hola.php"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Misión: Tu primer script</h2>
+      <div class="ejercicio" style="background: #E3F2FD;">
+        <h3>💻 Misión: Imprimir en pantalla</h3>
+        <p class="enunciado">Usa la instrucción <code>echo</code> para imprimir un mensaje de bienvenida personalizado en PHP.</p>
+        <details>
+          <summary>👁️ Ver solución sugerida</summary>
+          <CodeBlock lang="php" code={`<?php
+echo "Bienvenido a Café y Código, aprendiendo PHP moderno!";`} title="Solución" />
+        </details>
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2>Pon a prueba tu inicio</h2>
+      <p>Responde estas preguntas rápidas para ver si recordaste lo más importante de la introducción.</p>
+      <PhpQuizModal quizKey="introduccion" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/php/" class="prev">← Índice de PHP</a>
+      <a href="/course/php/variables/" class="next">Variables y Operadores →</a>
+    </nav>
+  </article>
+</Layout>

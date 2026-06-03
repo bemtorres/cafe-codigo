@@ -1,0 +1,19 @@
+---
+import QuizModal from './QuizModal.astro';
+
+type Props = {
+  quizKey: string;
+};
+
+const { quizKey } = Astro.props as Props;
+---
+
+<QuizModal
+  courseSlug="unity"
+  quizKey={quizKey}
+  title="Unity Ágil Quiz"
+  brandingColor="#000000"
+  brandingBg="#ffffff"
+  brandingText="#ffffff"
+  logo="🎮"
+/>

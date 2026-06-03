@@ -1,0 +1,19 @@
+---
+import QuizModal from './QuizModal.astro';
+
+type Props = {
+  quizKey: string;
+};
+
+const { quizKey } = Astro.props as Props;
+---
+
+<QuizModal
+  courseSlug="ecosistemas"
+  quizKey={quizKey}
+  title="Ecosistemas Pro Quiz"
+  brandingColor="#ef476f"
+  brandingBg="#ffffff"
+  brandingText="#ffffff"
+  logo="🌍"
+/>

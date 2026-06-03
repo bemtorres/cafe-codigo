@@ -1,0 +1,19 @@
+---
+import QuizModal from './QuizModal.astro';
+
+type Props = {
+  quizKey: string;
+};
+
+const { quizKey } = Astro.props as Props;
+---
+
+<QuizModal
+  courseSlug="csharp"
+  quizKey={quizKey}
+  title="C# Quiz"
+  brandingColor="#6d28d9"
+  brandingBg="#ffffff"
+  brandingText="#ffffff"
+  logo="💜"
+/>

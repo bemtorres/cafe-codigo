@@ -1,0 +1,80 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import PhpQuizModal from '../../../../components/quizzes/PhpQuizModal.astro';
+---
+
+<Layout title="Variables y Operadores en PHP" description="Aprende cómo declarar variables usando $ y los operadores básicos en PHP." courseSlug="php">
+  <article class="content-section">
+    <h1>2. Variables y Operadores 💵</h1>
+
+    <section class="mb-10">
+      <h2>El Prefijo Obligatorio: $</h2>
+      <p>
+        En PHP, todas las variables se definen obligatoriamente comenzando con el signo de dólar (<code>$</code>). PHP es un lenguaje de **tipado dinámico**, lo que significa que no necesitas decirle de qué tipo es la variable al declararla.
+      </p>
+      <CodeBlock lang="php" code={`<?php
+$nombre = "Benjamín";
+$edad = 28;
+$tazaDeCafe = true;
+$precio = 3.50;`}
+        title="variables.php"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>El Operador de Concatenación: el punto (.)</h2>
+      <p>
+        A diferencia de lenguajes como JavaScript o Python que usan el signo de suma <code>+</code> para unir textos, en PHP el operador de concatenación es el punto (<code>.</code>).
+      </p>
+      <CodeBlock lang="php" code={`<?php
+$saludo = "Hola, mi nombre es " . $nombre . " y tengo " . $edad . " años.";
+echo $saludo;`}
+        title="concatenar.php"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Comillas Dobles vs Comillas Simples</h2>
+      <p>
+        Las comillas dobles <code>""</code> en PHP son muy potentes: te permiten **interpolar** (incrustar) variables directamente sin tener que concatenar usando puntos:
+      </p>
+      <CodeBlock lang="php" code={`<?php
+// Interpolación directa (Solo funciona con comillas dobles "")
+echo "Hola $nombre, tienes $edad años.";
+
+// Con comillas simples '', esto imprimirá textualmente: Hola $nombre
+echo 'Hola $nombre';`}
+        title="comillas.php"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Reto de Variables</h2>
+      <div class="ejercicio" style="background: #FFF9C4;">
+        <h3>⚡ Reto: Suma de Precios</h3>
+        <p class="enunciado">Declara dos variables de tipo decimal con los precios de dos cafés, e imprime un mensaje usando comillas dobles indicando el precio total de la compra.</p>
+        <details>
+          <summary>👁️ Ver solución sugerida</summary>
+          <CodeBlock lang="php" code={`<?php
+$espresso = 2.50;
+$capuccino = 3.80;
+$total = $espresso + $capuccino;
+
+echo "El total de tu compra es de $$total USD.";`} title="Solución" />
+        </details>
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2>Pon a prueba tu conocimiento</h2>
+      <p>Responde las preguntas de esta lección para asegurar que comprendiste el uso de variables y comillas en PHP.</p>
+      <PhpQuizModal quizKey="variables" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/php/introduccion/" class="prev">← Introducción</a>
+      <a href="/course/php/arrays/" class="next">Arrays y Funciones →</a>
+    </nav>
+  </article>
+</Layout>

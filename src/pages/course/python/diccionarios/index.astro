@@ -1,63 +1,147 @@
-﻿---
+---
 import Layout from '../../../../layouts/Layout.astro';
 import CodeBlock from '../../../../components/CodeBlock.astro';
-import PythonQuizModal from '../../../../components/PythonQuizModal.astro';
+import PythonQuizModal from '../../../../components/quizzes/PythonQuizModal.astro';
 ---
 
-<Layout title="Diccionarios en Python" description="Clave-Valor: Busca información al instante." courseSlug="python">
+<Layout title="Diccionarios en Python" description="Domina las estructuras de clave-valor en Python: operaciones de actualización, borrado seguro, iteraciones y métodos profesionales." courseSlug="python">
   <article class="content-section">
-    <h1>8. Diccionarios: El Archivador Maestro 🗃️</h1>
+    <h1>8. Diccionarios: El Archivador Maestro Clave-Valor 🗃️</h1>
 
     <section class="mb-10">
-      <h2>Estructura Clave: Valor</h2>
-      <p>Un diccionario es una colección de <strong>pares clave-valor</strong> encerrados en llaves <code>{"{"} {"}"}</code>. Es como una base de datos pequeña que se guarda en una sola variable.</p>
-      <CodeBlock lang="python" code={`usuario = {
+      <h2>1. Estructura y Sintaxis</h2>
+      <p>
+        Un <strong>diccionario</strong> es una colección no ordenada y mutable que asocia una <strong>clave única</strong> a un <strong>valor</strong>. Se definen utilizando llaves <code>{"{"} {"}"}</code> y separando las claves de los valores mediante dos puntos (<code>:</code>).
+      </p>
+      <CodeBlock lang="python" code={`# Creación de un diccionario representativo de un usuario
+usuario = {
     "nombre": "Benjamín",
     "edad": 28,
-    "cargo": "Programador"
+    "cargo": "Programador",
+    "activo": True
 }
 
-# 1. Ver un valor
-print(usuario["nombre"])
-
-# 2. Agregar o cambiar
-usuario["web"] = "cafeycodigo.com"
-
-# 3. ¿Existe una clave?
-if "edad" in usuario:
-    print("La clave edad sí existe")
-
-# 4. Ver todas las claves
-print(usuario.keys())`}
-        title="perfil.py"
+# 1. Leer un valor mediante su clave
+print(usuario["nombre"])  # Imprime: Benjamín`}
+        title="usuario_base.py"
       />
     </section>
 
     <section class="mb-10">
-      <h2>Método .get() vs []</h2>
-      <p>Es mejor usar <code>.get()</code> porque si la clave no existe, tu programa no explota (devuelve <code>None</code>).</p>
-      <CodeBlock lang="python" code={`# Esto daría error si 'pais' no existe
-# print(usuario["pais"])
+      <h2>2. Lectura Segura con .get()</h2>
+      <p>
+        Si intentas acceder a una clave que no existe usando los corchetes tradicionales (por ejemplo, <code>usuario["pais"]</code>), Python lanzará un error <code>KeyError</code> que detendrá tu programa. 
+      </p>
+      <p>
+        Para evitar caídas del servidor, la mejor práctica profesional es usar el método <code>.get()</code>, el cual acepta un segundo parámetro opcional como valor de retorno por defecto si la clave no es hallada:
+      </p>
+      <CodeBlock lang="python" code={`# Intento directo peligroso
+# pais = usuario["pais"]  # Lanzaría KeyError si "pais" no está definido
 
-# Esto es seguro (devuelve None o un valor por defecto)
-pais = usuario.get("pais", "No especificado")
-print(pais)`}
-        title="seguridad.py"
+# Uso seguro de .get()
+pais_seguro = usuario.get("pais")                  # Retorna None sin lanzar error
+pais_con_defecto = usuario.get("pais", "Chile")    # Retorna "Chile" si no existe la clave`}
+        title="lectura_segura.py"
       />
     </section>
 
-    <div class="ejercicio" style="background: #FFF3E0;">
-      <h3>🐍 Desafío: El mapa de precios</h3>
-      <p class="enunciado">Crea un diccionario llamado <code>tienda</code> que tenga como claves <code>"iphone"</code> y <code>"laptop"</code> con sus respectivos precios numéricos.</p>
+    <section class="mb-10">
+      <h2>3. Modificar, Agregar y Eliminar Elementos</h2>
+      <p>
+        Puedes actualizar valores existentes, añadir nuevas claves al vuelo o remover registros específicos usando funciones integradas.
+      </p>
+      <CodeBlock lang="python" code={`# Agregar o actualizar
+usuario["web"] = "cafeycodigo.com"       # Añade una nueva clave
+usuario["edad"] = 29                    # Modifica un valor existente
+
+# Modificar múltiples campos al mismo tiempo con .update()
+usuario.update({
+    "cargo": "Senior Developer",
+    "ciudad": "Santiago"
+})
+
+# --- Métodos de Eliminación ---
+
+# 1. Usando pop() para extraer y remover (puedes proveer un valor por defecto)
+rol = usuario.pop("cargo", "No definido") # Elimina la clave y retorna "Senior Developer"
+
+# 2. Usando del para borrar directamente
+del usuario["activo"]                    # Elimina la clave 'activo' sin retornar valor
+
+# 3. Eliminar el último par insertado con popitem()
+ultima_clave, ultimo_valor = usuario.popitem() # Remueve y retorna (clave, valor) de la última inserción`}
+        title="crud_diccionarios.py"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>4. Métodos de Iteración (Recorrer un Diccionario)</h2>
+      <p>
+        Python provee tres métodos clave para recorrer y examinar la información de un archivador:
+      </p>
+      <ul>
+        <li><code>.keys()</code>: Obtiene solo las claves del diccionario.</li>
+        <li><code>.values()</code>: Obtiene solo los valores almacenados.</li>
+        <li><code>.items()</code>: Obtiene tuplas de <code>(clave, valor)</code>, ideal para recorrer con bucles <code>for</code>.</li>
+      </ul>
+
+      <CodeBlock lang="python" code={`precios = {
+    "espresso": 2.50,
+    "americano": 2.80,
+    "latte": 3.20
+}
+
+# Iterar solo por las claves
+for cafe in precios.keys():
+    print(f"Café disponible: {cafe}")
+
+# Iterar solo por los valores
+for precio in precios.values():
+    print(f"Precio: \${precio}")
+
+# Iterar por clave y valor al mismo tiempo (Práctica recomendada)
+for cafe, precio in precios.items():
+    print(f"El {cafe} cuesta \${precio} USD")`}
+        title="iteraciones.py"
+      />
+    </section>
+
+    <div class="ejercicio" style="background: #FFF3E0; margin-bottom: 2.5rem;">
+      <h3>☕ Desafío: El Menú de Café y Código</h3>
+      <p class="enunciado">
+        Crea un diccionario llamado <code>inventario</code> con tres tipos de café y sus cantidades en stock (números enteros). Luego realiza las siguientes operaciones:
+        <br />1. Añade un nuevo café "irlandes" con 8 unidades.
+        <br />2. Vende 2 unidades de la primera bebida (resta 2 a su valor).
+        <br />3. Usa <code>.get()</code> para consultar el stock de "capuccino", y si no existe muestra 0.
+        <br />4. Recorre el inventario e imprime cada producto con su stock total.
+      </p>
       <details>
         <summary>👁️ Ver solución sugerida</summary>
-        <CodeBlock lang="python" code={`tienda = { "iphone": 999, "laptop": 1200 }
-print(tienda["iphone"])`} title="Python" />
+        <CodeBlock lang="python" code={`# 1. Crear e insertar
+inventario = {
+    "espresso": 15,
+    "americano": 20,
+    "latte": 12
+}
+inventario["irlandes"] = 8
+
+# 2. Vender (restar stock)
+inventario["espresso"] -= 2
+
+# 3. Consulta segura
+stock_capuccino = inventario.get("capuccino", 0)
+print(f"Stock de Capuccino: {stock_capuccino}")
+
+# 4. Iterar e imprimir
+print("\\n--- Inventario Final ---")
+for cafe, stock in inventario.items():
+    print(f"• {cafe.capitalize()}: {stock} unidades")`} title="Solución" />
       </details>
     </div>
 
     <section class="mb-10">
       <h2>Prueba sobre Diccionarios</h2>
+      <p>Responde las preguntas del cuestionario interactivo para validar tu conocimiento sobre claves, valores e iteración segura.</p>
       <PythonQuizModal quizKey="diccionarios" />
     </section>
 

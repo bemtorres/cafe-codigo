@@ -1,0 +1,19 @@
+---
+import QuizModal from './QuizModal.astro';
+
+type Props = {
+  quizKey: string;
+};
+
+const { quizKey } = Astro.props as Props;
+---
+
+<QuizModal
+  courseSlug="javaunit"
+  quizKey={quizKey}
+  title="JUnit Quiz"
+  brandingColor="#0891b2"
+  brandingBg="#ffffff"
+  brandingText="#ffffff"
+  logo="☕"
+/>

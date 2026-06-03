@@ -1,0 +1,20 @@
+---
+import QuizModal from './QuizModal.astro';
+
+type Props = {
+  quizKey: string;
+};
+
+const { quizKey } = Astro.props as Props;
+---
+
+<QuizModal
+  courseSlug="pseint"
+  quizKey={quizKey}
+  title="PSeInt Desafío"
+  titleBadge="Desafío"
+  brandingColor="#34d399"
+  brandingBg="#ffffff"
+  brandingText="#1e1210"
+  logo="🎯"
+/>
