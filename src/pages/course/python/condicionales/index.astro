@@ -243,7 +243,7 @@ if lang == "es" or lang == "en" or lang == "pt":
       <h2>6) Combinados: <code>and</code>, <code>or</code> y paréntesis</h2>
       <p>
         Python evalúa <code>and</code> antes que <code>or</code> en expresiones largas. Si no estás seguro, usá
-        paréntesis para que el lector (y vos) entienda el orden.
+        paréntesis para que el lector (y tú) entienda el orden.
       </p>
       <CodeBlock
         lang="python"
@@ -387,7 +387,7 @@ else:
       />
       <p class="mt-4">
         <strong>Tip:</strong> <code>input()</code> siempre devuelve <strong>texto</strong> (<code>str</code>). Por eso
-        comparamos con <code>"1"</code> y no con <code>1</code>. Si querés número, usá
+        comparamos con <code>"1"</code> y no con <code>1</code>. Si quieres número, usá
         <code>int(input("..."))</code> dentro de un <code>try</code>/<code>except</code> (lo verás más adelante con
         errores).
       </p>
@@ -423,7 +423,7 @@ if eleccion == "A":
     if stock_agua <= 0:
         print("No hay agua. Elegí otra opción.")
     elif dinero < PRECIO_AGUA:
-        print("Falta dinero. Necesitás al menos $", PRECIO_AGUA, sep="")
+        print("Falta dinero. Necesitas al menos $", PRECIO_AGUA, sep="")
     else:
         print("¡Toma tu agua! 💧")
         vuelto = dinero - PRECIO_AGUA
@@ -433,14 +433,14 @@ elif eleccion == "B":
     if stock_snack <= 0:
         print("No hay snacks.")
     elif dinero < PRECIO_SNACK:
-        print("Falta dinero. Necesitás al menos $", PRECIO_SNACK, sep="")
+        print("Falta dinero. Necesitas al menos $", PRECIO_SNACK, sep="")
     else:
         print("¡Snack entregado! 🍫")
 elif eleccion == "C":
     if stock_gaseosa <= 0:
         print("Gaseosa agotada.")
     elif dinero < PRECIO_GASEOSA:
-        print("Falta dinero. Necesitás al menos $", PRECIO_GASEOSA, sep="")
+        print("Falta dinero. Necesitas al menos $", PRECIO_GASEOSA, sep="")
     else:
         print("¡Gaseosa fría! 🥤")
 else:
@@ -448,7 +448,7 @@ else:
       />
       <p class="mt-4">
         Fijate cómo el <code>if</code> exterior elige el producto y el <strong>interior</strong> responde a tres
-        preguntas: ¿hay stock?, ¿alcanza el dinero?, si todo ok → entregar (y opcionalmente calcular vuelto). Podés
+        preguntas: ¿hay stock?, ¿alcanza el dinero?, si todo ok → entregar (y opcionalmente calcular vuelto). Puedes
         extenderlo con un bucle <code>while</code> para que la máquina no termine tras una sola compra (lo harás en la
         lección de bucles).
       </p>
@@ -457,7 +457,7 @@ else:
     <section class="mb-10 rounded-xl border-2 border-border bg-primary/10 p-4">
       <h2 class="mt-0 text-base">Siguiente paso: <code>match</code> / <code>case</code></h2>
       <p class="mb-0 text-sm leading-snug text-textSecondary font-[650]">
-        Para ramificar como un <code>switch</code> de otros lenguajes (Python 3.10+), tenés la lección dedicada:
+        Para ramificar como un <code>switch</code> de otros lenguajes (Python 3.10+), tienes la lección dedicada:
         <a href="/course/python/match-case/" class="font-black text-[#3776ab] underline decoration-2 underline-offset-2">5. match / case →</a>
       </p>
     </section>

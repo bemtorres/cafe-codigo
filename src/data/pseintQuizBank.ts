@@ -623,7 +623,7 @@ export const pseintQuizBank: Record<string, PseintQuizDefinition> = {
       },
       {
         id: 'rep-10',
-        prompt: 'Si querés repetir un bloque hasta que ocurra algo, ¿qué bucle conviene más?',
+        prompt: 'Si quieres repetir un bloque hasta que ocurra algo, ¿qué bucle conviene más?',
         options: ['Mientras', 'Repetir', 'Para', 'Si'],
         correctIndex: 1,
       },

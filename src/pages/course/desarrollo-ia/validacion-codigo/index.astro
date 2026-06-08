@@ -6,14 +6,14 @@ import DesarrolloIaQuizModal from '../../../../components/quizzes/DesarrolloIaQu
 
 <Layout
   title="Checklist de Validación de Código IA"
-  description="Antes de aceptar código generado por IA, revisá este checklist de seguridad, eficiencia y responsabilidad profesional."
+  description="Antes de aceptar código generado por IA, revisa este checklist de seguridad, eficiencia y responsabilidad profesional."
   courseSlug="desarrollo-ia"
 >
   <article class="content-section">
     <h1>4. Checklist de Validación ✅</h1>
 
     <section class="mb-10">
-      <h2>¿Por qué necesitás un checklist?</h2>
+      <h2>¿Por qué necesitas un checklist?</h2>
       <p>
         El código generado por IA puede <strong>funcionar visualmente</strong> y aun así contener
         errores silenciosos, vulnerabilidades de seguridad o malas prácticas que solo se revelan en producción.
@@ -27,14 +27,14 @@ import DesarrolloIaQuizModal from '../../../../components/quizzes/DesarrolloIaQu
     <section class="mb-10">
       <h2>El Checklist de 4 Preguntas</h2>
       <p>
-        Antes de incorporar <strong>cualquier</strong> código sugerido por una IA a tu proyecto, hacete estas
+        Antes de incorporar <strong>cualquier</strong> código sugerido por una IA a tu proyecto, hazte estas
         4 preguntas en orden:
       </p>
 
       <div class="ejercicio" style="background: #FEF3C7;">
         <h3>1️⃣ ¿Copia o procesa datos sin validar?</h3>
         <p class="enunciado">
-          Verificá que el código compruebe <strong>tipos de datos</strong>, <strong>valores nulos</strong>,
+          Verifica que el código compruebe <strong>tipos de datos</strong>, <strong>valores nulos</strong>,
           <strong>rangos válidos</strong> y <strong>longitudes máximas</strong> antes de procesar cualquier entrada.
         </p>
       </div>
@@ -42,7 +42,7 @@ import DesarrolloIaQuizModal from '../../../../components/quizzes/DesarrolloIaQu
       <div class="ejercicio" style="background: #DBEAFE;">
         <h3>2️⃣ ¿Modifica la estructura de datos original?</h3>
         <p class="enunciado">
-          Buscá <strong>mutaciones inesperadas</strong>: métodos como <code>.sort()</code>, <code>.pop()</code>,
+          Busca <strong>mutaciones inesperadas</strong>: métodos como <code>.sort()</code>, <code>.pop()</code>,
           <code>.splice()</code> o <code>del lista[i]</code> que alteren la fuente de datos original.
           En frameworks reactivos (React, Vue), mutar props o estados directamente genera bugs difíciles de rastrear.
         </p>
@@ -52,7 +52,7 @@ import DesarrolloIaQuizModal from '../../../../components/quizzes/DesarrolloIaQu
         <h3>3️⃣ ¿Maneja excepciones específicas?</h3>
         <p class="enunciado">
           Un <code>except Exception</code> o un <code>catch(e)</code> genérico silencia <strong>todos</strong>
-          los errores, incluso los que no esperás. Verificá que se atrapen excepciones concretas
+          los errores, incluso los que no esperas. Verifica que se atrapen excepciones concretas
           (<code>ValueError</code>, <code>KeyError</code>, <code>TypeError</code>).
         </p>
       </div>
@@ -137,14 +137,14 @@ import DesarrolloIaQuizModal from '../../../../components/quizzes/DesarrolloIaQu
     <section class="mb-10">
       <h2>Responsabilidad profesional: ¿De quién es el código?</h2>
       <p>
-        Un punto fundamental que debés interiorizar:
+        Un punto fundamental que debes interiorizar:
       </p>
       <div class="ejercicio" style="background: #FEE2E2;">
         <h3>⚖️ Principio de Responsabilidad</h3>
         <p class="enunciado" style="font-size: 1.1rem;">
           <strong>La responsabilidad sobre el código siempre recae en la persona que lo desarrolla</strong>,
           no en la IA que lo sugirió. Si el código causa una brecha de seguridad, un fallo en producción o
-          un error de lógica, el responsable sos vos.
+          un error de lógica, el responsable eres tú.
         </p>
       </div>
       <p class="mt-4">
@@ -162,7 +162,7 @@ import DesarrolloIaQuizModal from '../../../../components/quizzes/DesarrolloIaQu
       <h2>Transparencia: Documentar el uso de IA</h2>
       <p>
         En entornos académicos y profesionales, es importante declarar qué herramientas usaste.
-        No para "castigar" su uso, sino para demostrar que <strong>entendés lo que entregás</strong>:
+        No para "castigar" su uso, sino para demostrar que <strong>entiendes lo que entregas</strong>:
       </p>
       <CodeBlock
         lang="python"
@@ -179,21 +179,21 @@ def eliminar_duplicados(productos: list | None) -> list:
     <section class="mb-10">
       <h2>Preguntas de reflexión final</h2>
       <div class="ejercicio" style="background: #EDE9FE;">
-        <h3>🧠 Reflexioná</h3>
+        <h3>🧠 Reflexiona</h3>
         <ol class="enunciado" style="margin:0;">
           <li>¿Cuál es el principal riesgo de aceptar código de Copilot sin comprenderlo?</li>
-          <li>Mencioná dos acciones concretas para proteger datos al programar con IA.</li>
+          <li>Menciona dos acciones concretas para proteger datos al programar con IA.</li>
           <li>¿Cómo asegurar transparencia y no dependencia en tu informe o documentación?</li>
         </ol>
       </div>
     </section>
 
     <div class="ejercicio" style="background: #FEF3C7;">
-      <h3>✅ Desafío Final: Revisá código de IA</h3>
+      <h3>✅ Desafío Final: Revisa código de IA</h3>
       <p class="enunciado">
-        Pedile a tu asistente de IA favorito que genere una función para calcular el descuento de un producto
-        (recibe precio y porcentaje). Aplicá el checklist de 4 preguntas, documentá tus hallazgos
-        y mejorá el código si encontrás problemas.
+        Pídele a tu asistente de IA favorito que genere una función para calcular el descuento de un producto
+        (recibe precio y porcentaje). Aplica el checklist de 4 preguntas, documenta tus hallazgos
+        y mejora el código si encuentras problemas.
       </p>
       <details>
         <summary>👁️ Ver criterio de evaluación</summary>
@@ -201,7 +201,7 @@ def eliminar_duplicados(productos: list | None) -> list:
           Tu análisis debería cubrir:<br/>
           1. ¿Valida que precio y porcentaje sean positivos y numéricos?<br/>
           2. ¿Qué pasa si porcentaje es mayor a 100?<br/>
-          3. ¿Maneja excepciones si le pasás un string?<br/>
+          3. ¿Maneja excepciones si le pasas un string?<br/>
           4. ¿El cálculo es directo (O(1)) o innecesariamente complejo?
         </p>
       </details>

@@ -47,14 +47,14 @@ db.libros.insertMany([
 ]);`}
       />
       <p>
-        Si no enviás <code>_id</code>, MongoDB puede generar uno automáticamente (<code>ObjectId</code>).
+        Si no envías <code>_id</code>, MongoDB puede generar uno automáticamente (<code>ObjectId</code>).
       </p>
     </section>
 
     <section class="mb-10">
       <h2>R — Read (leer)</h2>
       <p>
-        <strong><code>find</code></strong> devuelve un cursor con todos los documentos que cumplen el filtro (podés encadenar <code>.limit()</code>, <code>.sort()</code>, etc.). <strong><code>findOne</code></strong> devuelve solo el primero o <code>null</code>. La <strong>proyección</strong> (segundo argumento) indica qué campos traer: <code>1</code> incluir, <code>0</code> excluir (excepto <code>_id</code>, que hay que excluir explícitamente si no lo querés).
+        <strong><code>find</code></strong> devuelve un cursor con todos los documentos que cumplen el filtro (puedes encadenar <code>.limit()</code>, <code>.sort()</code>, etc.). <strong><code>findOne</code></strong> devuelve solo el primero o <code>null</code>. La <strong>proyección</strong> (segundo argumento) indica qué campos traer: <code>1</code> incluir, <code>0</code> excluir (excepto <code>_id</code>, que hay que excluir explícitamente si no lo quieres).
       </p>
       <CodeBlock
         lang="javascript"
@@ -79,7 +79,7 @@ db.libros.countDocuments({ anio: { $gte: 2024 } });`}
     <section class="mb-10">
       <h2>U — Update (actualizar)</h2>
       <p>
-        No se hace con un <code>UPDATE ... SET</code> como en SQL: pasás el filtro y un documento de <strong>operadores</strong>. Lo más habitual es <strong><code>$set</code></strong> para modificar o añadir campos, <strong><code>$inc</code></strong> para sumar a números, <strong><code>$unset</code></strong> para quitar un campo. <strong><code>replaceOne</code></strong> reemplaza el documento entero (menos común si solo querés tocar algunos campos).
+        No se hace con un <code>UPDATE ... SET</code> como en SQL: pasas el filtro y un documento de <strong>operadores</strong>. Lo más habitual es <strong><code>$set</code></strong> para modificar o añadir campos, <strong><code>$inc</code></strong> para sumar a números, <strong><code>$unset</code></strong> para quitar un campo. <strong><code>replaceOne</code></strong> reemplaza el documento entero (menos común si solo quieres tocar algunos campos).
       </p>
       <CodeBlock
         lang="javascript"

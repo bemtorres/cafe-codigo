@@ -1,7 +1,7 @@
 /**
  * Desbloqueo de cursos con candado (localStorage). No importa `courses.ts` para evitar
  * fallos raros de Vite/HMR al tocar `.env` (Cannot read properties of undefined (reading 'call')).
- * Si agregás un curso con `requiresPassword: true`, añadí su slug aquí también.
+ * Si agregas un curso con `requiresPassword: true`, añadí su slug aquí también.
  */
 const PASSWORD_PROTECTED_SLUGS: readonly string[] = ['c4', 'programacion-db'];
 

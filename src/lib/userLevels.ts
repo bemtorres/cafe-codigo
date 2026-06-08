@@ -1,6 +1,6 @@
 /**
  * Niveles de usuario (café) — se desbloquean según puntos de competencia / concursos.
- * Las imágenes viven en `public/badges/` (SVG de ejemplo; podés reemplazar por PNG con el mismo nombre base).
+ * Las imágenes viven en `public/badges/` (SVG de ejemplo; puedes reemplazar por PNG con el mismo nombre base).
  */
 
 export type UserLevelCode = 'americano' | 'latte' | 'macchiato' | 'espresso' | 'ristretto';
@@ -40,7 +40,7 @@ export const USER_LEVELS: readonly UserLevelDefinition[] = [
     minPoints: 100,
     colorHex: '#D2691E',
     badgeUrl: '/badges/latte.svg',
-    comment: 'Suave pero con cuerpo. Ya tenés experiencia.',
+    comment: 'Suave pero con cuerpo. Ya tienes experiencia.',
     description: 'Usuario activo con funciones avanzadas desbloqueadas.',
     levelUpMessage: '¡Subiste de nivel! Ahora sos parte del club Latte.',
   },

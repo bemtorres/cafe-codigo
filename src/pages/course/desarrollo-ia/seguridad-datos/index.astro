@@ -15,13 +15,13 @@ import DesarrolloIaQuizModal from '../../../../components/quizzes/DesarrolloIaQu
     <section class="mb-10">
       <h2>¿Por qué importa la privacidad al usar IA?</h2>
       <p>
-        Cada vez que escribís un prompt, seleccionás código o dejás que tu IDE envíe telemetría,
+        Cada vez que escribes un prompt, seleccionas código o dejas que tu IDE envíe telemetría,
         <strong>estás compartiendo información con servidores externos</strong>.
         Dependiendo de la herramienta y su configuración, esa información puede ser almacenada,
         procesada o incluso utilizada para entrenar futuros modelos.
       </p>
       <blockquote>
-        "Lo que le enviás a la IA no se queda solo entre vos y la pantalla. Tratá cada prompt como si fuera público."
+        "Lo que le envías a la IA no se queda solo entre tú y la pantalla. Trata cada prompt como si fuera público."
       </blockquote>
     </section>
 
@@ -57,7 +57,7 @@ STRIPE_KEY=TU_CLAVE_REAL_DE_STRIPE_AQUI
 JWT_SECRET=mi_super_secreto_jwt_2024`}
       />
       <p>
-        En lugar de enviar el archivo real, <strong>sanitizá</strong> el contexto antes de compartirlo:
+        En lugar de enviar el archivo real, <strong>sanitiza</strong> el contexto antes de compartirlo:
       </p>
       <CodeBlock
         lang="bash"
@@ -84,7 +84,7 @@ JWT_SECRET=tu_secreto_aqui`}
 
     <section class="mb-10">
       <h2>Práctica: Sanitizar un prompt real</h2>
-      <p>Supongamos que querés pedir ayuda con un error de conexión a Supabase. Este es el prompt <strong>malo</strong>:</p>
+      <p>Supongamos que quieres pedir ayuda con un error de conexión a Supabase. Este es el prompt <strong>malo</strong>:</p>
       <CodeBlock
         lang="text"
         title="❌ Prompt inseguro"
@@ -133,11 +133,11 @@ Connection string tiene formato: postgresql://user:pass@host:5432/dbname
     </section>
 
     <div class="ejercicio" style="background: #EDE9FE;">
-      <h3>🔒 Desafío: Revisá tu entorno</h3>
+      <h3>🔒 Desafío: Revisa tu entorno</h3>
       <p class="enunciado">
-        Abrí la configuración de privacidad de la herramienta de IA que usás (Copilot, Cursor, etc.)
-        y verificá que la telemetría y el entrenamiento de modelos estén desactivados.
-        Revisá tu archivo <code>.gitignore</code> para asegurar que <code>.env</code> no se suba al repositorio.
+        Abre la configuración de privacidad de la herramienta de IA que usas (Copilot, Cursor, etc.)
+        y verifica que la telemetría y el entrenamiento de modelos estén desactivados.
+        Revisa tu archivo <code>.gitignore</code> para asegurar que <code>.env</code> no se suba al repositorio.
       </p>
     </div>
 

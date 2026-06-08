@@ -14,7 +14,7 @@ import CodeBlock from '../../../../components/CodeBlock.astro';
     <section class="mb-10">
       <h2>Modelado mental</h2>
       <p>
-        Cada documento tiene un ID único dentro de su colección. Podés anidar <strong>subcolecciones</strong> cuando tiene sentido agrupar datos “bajo” un usuario o una entidad padre (por ejemplo <code>{'usuarios/{uid}/notas'}</code>).
+        Cada documento tiene un ID único dentro de su colección. Puedes anidar <strong>subcolecciones</strong> cuando tiene sentido agrupar datos “bajo” un usuario o una entidad padre (por ejemplo <code>{'usuarios/{uid}/notas'}</code>).
       </p>
       <p>
         Firestore no es SQL: las <strong>consultas compuestas</strong> tienen reglas (índices compuestos, limitaciones de <code>or</code> en ciertos casos). Conviene diseñar el modelo pensando en <strong>qué listados</strong> vas a mostrar en la app.

@@ -16,7 +16,7 @@ import PythonQuizModal from '../../../../components/quizzes/PythonQuizModal.astr
       <h2>¿Para qué sirve?</h2>
       <p>
         A veces el código falla: el usuario escribe letras cuando esperás un número, un archivo no existe, una clave no está en un diccionario.
-        Sin manejo de errores, Python muestra un <strong>traceback</strong> y el programa termina. Con <code>try</code> / <code>except</code> podés
+        Sin manejo de errores, Python muestra un <strong>traceback</strong> y el programa termina. Con <code>try</code> / <code>except</code> puedes
         <strong>atrapar</strong> ese fallo, mostrar un mensaje claro y seguir (o salir de forma ordenada).
       </p>
     </section>
@@ -40,7 +40,7 @@ except ValueError:
     <section class="mb-10">
       <h2>Varios tipos de error</h2>
       <p>
-        Podés encadenar varios <code>except</code> para reaccionar distinto según el problema. Es buena práctica ser <strong>específico</strong>
+        Puedes encadenar varios <code>except</code> para reaccionar distinto según el problema. Es buena práctica ser <strong>específico</strong>
         (por ejemplo <code>ValueError</code>) antes que un <code>except Exception:</code> muy genérico.
       </p>
       <CodeBlock
@@ -51,7 +51,7 @@ except ValueError:
 try:
     clave = input("Recurso: ")
     cantidad = datos[clave]
-    print(f"Tenés {cantidad}")
+    print(f"Tienes {cantidad}")
 except KeyError:
     print("No conozco ese recurso.")
 except KeyboardInterrupt:
@@ -92,7 +92,7 @@ dividir(10, 0)`}
     <section class="mb-10">
       <h2>Lanzar errores con <code>raise</code></h2>
       <p>
-        Cuando una regla de negocio falla (por ejemplo “edad negativa”), podés disparar vos mismo una excepción para que quien llama a la función la maneje con <code>try</code>/<code>except</code>.
+        Cuando una regla de negocio falla (por ejemplo “edad negativa”), puedes disparar tú mismo una excepción para que quien llama a la función la maneje con <code>try</code>/<code>except</code>.
       </p>
       <CodeBlock
         lang="python"

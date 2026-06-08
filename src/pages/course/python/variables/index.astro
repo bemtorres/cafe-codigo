@@ -54,7 +54,7 @@ print(f"Estado Actual: {perfil} (Nvl. {nivel})")`}
       <h3 class="mt-6">Formas de usar <code>print()</code> para mostrar variables</h3>
       <p>
         En Python vas a ver varias maneras. Funcionan, pero no todas son igual de claras o cómodas cuando crece el texto.
-        Acá tenés las más comunes:
+        Acá tienes las más comunes:
       </p>
       <CodeBlock
         lang="python"
@@ -63,19 +63,19 @@ print(f"Estado Actual: {perfil} (Nvl. {nivel})")`}
 edad = 19
 
 # 1) Con comas (print separa con espacios)
-print("Hola", nombre, "tenés", edad, "años")
+print("Hola", nombre, "tienes", edad, "años")
 
 # 2) Concatenando con + (solo strings: hay que convertir números)
-print("Hola " + nombre + ", tenés " + str(edad) + " años")
+print("Hola " + nombre + ", tienes " + str(edad) + " años")
 
 # 3) f-strings (recomendado en la mayoría de casos)
-print(f"Hola {nombre}, tenés {edad} años")
+print(f"Hola {nombre}, tienes {edad} años")
 
-# 4) .format() (útil si no podés/querés usar f-strings)
-print("Hola {}, tenés {} años".format(nombre, edad))
+# 4) .format() (útil si no puedes/quieres usar f-strings)
+print("Hola {}, tienes {} años".format(nombre, edad))
 
 # 5) join (cuando armás listas de textos)
-partes = ["Hola", nombre, "tenés", str(edad), "años"]
+partes = ["Hola", nombre, "tienes", str(edad), "años"]
 print(" ".join(partes))`}
       />
 
@@ -83,7 +83,7 @@ print(" ".join(partes))`}
       <ul class="mb-4">
         <li>
           <strong>Con comas (<code>print("a", x, "b")</code>)</strong>: es simple y rápido, pero el espaciado lo decide <code>print</code>
-          (mete espacios entre argumentos) y el resultado a veces queda “raro” si querés control fino.
+          (mete espacios entre argumentos) y el resultado a veces queda “raro” si quieres control fino.
         </li>
         <li>
           <strong>Con <code>+</code></strong>: te da control del texto, pero es <strong>frágil</strong> (si algo no es string rompe) y se vuelve difícil de leer

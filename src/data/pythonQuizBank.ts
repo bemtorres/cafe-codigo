@@ -379,7 +379,7 @@ export const pythonQuizBank: Record<string, PythonQuizDefinition> = {
         correctIndex: 1,
       },
       {
-        prompt: "¿Cómo lanzás vos una excepción explícitamente?",
+        prompt: "¿Cómo lanzas tú una excepción explícitamente?",
         options: ["throw Error()", "raise ValueError('mensaje')", "except up", "panic()"],
         correctIndex: 1,
       },
