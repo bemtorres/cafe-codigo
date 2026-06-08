@@ -1,0 +1,19 @@
+---
+import QuizModal from './QuizModal.astro';
+
+type Props = {
+  quizKey: string;
+};
+
+const { quizKey } = Astro.props as Props;
+---
+
+<QuizModal
+  courseSlug="desarrollo-ia"
+  quizKey={quizKey}
+  title="Desarrollo con IA Quiz"
+  brandingColor="#8A2BE2"
+  brandingBg="#F3E8FF"
+  brandingText="#1e1210"
+  logo="🤖"
+/>

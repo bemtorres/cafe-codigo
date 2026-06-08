@@ -1,0 +1,220 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import DesarrolloIaQuizModal from '../../../../components/quizzes/DesarrolloIaQuizModal.astro';
+---
+
+<Layout
+  title="Checklist de Validación de Código IA"
+  description="Antes de aceptar código generado por IA, revisá este checklist de seguridad, eficiencia y responsabilidad profesional."
+  courseSlug="desarrollo-ia"
+>
+  <article class="content-section">
+    <h1>4. Checklist de Validación ✅</h1>
+
+    <section class="mb-10">
+      <h2>¿Por qué necesitás un checklist?</h2>
+      <p>
+        El código generado por IA puede <strong>funcionar visualmente</strong> y aun así contener
+        errores silenciosos, vulnerabilidades de seguridad o malas prácticas que solo se revelan en producción.
+        Un checklist sistemático te protege de aceptar código a ciegas.
+      </p>
+      <blockquote>
+        "Que compile y que funcione no son sinónimos de que sea seguro, eficiente o mantenible."
+      </blockquote>
+    </section>
+
+    <section class="mb-10">
+      <h2>El Checklist de 4 Preguntas</h2>
+      <p>
+        Antes de incorporar <strong>cualquier</strong> código sugerido por una IA a tu proyecto, hacete estas
+        4 preguntas en orden:
+      </p>
+
+      <div class="ejercicio" style="background: #FEF3C7;">
+        <h3>1️⃣ ¿Copia o procesa datos sin validar?</h3>
+        <p class="enunciado">
+          Verificá que el código compruebe <strong>tipos de datos</strong>, <strong>valores nulos</strong>,
+          <strong>rangos válidos</strong> y <strong>longitudes máximas</strong> antes de procesar cualquier entrada.
+        </p>
+      </div>
+
+      <div class="ejercicio" style="background: #DBEAFE;">
+        <h3>2️⃣ ¿Modifica la estructura de datos original?</h3>
+        <p class="enunciado">
+          Buscá <strong>mutaciones inesperadas</strong>: métodos como <code>.sort()</code>, <code>.pop()</code>,
+          <code>.splice()</code> o <code>del lista[i]</code> que alteren la fuente de datos original.
+          En frameworks reactivos (React, Vue), mutar props o estados directamente genera bugs difíciles de rastrear.
+        </p>
+      </div>
+
+      <div class="ejercicio" style="background: #D1FAE5;">
+        <h3>3️⃣ ¿Maneja excepciones específicas?</h3>
+        <p class="enunciado">
+          Un <code>except Exception</code> o un <code>catch(e)</code> genérico silencia <strong>todos</strong>
+          los errores, incluso los que no esperás. Verificá que se atrapen excepciones concretas
+          (<code>ValueError</code>, <code>KeyError</code>, <code>TypeError</code>).
+        </p>
+      </div>
+
+      <div class="ejercicio" style="background: #EDE9FE;">
+        <h3>4️⃣ ¿Complejidad clara y razonable?</h3>
+        <p class="enunciado">
+          ¿La solución tiene una complejidad temporal proporcional al problema? Un bucle dentro de otro
+          sobre la misma colección (O(n²)) puede ser aceptable para 10 elementos pero catastrófico para 100.000.
+        </p>
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2>Ejemplo práctico: Aplicando el checklist</h2>
+      <p>Copilot te sugiere esta función para eliminar duplicados de una lista de productos:</p>
+      <CodeBlock
+        lang="python"
+        title="sugerencia_ia.py"
+        code={`def eliminar_duplicados(productos):
+    resultado = []
+    for p in productos:
+        if p not in resultado:
+            resultado.append(p)
+    return resultado`}
+      />
+
+      <p>Apliquemos el checklist:</p>
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>Pregunta</th>
+              <th>Análisis</th>
+              <th>Veredicto</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1. ¿Valida datos?</td>
+              <td>No verifica si <code>productos</code> es <code>None</code> o si contiene tipos mezclados.</td>
+              <td>⚠️ Falta</td>
+            </tr>
+            <tr>
+              <td>2. ¿Muta el original?</td>
+              <td>No. Crea una lista nueva <code>resultado</code>, la original queda intacta.</td>
+              <td>✅ OK</td>
+            </tr>
+            <tr>
+              <td>3. ¿Excepciones?</td>
+              <td>No hay <code>try/except</code>, pero tampoco hay operaciones que puedan fallar (salvo entrada nula).</td>
+              <td>⚠️ Parcial</td>
+            </tr>
+            <tr>
+              <td>4. ¿Complejidad?</td>
+              <td><code>in resultado</code> recorre la lista en cada iteración: es <strong>O(n²)</strong>. Con un <code>set</code> auxiliar bajaría a O(n).</td>
+              <td>⚠️ Mejorable</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>Versión mejorada tras aplicar el checklist:</p>
+      <CodeBlock
+        lang="python"
+        title="eliminados_mejorado.py"
+        code={`def eliminar_duplicados(productos: list | None) -> list:
+    """Elimina duplicados preservando el orden. O(n) con un set auxiliar."""
+    if not productos:
+        return []
+    vistos: set = set()
+    resultado: list = []
+    for p in productos:
+        clave = id(p) if not isinstance(p, (str, int, float, tuple)) else p
+        if clave not in vistos:
+            vistos.add(clave)
+            resultado.append(p)
+    return resultado`}
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Responsabilidad profesional: ¿De quién es el código?</h2>
+      <p>
+        Un punto fundamental que debés interiorizar:
+      </p>
+      <div class="ejercicio" style="background: #FEE2E2;">
+        <h3>⚖️ Principio de Responsabilidad</h3>
+        <p class="enunciado" style="font-size: 1.1rem;">
+          <strong>La responsabilidad sobre el código siempre recae en la persona que lo desarrolla</strong>,
+          no en la IA que lo sugirió. Si el código causa una brecha de seguridad, un fallo en producción o
+          un error de lógica, el responsable sos vos.
+        </p>
+      </div>
+      <p class="mt-4">
+        Utilizar IA de forma ética implica:
+      </p>
+      <ul>
+        <li><strong>Comprender</strong> el código generado antes de integrarlo.</li>
+        <li><strong>Proteger</strong> los datos del proyecto y sus usuarios (lección 2).</li>
+        <li><strong>Mantener un rol activo</strong> en el proceso de aprendizaje y toma de decisiones.</li>
+        <li><strong>Documentar</strong> qué partes contaron con asistencia de IA y cómo se validaron.</li>
+      </ul>
+    </section>
+
+    <section class="mb-10">
+      <h2>Transparencia: Documentar el uso de IA</h2>
+      <p>
+        En entornos académicos y profesionales, es importante declarar qué herramientas usaste.
+        No para "castigar" su uso, sino para demostrar que <strong>entendés lo que entregás</strong>:
+      </p>
+      <CodeBlock
+        lang="python"
+        title="Ejemplo de comentario de transparencia"
+        code={`# Función generada con asistencia de GitHub Copilot.
+# Modificaciones manuales: validación de entrada (líneas 3-4),
+# cambio de O(n²) a O(n) con set auxiliar (líneas 7-8).
+# Revisada y testeada por: [tu nombre] — 2026-06-08
+def eliminar_duplicados(productos: list | None) -> list:
+    ...`}
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Preguntas de reflexión final</h2>
+      <div class="ejercicio" style="background: #EDE9FE;">
+        <h3>🧠 Reflexioná</h3>
+        <ol class="enunciado" style="margin:0;">
+          <li>¿Cuál es el principal riesgo de aceptar código de Copilot sin comprenderlo?</li>
+          <li>Mencioná dos acciones concretas para proteger datos al programar con IA.</li>
+          <li>¿Cómo asegurar transparencia y no dependencia en tu informe o documentación?</li>
+        </ol>
+      </div>
+    </section>
+
+    <div class="ejercicio" style="background: #FEF3C7;">
+      <h3>✅ Desafío Final: Revisá código de IA</h3>
+      <p class="enunciado">
+        Pedile a tu asistente de IA favorito que genere una función para calcular el descuento de un producto
+        (recibe precio y porcentaje). Aplicá el checklist de 4 preguntas, documentá tus hallazgos
+        y mejorá el código si encontrás problemas.
+      </p>
+      <details>
+        <summary>👁️ Ver criterio de evaluación</summary>
+        <p style="margin: 0.5rem 0; font-weight: 700;">
+          Tu análisis debería cubrir:<br/>
+          1. ¿Valida que precio y porcentaje sean positivos y numéricos?<br/>
+          2. ¿Qué pasa si porcentaje es mayor a 100?<br/>
+          3. ¿Maneja excepciones si le pasás un string?<br/>
+          4. ¿El cálculo es directo (O(1)) o innecesariamente complejo?
+        </p>
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Quiz: Checklist de Validación</h2>
+      <DesarrolloIaQuizModal quizKey="validacion-codigo" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/desarrollo-ia/prompting-y-tokens/" class="prev">← Prompting y Tokens</a>
+      <a href="/course/desarrollo-ia/" class="next">Índice del Curso →</a>
+    </nav>
+  </article>
+</Layout>

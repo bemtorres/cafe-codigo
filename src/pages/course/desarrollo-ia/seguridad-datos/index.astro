@@ -1,0 +1,154 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import DesarrolloIaQuizModal from '../../../../components/quizzes/DesarrolloIaQuizModal.astro';
+---
+
+<Layout
+  title="Privacidad y Datos Sensibles"
+  description="Qué información compartir y cuál proteger al trabajar con asistentes de IA en el desarrollo de software."
+  courseSlug="desarrollo-ia"
+>
+  <article class="content-section">
+    <h1>2. Privacidad y Datos Sensibles 🔒</h1>
+
+    <section class="mb-10">
+      <h2>¿Por qué importa la privacidad al usar IA?</h2>
+      <p>
+        Cada vez que escribís un prompt, seleccionás código o dejás que tu IDE envíe telemetría,
+        <strong>estás compartiendo información con servidores externos</strong>.
+        Dependiendo de la herramienta y su configuración, esa información puede ser almacenada,
+        procesada o incluso utilizada para entrenar futuros modelos.
+      </p>
+      <blockquote>
+        "Lo que le enviás a la IA no se queda solo entre vos y la pantalla. Tratá cada prompt como si fuera público."
+      </blockquote>
+    </section>
+
+    <section class="mb-10">
+      <h2>🚫 Lo que NUNCA debes enviar a la IA</h2>
+      <p>
+        Independientemente de la herramienta que uses (Copilot, Cursor, Antigravity, Claude, ChatGPT),
+        estos datos deben <strong>permanecer fuera</strong> de cualquier prompt o ventana de contexto:
+      </p>
+      <div class="ejercicio" style="background: #FEE2E2;">
+        <h3>🛑 Datos Prohibidos</h3>
+        <ul class="enunciado" style="margin:0;">
+          <li><strong>Credenciales y Secretos:</strong> API keys, tokens de autenticación, contraseñas, certificados SSL, credenciales de bases de datos.</li>
+          <li><strong>Datos Personales (PII/GDPR):</strong> Nombres de clientes reales, correos electrónicos, teléfonos, RUTs, datos financieros.</li>
+          <li><strong>Código Propietario Confidencial:</strong> Algoritmos protegidos por NDA o acuerdos de confidencialidad.</li>
+          <li><strong>Bases de Datos Reales:</strong> Dumps de producción, registros de logs con información sensible.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2>Ejemplo: Cómo se filtra una API Key</h2>
+      <p>
+        Parece inocente, pero ocurre constantemente. Un desarrollador pega su archivo <code>.env</code>
+        en el chat para "pedir ayuda con la conexión":
+      </p>
+      <CodeBlock
+        lang="bash"
+        title="❌ Nunca hagas esto"
+        code={`# .env (PRODUCCIÓN)
+DATABASE_URL=postgresql://admin:s3cr3t_p4ss@prod-db.ejemplo.com:5432/clientes
+STRIPE_KEY=TU_CLAVE_REAL_DE_STRIPE_AQUI
+JWT_SECRET=mi_super_secreto_jwt_2024`}
+      />
+      <p>
+        En lugar de enviar el archivo real, <strong>sanitizá</strong> el contexto antes de compartirlo:
+      </p>
+      <CodeBlock
+        lang="bash"
+        title="✅ Versión sanitizada"
+        code={`# .env.example (SEGURO para compartir)
+DATABASE_URL=postgresql://user:password@localhost:5432/mi_base
+STRIPE_KEY=XXXXXXXXXXXXXXXX
+JWT_SECRET=tu_secreto_aqui`}
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>✅ Lo que SÍ puedes enviar</h2>
+      <div class="ejercicio" style="background: #D1FAE5;">
+        <h3>💚 Información Segura</h3>
+        <ul class="enunciado" style="margin:0;">
+          <li><strong>Estructuras de datos y firmas de métodos:</strong> Interfaces, tipos, declaraciones de clases vacías.</li>
+          <li><strong>Pseudocódigo y lógica algorítmica general:</strong> <em>"¿Cómo ordenar una lista de objetos por fecha en JS?"</em></li>
+          <li><strong>Datos ficticios (dummy/mock):</strong> <code>[{`{ id: 1, name: "User A", email: "user@example.com" }`}]</code></li>
+          <li><strong>Mensajes de error sanitizados:</strong> Stack traces sin rutas absolutas ni nombres de usuario del sistema.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2>Práctica: Sanitizar un prompt real</h2>
+      <p>Supongamos que querés pedir ayuda con un error de conexión a Supabase. Este es el prompt <strong>malo</strong>:</p>
+      <CodeBlock
+        lang="text"
+        title="❌ Prompt inseguro"
+        code={`Tengo este error al conectar:
+Error: connect ECONNREFUSED 192.168.1.45:5432
+Mi connection string es:
+postgresql://admin_carlos:C4rl0s_2024!@192.168.1.45:5432/ventas_produccion`}
+      />
+      <p>Y este es el prompt <strong>correcto</strong>:</p>
+      <CodeBlock
+        lang="text"
+        title="✅ Prompt seguro"
+        code={`Tengo un error ECONNREFUSED al conectar a PostgreSQL con Supabase.
+Connection string tiene formato: postgresql://user:pass@host:5432/dbname
+¿Qué puede causar este error y cómo lo depuro?`}
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Configuraciones de Privacidad en los IDEs</h2>
+      <p>La mayoría de herramientas de IA permiten ajustar qué datos se comparten:</p>
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>Herramienta</th>
+              <th>Configuración clave</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>GitHub Copilot</strong></td>
+              <td>Settings → <code>Copilot</code> → desactivar <em>"Allow GitHub to use my code snippets for product improvements"</em>.</td>
+            </tr>
+            <tr>
+              <td><strong>Cursor</strong></td>
+              <td>Settings → Privacy → activar <em>"Privacy Mode"</em> para que no se indexe el codebase.</td>
+            </tr>
+            <tr>
+              <td><strong>ChatGPT / Claude</strong></td>
+              <td>Desactivar <em>"Improve the model for everyone"</em> en la configuración de la cuenta.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <div class="ejercicio" style="background: #EDE9FE;">
+      <h3>🔒 Desafío: Revisá tu entorno</h3>
+      <p class="enunciado">
+        Abrí la configuración de privacidad de la herramienta de IA que usás (Copilot, Cursor, etc.)
+        y verificá que la telemetría y el entrenamiento de modelos estén desactivados.
+        Revisá tu archivo <code>.gitignore</code> para asegurar que <code>.env</code> no se suba al repositorio.
+      </p>
+    </div>
+
+    <section class="mb-10">
+      <h2>Quiz: Privacidad y Datos</h2>
+      <DesarrolloIaQuizModal quizKey="seguridad-datos" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/desarrollo-ia/introduccion/" class="prev">← No Dependencia</a>
+      <a href="/course/desarrollo-ia/prompting-y-tokens/" class="next">Prompting y Tokens →</a>
+    </nav>
+  </article>
+</Layout>

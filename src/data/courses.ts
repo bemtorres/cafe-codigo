@@ -605,4 +605,18 @@ export const courses: Course[] = [
       { slug: 'intercambio-firmas', title: '5. Intercambio de Claves y Firmas', href: '/course/criptografia/intercambio-firmas/' },
     ],
   },
+  {
+    slug: 'desarrollo-ia',
+    name: 'Desarrollo con IA',
+    description: 'Aprende a programar de forma ética, segura y eficiente con asistentes de Inteligencia Artificial.',
+    category: 'tools',
+    status: 'available',
+    color: '#8A2BE2',
+    lessons: [
+      { slug: 'introduccion', title: '1. No Dependencia y Explicabilidad', href: '/course/desarrollo-ia/introduccion/' },
+      { slug: 'seguridad-datos', title: '2. Privacidad y Datos Sensibles', href: '/course/desarrollo-ia/seguridad-datos/' },
+      { slug: 'prompting-y-tokens', title: '3. Prompting y Ahorro de Tokens', href: '/course/desarrollo-ia/prompting-y-tokens/' },
+      { slug: 'validacion-codigo', title: '4. Checklist de Validación', href: '/course/desarrollo-ia/validacion-codigo/' },
+    ],
+  },
 ];

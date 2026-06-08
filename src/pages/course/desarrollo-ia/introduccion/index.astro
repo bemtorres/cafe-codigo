@@ -1,0 +1,154 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import DesarrolloIaQuizModal from '../../../../components/quizzes/DesarrolloIaQuizModal.astro';
+---
+
+<Layout
+  title="No Dependencia y Explicabilidad"
+  description="El primer principio del uso ético de la IA: no depender de ella y poder explicar cada línea de tu código."
+  courseSlug="desarrollo-ia"
+>
+  <article class="content-section">
+    <h1>1. No Dependencia y Explicabilidad 🧠</h1>
+
+    <section class="mb-10">
+      <h2>¿Por qué hablar de ética si solo quiero programar?</h2>
+      <p>
+        Las herramientas de inteligencia artificial como <strong>GitHub Copilot</strong>, <strong>Cursor</strong>,
+        <strong>Antigravity</strong>, <strong>Codex</strong> u <strong>OpenCode</strong> pueden autocompletar funciones enteras,
+        generar tests y hasta diseñar bases de datos. Eso es poderoso, pero también peligroso si no sabés qué está haciendo el código que aceptás.
+      </p>
+      <blockquote>
+        "Un programa que funciona no es lo mismo que un programa que es seguro, mantenible y que el desarrollador comprende."
+      </blockquote>
+    </section>
+
+    <section class="mb-10">
+      <h2>El principio de No Dependencia</h2>
+      <p>
+        La IA debe cumplir un <strong>rol de apoyo</strong>, no de sustitución de tu razonamiento.
+        Si solo aceptás sugerencias sin poder explicar el porqué de cada decisión, estás desarrollando una dependencia que limita:
+      </p>
+      <ul>
+        <li>Tu <strong>pensamiento lógico</strong> y capacidad de diseño algorítmico.</li>
+        <li>La <strong>comprensión</strong> de las estructuras de datos que usás.</li>
+        <li>Tu habilidad para <strong>detectar errores</strong> y vulnerabilidades de seguridad.</li>
+      </ul>
+    </section>
+
+    <section class="mb-10">
+      <h2>¿Cómo saber si tenés dependencia?</h2>
+      <p>
+        Hacete estas preguntas honestas después de terminar una función o un módulo:
+      </p>
+      <div class="ejercicio" style="background: #FEF3C7;">
+        <h3>🔍 Autodiagnóstico</h3>
+        <ul class="enunciado" style="margin:0;">
+          <li>¿Puedo explicar <strong>por qué elegí una lista</strong> en vez de un diccionario o un set?</li>
+          <li>¿Entiendo cómo funciona el <code>try/except</code> que la IA me sugirió?</li>
+          <li>¿Sé qué riesgo de seguridad evita la validación que se agregó?</li>
+          <li>¿Puedo modificar el código <strong>sin volver a preguntar a la IA</strong>?</li>
+        </ul>
+      </div>
+      <p class="mt-4">
+        Si respondés "no" a más de una, estás aceptando código a ciegas. Eso no es usar IA: eso es
+        <strong>delegar tu responsabilidad profesional</strong>.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Dependencia vs. Uso Responsable</h2>
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>⚠️ Dependencia</th>
+              <th>✅ Uso Responsable</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Aceptar autocompletado sin leer el código.</td>
+              <td>Modificar, ampliar y depurar de forma autónoma.</td>
+            </tr>
+            <tr>
+              <td>No justificar decisiones de diseño (ej. lista vs diccionario).</td>
+              <td>Explicar el funcionamiento y justificación de cada bloque.</td>
+            </tr>
+            <tr>
+              <td>Desconocer cómo funciona el manejo de excepciones sugerido.</td>
+              <td>Detectar errores de sintaxis y lógicos simples sin IA.</td>
+            </tr>
+            <tr>
+              <td>Ignorar riesgos de seguridad del código insertado.</td>
+              <td>Comprender qué vulnerabilidad mitiga cada validación.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2>Ejemplo práctico: ¿Qué pasa si solo copiás?</h2>
+      <p>Supongamos que Copilot te sugiere esta función para buscar un usuario:</p>
+      <CodeBlock
+        lang="python"
+        title="sugerencia_copilot.py"
+        code={`def buscar_usuario(nombre, lista):
+    for u in lista:
+        if u["nombre"] == nombre:
+            return u
+    return None`}
+      />
+      <p>La función <strong>funciona</strong>. Pero un desarrollador responsable se pregunta:</p>
+      <ul>
+        <li>¿Qué pasa si <code>lista</code> es <code>None</code>? → Se rompe con <code>TypeError</code>.</li>
+        <li>¿Y si algún diccionario no tiene la clave <code>"nombre"</code>? → <code>KeyError</code>.</li>
+        <li>¿Es eficiente recorrer toda la lista en cada búsqueda? → Con muchos datos no, quizás un diccionario indexado sería mejor.</li>
+      </ul>
+      <p>
+        Una versión más robusta, que <strong>vos deberías poder escribir</strong>:
+      </p>
+      <CodeBlock
+        lang="python"
+        title="buscar_mejorado.py"
+        code={`def buscar_usuario(nombre: str, lista: list[dict] | None) -> dict | None:
+    if not lista:
+        return None
+    for u in lista:
+        if u.get("nombre") == nombre:
+            return u
+    return None`}
+      />
+    </section>
+
+    <div class="ejercicio" style="background: #EDE9FE;">
+      <h3>🤖 Desafío: Explicá el código</h3>
+      <p class="enunciado">
+        Abrí tu herramienta de IA favorita y pedile que genere una función que reciba una lista de notas y devuelva el promedio.
+        <strong>Antes de aceptar</strong>, escribí en un comentario: qué hace cada línea, qué tipo de error podría ocurrir
+        y qué validación agregarías. Si no podés, no la aceptes.
+      </p>
+      <details>
+        <summary>👁️ Ver criterio de evaluación</summary>
+        <p style="margin: 0.5rem 0; font-weight: 700;">
+          Deberías poder responder:<br/>
+          • ¿Qué pasa si la lista está vacía? (División por cero).<br/>
+          • ¿Qué pasa si algún elemento no es un número? (TypeError).<br/>
+          • ¿Se modifica la lista original? (No debería).
+        </p>
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Quiz: No Dependencia</h2>
+      <DesarrolloIaQuizModal quizKey="introduccion" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/desarrollo-ia/" class="prev">← Índice del Curso</a>
+      <a href="/course/desarrollo-ia/seguridad-datos/" class="next">Privacidad y Datos →</a>
+    </nav>
+  </article>
+</Layout>
