@@ -1,0 +1,121 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import CriptografiaQuizModal from '../../../../components/quizzes/CriptografiaQuizModal.astro';
+---
+
+<Layout
+  title="Conceptos Básicos de Criptografía"
+  description="Introducción a la seguridad de la información: algoritmos clásicos, pilares criptográficos y la diferencia clave entre cifrado y hashing."
+  courseSlug="criptografia"
+>
+  <article class="content-section">
+    <h1>1. Conceptos Básicos y Pilares de la Criptografía 🔐</h1>
+
+    <section class="mb-10">
+      <h2>Introducción y Motivación</h2>
+      <p>
+        En la era de la información, la seguridad de los datos ya no es una característica opcional; es la columna vertebral de cualquier aplicación confiable. Desde el almacenamiento de contraseñas de tus usuarios hasta la transmisión de transacciones bancarias, la <strong>criptografía</strong> es la ciencia que nos permite asegurar la confidencialidad, integridad y autenticidad de la información.
+      </p>
+      <p>
+        Antes de escribir complejas líneas de código en Python o Java, es fundamental entender los conceptos teóricos básicos. El error más común entre desarrolladores principiantes es aplicar algoritmos a ciegas, lo que genera sistemas con fallas estructurales graves.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>¿Cifrado o Hashing? La diferencia crucial</h2>
+      <p>
+        Uno de los mayores dolores en el desarrollo de software es confundir estos dos procesos. Aunque ambos transforman el texto original, sus propósitos matemáticos son opuestos:
+      </p>
+      
+      <div class="table-container" style="overflow-x: auto; margin-bottom: 2rem;">
+        <table class="content-table">
+          <thead>
+            <tr>
+              <th>Característica</th>
+              <th>Cifrado (Encryption)</th>
+              <th>Hashing (Funciones Resumen)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="font-weight: bold;">Direccionalidad</td>
+              <td><strong>Bidireccional</strong>: El texto cifrado se puede descifrar para recuperar el original con la clave correcta.</td>
+              <td><strong>Unidireccional</strong>: Es matemáticamente imposible reconstruir el texto original a partir del hash.</td>
+            </tr>
+            <tr>
+              <td style="font-weight: bold;">Tamaño de Salida</td>
+              <td>Variable (crece con el tamaño del mensaje).</td>
+              <td>Fijo (ej. SHA-256 siempre genera una huella de 256 bits/64 caracteres).</td>
+            </tr>
+            <tr>
+              <td style="font-weight: bold;">Caso de Uso Común</td>
+              <td>Envío de mensajes privados, almacenamiento de datos sensibles del cliente (ej. tarjetas de crédito).</td>
+              <td>Verificación de integridad de archivos y almacenamiento seguro de contraseñas.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2>El Inicio de Todo: Cifrado Clásico (César)</h2>
+      <p>
+        Para entender cómo funciona el cifrado simétrico moderno, es útil repasar el <strong>Cifrado César</strong>. Es un método de sustitución donde cada letra del texto original se desplaza un número fijo de posiciones en el alfabeto.
+      </p>
+      <p>
+        Si nuestro desplazamiento (clave) es 3, la <code>A</code> se convierte en <code>D</code>, la <code>B</code> en <code>E</code>, y así sucesivamente.
+      </p>
+
+      <CodeBlock lang="python" code={`def cifrado_cesar(texto, desplazamiento):
+    resultado = ""
+    for char in texto:
+        if char.isalpha():
+            # Determinar base ASCII (Mayúscula o Minúscula)
+            base = ord('A') if char.isupper() else ord('a')
+            # Aplicar desplazamiento cíclico en el alfabeto (26 letras)
+            cifrado = (ord(char) - base + desplazamiento) % 26 + base
+            resultado += chr(cifrado)
+        else:
+            resultado += char
+    return resultado
+
+# Prueba de Cifrado
+mensaje = "Aprende Criptografia"
+mensaje_cifrado = cifrado_cesar(mensaje, 3)
+print(f"Cifrado: {mensaje_cifrado}") # "Dsuhqgh Fulswrjudild"
+
+# Descifrado usando el desplazamiento inverso (-3)
+mensaje_descifrado = cifrado_cesar(mensaje_cifrado, -3)
+print(f"Descifrado: {mensaje_descifrado}") # "Aprende Criptografia"`}
+        title="cesar.py"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Los Dos Enfoques del Cifrado Moderno</h2>
+      <p>
+        Los algoritmos modernos se dividen en dos categorías principales según el manejo de claves:
+      </p>
+      <ul>
+        <li>
+          <strong>Cifrado Simétrico:</strong> Usa la misma clave secreta para encriptar y desencriptar. Su analogía física es una caja fuerte con una única llave. Es extremadamente rápido pero presenta el problema de cómo compartir esa única llave de forma segura.
+        </li>
+        <li>
+          <strong>Cifrado Asimétrico:</strong> Usa un par de llaves vinculadas matemáticamente: una clave pública (que se puede compartir con todo el mundo para cifrar) y una clave privada (que solo el dueño posee y sirve para descifrar). Su analogía es un buzón de correo con ranura pública y llave privada para vaciarlo.
+        </li>
+      </ul>
+    </section>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>Comprueba tus conocimientos sobre este tema realizando nuestro pequeño test (3 preguntas).</p>
+      <CriptografiaQuizModal quizKey="introduccion" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/criptografia/" class="prev">← Curso</a>
+      <a href="/course/criptografia/cifrado-simetrico/" class="next">Cifrado Simétrico →</a>
+    </nav>
+  </article>
+</Layout>

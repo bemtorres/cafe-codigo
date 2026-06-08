@@ -55,6 +55,7 @@ export function detectLang(src: string) {
   if (/<\/?[a-z][a-z0-9]*[\s>]/i.test(s) && /<!DOCTYPE|<html|<div|<p |<h[1-6]|<span/i.test(s)) return 'html';
   if (/\{[\s\S]*?:[\s\S]*?\}/.test(s) && /[.#]?\w+\s*\{/.test(s)) return 'css';
   if (/\b(const|let|var|function|=>|document\.|console\.log|async|await)\b/.test(s)) return 'javascript';
+  if (/<\?php\b/i.test(s) || /\$[a-zA-Z_]\w*\s*=/.test(s) || /\becho\s+['"]/.test(s)) return 'php';
 
   return 'java';
 }
@@ -76,6 +77,7 @@ export const langColors: Record<string, string> = {
   cmd: '#888888',
   json: '#13aa52',
   vba:  '#2E75B6',
+  php:  '#4f5b90',
 };
 
 export const idePalettes: Record<string, { bg: string; txt: string; kw: string; str: string; func: string; type: string; op: string }> = {
@@ -91,6 +93,7 @@ export const idePalettes: Record<string, { bg: string; txt: string; kw: string; 
   css: { bg: '#1e1e1e', txt: '#d4d4d4', kw: '#569cd6', str: '#ce9178', func: '#dcdcaa', type: '#4ec9b0', op: '#d4d4d4' },
   pseint: { bg: '#ffffff', txt: '#000000', kw: '#0000FF', str: '#A31515', func: '#000000', type: '#008080', op: '#000000' },
   ruby: { bg: '#2d1f1f', txt: '#e8dcc8', kw: '#ff6b6b', str: '#98d8aa', func: '#f9e79f', type: '#7ec8e3', op: '#c9b8a8' },
+  php: { bg: '#1e1f22', txt: '#bcbec4', kw: '#cf8e6d', str: '#6aab73', func: '#56a8f5', type: '#c9a26f', op: '#bcbec4' },
 };
 
 function escape(s: string) {
@@ -316,6 +319,24 @@ function highlightCss(line: string): string {
   ]);
 }
 
+function highlightPhp(line: string): string {
+  return tokenize(line, [
+    { re: /\/\/.*/, cls: 'hl-comment' },
+    { re: /#.*/, cls: 'hl-comment' },
+    { re: /\/\*[\s\S]*?\*\//, cls: 'hl-comment' },
+    { re: /"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'/, cls: 'hl-str' },
+    { re: /<\?php|\?>/, cls: 'hl-kw' },
+    {
+      re: /\b(class|function|public|private|protected|static|return|if|else|elseif|foreach|for|while|do|switch|case|break|continue|try|catch|finally|throw|new|use|namespace|echo|print|require|include|require_once|include_once|extends|implements|interface|trait|abstract|final|as|global|var|const|and|or|xor|array|list|fn)\b/,
+      cls: 'hl-kw',
+    },
+    { re: /\b(true|false|null)\b/i, cls: 'hl-type' },
+    { re: /\$[a-zA-Z_]\w*/, cls: 'hl-attr' },
+    { re: /\b(\w+)(?=\s*\()/, cls: 'hl-func' },
+    { re: /\b\d+\.?\d*\b/, cls: 'hl-num' },
+  ]);
+}
+
 export function highlightLine(line: string, lang: string): string {
   switch (lang) {
     case 'pseint':
@@ -344,6 +365,8 @@ export function highlightLine(line: string, lang: string): string {
       return highlightCss(line);
     case 'vba':
       return highlightVba(line);
+    case 'php':
+      return highlightPhp(line);
     default:
       return escape(line);
   }

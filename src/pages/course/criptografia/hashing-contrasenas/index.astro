@@ -1,0 +1,187 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlockMulti from '../../../../components/CodeBlockMulti.astro';
+import CriptografiaQuizModal from '../../../../components/quizzes/CriptografiaQuizModal.astro';
+
+const pythonCode = `import hashlib
+import os
+
+# 1. Hashing de datos general (SHA-256)
+datos = b"Verificar integridad de datos"
+sha256_hash = hashlib.sha256(datos).hexdigest()
+print(f"SHA-256: {sha256_hash}")
+
+# 2. Hashing seguro de contrasenas usando PBKDF2 (incluido en hashlib)
+password = "MiPasswordSeguro123".encode('utf-8')
+sal = os.urandom(16)  # Sal aleatoria de 16 bytes
+# Generar hash con 100,000 iteraciones
+password_hash = hashlib.pbkdf2_hmac('sha256', password, sal, 100000)
+print(f"Hash derivado (hex): {password_hash.hex()}")`;
+
+const javaCode = `import java.security.MessageDigest;
+import java.security.spec.KeySpec;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
+import java.security.SecureRandom;
+import java.util.Base64;
+
+public class HashingYContrasenas {
+    public static void main(String[] args) throws Exception {
+        // 1. Hash de datos simple con SHA-256
+        String datos = "Verificar integridad de datos";
+        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        byte[] hash = digest.digest(datos.getBytes("UTF-8"));
+        
+        StringBuilder hexString = new StringBuilder();
+        for (byte b : hash) {
+            String hex = Integer.toHexString(0xff & b);
+            if (hex.length() == 1) hexString.append('0');
+            hexString.append(hex);
+        }
+        System.out.println("SHA-256 Hex: " + hexString.toString());
+
+        // 2. Hash de contrasenas seguro usando PBKDF2 con sal
+        String password = "MiPasswordSeguro123";
+        byte[] sal = new byte[16];
+        SecureRandom.getInstanceStrong().nextBytes(sal);
+
+        KeySpec spec = new PBEKeySpec(password.toCharArray(), sal, 65536, 256);
+        SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
+        byte[] passwordHash = factory.generateSecret(spec).getEncoded();
+        System.out.println("PBKDF2 Hash: " + Base64.getEncoder().encodeToString(passwordHash));
+    }
+}`;
+
+const phpCode = `<?php
+// 1. Hash de datos con SHA-256
+$datos = "Verificar integridad de datos";
+$sha256_hash = hash('sha256', $datos);
+echo "SHA-256 Hex: " . $sha256_hash . "\n";
+
+// 2. Hashing de contrasenas nativo con Argon2id
+$password = "MiPasswordSeguro123";
+// PHP gestiona la sal y las iteraciones de forma automatica e integrada
+$hashed_password = password_hash($password, PASSWORD_ARGON2ID);
+echo "Argon2id Hash: " . $hashed_password . "\n";
+
+// Verificar contrasena
+if (password_verify($password, $hashed_password)) {
+    echo "Contrasena valida!\n";
+}
+?>`;
+
+const jsCode = `const crypto = require('crypto');
+
+// 1. Hash de datos con SHA-256
+const datos = "Verificar integridad de datos";
+const sha256Hash = crypto.createHash('sha256').update(datos).digest('hex');
+console.log("SHA-256 Hex:", sha256Hash);
+
+// 2. Hashing de contrasenas con scrypt
+const password = "MiPasswordSeguro123";
+const sal = crypto.randomBytes(16).toString('hex');
+
+crypto.scrypt(password, sal, 64, (err, derivedKey) => {
+    if (err) throw err;
+    console.log("Scrypt Hash (hex):", derivedKey.toString('hex'));
+});`;
+
+const csharpCode = `using System;
+using System.Security.Cryptography;
+using System.Text;
+
+public class HashingYContrasenas {
+    public static void Main() {
+        // 1. Hash de datos simple con SHA-256
+        string datos = "Verificar integridad de datos";
+        byte[] inputBytes = Encoding.UTF8.GetBytes(datos);
+        byte[] hashBytes = SHA256.HashData(inputBytes);
+        Console.WriteLine("SHA-256 Hex: " + Convert.ToHexString(hashBytes));
+
+        // 2. Hash de contraseñas seguro usando PBKDF2 con sal (Rfc2898DeriveBytes)
+        string password = "MiPasswordSeguro123";
+        byte[] sal = new byte[16];
+        RandomNumberGenerator.Fill(sal); // Generar sal aleatoria de 16 bytes
+
+        // Derivar una clave de 32 bytes con 100,000 iteraciones usando SHA-256
+        using (var pbkdf2 = new Rfc2898DeriveBytes(password, sal, 100000, HashAlgorithmName.SHA256)) {
+            byte[] passwordHash = pbkdf2.GetBytes(32);
+            Console.WriteLine("PBKDF2 Hash: " + Convert.ToBase64String(passwordHash));
+        }
+    }
+}`;
+---
+
+<Layout
+  title="Hashes y Seguridad de Contraseñas"
+  description="Aprende los principios del hashing unidireccional y las mejores prácticas para almacenar contraseñas seguras mediante sal y algoritmos lentos en Python, Java, PHP, C# y JS."
+  courseSlug="criptografia"
+>
+  <article class="content-section">
+    <h1>4. Hashes y Contraseñas: Asegurando Credenciales 🔑🛡️</h1>
+
+    <section class="mb-10">
+      <h2>¿Qué es una Función Hash?</h2>
+      <p>
+        Una función <strong>hash</strong> toma una entrada de cualquier longitud y la transforma matemáticamente en una cadena de caracteres de tamaño fijo. Las funciones hash criptográficas cumplen tres propiedades esenciales:
+      </p>
+      <ul>
+        <li>
+          <strong>Unidireccionalidad (Irreversible):</strong> Si tienes el hash, es computacionalmente imposible revertirlo para obtener el texto original.
+        </li>
+        <li>
+          <strong>Determinismo:</strong> La misma entrada exacta siempre producirá exactamente el mismo hash de salida.
+        </li>
+        <li>
+          <strong>Efecto Avalancha:</strong> Si modificas un solo carácter o bit en la entrada, el hash resultante cambia por completo de forma irreconocible.
+        </li>
+      </ul>
+    </section>
+
+    <section class="mb-10" style="background: #FEE2E2; border-left: 6px solid #ef4444; padding: 1rem; border-radius: 8px; margin-bottom: 2rem;">
+      <h3 style="margin-top: 0; color: #991b1b;">❌ Nunca uses SHA-256 para guardar contraseñas</h3>
+      <p style="margin-bottom: 0;">
+        Aunque SHA-256 es seguro para verificar la integridad de un archivo descargado, es <strong>inseguro para almacenar contraseñas</strong>. SHA-256 es un algoritmo diseñado para ser extremadamente <strong>rápido</strong>. Un atacante con una GPU moderna de escritorio puede probar miles de millones de hashes de SHA-256 por segundo, descifrando contraseñas comunes en minutos mediante ataques de fuerza bruta.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>El poder de la Sal (Salt) y los algoritmos lentos</h2>
+      <p>
+        Para proteger contraseñas, usamos algoritmos de <strong>Derivación de Clave (KDF)</strong> deliberadamente lentos y costosos en CPU/Memoria como <strong>Argon2id</strong>, <strong>bcrypt</strong> o <strong>scrypt</strong>. Estos algoritmos añaden automáticamente una <strong>sal</strong> (un string de caracteres aleatorios único para cada usuario) antes de procesar el hash.
+      </p>
+      <p>
+        La sal previene que dos usuarios con la misma contraseña tengan el mismo hash en la base de datos, y neutraliza por completo los ataques basados en <strong>Tablas Arcoíris</strong> (bases de datos con hashes precalculados de millones de contraseñas comunes).
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Implementación en Código</h2>
+      <p>
+        Compara el hashing general (SHA-256) versus el hashing de contraseñas mediante algoritmos ralentizados seguros en los cuatro lenguajes.
+      </p>
+
+      <CodeBlockMulti
+        title="Hashing de Datos y Contraseñas"
+        tabs={[
+          { label: 'Python', code: pythonCode, lang: 'python' },
+          { label: 'Java', code: javaCode, lang: 'java' },
+          { label: 'PHP', code: phpCode, lang: 'php' },
+          { label: 'C#', code: csharpCode, lang: 'csharp' },
+          { label: 'JavaScript', code: jsCode, lang: 'javascript' }
+        ]}
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>Comprueba tus conocimientos sobre salts y almacenamiento seguro de contraseñas.</p>
+      <CriptografiaQuizModal quizKey="hashing-contrasenas" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/criptografia/cifrado-asimetrico/" class="prev">← Cifrado Asimétrico</a>
+      <a href="/course/criptografia/intercambio-firmas/" class="next">Intercambio de Claves y Firmas →</a>
+    </nav>
+  </article>
+</Layout>

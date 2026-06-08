@@ -1,0 +1,210 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlockMulti from '../../../../components/CodeBlockMulti.astro';
+import CriptografiaQuizModal from '../../../../components/quizzes/CriptografiaQuizModal.astro';
+
+const pythonCode = `# Requisitos: pip install cryptography
+import os
+from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+
+# 1. Generar una clave segura de 256 bits (32 bytes)
+clave = AESGCM.generate_key(bit_length=256)
+aesgcm = AESGCM(clave)
+
+mensaje_plano = b"Este es un secreto confidencial cifrado con AES"
+
+# 2. Generar un IV/Nonce unico de 96 bits (12 bytes)
+# IMPORTANTE: Nunca reutilices el mismo nonce con la misma clave
+nonce = os.urandom(12)
+
+# 3. Cifrar (GCM genera internamente el tag de autenticidad y lo concatena al final)
+mensaje_cifrado = aesgcm.encrypt(nonce, mensaje_plano, None)
+print(f"Cifrado (hex): {mensaje_cifrado.hex()}")
+
+# 4. Descifrar (valida automaticamente la integridad usando el tag)
+mensaje_descifrado = aesgcm.decrypt(nonce, mensaje_cifrado, None)
+print(f"Descifrado: {mensaje_descifrado.decode('utf-8')}")`;
+
+const javaCode = `import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.GCMParameterSpec;
+import java.security.SecureRandom;
+import java.util.Base64;
+
+public class EncriptacionSimetrica {
+    public static void main(String[] args) throws Exception {
+        // 1. Generar clave AES de 256 bits
+        KeyGenerator keyGen = KeyGenerator.getInstance("AES");
+        keyGen.init(256);
+        SecretKey key = keyGen.generateKey();
+
+        // 2. Generar un IV aleatorio de 12 bytes para GCM
+        byte[] iv = new byte[12];
+        SecureRandom.getInstanceStrong().nextBytes(iv);
+
+        String plaintext = "Este es un secreto confidencial cifrado con AES";
+
+        // 3. Cifrar (modo AES/GCM/NoPadding)
+        Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+        GCMParameterSpec spec = new GCMParameterSpec(128, iv); // 128 bits de tag de autenticacion
+        cipher.init(Cipher.ENCRYPT_MODE, key, spec);
+        byte[] ciphertext = cipher.doFinal(plaintext.getBytes("UTF-8"));
+        System.out.println("Cifrado (Base64): " + Base64.getEncoder().encodeToString(ciphertext));
+
+        // 4. Descifrar (arrojara excepcion si el tag de integridad es invalido)
+        cipher.init(Cipher.DECRYPT_MODE, key, spec);
+        byte[] decrypted = cipher.doFinal(ciphertext);
+        System.out.println("Descifrado: " + new String(decrypted, "UTF-8"));
+    }
+}`;
+
+const phpCode = `<?php
+// 1. Generar una clave aleatoria de 256 bits
+$key = openssl_random_pseudo_bytes(32);
+$plaintext = "Este es un secreto confidencial cifrado con AES";
+
+// 2. Generar un IV de 12 bytes
+$iv_len = openssl_cipher_iv_length('aes-256-gcm');
+$iv = openssl_random_pseudo_bytes($iv_len);
+
+// 3. Cifrar (PHP requiere pasar una variable por referencia para recibir el tag)
+$tag = "";
+$ciphertext = openssl_encrypt($plaintext, 'aes-256-gcm', $key, OPENSSL_RAW_DATA, $iv, $tag);
+echo "Cifrado (hex): " . bin2hex($ciphertext) . "\n";
+
+// 4. Descifrar (debemos proveer el mismo tag que obtuvimos al cifrar)
+$decrypted = openssl_decrypt($ciphertext, 'aes-256-gcm', $key, OPENSSL_RAW_DATA, $iv, $tag);
+echo "Descifrado: " . $decrypted . "\n";
+?>`;
+
+const jsCode = `const crypto = require('crypto');
+
+const plaintext = "Este es un secreto confidencial cifrado con AES";
+
+// 1. Generar clave de 256 bits e IV de 12 bytes
+const key = crypto.randomBytes(32);
+const iv = crypto.randomBytes(12);
+
+// 2. Cifrar
+const cipher = crypto.createCipheriv('aes-256-gcm', key, iv);
+let ciphertext = cipher.update(plaintext, 'utf8', 'hex');
+ciphertext += cipher.final('hex');
+
+// 3. Obtener el tag de autenticacion GCM
+const tag = cipher.getAuthTag().toString('hex');
+console.log(\`Cifrado (hex): \${ciphertext}\`);
+console.log(\`Tag (hex): \${tag}\`);
+
+// 4. Descifrar
+const decipher = crypto.createDecipheriv('aes-256-gcm', key, iv);
+decipher.setAuthTag(Buffer.from(tag, 'hex')); // Validamos la integridad
+let decrypted = decipher.update(ciphertext, 'hex', 'utf8');
+decrypted += decipher.final('utf8');
+console.log(\`Descifrado: \${decrypted}\`);`;
+
+const csharpCode = `using System;
+using System.Security.Cryptography;
+using System.Text;
+
+public class EncriptacionSimetrica {
+    public static void Main() {
+        // 1. Generar clave AES de 256 bits (32 bytes)
+        byte[] key = new byte[32];
+        RandomNumberGenerator.Fill(key);
+
+        string plaintext = "Este es un secreto confidencial cifrado con AES";
+        byte[] plaintextBytes = Encoding.UTF8.GetBytes(plaintext);
+
+        // 2. Generar un IV/Nonce unico de 96 bits (12 bytes) para GCM
+        byte[] nonce = new byte[12];
+        RandomNumberGenerator.Fill(nonce);
+
+        // En GCM el texto cifrado y la etiqueta se manejan por separado
+        byte[] ciphertext = new byte[plaintextBytes.Length];
+        byte[] tag = new byte[16]; // Tag de 128 bits
+
+        // 3. Cifrar
+        using (AesGcm aesGcm = new AesGcm(key)) {
+            aesGcm.Encrypt(nonce, plaintextBytes, ciphertext, tag);
+        }
+        Console.WriteLine("Cifrado (hex): " + Convert.ToHexString(ciphertext));
+        Console.WriteLine("Tag (hex): " + Convert.ToHexString(tag));
+
+        // 4. Descifrar (arrojara excepcion si el tag es invalido)
+        byte[] decryptedBytes = new byte[ciphertext.Length];
+        using (AesGcm aesGcm = new AesGcm(key)) {
+            aesGcm.Decrypt(nonce, ciphertext, tag, decryptedBytes);
+        }
+        string decrypted = Encoding.UTF8.GetString(decryptedBytes);
+        Console.WriteLine("Descifrado: " + decrypted);
+    }
+}`;
+---
+
+<Layout
+  title="Cifrado Simétrico (AES-256-GCM)"
+  description="Aprende la encriptación simétrica por bloques usando el estándar AES en modo GCM para cifrado autenticado en Python, Java, PHP, C# y JS."
+  courseSlug="criptografia"
+>
+  <article class="content-section">
+    <h1>2. Cifrado Simétrico: Compartiendo una Sola Clave 🔑</h1>
+
+    <section class="mb-10">
+      <h2>Conceptos Clave del Cifrado Simétrico</h2>
+      <p>
+        El cifrado simétrico destaca por su gran <strong>velocidad</strong> y bajo consumo de recursos. Esto lo hace el estándar absoluto para proteger datos masivos (bases de datos completas, archivos en disco o conexiones TLS).
+      </p>
+      <p>
+        El algoritmo moderno por excelencia es <strong>AES</strong> (Advanced Encryption Standard). Usar AES-256 significa que hay $2^{256}$ combinaciones de claves posibles, haciendo imposible un ataque por fuerza bruta hoy en día.
+      </p>
+    </section>
+
+    <section class="mb-10" style="background: #E0F2FE; border-left: 6px solid #0ea5e9; padding: 1rem; border-radius: 8px; margin-bottom: 2rem;">
+      <h3 style="margin-top: 0; color: #0369a1;">⚠️ El peligro del modo ECB y por qué elegimos GCM</h3>
+      <p style="margin-bottom: 0;">
+        Nunca uses el modo de cifrado <strong>ECB</strong> (Electronic Codebook). ECB cifra cada bloque por separado de forma idéntica; si hay patrones repetidos en el archivo original, el texto cifrado revelará esos patrones (el famoso ejemplo del pingüino de Linux Tux). 
+        En su lugar, usamos <strong>GCM</strong> (Galois/Counter Mode), que es un modo de <strong>Cifrado Autenticado (AEAD)</strong>. GCM no solo cifra los datos, sino que genera un <strong>tag de autenticación</strong> de 128 bits que garantiza que los datos no han sido modificados ni manipulados.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>La importancia del IV o Nonce</h2>
+      <p>
+        El <strong>Vector de Inicialización (IV)</strong> o <em>Nonce</em> (número de un solo uso) es un valor aleatorio no secreto de 12 bytes. Su único propósito es asegurar que si cifras el mensaje "Hola" dos veces con la misma contraseña, los resultados cifrados sean totalmente distintos.
+      </p>
+      <p style="color: #b91c1c; font-weight: bold;">
+        Regla de oro: NUNCA reutilices el mismo IV con la misma clave. Si lo haces, el modo GCM pierde sus propiedades de seguridad y un atacante podría descifrar la comunicación.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Implementación en Código</h2>
+      <p>
+        Compara cómo se configura e implementa AES-256-GCM en diferentes lenguajes. Nota que todos generan un IV aleatorio y validan el tag de autenticación.
+      </p>
+
+      <CodeBlockMulti
+        title="Cifrar y Descifrar con AES-256-GCM"
+        tabs={[
+          { label: 'Python', code: pythonCode, lang: 'python' },
+          { label: 'Java', code: javaCode, lang: 'java' },
+          { label: 'PHP', code: phpCode, lang: 'php' },
+          { label: 'C#', code: csharpCode, lang: 'csharp' },
+          { label: 'JavaScript', code: jsCode, lang: 'javascript' }
+        ]}
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>Demuestra lo aprendido sobre vectores de inicialización y el estándar AES.</p>
+      <CriptografiaQuizModal quizKey="cifrado-simetrico" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/criptografia/introduccion/" class="prev">← Conceptos Básicos</a>
+      <a href="/course/criptografia/cifrado-asimetrico/" class="next">Cifrado Asimétrico →</a>
+    </nav>
+  </article>
+</Layout>

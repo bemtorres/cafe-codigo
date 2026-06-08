@@ -296,10 +296,10 @@ if muffin:
       <h2>¿Qué es un Módulo y una Librería?</h2>
       <p>
         Hasta ahora has escrito todo tu código en un único archivo. Pero en la vida real, los proyectos tienen miles de líneas. 
-        Para no perderte, dividimos el código en piezas llamadas **Módulos** (que no son más que otros archivos <code>.py</code> con funciones listas para usar).
+        Para no perderte, dividimos el código en piezas llamadas <strong>Módulos</strong> (que no son más que otros archivos <code>.py</code> con funciones listas para usar).
       </p>
       <p>
-        Python viene con "baterías incluidas". Es decir, trae una **Librería Estándar** repleta de módulos listos que puedes importar usando la palabra clave <code>import</code>.
+        Python viene con "baterías incluidas". Es decir, trae una <strong>Librería Estándar</strong> repleta de módulos listos que puedes importar usando la palabra clave <code>import</code>.
       </p>
       <CodeBlock 
         lang="python" 
@@ -315,7 +315,7 @@ if muffin:
         Puedes importar funciones creadas por ti mismo ubicadas en otros archivos en la misma carpeta. Esto permite separar la lógica matemática pesada de tu programa principal.
       </p>
       <p>
-        A continuación, te mostramos el diseño de un **entorno de desarrollo (IDE)** con dos archivos: un módulo validador de RUT chileno (`validador_rut.py`) y el script principal (`main.py`) que lo consume.
+        A continuación, te mostramos el diseño de un <strong>entorno de desarrollo (IDE)</strong> con dos archivos: un módulo validador de RUT chileno (`validador_rut.py`) y el script principal (`main.py`) que lo consume.
       </p>
 
       <!-- IDE Widget wrapper -->
@@ -408,7 +408,7 @@ if muffin:
     <section class="mb-10">
       <h2>¿Qué es PIP y cómo funciona? 📦</h2>
       <p>
-        Imagina que compras un teléfono nuevo. Viene con la app de llamadas y calculadora (Librería estándar). Pero si quieres jugar o chatear, vas a la **App Store** o **Play Store** y te descargas aplicaciones que otras personas programaron.
+        Imagina que compras un teléfono nuevo. Viene con la app de llamadas y calculadora (Librería estándar). Pero si quieres jugar o chatear, vas a la <strong>App Store</strong> o <strong>Play Store</strong> y te descargas aplicaciones que otras personas programaron.
       </p>
       <div class="tip-box" style="background: #FFF3E0; border-left: 4px solid #FF9800; padding: 15px; margin-bottom: 20px; border-radius: 4px; color: #e65100;">
         <strong>🚀 PIP: El Gestor de Paquetes oficial de Python</strong><br />
@@ -429,7 +429,7 @@ if muffin:
     <section class="mb-10">
       <h2>¿Para qué escribir todo a mano? ¡Usa PIP! 📦⚡</h2>
       <p>
-        Para resolver el validador de RUT que programamos arriba, no es necesario inventar la rueda de nuevo. En PyPI existe una librería oficial llamada **rutificador** que resuelve esto en un segundo.
+        Para resolver el validador de RUT que programamos arriba, no es necesario inventar la rueda de nuevo. En PyPI existe una librería oficial llamada <strong>rutificador</strong> que resuelve esto en un segundo.
       </p>
       <CodeBlock 
         lang="python" 
@@ -451,7 +451,7 @@ if muffin:
     <section class="mb-10">
       <h2>Paso a Paso Práctico: Conectando con la API de Rick and Morty 👽</h2>
       <p>
-        La librería externa <code>requests</code> es la más famosa del mundo para conectarse a internet. Vamos a usarla para comunicarnos con la **API oficial de Rick and Morty** y traer la ficha técnica de un personaje real en vivo.
+        La librería externa <code>requests</code> es la más famosa del mundo para conectarse a internet. Vamos a usarla para comunicarnos con la <strong>API oficial de Rick and Morty</strong> y traer la ficha técnica de un personaje real en vivo.
       </p>
       
       <ol class="list-decimal pl-5 mb-6 text-gray-300">
@@ -470,7 +470,7 @@ if muffin:
     <section class="mb-10">
       <h2>Conectando con la API de Pokémon (PokéAPI) 🐹</h2>
       <p>
-        ¡Intentémoslo ahora con otra API sumamente popular! Usaremos la **PokéAPI** para consultar información detallada de cualquier Pokémon (como sus habilidades y peso) usando el mismo paquete <code>requests</code>.
+        ¡Intentémoslo ahora con otra API sumamente popular! Usaremos la <strong>PokéAPI</strong> para consultar información detallada de cualquier Pokémon (como sus habilidades y peso) usando el mismo paquete <code>requests</code>.
       </p>
       <CodeBlock 
         lang="python" 
@@ -598,7 +598,7 @@ if muffin:
         Cuando necesitas almacenar información de manera persistente (por ejemplo, el menú o los clientes de tu cafetería), las bases de datos son tus mejores aliadas.
       </p>
       <p>
-        Python incluye por defecto la librería <code>sqlite3</code>, una base de datos ligera que se guarda en un solo archivo local. Sin embargo, en el mundo profesional es muy común utilizar un **ORM (Object-Relational Mapping)** como <strong>SQLAlchemy</strong>. Un ORM te permite interactuar con la base de datos usando clases y objetos de Python en lugar de escribir consultas SQL a mano.
+        Python incluye por defecto la librería <code>sqlite3</code>, una base de datos ligera que se guarda en un solo archivo local. Sin embargo, en el mundo profesional es muy común utilizar un <strong>ORM (Object-Relational Mapping)</strong> como <strong>SQLAlchemy</strong>. Un ORM te permite interactuar con la base de datos usando clases y objetos de Python en lugar de escribir consultas SQL a mano.
       </p>
       
       <div class="tip-box" style="background: #E0F2FE; border-left: 4px solid #0284c7; padding: 15px; margin-bottom: 20px; border-radius: 4px; color: #0369a1;">
@@ -620,7 +620,7 @@ if muffin:
     <section class="mb-10">
       <h2>El archivo requirements.txt 📋</h2>
       <p>
-        Cuando trabajas en equipo o subes tu código a la nube, no compartes la carpeta de librerías descargadas (que son gigabytes). En su lugar, creas un archivo de texto llamado <code>requirements.txt</code> que actúa como la **lista de compras** de tus dependencias:
+        Cuando trabajas en equipo o subes tu código a la nube, no compartes la carpeta de librerías descargadas (que son gigabytes). En su lugar, creas un archivo de texto llamado <code>requirements.txt</code> que actúa como la <strong>lista de compras</strong> de tus dependencias:
       </p>
       <CodeBlock 
         lang="plaintext" 

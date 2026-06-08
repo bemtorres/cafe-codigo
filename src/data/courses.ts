@@ -589,4 +589,19 @@ export const courses: Course[] = [
       { slug: 'poo', title: '4. POO en PHP', href: '/course/php/poo/' },
     ],
   },
+  {
+    slug: 'criptografia',
+    name: 'Sistemas Criptográficos',
+    description: 'Aprende los fundamentos de la criptografía (simétrica, asimétrica, hash y contraseñas) y su implementación práctica en Python, Java, PHP y JS.',
+    category: 'advanced',
+    status: 'available',
+    color: '#0ea5e9',
+    lessons: [
+      { slug: 'introduccion', title: '1. Conceptos Básicos', href: '/course/criptografia/introduccion/' },
+      { slug: 'cifrado-simetrico', title: '2. Cifrado Simétrico', href: '/course/criptografia/cifrado-simetrico/' },
+      { slug: 'cifrado-asimetrico', title: '3. Cifrado Asimétrico', href: '/course/criptografia/cifrado-asimetrico/' },
+      { slug: 'hashing-contrasenas', title: '4. Hashes y Contraseñas', href: '/course/criptografia/hashing-contrasenas/' },
+      { slug: 'intercambio-firmas', title: '5. Intercambio de Claves y Firmas', href: '/course/criptografia/intercambio-firmas/' },
+    ],
+  },
 ];

@@ -275,6 +275,24 @@ const payload = JSON.stringify(
     --shiki-token-punctuation: var(--ide-op);
   }
 
+  .cb-multi-root .code-viewer[data-lang='php'] {
+    background-color: var(--ide-bg);
+    color: var(--ide-txt);
+    --shiki-color-background: var(--ide-bg);
+    --shiki-color-text: var(--ide-txt);
+    --shiki-token-keyword: var(--ide-kw);
+    --shiki-token-string: var(--ide-str);
+    --shiki-token-string-expression: var(--ide-str);
+    --shiki-token-function: var(--ide-func);
+    --shiki-token-type: var(--ide-type);
+    --shiki-token-comment: #7a8a99;
+    --shiki-token-constant: var(--ide-type);
+    --shiki-token-parameter: var(--ide-txt);
+    --shiki-token-operator: var(--ide-op);
+    --shiki-token-variable: var(--ide-txt);
+    --shiki-token-punctuation: var(--ide-op);
+  }
+
   .cb-multi-root .code-viewer :global(.code-line),
   .cb-multi-root .code-viewer :global(.whitespace-pre) {
     font-variant-ligatures: none;

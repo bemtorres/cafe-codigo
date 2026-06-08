@@ -1,0 +1,220 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlockMulti from '../../../../components/CodeBlockMulti.astro';
+import CriptografiaQuizModal from '../../../../components/quizzes/CriptografiaQuizModal.astro';
+
+const pythonCode = `from cryptography.hazmat.primitives.asymmetric import rsa, padding
+from cryptography.hazmat.primitives import hashes
+
+# 1. Generar par de claves RSA de 2048 bits
+private_key = rsa.generate_private_key(
+    public_exponent=65537,
+    key_size=2048
+)
+public_key = private_key.public_key()
+
+message = b"Mensaje secreto para cifrado asimetrico"
+
+# 2. Cifrar con la clave publica usando padding OAEP y SHA-256
+ciphertext = public_key.encrypt(
+    message,
+    padding.OAEP(
+        mgf=padding.MGF1(algorithm=hashes.SHA256()),
+        algorithm=hashes.SHA256(),
+        label=None
+    )
+)
+print(f"Cifrado (hex): {ciphertext.hex()[:60]}...")
+
+# 3. Descifrar con la clave privada
+decrypted = private_key.decrypt(
+    ciphertext,
+    padding.OAEP(
+        mgf=padding.MGF1(algorithm=hashes.SHA256()),
+        algorithm=hashes.SHA256(),
+        label=None
+    )
+)
+print(f"Descifrado: {decrypted.decode('utf-8')}")`;
+
+const javaCode = `import javax.crypto.Cipher;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.spec.MGF1ParameterSpec;
+import javax.crypto.spec.OAEPParameterSpec;
+import javax.crypto.spec.PSource;
+import java.util.Base64;
+
+public class EncriptacionAsimetrica {
+    public static void main(String[] args) throws Exception {
+        // 1. Generar par de claves RSA
+        KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
+        keyGen.initialize(2048);
+        KeyPair pair = keyGen.generateKeyPair();
+
+        String message = "Mensaje secreto para cifrado asimetrico";
+
+        // 2. Configurar padding OAEP con SHA-256
+        OAEPParameterSpec oaepSpec = new OAEPParameterSpec(
+            "SHA-256", "MGF1", MGF1ParameterSpec.SHA256, PSource.PSpecified.DEFAULT
+        );
+
+        // 3. Cifrar con clave publica
+        Cipher cipher = Cipher.getInstance("RSA/ECB/OAEPWithSHA-256AndMGF1Padding");
+        cipher.init(Cipher.ENCRYPT_MODE, pair.getPublic(), oaepSpec);
+        byte[] ciphertext = cipher.doFinal(message.getBytes("UTF-8"));
+        System.out.println("Cifrado (Base64): " + Base64.getEncoder().encodeToString(ciphertext).substring(0, 60) + "...");
+
+        // 4. Descifrar con clave privada
+        cipher.init(Cipher.DECRYPT_MODE, pair.getPrivate(), oaepSpec);
+        byte[] decrypted = cipher.doFinal(ciphertext);
+        System.out.println("Descifrado: " + new String(decrypted, "UTF-8"));
+    }
+}`;
+
+const phpCode = `<?php
+// 1. Generar un nuevo par de claves RSA de 2048 bits
+$config = [
+    "digest_alg" => "sha256",
+    "private_key_bits" => 2048,
+    "private_key_type" => OPENSSL_KEYTYPE_RSA,
+];
+$pkey = openssl_pkey_new($config);
+openssl_pkey_export($pkey, $private_key);
+
+$details = openssl_pkey_get_details($pkey);
+$public_key = $details["key"];
+
+$message = "Mensaje secreto para cifrado asimetrico";
+
+// 2. Cifrar con clave publica usando padding OAEP (SHA-256)
+openssl_public_encrypt($message, $ciphertext, $public_key, OPENSSL_PKCS1_OAEP_PADDING);
+echo "Cifrado (hex): " . bin2hex(substr($ciphertext, 0, 30)) . "...\n";
+
+// 3. Descifrar con clave privada
+openssl_private_decrypt($ciphertext, $decrypted, $private_key, OPENSSL_PKCS1_OAEP_PADDING);
+echo "Descifrado: " . $decrypted . "\n";
+?>`;
+
+const jsCode = `const crypto = require('crypto');
+
+// 1. Generar par de claves RSA de 2048 bits
+const { publicKey, privateKey } = crypto.generateKeyPairSync('rsa', {
+    modulusLength: 2048,
+    publicKeyEncoding: { type: 'spki', format: 'pem' },
+    privateKeyEncoding: { type: 'pkcs8', format: 'pem' }
+});
+
+const message = Buffer.from("Mensaje secreto para cifrado asimetrico");
+
+// 2. Cifrar con clave publica usando OAEP con SHA-256
+const ciphertext = crypto.publicEncrypt({
+    key: publicKey,
+    padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
+    oaepHash: "sha256"
+}, message);
+console.log(\`Cifrado (hex): \${ciphertext.toString('hex').substring(0, 60)}...\`);
+
+// 3. Descifrar con clave privada
+const decrypted = crypto.privateDecrypt({
+    key: privateKey,
+    padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
+    oaepHash: "sha256"
+}, ciphertext);
+console.log(\`Descifrado: \${decrypted.toString('utf8')}\`);`;
+
+const csharpCode = `using System;
+using System.Security.Cryptography;
+using System.Text;
+
+public class EncriptacionAsimetrica {
+    public static void Main() {
+        // 1. Generar par de claves RSA de 2048 bits
+        using (RSA rsa = RSA.Create(2048)) {
+            string message = "Mensaje secreto para cifrado asimetrico";
+            byte[] messageBytes = Encoding.UTF8.GetBytes(message);
+
+            // 2. Cifrar con la clave publica usando padding OAEP y SHA-256
+            byte[] ciphertext = rsa.Encrypt(messageBytes, RSAEncryptionPadding.OaepSHA256);
+            Console.WriteLine("Cifrado (hex): " + Convert.ToHexString(ciphertext).Substring(0, 60) + "...");
+
+            // 3. Descifrar con la clave privada
+            byte[] decryptedBytes = rsa.Decrypt(ciphertext, RSAEncryptionPadding.OaepSHA256);
+            string decrypted = Encoding.UTF8.GetString(decryptedBytes);
+            Console.WriteLine("Descifrado: " + decrypted);
+        }
+    }
+}`;
+---
+
+<Layout
+  title="Cifrado Asimétrico (RSA y ECC)"
+  description="Aprende la encriptación asimétrica mediante clave pública y privada usando RSA y Curve Elliptic en Python, Java, PHP, C# y JS."
+  courseSlug="criptografia"
+>
+  <article class="content-section">
+    <h1>3. Cifrado Asimétrico: El Sistema de Dos Claves 🔑🗝️</h1>
+
+    <section class="mb-10">
+      <h2>¿Cómo funciona la Criptografía Asimétrica?</h2>
+      <p>
+        A diferencia del cifrado simétrico, aquí no compartimos la misma llave. Cada persona genera un par de llaves vinculadas matemáticamente:
+      </p>
+      <ul>
+        <li>
+          <strong>Clave Pública (Public Key):</strong> Se comparte libremente con cualquiera. Se usa únicamente para <strong>encriptar</strong> mensajes destinados a su dueño o para verificar firmas digitales.
+        </li>
+        <li>
+          <strong>Clave Privada (Private Key):</strong> Se guarda bajo estricto secreto. Se usa para <strong>desencriptar</strong> los mensajes recibidos o para firmar digitalmente.
+        </li>
+      </ul>
+      <p>
+        La regla de oro matemática es: <strong>Lo que cifra la clave pública solo puede descifrarlo la clave privada correspondiente.</strong>
+      </p>
+    </section>
+
+    <section class="mb-10" style="background: #FFFBEB; border-left: 6px solid #d97706; padding: 1rem; border-radius: 8px; margin-bottom: 2rem;">
+      <h3 style="margin-top: 0; color: #b45309;">💡 Arquitectura de Cifrado Híbrido</h3>
+      <p style="margin-bottom: 0;">
+        Cifrar datos masivos con RSA es extremadamente lento y requiere mucha CPU. Además, los algoritmos asimétricos tienen un límite de tamaño de texto plano (no se puede cifrar un mensaje más largo que la propia llave). 
+        En la vida real, se usa <strong>Cifrado Híbrido</strong> (ej. en HTTPS/TLS y SSH): se genera una clave simétrica temporal (AES) rápida para cifrar el archivo grande, y luego se cifra únicamente la clave AES (pequeña) con la clave pública RSA del destinatario.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>El ascenso de ECC (Criptografía de Curva Elíptica)</h2>
+      <p>
+        Aunque RSA es el estándar clásico, la <strong>Criptografía de Curva Elíptica (ECC)</strong> es la preferida hoy en día. ECC ofrece el mismo nivel de seguridad con llaves mucho más pequeñas (una llave ECC de 256 bits equivale en seguridad a una llave RSA de 3072 bits), consumiendo menos batería en móviles y ahorrando ancho de banda.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Implementación en Código (RSA-OAEP)</h2>
+      <p>
+        Compara las implementaciones en los cuatro lenguajes para cifrar y descifrar un texto pequeño usando llaves RSA generadas dinámicamente y el esquema de padding seguro <strong>OAEP</strong> con hash <strong>SHA-256</strong>.
+      </p>
+
+      <CodeBlockMulti
+        title="Cifrado Asimétrico con RSA-OAEP"
+        tabs={[
+          { label: 'Python', code: pythonCode, lang: 'python' },
+          { label: 'Java', code: javaCode, lang: 'java' },
+          { label: 'PHP', code: phpCode, lang: 'php' },
+          { label: 'C#', code: csharpCode, lang: 'csharp' },
+          { label: 'JavaScript', code: jsCode, lang: 'javascript' }
+        ]}
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>Pon a prueba tus conocimientos sobre llaves asimétricas y cifrado híbrido.</p>
+      <CriptografiaQuizModal quizKey="cifrado-asimetrico" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/criptografia/cifrado-simetrico/" class="prev">← Cifrado Simétrico</a>
+      <a href="/course/criptografia/hashing-contrasenas/" class="next">Hashes y Contraseñas →</a>
+    </nav>
+  </article>
+</Layout>
