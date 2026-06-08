@@ -1,4 +1,4 @@
-﻿---
+---
 import Layout from '../../../layouts/Layout.astro';
 import { courses } from '../../../data/courses';
 
@@ -8,14 +8,14 @@ if (!courseData) {
 }
 ---
 
-<Layout title="Fundamentos de Unity para Prototipado Ágil" description="Fundamentos de Unity orientados a la rápida creación y validación de prototipos jugables para Sprints." courseSlug="unity-prototipado">
+<Layout title="Unity Prototipado 3D" description="Aprende a prototipar videojuegos en 3D desde cero y a programar sus mecánicas con C# y físicas." courseSlug="unity-prototipado">
   <div class="course-container">
     <header class="course-index-header">
       <h1 class="course-big-title" style={`--course-color: ${courseData.color}`}>
          🎮 {courseData.name}
       </h1>
       <p class="course-description">
-         <strong>"Del requisito al prototipo funcional."</strong> <br/> {courseData.description}
+         <strong>"Crea tu primer juego 3D con físicas y C#."</strong> <br/> {courseData.description}
       </p>
     </header>
 

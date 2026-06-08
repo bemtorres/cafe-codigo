@@ -1,0 +1,132 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import UnityQuizModal from '../../../../components/quizzes/UnityQuizModal.astro';
+
+const restartCode = `using UnityEngine;
+using UnityEngine.SceneManagement; // Libreria requerida para manejar escenas
+
+public class GameManager : MonoBehaviour
+{
+    // ... codigo anterior del GameManager ...
+
+    private void GameOver(bool won)
+    {
+        isGameOver = true;
+        if (won)
+        {
+            winLoseText.text = "¡VICTORIA! 🎉";
+            winLoseText.color = Color.green;
+            
+            // Cargar pantalla de victoria despues de 3 segundos
+            Invoke("LoadVictoryScene", 3f);
+        }
+        else
+        {
+            winLoseText.text = "GAME OVER 💀";
+            winLoseText.color = Color.red;
+            
+            // Reiniciar el nivel actual despues de 2 segundos
+            Invoke("RestartLevel", 2f);
+        }
+    }
+
+    private void RestartLevel()
+    {
+        // Obtiene el nombre del nivel actual y lo vuelve a cargar desde cero
+        string currentSceneName = SceneManager.GetActiveScene().name;
+        SceneManager.LoadScene(currentSceneName);
+    }
+
+    private void LoadVictoryScene()
+    {
+        // Carga la escena de felicitaciones
+        SceneManager.LoadScene("VictoryScene");
+    }
+}`;
+---
+
+<Layout 
+  title="5. Ciclo de Juego y Compilación" 
+  description="Controla la carga de niveles y reinicios de escena mediante SceneManager y aprende a compilar tu prototipo final." 
+  courseSlug="unity-prototipado"
+>
+  <article class="content-section">
+    <h1>5. Ciclo de Juego y Compilación: Cerrando la Experiencia 🏆📦</h1>
+
+    <section class="mb-10">
+      <h2>El Ciclo de Juego Completo</h2>
+      <p>
+        Un prototipo funcional necesita un inicio y un fin automatizados. Si el jugador choca contra un obstáculo letal o si el tiempo llega a cero, el juego debe reiniciarse solo. Si junta todas las monedas, debe avanzar.
+      </p>
+      <p>
+        Para manejar esto en Unity, importamos la librería nativa <strong>UnityEngine.SceneManagement</strong>.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Programando el Reinicio y Cambio de Nivel</h2>
+      <p>
+        Abriremos nuestro script <code>GameManager.cs</code> y actualizaremos los métodos del fin del juego usando la función <code>Invoke(nombreMetodo, tiempoEspera)</code> para retrasar el reinicio del nivel, dándole tiempo al jugador de asimilar su derrota o victoria:
+      </p>
+
+      <CodeBlock 
+        lang="csharp" 
+        code={restartCode} 
+        title="GameManager.cs (Ciclo de Carga)" 
+      />
+
+      <p class="mt-4">
+        <strong>Explicación:</strong>
+      </p>
+      <ul>
+        <li><code>SceneManager.GetActiveScene().name</code>: Retorna un string con el nombre exacto de la escena en la que estás jugando en este momento (por ejemplo, "Level1").</li>
+        <li><code>SceneManager.LoadScene()</code>: Cierra la escena actual, libera la memoria y carga la escena solicitada desde su estado inicial.</li>
+        <li><code>Invoke("Metodo", 2f)</code>: Llama a una función interna de la clase después de esperar exactamente 2 segundos de tiempo real.</li>
+      </ul>
+    </section>
+
+    <section class="mb-10">
+      <h2>Paso Obligatorio: Registrar las Escenas en los Build Settings</h2>
+      <p>
+        Si intentas llamar a <code>SceneManager.LoadScene</code> con una escena que Unity no conoce, el juego lanzará un error de ejecución. Debemos registrar todas nuestras escenas en la configuración del juego:
+      </p>
+      <ol>
+        <li>En la barra superior de Unity, ve a <code>File -> Build Settings</code>.</li>
+        <li>Verás una lista vacía llamada <strong>Scenes In Build</strong> (Escenas en la compilación).</li>
+        <li>Arrastra tu escena de juego actual (ej. <code>SampleScene</code> o <code>Level1</code>) y tu escena de victoria (<code>VictoryScene</code>) dentro de ese recuadro.</li>
+        <li>Cierra la ventana. Ahora el motor ya sabe qué escenas están permitidas en el ciclo del ejecutable.</li>
+      </ol>
+    </section>
+
+    <section class="mb-10">
+      <h2>Compilando tu Juego (Build and Run)</h2>
+      <p>
+        El último paso de un prototipo ágil es exportarlo en un formato ejecutable para que otras personas puedan probar tu creación (por ejemplo, tu profesor, un cliente o tus amigos) sin necesidad de tener Unity instalado:
+      </p>
+      <ol>
+        <li>Abre nuevamente <code>File -> Build Settings</code>.</li>
+        <li>Selecciona tu plataforma objetivo en la lista de la izquierda:
+          <ul>
+            <li><strong>PC, Mac & Linux Standalone:</strong> Genera un ejecutable nativo (.exe o .app) para computadoras.</li>
+            <li><strong>WebGL:</strong> Compila tu juego en formato HTML5/JavaScript para que pueda ejecutarse directamente dentro de cualquier navegador web (puedes subirlo gratis a itch.io).</li>
+          </ul>
+        </li>
+        <li>Haz clic en el botón <strong>Build</strong> (o <em>Build and Run</em>).</li>
+        <li>Crea una nueva carpeta vacía en tu computadora llamada <code>Build</code> y selecciónala como destino.</li>
+        <li>Espera a que la barra de carga finalice. ¡Felicidades! Ya tienes tu carpeta contenedora con el videojuego 3D completo listo para compartir.</li>
+      </ol>
+    </section>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>Comprueba tus conocimientos sobre el ciclo de vida de las escenas en Unity y la generación de entregables compilados.</p>
+      <UnityQuizModal quizKey="ciclo-escenas" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/unity-prototipado/ui-gamemanager/" class="prev">← UI y GameManager</a>
+      <a href="/course/unity-prototipado/" class="next">Índice del Curso →</a>
+    </nav>
+  </article>
+</Layout>

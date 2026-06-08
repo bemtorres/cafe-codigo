@@ -1,0 +1,154 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import UnityQuizModal from '../../../../components/quizzes/UnityQuizModal.astro';
+
+const playerScriptCode = `using UnityEngine;
+
+public class PlayerController : MonoBehaviour
+{
+    // [SerializeField] permite editar esta variable desde el Inspector
+    [SerializeField] private float speed = 10f;
+
+    private Rigidbody rb;
+
+    // Start se ejecuta una sola vez al iniciar el juego
+    void Start()
+    {
+        // Guardamos la referencia al componente Rigidbody del jugador
+        rb = GetComponent<Rigidbody>();
+    }
+
+    // FixedUpdate se usa para calculos fisicos constantes
+    void FixedUpdate()
+    {
+        // 1. Leer los inputs del teclado (WASD / Flechas de direccion)
+        float moveHorizontal = Input.GetAxis("Horizontal");
+        float moveVertical = Input.GetAxis("Vertical");
+
+        // 2. Crear el vector de direccion en 3D (X, Y, Z)
+        Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
+
+        // 3. Aplicar fuerza al Rigidbody para mover la esfera
+        rb.AddForce(movement * speed);
+    }
+}`;
+
+const cameraScriptCode = `using UnityEngine;
+
+public class CameraFollow : MonoBehaviour
+{
+    // El objeto que la camara debe seguir (el jugador)
+    [SerializeField] private Transform target;
+
+    // Distancia offset inicial entre la camara y el jugador
+    [SerializeField] private Vector3 offset = new Vector3(0, 5, -7);
+
+    // LateUpdate corre despues de que todos los objetos se han movido en Update
+    void LateUpdate()
+    {
+        if (target != null)
+        {
+            // Posicionamos la camara en la posicion del jugador mas el desfase
+            transform.position = target.position + offset;
+            
+            // Hacemos que la camara apunte continuamente al jugador
+            transform.LookAt(target);
+        }
+    }
+}`;
+---
+
+<Layout 
+  title="2. Física y Movimiento del Jugador" 
+  description="Aprende a dotar de física a tu personaje mediante el componente Rigidbody y a programar su movimiento en C# leyendo inputs." 
+  courseSlug="unity-prototipado"
+>
+  <article class="content-section">
+    <h1>2. Física y Movimiento del Jugador: Programando en C# 💻⚽</h1>
+
+    <section class="mb-10">
+      <h2>El Sistema de Física de Unity: Rigidbody</h2>
+      <p>
+        Para que un objeto 3D caiga, ruede y reaccione a colisiones de forma realista, debe integrarse con el motor físico de Unity. Esto se logra a través del componente <strong>Rigidbody</strong>.
+      </p>
+      <div class="note-box" style="background: #E0F2FE; border-left: 5px solid #0ea5e9; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+        <strong>¿Cómo agregar física?</strong> Selecciona tu esfera <strong>Player</strong> en la jerarquía, ve al Inspector, haz clic en <em>Add Component</em>, escribe <strong>Rigidbody</strong> y selecciónalo. Deja activa la casilla <em>Use Gravity</em>.
+      </div>
+      <p>
+        Si presionas el botón de Play en la parte superior del editor, verás que la esfera ahora cae por efecto de la gravedad y se detiene firmemente sobre el piso (gracias a sus componentes <strong>Rigidbody</strong> y <strong>Sphere Collider</strong>).
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Creando el Primer Script C#</h2>
+      <p>
+        Para controlar cuándo y hacia dónde se mueve la pelota, escribiremos nuestro primer script en C#:
+      </p>
+      <ol>
+        <li>En la ventana <em>Project</em>, haz clic derecho, selecciona <code>Create -> C# Script</code>. Nómbralo exactamente como <code>PlayerController</code> (sin espacios y respetando mayúsculas/minúsculas).</li>
+        <li>Haz doble clic en el script para abrirlo en tu editor de código (como Visual Studio o VS Code).</li>
+        <li>Reemplaza el código por defecto con el siguiente bloque:</li>
+      </ol>
+
+      <CodeBlock 
+        lang="csharp" 
+        code={playerScriptCode} 
+        title="PlayerController.cs" 
+      />
+
+      <p class="mt-4">
+        <strong>Explicación del Código:</strong>
+      </p>
+      <ul>
+        <li><code>[SerializeField]</code>: Le dice a Unity que muestre la variable <code>speed</code> en el Inspector del editor. Así podemos cambiar la velocidad de la pelota sin volver a abrir el editor de código.</li>
+        <li><code>GetComponent&lt;Rigidbody&gt;()</code>: Busca y guarda la referencia de las físicas del objeto en la variable <code>rb</code> al iniciar el juego.</li>
+        <li><code>Input.GetAxis("Horizontal")</code>: Devuelve un valor entre <code>-1</code> y <code>1</code> dependiendo de si presionas las teclas A/D (Flechas Izquierda/Derecha). "Vertical" hace lo mismo para W/S (Flechas Arriba/Abajo).</li>
+        <li><code>rb.AddForce()</code>: Aplica un empuje físico en 3D sobre la esfera multiplicando la dirección del teclado por nuestra velocidad.</li>
+      </ul>
+      <div class="note-box" style="background: #f1f5f9; border-left: 5px solid #1e293b; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+        <strong>¡Muy importante!</strong> Recuerda arrastrar y soltar el script <code>PlayerController</code> desde tu carpeta de Proyecto sobre tu esfera <strong>Player</strong> en la jerarquía para activarlo.
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2>Cámara en Seguimiento: Creando el Script de Cámara</h2>
+      <p>
+        Si mueves la pelota fuera de la vista de la cámara, no podrás ver a dónde va. Necesitamos que la cámara principal siga al jugador de forma fluida.
+      </p>
+      <ol>
+        <li>Crea un nuevo C# Script y nómbralo <code>CameraFollow</code>.</li>
+        <li>Escribe el siguiente código dentro del script:</li>
+      </ol>
+
+      <CodeBlock 
+        lang="csharp" 
+        code={cameraScriptCode} 
+        title="CameraFollow.cs" 
+      />
+
+      <p class="mt-4">
+        <strong>Configuración de la Cámara:</strong>
+      </p>
+      <ol>
+        <li>Arrastra el script <code>CameraFollow</code> sobre el objeto <strong>Main Camera</strong> en la jerarquía.</li>
+        <li>Selecciona la <strong>Main Camera</strong> y busca el script en el Inspector. Verás un campo vacío llamado <strong>Target</strong>.</li>
+        <li>Arrastra tu objeto <strong>Player</strong> desde la jerarquía y suéltalo dentro del campo <strong>Target</strong>.</li>
+      </ol>
+      <p>
+        ¡Listo! Si das Play y mueves la esfera con las flechas o WASD, la cámara la seguirá manteniendo un ángulo perfecto en tercera persona.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>Comprueba si has comprendido los fundamentos del control de físicas mediante C# en Unity.</p>
+      <UnityQuizModal quizKey="movimiento" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/unity-prototipado/interfaz/" class="prev">← Interfaz y Escenario 3D</a>
+      <a href="/course/unity-prototipado/fisicas-interaccion/" class="next">Colisiones y Triggers →</a>
+    </nav>
+  </article>
+</Layout>

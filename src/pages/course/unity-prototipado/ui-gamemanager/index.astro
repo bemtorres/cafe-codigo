@@ -1,0 +1,215 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import UnityQuizModal from '../../../../components/quizzes/UnityQuizModal.astro';
+
+const gameManagerCode = `using UnityEngine;
+using TMPro; // Libreria necesaria para manejar TextMeshPro
+
+public class GameManager : MonoBehaviour
+{
+    // Instancia unica (Singleton) accesible por cualquier script
+    public static GameManager Instance { get; private set; }
+
+    [Header("UI References")]
+    [SerializeField] private TextMeshProUGUI scoreText;
+    [SerializeField] private TextMeshProUGUI timerText;
+    [SerializeField] private TextMeshProUGUI winLoseText;
+
+    [Header("Game Settings")]
+    [SerializeField] private int totalCoinsToWin = 5;
+    [SerializeField] private float timeLimit = 30f;
+
+    private int score = 0;
+    private float timeRemaining;
+    private bool isGameOver = false;
+
+    void Awake()
+    {
+        // Configuracion del patron Singleton
+        if (Instance == null) { Instance = this; }
+        else { Destroy(gameObject); }
+    }
+
+    void Start()
+    {
+        timeRemaining = timeLimit;
+        UpdateUI();
+        winLoseText.text = ""; // Limpiamos el texto al iniciar
+    }
+
+    void Update()
+    {
+        if (isGameOver) return;
+
+        // Cuenta regresiva del tiempo
+        if (timeRemaining > 0)
+        {
+            timeRemaining -= Time.deltaTime;
+            UpdateUI();
+        }
+        else
+        {
+            GameOver(false); // Perder por tiempo
+        }
+    }
+
+    public void CollectCoin()
+    {
+        if (isGameOver) return;
+
+        score++;
+        UpdateUI();
+
+        if (score >= totalCoinsToWin)
+        {
+            GameOver(true); // Ganar el juego
+        }
+    }
+
+    public void HitObstacle()
+    {
+        if (isGameOver) return;
+        
+        GameOver(false); // Perder por chocar contra un peligro
+    }
+
+    private void UpdateUI()
+    {
+        scoreText.text = "Monedas: " + score + " / " + totalCoinsToWin;
+        timerText.text = "Tiempo: " + Mathf.Max(0, Mathf.CeilToInt(timeRemaining)) + "s";
+    }
+
+    private void GameOver(bool won)
+    {
+        isGameOver = true;
+        if (won)
+        {
+            winLoseText.text = "¡VICTORIA! 🎉";
+            winLoseText.color = Color.green;
+        }
+        else
+        {
+            winLoseText.text = "GAME OVER 💀";
+            winLoseText.color = Color.red;
+        }
+    }
+}`;
+
+const playerUpdateCode = `// Modificacion dentro de PlayerController.cs al interactuar con objetos
+
+private void OnTriggerEnter(Collider other)
+{
+    if (other.CompareTag("Coin"))
+    {
+        other.gameObject.SetActive(false);
+        
+        // Reportamos al GameManager la recoleccion usando la instancia Singleton
+        GameManager.Instance.CollectCoin();
+    }
+}
+
+private void OnCollisionEnter(Collision collision)
+{
+    if (collision.gameObject.CompareTag("Obstacle"))
+    {
+        // Reportamos al GameManager que chocamos contra un peligro
+        GameManager.Instance.HitObstacle();
+    }
+}`;
+---
+
+<Layout 
+  title="4. UI y GameManager" 
+  description="Diseña la interfaz de usuario con TextMeshPro y programa un controlador global GameManager usando el patrón Singleton en C#." 
+  courseSlug="unity-prototipado"
+>
+  <article class="content-section">
+    <h1>4. UI y GameManager: El Estado Global del Juego 📊🖥️</h1>
+
+    <section class="mb-10">
+      <h2>Introducción a la Interfaz de Usuario (UI) en Unity</h2>
+      <p>
+        Para que un videojuego se sienta como tal, necesita comunicarse con el jugador. Esto se logra a través del <strong>HUD (Heads-Up Display)</strong> o Interfaz de Usuario en pantalla.
+      </p>
+      <p>
+        En Unity, toda interfaz visual requiere un objeto contenedor especial llamado <strong>Canvas</strong> (Lienzo).
+      </p>
+      <ol>
+        <li>Haz clic derecho en la ventana <em>Hierarchy</em> y selecciona <code>UI -> Canvas</code>.</li>
+        <li>Verás que se crea automáticamente el Canvas junto con un objeto llamado <strong>EventSystem</strong> (necesario para detectar clicks en botones).</li>
+        <li>Haz clic derecho sobre el <em>Canvas</em> y crea tres textos seleccionando <code>UI -> Text - TextMeshPro</code>:
+          <ul>
+            <li>Nombra al primero como <code>ScoreText</code> (ubicado arriba a la izquierda).</li>
+            <li>Nombra al segundo como <code>TimerText</code> (ubicado arriba a la derecha).</li>
+            <li>Nombra al tercero como <code>WinLoseText</code> (ubicado al centro de la pantalla, con tamaño de fuente grande).</li>
+          </ul>
+        </li>
+      </ol>
+      <div class="note-box" style="background: #FFFBEB; border-left: 5px solid #d97706; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+        <strong>Importante:</strong> Si es la primera vez que usas TextMeshPro, aparecerá una ventana emergente pidiéndote importar los assets básicos. Haz clic en el botón <strong>"Import TMP Essentials"</strong> para que los textos puedan renderizarse correctamente.
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2>El Controlador Global: GameManager</h2>
+      <p>
+        El <strong>GameManager</strong> es un script centralizado encargado de controlar las reglas del juego: contar los puntos, llevar el reloj de tiempo y determinar si el jugador gana o pierde.
+      </p>
+      <p>
+        Para que cualquier script pueda acceder al GameManager de forma directa y limpia, utilizaremos el <strong>Patrón de Diseño Singleton</strong>.
+      </p>
+      <ol>
+        <li>Crea un script llamado <code>GameManager</code> y ábrelo en tu editor de código.</li>
+        <li>Reemplaza su contenido con el siguiente código:</li>
+      </ol>
+
+      <CodeBlock 
+        lang="csharp" 
+        code={gameManagerCode} 
+        title="GameManager.cs" 
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Conectando los Componentes en el Editor</h2>
+      <p>
+        Para que el GameManager pueda actualizar los textos de la interfaz, debemos enlazar los objetos en el Inspector:
+      </p>
+      <ol>
+        <li>Crea un GameObject vacío en tu jerarquía (clic derecho -> <code>Create Empty</code>) y llámalo <code>_GameManager</code>.</li>
+        <li>Arrástrale el script <code>GameManager.cs</code> que acabas de programar.</li>
+        <li>Selecciona <code>_GameManager</code>. Verás en el Inspector los campos vacíos de UI: <strong>Score Text</strong>, <strong>Timer Text</strong> y <strong>Win Lose Text</strong>.</li>
+        <li>Arrastra tus objetos correspondientes de la jerarquía (<code>ScoreText</code>, <code>TimerText</code>, etc.) a cada uno de estos campos.</li>
+      </ol>
+    </section>
+
+    <section class="mb-10">
+      <h2>Enlazando el Jugador con el GameManager</h2>
+      <p>
+        Ahora debemos actualizar las funciones de interacción en el script <code>PlayerController.cs</code> para que le reporten los eventos a la instancia Singleton del GameManager:
+      </p>
+
+      <CodeBlock 
+        lang="csharp" 
+        code={playerUpdateCode} 
+        title="PlayerController.cs (Actualizado)" 
+      />
+
+      <p class="mt-4">
+        Al hacer <code>GameManager.Instance.CollectCoin()</code>, estamos llamando directamente al método de la única copia del GameManager que existe en memoria, sumando un punto de forma inmediata y actualizando el texto en pantalla.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>Comprueba si has asimilado la lógica del flujo de datos entre el jugador, el GameManager y el Canvas de la interfaz gráfica.</p>
+      <UnityQuizModal quizKey="ui-gamemanager" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/unity-prototipado/fisicas-interaccion/" class="prev">← Colisiones y Triggers</a>
+      <a href="/course/unity-prototipado/ciclo-escenas/" class="next">Ciclo de Juego y Compilación →</a>
+    </nav>
+  </article>
+</Layout>

@@ -1,0 +1,189 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import UnityQuizModal from '../../../../components/quizzes/UnityQuizModal.astro';
+
+const coinRotateCode = `using UnityEngine;
+
+public class RotateCoin : MonoBehaviour
+{
+    [SerializeField] private Vector3 rotationSpeed = new Vector3(0, 100, 0);
+
+    void Update()
+    {
+        // Rota el objeto sobre su propio eje de forma suave e independiente de los FPS
+        transform.Rotate(rotationSpeed * Time.deltaTime);
+    }
+}`;
+
+const triggerCode = `// Agrega esto dentro de la clase PlayerController.cs
+
+// OnTriggerEnter se ejecuta cuando cruzamos un objeto marcado como "Is Trigger"
+private void OnTriggerEnter(Collider other)
+{
+    // Comparamos si el objeto que atravesamos tiene la etiqueta "Coin"
+    if (other.CompareTag("Coin"))
+    {
+        // Desactivamos la moneda para que desaparezca de la escena
+        other.gameObject.SetActive(false);
+        
+        // Opcional: Mostrar mensaje en la consola de depuracion
+        Debug.Log("¡Moneda recolectada!");
+    }
+}`;
+
+const collisionCode = `// Agrega esto dentro de la clase PlayerController.cs
+
+// OnCollisionEnter se ejecuta al impactar fisicamente contra un objeto solido
+private void OnCollisionEnter(Collision collision)
+{
+    // Comparamos si chocamos contra un obstaculo peligroso
+    if (collision.gameObject.CompareTag("Obstacle"))
+    {
+        Debug.Log("¡Ay! Chocamos contra un obstaculo.");
+        
+        // Aqui mas adelante agregaremos logica para restar vida o reiniciar el nivel
+    }
+}`;
+
+const obstacleMoveCode = `using UnityEngine;
+
+public class ObstacleMovement : MonoBehaviour
+{
+    [SerializeField] private float speed = 3f;
+    [SerializeField] private float distance = 5f;
+
+    private Vector3 startPosition;
+
+    void Start()
+    {
+        // Guardamos la posicion de origen del obstaculo
+        startPosition = transform.position;
+    }
+
+    void Update()
+    {
+        // Calculamos una posicion de vaiven (Ping-Pong) sobre el eje X
+        float movementX = Mathf.PingPong(Time.time * speed, distance);
+        
+        // Aplicamos la nueva posicion sumando el desplazamiento a la posicion inicial
+        transform.position = new Vector3(startPosition.x + movementX, startPosition.y, startPosition.z);
+    }
+}`;
+---
+
+<Layout 
+  title="3. Colisiones y Triggers" 
+  description="Aprende a diferenciar entre colisiones sólidas y áreas trigger para programar la recolección de monedas y el impacto con obstáculos." 
+  courseSlug="unity-prototipado"
+>
+  <article class="content-section">
+    <h1>3. Colisiones y Triggers: Interacción Física en el Juego 💥🪙</h1>
+
+    <section class="mb-10">
+      <h2>Diferencia Crucial: Collider vs. Trigger</h2>
+      <p>
+        Para que dos objetos interactúen físicamente en Unity, ambos deben poseer un componente derivado de <strong>Collider</strong> (Box Collider, Sphere Collider, Capsule Collider, etc.). Existen dos formas de configurar estos colisionadores:
+      </p>
+      <ul>
+        <li>
+          <strong>Collider Sólido (Is Trigger desactivado):</strong> Actúa como un muro impenetrable. Cuando el jugador choca contra él, rebota física y automáticamente debido a la masa y fuerzas calculadas en el Rigidbody.
+        </li>
+        <li>
+          <strong>Trigger (Is Trigger activado):</strong> Funciona como una zona de detección o sensor invisible. El jugador puede atravesarlo libremente sin sentir resistencia, pero el motor de Unity nos avisará mediante código cuando el jugador entre, permanezca o salga de esa zona. Es ideal para coleccionables, llaves, portales de meta o trampas de lava.
+        </li>
+      </ul>
+    </section>
+
+    <section class="mb-10">
+      <h2>1. Animando las Monedas (Rotación Continua)</h2>
+      <p>
+        Para que nuestras monedas parezcan vivas y atraigan la atención del jugador, haremos que roten continuamente en el espacio.
+      </p>
+      <ol>
+        <li>Crea un script llamado <code>RotateCoin</code> en tu carpeta de activos.</li>
+        <li>Reemplaza su código por el siguiente:</li>
+      </ol>
+
+      <CodeBlock 
+        lang="csharp" 
+        code={coinRotateCode} 
+        title="RotateCoin.cs" 
+      />
+
+      <ol class="mt-4">
+        <li>Arrastra este script sobre tu objeto <strong>Coin</strong>.</li>
+        <li>En el Inspector del objeto <strong>Coin</strong>, asegúrate de activar la casilla <strong>Is Trigger</strong> en su componente <em>Box Collider</em> o <em>Sphere Collider</em>.</li>
+        <li>Asigna el Tag <strong>"Coin"</strong> al objeto en la parte superior del Inspector (si no existe, haz clic en <em>Add Tag</em> para crearlo).</li>
+      </ol>
+    </section>
+
+    <section class="mb-10">
+      <h2>2. Programando la Recolección (Triggers)</h2>
+      <p>
+        Abriremos nuestro script <code>PlayerController.cs</code> y agregaremos el método nativo <code>OnTriggerEnter</code> de Unity para detectar cuándo el jugador pasa por encima de la moneda:
+      </p>
+
+      <CodeBlock 
+        lang="csharp" 
+        code={triggerCode} 
+        title="PlayerController.cs (Fragmento Trigger)" 
+      />
+
+      <p class="mt-4">
+        <strong>¿Cómo funciona?</strong> Cuando la esfera del jugador entra en la zona del colisionador de la moneda, Unity invoca automáticamente a <code>OnTriggerEnter</code> y nos pasa los datos de ese colisionador (<code>other</code>). Si el tag del objeto es "Coin", lo desactivamos y desaparece visualmente del escenario.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>3. Detectando Impactos con Obstáculos (Colisiones)</h2>
+      <p>
+        Para los obstáculos sólidos (muros o cilindros de peligro), queremos que bloqueen el paso pero que el código se entere del golpe para poder restar vidas o reiniciar. Agregaremos el método <code>OnCollisionEnter</code> al script del jugador:
+      </p>
+
+      <CodeBlock 
+        lang="csharp" 
+        code={collisionCode} 
+        title="PlayerController.cs (Fragmento Collision)" 
+      />
+
+      <ol class="mt-4">
+        <li>Selecciona tu cilindro u obstáculo en la jerarquía.</li>
+        <li>En la parte superior del Inspector, cámbiale el Tag a <strong>"Obstacle"</strong> (créalo si no está en la lista).</li>
+        <li>Asegúrate de que la casilla <strong>Is Trigger</strong> esté <strong>desactivada</strong> para que actúe como un muro físico.</li>
+      </ol>
+    </section>
+
+    <section class="mb-10">
+      <h2>4. Creando Obstáculos Móviles (Patrones de Movimiento)</h2>
+      <p>
+        Un prototipo se vuelve más divertido si añadimos movimiento a los peligros. Programaremos un obstáculo que patrulle de un lado a otro sobre la arena de juego:
+      </p>
+      <ol>
+        <li>Crea un script llamado <code>ObstacleMovement</code>.</li>
+        <li>Reemplaza el código por el siguiente:</li>
+      </ol>
+
+      <CodeBlock 
+        lang="csharp" 
+        code={obstacleMoveCode} 
+        title="ObstacleMovement.cs" 
+      />
+
+      <p class="mt-4">
+        <strong>Explicación:</strong> <code>Mathf.PingPong(tiempo, distancia)</code> genera un valor oscilante que sube y baja constantemente como un péndulo. Al sumarlo a la posición inicial, el cilindro se moverá de izquierda a derecha automáticamente.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>Comprueba si comprendes la diferencia entre las físicas de colisión sólida y el registro de sensores trigger.</p>
+      <UnityQuizModal quizKey="fisicas-interaccion" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/unity-prototipado/movimiento/" class="prev">← Física y Movimiento del Jugador</a>
+      <a href="/course/unity-prototipado/ui-gamemanager/" class="next">UI y GameManager →</a>
+    </nav>
+  </article>
+</Layout>

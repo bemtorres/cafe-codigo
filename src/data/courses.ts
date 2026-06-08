@@ -387,16 +387,17 @@ export const courses: Course[] = [
   },
   {
     slug: 'unity-prototipado',
-    name: 'Unity Ágil',
-    description: 'Fundamentos de Unity orientados a la rápida creación y validación de prototipos jugables para Sprints.',
+    name: 'Unity Prototipado 3D',
+    description: 'Aprende a prototipar videojuegos en 3D desde cero y a programar sus mecánicas con C# y físicas.',
     category: 'gamedev',
     status: 'available',
     color: '#000000',
     lessons: [
-      { slug: 'interfaz', title: '1. Interfaz y Mentalidad', href: '/course/unity-prototipado/interfaz/' },
-      { slug: 'scripting', title: '2. Del Requisito al Script', href: '/course/unity-prototipado/scripting/' },
-      { slug: 'fisica', title: '3. Física y Colisiones', href: '/course/unity-prototipado/fisica/' },
-      { slug: 'ui-ciclo', title: '4. UI y Ciclo de Juego', href: '/course/unity-prototipado/ui-ciclo/' },
+      { slug: 'interfaz', title: '1. Interfaz y Escenario 3D', href: '/course/unity-prototipado/interfaz/' },
+      { slug: 'movimiento', title: '2. Física y Movimiento del Jugador', href: '/course/unity-prototipado/movimiento/' },
+      { slug: 'fisicas-interaccion', title: '3. Colisiones y Triggers', href: '/course/unity-prototipado/fisicas-interaccion/' },
+      { slug: 'ui-gamemanager', title: '4. UI y GameManager', href: '/course/unity-prototipado/ui-gamemanager/' },
+      { slug: 'ciclo-escenas', title: '5. Ciclo de Juego y Compilación', href: '/course/unity-prototipado/ciclo-escenas/' },
     ],
   },
   {

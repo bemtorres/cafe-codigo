@@ -80,7 +80,7 @@ const showLanguageCuriosity =
     <meta name="description" content={description} />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Eagle+Lake&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Eagle+Lake&family=Orbitron:wght@400;700;900&family=Press+Start+2P&display=swap" rel="stylesheet">
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
@@ -889,6 +889,930 @@ const showLanguageCuriosity =
           gap: 1.25rem;
         }
       }
+
+      /* --- Skin estilo Videojuegos / Sci-Fi (solo curso Unity Prototipado 3D) --- */
+      body[data-course="unity-prototipado"] {
+        --gaming-cyan: #00ffff;
+        --gaming-magenta: #ff007f;
+        --gaming-bg: #0b0914;
+        --gaming-dark-card: rgba(20, 16, 36, 0.85);
+        --gaming-border: #ff007f;
+        background-color: var(--gaming-bg) !important;
+        background-image: 
+          radial-gradient(1px 1px at 20px 30px, #eee, rgba(0,0,0,0)), 
+          radial-gradient(1px 1px at 150px 100px, #fff, rgba(0,0,0,0)), 
+          radial-gradient(2px 2px at 200px 300px, #00ffff, rgba(0,0,0,0)),
+          linear-gradient(rgba(18, 16, 32, 0.95) 2px, transparent 2px),
+          linear-gradient(90deg, rgba(18, 16, 32, 0.95) 2px, transparent 2px) !important;
+        background-size: 100%, 100%, 100%, 40px 40px, 40px 40px !important;
+        color: #e2e8f0 !important;
+      }
+
+      body[data-course="unity-prototipado"] h1,
+      body[data-course="unity-prototipado"] h2,
+      body[data-course="unity-prototipado"] h3 {
+        font-family: 'Orbitron', sans-serif !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.05em !important;
+        color: var(--gaming-cyan) !important;
+        text-shadow: 0 0 10px rgba(0, 255, 255, 0.5), 0 0 20px rgba(0, 255, 255, 0.2) !important;
+      }
+
+      body[data-course="unity-prototipado"] .content-section {
+        background: var(--gaming-dark-card) !important;
+        border: 3px solid var(--gaming-border) !important;
+        box-shadow: 0 0 25px rgba(255, 0, 127, 0.25), inset 0 0 15px rgba(0, 255, 255, 0.05) !important;
+        backdrop-filter: blur(12px) !important;
+        border-radius: 24px !important;
+        color: #e2e8f0 !important;
+      }
+
+      body[data-course="unity-prototipado"] .content-section p,
+      body[data-course="unity-prototipado"] .content-section li {
+        color: #cbd5e1 !important;
+        line-height: 1.7 !important;
+      }
+
+      body[data-course="unity-prototipado"] .content-section strong {
+        color: var(--gaming-cyan) !important;
+        text-shadow: 0 0 5px rgba(0, 255, 255, 0.3) !important;
+        font-weight: 800 !important;
+      }
+
+      body[data-course="unity-prototipado"] .content-section code {
+        background: rgba(0, 255, 255, 0.1) !important;
+        color: var(--gaming-cyan) !important;
+        border: 1px solid rgba(0, 255, 255, 0.2) !important;
+        padding: 0.15rem 0.4rem !important;
+        border-radius: 6px !important;
+      }
+
+      /* Note box custom styled with neon border and dark cyan transparent bg */
+      body[data-course="unity-prototipado"] .note-box {
+        background: rgba(0, 255, 255, 0.05) !important;
+        border: 2px solid var(--gaming-cyan) !important;
+        border-left: 6px solid var(--gaming-cyan) !important;
+        box-shadow: 0 0 15px rgba(0, 255, 255, 0.15) !important;
+        color: #cbd5e1 !important;
+        border-radius: 12px !important;
+        margin-bottom: 1.5rem !important;
+        padding: 1rem !important;
+      }
+
+      /* Custom CodeBlock overrides for cyberpunk neon terminal look */
+      body[data-course="unity-prototipado"] div[id^="block_"] {
+        border-color: var(--gaming-border) !important;
+        background: var(--gaming-dark-card) !important;
+        box-shadow: 0 0 25px rgba(255, 0, 127, 0.35) !important;
+      }
+      body[data-course="unity-prototipado"] div[id^="block_"] > div:first-child {
+        background: #110c22 !important;
+        border-bottom: 3px solid var(--gaming-border) !important;
+      }
+      body[data-course="unity-prototipado"] div[id^="block_"] > div:first-child span {
+        color: var(--gaming-cyan) !important;
+        font-family: 'Orbitron', sans-serif !important;
+        text-shadow: 0 0 5px rgba(0, 255, 255, 0.4) !important;
+      }
+      body[data-course="unity-prototipado"] div[id^="block_"] .copy-btn {
+        color: #cbd5e1 !important;
+        border-right: 2px solid rgba(255, 0, 127, 0.4) !important;
+      }
+      body[data-course="unity-prototipado"] div[id^="block_"] .copy-btn:hover {
+        background: rgba(255, 0, 127, 0.15) !important;
+        color: white !important;
+      }
+      body[data-course="unity-prototipado"] div[id^="block_"] .code-viewer {
+        background-color: #0b0914 !important;
+        color: #e2e8f0 !important;
+      }
+
+      /* Sidebar navigation items and stickiness styling overrides */
+      body[data-course="unity-prototipado"] aside .sticky {
+        border-color: var(--gaming-border) !important;
+        box-shadow: 0 0 15px rgba(255, 0, 127, 0.25) !important;
+        background: var(--gaming-dark-card) !important;
+        backdrop-filter: blur(8px) !important;
+      }
+
+      body[data-course="unity-prototipado"] aside .sticky h3 {
+        color: var(--gaming-cyan) !important;
+        font-family: 'Orbitron', sans-serif !important;
+      }
+
+      body[data-course="unity-prototipado"] aside a.rounded-xl.border-2 {
+        background: rgba(255, 255, 255, 0.03) !important;
+        border-color: rgba(255, 0, 127, 0.4) !important;
+        color: #cbd5e1 !important;
+      }
+
+      body[data-course="unity-prototipado"] aside a.rounded-xl.border-2:hover {
+        border-color: var(--gaming-cyan) !important;
+        background: rgba(0, 255, 255, 0.1) !important;
+        color: white !important;
+        box-shadow: 0 0 10px rgba(0, 255, 255, 0.2) !important;
+      }
+
+      body[data-course="unity-prototipado"] aside a.bg-success {
+        background: var(--gaming-cyan) !important;
+        border-color: var(--gaming-cyan) !important;
+        color: #0b0914 !important;
+        box-shadow: 0 0 15px rgba(0, 255, 255, 0.4) !important;
+      }
+
+      /* Sidebar collapse/restore buttons */
+      body[data-course="unity-prototipado"] #asideRestoreBtn {
+        background: var(--gaming-bg) !important;
+        border-color: var(--gaming-cyan) !important;
+        color: var(--gaming-cyan) !important;
+        box-shadow: 0 0 15px rgba(0, 255, 255, 0.4) !important;
+      }
+      body[data-course="unity-prototipado"] #asideRestoreBtn:hover {
+        background: var(--gaming-cyan) !important;
+        color: var(--gaming-bg) !important;
+      }
+      body[data-course="unity-prototipado"] #asideCollapseBtn {
+        background: rgba(255, 0, 127, 0.1) !important;
+        border-color: var(--gaming-border) !important;
+        color: var(--gaming-border) !important;
+      }
+      body[data-course="unity-prototipado"] #asideCollapseBtn:hover {
+        background: var(--gaming-border) !important;
+        color: white !important;
+      }
+
+      body[data-course="unity-prototipado"] .course-container {
+        color: #e2e8f0 !important;
+      }
+
+      body[data-course="unity-prototipado"] .course-big-title {
+        font-family: 'Orbitron', sans-serif !important;
+        color: var(--gaming-cyan) !important;
+        text-shadow: 0 0 15px rgba(0, 255, 255, 0.6), 0 0 30px rgba(0, 255, 255, 0.3) !important;
+      }
+
+      body[data-course="unity-prototipado"] .course-description {
+        color: #cbd5e1 !important;
+      }
+
+      body[data-course="unity-prototipado"] .lesson-card {
+        background: var(--gaming-dark-card) !important;
+        border: 3px solid rgba(255, 255, 255, 0.1) !important;
+        border-radius: 24px !important;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
+        transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+      }
+
+      body[data-course="unity-prototipado"] .lesson-card:hover {
+        border-color: var(--gaming-cyan) !important;
+        box-shadow: 0 0 20px rgba(0, 255, 255, 0.3) !important;
+        transform: translateY(-5px) scale(1.02) !important;
+      }
+
+      body[data-course="unity-prototipado"] .lesson-card__number {
+        font-family: 'Press Start 2P', cursive !important;
+        font-size: 1.25rem !important;
+        color: var(--gaming-magenta) !important;
+        text-shadow: 0 0 5px rgba(255, 0, 127, 0.5) !important;
+      }
+
+      body[data-course="unity-prototipado"] .lesson-card__title {
+        font-family: 'Orbitron', sans-serif !important;
+        font-size: 1rem !important;
+        color: #f8fafc !important;
+      }
+
+      body[data-course="unity-prototipado"] .lesson-card__cta {
+        color: var(--gaming-cyan) !important;
+        font-family: 'Orbitron', sans-serif !important;
+        font-size: 0.75rem !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.05em !important;
+      }
+
+      body[data-course="unity-prototipado"] .nav-bottom a {
+        border-color: var(--gaming-border) !important;
+        background: var(--gaming-dark-card) !important;
+        color: #cbd5e1 !important;
+        font-family: 'Orbitron', sans-serif !important;
+      }
+
+      body[data-course="unity-prototipado"] .nav-bottom a:hover {
+        background: rgba(255, 0, 127, 0.1) !important;
+        border-color: var(--gaming-cyan) !important;
+        color: white !important;
+        box-shadow: 0 0 15px rgba(0, 255, 255, 0.2) !important;
+      }
+
+      body[data-course="unity-prototipado"] .nav-bottom .next {
+        border-color: var(--gaming-cyan) !important;
+        color: #0b0914 !important;
+        background: var(--gaming-cyan) !important;
+        box-shadow: 0 0 15px rgba(0, 255, 255, 0.3) !important;
+      }
+
+      body[data-course="unity-prototipado"] .nav-bottom .next:hover {
+        background: white !important;
+        border-color: white !important;
+        color: #0b0914 !important;
+        box-shadow: 0 0 20px white !important;
+      }
+
+      body[data-course="unity-prototipado"] ::-webkit-scrollbar-track {
+        background: #0b0914 !important;
+      }
+
+      body[data-course="unity-prototipado"] ::-webkit-scrollbar-thumb {
+        background: var(--gaming-magenta) !important;
+        border: 2px solid #0b0914 !important;
+        border-radius: 4px !important;
+      }
+
+      /* === Skin Matrix === */
+      body[data-course="unity-prototipado"][data-game-skin="matrix"] {
+        background: black !important;
+        background-image: none !important;
+        color: #00ff00 !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="matrix"] h1,
+      body[data-course="unity-prototipado"][data-game-skin="matrix"] h2,
+      body[data-course="unity-prototipado"][data-game-skin="matrix"] h3 {
+        font-family: monospace !important;
+        color: #00ff00 !important;
+        text-shadow: 0 0 10px #00ff00 !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="matrix"] .content-section {
+        background: rgba(0, 0, 0, 0.95) !important;
+        border: 2px solid #00ff00 !important;
+        box-shadow: 0 0 20px rgba(0, 255, 0, 0.3) !important;
+        color: #00ff00 !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="matrix"] .content-section p,
+      body[data-course="unity-prototipado"][data-game-skin="matrix"] .content-section li {
+        color: #33ff33 !important;
+        font-family: monospace !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="matrix"] .content-section strong {
+        color: #ffffff !important;
+        text-shadow: 0 0 5px #00ff00 !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="matrix"] .note-box {
+        background: rgba(0, 50, 0, 0.3) !important;
+        border: 2px solid #00ff00 !important;
+        border-left: 6px solid #00ff00 !important;
+        box-shadow: 0 0 15px rgba(0, 255, 0, 0.2) !important;
+        color: #00ff00 !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="matrix"] div[id^="block_"] {
+        border-color: #00ff00 !important;
+        box-shadow: 0 0 15px rgba(0, 255, 0, 0.2) !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="matrix"] div[id^="block_"] > div:first-child {
+        background: #051405 !important;
+        border-bottom-color: #00ff00 !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="matrix"] div[id^="block_"] > div:first-child span {
+        color: #00ff00 !important;
+        font-family: monospace !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="matrix"] div[id^="block_"] .copy-btn {
+        color: #00ff00 !important;
+        border-right: 2px solid rgba(0, 255, 0, 0.3) !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="matrix"] div[id^="block_"] .copy-btn:hover {
+        background: rgba(0, 255, 0, 0.1) !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="matrix"] div[id^="block_"] .code-viewer {
+        background-color: #000000 !important;
+        color: #00ff00 !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="matrix"] aside .sticky {
+        border-color: #00ff00 !important;
+        background: rgba(0, 0, 0, 0.9) !important;
+        box-shadow: 0 0 15px rgba(0, 255, 0, 0.3) !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="matrix"] aside a.rounded-xl.border-2 {
+        border-color: rgba(0, 255, 0, 0.4) !important;
+        color: #33ff33 !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="matrix"] aside a.rounded-xl.border-2:hover,
+      body[data-course="unity-prototipado"][data-game-skin="matrix"] aside a.bg-success {
+        background: rgba(0, 255, 0, 0.15) !important;
+        border-color: #00ff00 !important;
+        color: #00ff00 !important;
+        box-shadow: 0 0 10px rgba(0, 255, 0, 0.3) !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="matrix"] .nav-bottom a {
+        border-color: #00ff00 !important;
+        color: #00ff00 !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="matrix"] .nav-bottom a:hover,
+      body[data-course="unity-prototipado"][data-game-skin="matrix"] .nav-bottom .next {
+        background: rgba(0, 255, 0, 0.15) !important;
+        border-color: #00ff00 !important;
+        color: #00ff00 !important;
+        box-shadow: 0 0 15px rgba(0, 255, 0, 0.4) !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="matrix"] .lesson-card {
+        background: rgba(0, 0, 0, 0.8) !important;
+        border: 2px solid rgba(0, 255, 0, 0.4) !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="matrix"] .lesson-card:hover {
+        border-color: #00ff00 !important;
+        box-shadow: 0 0 15px rgba(0, 255, 0, 0.4) !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="matrix"] .lesson-card__number {
+        color: #00ff00 !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="matrix"] .lesson-card__title {
+        color: #33ff33 !important;
+        font-family: monospace !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="matrix"] .lesson-card__cta {
+        color: #00ff00 !important;
+        font-family: monospace !important;
+      }
+
+      /* === Skin Minecraft === */
+      body[data-course="unity-prototipado"][data-game-skin="minecraft"] {
+        background-color: #271b12 !important;
+        background-image: 
+          linear-gradient(rgba(18, 12, 8, 0.75) 2px, transparent 2px),
+          linear-gradient(90deg, rgba(18, 12, 8, 0.75) 2px, transparent 2px) !important;
+        background-size: 20px 20px !important;
+        color: #e2d6c5 !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="minecraft"] h1,
+      body[data-course="unity-prototipado"][data-game-skin="minecraft"] h2,
+      body[data-course="unity-prototipado"][data-game-skin="minecraft"] h3 {
+        font-family: 'Press Start 2P', cursive !important;
+        color: #ffff55 !important;
+        text-shadow: 3px 3px 0px #3f3f0f !important;
+        text-transform: none !important;
+        letter-spacing: normal !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="minecraft"] .content-section {
+        background: #2b2b2b !important;
+        border: 4px solid #3c3c3c !important;
+        border-top-color: #8f8f8f !important;
+        border-left-color: #8f8f8f !important;
+        box-shadow: 5px 5px 0px #111 !important;
+        border-radius: 0px !important;
+        color: #e2d6c5 !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="minecraft"] .content-section p,
+      body[data-course="unity-prototipado"][data-game-skin="minecraft"] .content-section li {
+        color: #e2d6c5 !important;
+        font-family: 'Courier New', Courier, monospace !important;
+        font-weight: bold !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="minecraft"] .content-section strong {
+        color: #55ff55 !important;
+        text-shadow: none !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="minecraft"] .note-box {
+        background: #1e1e1e !important;
+        border: 4px dashed #ffaa00 !important;
+        border-radius: 0px !important;
+        color: #ffaa00 !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="minecraft"] div[id^="block_"] {
+        border: 4px solid #3c3c3c !important;
+        border-top-color: #8f8f8f !important;
+        border-left-color: #8f8f8f !important;
+        border-radius: 0px !important;
+        box-shadow: 4px 4px 0px #111 !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="minecraft"] div[id^="block_"] > div:first-child {
+        background: #4a4a4a !important;
+        border-bottom: 4px solid #3c3c3c !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="minecraft"] div[id^="block_"] > div:first-child span {
+        color: #ffffff !important;
+        font-family: 'Press Start 2P', cursive !important;
+        font-size: 0.65rem !important;
+        text-shadow: 2px 2px 0px #111 !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="minecraft"] div[id^="block_"] .copy-btn {
+        color: #e2d6c5 !important;
+        border-right: 4px solid #3c3c3c !important;
+        font-family: 'Press Start 2P', cursive !important;
+        font-size: 0.55rem !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="minecraft"] div[id^="block_"] .copy-btn:hover {
+        background: #555555 !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="minecraft"] div[id^="block_"] .code-viewer {
+        background-color: #0f0f0f !important;
+        color: #ffffff !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="minecraft"] aside .sticky {
+        border: 4px solid #3c3c3c !important;
+        border-top-color: #8f8f8f !important;
+        border-left-color: #8f8f8f !important;
+        border-radius: 0px !important;
+        background: #2b2b2b !important;
+        box-shadow: 4px 4px 0px #111 !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="minecraft"] aside a.rounded-xl.border-2 {
+        border: 3px solid #3c3c3c !important;
+        border-top-color: #8f8f8f !important;
+        border-left-color: #8f8f8f !important;
+        background: #4a4a4a !important;
+        border-radius: 0px !important;
+        color: #ffffff !important;
+        font-family: 'Press Start 2P', cursive !important;
+        font-size: 0.55rem !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="minecraft"] aside a.rounded-xl.border-2:hover,
+      body[data-course="unity-prototipado"][data-game-skin="minecraft"] aside a.bg-success {
+        background: #55ff55 !important;
+        border-color: #3c3c3c !important;
+        border-top-color: #8f8f8f !important;
+        border-left-color: #8f8f8f !important;
+        color: #000000 !important;
+        box-shadow: none !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="minecraft"] .nav-bottom a {
+        border: 4px solid #3c3c3c !important;
+        border-top-color: #8f8f8f !important;
+        border-left-color: #8f8f8f !important;
+        border-radius: 0px !important;
+        background: #4a4a4a !important;
+        color: #ffffff !important;
+        font-family: 'Press Start 2P', cursive !important;
+        font-size: 0.6rem !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="minecraft"] .nav-bottom a:hover {
+        background: #555555 !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="minecraft"] .nav-bottom .next {
+        background: #55ff55 !important;
+        color: #000000 !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="minecraft"] .nav-bottom .next:hover {
+        background: #22aa22 !important;
+        color: #ffffff !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="minecraft"] .lesson-card {
+        background: #2b2b2b !important;
+        border: 4px solid #3c3c3c !important;
+        border-top-color: #8f8f8f !important;
+        border-left-color: #8f8f8f !important;
+        border-radius: 0px !important;
+        box-shadow: 4px 4px 0px #111 !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="minecraft"] .lesson-card:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 6px 6px 0px #111 !important;
+        border-color: #ffff55 !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="minecraft"] .lesson-card__title {
+        font-family: 'Press Start 2P', cursive !important;
+        font-size: 0.75rem !important;
+        color: #ffffff !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="minecraft"] .lesson-card__cta {
+        font-family: 'Press Start 2P', cursive !important;
+        font-size: 0.55rem !important;
+        color: #ffff55 !important;
+      }
+
+      /* === Skin Pacman === */
+      body[data-course="unity-prototipado"][data-game-skin="pacman"] {
+        background-color: #000000 !important;
+        background-image: none !important;
+        color: #ffffff !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="pacman"] h1,
+      body[data-course="unity-prototipado"][data-game-skin="pacman"] h2,
+      body[data-course="unity-prototipado"][data-game-skin="pacman"] h3 {
+        font-family: 'Press Start 2P', cursive !important;
+        color: #ffb8ff !important;
+        text-shadow: 3px 3px 0px #ff0000 !important;
+        text-transform: uppercase !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="pacman"] h1 {
+        color: #ffff00 !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="pacman"] .content-section {
+        background: #05051a !important;
+        border: 4px double #2121ff !important;
+        border-radius: 16px !important;
+        box-shadow: 0 0 20px #2121ff, inset 0 0 10px #2121ff !important;
+        color: #ffffff !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="pacman"] .content-section p,
+      body[data-course="unity-prototipado"][data-game-skin="pacman"] .content-section li {
+        color: #ffffff !important;
+        font-family: monospace, Courier !important;
+        font-size: 0.95rem !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="pacman"] .content-section ul li::marker {
+        content: "🍒 " !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="pacman"] .content-section ol li::marker {
+        color: #ffff00 !important;
+        font-family: 'Press Start 2P', cursive !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="pacman"] .content-section strong {
+        color: #ffff00 !important;
+        text-shadow: 0 0 5px rgba(255, 255, 0, 0.5) !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="pacman"] .note-box {
+        background: #000 !important;
+        border: 3px solid #ffb851 !important;
+        border-radius: 8px !important;
+        color: #ffb851 !important;
+        box-shadow: 0 0 10px #ffb851 !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="pacman"] div[id^="block_"] {
+        border: 3px solid #00ffff !important;
+        border-radius: 12px !important;
+        box-shadow: 0 0 15px #00ffff !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="pacman"] div[id^="block_"] > div:first-child {
+        background: #000000 !important;
+        border-bottom: 3px solid #00ffff !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="pacman"] div[id^="block_"] > div:first-child span {
+        color: #ffff00 !important;
+        font-family: 'Press Start 2P', cursive !important;
+        font-size: 0.6rem !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="pacman"] div[id^="block_"] .copy-btn {
+        color: #00ffff !important;
+        border-right: 2px solid #00ffff !important;
+        font-family: 'Press Start 2P', cursive !important;
+        font-size: 0.5rem !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="pacman"] div[id^="block_"] .copy-btn:hover {
+        background: rgba(0, 255, 255, 0.15) !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="pacman"] div[id^="block_"] .code-viewer {
+        background-color: #000000 !important;
+        color: #ffffff !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="pacman"] aside .sticky {
+        border: 4px double #2121ff !important;
+        border-radius: 16px !important;
+        background: #05051a !important;
+        box-shadow: 0 0 15px #2121ff !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="pacman"] aside a.rounded-xl.border-2 {
+        border: 2px solid #2121ff !important;
+        background: #000000 !important;
+        color: #ffffff !important;
+        font-family: 'Press Start 2P', cursive !important;
+        font-size: 0.55rem !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="pacman"] aside a.rounded-xl.border-2:hover,
+      body[data-course="unity-prototipado"][data-game-skin="pacman"] aside a.bg-success {
+        background: #ffff00 !important;
+        border-color: #ffff00 !important;
+        color: #000000 !important;
+        box-shadow: 0 0 10px #ffff00 !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="pacman"] .nav-bottom a {
+        border: 3px double #2121ff !important;
+        border-radius: 8px !important;
+        background: #000000 !important;
+        color: #ffffff !important;
+        font-family: 'Press Start 2P', cursive !important;
+        font-size: 0.6rem !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="pacman"] .nav-bottom a:hover {
+        border-color: #ffff00 !important;
+        color: #ffff00 !important;
+        box-shadow: 0 0 10px #ffff00 !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="pacman"] .nav-bottom .next {
+        background: #ffff00 !important;
+        color: #000000 !important;
+        border-color: #ffff00 !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="pacman"] .nav-bottom .next:hover {
+        background: #ffb851 !important;
+        border-color: #ffb851 !important;
+        color: #000000 !important;
+        box-shadow: 0 0 15px #ffb851 !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="pacman"] .lesson-card {
+        background: #000000 !important;
+        border: 4px double #2121ff !important;
+        border-radius: 16px !important;
+        box-shadow: 0 0 10px rgba(33, 33, 255, 0.4) !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="pacman"] .lesson-card:hover {
+        border-color: #ffff00 !important;
+        box-shadow: 0 0 15px #ffff00 !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="pacman"] .lesson-card__number {
+        color: #ff0000 !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="pacman"] .lesson-card__title {
+        font-family: 'Press Start 2P', cursive !important;
+        font-size: 0.75rem !important;
+        color: #ffffff !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="pacman"] .lesson-card__cta {
+        font-family: 'Press Start 2P', cursive !important;
+        font-size: 0.55rem !important;
+        color: #ffff00 !important;
+      }
+
+      /* === Quiz Cyberpunk (Default) Overrides === */
+      body[data-course="unity-prototipado"] .universal-quiz__start {
+        background: var(--gaming-cyan) !important;
+        color: #0b0914 !important;
+        border-color: var(--gaming-border) !important;
+        box-shadow: 0 0 15px rgba(0, 255, 255, 0.4) !important;
+        font-family: 'Orbitron', sans-serif !important;
+      }
+      body[data-course="unity-prototipado"] .universal-quiz__start:hover {
+        background: white !important;
+        box-shadow: 0 0 20px white !important;
+      }
+      body[data-course="unity-prototipado"] .universal-quiz__panel {
+        background: var(--gaming-dark-card) !important;
+        border-color: var(--gaming-border) !important;
+        box-shadow: 0 0 35px rgba(255, 0, 127, 0.4) !important;
+        color: #e2e8f0 !important;
+      }
+      body[data-course="unity-prototipado"] .universal-quiz__header {
+        background: #120e24 !important;
+        border-bottom-color: var(--gaming-border) !important;
+        color: var(--gaming-cyan) !important;
+      }
+      body[data-course="unity-prototipado"] .universal-quiz__title-badge {
+        background: rgba(0, 255, 255, 0.1) !important;
+        color: var(--gaming-cyan) !important;
+        border-color: var(--gaming-cyan) !important;
+      }
+      body[data-course="unity-prototipado"] .universal-quiz__close {
+        background: rgba(255, 0, 127, 0.1) !important;
+        border-color: var(--gaming-border) !important;
+        color: var(--gaming-border) !important;
+      }
+      body[data-course="unity-prototipado"] .universal-quiz__close:hover {
+        background: var(--gaming-border) !important;
+        color: white !important;
+      }
+      body[data-course="unity-prototipado"] .universal-quiz__intro {
+        color: #cbd5e1 !important;
+      }
+      body[data-course="unity-prototipado"] .universal-quiz__q {
+        background: rgba(255, 255, 255, 0.02) !important;
+        border-color: rgba(255, 0, 127, 0.4) !important;
+        color: #e2e8f0 !important;
+      }
+      body[data-course="unity-prototipado"] .universal-quiz__opt {
+        color: #cbd5e1 !important;
+      }
+      body[data-course="unity-prototipado"] .universal-quiz__submit {
+        background: var(--gaming-cyan) !important;
+        border-color: var(--gaming-cyan) !important;
+        color: #0b0914 !important;
+        box-shadow: 0 0 10px rgba(0, 255, 255, 0.3) !important;
+      }
+      body[data-course="unity-prototipado"] .universal-quiz__restart {
+        background: rgba(255, 255, 255, 0.05) !important;
+        border-color: rgba(255, 255, 255, 0.2) !important;
+        color: #cbd5e1 !important;
+      }
+
+      /* === Matrix Quiz Overrides === */
+      body[data-course="unity-prototipado"][data-game-skin="matrix"] .universal-quiz__start {
+        background: #000 !important;
+        color: #00ff00 !important;
+        border-color: #00ff00 !important;
+        box-shadow: 0 0 15px rgba(0, 255, 0, 0.4) !important;
+        font-family: monospace !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="matrix"] .universal-quiz__panel {
+        background: #000000 !important;
+        border-color: #00ff00 !important;
+        box-shadow: 0 0 25px rgba(0, 255, 0, 0.4) !important;
+        color: #00ff00 !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="matrix"] .universal-quiz__header {
+        background: #051405 !important;
+        border-bottom-color: #00ff00 !important;
+        color: #00ff00 !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="matrix"] .universal-quiz__title-badge {
+        background: rgba(0, 255, 0, 0.1) !important;
+        color: #00ff00 !important;
+        border-color: #00ff00 !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="matrix"] .universal-quiz__close {
+        background: rgba(0, 255, 0, 0.1) !important;
+        border-color: #00ff00 !important;
+        color: #00ff00 !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="matrix"] .universal-quiz__close:hover {
+        background: #00ff00 !important;
+        color: #000000 !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="matrix"] .universal-quiz__intro {
+        color: #33ff33 !important;
+        font-family: monospace !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="matrix"] .universal-quiz__q {
+        background: rgba(0, 20, 0, 0.4) !important;
+        border-color: rgba(0, 255, 0, 0.5) !important;
+        color: #00ff00 !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="matrix"] .universal-quiz__q-title {
+        font-family: monospace !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="matrix"] .universal-quiz__opt {
+        color: #33ff33 !important;
+        font-family: monospace !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="matrix"] .universal-quiz__submit {
+        background: #00ff00 !important;
+        border-color: #00ff00 !important;
+        color: #000000 !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="matrix"] .universal-quiz__restart {
+        background: #000 !important;
+        border-color: #00ff00 !important;
+        color: #00ff00 !important;
+      }
+
+      /* === Minecraft Quiz Overrides === */
+      body[data-course="unity-prototipado"][data-game-skin="minecraft"] .universal-quiz__start {
+        background: #55ff55 !important;
+        color: #000000 !important;
+        border: 4px solid #3c3c3c !important;
+        border-top-color: #8f8f8f !important;
+        border-left-color: #8f8f8f !important;
+        border-radius: 0px !important;
+        box-shadow: none !important;
+        font-family: 'Press Start 2P', cursive !important;
+        font-size: 0.8rem !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="minecraft"] .universal-quiz__panel {
+        background: #2b2b2b !important;
+        border: 4px solid #3c3c3c !important;
+        border-top-color: #8f8f8f !important;
+        border-left-color: #8f8f8f !important;
+        box-shadow: 6px 6px 0px #111 !important;
+        border-radius: 0px !important;
+        color: #e2d6c5 !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="minecraft"] .universal-quiz__header {
+        background: #4a4a4a !important;
+        border-bottom: 4px solid #3c3c3c !important;
+        color: #ffff55 !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="minecraft"] .universal-quiz__title {
+        font-family: 'Press Start 2P', cursive !important;
+        font-size: 0.65rem !important;
+        text-shadow: 2px 2px 0px #111 !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="minecraft"] .universal-quiz__title-badge {
+        background: #2b2b2b !important;
+        border: 3px solid #3c3c3c !important;
+        border-top-color: #8f8f8f !important;
+        border-left-color: #8f8f8f !important;
+        border-radius: 0px !important;
+        color: #ffff55 !important;
+        box-shadow: none !important;
+        font-family: 'Press Start 2P', cursive !important;
+        font-size: 0.55rem !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="minecraft"] .universal-quiz__close {
+        background: #4a4a4a !important;
+        border: 3px solid #3c3c3c !important;
+        border-top-color: #8f8f8f !important;
+        border-left-color: #8f8f8f !important;
+        border-radius: 0px !important;
+        color: #ffffff !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="minecraft"] .universal-quiz__close:hover {
+        background: #555555 !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="minecraft"] .universal-quiz__intro {
+        color: #e2d6c5 !important;
+        font-family: 'Courier New', Courier, monospace !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="minecraft"] .universal-quiz__q {
+        background: #1e1e1e !important;
+        border: 3px solid #3c3c3c !important;
+        border-radius: 0px !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="minecraft"] .universal-quiz__q-title {
+        font-family: 'Courier New', Courier, monospace !important;
+        font-weight: bold !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="minecraft"] .universal-quiz__opt {
+        color: #e2d6c5 !important;
+        font-family: 'Courier New', Courier, monospace !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="minecraft"] .universal-quiz__submit {
+        background: #55ff55 !important;
+        border: 3px solid #3c3c3c !important;
+        border-top-color: #8f8f8f !important;
+        border-left-color: #8f8f8f !important;
+        border-radius: 0px !important;
+        color: #000000 !important;
+        box-shadow: none !important;
+        font-family: 'Press Start 2P', cursive !important;
+        font-size: 0.55rem !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="minecraft"] .universal-quiz__restart {
+        background: #4a4a4a !important;
+        border: 3px solid #3c3c3c !important;
+        border-top-color: #8f8f8f !important;
+        border-left-color: #8f8f8f !important;
+        border-radius: 0px !important;
+        color: #ffffff !important;
+        box-shadow: none !important;
+        font-family: 'Press Start 2P', cursive !important;
+        font-size: 0.55rem !important;
+      }
+
+      /* === Pac-Man Quiz Overrides === */
+      body[data-course="unity-prototipado"][data-game-skin="pacman"] .universal-quiz__start {
+        background: #ffff00 !important;
+        color: #000000 !important;
+        border: 3px double #2121ff !important;
+        box-shadow: 0 0 10px #ffff00 !important;
+        font-family: 'Press Start 2P', cursive !important;
+        font-size: 0.75rem !important;
+        border-radius: 8px !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="pacman"] .universal-quiz__panel {
+        background: #05051a !important;
+        border: 4px double #2121ff !important;
+        box-shadow: 0 0 20px #2121ff !important;
+        color: #ffffff !important;
+        border-radius: 16px !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="pacman"] .universal-quiz__header {
+        background: #000000 !important;
+        border-bottom: 4px double #2121ff !important;
+        color: #ffff00 !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="pacman"] .universal-quiz__title {
+        font-family: 'Press Start 2P', cursive !important;
+        font-size: 0.65rem !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="pacman"] .universal-quiz__title-badge {
+        background: #000000 !important;
+        border: 2px solid #ffff00 !important;
+        color: #ffff00 !important;
+        font-family: 'Press Start 2P', cursive !important;
+        font-size: 0.55rem !important;
+        box-shadow: none !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="pacman"] .universal-quiz__close {
+        background: #000000 !important;
+        border: 2px solid #2121ff !important;
+        color: #2121ff !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="pacman"] .universal-quiz__close:hover {
+        color: #ffff00 !important;
+        border-color: #ffff00 !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="pacman"] .universal-quiz__intro {
+        color: #ffffff !important;
+        font-family: monospace !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="pacman"] .universal-quiz__q {
+        background: #000000 !important;
+        border: 2px solid #2121ff !important;
+        color: #ffffff !important;
+        border-radius: 8px !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="pacman"] .universal-quiz__q-title {
+        font-family: monospace !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="pacman"] .universal-quiz__opt {
+        color: #ffffff !important;
+        font-family: monospace !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="pacman"] .universal-quiz__submit {
+        background: #ffff00 !important;
+        border: 3px double #2121ff !important;
+        color: #000000 !important;
+        font-family: 'Press Start 2P', cursive !important;
+        font-size: 0.55rem !important;
+        border-radius: 8px !important;
+        box-shadow: none !important;
+      }
+      body[data-course="unity-prototipado"][data-game-skin="pacman"] .universal-quiz__restart {
+        background: #000000 !important;
+        border: 3px double #2121ff !important;
+        color: #ffffff !important;
+        font-family: 'Press Start 2P', cursive !important;
+        font-size: 0.55rem !important;
+        border-radius: 8px !important;
+        box-shadow: none !important;
+      }
     </style>
 
     <!-- ══════════════════════════════════════
@@ -1105,5 +2029,117 @@ const showLanguageCuriosity =
 
     {/* Widget flotante del temporizador del café */}
     <div class="embed-hide pdf-hide"><CoffeeTimerWidget client:load /></div>
+
+    {courseSlug === 'unity-prototipado' && (
+      <>
+        <canvas id="matrixCanvas" class="fixed inset-0 pointer-events-none z-[-2] w-full h-full" style="display: none; background: #000; opacity: 0.35;"></canvas>
+        <div id="unityCheatConsole" class="embed-hide pdf-hide fixed bottom-4 right-4 z-[999] bg-[#0b0914]/95 border-2 border-[#ff007f] rounded-xl p-3 shadow-[0_0_15px_rgba(255,0,127,0.4)] max-w-xs font-mono text-xs text-white">
+          <div class="flex items-center gap-1.5 mb-1.5 font-bold text-[#00ffff] uppercase tracking-wider select-none">
+            <span>🎮 CONSOLA DE SKIN</span>
+            <span class="animate-pulse">●</span>
+          </div>
+          <div class="text-[0.68rem] text-slate-400 mb-2 select-none">Comandos: matrix, minecraft, pacman, default</div>
+          <div class="flex items-center gap-1">
+            <span class="text-[#ff007f] font-bold select-none">&gt;</span>
+            <input 
+              type="text" 
+              id="cheatInput" 
+              class="bg-black/60 border border-slate-700 rounded px-1.5 py-0.5 text-white outline-none focus:border-[#00ffff] w-full text-xs font-mono"
+              placeholder="Escribe comando..."
+              autocomplete="off"
+            />
+          </div>
+        </div>
+
+        <script is:inline>
+          (function() {
+            const input = document.getElementById('cheatInput');
+            const canvas = document.getElementById('matrixCanvas');
+            if (!input) return;
+
+            let matrixInterval = null;
+
+            function startMatrix() {
+              if (!canvas) return;
+              canvas.style.display = 'block';
+              const ctx = canvas.getContext('2d');
+              
+              const resize = () => {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+              };
+              resize();
+              window.addEventListener('resize', resize);
+
+              const katakana = 'ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+              const alphabet = katakana.split('');
+              const fontSize = 16;
+              let columns = canvas.width / fontSize;
+              let rainDrops = Array.from({ length: columns }).map(() => 1);
+
+              const draw = () => {
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = '#0F0';
+                ctx.font = fontSize + 'px monospace';
+
+                for (let i = 0; i < rainDrops.length; i++) {
+                  const text = alphabet[Math.floor(Math.random() * alphabet.length)];
+                  ctx.fillText(text, i * fontSize, rainDrops[i] * fontSize);
+
+                  if (rainDrops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    rainDrops[i] = 0;
+                  }
+                  rainDrops[i]++;
+                }
+              };
+
+              if (matrixInterval) clearInterval(matrixInterval);
+              matrixInterval = setInterval(draw, 30);
+            }
+
+            function stopMatrix() {
+              if (matrixInterval) {
+                clearInterval(matrixInterval);
+                matrixInterval = null;
+              }
+              if (canvas) {
+                canvas.style.display = 'none';
+              }
+            }
+
+            function applySkin(skin) {
+              const s = (skin || '').trim().toLowerCase();
+              document.body.setAttribute('data-game-skin', s);
+              localStorage.setItem('unity-game-skin', s);
+
+              if (s === 'matrix') {
+                startMatrix();
+              } else {
+                stopMatrix();
+              }
+            }
+
+            // Load initial skin
+            const initialSkin = localStorage.getItem('unity-game-skin') || 'default';
+            applySkin(initialSkin);
+
+            input.addEventListener('keydown', function(e) {
+              if (e.key === 'Enter') {
+                const cmd = input.value.trim().toLowerCase();
+                if (['matrix', 'minecraft', 'pacman', 'default'].includes(cmd)) {
+                  applySkin(cmd);
+                  input.value = '';
+                } else {
+                  // command not found feedback
+                  input.style.borderColor = 'red';
+                  setTimeout(() => input.style.borderColor = '', 1000);
+                }
+              }
+            });
+          })();
+        </script>
+      </>
+    )}
   </body>
 </html>
