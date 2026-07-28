@@ -44,6 +44,7 @@ export default function CourseSlideViewer({
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
   const [showOverview, setShowOverview] = useState(false);
   const [copiedCode, setCopiedCode] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   // Estados del Menú de Herramientas y Temporizador FLOTANTE Y MOVIBLE
   const [showToolsMenu, setShowToolsMenu] = useState(false);
@@ -863,7 +864,7 @@ export default function CourseSlideViewer({
                 ? 'bg-slate-800/50 text-slate-300 border-slate-700/60 hover:bg-slate-700/70 hover:text-white'
                 : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-100'
             }`}
-            title="Pantalla completa"
+            title={isFullscreen ? 'Salir de pantalla completa' : 'Pantalla completa'}
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-5h-4m4 0v4m0-4l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
