@@ -1,6 +1,6 @@
 # 📊 Sistema de Presentaciones & Embeds — cafeycodigo.org
 
-Este módulo permite visualizar e incrustar cualquier lección en modo **Presentación Interactiva en Diapositivas** estilo PowerPoint / Keynote con **Evaluación Interactiva**, **Reflexión de Metacognición** y **Personalización de Banner y Títulos**.
+Este módulo permite visualizar e incrustar cualquier lección en modo **Presentación Interactiva en Diapositivas** estilo PowerPoint / Keynote con **Evaluación Interactiva**, **Reflexión de Metacognición**, **Logo Institucional**, **Menú de Herramientas (🛠️)** y **Reloj Temporizador Flotante Movible (⏱️)**.
 
 ---
 
@@ -19,78 +19,12 @@ https://cafeycodigo.org/course-slides/python/texto-y-conversiones/
 
 ---
 
-## 🎨 Personalización Estricta de Colores (`bgcolor`, `text`, `color`)
+## 📱 Comportamiento de Navegación Responsiva en Móviles vs Módulo de Quiz
 
-Para preservar una neutralidad limpia e impecable en los modos **Oscuro** y **Claro**, los parámetros de color funcionan con las siguientes reglas exactas:
-
-| Parámetro | Alias | Efecto Exacto |
-| :--- | :--- | :--- |
-| **`bgcolor`** | `background` / `b` | Cambia **exclusivamente el color del Banner / Barra Superior Header** (permite branding institucional sin alterar la neutralidad del lienzo). |
-| **`text`** | `textcolor` / `x` | Cambia **exclusivamente el color de los Títulos Principales (`<h1>` ... `<h6>`)** en la banner bar y en las diapositivas. |
-| **`color`** | `accent` / `c` | Cambia el color de **Botones de Acento, Insignias, Progreso y Destacados**. |
-| **`theme`** | - | Alterna la neutralidad del lienzo entre `dark` (fondo oscuro `#0f172a`) e `light` (fondo neutro `#f8fafc`). |
-
----
-
-## 💻 Ejemplos Listos para Usar con Colores (iFrame y URL)
-
-### 1. 🌌 Banner Neón Cyberpunk + Títulos Amarillos
-**URL:**
-```text
-https://cafeycodigo.org/course-slides/python/texto-y-conversiones/?embed=true&bgcolor=1e1b4b&text=ffea00&color=ef476f&icon=⚡&quiz=true
-```
-
-**iFrame Embed:**
-```html
-<iframe
-  src="https://cafeycodigo.org/course-slides/python/texto-y-conversiones/?embed=true&bgcolor=1e1b4b&text=ffea00&color=ef476f&icon=⚡&quiz=true"
-  width="100%"
-  height="650px"
-  style="border:none; border-radius:16px; overflow:hidden;"
-  allow="clipboard-write"
-  title="Presentación Neón Cyberpunk"
-></iframe>
-```
-
----
-
-### 2. 🏫 Banner Institucional INACAP + Títulos Azules
-**URL:**
-```text
-https://cafeycodigo.org/course-slides/python/texto-y-conversiones/?embed=true&bgcolor=0f172a&text=38bdf8&color=10b981&title=INACAP&name=Juan+P%C3%A9rez&email=juan@inacap.cl&quiz=true
-```
-
-**iFrame Embed:**
-```html
-<iframe
-  src="https://cafeycodigo.org/course-slides/python/texto-y-conversiones/?embed=true&bgcolor=0f172a&text=38bdf8&color=10b981&title=INACAP&name=Juan+P%C3%A9rez&email=juan@inacap.cl&quiz=true"
-  width="100%"
-  height="650px"
-  style="border:none; border-radius:16px; overflow:hidden;"
-  allow="clipboard-write"
-  title="Presentación Institucional INACAP"
-></iframe>
-```
-
----
-
-### 3. ☀️ Banner Claro + Títulos Índigo (Light Mode)
-**URL:**
-```text
-https://cafeycodigo.org/course-slides/python/texto-y-conversiones/?embed=true&theme=light&bgcolor=ffffff&text=4338ca&color=6366f1&quiz=true
-```
-
-**iFrame Embed:**
-```html
-<iframe
-  src="https://cafeycodigo.org/course-slides/python/texto-y-conversiones/?embed=true&theme=light&bgcolor=ffffff&text=4338ca&color=6366f1&quiz=true"
-  width="100%"
-  height="650px"
-  style="border:none; border-radius:16px; overflow:hidden;"
-  allow="clipboard-write"
-  title="Presentación Tema Claro"
-></iframe>
-```
+- **📱 En Pantallas Móviles / Celulares (`isMobile`)**:
+  - Los botones de navegación `Anterior` y `Siguiente` **se activan y están siempre accesibles de forma independiente a si la URL especifica `bar=false`**.
+- **🧪 Al Entrar al Módulo de Quiz Evaluativo (`quiz_interaction`)**:
+  - La barra de navegación inferior **se desactiva y oculta automáticamente**. Esto garantiza que el estudiante responda activamente cada desafío e interactúe con el botón `[Continuar →]` integrado en la retroalimentación.
 
 ---
 
@@ -98,15 +32,30 @@ https://cafeycodigo.org/course-slides/python/texto-y-conversiones/?embed=true&th
 
 El sistema incluye **7 tipos de dinámicas evaluativas**:
 
-| Nombre en Inglés | Descripción | Mecánica de Juego |
+| Nombre en Inglés | Descripción | Mecánica de Juego y Etiquetas |
 | :--- | :--- | :--- |
-| `TrueFalse` | Verdadero o Falso (Sí / No) | 2 Botones gigantes con retroalimentación instantánea de validez de una afirmación. |
+| `TrueFalse` | Verdadero o Falso / Sí o No | Botones limpios independientes: o bien `VERDADERO` / `FALSO`, o bien `SÍ` / `NO` (nunca combinados juntos). |
 | `MultipleChoice` | Selección Múltiple | Alternativas de respuesta con explicaciones paso a paso. |
 | `ReorderSequence` | Ordenar Secuencia de Código | Fichas de código desordenadas que el usuario toca para armar la instrucción lógica. |
 | `MatchPairs` | Unir Lista A ↔ Lista B | Conexión en tiempo real entre métodos y sus definiciones correspondientes. |
 | `FillInTheBlank` | Completar Espacio en Blanco | Identificar y seleccionar la función/palabra reservada que falta en el código. |
 | `PredictOutput` | Predecir Salida de Código | Predecir la impresión exacta por consola (`print`) de un programa en ejecución. |
 | `FindTheBug` | Identificar la Causa del Error | Encontrar el error sintáctico o de tipos (`TypeError`) en un fragmento de código. |
+
+---
+
+## ⏱️ Reloj Temporizador Flotante Movible y Menú de Herramientas (🛠️)
+
+El visor de diapositivas cuenta con una barra de acción con el **Ícono de Herramientas `🛠️`**:
+
+1. **⏱️ Temporizador Regresivo Flotante**:
+   - **Visibilidad a Demanda**: Por defecto está oculto. Solo aparece en pantalla cuando el usuario selecciona un tiempo regresivo en el menú `🛠️ Herramientas` (ej. 3m, 5m, 10m, 25m) o pasa el parámetro `timer=300`.
+   - **Movible / Arrastrable (Drag & Drop)**: El widget se puede arrastrar libremente a cualquier posición del lienzo con el mouse o en pantallas táctiles con el dedo.
+   - **Escala de Tamaños (`S` \| `M` \| `L` \| `XL`)**: Selector integrado en el widget para ajustar el tamaño del reloj desde pequeño (`S`) hasta gigante (`XL`).
+   - **Alerta de Sonido y Vibración (`00:00`)**: Al llegar a cero, el sistema reproduce una **melodía sintética (Web Audio API)** y hace **vibrar el dispositivo móvil**.
+
+2. **🗣️ Lectura en Voz Alta (Text-to-Speech)**:
+   - Permite escuchar la lectura en voz alta del contenido de la diapositiva actual.
 
 ---
 
@@ -135,17 +84,17 @@ Las 8 preguntas de Metacognición se concentran en **una única diapositiva inte
 | Parámetro | Alias | Valores | Descripción |
 | :--- | :--- | :--- | :--- |
 | `embed` | `e` | `true` \| `1` | Oculta el botón superior de *"Volver a la lección"* para integraciones en `<iframe>` o LMS. |
+| `timer` | `time` | `true` \| *segundos* | Activa el Reloj Temporizador Regresivo Flotante (ej. `timer=300`). |
+| `logo` | `institutionLogo` / `l` | *URL de imagen* | Muestra la imagen del Logo Institucional en el banner header y badge. |
 | `title` | `institution` / `t` | *Texto* (ej. `INACAP`) | Muestra el distintivo con el nombre de la institución en el encabezado. |
 | `name` | `n` | *Texto* (ej. `Juan Pérez`) | Muestra el distintivo con el nombre del estudiante en el encabezado. |
 | `email` | `m` | *Correo* (ej. `juan@e.com`) | Muestra el correo del estudiante en el perfil de la barra superior. |
-| `logo` | `l` | *URL de imagen* | Muestra un logo personalizado de la institución/plataforma en la esquina del encabezado. |
 | `icon` | `emoji` | *Emoji/Ícono* (ej. `🚀` \| `🐍`) | Reemplaza o antepone un ícono/emoji personalizado en las insignias. |
 | `color` | `accent` / `c` | *Color Hex* (ej. `EF476F`) | Cambia el color primario de acento (botones, barra de progreso). |
 | `text` | `textcolor` / `x` | *Color Hex* (ej. `FFEA00`) | Cambia únicamente el color de texto de los títulos principales (`<h1>` ... `<h6>`). |
 | `bgcolor` | `background` / `b` | *Color Hex* (ej. `1e1b4b`) | Cambia únicamente el color de fondo del Banner / Encabezado superior. |
 | `theme` | - | `dark` \| `light` | Fuerza la neutralidad de la diapositiva entre tema oscuro (`dark`) o claro (`light`). |
-| `pdf` | `p` | `true` \| `1` | Muestra el botón `📄 PDF` para imprimir o exportar la presentación. |
-| `quiz` | `q` | `true` \| `1` | Activa las diapositivas evaluativas del quiz al final de la lección. |
+| `quiz` | `q` | `true` (por defecto) \| `false` \| `0` | El Módulo de Quiz está **activado por defecto (`true`)**. Usa `quiz=false` o `q=0` para desactivarlo. |
 | `bar` | - | `false` \| `0` \| `autohide` \| `true` | Configura la barra inferior de navegación. |
 
 ---

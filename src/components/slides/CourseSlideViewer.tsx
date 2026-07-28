@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { textoYConversionesSlides, type Slide } from '../../data/slides/python/texto-y-conversiones';
+import { condicionalesSlides } from '../../data/slides/python/condicionales';
 import { highlightLine } from '../../lib/codeHighlight';
 
 interface Props {
@@ -15,7 +16,6 @@ interface EmbedParams {
   isEmbed: boolean;
   showMetaQuestions: boolean;
   showQuiz: boolean;
-  showPdf: boolean;
   institution: string;
   studentName: string;
   studentEmail: string;
@@ -24,11 +24,12 @@ interface EmbedParams {
   bgColor: string;
   accentColor: string;
   textColor: string;
+  timerSeconds: number;
 }
 
 // 🌐 IDENTIFICADORES ESTÁNDAR EN INGLÉS PARA CADA INTERACCIÓN DE EVALUACIÓN
 export type InteractionType =
-  | 'TrueFalse'         // Verdadero o Falso (Sí / No)
+  | 'TrueFalse'         // Verdadero o Falso (o Sí / No según etiquetas)
   | 'MultipleChoice'    // Selección Múltiple
   | 'ReorderSequence'   // Ordenar secuencia de fichas de código
   | 'MatchPairs'        // Unir lista A con lista B
@@ -45,6 +46,7 @@ export type QuizQuestion =
       code?: string;
       correctAnswer: boolean;
       explanation: string;
+      labels?: { trueText: string; falseText: string };
     }
   | {
       id: number;
@@ -104,8 +106,8 @@ export type QuizQuestion =
       explanation: string;
     };
 
-// 🎯 BANCO DE 10 INTERACCIONES EVALUATIVAS DEL QUIZ
-const courseQuizQuestions: QuizQuestion[] = [
+// 🎯 BANCO DE QUIZ 1: TEXTO Y CONVERSIONES
+const textoYConversionesQuiz: QuizQuestion[] = [
   {
     id: 1,
     kind: 'TrueFalse',
@@ -113,6 +115,7 @@ const courseQuizQuestions: QuizQuestion[] = [
     questionText: '¿La función input() en Python siempre devuelve una cadena de texto (str), sin importar lo que el usuario escriba?',
     code: `num = input("Ingresa tu número de identificación: ")\nprint(type(num))  # ¿Es siempre <class 'str'>?`,
     correctAnswer: true,
+    labels: { trueText: 'VERDADERO', falseText: 'FALSO' },
     explanation: '¡VERDADERO! En Python, input() siempre retorna un str. Para tratar la entrada como entero debes convertirlo explícitamente con int().'
   },
   {
@@ -185,11 +188,12 @@ const courseQuizQuestions: QuizQuestion[] = [
   {
     id: 8,
     kind: 'TrueFalse',
-    title: '🧪 Quiz (8/10) · TrueFalse',
-    questionText: '¿Las cadenas en Python son inmutables (ejecutar s.upper() NO modifica la variable original s)?',
-    code: `s = "hola"\ns.upper()\n# ¿s sigue siendo "hola"?`,
-    correctAnswer: true,
-    explanation: '¡VERDADERO! Las cadenas son inmutables. upper() devuelve una nueva cadena y no altera s a menos que la reasignes.'
+    title: '🧪 Quiz (8/10) · TrueFalse (Sí / No)',
+    questionText: '¿Las cadenas de texto en Python se pueden modificar directamente sobre el mismo índice (ej: s[0] = "H")?',
+    code: `s = "hola"\ns[0] = "H"  # ¿Es esto permitido en Python?`,
+    correctAnswer: false,
+    labels: { trueText: 'SÍ', falseText: 'NO' },
+    explanation: '¡CORRECTO! NO se puede. Las cadenas en Python son inmutables. Para cambiar una letra debes crear una nueva cadena.'
   },
   {
     id: 9,
@@ -215,7 +219,119 @@ const courseQuizQuestions: QuizQuestion[] = [
   }
 ];
 
-// 🧠 ESTRUCTURA DE LAS 8 PREGUNTAS DE METACOGNICIÓN (4 GENÉRICAS + 4 ESPECÍFICAS)
+// 🎯 BANCO DE QUIZ 2: CONDICIONALES
+const condicionalesQuiz: QuizQuestion[] = [
+  {
+    id: 1,
+    kind: 'TrueFalse',
+    title: '🧪 Quiz (1/10) · TrueFalse',
+    questionText: '¿En Python, la instrucción else requiere escribir una condición lógica propia después del signo dos puntos?',
+    code: `edad = 20\nif edad >= 18:\n    print("Mayor")\nelse:  # ¿Puede llevar condición aquí?\n    print("Menor")`,
+    correctAnswer: false,
+    labels: { trueText: 'VERDADERO', falseText: 'FALSO' },
+    explanation: '¡CORRECTO! else NO acepta condiciones. Se ejecuta automáticamente cuando la condición previa es False.'
+  },
+  {
+    id: 2,
+    kind: 'MultipleChoice',
+    title: '🧪 Quiz (2/10) · MultipleChoice',
+    questionText: '¿Qué palabra reservada se utiliza en Python para encadenar condiciones secuenciales alternativas?',
+    options: ['elseif', 'else if', 'elif', 'then'],
+    correctOption: 2,
+    explanation: '¡CORRECTO! En Python la palabra exacta es elif (abreviatura de else if).'
+  },
+  {
+    id: 3,
+    kind: 'ReorderSequence',
+    title: '🧪 Quiz (3/10) · ReorderSequence',
+    questionText: 'Toca los bloques en orden para construir la estructura condicional de verificación de mayoría de edad:',
+    tokens: ['print("Aprobado")', 'edad = 20', 'if edad >= 18:', 'else:'],
+    correctOrder: ['edad = 20', 'if edad >= 18:', 'print("Aprobado")', 'else:'],
+    explanation: '¡EXCELENTE! Primero asignas la variable, luego abres el if, ejecutas su bloque e incluyes el else.'
+  },
+  {
+    id: 4,
+    kind: 'MatchPairs',
+    title: '🧪 Quiz (4/10) · MatchPairs',
+    questionText: 'Conecta cada operador condicional con su función matemática/lógica:',
+    pairs: [
+      { id: 'p1', left: '==', right: 'Compara si dos valores son iguales' },
+      { id: 'p2', left: '!=', right: 'Verifica si dos valores son distintos' },
+      { id: 'p3', left: 'and', right: 'Exige que ambas condiciones sean True' },
+      { id: 'p4', left: 'or', right: 'Requiere que al menos una sea True' }
+    ],
+    explanation: '¡PERFECTO! Has vinculado los operadores relacionales y lógicos con sus definiciones.'
+  },
+  {
+    id: 5,
+    kind: 'FillInTheBlank',
+    title: '🧪 Quiz (5/10) · FillInTheBlank',
+    questionText: 'Completa el operador lógico requerido para invertir el resultado booleano (convertir False a True):',
+    code: `conectado = False\nif ____ conectado:\n    print("Por favor inicia sesión")`,
+    options: ['not', 'no', 'invert', 'false'],
+    correctOption: 0,
+    explanation: '¡CORRECTO! not False se evalúa como True en la condición.'
+  },
+  {
+    id: 6,
+    kind: 'PredictOutput',
+    title: '🧪 Quiz (6/10) · PredictOutput',
+    questionText: '¿Cuál será la salida impresa exacta en consola al ejecutar este código?',
+    code: `x = 15\nif x > 10 and x < 20:\n    print("En rango")\nelse:\n    print("Fuera de rango")`,
+    options: ['En rango', 'Fuera de rango', 'SyntaxError', 'Ninguna salida'],
+    correctOption: 0,
+    explanation: '¡CORRECTO! 15 > 10 es True y 15 < 20 es True. True and True resulta True.'
+  },
+  {
+    id: 7,
+    kind: 'FindTheBug',
+    title: '🧪 Quiz (7/10) · FindTheBug',
+    questionText: '¿Por qué este código genera un IndentationError al ejecutarse?',
+    code: `temperatura = 35\nif temperatura > 30:\nprint("Hace calor")  # ❌ IndentationError!`,
+    options: [
+      'La variable temperatura no lleva comillas',
+      'El print debe llevar 4 espacios de sangría (indentación) bajo el if',
+      'El número 30 debe ser un string "30"',
+      'Falta la palabra clave else'
+    ],
+    correctOption: 1,
+    explanation: '¡CORRECTO! En Python los bloques dentro de un if DEBEN llevar indentación (sangría).'
+  },
+  {
+    id: 8,
+    kind: 'TrueFalse',
+    title: '🧪 Quiz (8/10) · TrueFalse (Sí / No)',
+    questionText: '¿En una evaluación con or, si la primera condición es True, Python ejecuta el bloque sin evaluar la segunda?',
+    code: `dia = "sábado"\nif dia == "sábado" or dia == "domingo":\n    print("Fin de semana")`,
+    correctAnswer: true,
+    labels: { trueText: 'SÍ', falseText: 'NO' },
+    explanation: '¡CORRECTO! Se le conoce como evaluación de cortocircuito (short-circuit evaluation).'
+  },
+  {
+    id: 9,
+    kind: 'ReorderSequence',
+    title: '🧪 Quiz (9/10) · ReorderSequence',
+    questionText: 'Ordena los bloques para construir la verificación de descuento para estudiante O jubilado:',
+    tokens: ['if es_estudiante', 'print("Aplica descuento")', 'or es_jubilado:', 'descuento = True'],
+    correctOrder: ['if es_estudiante', 'or es_jubilado:', 'print("Aplica descuento")', 'descuento = True'],
+    explanation: '¡FANTÁSTICO! El operador or permite conceder el beneficio con cualquiera de los dos perfiles.'
+  },
+  {
+    id: 10,
+    kind: 'MatchPairs',
+    title: '🧪 Quiz (10/10) · MatchPairs',
+    questionText: 'Asocia cada expresión lógica compleja con su resultado final:',
+    pairs: [
+      { id: 'm1', left: 'not True', right: 'False' },
+      { id: 'm2', left: 'True and False', right: 'False' },
+      { id: 'm3', left: 'False or True', right: 'True' },
+      { id: 'm4', left: '10 == 10', right: 'True' }
+    ],
+    explanation: '¡EXCELENTE! Dominas a la perfección la evaluación de expresiones lógicas en Python.'
+  }
+];
+
+// 🧠 ESTRUCTURA DE LAS PREGUNTAS DE METACOGNICIÓN
 export interface MetaReflectionQuestion {
   id: number;
   category: 'Generic' | 'CourseSpecific';
@@ -225,8 +341,8 @@ export interface MetaReflectionQuestion {
   keyTakeaway: string;
 }
 
-const metacognition8Questions: MetaReflectionQuestion[] = [
-  // 🌐 4 PREGUNTAS GENÉRICAS A TODOS LOS CURSOS (1 a 4)
+// 🧠 METACOGNICIÓN 1: TEXTO Y CONVERSIONES
+const textoYConversionesMeta: MetaReflectionQuestion[] = [
   {
     id: 1,
     category: 'Generic',
@@ -259,8 +375,6 @@ const metacognition8Questions: MetaReflectionQuestion[] = [
     promptHint: 'Practicar en código dentro de las próximas 24 horas multiplica tu tasa de retención.',
     keyTakeaway: 'Escribir código real el mismo día del estudio convierte la teoría en memoria de largo plazo.'
   },
-
-  // 🐍 4 PREGUNTAS ESPECÍFICAS DEL MÓDULO (Python: Texto y Conversiones - 5 a 8)
   {
     id: 5,
     category: 'CourseSpecific',
@@ -295,6 +409,74 @@ const metacognition8Questions: MetaReflectionQuestion[] = [
   }
 ];
 
+// 🧠 METACOGNICIÓN 2: CONDICIONALES
+const condicionalesMeta: MetaReflectionQuestion[] = [
+  {
+    id: 1,
+    category: 'Generic',
+    title: '1. Estrategia de Aprendizaje',
+    questionText: '¿Qué estrategia personal utilizaste durante esta lección para mantener tu concentración y comprender los conceptos nuevos?',
+    promptHint: 'Reflexiona sobre si tomar notas, pausar el código o probar ejemplos te ayuda a procesar mejor la información.',
+    keyTakeaway: 'Reconocer tu mejor método de estudio acelera tu ritmo de aprendizaje en cualquier tecnología.'
+  },
+  {
+    id: 2,
+    category: 'Generic',
+    title: '2. Gestión de Dificultades',
+    questionText: '¿En qué momento de la lección sentiste mayor nivel de duda o complejidad, y qué paso diste para resolverlo?',
+    promptHint: 'Pensar en cómo superas bloqueos te prepara para resolver errores reales de programación (debugging).',
+    keyTakeaway: 'Superar la duda inicial es la habilidad más valiosa de un desarrollador de software.'
+  },
+  {
+    id: 3,
+    category: 'Generic',
+    title: '3. Conexión de Aprendizajes',
+    questionText: '¿Cómo se conecta lo que aprendiste hoy con alguna experiencia previa que ya tenías de lógica o informática?',
+    promptHint: 'Buscar analogías entre lo nuevo y lo conocido ayuda a afianzar patrones mentales sólidos.',
+    keyTakeaway: 'El conocimiento se construye conectando ideas previas con nuevos conceptos prácticos.'
+  },
+  {
+    id: 4,
+    category: 'Generic',
+    title: '4. Hábito y Retención',
+    questionText: '¿Qué acción o hábito inmediato realizarás hoy para asegurar que no olvides este aprendizaje?',
+    promptHint: 'Practicar en código dentro de las próximas 24 horas multiplica tu tasa de retención.',
+    keyTakeaway: 'Escribir código real el mismo día del estudio convierte la teoría en memoria de largo plazo.'
+  },
+  {
+    id: 5,
+    category: 'CourseSpecific',
+    title: '5. Control de Flujo if/else',
+    questionText: '¿Cómo cambia la capacidad de tu código cuando pasas de ejecutar instrucciones lineales a tomar decisiones con if/else?',
+    promptHint: 'Piensa en programas cotidianos como validadores de clave o sistemas de compra que reaccionan a tus decisiones.',
+    keyTakeaway: 'Las estructuras condicionales transforman scripts estáticos en software verdaderamente inteligente e interactivo.'
+  },
+  {
+    id: 6,
+    category: 'CourseSpecific',
+    title: '6. Operadores Lógicos and/or',
+    questionText: '¿En qué escenarios reales de desarrollo consideras crítico usar `and` para verificar múltiples requisitos a la vez?',
+    promptHint: 'Piensa en formularios de autenticación donde se debe validar nombre de usuario Y contraseña simultáneamente.',
+    keyTakeaway: 'Usar and garantiza la integridad de los datos requiriendo el cumplimiento de todos los filtros de seguridad.'
+  },
+  {
+    id: 7,
+    category: 'CourseSpecific',
+    title: '7. Cascada de elif',
+    questionText: '¿Por qué el orden en que colocas las condiciones dentro de una cadena `if...elif...else` puede cambiar drásticamente el resultado?',
+    promptHint: 'Recuerda que Python ejecuta el primer bloque True y omite el resto, por lo que las condiciones específicas van primero.',
+    keyTakeaway: 'Ordenar las condiciones de lo más específico a lo más general evita falsos positivos en tu lógica.'
+  },
+  {
+    id: 8,
+    category: 'CourseSpecific',
+    title: '8. Debbuging de Indentación',
+    questionText: '¿Qué hábito de escritura en tu editor prevendrá errores de `IndentationError` cuando comiences a anidar condicionales?',
+    promptHint: 'Configurar 4 espacios por tabulación y mantener la alineación visual clara con los dos puntos `:`',
+    keyTakeaway: 'La disciplina con la indentación no solo evita errores en Python, sino que hace tu código hermoso de leer.'
+  }
+];
+
 export default function CourseSlideViewer({
   courseSlug,
   lessonSlug,
@@ -305,8 +487,7 @@ export default function CourseSlideViewer({
   const [embedParams, setEmbedParams] = useState<EmbedParams>({
     isEmbed: false,
     showMetaQuestions: false,
-    showQuiz: false,
-    showPdf: false,
+    showQuiz: true,
     institution: '',
     studentName: '',
     studentEmail: '',
@@ -315,10 +496,12 @@ export default function CourseSlideViewer({
     bgColor: '',
     accentColor: '',
     textColor: '',
+    timerSeconds: 300,
   });
 
   const [barMode, setBarMode] = useState<BarMode>('visible');
   const [isBarVisible, setIsBarVisible] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
@@ -326,7 +509,21 @@ export default function CourseSlideViewer({
   const [copiedCode, setCopiedCode] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
-  // Estado hover para el modal de pauta de reflexión en la diapositiva única de metacognición
+  // Estados del Menú de Herramientas y Temporizador FLOTANTE Y MOVIBLE
+  const [showToolsMenu, setShowToolsMenu] = useState(false);
+  const [isTimerActive, setIsTimerActive] = useState(false);
+  const [timerSeconds, setTimerSeconds] = useState(300);
+  const [isTimerRunning, setIsTimerRunning] = useState(false);
+  const [timerSize, setTimerSize] = useState<'s' | 'm' | 'l' | 'xl'>('m');
+  const [timerPos, setTimerPos] = useState({ x: 20, y: 80 });
+  const [isDraggingTimer, setIsDraggingTimer] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const [isSpeaking, setIsSpeaking] = useState(false);
+
+  // Estado del Swipe táctil en móviles
+  const [touchStartX, setTouchStartX] = useState<number | null>(null);
+
+  // Estado hover para la pauta de reflexión en la diapositiva de metacognición
   const [hoveredMetaId, setHoveredMetaId] = useState<number | null>(null);
 
   // Respuestas del quiz evaluativo
@@ -336,6 +533,17 @@ export default function CourseSlideViewer({
   const [matchSelectedLeft, setMatchSelectedLeft] = useState<string | null>(null);
   const [matchedPairs, setMatchedPairs] = useState<Record<number, Record<string, string>>>({});
 
+  // Detección dinámica de pantalla móvil
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 640);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   // Leer todos los parámetros de URL
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -343,18 +551,30 @@ export default function CourseSlideViewer({
 
     const isE = sp.get('embed') === 'true' || sp.get('embed') === '1' || sp.get('e') === '1';
     const isMeta = sp.get('metaquestions') === 'true' || sp.get('metaquestions') === '1';
-    const isQ = sp.get('quiz') === 'true' || sp.get('quiz') === '1' || sp.get('q') === '1';
-    const isP = sp.get('pdf') === 'true' || sp.get('pdf') === '1' || sp.get('p') === '1';
+
+    const quizRaw = sp.get('quiz')?.toLowerCase() || sp.get('q')?.toLowerCase();
+    let isQ = true; // Por defecto el quiz ESTÁ ACTIVADO
+    if (quizRaw === 'false' || quizRaw === '0' || quizRaw === 'off' || quizRaw === 'no') {
+      isQ = false;
+    }
 
     const inst = sp.get('title') || sp.get('institution') || sp.get('t') || '';
     const sName = sp.get('name') || sp.get('n') || '';
     const sEmail = sp.get('email') || sp.get('m') || '';
-    const cLogo = sp.get('logo') || sp.get('l') || '';
+    const cLogo = sp.get('logo') || sp.get('institutionLogo') || sp.get('logourl') || sp.get('l') || '';
     const cIcon = sp.get('icon') || sp.get('emoji') || '';
 
     const bg = sp.get('bgcolor') || sp.get('background') || sp.get('b') || '';
     const acc = sp.get('color') || sp.get('accent') || sp.get('c') || '';
     const txt = sp.get('text') || sp.get('textcolor') || sp.get('x') || '';
+
+    const tmParam = sp.get('timer') || sp.get('time') || '';
+    if (tmParam) {
+      let parsedSecs = 300;
+      if (!isNaN(Number(tmParam)) && Number(tmParam) > 0) parsedSecs = Number(tmParam);
+      setTimerSeconds(parsedSecs);
+      setIsTimerActive(true);
+    }
 
     const thm = sp.get('theme')?.toLowerCase();
     if (thm === 'light') setTheme('light');
@@ -364,7 +584,6 @@ export default function CourseSlideViewer({
       isEmbed: isE,
       showMetaQuestions: isMeta,
       showQuiz: isQ,
-      showPdf: isP,
       institution: inst,
       studentName: sName,
       studentEmail: sEmail,
@@ -373,6 +592,7 @@ export default function CourseSlideViewer({
       bgColor: bg ? (bg.startsWith('#') ? bg : `#${bg}`) : '',
       accentColor: acc ? (acc.startsWith('#') ? acc : `#${acc}`) : '',
       textColor: txt ? (txt.startsWith('#') ? txt : `#${txt}`) : '',
+      timerSeconds: 300
     });
 
     const barParam = sp.get('bar')?.toLowerCase();
@@ -386,6 +606,95 @@ export default function CourseSlideViewer({
       setBarMode('visible');
     }
   }, []);
+
+  // 🔔 SONIDO Y VIBRACIÓN AL FINALIZAR EL TEMPORIZADOR (00:00)
+  const triggerTimerEndAlert = useCallback(() => {
+    try {
+      const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const playBeep = (freq: number, delay: number, duration: number) => {
+        setTimeout(() => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'sine';
+          osc.frequency.value = freq;
+          gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start();
+          osc.stop(audioCtx.currentTime + duration);
+        }, delay);
+      };
+
+      playBeep(523.25, 0, 0.2);   // C5
+      playBeep(659.25, 200, 0.2); // E5
+      playBeep(783.99, 400, 0.2); // G5
+      playBeep(1046.50, 600, 0.6); // C6
+    } catch (err) {
+      console.error('AudioContext error', err);
+    }
+
+    if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
+      navigator.vibrate([200, 100, 200, 100, 400]);
+    }
+  }, []);
+
+  // Efecto del Temporizador Regresivo
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (isTimerActive && isTimerRunning && timerSeconds > 0) {
+      interval = setInterval(() => {
+        setTimerSeconds(prev => prev - 1);
+      }, 1000);
+    } else if (isTimerActive && isTimerRunning && timerSeconds === 0) {
+      setIsTimerRunning(false);
+      triggerTimerEndAlert();
+    }
+    return () => clearInterval(interval);
+  }, [isTimerActive, isTimerRunning, timerSeconds, triggerTimerEndAlert]);
+
+  // Formato mm:ss
+  const formatTime = (secs: number) => {
+    const m = Math.floor(secs / 60);
+    const s = secs % 60;
+    return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+  };
+
+  // Handlers para ARRASTRAR el reloj temporizador por la pantalla
+  const handleDragStart = (clientX: number, clientY: number) => {
+    setIsDraggingTimer(true);
+    setDragStart({ x: clientX - timerPos.x, y: clientY - timerPos.y });
+  };
+
+  const handleDragMove = useCallback((clientX: number, clientY: number) => {
+    if (!isDraggingTimer) return;
+    const newX = Math.max(10, Math.min(window.innerWidth - 200, clientX - dragStart.x));
+    const newY = Math.max(10, Math.min(window.innerHeight - 150, clientY - dragStart.y));
+    setTimerPos({ x: newX, y: newY });
+  }, [isDraggingTimer, dragStart]);
+
+  useEffect(() => {
+    const onMouseMove = (e: MouseEvent) => handleDragMove(e.clientX, e.clientY);
+    const onTouchMove = (e: TouchEvent) => {
+      if (e.touches.length > 0) {
+        handleDragMove(e.touches[0].clientX, e.touches[0].clientY);
+      }
+    };
+    const onUp = () => setIsDraggingTimer(false);
+
+    if (isDraggingTimer) {
+      window.addEventListener('mousemove', onMouseMove);
+      window.addEventListener('mouseup', onUp);
+      window.addEventListener('touchmove', onTouchMove);
+      window.addEventListener('touchend', onUp);
+    }
+    return () => {
+      window.removeEventListener('mousemove', onMouseMove);
+      window.removeEventListener('mouseup', onUp);
+      window.removeEventListener('touchmove', onTouchMove);
+      window.removeEventListener('touchend', onUp);
+    };
+  }, [isDraggingTimer, handleDragMove]);
 
   // Auto-hide barra inferior
   useEffect(() => {
@@ -416,12 +725,29 @@ export default function CourseSlideViewer({
     };
   }, [barMode]);
 
-  // Cargar diapositivas base
+  // Cargar diapositivas base según la lección actual
   const baseSlides: Slide[] = useMemo(() => {
-    return courseSlug === 'python' && lessonSlug === 'texto-y-conversiones'
-      ? textoYConversionesSlides
-      : textoYConversionesSlides;
-  }, [courseSlug, lessonSlug]);
+    if (lessonSlug === 'condicionales') {
+      return condicionalesSlides;
+    }
+    return textoYConversionesSlides;
+  }, [lessonSlug]);
+
+  // Cargar banco de preguntas del Quiz según la lección actual
+  const activeQuizQuestions = useMemo(() => {
+    if (lessonSlug === 'condicionales') {
+      return condicionalesQuiz;
+    }
+    return textoYConversionesQuiz;
+  }, [lessonSlug]);
+
+  // Cargar banco de Metacognición según la lección actual
+  const activeMetaQuestions = useMemo(() => {
+    if (lessonSlug === 'condicionales') {
+      return condicionalesMeta;
+    }
+    return textoYConversionesMeta;
+  }, [lessonSlug]);
 
   // Construir mazo final con 1 sola diapositiva de Metacognición (8 preguntas)
   const slides = useMemo(() => {
@@ -437,13 +763,13 @@ export default function CourseSlideViewer({
       });
 
       // 2. Diapositivas de las 10 Interacciones Evaluativas
-      courseQuizQuestions.forEach((qItem, qIdx) => {
+      activeQuizQuestions.forEach((qItem, qIdx) => {
         list.push({
           id: baseSlides.length + 50 + qIdx,
           type: 'quiz_interaction',
           quizIndex: qIdx,
           questionData: qItem,
-          badge: `Desafío ${qIdx + 1}/${courseQuizQuestions.length}`
+          badge: `Desafío ${qIdx + 1}/${activeQuizQuestions.length}`
         });
       });
 
@@ -462,7 +788,7 @@ export default function CourseSlideViewer({
       type: 'metacognition_overview',
       title: '🧠 Preguntas de Metacognición y Autoevaluación',
       badge: 'Metacognición (8 Preguntas)',
-      questions: metacognition8Questions
+      questions: activeMetaQuestions
     });
 
     // 5. Diapositiva Final de Cierre
@@ -481,7 +807,7 @@ export default function CourseSlideViewer({
     });
 
     return list;
-  }, [baseSlides, embedParams.showQuiz]);
+  }, [baseSlides, embedParams.showQuiz, activeQuizQuestions, activeMetaQuestions]);
 
   const currentSlide = slides[currentIndex] || slides[0];
   const totalSlides = slides.length;
@@ -501,6 +827,28 @@ export default function CourseSlideViewer({
       setCurrentIndex(index);
       setShowOverview(false);
     }
+  };
+
+  // Handlers de Deslizamiento Táctil en Móviles (Swipe Left/Right)
+  const handleTouchStartSlide = (e: React.TouchEvent) => {
+    if (e.touches.length > 0) {
+      setTouchStartX(e.touches[0].clientX);
+    }
+  };
+
+  const handleTouchEndSlide = (e: React.TouchEvent) => {
+    if (touchStartX === null || e.changedTouches.length === 0) return;
+    const touchEndX = e.changedTouches[0].clientX;
+    const diffX = touchStartX - touchEndX;
+
+    if (Math.abs(diffX) > 45) {
+      if (diffX > 0) {
+        goToNext();
+      } else {
+        goToPrev();
+      }
+    }
+    setTouchStartX(null);
   };
 
   // Teclado
@@ -549,13 +897,38 @@ export default function CourseSlideViewer({
     }).catch(() => {});
   };
 
+  // 🔊 Lectura en voz alta (Text-to-Speech)
+  const speakCurrentSlide = () => {
+    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+
+    if (isSpeaking) {
+      window.speechSynthesis.cancel();
+      setIsSpeaking(false);
+      return;
+    }
+
+    const textToSpeak = `${currentSlide.title}. ${currentSlide.content || ''}. ${
+      currentSlide.bulletPoints ? currentSlide.bulletPoints.join('. ') : ''
+    }`;
+
+    const utterance = new SpeechSynthesisUtterance(textToSpeak);
+    utterance.lang = 'es-ES';
+    utterance.rate = 1.0;
+
+    utterance.onend = () => setIsSpeaking(false);
+    utterance.onerror = () => setIsSpeaking(false);
+
+    window.speechSynthesis.speak(utterance);
+    setIsSpeaking(true);
+  };
+
   const isDark = theme === 'dark';
 
   // Puntaje total evaluativo sobre las 10 preguntas del quiz
   const totalQuizScore = useMemo(() => {
     let score = 0;
 
-    courseQuizQuestions.forEach((q, idx) => {
+    activeQuizQuestions.forEach((q, idx) => {
       if (q.kind === 'TrueFalse' && tfAnswers[idx] === q.correctAnswer) {
         score++;
       } else if (
@@ -573,7 +946,7 @@ export default function CourseSlideViewer({
     });
 
     return score;
-  }, [tfAnswers, mcAnswers, reorderSelected, matchedPairs]);
+  }, [tfAnswers, mcAnswers, reorderSelected, matchedPairs, activeQuizQuestions]);
 
   // Reiniciar todo el quiz
   const resetQuiz = () => {
@@ -587,10 +960,20 @@ export default function CourseSlideViewer({
   };
 
   // 🎨 CONFIGURACIÓN DE COLORES
-  // 1. activeTitleColor: Afecta ÚNICAMENTE a los títulos (<h1> ... <h6>)
-  // 2. embedParams.bgColor: Afecta ÚNICAMENTE a la barra de encabezado superior (banner)
   const activeAccent = embedParams.accentColor || (isDark ? '#3776ab' : '#2563eb');
   const activeTitleColor = embedParams.textColor || (isDark ? '#f59e0b' : '#0f172a');
+
+  // Estilos de Escala de Tamaño (S, M, L, XL) del reloj flotante
+  const timerScaleClasses = {
+    s: 'text-xs p-2 gap-1.5 min-w-[120px]',
+    m: 'text-base p-3 gap-2 min-w-[160px]',
+    l: 'text-2xl p-4 gap-3 min-w-[220px]',
+    xl: 'text-4xl p-6 gap-4 min-w-[300px]'
+  };
+
+  // 🎯 LÓGICA RESPONSIVA DE NAVEGACIÓN EN MÓVIL vs QUIZ
+  const isQuizInteraction = currentSlide.type === 'quiz_interaction';
+  const shouldShowNavFooter = !isQuizInteraction && (isMobile || barMode !== 'hidden');
 
   return (
     <div
@@ -598,7 +981,104 @@ export default function CourseSlideViewer({
         isDark ? 'bg-[#0f172a] text-slate-100' : 'bg-slate-100 text-slate-900'
       }`}
     >
-      {/* BARRA SUPERIOR DE LA PRESENTACIÓN (BANNER PERSONALIZABLE CON bgcolor) */}
+      {/* ⏱️ WIDGET FLOTANTE MOVIBLE DE TEMPORIZADOR REGRESIVO */}
+      {isTimerActive && (
+        <div
+          style={{ left: `${timerPos.x}px`, top: `${timerPos.y}px` }}
+          className={`fixed z-50 rounded-2xl border-2 shadow-2xl backdrop-blur-2xl flex flex-col transition-all cursor-move select-none ${
+            timerSeconds === 0
+              ? 'bg-rose-950/95 border-rose-500 text-rose-200 animate-bounce'
+              : isDark
+              ? 'bg-slate-900/95 border-amber-400/80 text-amber-300 shadow-slate-950/80'
+              : 'bg-slate-900/95 border-amber-400 text-white shadow-xl'
+          } ${timerScaleClasses[timerSize]}`}
+          onMouseDown={(e) => handleDragStart(e.clientX, e.clientY)}
+          onTouchStart={(e) => {
+            if (e.touches.length > 0) handleDragStart(e.touches[0].clientX, e.touches[0].clientY);
+          }}
+        >
+          {/* Header del Widget Flotante */}
+          <div className="flex items-center justify-between border-b border-white/10 pb-1 cursor-grab active:cursor-grabbing">
+            <span className="text-[10px] font-black uppercase tracking-widest opacity-80 flex items-center gap-1">
+              <span>🖐️</span>
+              <span>Arrastrar</span>
+            </span>
+
+            {/* Selector de Escala de Tamaño: S | M | L | XL */}
+            <div className="flex items-center gap-1 bg-black/40 px-1.5 py-0.5 rounded-lg border border-white/10">
+              {(['s', 'm', 'l', 'xl'] as const).map(sz => (
+                <button
+                  key={sz}
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setTimerSize(sz);
+                  }}
+                  className={`px-1 rounded text-[9px] font-extrabold uppercase transition-all ${
+                    timerSize === sz ? 'bg-amber-400 text-slate-950 font-black' : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  {sz}
+                </button>
+              ))}
+            </div>
+
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsTimerActive(false);
+                setIsTimerRunning(false);
+              }}
+              className="text-slate-400 hover:text-white font-black text-xs px-1 cursor-pointer"
+              title="Cerrar temporizador"
+            >
+              ✕
+            </button>
+          </div>
+
+          {/* Reloj Digital Gigante */}
+          <div className="flex items-center justify-between gap-3 my-1">
+            <div className="flex items-center gap-2">
+              <span>⏱️</span>
+              <span className="font-mono font-black tracking-tight">{formatTime(timerSeconds)}</span>
+            </div>
+
+            <div className="flex items-center gap-1">
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsTimerRunning(!isTimerRunning);
+                }}
+                className="px-2 py-1 rounded-lg bg-amber-400 text-slate-950 font-extrabold text-xs hover:bg-amber-300 transition-all cursor-pointer shadow"
+              >
+                {isTimerRunning ? '⏸️' : '▶️'}
+              </button>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setTimerSeconds(300);
+                  setIsTimerRunning(false);
+                }}
+                className="px-2 py-1 rounded-lg bg-white/10 text-white font-extrabold text-xs hover:bg-white/20 transition-all cursor-pointer"
+                title="Reiniciar a 5 min"
+              >
+                🔄
+              </button>
+            </div>
+          </div>
+
+          {timerSeconds === 0 && (
+            <span className="text-[10px] font-black uppercase text-center text-rose-300 animate-pulse">
+              🔔 ¡Tiempo completado! 📳
+            </span>
+          )}
+        </div>
+      )}
+
+      {/* BARRA SUPERIOR DE LA PRESENTACIÓN */}
       <header
         className={`px-4 sm:px-6 py-2.5 flex items-center justify-between border-b backdrop-blur-xl sticky top-0 z-30 transition-all shrink-0 ${
           isDark
@@ -612,7 +1092,11 @@ export default function CourseSlideViewer({
         {/* BLOQUE IZQUIERDO */}
         <div className="flex items-center gap-3 min-w-0">
           {embedParams.customLogo ? (
-            <img src={embedParams.customLogo} alt="Logo" className="h-6 w-auto object-contain shrink-0" />
+            <img
+              src={embedParams.customLogo}
+              alt={embedParams.institution || 'Logo Institución'}
+              className="h-6 w-auto max-w-[120px] object-contain shrink-0 rounded"
+            />
           ) : !embedParams.isEmbed ? (
             <a
               href={`/course/${courseSlug}/${lessonSlug}/`}
@@ -640,7 +1124,7 @@ export default function CourseSlideViewer({
 
           <div className="h-4 w-[1px] bg-slate-700/50 hidden sm:block shrink-0" />
 
-          {/* TÍTULO DE LA BANNER BAR (USA activeTitleColor) */}
+          {/* TÍTULO DE LA BANNER BAR */}
           <h1
             className="text-xs sm:text-sm font-bold truncate max-w-[140px] sm:max-w-[240px] md:max-w-[340px] m-0"
             style={{ color: activeTitleColor }}
@@ -649,22 +1133,30 @@ export default function CourseSlideViewer({
           </h1>
         </div>
 
-        {/* BLOQUE DERECHO */}
-        <div className="flex items-center gap-2.5 shrink-0">
-          {(embedParams.institution || embedParams.studentName) && (
+        {/* BLOQUE DERECHO (HERRAMIENTAS + PERFIL) */}
+        <div className="flex items-center gap-2 shrink-0">
+          {(embedParams.institution || embedParams.studentName || embedParams.customLogo) && (
             <div className={`hidden lg:flex items-center gap-2 px-3 py-1 rounded-full border text-xs font-medium backdrop-blur-md ${
               isDark
                 ? 'border-slate-700/60 bg-slate-900/60 text-slate-300'
                 : 'border-slate-300 bg-white/80 text-slate-700 shadow-sm'
             }`}>
-              {embedParams.institution && (
-                <span className="flex items-center gap-1 font-semibold">
-                  <span>🏫</span>
-                  <span>{embedParams.institution}</span>
+              {(embedParams.institution || embedParams.customLogo) && (
+                <span className="flex items-center gap-1.5 font-semibold">
+                  {embedParams.customLogo ? (
+                    <img
+                      src={embedParams.customLogo}
+                      alt={embedParams.institution || 'Logo'}
+                      className="h-4 w-auto max-w-[70px] object-contain shrink-0"
+                    />
+                  ) : (
+                    <span>🏫</span>
+                  )}
+                  {embedParams.institution && <span>{embedParams.institution}</span>}
                 </span>
               )}
 
-              {embedParams.institution && embedParams.studentName && (
+              {(embedParams.institution || embedParams.customLogo) && embedParams.studentName && (
                 <span className="opacity-50 font-bold">•</span>
               )}
 
@@ -680,19 +1172,7 @@ export default function CourseSlideViewer({
             </div>
           )}
 
-          {embedParams.showPdf && (
-            <button
-              type="button"
-              onClick={() => window.print()}
-              className="px-2.5 py-1 rounded-lg text-xs font-bold bg-rose-500/10 text-rose-500 border border-rose-500/30 hover:bg-rose-500/20 transition-all cursor-pointer flex items-center gap-1"
-              title="Exportar a PDF"
-            >
-              <span>📄</span>
-              <span className="hidden sm:inline">PDF</span>
-            </button>
-          )}
-
-          <div className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-mono font-bold border shadow-inner ${
+          <div className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-mono font-bold border shadow-inner ${
             isDark
               ? 'bg-slate-900/80 text-amber-400 border-slate-700/80'
               : 'bg-white text-indigo-600 border-slate-300'
@@ -704,52 +1184,164 @@ export default function CourseSlideViewer({
 
           <div className="h-4 w-[1px] bg-slate-700/50 hidden sm:block" />
 
-          <div className="flex items-center gap-1">
+          {/* BOTÓN DE MENÚ DE HERRAMIENTAS 🛠️ */}
+          <div className="relative">
             <button
               type="button"
-              onClick={() => setShowOverview(!showOverview)}
-              className={`p-1.5 rounded-lg border transition-all cursor-pointer ${
-                showOverview
-                  ? 'bg-amber-400/20 text-amber-500 border-amber-400/40'
+              onClick={() => setShowToolsMenu(!showToolsMenu)}
+              className={`px-2.5 py-1 rounded-lg border transition-all cursor-pointer flex items-center gap-1 text-xs font-bold ${
+                showToolsMenu
+                  ? 'bg-amber-400/20 text-amber-500 border-amber-400/40 ring-2 ring-amber-400/30'
                   : isDark
                   ? 'bg-slate-800/50 text-slate-300 border-slate-700/60 hover:bg-slate-700/70 hover:text-white'
                   : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-100'
               }`}
-              title="Vista en cuadrícula (Grid)"
+              title="Menú de Herramientas de Estudio"
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
-              </svg>
+              <span>🛠️</span>
+              <span className="hidden sm:inline">Herramientas</span>
             </button>
 
-            <button
-              type="button"
-              onClick={() => setTheme(isDark ? 'light' : 'dark')}
-              className={`p-1.5 rounded-lg border transition-all cursor-pointer ${
-                isDark
-                  ? 'bg-slate-800/50 text-slate-300 border-slate-700/60 hover:bg-slate-700/70 hover:text-amber-300'
-                  : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-100'
-              }`}
-              title="Cambiar tema"
-            >
-              {isDark ? '☀️' : '🌙'}
-            </button>
+            {/* POPUP DROPDOWN DE HERRAMIENTAS 🛠️ */}
+            {showToolsMenu && (
+              <div className="absolute right-0 mt-2 w-72 rounded-2xl bg-slate-900/95 border border-slate-700 text-slate-100 shadow-2xl backdrop-blur-xl p-4 z-50 flex flex-col gap-3 animate-fade-in">
+                <div className="flex items-center justify-between border-b pb-2 border-slate-800">
+                  <span className="text-xs font-black uppercase tracking-wider text-amber-400 flex items-center gap-1">
+                    <span>🛠️</span>
+                    <span>Herramientas de Estudio</span>
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setShowToolsMenu(false)}
+                    className="text-xs text-slate-400 hover:text-white font-bold cursor-pointer"
+                  >
+                    ✕
+                  </button>
+                </div>
 
-            <button
-              type="button"
-              onClick={toggleFullscreen}
-              className={`p-1.5 rounded-lg border hidden sm:flex transition-all cursor-pointer ${
-                isDark
-                  ? 'bg-slate-800/50 text-slate-300 border-slate-700/60 hover:bg-slate-700/70 hover:text-white'
-                  : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-100'
-              }`}
-              title="Pantalla completa"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-5h-4m4 0v4m0-4l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
-              </svg>
-            </button>
+                {/* 1. SECCIÓN ACTIVAR TEMPORIZADOR Y PRESETS */}
+                <div className="flex flex-col gap-2 bg-slate-800/60 p-3 rounded-xl border border-slate-700/60">
+                  <span className="text-[11px] font-bold text-slate-300 flex items-center justify-between">
+                    <span>⏱️ Selecciona Tiempo Regresivo</span>
+                    {isTimerActive && (
+                      <span className="font-mono text-amber-400 font-bold">{formatTime(timerSeconds)}</span>
+                    )}
+                  </span>
+
+                  <div className="grid grid-cols-4 gap-1">
+                    {[
+                      { label: '3m', secs: 180 },
+                      { label: '5m', secs: 300 },
+                      { label: '10m', secs: 600 },
+                      { label: '25m', secs: 1500 }
+                    ].map(preset => (
+                      <button
+                        key={preset.label}
+                        type="button"
+                        onClick={() => {
+                          setTimerSeconds(preset.secs);
+                          setIsTimerActive(true);
+                          setIsTimerRunning(true);
+                          setShowToolsMenu(false);
+                        }}
+                        className="px-2 py-1.5 rounded bg-slate-700 hover:bg-amber-500 hover:text-slate-950 text-xs font-extrabold text-slate-200 transition-all cursor-pointer"
+                      >
+                        {preset.label}
+                      </button>
+                    ))}
+                  </div>
+
+                  {isTimerActive && (
+                    <div className="flex items-center gap-2 mt-1">
+                      <button
+                        type="button"
+                        onClick={() => setIsTimerRunning(!isTimerRunning)}
+                        className={`flex-1 py-1.5 rounded text-xs font-bold transition-all cursor-pointer ${
+                          isTimerRunning
+                            ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                            : 'bg-emerald-600 text-white hover:bg-emerald-500'
+                        }`}
+                      >
+                        {isTimerRunning ? '⏸️ Pausar' : '▶️ Iniciar'}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIsTimerActive(false);
+                          setIsTimerRunning(false);
+                        }}
+                        className="px-3 py-1.5 rounded bg-rose-600/30 text-rose-300 border border-rose-500/30 text-xs font-bold hover:bg-rose-600 hover:text-white cursor-pointer"
+                      >
+                        Ocultar
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+                {/* 2. SECCIÓN LECTURA EN VOZ ALTA */}
+                <button
+                  type="button"
+                  onClick={speakCurrentSlide}
+                  className={`p-2.5 rounded-xl border text-xs font-bold flex items-center justify-between transition-all cursor-pointer ${
+                    isSpeaking
+                      ? 'bg-rose-500/20 text-rose-300 border-rose-500/40 animate-pulse'
+                      : 'bg-slate-800 text-slate-200 border-slate-700 hover:bg-slate-700'
+                  }`}
+                >
+                  <span className="flex items-center gap-2">
+                    <span>{isSpeaking ? '🔊' : '🗣️'}</span>
+                    <span>{isSpeaking ? 'Detener Lectura' : 'Escuchar Diapositiva (Voz)'}</span>
+                  </span>
+                  <span>{isSpeaking ? '⏹️' : '▶️'}</span>
+                </button>
+              </div>
+            )}
           </div>
+
+          <button
+            type="button"
+            onClick={() => setShowOverview(!showOverview)}
+            className={`p-1.5 rounded-lg border transition-all cursor-pointer ${
+              showOverview
+                ? 'bg-amber-400/20 text-amber-500 border-amber-400/40'
+                : isDark
+                ? 'bg-slate-800/50 text-slate-300 border-slate-700/60 hover:bg-slate-700/70 hover:text-white'
+                : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-100'
+            }`}
+            title="Vista en cuadrícula (Grid)"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+            </svg>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setTheme(isDark ? 'light' : 'dark')}
+            className={`p-1.5 rounded-lg border transition-all cursor-pointer ${
+              isDark
+                ? 'bg-slate-800/50 text-slate-300 border-slate-700/60 hover:bg-slate-700/70 hover:text-amber-300'
+                : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-100'
+            }`}
+            title="Cambiar tema"
+          >
+            {isDark ? '☀️' : '🌙'}
+          </button>
+
+          <button
+            type="button"
+            onClick={toggleFullscreen}
+            className={`p-1.5 rounded-lg border hidden sm:flex transition-all cursor-pointer ${
+              isDark
+                ? 'bg-slate-800/50 text-slate-300 border-slate-700/60 hover:bg-slate-700/70 hover:text-white'
+                : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-100'
+            }`}
+            title="Pantalla completa"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-5h-4m4 0v4m0-4l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+            </svg>
+          </button>
         </div>
       </header>
 
@@ -764,13 +1356,17 @@ export default function CourseSlideViewer({
         />
       </div>
 
-      {/* LIENZO DE LA DIAPOSITIVA (CONSERVANDO NEUTRALIDAD DE FONDO EN MODO OSCURO Y CLARO) */}
-      <main className={`flex-1 flex flex-col items-center justify-center p-3 sm:p-6 max-w-6xl w-full mx-auto relative overflow-hidden ${
-        barMode === 'hidden' ? 'pb-3' : 'pb-20'
-      }`}>
+      {/* LIENZO DE LA DIAPOSITIVA */}
+      <main
+        onTouchStart={handleTouchStartSlide}
+        onTouchEnd={handleTouchEndSlide}
+        className={`flex-1 flex flex-col items-center justify-center p-2 sm:p-6 max-w-6xl w-full mx-auto relative overflow-hidden ${
+          shouldShowNavFooter ? 'pb-20' : 'pb-2'
+        }`}
+      >
         <div
           key={currentSlide.id}
-          className={`w-full h-full max-h-full rounded-2xl p-5 sm:p-8 border transition-all duration-300 transform shadow-2xl flex flex-col justify-between overflow-hidden ${
+          className={`w-full h-full max-h-full rounded-2xl p-4 sm:p-8 border transition-all duration-300 transform shadow-2xl flex flex-col justify-between overflow-y-auto custom-scrollbar ${
             isDark
               ? 'bg-slate-800/90 border-slate-700/80 backdrop-blur-xl text-slate-100 shadow-slate-950/50'
               : 'bg-white/95 border-slate-200/90 backdrop-blur-xl text-slate-900 shadow-slate-300/50'
@@ -778,7 +1374,7 @@ export default function CourseSlideViewer({
         >
           {/* SLIDE TYPE: COVER */}
           {currentSlide.type === 'cover' && (
-            <div className="flex flex-col items-center text-center justify-center py-6 gap-6 my-auto">
+            <div className="flex flex-col items-center text-center justify-center py-6 gap-6 my-auto overflow-y-auto custom-scrollbar">
               <span
                 className="px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-wider text-white shadow-sm flex items-center gap-1.5"
                 style={{ backgroundColor: activeAccent }}
@@ -823,7 +1419,7 @@ export default function CourseSlideViewer({
 
           {/* SLIDE TYPE: QUIZ INTRO */}
           {currentSlide.type === 'quiz_intro' && (
-            <div className="flex flex-col items-center text-center justify-center py-10 gap-6 my-auto max-w-xl mx-auto">
+            <div className="flex flex-col items-center text-center justify-center py-10 gap-6 my-auto max-w-xl mx-auto overflow-y-auto custom-scrollbar">
               <span className="px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider bg-amber-500/20 text-amber-500 border border-amber-500/30">
                 🧪 Módulo de Quiz
               </span>
@@ -833,7 +1429,7 @@ export default function CourseSlideViewer({
               </h2>
 
               <p className={`text-base font-medium m-0 ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
-                Responde 10 desafíos interactivos diseñados para comprobar tu dominio de Texto y Conversiones en Python.
+                Responde 10 desafíos interactivos diseñados para comprobar tu dominio de {lessonTitle} en Python.
               </p>
 
               <button
@@ -848,11 +1444,11 @@ export default function CourseSlideViewer({
             </div>
           )}
 
-          {/* SLIDE TYPE: METACOGNICIÓN COMPLETA EN 1 DIAPOSITIVA (CON POPUP HOVER) */}
+          {/* SLIDE TYPE: METACOGNICIÓN COMPLETA EN 1 DIAPOSITIVA (CON POPUP HOVER Y SCROLL RESPONSIVO) */}
           {currentSlide.type === 'metacognition_overview' && (
-            <div className="flex flex-col gap-4 my-auto h-full justify-between relative overflow-hidden">
+            <div className="flex flex-col gap-4 my-auto h-full justify-between relative overflow-y-auto custom-scrollbar pr-1">
               {/* Header */}
-              <div className="border-b pb-2 border-slate-700/40">
+              <div className="border-b pb-2 border-slate-700/40 shrink-0">
                 <div className="flex items-center justify-between">
                   <span className="px-2.5 py-0.5 rounded-md text-[11px] font-black uppercase tracking-wider bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">
                     🧠 Metacognición (8 Preguntas)
@@ -867,7 +1463,7 @@ export default function CourseSlideViewer({
               </div>
 
               {/* 2 Columnas de 4 preguntas (Genéricas vs Específicas) */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 flex-1 overflow-hidden">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 flex-1 overflow-y-auto custom-scrollbar">
                 {/* Columna Izquierda: 4 Preguntas Genéricas */}
                 <div className="flex flex-col gap-2">
                   <span className="text-[11px] font-extrabold uppercase tracking-wider text-indigo-500 flex items-center gap-1">
@@ -875,7 +1471,7 @@ export default function CourseSlideViewer({
                     <span>Preguntas Genéricas del Curso (1 - 4)</span>
                   </span>
                   <div className="flex flex-col gap-2 flex-1 justify-between">
-                    {metacognition8Questions.filter(q => q.category === 'Generic').map(q => {
+                    {activeMetaQuestions.filter(q => q.category === 'Generic').map(q => {
                       const isHovered = hoveredMetaId === q.id;
                       return (
                         <div
@@ -912,7 +1508,7 @@ export default function CourseSlideViewer({
                     <span>Específicas de esta Lección (5 - 8)</span>
                   </span>
                   <div className="flex flex-col gap-2 flex-1 justify-between">
-                    {metacognition8Questions.filter(q => q.category === 'CourseSpecific').map(q => {
+                    {activeMetaQuestions.filter(q => q.category === 'CourseSpecific').map(q => {
                       const isHovered = hoveredMetaId === q.id;
                       return (
                         <div
@@ -946,7 +1542,7 @@ export default function CourseSlideViewer({
               {/* POPUP HOVER / MODAL DE PAUTA DE REFLEXIÓN EN LA PARTE INFERIOR */}
               <div className="min-h-[70px] shrink-0 transition-all">
                 {hoveredMetaId ? (() => {
-                  const q = metacognition8Questions.find(item => item.id === hoveredMetaId)!;
+                  const q = activeMetaQuestions.find(item => item.id === hoveredMetaId)!;
                   return (
                     <div className={`p-3.5 rounded-xl border shadow-2xl backdrop-blur-xl animate-fade-in flex items-center justify-between gap-4 ${
                       isDark
@@ -993,7 +1589,7 @@ export default function CourseSlideViewer({
             const qIdx = currentSlide.quizIndex;
 
             return (
-              <div className="flex flex-col gap-5 my-auto">
+              <div className="flex flex-col gap-5 my-auto overflow-y-auto custom-scrollbar pr-1">
                 {/* Header de la Pregunta (Organizado en 2 filas limpias) */}
                 <div className="flex flex-col gap-2 border-b pb-3 border-slate-700/40">
                   <div className="flex items-center justify-between gap-2">
@@ -1004,7 +1600,7 @@ export default function CourseSlideViewer({
                       <span className={`px-3 py-1 rounded-full text-xs font-black border ${
                         isDark ? 'bg-slate-900 text-amber-400 border-slate-700' : 'bg-slate-100 text-amber-600 border-slate-300'
                       }`}>
-                        Puntaje: {totalQuizScore} / {courseQuizQuestions.length}
+                        Puntaje: {totalQuizScore} / {activeQuizQuestions.length}
                       </span>
                       <button
                         type="button"
@@ -1029,89 +1625,94 @@ export default function CourseSlideViewer({
                 </div>
 
                 {/* 1. TrueFalse */}
-                {qData.kind === 'TrueFalse' && (
-                  <div className="flex flex-col gap-4">
-                    {qData.code && (
-                      <div className="rounded-xl overflow-hidden border border-slate-700/80 bg-[#0d1117]">
-                        <pre className="p-3.5 m-0 text-xs sm:text-sm font-mono leading-relaxed bg-[#0d1117] text-[#abb2bf]">
-                          <code>
-                            {qData.code.split('\n').map((line, idx) => (
-                              <div key={idx} className="flex">
-                                <span className="select-none pr-3 mr-3 text-slate-600 text-right min-w-[1.5rem] border-r border-slate-800 shrink-0">
-                                  {idx + 1}
-                                </span>
-                                <span dangerouslySetInnerHTML={{ __html: highlightLine(line, 'python') }} />
-                              </div>
-                            ))}
-                          </code>
-                        </pre>
-                      </div>
-                    )}
+                {qData.kind === 'TrueFalse' && (() => {
+                  const trueLabel = qData.labels?.trueText || 'VERDADERO';
+                  const falseLabel = qData.labels?.falseText || 'FALSO';
 
-                    <div className="grid grid-cols-2 gap-4 mt-2">
-                      {[true, false].map((choice) => {
-                        const hasAnswered = tfAnswers[qIdx] !== undefined;
-                        const isSelected = tfAnswers[qIdx] === choice;
-                        const isCorrect = qData.correctAnswer === choice;
-
-                        let style = isDark
-                          ? 'bg-slate-800/90 text-slate-100 border-slate-700 hover:bg-slate-700'
-                          : 'bg-slate-100 text-slate-900 border-slate-300 hover:bg-slate-200';
-
-                        if (hasAnswered) {
-                          if (isCorrect) {
-                            style = 'bg-emerald-600 text-white border-emerald-400 font-extrabold shadow-lg shadow-emerald-600/30 scale-[1.02]';
-                          } else if (isSelected) {
-                            style = 'bg-rose-600 text-white border-rose-400 font-extrabold shadow-lg shadow-rose-600/30';
-                          } else {
-                            style = 'opacity-40 bg-slate-800 text-slate-400 border-slate-800';
-                          }
-                        }
-
-                        return (
-                          <button
-                            key={String(choice)}
-                            type="button"
-                            onClick={() => setTfAnswers(prev => ({ ...prev, [qIdx]: choice }))}
-                            className={`p-6 rounded-2xl border-2 font-extrabold text-base sm:text-xl transition-all flex flex-col items-center justify-center gap-2 cursor-pointer ${style}`}
-                          >
-                            <span>{choice ? '✅ VERDADERO (SÍ)' : '❌ FALSO (NO)'}</span>
-                          </button>
-                        );
-                      })}
-                    </div>
-
-                    {tfAnswers[qIdx] !== undefined && (
-                      <div className={`p-3.5 rounded-xl border text-sm font-semibold flex items-center justify-between gap-3 animate-fade-in ${
-                        tfAnswers[qIdx] === qData.correctAnswer
-                          ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-600'
-                          : 'bg-rose-500/10 border-rose-500/30 text-rose-600'
-                      }`}>
-                        <div className="flex items-center gap-3">
-                          <span className="text-xl">
-                            {tfAnswers[qIdx] === qData.correctAnswer ? '🎉' : '💡'}
-                          </span>
-                          <div>
-                            <span className="block font-bold">
-                              {tfAnswers[qIdx] === qData.correctAnswer ? '¡Excelente! Respuesta Correcta.' : 'Respuesta Incorrecta.'}
-                            </span>
-                            <span className="text-xs opacity-90">{qData.explanation}</span>
-                          </div>
+                  return (
+                    <div className="flex flex-col gap-4">
+                      {qData.code && (
+                        <div className="rounded-xl overflow-hidden border border-slate-700/80 bg-[#0d1117]">
+                          <pre className="p-3.5 m-0 text-xs sm:text-sm font-mono leading-relaxed bg-[#0d1117] text-[#abb2bf]">
+                            <code>
+                              {qData.code.split('\n').map((line, idx) => (
+                                <div key={idx} className="flex">
+                                  <span className="select-none pr-3 mr-3 text-slate-600 text-right min-w-[1.5rem] border-r border-slate-800 shrink-0">
+                                    {idx + 1}
+                                  </span>
+                                  <span dangerouslySetInnerHTML={{ __html: highlightLine(line, 'python') }} />
+                                </div>
+                              ))}
+                            </code>
+                          </pre>
                         </div>
+                      )}
 
-                        <button
-                          type="button"
-                          onClick={goToNext}
-                          className="px-5 py-2.5 rounded-xl font-extrabold text-xs sm:text-sm text-white shadow-lg transition-all cursor-pointer shrink-0 flex items-center gap-1.5 hover:opacity-90 active:scale-95"
-                          style={{ backgroundColor: activeAccent }}
-                        >
-                          <span>Continuar</span>
-                          <span>→</span>
-                        </button>
+                      <div className="grid grid-cols-2 gap-4 mt-2">
+                        {[true, false].map((choice) => {
+                          const hasAnswered = tfAnswers[qIdx] !== undefined;
+                          const isSelected = tfAnswers[qIdx] === choice;
+                          const isCorrect = qData.correctAnswer === choice;
+
+                          let style = isDark
+                            ? 'bg-slate-800/90 text-slate-100 border-slate-700 hover:bg-slate-700'
+                            : 'bg-slate-100 text-slate-900 border-slate-300 hover:bg-slate-200';
+
+                          if (hasAnswered) {
+                            if (isCorrect) {
+                              style = 'bg-emerald-600 text-white border-emerald-400 font-extrabold shadow-lg shadow-emerald-600/30 scale-[1.02]';
+                            } else if (isSelected) {
+                              style = 'bg-rose-600 text-white border-rose-400 font-extrabold shadow-lg shadow-rose-600/30';
+                            } else {
+                              style = 'opacity-40 bg-slate-800 text-slate-400 border-slate-800';
+                            }
+                          }
+
+                          return (
+                            <button
+                              key={String(choice)}
+                              type="button"
+                              onClick={() => setTfAnswers(prev => ({ ...prev, [qIdx]: choice }))}
+                              className={`p-6 rounded-2xl border-2 font-extrabold text-base sm:text-xl transition-all flex flex-col items-center justify-center gap-2 cursor-pointer ${style}`}
+                            >
+                              <span>{choice ? `✅ ${trueLabel}` : `❌ ${falseLabel}`}</span>
+                            </button>
+                          );
+                        })}
                       </div>
-                    )}
-                  </div>
-                )}
+
+                      {tfAnswers[qIdx] !== undefined && (
+                        <div className={`p-3.5 rounded-xl border text-sm font-semibold flex items-center justify-between gap-3 animate-fade-in ${
+                          tfAnswers[qIdx] === qData.correctAnswer
+                            ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-600'
+                            : 'bg-rose-500/10 border-rose-500/30 text-rose-600'
+                        }`}>
+                          <div className="flex items-center gap-3">
+                            <span className="text-xl">
+                              {tfAnswers[qIdx] === qData.correctAnswer ? '🎉' : '💡'}
+                            </span>
+                            <div>
+                              <span className="block font-bold">
+                                {tfAnswers[qIdx] === qData.correctAnswer ? '¡Excelente! Respuesta Correcta.' : 'Respuesta Incorrecta.'}
+                              </span>
+                              <span className="text-xs opacity-90">{qData.explanation}</span>
+                            </div>
+                          </div>
+
+                          <button
+                            type="button"
+                            onClick={goToNext}
+                            className="px-5 py-2.5 rounded-xl font-extrabold text-xs sm:text-sm text-white shadow-lg transition-all cursor-pointer shrink-0 flex items-center gap-1.5 hover:opacity-90 active:scale-95"
+                            style={{ backgroundColor: activeAccent }}
+                          >
+                            <span>Continuar</span>
+                            <span>→</span>
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })()}
 
                 {/* 2, 5, 6, 7. MultipleChoice / FillInTheBlank / PredictOutput / FindTheBug */}
                 {(qData.kind === 'MultipleChoice' || qData.kind === 'FillInTheBlank' || qData.kind === 'PredictOutput' || qData.kind === 'FindTheBug') && (
@@ -1421,20 +2022,20 @@ export default function CourseSlideViewer({
 
           {/* SLIDE TYPE: RESULTADOS DEL QUIZ */}
           {currentSlide.type === 'quiz_results' && (
-            <div className="flex flex-col items-center text-center justify-center py-6 gap-6 my-auto">
+            <div className="flex flex-col items-center text-center justify-center py-6 gap-6 my-auto overflow-y-auto custom-scrollbar">
               <span className="px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-wider bg-amber-400/20 text-amber-500 border border-amber-400/30">
                 Resultados de la Evaluación (10 Desafíos)
               </span>
 
               <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight" style={{ color: activeTitleColor }}>
-                🏆 Puntaje Final: {totalQuizScore} / {courseQuizQuestions.length}
+                🏆 Puntaje Final: {totalQuizScore} / {activeQuizQuestions.length}
               </h2>
 
               <p className={`text-lg sm:text-xl font-medium max-w-xl ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-                {totalQuizScore === courseQuizQuestions.length
-                  ? '🥇 ¡Puntaje Perfecto! Dominas al 100% el manejo de texto, tipos y conversiones en Python.'
+                {totalQuizScore === activeQuizQuestions.length
+                  ? '🥇 ¡Puntaje Perfecto! Dominas al 100% las estructuras condicionales en Python.'
                   : totalQuizScore >= 7
-                  ? '🥈 ¡Excelente trabajo! Demuestras una gran comprensión de los conceptos clave.'
+                  ? '🥈 ¡Excelente trabajo! Demuestras una gran comprensión de la lógica condicional.'
                   : '🥉 ¡Buen intento! Repasa las diapositivas anteriores para consolidar tus conocimientos.'}
               </p>
 
@@ -1453,8 +2054,8 @@ export default function CourseSlideViewer({
 
           {/* SLIDE TYPES: CONCEPT, CODE, DIAGRAM, PROJECT, SUMMARY */}
           {currentSlide.type !== 'cover' && currentSlide.type !== 'quiz_intro' && currentSlide.type !== 'quiz_interaction' && currentSlide.type !== 'metacognition_overview' && currentSlide.type !== 'quiz_results' && (
-            <div className="flex flex-col gap-6">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b pb-4 border-slate-700/40">
+            <div className="flex flex-col gap-6 overflow-y-auto custom-scrollbar pr-1">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b pb-4 border-slate-700/40 shrink-0">
                 <div>
                   <div className="flex items-center gap-2 mb-1">
                     <span
@@ -1634,14 +2235,14 @@ export default function CourseSlideViewer({
       </main>
 
       {/* BARRA INFERIOR DE NAVEGACIÓN */}
-      {barMode !== 'hidden' && (
+      {shouldShowNavFooter && (
         <footer
-          className={`px-6 py-4 flex items-center justify-between border-t backdrop-blur-md fixed bottom-0 left-0 right-0 z-30 transition-all duration-500 ease-in-out ${
+          className={`px-4 sm:px-6 py-3 flex items-center justify-between border-t backdrop-blur-md fixed bottom-0 left-0 right-0 z-30 transition-all duration-500 ease-in-out ${
             isDark
               ? 'bg-[#1e293b]/90 border-slate-700/60'
               : 'bg-white/90 border-slate-200 shadow-lg'
           } ${
-            barMode === 'autohide' && !isBarVisible
+            barMode === 'autohide' && !isBarVisible && !isMobile
               ? 'opacity-0 translate-y-full pointer-events-none'
               : 'opacity-100 translate-y-0'
           }`}
@@ -1650,7 +2251,7 @@ export default function CourseSlideViewer({
             type="button"
             onClick={goToPrev}
             disabled={currentIndex === 0}
-            className={`px-5 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 transition-all border ${
+            className={`px-4 sm:px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm flex items-center gap-1.5 transition-all border cursor-pointer ${
               currentIndex === 0
                 ? 'opacity-40 cursor-not-allowed border-slate-700 text-slate-500'
                 : isDark
@@ -1682,18 +2283,21 @@ export default function CourseSlideViewer({
             ))}
           </div>
 
-          <button
-            type="button"
-            onClick={goToNext}
-            disabled={currentIndex === totalSlides - 1}
-            className="px-6 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 transition-all border text-white shadow-lg active:scale-95 cursor-pointer"
-            style={{ backgroundColor: activeAccent, borderColor: activeAccent }}
-          >
-            <span>Siguiente</span>
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
+          {currentIndex < totalSlides - 1 ? (
+            <button
+              type="button"
+              onClick={goToNext}
+              className="px-5 sm:px-6 py-2.5 rounded-xl font-bold text-xs sm:text-sm flex items-center gap-1.5 transition-all border text-white shadow-lg active:scale-95 cursor-pointer"
+              style={{ backgroundColor: activeAccent, borderColor: activeAccent }}
+            >
+              <span>Siguiente</span>
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          ) : (
+            <div />
+          )}
         </footer>
       )}
 

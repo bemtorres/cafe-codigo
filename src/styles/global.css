@@ -553,3 +553,20 @@ body[data-course="arch"] ::-webkit-scrollbar-thumb { background: #C5A059; border
 .hl-annotation, .hl-attr { color: #e06c75; }
 .hl-tag { color: #e06c75; }
 
+/* Custom Scrollbar elegante para presentaciones responsivas */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.35);
+  border-radius: 9999px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(245, 158, 11, 0.6);
+}
+
+
