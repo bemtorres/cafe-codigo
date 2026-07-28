@@ -1117,9 +1117,9 @@ export default function CourseSlideViewer({
             const qIdx = currentSlide.quizIndex;
 
             return (
-              <div className="flex flex-col gap-5 my-auto overflow-y-auto custom-scrollbar pr-1">
-                {/* Header de la Pregunta (Organizado en 2 filas limpias) */}
-                <div className="flex flex-col gap-2 border-b pb-3 border-slate-700/40">
+              <div className="flex flex-col gap-3 sm:gap-4 justify-start pt-1 sm:pt-2 pb-32 overflow-y-auto custom-scrollbar pr-1 h-full">
+                {/* Header de la Pregunta (Compacto y pegado arriba) */}
+                <div className="flex flex-col gap-1.5 border-b pb-2 border-slate-700/40 shrink-0">
                   <div className="flex items-center justify-between gap-2">
                     <span className="px-2.5 py-0.5 rounded-md text-[11px] font-black uppercase tracking-wider bg-amber-500/20 text-amber-500 border border-amber-500/30">
                       {qData.title}
@@ -1145,7 +1145,7 @@ export default function CourseSlideViewer({
                     </div>
                   </div>
                   <h2
-                    className="text-base sm:text-xl font-extrabold tracking-tight m-0 leading-snug"
+                    className="text-base sm:text-lg font-extrabold tracking-tight m-0 leading-snug"
                     style={{ color: activeTitleColor }}
                   >
                     {qData.questionText}
@@ -1156,14 +1156,16 @@ export default function CourseSlideViewer({
                 {qData.kind === 'TrueFalse' && (() => {
                   const trueLabel = qData.labels?.trueText || 'VERDADERO';
                   const falseLabel = qData.labels?.falseText || 'FALSO';
+                  const hasAnswered = tfAnswers[qIdx] !== undefined;
+                  const isCorrect = tfAnswers[qIdx] === qData.correctAnswer;
 
                   return (
-                    <div className="flex flex-col gap-4">
+                    <div className="flex flex-col gap-3">
                       {qData.code && (
                         <div className="rounded-xl overflow-hidden border border-slate-700/80 bg-[#0d1117]">
-                          <pre className="p-3.5 m-0 text-xs sm:text-sm font-mono leading-relaxed bg-[#0d1117] text-[#abb2bf]">
+                          <pre className="p-3 m-0 text-xs sm:text-sm font-mono leading-relaxed bg-[#0d1117] text-[#abb2bf]">
                             <code>
-                              {qData.code.split('\n').map((line, idx) => (
+                              {qData.code.split('\n').map((line: string, idx: number) => (
                                 <div key={idx} className="flex">
                                   <span className="select-none pr-3 mr-3 text-slate-600 text-right min-w-[1.5rem] border-r border-slate-800 shrink-0">
                                     {idx + 1}
@@ -1176,18 +1178,17 @@ export default function CourseSlideViewer({
                         </div>
                       )}
 
-                      <div className="grid grid-cols-2 gap-4 mt-2">
+                      <div className="grid grid-cols-2 gap-3 mt-1">
                         {[true, false].map((choice) => {
-                          const hasAnswered = tfAnswers[qIdx] !== undefined;
                           const isSelected = tfAnswers[qIdx] === choice;
-                          const isCorrect = qData.correctAnswer === choice;
+                          const isOptionCorrect = qData.correctAnswer === choice;
 
                           let style = isDark
                             ? 'bg-slate-800/90 text-slate-100 border-slate-700 hover:bg-slate-700'
                             : 'bg-slate-100 text-slate-900 border-slate-300 hover:bg-slate-200';
 
                           if (hasAnswered) {
-                            if (isCorrect) {
+                            if (isOptionCorrect) {
                               style = 'bg-emerald-600 text-white border-emerald-400 font-extrabold shadow-lg shadow-emerald-600/30 scale-[1.02]';
                             } else if (isSelected) {
                               style = 'bg-rose-600 text-white border-rose-400 font-extrabold shadow-lg shadow-rose-600/30';
@@ -1201,7 +1202,7 @@ export default function CourseSlideViewer({
                               key={String(choice)}
                               type="button"
                               onClick={() => setTfAnswers(prev => ({ ...prev, [qIdx]: choice }))}
-                              className={`p-6 rounded-2xl border-2 font-extrabold text-base sm:text-xl transition-all flex flex-col items-center justify-center gap-2 cursor-pointer ${style}`}
+                              className={`p-5 sm:p-6 rounded-2xl border-2 font-extrabold text-base sm:text-xl transition-all flex flex-col items-center justify-center gap-2 cursor-pointer ${style}`}
                             >
                               <span>{choice ? `✅ ${trueLabel}` : `❌ ${falseLabel}`}</span>
                             </button>
@@ -1209,32 +1210,46 @@ export default function CourseSlideViewer({
                         })}
                       </div>
 
-                      {tfAnswers[qIdx] !== undefined && (
-                        <div className={`p-3.5 rounded-xl border text-sm font-semibold flex items-center justify-between gap-3 animate-fade-in ${
-                          tfAnswers[qIdx] === qData.correctAnswer
-                            ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-600'
-                            : 'bg-rose-500/10 border-rose-500/30 text-rose-600'
+                      {/* FEEDBACK DRAWER ESTILO DUOLINGO FIXED BOTTOM */}
+                      {hasAnswered && (
+                        <div className={`fixed bottom-0 left-0 right-0 z-50 p-4 sm:p-5 border-t-2 shadow-2xl backdrop-blur-2xl transition-all animate-slide-up flex flex-col sm:flex-row items-center justify-between gap-4 ${
+                          isCorrect
+                            ? isDark
+                              ? 'bg-slate-950/95 border-emerald-500 text-emerald-100 shadow-emerald-950/80'
+                              : 'bg-emerald-50 border-emerald-500 text-emerald-950 shadow-emerald-900/30'
+                            : isDark
+                            ? 'bg-slate-950/95 border-rose-500 text-rose-100 shadow-rose-950/80'
+                            : 'bg-rose-50 border-rose-500 text-rose-950 shadow-rose-900/30'
                         }`}>
-                          <div className="flex items-center gap-3">
-                            <span className="text-xl">
-                              {tfAnswers[qIdx] === qData.correctAnswer ? '🎉' : '💡'}
-                            </span>
-                            <div>
-                              <span className="block font-bold">
-                                {tfAnswers[qIdx] === qData.correctAnswer ? '¡Excelente! Respuesta Correcta.' : 'Respuesta Incorrecta.'}
+                          <div className="flex items-center gap-3 sm:gap-4 w-full sm:w-auto">
+                            <div className={`w-11 h-11 sm:w-13 sm:h-13 rounded-2xl flex items-center justify-center text-xl sm:text-2xl font-black shrink-0 ${
+                              isCorrect ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/40' : 'bg-rose-500 text-white shadow-lg shadow-rose-500/40'
+                            }`}>
+                              {isCorrect ? '✓' : '✕'}
+                            </div>
+                            <div className="flex flex-col">
+                              <span className={`text-sm sm:text-base font-black tracking-wide ${
+                                isCorrect ? 'text-emerald-400' : 'text-rose-400'
+                              }`}>
+                                {isCorrect ? '¡Excelente! Respuesta Correcta 🎉' : 'Respuesta Incorrecta 💡'}
                               </span>
-                              <span className="text-xs opacity-90">{qData.explanation}</span>
+                              <span className="text-xs sm:text-sm font-medium opacity-90 leading-tight max-w-2xl">
+                                {qData.explanation}
+                              </span>
                             </div>
                           </div>
 
                           <button
                             type="button"
                             onClick={goToNext}
-                            className="px-5 py-2.5 rounded-xl font-extrabold text-xs sm:text-sm text-white shadow-lg transition-all cursor-pointer shrink-0 flex items-center gap-1.5 hover:opacity-90 active:scale-95"
-                            style={{ backgroundColor: activeAccent }}
+                            className={`w-full sm:w-auto px-8 py-3.5 rounded-2xl font-black text-sm sm:text-base text-white shadow-xl transition-all cursor-pointer flex items-center justify-center gap-2 hover:scale-105 active:scale-95 shrink-0 ${
+                              isCorrect
+                                ? 'bg-emerald-500 hover:bg-emerald-400 shadow-emerald-500/40'
+                                : 'bg-rose-500 hover:bg-rose-400 shadow-rose-500/40'
+                            }`}
                           >
-                            <span>Continuar</span>
-                            <span>→</span>
+                            <span>CONTINUAR</span>
+                            <span className="text-lg">→</span>
                           </button>
                         </div>
                       )}
@@ -1243,91 +1258,109 @@ export default function CourseSlideViewer({
                 })()}
 
                 {/* 2, 5, 6, 7. MultipleChoice / FillInTheBlank / PredictOutput / FindTheBug */}
-                {(qData.kind === 'MultipleChoice' || qData.kind === 'FillInTheBlank' || qData.kind === 'PredictOutput' || qData.kind === 'FindTheBug') && (
-                  <div className="flex flex-col gap-4">
-                    {qData.code && (
-                      <div className="rounded-xl overflow-hidden border border-slate-700/80 bg-[#0d1117]">
-                        <pre className="p-3.5 m-0 text-xs sm:text-sm font-mono leading-relaxed bg-[#0d1117] text-[#abb2bf]">
-                          <code>
-                            {qData.code.split('\n').map((line, idx) => (
-                              <div key={idx} className="flex">
-                                <span className="select-none pr-3 mr-3 text-slate-600 text-right min-w-[1.5rem] border-r border-slate-800 shrink-0">
-                                  {idx + 1}
-                                </span>
-                                <span dangerouslySetInnerHTML={{ __html: highlightLine(line, 'python') }} />
-                              </div>
-                            ))}
-                          </code>
-                        </pre>
-                      </div>
-                    )}
+                {(qData.kind === 'MultipleChoice' || qData.kind === 'FillInTheBlank' || qData.kind === 'PredictOutput' || qData.kind === 'FindTheBug') && (() => {
+                  const hasAnswered = mcAnswers[qIdx] !== undefined;
+                  const isCorrect = mcAnswers[qIdx] === qData.correctOption;
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      {qData.options.map((opt, oIdx) => {
-                        const hasAnswered = mcAnswers[qIdx] !== undefined;
-                        const isSelected = mcAnswers[qIdx] === oIdx;
-                        const isCorrect = qData.correctOption === oIdx;
-
-                        let style = isDark
-                          ? 'bg-slate-800/90 text-slate-100 border-slate-700 hover:bg-slate-700'
-                          : 'bg-slate-100 text-slate-900 border-slate-300 hover:bg-slate-200';
-
-                        if (hasAnswered) {
-                          if (isCorrect) {
-                            style = 'bg-emerald-600 text-white border-emerald-400 font-extrabold shadow-lg shadow-emerald-600/30 scale-[1.01]';
-                          } else if (isSelected) {
-                            style = 'bg-rose-600 text-white border-rose-400 font-extrabold shadow-lg shadow-rose-600/30';
-                          } else {
-                            style = 'opacity-40 bg-slate-800 text-slate-400 border-slate-800';
-                          }
-                        }
-
-                        return (
-                          <button
-                            key={oIdx}
-                            type="button"
-                            onClick={() => setMcAnswers(prev => ({ ...prev, [qIdx]: oIdx }))}
-                            className={`p-4 rounded-xl border font-bold text-sm sm:text-base text-left transition-all flex items-center justify-between cursor-pointer ${style}`}
-                          >
-                            <span>{opt}</span>
-                            {hasAnswered && isCorrect && <span>✓</span>}
-                            {hasAnswered && isSelected && !isCorrect && <span>✕</span>}
-                          </button>
-                        );
-                      })}
-                    </div>
-
-                    {mcAnswers[qIdx] !== undefined && (
-                      <div className={`p-3.5 rounded-xl border text-sm font-semibold flex items-center justify-between gap-3 animate-fade-in ${
-                        mcAnswers[qIdx] === qData.correctOption
-                          ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-600'
-                          : 'bg-rose-500/10 border-rose-500/30 text-rose-600'
-                      }`}>
-                        <div className="flex items-center gap-3">
-                          <span className="text-xl">
-                            {mcAnswers[qIdx] === qData.correctOption ? '🎉' : '💡'}
-                          </span>
-                          <div>
-                            <span className="block font-bold">
-                              {mcAnswers[qIdx] === qData.correctOption ? '¡Excelente! Respuesta Correcta.' : 'Respuesta Incorrecta.'}
-                            </span>
-                            <span className="text-xs opacity-90">{qData.explanation}</span>
-                          </div>
+                  return (
+                    <div className="flex flex-col gap-3">
+                      {qData.code && (
+                        <div className="rounded-xl overflow-hidden border border-slate-700/80 bg-[#0d1117]">
+                          <pre className="p-3 m-0 text-xs sm:text-sm font-mono leading-relaxed bg-[#0d1117] text-[#abb2bf]">
+                            <code>
+                              {qData.code.split('\n').map((line: string, idx: number) => (
+                                <div key={idx} className="flex">
+                                  <span className="select-none pr-3 mr-3 text-slate-600 text-right min-w-[1.5rem] border-r border-slate-800 shrink-0">
+                                    {idx + 1}
+                                  </span>
+                                  <span dangerouslySetInnerHTML={{ __html: highlightLine(line, 'python') }} />
+                                </div>
+                              ))}
+                            </code>
+                          </pre>
                         </div>
+                      )}
 
-                        <button
-                          type="button"
-                          onClick={goToNext}
-                          className="px-5 py-2.5 rounded-xl font-extrabold text-xs sm:text-sm text-white shadow-lg transition-all cursor-pointer shrink-0 flex items-center gap-1.5 hover:opacity-90 active:scale-95"
-                          style={{ backgroundColor: activeAccent }}
-                        >
-                          <span>Continuar</span>
-                          <span>→</span>
-                        </button>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        {qData.options.map((opt, oIdx) => {
+                          const isSelected = mcAnswers[qIdx] === oIdx;
+                          const isOptionCorrect = qData.correctOption === oIdx;
+
+                          let style = isDark
+                            ? 'bg-slate-800/90 text-slate-100 border-slate-700 hover:bg-slate-700'
+                            : 'bg-slate-100 text-slate-900 border-slate-300 hover:bg-slate-200';
+
+                          if (hasAnswered) {
+                            if (isOptionCorrect) {
+                              style = 'bg-emerald-600 text-white border-emerald-400 font-extrabold shadow-lg shadow-emerald-600/30 scale-[1.01]';
+                            } else if (isSelected) {
+                              style = 'bg-rose-600 text-white border-rose-400 font-extrabold shadow-lg shadow-rose-600/30';
+                            } else {
+                              style = 'opacity-40 bg-slate-800 text-slate-400 border-slate-800';
+                            }
+                          }
+
+                          return (
+                            <button
+                              key={oIdx}
+                              type="button"
+                              onClick={() => setMcAnswers(prev => ({ ...prev, [qIdx]: oIdx }))}
+                              className={`p-3.5 sm:p-4 rounded-xl border font-bold text-sm sm:text-base text-left transition-all flex items-center justify-between cursor-pointer ${style}`}
+                            >
+                              <span>{opt}</span>
+                              {hasAnswered && isOptionCorrect && <span>✓</span>}
+                              {hasAnswered && isSelected && !isOptionCorrect && <span>✕</span>}
+                            </button>
+                          );
+                        })}
                       </div>
-                    )}
-                  </div>
-                )}
+
+                      {/* FEEDBACK DRAWER ESTILO DUOLINGO FIXED BOTTOM */}
+                      {hasAnswered && (
+                        <div className={`fixed bottom-0 left-0 right-0 z-50 p-4 sm:p-5 border-t-2 shadow-2xl backdrop-blur-2xl transition-all animate-slide-up flex flex-col sm:flex-row items-center justify-between gap-4 ${
+                          isCorrect
+                            ? isDark
+                              ? 'bg-slate-950/95 border-emerald-500 text-emerald-100 shadow-emerald-950/80'
+                              : 'bg-emerald-50 border-emerald-500 text-emerald-950 shadow-emerald-900/30'
+                            : isDark
+                            ? 'bg-slate-950/95 border-rose-500 text-rose-100 shadow-rose-950/80'
+                            : 'bg-rose-50 border-rose-500 text-rose-950 shadow-rose-900/30'
+                        }`}>
+                          <div className="flex items-center gap-3 sm:gap-4 w-full sm:w-auto">
+                            <div className={`w-11 h-11 sm:w-13 sm:h-13 rounded-2xl flex items-center justify-center text-xl sm:text-2xl font-black shrink-0 ${
+                              isCorrect ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/40' : 'bg-rose-500 text-white shadow-lg shadow-rose-500/40'
+                            }`}>
+                              {isCorrect ? '✓' : '✕'}
+                            </div>
+                            <div className="flex flex-col">
+                              <span className={`text-sm sm:text-base font-black tracking-wide ${
+                                isCorrect ? 'text-emerald-400' : 'text-rose-400'
+                              }`}>
+                                {isCorrect ? '¡Excelente! Respuesta Correcta 🎉' : 'Respuesta Incorrecta 💡'}
+                              </span>
+                              <span className="text-xs sm:text-sm font-medium opacity-90 leading-tight max-w-2xl">
+                                {qData.explanation}
+                              </span>
+                            </div>
+                          </div>
+
+                          <button
+                            type="button"
+                            onClick={goToNext}
+                            className={`w-full sm:w-auto px-8 py-3.5 rounded-2xl font-black text-sm sm:text-base text-white shadow-xl transition-all cursor-pointer flex items-center justify-center gap-2 hover:scale-105 active:scale-95 shrink-0 ${
+                              isCorrect
+                                ? 'bg-emerald-500 hover:bg-emerald-400 shadow-emerald-500/40'
+                                : 'bg-rose-500 hover:bg-rose-400 shadow-rose-500/40'
+                            }`}
+                          >
+                            <span>CONTINUAR</span>
+                            <span className="text-lg">→</span>
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })()}
 
                 {/* 3, 9. ReorderSequence */}
                 {qData.kind === 'ReorderSequence' && (() => {
@@ -1351,8 +1384,8 @@ export default function CourseSlideViewer({
                   };
 
                   return (
-                    <div className="flex flex-col gap-4">
-                      <div className={`p-4 rounded-xl border-2 border-dashed min-h-[70px] flex items-center gap-2 flex-wrap ${
+                    <div className="flex flex-col gap-3">
+                      <div className={`p-3.5 rounded-xl border-2 border-dashed min-h-[60px] flex items-center gap-2 flex-wrap ${
                         isDark ? 'border-slate-700 bg-slate-900/90' : 'border-slate-300 bg-slate-100'
                       }`}>
                         {currentSelected.length === 0 ? (
@@ -1365,7 +1398,7 @@ export default function CourseSlideViewer({
                               key={idx}
                               type="button"
                               onClick={() => handleRemoveToken(token)}
-                              className="px-3 py-1.5 rounded-lg bg-indigo-600 text-white font-mono text-sm font-bold shadow-md hover:bg-indigo-500 cursor-pointer flex items-center gap-1"
+                              className="px-3 py-1.5 rounded-lg bg-indigo-600 text-white font-mono text-xs sm:text-sm font-bold shadow-md hover:bg-indigo-500 cursor-pointer flex items-center gap-1"
                             >
                               <span>{token}</span>
                               <span className="text-xs opacity-75">✕</span>
@@ -1383,7 +1416,7 @@ export default function CourseSlideViewer({
                               type="button"
                               disabled={isUsed}
                               onClick={() => handleAddToken(token)}
-                              className={`px-4 py-2 rounded-xl font-mono text-sm font-bold border transition-all cursor-pointer ${
+                              className={`px-3.5 py-2 rounded-xl font-mono text-xs sm:text-sm font-bold border transition-all cursor-pointer ${
                                 isUsed
                                   ? 'opacity-30 bg-slate-800 text-slate-500 border-slate-800'
                                   : isDark
@@ -1397,30 +1430,46 @@ export default function CourseSlideViewer({
                         })}
                       </div>
 
+                      {/* FEEDBACK DRAWER ESTILO DUOLINGO FIXED BOTTOM */}
                       {isSubmitted && (
-                        <div className={`p-3.5 rounded-xl border text-sm font-semibold flex items-center justify-between gap-3 animate-fade-in ${
+                        <div className={`fixed bottom-0 left-0 right-0 z-50 p-4 sm:p-5 border-t-2 shadow-2xl backdrop-blur-2xl transition-all animate-slide-up flex flex-col sm:flex-row items-center justify-between gap-4 ${
                           isCorrectOrder
-                            ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-600'
-                            : 'bg-rose-500/10 border-rose-500/30 text-rose-600'
+                            ? isDark
+                              ? 'bg-slate-950/95 border-emerald-500 text-emerald-100 shadow-emerald-950/80'
+                              : 'bg-emerald-50 border-emerald-500 text-emerald-950 shadow-emerald-900/30'
+                            : isDark
+                            ? 'bg-slate-950/95 border-rose-500 text-rose-100 shadow-rose-950/80'
+                            : 'bg-rose-50 border-rose-500 text-rose-950 shadow-rose-900/30'
                         }`}>
-                          <div className="flex items-center gap-3">
-                            <span className="text-xl">{isCorrectOrder ? '🎉' : '💡'}</span>
-                            <div>
-                              <span className="block font-bold">
-                                {isCorrectOrder ? '¡Fantástico! Secuencia Ordenada Correctamente.' : 'Secuencia Incorrecta.'}
+                          <div className="flex items-center gap-3 sm:gap-4 w-full sm:w-auto">
+                            <div className={`w-11 h-11 sm:w-13 sm:h-13 rounded-2xl flex items-center justify-center text-xl sm:text-2xl font-black shrink-0 ${
+                              isCorrectOrder ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/40' : 'bg-rose-500 text-white shadow-lg shadow-rose-500/40'
+                            }`}>
+                              {isCorrectOrder ? '✓' : '✕'}
+                            </div>
+                            <div className="flex flex-col">
+                              <span className={`text-sm sm:text-base font-black tracking-wide ${
+                                isCorrectOrder ? 'text-emerald-400' : 'text-rose-400'
+                              }`}>
+                                {isCorrectOrder ? '¡Fantástico! Secuencia Ordenada 🎉' : 'Secuencia Incorrecta 💡'}
                               </span>
-                              <span className="text-xs opacity-90">{qData.explanation}</span>
+                              <span className="text-xs sm:text-sm font-medium opacity-90 leading-tight max-w-2xl">
+                                {qData.explanation}
+                              </span>
                             </div>
                           </div>
 
                           <button
                             type="button"
                             onClick={goToNext}
-                            className="px-5 py-2.5 rounded-xl font-extrabold text-xs sm:text-sm text-white shadow-lg transition-all cursor-pointer shrink-0 flex items-center gap-1.5 hover:opacity-90 active:scale-95"
-                            style={{ backgroundColor: activeAccent }}
+                            className={`w-full sm:w-auto px-8 py-3.5 rounded-2xl font-black text-sm sm:text-base text-white shadow-xl transition-all cursor-pointer flex items-center justify-center gap-2 hover:scale-105 active:scale-95 shrink-0 ${
+                              isCorrectOrder
+                                ? 'bg-emerald-500 hover:bg-emerald-400 shadow-emerald-500/40'
+                                : 'bg-rose-500 hover:bg-rose-400 shadow-rose-500/40'
+                            }`}
                           >
-                            <span>Continuar</span>
-                            <span>→</span>
+                            <span>CONTINUAR</span>
+                            <span className="text-lg">→</span>
                           </button>
                         </div>
                       )}
@@ -1454,8 +1503,8 @@ export default function CourseSlideViewer({
                   const isComplete = Object.keys(currentMatched).length === qData.pairs.length;
 
                   return (
-                    <div className="flex flex-col gap-4">
-                      <div className="grid grid-cols-2 gap-4">
+                    <div className="flex flex-col gap-3">
+                      <div className="grid grid-cols-2 gap-3">
                         {/* Columna A */}
                         <div className="flex flex-col gap-2">
                           <h3 className={`text-xs font-bold uppercase tracking-wider m-0 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
@@ -1480,7 +1529,7 @@ export default function CourseSlideViewer({
                                 type="button"
                                 disabled={isMatched}
                                 onClick={() => handleLeftClick(item.id)}
-                                className={`p-3 rounded-xl border text-xs sm:text-sm font-mono font-bold text-left transition-all cursor-pointer flex items-center justify-between ${style}`}
+                                className={`p-2.5 rounded-xl border text-xs sm:text-sm font-mono font-bold text-left transition-all cursor-pointer flex items-center justify-between ${style}`}
                               >
                                 <span>{item.text}</span>
                                 {isMatched && <span>✓</span>}
@@ -1510,7 +1559,7 @@ export default function CourseSlideViewer({
                                 type="button"
                                 disabled={isMatched}
                                 onClick={() => handleRightClick(item.id)}
-                                className={`p-3 rounded-xl border text-xs sm:text-sm font-bold text-left transition-all cursor-pointer flex items-center justify-between ${style}`}
+                                className={`p-2.5 rounded-xl border text-xs sm:text-sm font-bold text-left transition-all cursor-pointer flex items-center justify-between ${style}`}
                               >
                                 <span>{item.text}</span>
                                 {isMatched && <span>✓</span>}
@@ -1520,24 +1569,34 @@ export default function CourseSlideViewer({
                         </div>
                       </div>
 
+                      {/* FEEDBACK DRAWER ESTILO DUOLINGO FIXED BOTTOM */}
                       {isComplete && (
-                        <div className="p-3.5 rounded-xl border bg-emerald-500/10 border-emerald-500/30 text-emerald-600 text-sm font-semibold flex items-center justify-between gap-3 animate-fade-in">
-                          <div className="flex items-center gap-3">
-                            <span className="text-xl">🎉</span>
-                            <div>
-                              <span className="block font-bold">¡Excelente Trabajo! Coincidencias completas.</span>
-                              <span className="text-xs opacity-90">{qData.explanation}</span>
+                        <div className={`fixed bottom-0 left-0 right-0 z-50 p-4 sm:p-5 border-t-2 shadow-2xl backdrop-blur-2xl transition-all animate-slide-up flex flex-col sm:flex-row items-center justify-between gap-4 ${
+                          isDark
+                            ? 'bg-slate-950/95 border-emerald-500 text-emerald-100 shadow-emerald-950/80'
+                            : 'bg-emerald-50 border-emerald-500 text-emerald-950 shadow-emerald-900/30'
+                        }`}>
+                          <div className="flex items-center gap-3 sm:gap-4 w-full sm:w-auto">
+                            <div className="w-11 h-11 sm:w-13 sm:h-13 rounded-2xl bg-emerald-500 text-white flex items-center justify-center text-xl sm:text-2xl font-black shrink-0 shadow-lg shadow-emerald-500/40">
+                              ✓
+                            </div>
+                            <div className="flex flex-col">
+                              <span className="text-sm sm:text-base font-black text-emerald-400 tracking-wide">
+                                ¡Excelente Trabajo! Coincidencias completas 🎉
+                              </span>
+                              <span className="text-xs sm:text-sm font-medium opacity-90 leading-tight max-w-2xl">
+                                {qData.explanation}
+                              </span>
                             </div>
                           </div>
 
                           <button
                             type="button"
                             onClick={goToNext}
-                            className="px-5 py-2.5 rounded-xl font-extrabold text-xs sm:text-sm text-white shadow-lg transition-all cursor-pointer shrink-0 flex items-center gap-1.5 hover:opacity-90 active:scale-95"
-                            style={{ backgroundColor: activeAccent }}
+                            className="w-full sm:w-auto px-8 py-3.5 rounded-2xl font-black text-sm sm:text-base text-white bg-emerald-500 hover:bg-emerald-400 shadow-xl shadow-emerald-500/40 transition-all cursor-pointer flex items-center justify-center gap-2 hover:scale-105 active:scale-95 shrink-0"
                           >
-                            <span>Continuar</span>
-                            <span>→</span>
+                            <span>CONTINUAR</span>
+                            <span className="text-lg">→</span>
                           </button>
                         </div>
                       )}
