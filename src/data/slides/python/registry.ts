@@ -1,4 +1,4 @@
-import type { Slide } from './texto-y-conversiones';
+import type { Slide } from '../../../types/slides';
 import { getQuizForLesson, type QuizQuestion } from './quizzes';
 import { getMetaQuestionsForLesson, type MetaReflectionQuestion } from './metacognition';
 
@@ -108,7 +108,7 @@ export const variablesSlides: Slide[] = [
     bulletPoints: [
       '`int`: Números enteros sin decimales (ej. `25`, `-5`)',
       '`float`: Números reales con punto decimal (ej. `3.1416`, `19.99`)',
-      '`str`: Cadenas de texto entre comillas (ej. `"Python"`, `'Código'`)',
+      '`str`: Cadenas de texto entre comillas (ej. `"Python"`, `"Código"`)',
       '`bool`: Valores de verdad lógica (`True` o `False`)'
     ],
     codeSnippet: {
@@ -342,7 +342,7 @@ export const funcionesSlides: Slide[] = [
     return precio * (1 + impuesto)
 
 total = calcular_total(100)
-print(f"Total a pagar: ${total:.2f}")  # $119.00`,
+print(f"Total a pagar: \${total:.2f}")`,
       explanation: 'El parámetro impuesto tiene un valor predeterminado del 19% si no se envía.'
     },
     keyTakeaway: 'Utiliza docstrings ("""...""") para documentar el propósito de cada función.'
@@ -387,7 +387,7 @@ export const pooSlides: Slide[] = [
 
     def depositar(self, monto):
         self.saldo += monto
-        print(f"Depositado ${monto}. Saldo actual: ${self.saldo}")
+        print(f"Depositado \\\${monto}. Saldo actual: \\\${self.saldo}")
 
 cuenta_juan = CuentaBancaria("Juan", 500)
 cuenta_juan.depositar(200) # Saldo: $700`,
