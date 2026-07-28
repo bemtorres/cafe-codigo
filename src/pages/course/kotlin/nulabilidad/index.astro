@@ -1,0 +1,103 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import KotlinQuizModal from '../../../../components/quizzes/KotlinQuizModal.astro';
+---
+
+<Layout title="Null Safety en Kotlin" description="El sistema de nulabilidad: ?, ?: !!, let y safe calls." courseSlug="kotlin">
+  <article class="content-section">
+    <h1>7. Null Safety: Adiós, NullPointerException</h1>
+
+    <section class="mb-10">
+      <h2>El problema que Kotlin resuelve</h2>
+      <p>El <code>NullPointerException</code> es el error más común en programación. Kotlin lo elimina en <strong>tiempo de compilación</strong> con su sistema de tipos.</p>
+      <blockquote>
+        "Si algo puede ser null, el tipo te lo dice obligatoriamente."
+      </blockquote>
+    </section>
+
+    <section class="mb-10">
+      <h2>Tipos nullable vs no-nullable</h2>
+      <p>Por defecto, las variables en Kotlin <strong>no pueden ser null</strong>. Para permitir null, agrega <code>?</code>:</p>
+      <CodeBlock lang="kotlin" code={`val nombre: String = "Kotlin"   // NO puede ser null
+// nombre = null                // ERROR de compilación
+
+val nullable: String? = "Kotlin" // Puede ser null
+nullable = null                  // OK
+
+// Acceso directo a nullable = ERROR
+// println(nullable.length)      // ERROR
+
+// Acceso seguro con ?.
+println(nullable?.length)        // null (sin crash)`} title="nullable.kt" />
+    </section>
+
+    <section class="mb-10">
+      <h2>Elvis Operator (?:)</h2>
+      <p>Si un valor es null, usa un valor por defecto:</p>
+      <CodeBlock lang="kotlin" code={`val nombre: String? = null
+
+// Si es null, usa "Desconocido"
+val nombreSeguro = nombre ?: "Desconocido"
+println(nombreSeguro)  // "Desconocido"
+
+// Útil con longitudes
+val texto: String? = null
+val longitud = texto?.length ?: 0
+println(longitud)  // 0`} title="elvis.kt" />
+    </section>
+
+    <section class="mb-10">
+      <h2>Non-null assertion (!!)</h2>
+      <p>Úsalo solo cuando estés <strong>seguro</strong> de que no es null. Lanza excepción si lo es:</p>
+      <CodeBlock lang="kotlin" code={`val nombre: String? = "Kotlin"
+val longitud = nombre!!.length  // OK: 6
+
+val vacio: String? = null
+// val error = vacio!!.length  // Lanza NullPointerException`} title="non-null.kt" />
+    </section>
+
+    <section class="mb-10">
+      <h2>let con nullable</h2>
+      <p>Ejecuta un bloque solo si el valor no es null:</p>
+      <CodeBlock lang="kotlin" code={`val email: String? = "ana@mail.com"
+
+email?.let {
+    println("Enviando correo a: $it")
+    // "it" es el valor no-null dentro del bloque
+}
+
+val vacio: String? = null
+vacio?.let {
+    println("Esto NO se imprime")
+}`} title="let.kt" />
+    </section>
+
+    <div class="ejercicio" style="background: #E3F2FD;">
+      <h3>💻 Misión</h3>
+      <p class="enunciado">Crea una variable nullable Int?. Usa ?.let para imprimir su valor si no es null, y usa ?: para asignar 0 si lo es.</p>
+      <details>
+        <summary>👁️ Ver solución sugerida</summary>
+        <CodeBlock lang="kotlin" code={`fun main() {
+    val puntos: Int? = null
+    val puntosSeguro = puntos ?: 0
+    println("Puntos: $puntosSeguro")
+
+    puntos?.let {
+        println("Tienes $it puntos")
+    } ?: println("No hay puntos registrados")
+}`} title="main.kt" />
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Pon a prueba tu null safety</h2>
+      <KotlinQuizModal quizKey="nulabilidad" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/kotlin/funciones/" class="prev">← Funciones</a>
+      <a href="/course/kotlin/colecciones/" class="next">Colecciones →</a>
+    </nav>
+  </article>
+</Layout>

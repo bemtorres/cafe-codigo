@@ -1,0 +1,132 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import KotlinQuizModal from '../../../../components/quizzes/KotlinQuizModal.astro';
+---
+
+<Layout title="Proyecto Agenda de Contactos" description="Proyecto integrador: CRUD con MutableList, data class y menú interactivo." courseSlug="kotlin">
+  <article class="content-section">
+    <h1>13. Proyecto - Agenda de Contactos 📱</h1>
+
+    <section class="mb-10">
+      <h2>Objetivo del proyecto</h2>
+      <p>Vamos a crear una agenda de contactos en consola que aplique todo lo aprendido: <strong>data classes</strong>, <strong>colecciones mutables</strong>, <strong>bucles</strong>, <strong>when</strong>, <strong>funciones</strong> y <strong>null safety</strong>.</p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Paso 1: Modelo de datos</h2>
+      <p>Creamos la data class que representa un contacto:</p>
+      <CodeBlock lang="kotlin" code={`data class Contacto(
+    val id: Int,
+    val nombre: String,
+    val telefono: String,
+    val email: String?
+)`} title="modelos.kt" />
+    </section>
+
+    <section class="mb-10">
+      <h2>Paso 2: Lista de contactos</h2>
+      <p>Usamos <code>mutableListOf</code> para almacenar contactos:</p>
+      <CodeBlock lang="kotlin" code={`val contactos = mutableListOf<Contacto>()
+var nextId = 1
+
+fun agregarContacto(nombre: String, telefono: String, email: String?) {
+    contactos.add(Contacto(nextId++, nombre, telefono, email))
+}
+
+fun eliminarContacto(id: Int) {
+    val eliminado = contactos.removeAll { it.id == id }
+    if (eliminado) println("Contacto eliminado")
+    else println("No se encontró el contacto")
+}
+
+fun buscarContacto(nombre: String): List<Contacto> {
+    return contactos.filter {
+        it.nombre.contains(nombre, ignoreCase = true)
+    }
+}`} title="operaciones.kt" />
+    </section>
+
+    <section class="mb-10">
+      <h2>Paso 3: Menú interactivo</h2>
+      <p>Un bucle while con when para el menú:</p>
+      <CodeBlock lang="kotlin" code={`fun mostrarMenu() {
+    println("\\n=== AGENDA DE CONTACTOS ===")
+    println("1. Agregar contacto")
+    println("2. Listar contactos")
+    println("3. Buscar contacto")
+    println("4. Eliminar contacto")
+    println("0. Salir")
+    print("Elige una opción: ")
+}
+
+fun main() {
+    val contactos = mutableListOf<Contacto>()
+    var nextId = 1
+
+    do {
+        mostrarMenu()
+        val opcion = readLine() ?: "0"
+
+        when (opcion) {
+            "1" -> {
+                print("Nombre: ")
+                val nombre = readLine() ?: ""
+                print("Teléfono: ")
+                val tel = readLine() ?: ""
+                print("Email (opcional): ")
+                val email = readLine()?.ifEmpty { null }
+                contactos.add(Contacto(nextId++, nombre, tel, email))
+                println("Contacto agregado!")
+            }
+            "2" -> {
+                if (contactos.isEmpty()) {
+                    println("No hay contactos")
+                } else {
+                    contactos.forEach { c ->
+                        println("\${c.id}. \${c.nombre} | \${c.telefono} | \${c.email ?: "sin email"}")
+                    }
+                }
+            }
+            "3" -> {
+                print("Buscar nombre: ")
+                val busqueda = readLine() ?: ""
+                val encontrados = contactos.filter {
+                    it.nombre.contains(busqueda, ignoreCase = true)
+                }
+                encontrados.forEach { println(it) }
+                if (encontrados.isEmpty()) println("No se encontraron contactos")
+            }
+            "4" -> {
+                print("ID a eliminar: ")
+                val id = readLine()?.toIntOrNull()
+                if (id != null) {
+                    val eliminado = contactos.removeAll { it.id == id }
+                    if (eliminado) println("Eliminado") else println("No encontrado")
+                } else {
+                    println("ID inválido")
+                }
+            }
+            "0" -> println("¡Hasta luego!")
+            else -> println("Opción inválida")
+        }
+    } while (opcion != "0")
+}`} title="agenda.kt" />
+    </section>
+
+    <div class="ejercicio" style="background: #FFF9C4;">
+      <h3>🟣 Reto extra</h3>
+      <p class="enunciado">Agrega una opción "5. Exportar contactos" que imprima todos los contactos en formato CSV (nombre,telefono,email).</p>
+    </div>
+
+    <section class="mb-10">
+      <h2>Pon a prueba tu proyecto</h2>
+      <KotlinQuizModal quizKey="proyecto-agenda" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/kotlin/excepciones/" class="prev">← Excepciones</a>
+      <a href="/course/kotlin/coroutines-intro/" class="next">Coroutines →</a>
+    </nav>
+  </article>
+</Layout>

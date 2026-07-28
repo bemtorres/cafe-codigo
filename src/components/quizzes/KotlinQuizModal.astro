@@ -1,0 +1,19 @@
+---
+import QuizModal from './QuizModal.astro';
+
+type Props = {
+  quizKey: string;
+};
+
+const { quizKey } = Astro.props as Props;
+---
+
+<QuizModal
+  courseSlug="kotlin"
+  quizKey={quizKey}
+  title="Kotlin Quiz"
+  brandingColor="#A97BFF"
+  brandingBg="#F3E8FF"
+  brandingText="#1a1a1b"
+  logo="🟣"
+/>

@@ -1,0 +1,84 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import KotlinQuizModal from '../../../../components/quizzes/KotlinQuizModal.astro';
+---
+
+<Layout title="Strings y formato en Kotlin" description="Templates, funciones de string y formato de texto en Kotlin." courseSlug="kotlin">
+  <article class="content-section">
+    <h1>3. Strings y formato: Texto elegante</h1>
+
+    <section class="mb-10">
+      <h2>String Templates: El poder del $</h2>
+      <p>Kotlin permite insertar variables y expresiones directamente en strings con <code>$</code>:</p>
+      <CodeBlock lang="kotlin" code={`val nombre = "Kotlin"
+val version = 2.0
+
+// Simple: $variable
+println("Lenguaje: $nombre")
+
+// Expresión: \${expresion}
+println("Versión: \${version + 0.5}")
+println("Mayúsculas: \${nombre.uppercase()}")`} title="templates.kt" />
+    </section>
+
+    <section class="mb-10">
+      <h2>Funciones útiles de String</h2>
+      <p>Kotlin tiene muchas funciones integradas para trabajar con texto:</p>
+      <CodeBlock lang="kotlin" code={`val saludo = "  Hola, Kotlin!  "
+
+println(saludo.trim())          // "Hola, Kotlin!"
+println(saludo.trim().lowercase()) // "hola, kotlin!"
+println(saludo.trim().uppercase()) // "HOLA, KOTLIN!"
+
+val frase = "Me gusta Kotlin"
+println(frase.replace("Kotlin", "Java"))  // "Me gusta Java"
+println(frase.contains("Kotlin"))          // true
+println(frase.length)                      // 14
+
+val lista = "uno,dos,tres"
+println(lista.split(","))  // ["uno", "dos", "tres"]`} title="funciones-string.kt" />
+    </section>
+
+    <section class="mb-10">
+      <h2>Strings multilínea</h2>
+      <p>Para textos largos usa <code>"""</code> (triple comilla):</p>
+      <CodeBlock lang="kotlin" code={`val poema = """
+    |Kotlin es genial,
+    |conciso y moderno.
+    |Null safety me salva.
+""".trimMargin()
+
+println(poema)`} title="multiline.kt" />
+    </section>
+
+    <div class="ejercicio" style="background: #E3F2FD;">
+      <h3>💻 Misión</h3>
+      <p class="enunciado">Crea un string con tu nombre y edad. Usa templates para imprimir: "Me llamo [nombre] y tengo [edad] años". Luego crea un string multilínea con tu frase favorita.</p>
+      <details>
+        <summary>👁️ Ver solución sugerida</summary>
+        <CodeBlock lang="kotlin" code={`fun main() {
+    val nombre = "Benjamín"
+    val edad = 25
+    println("Me llamo $nombre y tengo $edad años")
+
+    val frase = """
+        |La mejor manera de aprender
+        |es practicando todos los días.
+    """.trimMargin()
+    println(frase)
+}`} title="main.kt" />
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Pon a prueba tus strings</h2>
+      <KotlinQuizModal quizKey="strings-y-formato" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/kotlin/variables-y-tipos/" class="prev">← Variables y tipos</a>
+      <a href="/course/kotlin/condicionales/" class="next">Condicionales →</a>
+    </nav>
+  </article>
+</Layout>

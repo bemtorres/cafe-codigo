@@ -1,0 +1,86 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import KotlinQuizModal from '../../../../components/quizzes/KotlinQuizModal.astro';
+---
+
+<Layout title="Variables y tipos en Kotlin" description="val vs var, tipos de datos y la inferencia de tipos de Kotlin." courseSlug="kotlin">
+  <article class="content-section">
+    <h1>2. Variables y tipos: Contenedores de datos</h1>
+
+    <section class="mb-10">
+      <h2>val vs var: Inmutabilidad primero</h2>
+      <p>Kotlin distingue claramente entre lo que <strong>puede cambiar</strong> y lo que <strong>no</strong>:</p>
+      <ul class="mb-4">
+        <li><strong>val</strong>: constante, no se puede reasignar (preferí usar val siempre).</li>
+        <li><strong>var</strong>: mutable, puede reasignarse.</li>
+      </ul>
+      <CodeBlock lang="kotlin" code={`val nombre = "Kotlin"    // inmutable
+// nombre = "Java"      // ERROR: no se puede reasignar
+
+var edad = 25           // mutable
+edad = 26               // OK: se puede reasignar
+println(edad)`} title="val-vs-var.kt" />
+    </section>
+
+    <section class="mb-10">
+      <h2>Tipos de datos básicos</h2>
+      <p>Kotlin es <strong>estáticamente tipado</strong>, pero infiere el tipo automáticamente:</p>
+      <CodeBlock lang="kotlin" code={`val entero: Int = 42
+val decimal: Double = 3.14
+val texto: String = "Hola"
+val activo: Boolean = true
+
+// Kotlin infiere el tipo:
+valAutomatico = 100       // Int
+val tambienAutomatico = "Texto"  // String`} title="tipos.kt" />
+    </section>
+
+    <section class="mb-10">
+      <h2>Conversión de tipos</h2>
+      <p>A diferencia de Java, Kotlin <strong>no hace casting implícito</strong>. Debes ser explícito:</p>
+      <CodeBlock lang="kotlin" code={`val numero: Int = 42
+val decimal: Double = numero.toDouble()   // Int → Double
+val texto: String = numero.toString()    // Int → String
+val desdeTexto: Int = "100".toInt()      // String → Int
+
+println(decimal)   // 42.0
+println(texto)     // "42"
+println(desdeTexto) // 100`} title="conversiones.kt" />
+    </section>
+
+    <div class="ejercicio" style="background: #E3F2FD;">
+      <h3>💻 Misión</h3>
+      <p class="enunciado">Declara variables de cada tipo (Int, Double, String, Boolean) e imprímelas con println(). Luego convierte un Int a String y un Double a Int.</p>
+      <details>
+        <summary>👁️ Ver solución sugerida</summary>
+        <CodeBlock lang="kotlin" code={`fun main() {
+    val edad: Int = 28
+    val precio: Double = 19.99
+    val nombre: String = "Ana"
+    val activo: Boolean = true
+
+    println(edad)
+    println(precio)
+    println(nombre)
+    println(activo)
+
+    val edadTexto = edad.toString()
+    val precioEntero = precio.toInt()
+    println("Edad como texto: $edadTexto")
+    println("Precio como entero: $precioEntero")
+}`} title="main.kt" />
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Pon a prueba tus variables</h2>
+      <KotlinQuizModal quizKey="variables-y-tipos" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/kotlin/introduccion/" class="prev">← Introducción</a>
+      <a href="/course/kotlin/strings-y-formato/" class="next">Strings y formato →</a>
+    </nav>
+  </article>
+</Layout>

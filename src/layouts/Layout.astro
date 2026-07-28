@@ -557,13 +557,28 @@ const showLanguageCuriosity =
           </div>
         )}
         {currentCourse && currentLesson && (
-          <div class="embed-hide flex items-center gap-2 mb-2 flex-wrap">
-            <LessonBookmarkToggle
-              client:load
-              courseSlug={currentCourse.slug}
-              lessonSlug={currentLesson.slug}
-              lessonTitle={currentLesson.title}
-            />
+          <div class="embed-hide flex items-center justify-between gap-3 mb-2 flex-wrap">
+            <div class="flex-1 min-w-[220px]">
+              <LessonBookmarkToggle
+                client:load
+                courseSlug={currentCourse.slug}
+                lessonSlug={currentLesson.slug}
+                lessonTitle={currentLesson.title}
+              />
+            </div>
+            <a
+              href={`/course-slides/${currentCourse.slug}/${currentLesson.slug}/`}
+              class="shrink-0 mb-4 inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl border-[3px] border-border bg-gradient-to-r from-[#1e293b] to-[#0f172a] text-white font-nunito font-black text-sm shadow-[3px_3px_0px_#1E1210] hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_#1E1210] transition-all no-underline"
+              title="Ver presentación interactiva en diapositivas estilo PowerPoint"
+            >
+              <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12H4z" />
+              </svg>
+              <span>Presentación</span>
+              <span class="bg-amber-400 text-slate-950 text-[10px] px-2 py-0.5 rounded-full uppercase font-black tracking-wider">
+                PPT 📊
+              </span>
+            </a>
           </div>
         )}
         <slot />

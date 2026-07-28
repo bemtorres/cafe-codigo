@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width" />
+  <title>Café y Código · Compilador SCORM</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&family=Quicksand:wght@500;700&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☕</text></svg>" />
+</head>
+<body>
+  <header class="app-header">
+    <h1>☕ Compilador SCORM · Café y Código</h1>
+    <p>Seleccioná lecciones, configurá el branding y generá paquetes SCORM listos para tu LMS</p>
+  </header>
+
+  <div class="app-grid">
+    <!-- Left: Catalog -->
+    <div>
+      <div class="toolbar">
+        <button class="btn btn-xs" id="selectAll">☑ Seleccionar todo</button>
+        <button class="btn btn-xs" id="selectNone">☐ Limpiar</button>
+        <span class="spacer"></span>
+        <span id="selectedCountTop" class="font-nunito font-black text-sm">0 lecciones</span>
+      </div>
+      <div id="catalog"></div>
+    </div>
+
+    <!-- Right: Branding + Compile -->
+    <div class="branding-panel">
+      <h2>Configuración SCORM</h2>
+
+      <!-- Presets -->
+      <div class="presets">
+        <button type="button" class="btn btn-xs" data-preset="clean">Limpiar</button>
+        <button type="button" class="btn btn-xs" data-preset="student">+ alumno</button>
+      </div>
+
+      <!-- Branding fields -->
+      <div class="field">
+        <label>Institución (title)</label>
+        <input id="brandInstitution" placeholder="Ej: Universidad Nacional" />
+      </div>
+
+      <div class="field">
+        <label>Nombre alumno (name)</label>
+        <input id="brandStudentName" placeholder="Ej: {{student_name}} o Juan Pérez" />
+      </div>
+
+      <div class="field">
+        <label>Email alumno (email)</label>
+        <input id="brandStudentEmail" placeholder="Ej: {{student_email}} o juan@mail.com" />
+      </div>
+
+      <div class="field">
+        <label>Logo URL</label>
+        <input id="brandLogo" placeholder="https://..." />
+      </div>
+
+      <div class="field">
+        <label>Fondo página (background)</label>
+        <input id="brandBackground" placeholder="URL imagen o #color" />
+      </div>
+
+      <div class="color-row">
+        <div class="field">
+          <label>Barra fondo</label>
+          <input id="brandBarColor" type="color" value="#2b1d1b" />
+        </div>
+        <div class="field">
+          <label>Barra texto</label>
+          <input id="brandTextColor" type="color" value="#fdf6e9" />
+        </div>
+      </div>
+
+      <div id="barPreview" class="bar-preview" style="background:#2b1d1b;color:#fdf6e9">
+        <span>🏫 Institución</span>
+        <span>Lección</span>
+      </div>
+
+      <div class="field">
+        <label>Logo preview</label>
+        <img id="logoPreview" style="display:none;max-height:2.5rem;border-radius:0.5rem;border:2px solid var(--color-border);margin-top:0.25rem" />
+      </div>
+
+      <!-- SCORM options -->
+      <div class="color-row">
+        <div class="field">
+          <label>Versión SCORM</label>
+          <select id="scormVersion">
+            <option value="1.2">SCORM 1.2</option>
+            <option value="2004">SCORM 2004</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Empaquetado</label>
+          <select id="packageMode">
+            <option value="single">Un solo ZIP</option>
+            <option value="per-lesson">Un ZIP por lección</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>URL base del sitio</label>
+        <input id="brandBaseUrl" value="https://cafeycodigo.org" />
+      </div>
+
+      <div class="field">
+        <label>Prefijo ZIP</label>
+        <input id="zipPrefix" value="cafeycodigo" />
+      </div>
+
+      <!-- Summary -->
+      <div class="summary-area">
+        <div id="selectedCount" class="font-nunito font-black text-sm"></div>
+        <div id="selectedList"></div>
+      </div>
+
+      <!-- Compile -->
+      <button class="btn btn-primary" id="compileBtn" disabled style="width:100%;margin-top:0.75rem;padding:0.6rem;font-size:0.9rem">
+        Compilar SCORM
+      </button>
+
+      <div id="progressArea" class="hidden">
+        <span id="progressText">Preparando...</span>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>

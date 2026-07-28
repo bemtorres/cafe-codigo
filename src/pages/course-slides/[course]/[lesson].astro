@@ -1,0 +1,57 @@
+---
+import '../../../styles/global.css';
+import '../../../styles/code-themes.css';
+import CourseSlideViewer from '../../../components/slides/CourseSlideViewer';
+import { courses } from '../../../data/courses';
+
+export async function getStaticPaths() {
+  const paths: Array<{
+    params: { course: string; lesson: string };
+    props: { courseName: string; lessonTitle: string };
+  }> = [];
+
+  for (const course of courses) {
+    if (course.lessons && Array.isArray(course.lessons)) {
+      for (const lesson of course.lessons) {
+        paths.push({
+          params: {
+            course: course.slug,
+            lesson: lesson.slug,
+          },
+          props: {
+            courseName: course.name,
+            lessonTitle: lesson.title,
+          },
+        });
+      }
+    }
+  }
+
+  return paths;
+}
+
+const { course, lesson } = Astro.params;
+const { courseName, lessonTitle } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Presentación: {lessonTitle || lesson} | {courseName || course} - cafeycodigo</title>
+    <meta
+      name="description"
+      content={`Presentación interactiva en diapositivas para la lección ${lessonTitle} del curso de ${courseName}.`}
+    />
+  </head>
+  <body class="m-0 p-0 bg-[#0f172a] text-white font-sans antialiased overflow-x-hidden" style="background-image: none !important; background-color: #0f172a !important;">
+    <CourseSlideViewer
+      client:only="react"
+      courseSlug={course!}
+      lessonSlug={lesson!}
+      courseName={courseName}
+      lessonTitle={lessonTitle}
+    />
+  </body>
+</html>

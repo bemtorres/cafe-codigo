@@ -540,3 +540,16 @@ body[data-course="arch"] ::-webkit-scrollbar-thumb { background: #C5A059; border
 .join-otp-caret-blink {
   animation: join-otp-caret-blink 1.2s ease-out infinite;
 }
+
+/* ==============================================
+   ESTILOS DE RESALTADO DE SINTAXIS (CODE HIGHLIGHT)
+   ============================================== */
+.hl-kw { color: #c678dd; font-weight: 700; }
+.hl-str { color: #98c379; }
+.hl-func, .hl-func-call { color: #61afef; }
+.hl-type { color: #e5c07b; }
+.hl-num { color: #d19a66; }
+.hl-comment { color: #7f8c8d; font-style: italic; opacity: 0.85; }
+.hl-annotation, .hl-attr { color: #e06c75; }
+.hl-tag { color: #e06c75; }
+

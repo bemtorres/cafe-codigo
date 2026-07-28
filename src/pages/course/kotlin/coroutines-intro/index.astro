@@ -1,0 +1,136 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import KotlinQuizModal from '../../../../components/quizzes/KotlinQuizModal.astro';
+---
+
+<Layout title="Introducción a Coroutines en Kotlin" description="suspend, launch, async y concurrencia básica en Kotlin." courseSlug="kotlin">
+  <article class="content-section">
+    <h1>14. Introducción a Coroutines ⚡</h1>
+
+    <section class="mb-10">
+      <h2>¿Qué son las Coroutines?</h2>
+      <p>Las <strong>coroutines</strong> son la forma en que Kotlin maneja la concurrencia. Son como hilos, pero mucho más ligeras y fáciles de usar. No necesitas callbacks ni complejidad.</p>
+      <blockquote>
+        "Las coroutines son hilos que el compilador puede pausar y reanudar sin bloquear recursos."
+      </blockquote>
+    </section>
+
+    <section class="mb-10">
+      <h2>Funções suspend</h2>
+      <p>Una función <code>suspend</code> puede pausarse sin bloquear el hilo:</p>
+      <CodeBlock lang="kotlin" code={`import kotlinx.coroutines.*
+import kotlin.system.measureTimeMillis
+
+suspend fun descargarDatos(): String {
+    delay(1000)  // Pausa 1 segundo (no bloquea el hilo)
+    return "Datos descargados"
+}
+
+fun main() = runBlocking {
+    val tiempo = measureTimeMillis {
+        val datos = descargarDatos()
+        println(datos)
+    }
+    println("Tiempo: \${tiempo}ms")  // ~1000ms
+}`} title="suspend.kt" />
+    </section>
+
+    <section class="mb-10">
+      <h2>launch: Tareas en paralelo</h2>
+      <p><code>launch</code> lanza una tarea en segundo plano sin esperar que termine:</p>
+      <CodeBlock lang="kotlin" code={`import kotlinx.coroutines.*
+
+fun main() = runBlocking {
+    // Lanza 3 tareas en paralelo
+    launch { println("Tarea 1: \${Thread.currentThread().name}") }
+    launch { println("Tarea 2: \${Thread.currentThread().name}") }
+    launch { println("Tarea 3: \${Thread.currentThread().name}") }
+
+    println("Tarea principal: \${Thread.currentThread().name}")
+    // Todo se ejecuta prácticamente al mismo tiempo
+}`} title="launch.kt" />
+    </section>
+
+    <section class="mb-10">
+      <h2>async: Obtener resultados</h2>
+      <p><code>async</code> retorna un <code>Deferred</code> con el resultado futuro:</p>
+      <CodeBlock lang="kotlin" code={`import kotlinx.coroutines.*
+
+suspend fun precioDolar(): Double {
+    delay(500)
+    return 950.0
+}
+
+suspend fun precioEuro(): Double {
+    delay(500)
+    return 1050.0
+}
+
+fun main() = runBlocking {
+    val tiempo = measureTimeMillis {
+        // En paralelo
+        val dolar = async { precioDolar() }
+        val euro = async { precioEuro() }
+
+        // Esperar resultados
+        println("Dolar: \${dolar.await()}")
+        println("Euro: \${euro.await()}")
+    }
+    println("Tiempo total: \${tiempo}ms")  // ~500ms (no 1000ms)
+}`} title="async.kt" />
+    </section>
+
+    <section class="mb-10">
+      <h2>withContext: Cambiar de coroutine</h2>
+      <p>Cambia el contexto de ejecución (por ejemplo, para operaciones de IO):</p>
+      <CodeBlock lang="kotlin" code={`import kotlinx.coroutines.*
+
+fun main() = runBlocking {
+    val resultado = withContext(Dispatchers.Default) {
+        // Ejecutar en hilo de CPU
+        (1..1000).sum()
+    }
+    println("Suma: \$resultado")
+}`} title="withContext.kt" />
+    </section>
+
+    <div class="ejercicio" style="background: #E3F2FD;">
+      <h3>💻 Misión</h3>
+      <p class="enunciado">Crea 3 funciones suspend que simulen descargar archivos (delay de diferentes duraciones). Usa async para ejecutarlas en paralelo y muestra el tiempo total vs secuencial.</p>
+      <details>
+        <summary>👁️ Ver solución sugerida</summary>
+        <CodeBlock lang="kotlin" code={`import kotlinx.coroutines.*
+import kotlin.system.measureTimeMillis
+
+suspend fun descargar(nombre: String, ms: Long): String {
+    delay(ms)
+    return "\$nombre descargado"
+}
+
+fun main() = runBlocking {
+    val tiempo = measureTimeMillis {
+        val a = async { descargar("Archivo1", 1000) }
+        val b = async { descargar("Archivo2", 1500) }
+        val c = async { descargar("Archivo3", 800) }
+
+        println(a.await())
+        println(b.await())
+        println(c.await())
+    }
+    println("Total en paralelo: \${tiempo}ms")  // ~1500ms, no 3300ms
+}`} title="main.kt" />
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Pon a prueba tus coroutines</h2>
+      <KotlinQuizModal quizKey="coroutines-intro" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/kotlin/proyecto-agenda/" class="prev">← Proyecto Agenda</a>
+      <a href="/course/kotlin/" class="next">Índice de Kotlin →</a>
+    </nav>
+  </article>
+</Layout>

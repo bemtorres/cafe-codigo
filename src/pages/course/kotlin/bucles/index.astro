@@ -1,0 +1,108 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import KotlinQuizModal from '../../../../components/quizzes/KotlinQuizModal.astro';
+---
+
+<Layout title="Bucles en Kotlin" description="for, while, rangos y repeat en Kotlin." courseSlug="kotlin">
+  <article class="content-section">
+    <h1>5. Bucles: Repetición inteligente</h1>
+
+    <section class="mb-10">
+      <h2>for con rangos</h2>
+      <p>Kotlin tiene rangos poderosos que hacen los bucles limpios y expresivos:</p>
+      <CodeBlock lang="kotlin" code={`// Rango inclusivo: 1, 2, 3, 4, 5
+for (i in 1..5) {
+    println(i)
+}
+
+// Rango excluyente: 1, 2, 3, 4 (sin el 5)
+for (i in 1 until 5) {
+    print("$i ")  // 1 2 3 4
+}
+
+// Decremento
+for (i in 5 downTo 1) {
+    print("$i ")  // 5 4 3 2 1
+}
+
+// Con step (saltos)
+for (i in 0..10 step 2) {
+    print("$i ")  // 0 2 4 6 8 10
+}`} title="rangos.kt" />
+    </section>
+
+    <section class="mb-10">
+      <h2>while y do-while</h2>
+      <p>Funcionan igual que en otros lenguajes:</p>
+      <CodeBlock lang="kotlin" code={`var contador = 5
+while (contador > 0) {
+    print("$contador ")
+    contador--
+}
+// 5 4 3 2 1
+
+do {
+    println("Se ejecuta al menos una vez")
+} while (false)`} title="while.kt" />
+    </section>
+
+    <section class="mb-10">
+      <h2>repeat: Repetir N veces</h2>
+      <p>Una alternativa elegante para bucles con contador fijo:</p>
+      <CodeBlock lang="kotlin" code={`repeat(5) {
+    println("Iteración $it")
+}
+
+// Con índice
+repeat(3) { i ->
+    println("Posición: $i")
+}`} title="repeat.kt" />
+    </section>
+
+    <section class="mb-10">
+      <h2>break y continue</h2>
+      <p>Controla el flujo de tus bucles:</p>
+      <CodeBlock lang="kotlin" code={`// break: salir del bucle
+for (i in 1..10) {
+    if (i == 5) break
+    print("$i ")  // 1 2 3 4
+}
+
+// continue: saltar a la siguiente iteración
+for (i in 1..5) {
+    if (i == 3) continue
+    print("$i ")  // 1 2 4 5
+}`} title="break-continue.kt" />
+    </section>
+
+    <div class="ejercicio" style="background: #E3F2FD;">
+      <h3>💻 Misión</h3>
+      <p class="enunciado">Imprime la tabla de multiplicar del 7 usando un bucle for con rangos. Luego usa repeat para imprimir "Kotlin" 3 veces.</p>
+      <details>
+        <summary>👁️ Ver solución sugerida</summary>
+        <CodeBlock lang="kotlin" code={`fun main() {
+    // Tabla del 7
+    for (i in 1..10) {
+        println("7 x $i = \${7 * i}")
+    }
+
+    // Repeat
+    repeat(3) {
+        println("Kotlin")
+    }
+}`} title="main.kt" />
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Pon a prueba tus bucles</h2>
+      <KotlinQuizModal quizKey="bucles" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/kotlin/condicionales/" class="prev">← Condicionales</a>
+      <a href="/course/kotlin/funciones/" class="next">Funciones →</a>
+    </nav>
+  </article>
+</Layout>

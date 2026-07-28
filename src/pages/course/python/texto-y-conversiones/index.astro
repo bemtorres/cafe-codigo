@@ -1,7 +1,7 @@
 ---
-import Layout from '../../../../layouts/Layout.astro';
-import CodeBlock from '../../../../components/CodeBlock.astro';
-import PythonQuizModal from '../../../../components/quizzes/PythonQuizModal.astro';
+import Layout from "../../../../layouts/Layout.astro";
+import CodeBlock from "../../../../components/CodeBlock.astro";
+import PythonQuizModal from "../../../../components/quizzes/PythonQuizModal.astro";
 ---
 
 <Layout
@@ -10,20 +10,37 @@ import PythonQuizModal from '../../../../components/quizzes/PythonQuizModal.astr
   courseSlug="python"
 >
   <article class="content-section">
-    <h1>3. Texto y tipos básicos: str(), int(), bool() y métodos de <code>str</code></h1>
+    <h1>
+      3. Texto y tipos básicos: str(), int(), bool() y métodos de <code
+        >str</code
+      >
+    </h1>
 
     <section class="mb-10">
-      <h2>No son “propiedades”: son <strong>constructores</strong> (funciones incorporadas)</h2>
+      <h2>
+        No son “propiedades”: son <strong>constructores</strong> (funciones incorporadas)
+      </h2>
       <p>
-        En Python vas a ver cosas como <code>str("13")</code>, <code>int("123")</code> o <code>bool(1)</code>.
-        El nombre técnico suele ser <strong>constructor</strong> o simplemente <strong>función incorporada</strong> que devuelve un valor de ese tipo
-        (a veces <strong>convirtiendo</strong> lo que le pasas).
+        En Python vas a ver cosas como <code>str("13")</code>, <code
+          >int("123")</code
+        > o <code>bool(1)</code>. El nombre técnico suele ser <strong
+          >constructor</strong
+        > o simplemente <strong>función incorporada</strong> que devuelve un valor
+        de ese tipo (a veces <strong>convirtiendo</strong> lo que le pasas).
       </p>
       <ul class="mb-4">
-        <li><code>str(x)</code> → intenta representar <code>x</code> como texto.</li>
-        <li><code>int(x)</code> → intenta interpretar <code>x</code> como entero (si no puede, lanza error).</li>
+        <li>
+          <code>str(x)</code> → intenta representar <code>x</code> como texto.
+        </li>
+        <li>
+          <code>int(x)</code> → intenta interpretar <code>x</code> como entero (si
+          no puede, lanza error).
+        </li>
         <li><code>float(x)</code> → igual, pero número decimal.</li>
-        <li><code>bool(x)</code> → devuelve <code>True</code> o <code>False</code> según las reglas de “verdadero / falso” en Python.</li>
+        <li>
+          <code>bool(x)</code> → devuelve <code>True</code> o <code>False</code> según
+          las reglas de “verdadero / falso” en Python.
+        </li>
       </ul>
       <CodeBlock
         lang="python"
@@ -47,7 +64,8 @@ print(bool(99))     # True`}
     <section class="mb-10">
       <h2><code>type()</code>: saber qué tienes en la mano</h2>
       <p>
-        Cuando dudás si algo es texto o número, <code>type()</code> te lo dice. Esto conecta directo con la lección de variables e <code>input()</code>.
+        Cuando dudás si algo es texto o número, <code>type()</code> te lo dice. Esto
+        conecta directo con la lección de variables e <code>input()</code>.
       </p>
       <CodeBlock
         lang="python"
@@ -61,15 +79,24 @@ print(type(numero))  # <class 'int'>`}
     </section>
 
     <section class="mb-10">
-      <h2><code>len()</code>, posición con <code>[ ]</code> y rebanadas <code>[:]</code></h2>
+      <h2>
+        <code>len()</code>, posición con <code>[ ]</code> y rebanadas <code
+          >[:]</code
+        >
+      </h2>
       <p>
-        Un <code>str</code> es una secuencia de caracteres. Puedes saber <strong>cuántos</strong> tiene, leer <strong>uno por posición</strong>
-        y <strong>cortar pedazos</strong> (slicing). Los índices empiezan en <strong>0</strong> (el primer carácter es el índice 0).
+        Un <code>str</code> es una secuencia de caracteres. Puedes saber <strong
+          >cuántos</strong
+        > tiene, leer <strong>uno por posición</strong>
+        y <strong>cortar pedazos</strong> (slicing). Los índices empiezan en <strong
+          >0</strong
+        > (el primer carácter es el índice 0).
       </p>
 
       <h3 class="mt-6"><code>len(cadena)</code> — cuántos caracteres</h3>
       <p>
-        <code>len</code> cuenta letras, números, espacios y símbolos: cada “unidad” visible cuenta como uno (en textos simples, un carácter).
+        <code>len</code> cuenta letras, números, espacios y símbolos: cada “unidad”
+        visible cuenta como uno (en textos simples, un carácter).
       </p>
       <CodeBlock
         lang="python"
@@ -81,10 +108,14 @@ print(len(clave))     # 7
 print(len(""))        # 0 cadena vacía`}
       />
 
-      <h3 class="mt-6"><code>[0]</code> y <code>[-1]</code> — primer y último carácter</h3>
+      <h3 class="mt-6">
+        <code>[0]</code> y <code>[-1]</code> — primer y último carácter
+      </h3>
       <p>
-        Con corchetes accedés a <strong>una</strong> posición. <code>[0]</code> es siempre el primero.
-        Los índices negativos cuentan desde el final: <code>[-1]</code> es el último, <code>[-2]</code> el anterior, y así.
+        Con corchetes accedés a <strong>una</strong> posición. <code>[0]</code> es
+        siempre el primero. Los índices negativos cuentan desde el final: <code
+          >[-1]</code
+        > es el último, <code>[-2]</code> el anterior, y así.
       </p>
       <CodeBlock
         lang="python"
@@ -98,10 +129,16 @@ print(s[-2])   # 'o'   penúltima
 # Ojo: si el string está vacío, s[0] da error (no hay posición 0)`}
       />
 
-      <h3 class="mt-6"><code>[:3]</code> — las primeras tres letras (o las que indiques)</h3>
+      <h3 class="mt-6">
+        <code>[:3]</code> — las primeras tres letras (o las que indiques)
+      </h3>
       <p>
-        La notación <code>inicio:fin</code> en corchetes devuelve un <strong>tramo</strong>: desde <code>inicio</code> hasta <strong>antes</strong> de <code>fin</code>.
-        Si omitís el inicio, empieza en 0. Por eso <code>[:3]</code> son los índices 0, 1 y 2 (tres caracteres).
+        La notación <code>inicio:fin</code> en corchetes devuelve un <strong
+          >tramo</strong
+        >: desde <code>inicio</code> hasta <strong>antes</strong> de <code
+          >fin</code
+        >. Si omitís el inicio, empieza en 0. Por eso <code>[:3]</code> son los índices
+        0, 1 y 2 (tres caracteres).
       </p>
       <CodeBlock
         lang="python"
@@ -114,12 +151,18 @@ nick = "superuser"
 print(nick[:5])           # 'super'  primeros cinco`}
       />
 
-      <h3 class="mt-6"><code>[2:len(variable)]</code> — del índice 2 hasta el final</h3>
+      <h3 class="mt-6">
+        <code>[2:len(variable)]</code> — del índice 2 hasta el final
+      </h3>
       <p>
-        El segundo número del slicing es <strong>exclusivo</strong>: <code>variable[2:len(variable)]</code> toma desde el índice 2
-        hasta el último carácter incluido, porque <code>len(variable)</code> apunta “una posición después del último”, que es cómo Python cierra el tramo.
-        Es equivalente a escribir <code>variable[2:]</code> (omitir el fin = hasta el final), pero usar <code>len</code> deja explícito
-        que estás pensando en “desde 2 hasta la longitud total”.
+        El segundo número del slicing es <strong>exclusivo</strong>: <code
+          >variable[2:len(variable)]</code
+        > toma desde el índice 2 hasta el último carácter incluido, porque <code
+          >len(variable)</code
+        > apunta “una posición después del último”, que es cómo Python cierra el tramo.
+        Es equivalente a escribir <code>variable[2:]</code> (omitir el fin = hasta
+        el final), pero usar <code>len</code> deja explícito que estás pensando en
+        “desde 2 hasta la longitud total”.
       </p>
       <CodeBlock
         lang="python"
@@ -141,14 +184,24 @@ print(palabra[1:len(palabra) - 1])  # 'bcde'  (sin 'a' ni 'f')`}
     <section class="mb-10">
       <h2>Cadenas (<code>str</code>): métodos que vas a usar todo el tiempo</h2>
       <p>
-        Los textos en Python son objetos de tipo <code>str</code>. No “propiedades para setear” como en otros lenguajes: en general usas
-        <strong>métodos</strong> que devuelven un <strong>texto nuevo</strong> (las cadenas son <strong>inmutables</strong>).
+        Los textos en Python son objetos de tipo <code>str</code>. No
+        “propiedades para setear” como en otros lenguajes: en general usas
+        <strong>métodos</strong> que devuelven un <strong>texto nuevo</strong> (las
+        cadenas son <strong>inmutables</strong>).
       </p>
 
-      <h3 class="mt-6"><code>upper()</code>, <code>lower()</code>, <code>capitalize()</code> y <code>title()</code></h3>
+      <h3 class="mt-6">
+        <code>upper()</code>, <code>lower()</code>, <code>capitalize()</code> y <code
+          >title()</code
+        >
+      </h3>
       <p>
-        <code>upper()</code> y <code>lower()</code> cambian todo el texto. <code>capitalize()</code> deja en mayúscula solo la <strong>primera</strong> letra del string
-        y el resto en minúsculas (ideal para un nombre solo o una frase corta). <code>title()</code> hace eso en <strong>cada palabra</strong> separada por espacios.
+        <code>upper()</code> y <code>lower()</code> cambian todo el texto. <code
+          >capitalize()</code
+        > deja en mayúscula solo la <strong>primera</strong> letra del string y el
+        resto en minúsculas (ideal para un nombre solo o una frase corta). <code
+          >title()</code
+        > hace eso en <strong>cada palabra</strong> separada por espacios.
       </p>
       <CodeBlock
         lang="python"
@@ -167,8 +220,14 @@ if respuesta.lower() == "sí":
     print("Ok")`}
       />
 
-      <h3 class="mt-6"><code>strip()</code>, <code>lstrip()</code>, <code>rstrip()</code> — sacar espacios</h3>
-      <p>Ideal para limpiar lo que escribe el usuario (espacios al inicio o al final).</p>
+      <h3 class="mt-6">
+        <code>strip()</code>, <code>lstrip()</code>, <code>rstrip()</code> — sacar
+        espacios
+      </h3>
+      <p>
+        Ideal para limpiar lo que escribe el usuario (espacios al inicio o al
+        final).
+      </p>
       <CodeBlock
         lang="python"
         title="str-strip.py"
@@ -180,7 +239,9 @@ codigo = "...123..."
 print(codigo.strip("."))  # "123"`}
       />
 
-      <h3 class="mt-6"><code>split()</code> y <code>join()</code> — trocear y unir</h3>
+      <h3 class="mt-6">
+        <code>split()</code> y <code>join()</code> — trocear y unir
+      </h3>
       <CodeBlock
         lang="python"
         title="str-split-join.py"
@@ -193,7 +254,11 @@ frase = " | ".join(nombres)
 print(frase)  # ana | lucas | diego`}
       />
 
-      <h3 class="mt-6"><code>replace()</code>, <code>startswith()</code>, <code>endswith()</code></h3>
+      <h3 class="mt-6">
+        <code>replace()</code>, <code>startswith()</code>, <code
+          >endswith()</code
+        >
+      </h3>
       <CodeBlock
         lang="python"
         title="str-replace-start.py"
@@ -204,7 +269,9 @@ archivo = "foto.PNG"
 print(archivo.lower().endswith(".png"))  # True (normalizamos antes)`}
       />
 
-      <h3 class="mt-6"><code>find()</code>, <code>count()</code>, <code>in</code></h3>
+      <h3 class="mt-6">
+        <code>find()</code>, <code>count()</code>, <code>in</code>
+      </h3>
       <CodeBlock
         lang="python"
         title="str-buscar.py"
@@ -214,9 +281,12 @@ print(texto.count("py"))  # 2
 print("es" in texto)    # True`}
       />
 
-      <h3 class="mt-6">¿Es un número en texto? <code>isdigit()</code> y amigos</h3>
+      <h3 class="mt-6">
+        ¿Es un número en texto? <code>isdigit()</code> y amigos
+      </h3>
       <p>
-        <code>isdigit()</code> sirve para saber si todos los caracteres son dígitos (ojo: no valida floats con punto; para eso hay otras estrategias).
+        <code>isdigit()</code> sirve para saber si todos los caracteres son dígitos
+        (ojo: no valida floats con punto; para eso hay otras estrategias).
       </p>
       <CodeBlock
         lang="python"
@@ -236,7 +306,10 @@ else:
     <div class="ejercicio" style="background: #FFF8E1;">
       <h3>💻 Misión: normalizar un comando</h3>
       <p class="enunciado">
-        Pedí al usuario una palabra. Mostrá en pantalla la misma palabra en minúsculas, sin espacios alrededor, y decí con <code>True</code>/<code>False</code>
+        Pedí al usuario una palabra. Mostrá en pantalla la misma palabra en
+        minúsculas, sin espacios alrededor, y decí con <code>True</code>/<code
+          >False</code
+        >
         si empieza con la letra <code>"p"</code> (después de normalizar).
       </p>
       <details>
@@ -255,18 +328,30 @@ print("¿Empieza con 'p'?", s.startswith("p"))`}
     <section class="mb-10">
       <h2>Práctica: correo corporativo @cafeycodigo.org</h2>
       <p>
-        En todos los casos el correo institucional sigue la misma regla:{' '}
-        <strong>3 primeras letras del nombre</strong> + <strong>2 últimas del apellido</strong> + <code>.</code> +{' '}
-        <strong>año de nacimiento</strong> + <code>@cafeycodigo.org</code> (sin espacios). También pedís{' '}
-        <strong>correo personal</strong> y <strong>edad</strong> como parte del enunciado (aunque en algún ejercicio el año nazca de otra forma).
+        En todos los casos el correo institucional sigue la misma regla:{" "}
+        <strong>3 primeras letras del nombre</strong> + <strong
+          >2 últimas del apellido</strong
+        > + <code>.</code> +{" "}
+        <strong>año de nacimiento</strong> + <code>@cafeycodigo.org</code> (sin espacios).
+        También pedís{" "}
+        <strong>correo personal</strong> y <strong>edad</strong> como parte del enunciado
+        (aunque en algún ejercicio el año nazca de otra forma).
       </p>
 
       <div class="ejercicio mt-6" style="background: #E8F5E9;">
         <h3>💻 1. Ficha de ingreso</h3>
         <p class="enunciado">
-          Solicitá <strong>nombre</strong>, <strong>apellido</strong>, <strong>correo personal</strong> y <strong>edad</strong> (entero). Calculá el año de nacimiento como{' '}
-          <code>año actual − edad</code> usando <code>datetime.date.today().year</code>. Armá el correo corporativo con la regla de arriba (normalizá nombre y apellido en{' '}
-          <strong>minúsculas</strong> y sin espacios al inicio/fin). Mostrá el correo personal y el corporativo en dos líneas claras.
+          Solicitá <strong>nombre</strong>, <strong>apellido</strong>, <strong
+            >correo personal</strong
+          > y <strong>edad</strong> (entero). Calculá el año de nacimiento como{
+            " "
+          }
+          <code>año actual − edad</code> usando <code
+            >datetime.date.today().year</code
+          >. Armá el correo corporativo con la regla de arriba (normalizá nombre
+          y apellido en{" "}
+          <strong>minúsculas</strong> y sin espacios al inicio/fin). Mostrá el correo
+          personal y el corporativo en dos líneas claras.
         </p>
         <details>
           <summary>👁️ Ver solución sugerida</summary>
@@ -293,7 +378,11 @@ print("Correo corporativo:", correo_corp)`}
       <div class="ejercicio mt-6" style="background: #E3F2FD;">
         <h3>💻 2. Validá la edad antes de convertir</h3>
         <p class="enunciado">
-          Mismos datos que el ejercicio 1. Antes de hacer <code>int(edad)</code>, leé la edad como texto y comprobá con <code>isdigit()</code>. Si no es un entero válido, mostrá un mensaje de error y no generes el correo. Si es válido, calculá el año de nacimiento y el correo corporativo con la misma regla (nombre/apellido en minúsculas).
+          Mismos datos que el ejercicio 1. Antes de hacer <code>int(edad)</code
+          >, leé la edad como texto y comprobá con <code>isdigit()</code>. Si no
+          es un entero válido, mostrá un mensaje de error y no generes el
+          correo. Si es válido, calculá el año de nacimiento y el correo
+          corporativo con la misma regla (nombre/apellido en minúsculas).
         </p>
         <details>
           <summary>👁️ Ver solución sugerida</summary>
@@ -322,7 +411,15 @@ else:
       <div class="ejercicio mt-6" style="background: #F3E5F5;">
         <h3>💻 3. Año de nacimiento explícito</h3>
         <p class="enunciado">
-          Pedí nombre, apellido, correo personal, edad <strong>y además el año de nacimiento en cuatro dígitos</strong> (por ejemplo <code>2008</code>). Para el correo corporativo usá <strong>ese año ingresado</strong>, no el calculado desde la edad (así practicas otro <code>int()</code>). Al final mostrá una línea que diga si la edad coincide aproximadamente con el año (opcional: compará <code>date.today().year - edad</code> con el año ingresado).
+          Pedí nombre, apellido, correo personal, edad <strong
+            >y además el año de nacimiento en cuatro dígitos</strong
+          > (por ejemplo <code>2008</code>). Para el correo corporativo usá <strong
+            >ese año ingresado</strong
+          >, no el calculado desde la edad (así practicas otro <code>int()</code
+          >). Al final mostrá una línea que diga si la edad coincide
+          aproximadamente con el año (opcional: compará <code
+            >date.today().year - edad</code
+          > con el año ingresado).
         </p>
         <details>
           <summary>👁️ Ver solución sugerida</summary>
@@ -350,7 +447,13 @@ print("¿Coincide el año con la edad?", calculado == anio_nac)`}
       <div class="ejercicio mt-6" style="background: #FFF3E0;">
         <h3>💻 4. Nombre compuesto: solo la primera palabra</h3>
         <p class="enunciado">
-          Pedí los mismos cuatro datos. Si el usuario escribe un nombre compuesto (ej. <code>"María Laura"</code>), tomá <strong>solo la primera palabra</strong> para las tres letras iniciales (usá <code>split()</code>). El apellido sigue entero para las dos últimas letras. El año de nacimiento sale de <code>año actual − edad</code>. Mostrá el correo corporativo con <code>f"..."</code>.
+          Pedí los mismos cuatro datos. Si el usuario escribe un nombre
+          compuesto (ej. <code>"María Laura"</code>), tomá <strong
+            >solo la primera palabra</strong
+          > para las tres letras iniciales (usá <code>split()</code>). El
+          apellido sigue entero para las dos últimas letras. El año de
+          nacimiento sale de <code>año actual − edad</code>. Mostrá el correo
+          corporativo con <code>f"..."</code>.
         </p>
         <details>
           <summary>👁️ Ver solución sugerida</summary>
@@ -377,7 +480,15 @@ print("Correo corporativo:", correo_corp)`}
       <div class="ejercicio mt-6" style="background: #ECEFF1;">
         <h3>💻 5. Comprobá el correo personal</h3>
         <p class="enunciado">
-          Pedí nombre, apellido, correo personal y edad. Generá el correo corporativo como en el ejercicio 1. Además, sin usar regex avanzada, indicá con <code>True</code>/<code>False</code> si el correo personal <strong>contiene</strong> el carácter <code>@</code> y si <strong>termina</strong> en <code>.org</code>, <code>.com</code> o <code>.edu</code> (usá <code>in</code> y <code>endswith()</code> en minúsculas). Mostrá el corporativo y esas dos comprobaciones.
+          Pedí nombre, apellido, correo personal y edad. Generá el correo
+          corporativo como en el ejercicio 1. Además, sin usar regex avanzada,
+          indicá con <code>True</code>/<code>False</code> si el correo personal <strong
+            >contiene</strong
+          > el carácter <code>@</code> y si <strong>termina</strong> en <code
+            >.org</code
+          >, <code>.com</code> o <code>.edu</code> (usá <code>in</code> y <code
+            >endswith()</code
+          > en minúsculas). Mostrá el corporativo y esas dos comprobaciones.
         </p>
         <details>
           <summary>👁️ Ver solución sugerida</summary>

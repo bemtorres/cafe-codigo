@@ -125,119 +125,11 @@ export default function ShareEmbedButton({ courseSlug, lessonSlug, courseName, l
                 </p>
                 <ul className="m-0 pl-4 flex flex-col gap-0.5 font-nunito text-[0.78rem] text-[#0e7490]">
                   <li><code className="bg-white/80 px-1 rounded font-mono">?embed=true</code> — Oculta navbar, banner y controles de la plataforma.</li>
+                  <li><code className="bg-white/80 px-1 rounded font-mono">?metaquestions=true</code> — Agrega diapositiva de reflexión/metacognición antes del final.</li>
+                  <li><code className="bg-white/80 px-1 rounded font-mono">?bar=false</code> — Oculta totalmente la barra inferior en las presentaciones.</li>
                   <li><code className="bg-white/80 px-1 rounded font-mono">?title=MIT</code> — Muestra el nombre de la institución en la barra superior.</li>
                   <li><code className="bg-white/80 px-1 rounded font-mono">?quiz=false</code> — Oculta el quiz de la lección. Por defecto el quiz es visible.</li>
-                  <li><code className="bg-white/80 px-1 rounded font-mono">?name=NOMBRE</code> — Nombre del estudiante; aparece en la barra superior del embed.</li>
-                  <li><code className="bg-white/80 px-1 rounded font-mono">?email=CORREO</code> — Email del estudiante (útil para registro de progreso).</li>
                 </ul>
-              </div>
-
-              {/* Institución */}
-              <div className="flex flex-col gap-2">
-                <label className="flex flex-col gap-1">
-                  <span className="font-nunito font-extrabold text-[0.82rem] text-textMuted uppercase tracking-widest">
-                    Nombre de la institución <span className="normal-case font-normal text-textMuted/60">(opcional)</span>
-                  </span>
-                  <input
-                    type="text"
-                    value={institution}
-                    onChange={(e) => setInstitution(e.target.value)}
-                    placeholder="Ej: INACAP, Universidad de Chile…"
-                    className="border-2 border-border rounded-xl px-3 py-2 font-nunito text-sm outline-none focus:border-info"
-                  />
-                  <span className="font-nunito text-[0.72rem] text-textMuted">
-                    Aparece en la barra superior del embed como encabezado de contexto.
-                  </span>
-                </label>
-              </div>
-
-              {/* Dimensiones */}
-              <div className="flex flex-col gap-2">
-                <p className="font-nunito font-extrabold text-[0.82rem] text-textMuted m-0 uppercase tracking-widest">Dimensiones del iframe</p>
-                <div className="flex gap-3 items-center">
-                  <label className="flex flex-col gap-1 flex-1">
-                    <span className="font-nunito text-[0.75rem] font-bold text-textSecondary">Ancho</span>
-                    <input
-                      type="text"
-                      value={width}
-                      onChange={(e) => setWidth(e.target.value)}
-                      className="border-2 border-border rounded-xl px-3 py-1.5 font-mono text-sm outline-none focus:border-info"
-                      placeholder="100% o 800"
-                    />
-                  </label>
-                  <label className="flex flex-col gap-1 flex-1">
-                    <span className="font-nunito text-[0.75rem] font-bold text-textSecondary">Alto (px)</span>
-                    <input
-                      type="number"
-                      value={height}
-                      onChange={(e) => setHeight(e.target.value)}
-                      className="border-2 border-border rounded-xl px-3 py-1.5 font-mono text-sm outline-none focus:border-info"
-                      placeholder="650"
-                    />
-                  </label>
-                </div>
-              </div>
-
-              {/* Quiz */}
-              <div className="flex flex-col gap-2">
-                <p className="font-nunito font-extrabold text-[0.82rem] text-textMuted m-0 uppercase tracking-widest">Quiz al final de la lección</p>
-                <div className="flex gap-2">
-                  {(['show', 'hide'] as QuizMode[]).map((m) => (
-                    <button
-                      key={m}
-                      type="button"
-                      onClick={() => setQuizMode(m)}
-                      className={`flex-1 rounded-xl border-2 py-2 font-nunito font-extrabold text-sm transition-all ${
-                        quizMode === m
-                          ? 'bg-[#2b1d1b] text-white border-border shadow-neo'
-                          : 'bg-white text-textSecondary border-border hover:bg-tertiary/30'
-                      }`}
-                    >
-                      {m === 'show' ? '✅ Mostrar quiz' : '🚫 Ocultar quiz'}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Código básico */}
-              <div className="flex flex-col gap-2">
-                <div className="flex items-center justify-between">
-                  <p className="font-nunito font-black text-[0.88rem] text-textPrimary m-0">Código HTML básico</p>
-                  <button
-                    type="button"
-                    onClick={() => copyToClipboard(iframeCode)}
-                    className="inline-flex items-center gap-1.5 rounded-xl border-2 border-border bg-white px-3 py-1 font-nunito font-extrabold text-[0.75rem] shadow-neo transition-all hover:-translate-y-0.5 hover:bg-success hover:text-white hover:border-success"
-                  >
-                    {copied ? '✅ Copiado' : '📋 Copiar'}
-                  </button>
-                </div>
-                <pre className="m-0 rounded-xl border-2 border-border bg-[#1a0e0a] p-4 overflow-x-auto">
-                  <code className="font-mono text-[0.75rem] text-[#e8d5c4] whitespace-pre">
-                    {iframeCode}
-                  </code>
-                </pre>
-              </div>
-
-              {/* Código con datos del estudiante */}
-              <div className="flex flex-col gap-2">
-                <div className="flex items-center justify-between">
-                  <p className="font-nunito font-black text-[0.88rem] text-textPrimary m-0">Código con datos del estudiante</p>
-                  <button
-                    type="button"
-                    onClick={() => copyToClipboard(iframeCodePersonalized)}
-                    className="inline-flex items-center gap-1.5 rounded-xl border-2 border-border bg-white px-3 py-1 font-nunito font-extrabold text-[0.75rem] shadow-neo transition-all hover:-translate-y-0.5 hover:bg-success hover:text-white hover:border-success"
-                  >
-                    📋 Copiar
-                  </button>
-                </div>
-                <p className="font-nunito text-[0.75rem] text-textMuted m-0">
-                  Reemplaza <code className="bg-gray-100 px-1 rounded font-mono">NOMBRE</code> y <code className="bg-gray-100 px-1 rounded font-mono">CORREO</code> con los datos reales del estudiante (pueden venir de variables de tu LMS).
-                </p>
-                <pre className="m-0 rounded-xl border-2 border-border bg-[#1a0e0a] p-4 overflow-x-auto">
-                  <code className="font-mono text-[0.75rem] text-[#e8d5c4] whitespace-pre">
-                    {iframeCodePersonalized}
-                  </code>
-                </pre>
               </div>
 
               {/* Vista previa del link directo */}
@@ -256,6 +148,45 @@ export default function ShareEmbedButton({ courseSlug, lessonSlug, courseName, l
                   </button>
                 </div>
               </div>
+
+              {/* NUEVA SECCIÓN: Presentación de Diapositivas (PPT Mode) */}
+              {lessonSlug && (
+                <div className="rounded-2xl border-2 border-amber-400/80 bg-amber-50/70 p-4 flex flex-col gap-3">
+                  <div className="flex items-center justify-between">
+                    <p className="font-nunito font-black text-[0.9rem] text-amber-950 m-0 flex items-center gap-2">
+                      <span>📊 Link & Embed de Presentación (Diapositivas)</span>
+                      <span className="bg-amber-400 text-slate-950 text-[10px] px-2 py-0.5 rounded-full font-black uppercase">PPT</span>
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => copyToClipboard(`${origin}/course-slides/${courseSlug}/${lessonSlug}/`)}
+                      className="inline-flex items-center gap-1.5 rounded-xl border-2 border-border bg-white px-3 py-1 font-nunito font-extrabold text-[0.75rem] shadow-neo transition-all hover:-translate-y-0.5 hover:bg-amber-300"
+                    >
+                      📋 Copiar URL Presentación
+                    </button>
+                  </div>
+                  
+                  <p className="font-nunito text-[0.75rem] text-amber-900 m-0">
+                    Abre o incrusta la lección en modo diapositivas paso a paso estilo PowerPoint:
+                  </p>
+
+                  <div className="flex flex-col gap-1.5">
+                    <span className="font-nunito text-[0.72rem] font-bold text-amber-900">Código iframe para Presentación (Modo Embed Limpio):</span>
+                    <pre className="m-0 rounded-xl border-2 border-border bg-[#0f172a] p-3 overflow-x-auto">
+                      <code className="font-mono text-[0.73rem] text-amber-300 whitespace-pre">
+{`<iframe
+  src="${origin}/course-slides/${courseSlug}/${lessonSlug}/?embed=true&bar=false&metaquestions=true"
+  width="${width}"
+  height="${height}px"
+  style="border:none; border-radius:12px; overflow:hidden;"
+  allow="clipboard-write"
+  title="Presentación ${lessonTitle ?? courseName}"
+></iframe>`}
+                      </code>
+                    </pre>
+                  </div>
+                </div>
+              )}
 
             </div>
 

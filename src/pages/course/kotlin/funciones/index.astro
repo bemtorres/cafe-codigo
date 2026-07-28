@@ -1,0 +1,94 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import KotlinQuizModal from '../../../../components/quizzes/KotlinQuizModal.astro';
+---
+
+<Layout title="Funciones en Kotlin" description="fun, parámetros, retorno y expresiones de función en Kotlin." courseSlug="kotlin">
+  <article class="content-section">
+    <h1>6. Funciones: Bloques reutilizables</h1>
+
+    <section class="mb-10">
+      <h2>Sintaxis básica</h2>
+      <p>Las funciones se definen con <code>fun</code>. Kotlin las hace concisas y expresivas:</p>
+      <CodeBlock lang="kotlin" code={`// Función con retorno
+fun sumar(a: Int, b: Int): Int {
+    return a + b
+}
+
+// Expresión de función (una sola línea)
+fun multiplicar(a: Int, b: Int) = a * b
+
+// Sin retorno (Unit implícito)
+fun saludar(nombre: String) {
+    println("¡Hola, $nombre!")
+}
+
+fun main() {
+    println(sumar(3, 5))       // 8
+    println(multiplicar(4, 2)) // 8
+    saludar("Kotlin")          // ¡Hola, Kotlin!
+}`} title="funciones-basicas.kt" />
+    </section>
+
+    <section class="mb-10">
+      <h2>Valores por defecto y argumentos con nombre</h2>
+      <p>Puedes dar valores por defecto y llamar funciones nombrando los argumentos:</p>
+      <CodeBlock lang="kotlin" code={`fun saludar(nombre: String = "Mundo", veces: Int = 1) {
+    repeat(veces) {
+        println("¡Hola, $nombre!")
+    }
+}
+
+fun main() {
+    saludar()                    // ¡Hola, Mundo!
+    saludar("Ana")               // ¡Hola, Ana!
+    saludar(veces = 3)           // ¡Hola, Mundo! x3
+    saludar("Kotlin", veces = 2) // ¡Hola, Kotlin! x2
+}`} title="parametros-default.kt" />
+    </section>
+
+    <section class="mb-10">
+      <h2>Funciones de orden superior (preview)</h2>
+      <p>Las funciones pueden ser parámetros de otras funciones:</p>
+      <CodeBlock lang="kotlin" code={`fun ejecutar(nombre: String, accion: () -> Unit) {
+    println("Antes de $nombre")
+    accion()
+    println("Después de $nombre")
+}
+
+fun main() {
+    ejecutar("tarea") {
+        println("  Haciendo la tarea...")
+    }
+}`} title="funciones-orden-superior.kt" />
+    </section>
+
+    <div class="ejercicio" style="background: #E3F2FD;">
+      <h3>💻 Misión</h3>
+      <p class="enunciado">Crea una función `calcularArea` que reciba base y altura (con valor por defecto 10) y retorne el área de un rectángulo. Llama a la función de 3 formas distintas.</p>
+      <details>
+        <summary>👁️ Ver solución sugerida</summary>
+        <CodeBlock lang="kotlin" code={`fun calcularArea(base: Int = 10, altura: Int = 10): Int {
+    return base * altura
+}
+
+fun main() {
+    println(calcularArea())        // 100
+    println(calcularArea(5))       // 50
+    println(calcularArea(3, 7))    // 21
+}`} title="main.kt" />
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Pon a prueba tus funciones</h2>
+      <KotlinQuizModal quizKey="funciones" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/kotlin/bucles/" class="prev">← Bucles</a>
+      <a href="/course/kotlin/nulabilidad/" class="next">Null Safety →</a>
+    </nav>
+  </article>
+</Layout>

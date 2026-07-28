@@ -1,0 +1,91 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import KotlinQuizModal from '../../../../components/quizzes/KotlinQuizModal.astro';
+---
+
+<Layout title="Colecciones en Kotlin" description="List, Set, Map y sus métodos funcionales: filter, map, reduce." courseSlug="kotlin">
+  <article class="content-section">
+    <h1>8. Colecciones: Agrupar datos</h1>
+
+    <section class="mb-10">
+      <h2>Listas: Ordenadas y duplicados</h2>
+      <p>Kotlin tiene listas inmutables (<code>listOf</code>) y mutables (<code>mutableListOf</code>):</p>
+      <CodeBlock lang="kotlin" code={`// Lista inmutable
+val frutas = listOf("Manzana", "Pera", "Naranja")
+println(frutas[0])  // "Manzana"
+// frutas.add("Uva")  // ERROR
+
+// Lista mutable
+val carrito = mutableListOf("Leche", "Pan")
+carrito.add("Huevos")    // OK
+carrito.remove("Pan")    // OK
+println(carrito)         // [Leche, Huevos]`} title="listas.kt" />
+    </section>
+
+    <section class="mb-10">
+      <h2>Sets y Maps</h2>
+      <CodeBlock lang="kotlin" code={`// Set: sin duplicados
+val numeros = setOf(1, 2, 2, 3, 3)
+println(numeros)  // [1, 2, 3]
+
+// Map: pares clave-valor
+val edades = mapOf("Ana" to 25, "Luis" to 30)
+println(edades["Ana"])    // 25
+println(edades.keys)     // [Ana, Luis]
+println(edades.values)   // [25, 30]`} title="sets-maps.kt" />
+    </section>
+
+    <section class="mb-10">
+      <h2>Métodos funcionales</h2>
+      <p>La verdadera magia de Kotlin: transformar colecciones con elegancia:</p>
+      <CodeBlock lang="kotlin" code={`val numeros = listOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+
+// filter: filtrar elementos
+val pares = numeros.filter { it % 2 == 0 }
+println(pares)  // [2, 4, 6, 8, 10]
+
+// map: transformar cada elemento
+val dobles = numeros.map { it * 2 }
+println(dobles)  // [2, 4, 6, 8, 10, 12, 14, 16, 18, 20]
+
+// reduce: acumular en un solo valor
+val suma = numeros.reduce { acc, i -> acc + i }
+println(suma)  // 55
+
+// forEach: ejecutar acción por cada elemento
+numeros.forEach { print("$it ") }  // 1 2 3 4 5 6 7 8 9 10
+
+// chained: filter + map
+val resultado = numeros.filter { it > 3 }.map { it * 10 }
+println(resultado)  // [40, 50, 60, 70, 80, 90, 100]`} title="funcionales.kt" />
+    </section>
+
+    <div class="ejercicio" style="background: #E3F2FD;">
+      <h3>💻 Misión</h3>
+      <p class="enunciado">Crea una lista de 5 números. Usa filter para quedarte con los mayores a 3, map para duplicarlos, y reduce para sumarlos.</p>
+      <details>
+        <summary>👁️ Ver solución sugerida</summary>
+        <CodeBlock lang="kotlin" code={`fun main() {
+    val numeros = listOf(1, 5, 2, 8, 3)
+    val resultado = numeros
+        .filter { it > 3 }
+        .map { it * 2 }
+        .reduce { acc, i -> acc + i }
+    println("Suma de duplicados mayores a 3: $resultado")
+    // (5 + 8) * 2 = 26
+}`} title="main.kt" />
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Pon a prueba tus colecciones</h2>
+      <KotlinQuizModal quizKey="colecciones" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/kotlin/nulabilidad/" class="prev">← Null Safety</a>
+      <a href="/course/kotlin/clases-y-objetos/" class="next">Clases y Objetos →</a>
+    </nav>
+  </article>
+</Layout>

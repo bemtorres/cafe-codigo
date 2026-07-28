@@ -1,0 +1,106 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import KotlinQuizModal from '../../../../components/quizzes/KotlinQuizModal.astro';
+---
+
+<Layout title="Excepciones en Kotlin" description="try/catch/finally, throw y manejo de errores en Kotlin." courseSlug="kotlin">
+  <article class="content-section">
+    <h1>12. Excepciones: Manejo de errores</h1>
+
+    <section class="mb-10">
+      <h2>try/catch/finally</h2>
+      <p>Kotlin no tiene checked exceptions. El manejo es similar a Java pero más limpio:</p>
+      <CodeBlock lang="kotlin" code={`try {
+    val numero = "abc".toInt()
+    println(numero)
+} catch (e: NumberFormatException) {
+    println("Error: no es un número válido")
+} finally {
+    println("Esto siempre se ejecuta")
+}`} title="try-catch.kt" />
+    </section>
+
+    <section class="mb-10">
+      <h2>try como expresión</h2>
+      <p>En Kotlin, <code>try</code> puede devolver un valor:</p>
+      <CodeBlock lang="kotlin" code={`val resultado = try {
+    "42".toInt()
+} catch (e: NumberFormatException) {
+    0  // valor por defecto
+}
+println(resultado)  // 42
+
+val texto = try {
+    "100".toInt()
+} catch (e: Exception) {
+    -1
+}
+println(texto)  // 100`} title="try-expresion.kt" />
+    </section>
+
+    <section class="mb-10">
+      <h2>Lanzar excepciones</h2>
+      <p>Usa <code>throw</code> para crear excepciones personalizadas:</p>
+      <CodeBlock lang="kotlin" code={`fun dividir(a: Int, b: Int): Int {
+    if (b == 0) throw IllegalArgumentException("No se puede dividir por cero")
+    return a / b
+}
+
+try {
+    println(dividir(10, 0))
+} catch (e: IllegalArgumentException) {
+    println(e.message)  // "No se puede dividir por cero"
+}
+
+// Tipos comunes:
+// IllegalArgumentException - argumento inválido
+// IllegalStateException - estado inválido
+// IndexOutOfBoundsException - índice fuera de rango
+// NumberFormatException - conversión fallida`} title="throw.kt" />
+    </section>
+
+    <section class="mb-10">
+      <h2>Seguridad con let</h2>
+      <p>Combina null safety con manejo de errores:</p>
+      <CodeBlock lang="kotlin" code={`val input: String? = "42"
+
+val numero = input?.toIntOrNull() ?: 0
+println(numero)  // 42
+
+val invalido: String? = "abc"
+val valor = invalido?.toIntOrNull() ?: -1
+println(valor)  // -1`} title="safe-let.kt" />
+    </section>
+
+    <div class="ejercicio" style="background: #E3F2FD;">
+      <h3>💻 Misión</h3>
+      <p class="enunciado">Crea una función `parsearEdad` que reciba un String y retorne un Int. Si falla, retorna -1. Pruébala con "25" y "abc".</p>
+      <details>
+        <summary>👁️ Ver solución sugerida</summary>
+        <CodeBlock lang="kotlin" code={`fun parsearEdad(input: String): Int {
+    return try {
+        input.toInt()
+    } catch (e: NumberFormatException) {
+        -1
+    }
+}
+
+fun main() {
+    println(parsearEdad("25"))   // 25
+    println(parsearEdad("abc"))  // -1
+}`} title="main.kt" />
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Pon a prueba tus excepciones</h2>
+      <KotlinQuizModal quizKey="excepciones" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/kotlin/lambdas-y-higher-order/" class="prev">← Lambdas y Scope Functions</a>
+      <a href="/course/kotlin/proyecto-agenda/" class="next">Proyecto Agenda →</a>
+    </nav>
+  </article>
+</Layout>

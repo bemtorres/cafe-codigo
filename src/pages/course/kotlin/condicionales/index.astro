@@ -1,0 +1,97 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import KotlinQuizModal from '../../../../components/quizzes/KotlinQuizModal.astro';
+---
+
+<Layout title="Condicionales en Kotlin" description="if/else, when y expresiones condicionales en Kotlin." courseSlug="kotlin">
+  <article class="content-section">
+    <h1>4. Condicionales: Decisiones inteligentes</h1>
+
+    <section class="mb-10">
+      <h2>if/else como expresión</h2>
+      <p>En Kotlin, <code>if</code> no es solo un statements: <strong>devuelve un valor</strong>, como un operador ternario pero más legible:</p>
+      <CodeBlock lang="kotlin" code={`val edad = 20
+
+// Como expresión (devuelve un valor)
+val mensaje = if (edad >= 18) "Mayor de edad" else "Menor de edad"
+println(mensaje)  // "Mayor de edad"
+
+// Sin else, retorna Unit
+if (edad >= 18) {
+    println("Puedes votar")
+}`} title="if-else.kt" />
+    </section>
+
+    <section class="mb-10">
+      <h2>when: El switch mejorado</h2>
+      <p><code>when</code> reemplaza al switch de Java con mucho más poder:</p>
+      <CodeBlock lang="kotlin" code={`val dia = "Lunes"
+
+when (dia) {
+    "Lunes", "Martes", "Miércoles", "Jueves", "Viernes" -> println("Día laboral")
+    "Sábado", "Domingo" -> println("Fin de semana")
+    else -> println("Día inválido")
+}
+
+// when sin argumento (como if-else chain)
+val nota = 85
+val calificacion = when {
+    nota >= 90 -> "A"
+    nota >= 80 -> "B"
+    nota >= 70 -> "C"
+    else -> "F"
+}
+println(calificacion)  // "B"`} title="when.kt" />
+    </section>
+
+    <section class="mb-10">
+      <h2>when con rangos y tipos</h2>
+      <p>when puede verificar rangos, tipos y más:</p>
+      <CodeBlock lang="kotlin" code={`// Con rangos
+val puntos = 75
+when (puntos) {
+    in 90..100 -> println("Excelente")
+    in 70..89 -> println("Bueno")
+    in 50..69 -> println("Regular")
+    else -> println("Necesita mejorar")
+}
+
+// Con tipos
+val x: Any = 42
+when (x) {
+    is Int -> println("Es un entero: $x")
+    is String -> println("Es un texto: $x")
+    is Boolean -> println("Es un booleano: $x")
+}`} title="when-avanzado.kt" />
+    </section>
+
+    <div class="ejercicio" style="background: #E3F2FD;">
+      <h3>💻 Misión</h3>
+      <p class="enunciado">Crea un programa que pida la temperatura y use when para clasificarla: bajo 10 = "frío", 10-25 = "agradable", sobre 25 = "caluroso".</p>
+      <details>
+        <summary>👁️ Ver solución sugerida</summary>
+        <CodeBlock lang="kotlin" code={`fun main() {
+    val temperatura = 18
+
+    val clima = when {
+        temperatura < 10 -> "frío"
+        temperatura in 10..25 -> "agradable"
+        else -> "caluroso"
+    }
+    println("Con $temperatura°C hace $clima")
+}`} title="main.kt" />
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Pon a prueba tu lógica</h2>
+      <KotlinQuizModal quizKey="condicionales" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/kotlin/strings-y-formato/" class="prev">← Strings y formato</a>
+      <a href="/course/kotlin/bucles/" class="next">Bucles →</a>
+    </nav>
+  </article>
+</Layout>

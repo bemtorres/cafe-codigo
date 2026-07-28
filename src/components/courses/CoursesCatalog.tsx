@@ -83,6 +83,16 @@ const COFFEE_ROUTES: CoffeeRoute[] = [
     accent: '#118AB2',
     courseSlugs: ['vision-producto', 'analisis-backlog', 'scrum-prototipado', 'estructuras-datos', 'patrones-diseno', 'c4'],
   },
+  {
+    id: 'americano',
+    name: 'Ruta del Americano',
+    subtitle: 'Mobile y Android',
+    emoji: '📱',
+    description: 'Fuerte y directo. Domina Kotlin como base para apps Android y backend moderno con null safety, concurrencia y sintaxis elegante.',
+    color: '#A97BFF',
+    accent: '#7C3AED',
+    courseSlugs: ['kotlin'],
+  },
 ];
 
 /** Normaliza para búsqueda insensible a mayúsculas y acentos. */

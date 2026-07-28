@@ -1,0 +1,105 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import KotlinQuizModal from '../../../../components/quizzes/KotlinQuizModal.astro';
+---
+
+<Layout title="Clases y Objetos en Kotlin" description="class, data class, constructores, propiedades y object (singleton)." courseSlug="kotlin">
+  <article class="content-section">
+    <h1>9. Clases y Objetos: POO en Kotlin</h1>
+
+    <section class="mb-10">
+      <h2>Clases básicas</h2>
+      <p>Kotlin hace las clases concisas con el constructor primario integrado:</p>
+      <CodeBlock lang="kotlin" code={`class Persona(val nombre: String, var edad: Int)
+
+fun main() {
+    val persona = Persona("Ana", 25)
+    println(persona.nombre)  // "Ana"
+    persona.edad = 26        // var: se puede modificar
+    println(persona.edad)    // 26
+}`} title="clase-basica.kt" />
+    </section>
+
+    <section class="mb-10">
+      <h2>data class: Para datos</h2>
+      <p><code>data class</code> genera automáticamente <code>equals()</code>, <code>hashCode()</code>, <code>toString()</code> y <code>copy()</code>:</p>
+      <CodeBlock lang="kotlin" code={`data class Contacto(val nombre: String, val telefono: String)
+
+fun main() {
+    val contacto = Contacto("Luis", "123456789")
+    println(contacto)  // Contacto(nombre=Luis, telefono=123456789)
+
+    // Copiar con cambios
+    val actualizado = contacto.copy(telefono = "987654321")
+    println(actualizado)  // Contacto(nombre=Luis, telefono=987654321)
+}`} title="data-class.kt" />
+    </section>
+
+    <section class="mb-10">
+      <h2>object: Singletons</h2>
+      <p>Un <code>object</code> es una clase con una sola instancia:</p>
+      <CodeBlock lang="kotlin" code={`object Config {
+    val version = "1.0"
+    val debug = true
+}
+
+fun main() {
+    println(Config.version)  // "1.0"
+    println(Config.debug)    // true
+    // No se puede: val c = Config()
+}`} title="singleton.kt" />
+    </section>
+
+    <section class="mb-10">
+      <h2>Herencia con open</h2>
+      <p>Por defecto las clases son <strong>final</strong>. Usa <code>open</code> para permitir herencia:</p>
+      <CodeBlock lang="kotlin" code={`open class Animal(val nombre: String) {
+    open fun sonido() = "..."
+}
+
+class Perro(nombre: String) : Animal(nombre) {
+    override fun sonido() = "Guau!"
+}
+
+class Gato(nombre: String) : Animal(nombre) {
+    override fun sonido() = "Miau!"
+}
+
+fun main() {
+    val mascota: Animal = Perro("Rex")
+    println("\${mascota.nombre} dice: \${mascota.sonido()}")
+    // Rex dice: Guau!
+}`} title="herencia.kt" />
+    </section>
+
+    <div class="ejercicio" style="background: #E3F2FD;">
+      <h3>💻 Misión</h3>
+      <p class="enunciado">Crea una data class `Producto` con nombre y precio. Crea 2 productos, imprímelos y crea una copia de uno con precio actualizado.</p>
+      <details>
+        <summary>👁️ Ver solución sugerida</summary>
+        <CodeBlock lang="kotlin" code={`data class Producto(val nombre: String, val precio: Double)
+
+fun main() {
+    val leche = Producto("Leche", 1.5)
+    val pan = Producto("Pan", 0.8)
+    println(leche)
+    println(pan)
+
+    val leche2 = leche.copy(precio = 1.8)
+    println("Leche actualizada: $leche2")
+}`} title="main.kt" />
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Pon a prueba tus clases</h2>
+      <KotlinQuizModal quizKey="clases-y-objetos" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/kotlin/colecciones/" class="prev">← Colecciones</a>
+      <a href="/course/kotlin/interfaces-y-herencia/" class="next">Interfaces y Polimorfismo →</a>
+    </nav>
+  </article>
+</Layout>

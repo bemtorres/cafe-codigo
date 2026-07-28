@@ -1,0 +1,119 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import KotlinQuizModal from '../../../../components/quizzes/KotlinQuizModal.astro';
+---
+
+<Layout title="Lambdas y Scope Functions en Kotlin" description="Lambdas, funciones de orden superior y let, run, apply, also, with." courseSlug="kotlin">
+  <article class="content-section">
+    <h1>11. Lambdas y Scope Functions</h1>
+
+    <section class="mb-10">
+      <h2>Lambdas: Funciones anónimas</h2>
+      <p>Las lambdas son bloques de código que puedes pasar como variables:</p>
+      <CodeBlock lang="kotlin" code={`// Sintaxis: { parametros -> cuerpo }
+val sumar = { a: Int, b: Int -> a + b }
+println(sumar(3, 5))  // 8
+
+// Si es un solo parámetro, usa "it"
+val duplicar = { it: Int -> it * 2 }
+println(duplicar(4))  // 8
+
+// Pasar lambda a función
+fun ejecutar(nombre: String, accion: () -> Unit) {
+    println("Inicio: $nombre")
+    accion()
+    println("Fin: $nombre")
+}
+
+ejecutar("Tarea") {
+    println("  Haciendo algo...")
+}`} title="lambdas.kt" />
+    </section>
+
+    <section class="mb-10">
+      <h2>Scope Functions: let, run, with, apply, also</h2>
+      <p>Ejecutan un bloque en el contexto de un objeto. Cada una tiene un propósito:</p>
+      <CodeBlock lang="kotlin" code={`data class Persona(var nombre: String, var edad: Int)
+
+fun main() {
+    val persona = Persona("Ana", 25)
+
+    // let: acceso a "it", retorna resultado del bloque
+    val nombreLargo = persona.nombre.let {
+        println("Nombre: $it")
+        it.length  // retorna esto
+    }
+    println("Longitud: $nombreLargo")  // 3
+
+    // run: como let pero con "this" (sin "it")
+    val info = persona.run {
+        "$nombre tiene $edad años"  // "this" es persona
+    }
+    println(info)
+
+    // with: igual a run pero con función
+    with(persona) {
+        println("$nombre tiene $edad años")
+    }
+
+    // apply: retorna el objeto, útil para configuración
+    val nuevaPersona = Persona("", 0).apply {
+        nombre = "Luis"
+        edad = 30
+    }
+    println(nuevaPersona)  // Persona(nombre=Luis, edad=30)
+
+    // also: ejecuta acción sin cambiar el objeto (debug)
+    persona.also {
+        println("DEBUG: $it")
+    }
+}`} title="scope-functions.kt" />
+    </section>
+
+    <section class="mb-10">
+      <h2>¿Cuándo usar cada una?</h2>
+      <div class="ejercicio" style="background: #F3E8FF;">
+        <h3>🧩 Guía rápida</h3>
+        <ul class="enunciado" style="margin:0;">
+          <li><strong>let</strong>: transformar o filtrar un nullable con <code>?.let { }</code></li>
+          <li><strong>run</strong>: ejecutar código con el objeto y obtener un resultado</li>
+          <li><strong>with</strong>: acceder a múltiples propiedades sin repetir el nombre</li>
+          <li><strong>apply</strong>: configurar un objeto (inicializar propiedades)</li>
+          <li><strong>also</strong>: debug, logs o acciones secundarias</li>
+        </ul>
+      </div>
+    </section>
+
+    <div class="ejercicio" style="background: #E3F2FD;">
+      <h3>💻 Misión</h3>
+      <p class="enunciado">Crea una data class `Config` con host y puerto. Usa apply para configurarla y run para crear un string de conexión.</p>
+      <details>
+        <summary>👁️ Ver solución sugerida</summary>
+        <CodeBlock lang="kotlin" code={`data class Config(var host: String = "", var puerto: Int = 0)
+
+fun main() {
+    val config = Config().apply {
+        host = "localhost"
+        puerto = 8080
+    }
+
+    val conexion = config.run {
+        "Conectando a $host:$puerto"
+    }
+    println(conexion)
+}`} title="main.kt" />
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Pon a prueba tus lambdas</h2>
+      <KotlinQuizModal quizKey="lambdas-y-higher-order" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/kotlin/interfaces-y-herencia/" class="prev">← Interfaces y Polimorfismo</a>
+      <a href="/course/kotlin/excepciones/" class="next">Excepciones →</a>
+    </nav>
+  </article>
+</Layout>

@@ -1,0 +1,110 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import KotlinQuizModal from '../../../../components/quizzes/KotlinQuizModal.astro';
+---
+
+<Layout title="Interfaces y Polimorfismo en Kotlin" description="interface, abstract, sealed class y casting en Kotlin." courseSlug="kotlin">
+  <article class="content-section">
+    <h1>10. Interfaces y Polimorfismo</h1>
+
+    <section class="mb-10">
+      <h2>Interfaces</h2>
+      <p>Definen un contrato que las clases deben implementar:</p>
+      <CodeBlock lang="kotlin" code={`interface Navegable {
+    fun haciaAdelante()
+    fun haciaAtras() {
+        println("Volviendo atrás")
+    }
+}
+
+class Browser : Navegable {
+    override fun haciaAdelante() {
+        println("Navegando adelante")
+    }
+    // haciaAtras() usa la implementación por defecto
+}`} title="interface.kt" />
+    </section>
+
+    <section class="mb-10">
+      <h2>Abstract classes</h2>
+      <p>Similar a interfaces pero pueden tener estado (propiedades con valor):</p>
+      <CodeBlock lang="kotlin" code={`abstract class Forma(val nombre: String) {
+    abstract fun area(): Double
+    fun describir() = "Soy $nombre con área \${area()}"
+}
+
+class Circulo(val radio: Double) : Forma("Círculo") {
+    override fun area() = Math.PI * radio * radio
+}
+
+class Rectangulo(val ancho: Double, val alto: Double) : Forma("Rectángulo") {
+    override fun area() = ancho * alto
+}`} title="abstract.kt" />
+    </section>
+
+    <section class="mb-10">
+      <h2>Sealed class</h2>
+      <p>Jerarquía de tipos restringida al mismo archivo. Perfecta para estados:</p>
+      <CodeBlock lang="kotlin" code={`sealed class Estado {
+    object Cargando : Estado()
+    data class Exito(val datos: String) : Estado()
+    data class Error(val mensaje: String) : Estado()
+}
+
+fun procesar(estado: Estado) = when (estado) {
+    is Estado.Cargando -> println("Cargando...")
+    is Estado.Exito -> println("Datos: \${estado.datos}")
+    is Estado.Error -> println("Error: \${estado.mensaje}")
+}`} title="sealed.kt" />
+    </section>
+
+    <section class="mb-10">
+      <h2>Casting: is y as</h2>
+      <CodeBlock lang="kotlin" code={`fun describir(obj: Any): String = when (obj) {
+    is String -> "Texto de longitud \${obj.length}"
+    is Int -> "Entero: $obj"
+    is Boolean -> if (obj) "Verdadero" else "Falso"
+    else -> "Tipo desconocido"
+}
+
+fun main() {
+    println(describir("Hola"))    // Texto de longitud 4
+    println(describir(42))        // Entero: 42
+    println(describir(true))      // Verdadero
+}`} title="casting.kt" />
+    </section>
+
+    <div class="ejercicio" style="background: #E3F2FD;">
+      <h3>💻 Misión</h3>
+      <p class="enunciado">Crea una sealed class `Resultado` con casos `Exito` y `Fallo`. Crea una función que use when para procesar cada caso.</p>
+      <details>
+        <summary>👁️ Ver solución sugerida</summary>
+        <CodeBlock lang="kotlin" code={`sealed class Resultado {
+    data class Exito(val nota: Double) : Resultado()
+    data class Fallo(val razon: String) : Resultado()
+}
+
+fun evaluar(resultado: Resultado) = when (resultado) {
+    is Resultado.Exito -> println("Aprobado con \${resultado.nota}")
+    is Resultado.Fallo -> println("Reprobado: \${resultado.razon}")
+}
+
+fun main() {
+    evaluar(Resultado.Exito(9.5))
+    evaluar(Resultado.Fallo("No entregó el trabajo"))
+}`} title="main.kt" />
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Pon a prueba tu polimorfismo</h2>
+      <KotlinQuizModal quizKey="interfaces-y-herencia" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/kotlin/clases-y-objetos/" class="prev">← Clases y Objetos</a>
+      <a href="/course/kotlin/lambdas-y-higher-order/" class="next">Lambdas y Scope Functions →</a>
+    </nav>
+  </article>
+</Layout>

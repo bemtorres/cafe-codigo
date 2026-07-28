@@ -1,0 +1,93 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import KotlinQuizModal from '../../../../components/quizzes/KotlinQuizModal.astro';
+---
+
+<Layout title="Introducción a Kotlin" description="Primeros pasos en Kotlin: instalación, fun main() y tu primer println()." courseSlug="kotlin">
+  <article class="content-section">
+    <h1>1. El comienzo: ¡Hola, Kotlin! 🟣</h1>
+
+    <section class="mb-10">
+      <h2>¿Por qué Kotlin?</h2>
+      <p>
+        Kotlin es el lenguaje oficial de Google para Android, pero también se usa en backend, multiplataforma y scripts. Su ventaja: <strong>sintaxis concisa</strong>, <strong>null safety</strong> y compatibilidad total con Java.
+      </p>
+      <blockquote>
+        "Kotlin es lo que Java debería haber sido: moderno, seguro y placentero de escribir."
+      </blockquote>
+    </section>
+
+    <section class="mb-10">
+      <h2>Origen: JetBrains y la JVM</h2>
+      <p>
+        Kotlin fue creado por <strong>JetBrains</strong> (los mismos de IntelliJ IDEA) y se lanzó en 2011. En 2017, Google lo declaró lenguaje oficial para Android, y desde entonces su uso no ha parado de crecer.
+      </p>
+      <p>
+        El nombre viene de una isla cerca de San Petersburgo, Rusia. No es un acrónimo: es solo un nombre bonito.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>¿Qué lo hace especial?</h2>
+      <div class="ejercicio" style="background: #F3E8FF;">
+        <h3>🧩 Ventajas clave</h3>
+        <ul class="enunciado" style="margin:0;">
+          <li><strong>Null Safety</strong>: elimina los NullPointerException en tiempo de compilación.</li>
+          <li><strong>Conciso</strong>: menos código repetitivo que Java.</li>
+          <li><strong>Interoperable</strong>: funciona 100% con código Java existente.</li>
+          <li><strong>Coroutines</strong>: concurrencia fácil sin callbacks ni complejidad.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2>Tu primer programa</h2>
+      <p>En Kotlin no necesitas una clase para todo. Solo escribe <code>fun main()</code>:</p>
+      <CodeBlock lang="kotlin" code={`fun main() {
+    println("¡Hola, Kotlin!")
+    println("Mi primer programa en Kotlin")
+}`} title="main.kt" />
+    </section>
+
+    <section class="mb-10">
+      <h2>REPL de Kotlin</h2>
+      <p>Puedes probar Kotlin directamente en la consola con <code>kotlinc</code>:</p>
+      <CodeBlock lang="kotlin" code={`>>> 2 + 2
+4
+>>> val nombre = "Kotlin"
+>>> nombre.length
+6
+>>> println("Hola " + nombre)
+Hola Kotlin`} title="Terminal Kotlin" />
+    </section>
+
+    <div class="ejercicio" style="background: #E3F2FD;">
+      <h3>💻 Misión: Tu primer println</h3>
+      <p class="enunciado">Escribe un programa Kotlin que imprima tu nombre y qué quieres lograr aprendiendo a programar.</p>
+      <details>
+        <summary>👁️ Ver solución sugerida</summary>
+        <CodeBlock lang="kotlin" code={`fun main() {
+    println("Hola, soy Benjamín")
+    println("Quiero crear mi propia app Android")
+}`} title="main.kt" />
+      </details>
+    </div>
+
+    <div class="ejercicio" style="background: #FFF9C4;">
+      <h3>🟣 Reto: Tu primer cálculo</h3>
+      <p class="enunciado">Abre IntelliJ o VS Code, escribe un programa que calcule cuántos segundos hay en una hora (60 * 60) y imprima el resultado.</p>
+    </div>
+
+    <section class="mb-10">
+      <h2>Pon a prueba tu inicio</h2>
+      <p>Responde estas preguntas rápidas para ver si recordaste lo más importante.</p>
+      <KotlinQuizModal quizKey="introduccion" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/kotlin/" class="prev">← Índice de Kotlin</a>
+      <a href="/course/kotlin/variables-y-tipos/" class="next">Variables y tipos →</a>
+    </nav>
+  </article>
+</Layout>
