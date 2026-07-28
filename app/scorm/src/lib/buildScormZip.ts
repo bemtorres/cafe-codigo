@@ -1,4 +1,6 @@
+// @ts-ignore
 import JSZip from 'jszip';
+// @ts-ignore
 import { saveAs } from 'file-saver';
 import type { SelectedLesson, CompileOptions } from './types';
 import { generateManifest } from './generateManifest';
