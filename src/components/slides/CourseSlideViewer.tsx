@@ -5,7 +5,6 @@ import type {
   EmbedParams,
   Slide,
   QuizQuestion,
-  MetaReflectionQuestion,
 } from '../../types/slides';
 import {
   getSlidesForLesson,
@@ -45,7 +44,6 @@ export default function CourseSlideViewer({
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
   const [showOverview, setShowOverview] = useState(false);
   const [copiedCode, setCopiedCode] = useState(false);
-  const [isFullscreen, setIsFullscreen] = useState(false);
 
   // Estados del Menú de Herramientas y Temporizador FLOTANTE Y MOVIBLE
   const [showToolsMenu, setShowToolsMenu] = useState(false);
@@ -929,7 +927,7 @@ export default function CourseSlideViewer({
               )}
               {currentSlide.bulletPoints && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-left w-full max-w-3xl mt-4">
-                  {currentSlide.bulletPoints.map((point, idx) => (
+                  {currentSlide.bulletPoints.map((point: string, idx: number) => (
                     <div
                       key={idx}
                       className={`p-3 rounded-xl border text-sm font-semibold flex items-center gap-3 ${
@@ -1641,7 +1639,7 @@ export default function CourseSlideViewer({
                       Puntos Clave:
                     </h3>
                     <ul className="space-y-2.5 m-0 p-0 list-none">
-                      {currentSlide.bulletPoints.map((bullet, idx) => (
+                      {currentSlide.bulletPoints.map((bullet: string, idx: number) => (
                         <li
                           key={idx}
                           className={`p-3 rounded-xl border text-sm font-semibold flex items-start gap-3 transition-all ${
@@ -1677,7 +1675,7 @@ export default function CourseSlideViewer({
                       </div>
                       <pre className="p-4 m-0 overflow-x-auto overflow-y-auto max-h-[220px] sm:max-h-[260px] text-xs sm:text-sm font-mono leading-relaxed bg-[#0d1117] text-[#abb2bf]">
                         <code>
-                          {currentSlide.codeSnippet.code.split('\n').map((line, idx) => (
+                          {currentSlide.codeSnippet.code.split('\n').map((line: string, idx: number) => (
                             <div key={idx} className="flex leading-relaxed">
                               <span className="select-none pr-3 mr-3 text-slate-600 text-right min-w-[1.8rem] border-r border-slate-800 shrink-0">
                                 {idx + 1}
@@ -1716,15 +1714,15 @@ export default function CourseSlideViewer({
                       <table className="w-full text-center border-collapse text-xs sm:text-sm font-mono">
                         <thead>
                           <tr className="border-b border-slate-700/60" style={{ color: activeAccent }}>
-                            {currentSlide.visualChart.headers.map((h, i) => (
+                            {currentSlide.visualChart.headers.map((h: string, i: number) => (
                               <th key={i} className="p-2 font-bold">{h}</th>
                             ))}
                           </tr>
                         </thead>
                         <tbody>
-                          {currentSlide.visualChart.rows.map((row, rIdx) => (
+                          {currentSlide.visualChart.rows.map((row: any[], rIdx: number) => (
                             <tr key={rIdx} className="border-b border-slate-700/40 last:border-0">
-                              {row.map((cell, cIdx) => (
+                              {row.map((cell: any, cIdx: number) => (
                                 <td
                                   key={cIdx}
                                   className={`p-2 ${

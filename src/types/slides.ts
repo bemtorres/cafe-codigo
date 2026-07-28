@@ -45,9 +45,12 @@ export type SlideType =
   | 'diagram'
   | 'code'
   | 'summary'
+  | 'project'
   | 'quiz_intro'
   | 'quiz_question'
+  | 'quiz_q'
   | 'quiz_result'
+  | 'quiz_results'
   | 'metacognition';
 
 export interface Slide {

@@ -1,4 +1,4 @@
-import type { Slide } from './texto-y-conversiones';
+import type { Slide } from '../../../types/slides';
 
 export const condicionalesSlides: Slide[] = [
   {

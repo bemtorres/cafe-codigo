@@ -1,23 +1,6 @@
-export interface Slide {
-  id: number;
-  title: string;
-  subtitle?: string;
-  badge?: string;
-  type: 'cover' | 'concept' | 'code' | 'diagram' | 'project' | 'summary' | 'quiz_q' | 'quiz_results';
-  content?: string;
-  bulletPoints?: string[];
-  codeSnippet?: {
-    filename: string;
-    lang: string;
-    code: string;
-    explanation?: string;
-  };
-  keyTakeaway?: string;
-  visualChart?: {
-    headers: string[];
-    rows: (string | number)[][];
-  };
-}
+import type { Slide } from '../../../types/slides';
+
+export type { Slide };
 
 export const textoYConversionesSlides: Slide[] = [
   {
