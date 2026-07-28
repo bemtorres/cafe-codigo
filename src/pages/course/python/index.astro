@@ -1,4 +1,4 @@
-﻿---
+---
 import Layout from '../../../layouts/Layout.astro';
 import { courses } from '../../../data/courses';
 
@@ -9,130 +9,46 @@ if (!pythonCourse) {
 ---
 
 <Layout title="Curso de Python Pro: De Novato a Data Scientist" description="Aprende el lenguaje más versátil del mundo: automatización, ciencia de datos, IA y desarrollo web simplificado." courseSlug="python">
-  <div class="course-container">
-    <header class="course-index-header">
-      <!-- <div class="python-logo-box">
-        <span class="snake">🐍</span>
-      </div> -->
-      <h1 class="course-big-title">
-        <span class="snake">🐍</span> 
+  <div class="max-w-[1050px] mx-auto px-5 py-10">
+    <header class="text-center mb-12">
+      <h1 class="text-4xl sm:text-5xl font-black text-[#3776ab] mb-4 font-nunito drop-shadow-[3px_3px_0px_rgba(15,23,42,0.1)]">
+        <span class="inline-block mr-2">🐍</span> 
         {pythonCourse.name}
       </h1>
-      <p class="course-description">
+      <p class="text-base sm:text-lg text-slate-600 max-w-[650px] mx-auto font-bold leading-relaxed">
         {pythonCourse.description}
       </p>
     </header>
 
-    <div class="cards-grid">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {pythonCourse.lessons?.map((lesson, index) => (
-        <a href={lesson.href} class="lesson-card">
-          <div class="lesson-card__number">{index + 1}</div>
-          <div class="lesson-card__content">
-            <h3 class="lesson-card__title">{lesson.title}</h3>
-            <span class="lesson-card__cta">Abrir lección →</span>
+        <div class="flex gap-4 bg-white border-[3.5px] border-slate-900 rounded-2xl p-5 shadow-[6px_6px_0px_#0f172a] hover:-translate-y-1 hover:shadow-[10px_10px_0px_#0f172a] transition-all duration-200 relative">
+          <div class="text-[2.2rem] font-black text-slate-300 font-mono leading-none shrink-0 opacity-40 select-none">
+            {(index + 1).toString().padStart(2, '0')}
           </div>
-        </a>
+          <div class="flex-1 min-w-0 flex flex-col justify-between">
+            <h3 class="text-[1.1rem] font-black text-slate-900 mb-3 leading-snug">
+              {lesson.title}
+            </h3>
+            <div class="flex items-center gap-3 mt-auto pt-2 flex-wrap">
+              <a
+                href={lesson.href}
+                class="inline-flex items-center text-sm font-black text-[#3776ab] hover:underline font-mono"
+              >
+                Leer lección →
+              </a>
+              <a
+                href={`/course-slides/python/${lesson.slug}/`}
+                class="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-black bg-slate-900 text-amber-400 border-2 border-slate-900 rounded-lg shadow-[2px_2px_0px_#ffd43b] hover:-translate-y-0.5 hover:shadow-[3px_3px_0px_#ffd43b] hover:bg-[#3776ab] hover:text-white hover:border-[#3776ab] transition-all font-mono"
+                title={`Ver presentación en diapositivas 📊 de: ${lesson.title}`}
+              >
+                <span>Slides</span>
+                <span>📊</span>
+              </a>
+            </div>
+          </div>
+        </div>
       ))}
     </div>
   </div>
 </Layout>
-
-<style>
-  .course-container {
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 2.5rem 1.25rem;
-  }
-
-  .course-index-header {
-    text-align: center;
-    margin-bottom: 4rem;
-  }
-
-  .python-logo-box {
-    font-size: 4rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .course-big-title {
-    font-size: clamp(1.65rem, 5.5vw, 2.75rem);
-    font-weight: 900;
-    color: #3776ab;
-    margin-bottom: 0.85rem;
-    line-height: 1.1;
-    font-family: 'Nunito', sans-serif;
-    text-shadow: 4px 4px 0px var(--border);
-  }
-
-  .course-description {
-    font-size: 1.05rem;
-    color: var(--text-secondary);
-    max-width: 650px;
-    margin: 0 auto;
-    font-weight: 750;
-    line-height: 1.55;
-  }
-
-  .cards-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1.25rem;
-  }
-
-  .lesson-card {
-    display: flex;
-    gap: 1rem;
-    background: white;
-    border: 3.5px solid var(--border);
-    border-radius: 18px;
-    padding: 1.5rem;
-    text-decoration: none;
-    color: var(--text-primary);
-    box-shadow: 6px 6px 0px var(--border);
-    align-items: center;
-    transition:
-      transform 0.22s ease,
-      box-shadow 0.22s ease,
-      border-color 0.22s ease;
-  }
-
-  .lesson-card:hover {
-    transform: translate(-6px, -6px);
-    box-shadow: 12px 12px 0px var(--border);
-    border-color: #ffd43b;
-    background: #fdfdfd;
-  }
-
-  .lesson-card__number {
-    font-size: 2.5rem;
-    font-weight: 900;
-    color: var(--border);
-    opacity: 0.15;
-    line-height: 1;
-    font-family: 'JetBrains Mono', monospace;
-    flex-shrink: 0;
-  }
-
-  .lesson-card__content {
-    flex: 1;
-    min-width: 0;
-  }
-
-  .lesson-card__title {
-    font-size: 1.25rem;
-    font-weight: 950;
-    margin: 0 0 0.35rem;
-    color: #1a1a1b;
-  }
-
-  .lesson-card:hover .lesson-card__title {
-    color: #3776ab;
-  }
-
-  .lesson-card__cta {
-    font-size: 0.95rem;
-    font-weight: 900;
-    color: #3776ab;
-    font-family: 'JetBrains Mono', monospace;
-  }
-</style>
