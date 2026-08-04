@@ -91,6 +91,13 @@ const showLanguageCuriosity =
     <meta property="twitter:image" content={ogLogo.src} />
     <meta name="generator" content={Astro.generator} />
     <title>{title} | cafeycodigo</title>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-CSJTCX1FHC"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){ dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'G-CSJTCX1FHC');
+    </script>
     <script is:inline>
       try {
         const t = localStorage.getItem('theme');
