@@ -164,7 +164,8 @@ export default function CoursesCatalog() {
       const supabase = getSupabaseBrowser();
       if (!supabase) return;
       
-      const { data: { user } } = await supabase.auth.getUser();
+      const { data: authData } = await supabase.auth.getUser();
+      const user = authData?.user;
       if (!user) return;
 
       const { data, error } = await supabase
