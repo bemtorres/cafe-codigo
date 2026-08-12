@@ -222,13 +222,14 @@ const showLanguageCuriosity =
 
         <div class="col-span-full sm:col-span-1 flex justify-start sm:justify-center min-w-0 mt-1 sm:mt-0">
           {!currentCourse?.lessons?.length ? (
-            <div class="flex items-center gap-5">
+            <div class="flex items-center gap-2 sm:gap-4 flex-wrap">
+              <a href="/cursos/" class="bg-white/90 border border-black/15 rounded-full px-4 py-2 font-nunito font-extrabold text-textPrimary shadow-[0_14px_34px_rgba(30,18,16,0.08)] hover:-translate-y-0.5 hover:bg-white transition-all no-underline flex items-center gap-1.5">
+                <span>📚</span> Cursos
+              </a>
               <button type="button" class="bg-white/70 border border-black/10 rounded-full px-4 py-2 font-nunito font-extrabold text-textPrimary shadow-[0_14px_34px_rgba(30,18,16,0.08)] hover:-translate-y-0.5 hover:bg-white/95 transition-all outline-none" data-open-modal="langs" aria-haspopup="dialog" aria-controls="langsModal">
-                Aprende
+                Explorar
               </button>
               <a href="/ejercicios/" class="bg-white/70 border border-black/10 rounded-full px-4 py-2 font-nunito font-extrabold text-textPrimary shadow-[0_14px_34px_rgba(30,18,16,0.08)] hover:-translate-y-0.5 hover:bg-white/95 transition-all no-underline">Ejercicios</a>
-              {/* <a href="/academia/" class="bg-white/70 border border-black/10 rounded-full px-4 py-2 font-nunito font-extrabold text-textPrimary shadow-[0_14px_34px_rgba(30,18,16,0.08)] hover:-translate-y-0.5 hover:bg-white/95 transition-all no-underline">Academia</a> */}
-              {/* <a href="/colaboradores/" class="bg-white/70 border border-black/10 rounded-full px-4 py-2 font-nunito font-extrabold text-textPrimary shadow-[0_14px_34px_rgba(30,18,16,0.08)] hover:-translate-y-0.5 hover:bg-white/95 transition-all no-underline">Colaboradores</a> */}
               <CafeDelDiaNavBtn client:load />
             </div>
           ) : currentCourse?.slug === 'pseint' ? (
@@ -240,12 +241,7 @@ const showLanguageCuriosity =
         </div>
 
         <div class="flex items-center justify-end gap-4 row-start-1 sm:row-auto col-start-2 sm:col-auto">
-          <!-- <button class="w-10 h-10 rounded-full border border-black/15 bg-white/90 shadow-[0_10px_24px_rgba(30,18,16,0.1)] font-black font-nunito leading-none hover:-translate-y-0.5 transition-transform" type="button" aria-label="Cambiar tema">
-            ☾
-          </button> -->
-
           <div class="flex items-center gap-4">
-           
             <HeaderAuth client:load />
             {currentCourse && (
               <div class="flex items-center">
@@ -260,11 +256,6 @@ const showLanguageCuriosity =
               </div>
             )}
             {showCodeThemeSelector && <CodeThemeSelector />}
-            <!-- {!currentCourse && (
-              <a class="inline-flex items-center gap-2 bg-white/90 border border-black/15 rounded-full px-3 py-1.5 font-nunito font-extrabold text-textPrimary shadow-[0_10px_24px_rgba(30,18,16,0.1)] hover:bg-white hover:-translate-y-0.5 active:translate-y-0 transition-all outline-none" href="https://github.com/bemtorres/cafe-codigo" target="_blank" rel="noreferrer">
-                GitHub
-              </a>
-            )} -->
           </div>
         </div>
       </nav>
@@ -284,9 +275,24 @@ const showLanguageCuriosity =
         </div>
 
         <!-- Header fijo -->
-        <div class="flex justify-between items-center px-6 py-4 border-b-2 border-border shrink-0">
-          <h3 class="text-xl text-info font-nunito font-black m-0">📚 Elige un curso</h3>
-          <button type="button" class="w-10 h-10 rounded-full border-2 border-border bg-white text-lg font-black cursor-pointer hover:bg-gray-100" data-close-modal="langs" aria-label="Cerrar modal">✕</button>
+        <div class="flex flex-col gap-2 px-6 pt-4 pb-3 border-b-2 border-border shrink-0">
+          <div class="flex justify-between items-center">
+            <div class="flex items-center gap-2">
+              <h3 class="text-xl text-info font-nunito font-black m-0">📚 Cursos de Café y Código</h3>
+              <a href="/cursos/" class="text-xs font-nunito font-black bg-[#45B3E0]/15 text-[#118AB2] border border-[#45B3E0]/40 px-2.5 py-1 rounded-full hover:bg-[#45B3E0]/25 transition-colors no-underline">Ver catálogo completo →</a>
+            </div>
+            <button type="button" class="w-10 h-10 rounded-full border-2 border-border bg-white text-lg font-black cursor-pointer hover:bg-gray-100" data-close-modal="langs" aria-label="Cerrar modal">✕</button>
+          </div>
+          <!-- Buscador rápido dentro del modal -->
+          <div class="relative mt-1">
+            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm opacity-60">🔍</span>
+            <input
+              type="search"
+              id="langsModalSearch"
+              placeholder="Filtrar cursos..."
+              class="w-full rounded-xl border-2 border-border bg-tertiary/20 py-1.5 pl-8 pr-3 font-nunito text-xs font-bold text-textPrimary placeholder:text-textMuted focus:border-info focus:outline-none"
+            />
+          </div>
         </div>
 
         <!-- Contenido scrolleable — modo lista -->
@@ -687,8 +693,34 @@ const showLanguageCuriosity =
         const modal = document.getElementById('langsModal');
         if (!modal) return;
         const closeBtns = modal.querySelectorAll('[data-close-modal="langs"]');
-        const open = () => { modal.setAttribute('aria-hidden', 'false'); modal.classList.add('is-open'); document.documentElement.style.overflow = 'hidden'; };
+        const searchInput = document.getElementById('langsModalSearch');
+        const links = modal.querySelectorAll('a[href^="/course/"]');
+        const headers = modal.querySelectorAll('.overflow-y-auto > p');
+
+        const open = () => { modal.setAttribute('aria-hidden', 'false'); modal.classList.add('is-open'); document.documentElement.style.overflow = 'hidden'; searchInput?.focus(); };
         const close = () => { modal.setAttribute('aria-hidden', 'true'); modal.classList.remove('is-open'); document.documentElement.style.overflow = ''; };
+
+        searchInput?.addEventListener('input', (e) => {
+          const val = (e.target.value || '').toLowerCase().trim();
+          links.forEach((link) => {
+            const txt = (link.textContent || '').toLowerCase();
+            if (!val || txt.includes(val)) {
+              link.style.display = '';
+            } else {
+              link.style.display = 'none';
+            }
+          });
+          // Ocultar cabeceras sin elementos visibles
+          headers.forEach((h) => {
+            let hasVisible = false;
+            let next = h.nextElementSibling;
+            while (next && next.tagName === 'A') {
+              if (next.style.display !== 'none') hasVisible = true;
+              next = next.nextElementSibling;
+            }
+            h.style.display = hasVisible || !val ? '' : 'none';
+          });
+        });
 
         // Event delegation
         document.addEventListener('click', (e) => {

@@ -208,27 +208,6 @@ export const courses: Course[] = [
     ],
   },
   {
-    slug: 'kotlin',
-    name: 'Kotlin',
-    description: 'Lenguaje moderno, conciso y oficial para desarrollo Android y multiplataforma.',
-    category: 'language',
-    status: 'available',
-    color: '#7F52FF',
-    communityReleaseYear: 2011,
-    lessons: [
-      { slug: 'introduccion', title: '1. Introducción', href: '/course/kotlin/introduccion/' },
-      { slug: 'variables', title: '2. Variables', href: '/course/kotlin/variables/' },
-      { slug: 'io', title: '3. Entrada / Salida', href: '/course/kotlin/io/' },
-      { slug: 'operadores', title: '4. Operadores', href: '/course/kotlin/operadores/' },
-      { slug: 'condicionales', title: '5. Condicionales', href: '/course/kotlin/condicionales/' },
-      { slug: 'ciclos', title: '6. Ciclos', href: '/course/kotlin/ciclos/' },
-      { slug: 'colecciones', title: '7. Arreglos y Colecciones', href: '/course/kotlin/colecciones/' },
-      { slug: 'funciones', title: '8. Funciones', href: '/course/kotlin/funciones/' },
-      { slug: 'poo-basico', title: '9. POO Básico', href: '/course/kotlin/poo-basico/' },
-      { slug: 'poo-pilares', title: '10. Pilares POO', href: '/course/kotlin/poo-pilares/' },
-    ],
-  },
-  {
     slug: 'estructuras-datos',
     name: 'Estructuras de datos',
     description:

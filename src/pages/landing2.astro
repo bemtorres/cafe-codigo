@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import imagen1 from '../assets/images/imagen1.png';
+import CoursesCatalog from '../components/courses/CoursesCatalog';
 
 const benefits = [
   {
@@ -166,6 +167,20 @@ const testimonials = [
             </li>
           </ol>
         </div>
+      </div>
+    </section>
+
+    <!-- Catálogo y Rutas de Cursos -->
+    <section id="cursos" class="l2-courses-showcase py-12">
+      <div class="l2-container">
+        <div class="text-center max-w-3xl mx-auto mb-10">
+          <p class="l2-eyebrow">Catálogo en vivo</p>
+          <h2 class="l2-h2">Explora los +28 Cursos y Rutas de Aprendizaje</h2>
+          <p class="l2-solution-text text-textSecondary text-base sm:text-lg">
+            Elige una ruta de aprendizaje orientada o usa los filtros por categoría y el buscador para acceder al instante a cualquier curso.
+          </p>
+        </div>
+        <CoursesCatalog client:load />
       </div>
     </section>
 

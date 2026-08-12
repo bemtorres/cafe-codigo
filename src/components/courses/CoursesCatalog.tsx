@@ -151,6 +151,7 @@ export default function CoursesCatalog() {
   const [comingName, setComingName] = useState('');
   const [activeTab, setActiveTab] = useState<'routes' | 'all'>('routes');
   const [selectedRouteId, setSelectedRouteId] = useState<string>('expreso');
+  const [selectedCategory, setSelectedCategory] = useState<CourseCategory | 'all'>('all');
 
   const [completedCourses, setCompletedCourses] = useState<Set<string>>(new Set());
   const [inProgressCourses, setInProgressCourses] = useState<Set<string>>(new Set());
@@ -195,6 +196,14 @@ export default function CoursesCatalog() {
     fetchProgress();
   }, []);
 
+  const categoryCounts = useMemo(() => {
+    const counts: Record<string, number> = { all: courses.length };
+    for (const c of courses) {
+      counts[c.category] = (counts[c.category] || 0) + 1;
+    }
+    return counts;
+  }, []);
+
   const persistView = useCallback((v: ViewMode) => {
     setView(v);
     try {
@@ -222,12 +231,13 @@ export default function CoursesCatalog() {
 
   const filteredGrouped = useMemo(() => {
     return grouped
+      .filter((g) => selectedCategory === 'all' || g.cat === selectedCategory)
       .map((g) => ({
         ...g,
         items: g.items.filter((c) => courseMatchesQuery(c, searchQuery)),
       }))
       .filter((g) => g.items.length > 0);
-  }, [grouped, searchQuery]);
+  }, [grouped, searchQuery, selectedCategory]);
 
   const filteredCount = useMemo(
     () => filteredGrouped.reduce((sum, g) => sum + g.items.length, 0),
@@ -370,34 +380,63 @@ export default function CoursesCatalog() {
 
   return (
     <div>
-      {/* Selector de pestañas premium */}
-      <div className="mb-8 flex justify-center">
-        <div className="inline-flex rounded-3xl border-[3px] border-border bg-white p-1.5 shadow-neo">
+      {/* Barra de pestañas y tipo de vista (compacta) */}
+      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="inline-flex rounded-2xl border-2 border-border bg-white p-1 shadow-neo">
           <button
             type="button"
             onClick={() => setActiveTab('routes')}
-            className={`flex items-center gap-2 rounded-2xl px-5 py-3 font-nunito text-sm sm:text-base font-black transition-all ${
+            className={`flex items-center gap-1.5 rounded-xl px-4 py-2 font-nunito text-xs sm:text-sm font-black transition-all ${
               activeTab === 'routes'
                 ? 'bg-[#B06D63] text-white shadow-[2px_2px_0px_#1E1210]'
                 : 'text-textSecondary hover:bg-tertiary/40'
             }`}
           >
-            <span className="text-lg">🧭</span>
+            <span>🧭</span>
             Rutas de Aprendizaje
           </button>
           <button
             type="button"
             onClick={() => setActiveTab('all')}
-            className={`flex items-center gap-2 rounded-2xl px-5 py-3 font-nunito text-sm sm:text-base font-black transition-all ${
+            className={`flex items-center gap-1.5 rounded-xl px-4 py-2 font-nunito text-xs sm:text-sm font-black transition-all ${
               activeTab === 'all'
                 ? 'bg-[#118AB2] text-white shadow-[2px_2px_0px_#1E1210]'
                 : 'text-textSecondary hover:bg-tertiary/40'
             }`}
           >
-            <span className="text-lg">📚</span>
-            Todos los Cursos
+            <span>📚</span>
+            Todos los Cursos ({courses.length})
           </button>
         </div>
+
+        {activeTab === 'all' && (
+          <div
+            className="inline-flex rounded-2xl border-2 border-border bg-white p-1 shadow-neo self-start sm:self-auto"
+            role="group"
+            aria-label="Tipo de vista"
+          >
+            <button
+              type="button"
+              onClick={() => persistView('grid')}
+              className={`rounded-xl px-3 py-1.5 font-nunito text-xs font-extrabold transition-colors ${
+                view === 'grid' ? 'bg-info text-white' : 'text-textSecondary hover:bg-tertiary/50'
+              }`}
+              aria-pressed={view === 'grid'}
+            >
+              ▦ Cuadrícula
+            </button>
+            <button
+              type="button"
+              onClick={() => persistView('list')}
+              className={`rounded-xl px-3 py-1.5 font-nunito text-xs font-extrabold transition-colors ${
+                view === 'list' ? 'bg-info text-white' : 'text-textSecondary hover:bg-tertiary/50'
+              }`}
+              aria-pressed={view === 'list'}
+            >
+              ☰ Lista
+            </button>
+          </div>
+        )}
       </div>
 
       {activeTab === 'routes' && (
@@ -471,21 +510,15 @@ export default function CoursesCatalog() {
               <div className="flex items-center gap-4 bg-white/80 border-2 border-border/40 rounded-2xl p-3 shadow-neo">
                 <div className="relative w-12 h-12 flex items-center justify-center">
                   <svg width="42" height="42" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="overflow-visible">
-                    {/* Asa de la taza */}
                     <path d="M68 35C78 35 84 41 84 50C84 59 78 65 68 65" stroke="#1E1210" strokeWidth="6" strokeLinecap="round" />
-                    {/* Cuerpo de la taza */}
                     <path d="M16 28H72V52C72 67 60 79 44 79C28 79 16 67 16 52V28Z" fill="#F0ECE4" stroke="#1E1210" strokeWidth="6" strokeLinejoin="round" />
-                    {/* Máscara del líquido de café */}
                     <clipPath id="coffeeClip">
                       <path d="M19 31H69V52C69 65.5 58 76 44 76C30 76 19 65.5 19 52V31Z" />
                     </clipPath>
-                    {/* Líquido de café animado */}
                     <g clipPath="url(#coffeeClip)">
                       <rect x="0" y={76 - (routePercent * 0.45)} width="100" height="80" fill="#6F4E37" className="transition-all duration-700 ease-out" />
                     </g>
-                    {/* Borde superior */}
                     <ellipse cx="44" cy="28" rx="28" ry="6" fill="#FFFFFF" stroke="#1E1210" strokeWidth="5" />
-                    {/* Vaporcito del café caliente si hay progreso */}
                     {routePercent > 0 && (
                       <path d="M34 16Q37 10 34 4M44 18Q47 8 44 2M54 16Q57 10 54 4" stroke="#B06D63" strokeWidth="3" strokeLinecap="round" className="animate-pulse" />
                     )}
@@ -500,7 +533,6 @@ export default function CoursesCatalog() {
 
             {/* Pipeline vertical responsivo y elegante */}
             <div className="relative pl-2 sm:pl-6 space-y-6">
-              {/* Línea vertical conectora */}
               <div
                 className="absolute left-8 sm:left-12 top-4 bottom-4 w-[4px] border-l-4 border-dashed"
                 style={{
@@ -534,7 +566,6 @@ export default function CoursesCatalog() {
                     key={course.slug}
                     className="relative flex items-start gap-4 sm:gap-6 group"
                   >
-                    {/* Indicador de número / checkmark de progreso */}
                     <div
                       className={`relative z-10 flex h-12 w-12 sm:h-16 sm:w-16 shrink-0 items-center justify-center rounded-2xl border-[3px] font-nunito font-black text-base sm:text-xl shadow-neo transition-transform group-hover:scale-105 ${indicatorBg}`}
                       style={{
@@ -551,7 +582,6 @@ export default function CoursesCatalog() {
                       )}
                     </div>
  
-                    {/* Tarjeta del curso */}
                     <a
                       href={course.status === 'coming' ? '#' : courseHomePath(course.slug)}
                       onClick={(e) => {
@@ -610,16 +640,11 @@ export default function CoursesCatalog() {
 
       {activeTab === 'all' && (
         <div className="animate-[fadeIn_0.3s_ease-out]">
-          {/* Buscador de cursos */}
-          <div className="mb-6">
-            <label htmlFor="courses-search" className="sr-only">
-              Buscar cursos
-            </label>
-            <div className="relative">
-              <span
-                className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-lg opacity-60"
-                aria-hidden
-              >
+          {/* Buscador + Filtros por Categoría en una sola fila responsiva compacta */}
+          <div className="mb-4 flex flex-col md:flex-row gap-2.5 items-stretch md:items-center">
+            {/* Buscador compacto */}
+            <div className="relative w-full md:w-72 shrink-0">
+              <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm opacity-60" aria-hidden>
                 🔍
               </span>
               <input
@@ -627,66 +652,77 @@ export default function CoursesCatalog() {
                 type="search"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Buscar por nombre, descripción, categoría o ruta…"
+                placeholder="Buscar curso o tecnología…"
                 autoComplete="off"
-                className="w-full rounded-2xl border-[3px] border-border bg-white py-3 pl-11 pr-11 font-nunito text-sm font-bold text-textPrimary shadow-neo placeholder:text-textMuted/70 focus:border-info focus:outline-none focus:ring-2 focus:ring-info/25 sm:text-base"
+                className="w-full rounded-xl border-2 border-border bg-white py-2 pl-9 pr-8 font-nunito text-xs sm:text-sm font-bold text-textPrimary shadow-neo placeholder:text-textMuted focus:border-info focus:outline-none"
               />
               {searchQuery.trim() !== '' && (
                 <button
                   type="button"
                   onClick={() => setSearchQuery('')}
-                  className="absolute right-2 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-xl border-2 border-border bg-white font-black text-textSecondary hover:bg-tertiary/40"
+                  className="absolute right-2 top-1/2 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-lg border border-border bg-white text-xs font-black text-textSecondary hover:bg-tertiary/40"
                   aria-label="Limpiar búsqueda"
                 >
                   ✕
                 </button>
               )}
             </div>
-          </div>
 
-          <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <p className="m-0 font-nunito text-sm font-bold text-textSecondary">
-              {searchQuery.trim() === ''
-                ? `${courses.length} cursos · Ordenados por categoría`
-                : filteredCount === 0
-                  ? 'Ningún resultado'
-                  : `${filteredCount} de ${courses.length} cursos · Filtrado`}
-            </p>
-            <div
-              className="inline-flex rounded-2xl border-[3px] border-border bg-white p-1 shadow-neo"
-              role="group"
-              aria-label="Tipo de vista"
-            >
+            {/* Pills de categorías (Scroll Horizontal en 1 sola línea) */}
+            <div className="flex-1 flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0 scrollbar-none">
               <button
                 type="button"
-                onClick={() => persistView('grid')}
-                className={`rounded-xl px-4 py-2 font-nunito text-sm font-extrabold transition-colors ${
-                  view === 'grid' ? 'bg-info text-white' : 'text-textSecondary hover:bg-tertiary/50'
+                onClick={() => setSelectedCategory('all')}
+                className={`rounded-xl border-2 px-3 py-1 font-nunito text-xs font-extrabold transition-all shrink-0 ${
+                  selectedCategory === 'all'
+                    ? 'border-border bg-[#118AB2] text-white shadow-[2px_2px_0px_#1E1210]'
+                    : 'border-border/40 bg-white text-textSecondary hover:border-border hover:bg-tertiary/40'
                 }`}
-                aria-pressed={view === 'grid'}
               >
-                <span className="mr-1.5 inline-block" aria-hidden>
-                  ▦
-                </span>
-                Cuadrícula
+                Todos ({categoryCounts.all})
               </button>
-              <button
-                type="button"
-                onClick={() => persistView('list')}
-                className={`rounded-xl px-4 py-2 font-nunito text-sm font-extrabold transition-colors ${
-                  view === 'list' ? 'bg-info text-white' : 'text-textSecondary hover:bg-tertiary/50'
-                }`}
-                aria-pressed={view === 'list'}
-              >
-                <span className="mr-1.5 inline-block" aria-hidden>
-                  ☰
-                </span>
-                Lista
-              </button>
+              {categoryOrder.map((cat) => {
+                const count = categoryCounts[cat] || 0;
+                if (!count) return null;
+                const isSelected = selectedCategory === cat;
+                return (
+                  <button
+                    key={cat}
+                    type="button"
+                    onClick={() => setSelectedCategory(cat)}
+                    className={`rounded-xl border-2 px-3 py-1 font-nunito text-xs font-extrabold transition-all shrink-0 ${
+                      isSelected
+                        ? 'border-border bg-[#118AB2] text-white shadow-[2px_2px_0px_#1E1210]'
+                        : 'border-border/40 bg-white text-textSecondary hover:border-border hover:bg-tertiary/40'
+                    }`}
+                  >
+                    {categoryLabel[cat]} ({count})
+                  </button>
+                );
+              })}
             </div>
           </div>
 
-          {filteredGrouped.length === 0 && searchQuery.trim() !== '' && (
+          {(searchQuery.trim() !== '' || selectedCategory !== 'all') && (
+            <div className="mb-4 flex items-center justify-between text-xs font-bold text-textMuted">
+              <span>
+                Mostrando {filteredCount} de {courses.length} cursos
+                {selectedCategory !== 'all' ? ` en ${categoryLabel[selectedCategory]}` : ''}
+              </span>
+              <button
+                type="button"
+                onClick={() => {
+                  setSearchQuery('');
+                  setSelectedCategory('all');
+                }}
+                className="text-[#118AB2] hover:underline font-black"
+              >
+                Limpiar filtros ✕
+              </button>
+            </div>
+          )}
+
+          {filteredGrouped.length === 0 && (searchQuery.trim() !== '' || selectedCategory !== 'all') && (
             <div className="mb-10 rounded-2xl border-[3px] border-dashed border-border bg-tertiary/20 px-6 py-10 text-center">
               <p className="m-0 font-nunito text-lg font-black text-textPrimary">No encontramos cursos</p>
               <p className="mt-2 m-0 font-nunito text-sm font-[650] text-textSecondary">
