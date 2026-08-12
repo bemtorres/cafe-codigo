@@ -1,0 +1,19 @@
+---
+import QuizModal from './QuizModal.astro';
+
+type Props = {
+  quizKey: string;
+};
+
+const { quizKey } = Astro.props as Props;
+---
+
+<QuizModal
+  courseSlug="django"
+  quizKey={quizKey}
+  title="Django Quiz"
+  brandingColor="#0c4a3f"
+  brandingBg="#D1E8E2"
+  brandingText="#0f2118"
+  logo="🌿"
+/>

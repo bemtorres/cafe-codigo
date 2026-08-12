@@ -1,0 +1,81 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import DjangoQuizModal from '../../../../components/quizzes/DjangoQuizModal.astro';
+---
+
+<Layout title="Arquitectura Django" description="Aprende cómo funcionan URLs, views y templates dentro de Django." courseSlug="django">
+  <article class="content-section">
+    <h1>4. Arquitectura Django: URLs, Views y Templates</h1>
+
+    <section class="mb-10">
+      <h2>MVT: Model, View, Template</h2>
+      <p>
+        Django organiza las aplicaciones con el patrón MVT. El modelo gestiona datos, la vista procesa solicitudes y el template renderiza HTML.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>URLs y rutas</h2>
+      <p>
+        Las rutas convierten una URL en una función o clase que devuelve una respuesta.
+      </p>
+      <CodeBlock
+        lang="python"
+        code={`from django.urls import path
+from .views import inicio, detalle_curso
+
+urlpatterns = [
+    path('', inicio, name='inicio'),
+    path('cursos/<int:id>/', detalle_curso, name='detalle_curso'),
+]`}
+        title="urls.py"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Views</h2>
+      <p>
+        Las views reciben el request y devuelven una response. Pueden renderizar templates o devolver JSON en una API.
+      </p>
+      <CodeBlock
+        lang="python"
+        code={`from django.shortcuts import render
+
+
+def inicio(request):
+    cursos = ["Django", "Python", "APIs"]
+    return render(request, 'inicio.html', {'cursos': cursos})`}
+        title="views.py"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Templates</h2>
+      <p>
+        Los templates son archivos HTML con sintaxis propia para inyectar datos y controlar la estructura de la página.
+      </p>
+      <CodeBlock
+        lang="html"
+        code={`<h1>Bienvenido</h1>
+<ul>
+{% for curso in cursos %}
+  <li>{{ curso }}</li>
+{% endfor %}
+</ul>`}
+        title="inicio.html"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>Valida tus conocimientos sobre la arquitectura básica de Django.</p>
+      <DjangoQuizModal quizKey="arquitectura-django" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/django/introduccion-django/" class="prev">← Introducción a Django</a>
+      <a href="/course/django/modelo-bd/" class="next">Modelos y Bases de Datos →</a>
+    </nav>
+  </article>
+</Layout>

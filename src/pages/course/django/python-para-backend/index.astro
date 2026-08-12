@@ -1,0 +1,74 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import DjangoQuizModal from '../../../../components/quizzes/DjangoQuizModal.astro';
+---
+
+<Layout title="Python para Backend" description="Fundamentos de Python necesarios para construir la lógica de un backend con Django." courseSlug="django">
+  <article class="content-section">
+    <h1>2. Fundamentos de Python para Backend</h1>
+
+    <section class="mb-10">
+      <h2>Tipos de datos básicos</h2>
+      <p>
+        En backend utilizaremos datos como textos, números y estructuras que nos permiten guardar información y procesarla de forma correcta.
+      </p>
+      <CodeBlock
+        lang="python"
+        code={`nombre = "Maria"
+edad = 28
+activo = True
+cursos = ["Django", "Python", "APIs"]
+usuario = {
+    "nombre": nombre,
+    "edad": edad,
+    "activo": activo,
+}`}
+        title="datos_backend.py"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Funciones que resuelven problemas</h2>
+      <p>
+        Las funciones encapsulan lógica. En backend, las usamos para validar datos, crear registros en la base o procesar información.
+      </p>
+      <CodeBlock
+        lang="python"
+        code={`def sumar_precio(precio, impuesto=0.19):
+    return precio * (1 + impuesto)
+
+valor_final = sumar_precio(15000)
+print(valor_final)`}
+        title="funciones.py"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Estructuras de control</h2>
+      <p>
+        Con condicionales y bucles puedes crear decisiones y repetir tareas: elementos esenciales en cualquier backend.
+      </p>
+      <CodeBlock
+        lang="python"
+        code={`for curso in cursos:
+    if curso == "Django":
+        print("Vamos a crear un backend")
+    else:
+        print(f"{curso} es importante para el desarrollo")`}
+        title="control.py"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>Verifica que entiendes las bases de Python necesarias antes de avanzar a Django.</p>
+      <DjangoQuizModal quizKey="python-para-backend" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/django/introduccion/" class="prev">← Introducción</a>
+      <a href="/course/django/introduccion-django/" class="next">Introducción a Django →</a>
+    </nav>
+  </article>
+</Layout>

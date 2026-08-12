@@ -1,0 +1,76 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import DjangoQuizModal from '../../../../components/quizzes/DjangoQuizModal.astro';
+---
+
+<Layout title="Django REST Framework y JWT" description="Implementa una API segura con Django REST Framework y autenticación JWT." courseSlug="django">
+  <article class="content-section">
+    <h1>9. Django REST Framework y JWT</h1>
+
+    <section class="mb-10">
+      <h2>DRF: serializadores y views</h2>
+      <p>
+        Django REST Framework facilita construir APIs en Django. Puedes convertir modelos a JSON con serializers y crear views especializadas.
+      </p>
+      <CodeBlock
+        lang="python"
+        code={`from rest_framework import serializers
+from .models import Curso
+
+
+class CursoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Curso
+        fields = ['id', 'nombre', 'descripcion', 'duracion', 'publicado']`}
+        title="serializers.py"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>ViewSets y routers</h2>
+      <p>
+        Los ViewSets permiten definir lógica CRUD de manera compacta. Los routers crean las rutas automáticamente.
+      </p>
+      <CodeBlock
+        lang="python"
+        code={`from rest_framework import viewsets
+from .models import Curso
+from .serializers import CursoSerializer
+
+
+class CursoViewSet(viewsets.ModelViewSet):
+    queryset = Curso.objects.all()
+    serializer_class = CursoSerializer`}
+        title="views.py"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>JWT para autenticación</h2>
+      <p>
+        JWT es un método para proteger APIs con tokens firmados. El cliente envía el token en cada petición y el servidor lo valida.
+      </p>
+      <CodeBlock
+        lang="python"
+        code={`REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+}`}
+        title="settings.py"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>Comprueba que dominas los conceptos de DRF y JWT.</p>
+      <DjangoQuizModal quizKey="drf-jwt" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/django/apis-restful/" class="prev">← APIs RESTful</a>
+      <a href="/course/django/proyecto-integrador/" class="next">Proyecto Integrador →</a>
+    </nav>
+  </article>
+</Layout>

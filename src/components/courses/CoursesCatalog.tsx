@@ -71,7 +71,7 @@ const COFFEE_ROUTES: CoffeeRoute[] = [
     description: 'Filtrado paciente y profundo. Aprende lógica de servidor con Python, pruebas automatizadas y modelado/consultas de bases de datos relacionales y NoSQL.',
     color: '#06D6A0',
     accent: '#0d9488',
-    courseSlugs: ['python', 'modelamiento-db', 'consultas-sql', 'python-testing', 'nosql'],
+    courseSlugs: ['python', 'django', 'modelamiento-db', 'consultas-sql', 'python-testing', 'nosql'],
   },
   {
     id: 'macchiato',

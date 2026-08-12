@@ -26,6 +26,7 @@ import { phpQuizBank } from '../../data/phpQuizBank';
 import { criptografiaQuizBank } from '../../data/criptografiaQuizBank';
 import { desarrolloIaQuizBank } from '../../data/desarrolloIaQuizBank';
 import { kotlinQuizBank } from '../../data/kotlinQuizBank';
+import { djangoQuizBank } from '../../data/djangoQuizBank';
 
 const QUIZ_BANKS: Record<string, any> = {
   python: pythonQuizBank,
@@ -55,7 +56,8 @@ const QUIZ_BANKS: Record<string, any> = {
   php: phpQuizBank,
   criptografia: criptografiaQuizBank,
   'desarrollo-ia': desarrolloIaQuizBank,
-  kotlin: kotlinQuizBank
+  kotlin: kotlinQuizBank,
+  django: djangoQuizBank,
 };
 
 type Props = {

@@ -1,0 +1,72 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import DjangoQuizModal from '../../../../components/quizzes/DjangoQuizModal.astro';
+---
+
+<Layout title="Modelos y Bases de Datos" description="Modela información y aprende a persistirla con Django ORM." courseSlug="django">
+  <article class="content-section">
+    <h1>5. Bases de Datos y Django ORM</h1>
+
+    <section class="mb-10">
+      <h2>Modelar información</h2>
+      <p>
+        Un modelo representa una tabla en la base de datos. Cada campo define una columna y el ORM convierte la consulta en SQL por nosotros.
+      </p>
+      <CodeBlock
+        lang="python"
+        code={`from django.db import models
+
+
+class Curso(models.Model):
+    nombre = models.CharField(max_length=120)
+    descripcion = models.TextField()
+    duracion = models.IntegerField()
+    publicado = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.nombre`}
+        title="models.py"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Migraciones</h2>
+      <p>
+        Tras cambiar un modelo, Django genera migraciones para actualizar la estructura de la base de datos sin perder los datos existentes.
+      </p>
+      <CodeBlock
+        lang="bash"
+        code={`python manage.py makemigrations
+python manage.py migrate`}
+        title="migraciones.sh"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Consultas básicas</h2>
+      <p>
+        El ORM permite trabajar con datos como objetos: crear, consultar, filtrar y actualizar registros.
+      </p>
+      <CodeBlock
+        lang="python"
+        code={`cursos = Curso.objects.all()
+python_curso = Curso.objects.get(id=1)
+activos = Curso.objects.filter(publicado=True)
+Curso.objects.create(nombre='Django API', descripcion='API con DRF', duracion=30)`}
+        title="consultas.py"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>Comprueba que entiendes la relación entre modelos y base de datos.</p>
+      <DjangoQuizModal quizKey="modelo-bd" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/django/arquitectura-django/" class="prev">← Arquitectura Django</a>
+      <a href="/course/django/admin-crud/" class="next">Django Admin y CRUD →</a>
+    </nav>
+  </article>
+</Layout>

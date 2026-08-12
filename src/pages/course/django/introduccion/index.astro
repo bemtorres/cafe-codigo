@@ -1,0 +1,71 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import DjangoQuizModal from '../../../../components/quizzes/DjangoQuizModal.astro';
+---
+
+<Layout title="Introducción a Django" description="Conceptos clave del backend y el lugar de Django dentro del desarrollo web." courseSlug="django">
+  <article class="content-section">
+    <h1>1. Introducción al backend con Django</h1>
+
+    <section class="mb-10">
+      <h2>¿Qué hace el backend?</h2>
+      <p>
+        El backend es la parte de una aplicación que corre en el servidor. Se encarga de recibir solicitudes, ejecutar la lógica de negocio, acceder a la base de datos y devolver respuestas al cliente.
+      </p>
+      <ul>
+        <li><strong>Cliente:</strong> el navegador o aplicación móvil.</li>
+        <li><strong>Servidor:</strong> la máquina que procesa la petición.</li>
+        <li><strong>Base de datos:</strong> donde se guarda la información.</li>
+      </ul>
+    </section>
+
+    <section class="mb-10">
+      <h2>El rol de Django</h2>
+      <p>
+        Django es un framework de Python para desarrollar aplicaciones web completas. Ofrece herramientas para trabajar con rutas, vistas, modelos, formularios, autenticación y APIs.
+      </p>
+      <p>
+        Su filosofía es ".<strong>DRY</strong>." (Don’t Repeat Yourself), lo que significa escribir menos código y mantenerlo organizado.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Request y Response</h2>
+      <p>
+        En Django, cada vez que un cliente solicita una URL, el servidor recibe un <strong>request</strong> y responde con un <strong>response</strong>. Ese flujo es la base de cualquier web backend.
+      </p>
+      <CodeBlock
+        lang="text"
+        code={`GET /cursos/123 HTTP/1.1
+Host: misitio.com
+
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{"id": 123, "nombre": "Curso Django"}`}
+        title="Solicitud y respuesta HTTP"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>¿Por qué usar Django?</h2>
+      <ul>
+        <li>Incluye ORM, rutas, plantillas, panel de administración y seguridad.</li>
+        <li>Permite crear aplicaciones web y APIs con rapidez.</li>
+        <li>Es ideal para proyectos backend escalables y mantenibles.</li>
+      </ul>
+    </section>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>Repasa lo aprendido respondiendo estas preguntas.</p>
+      <DjangoQuizModal quizKey="introduccion" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/django/" class="prev">← Índice de Django</a>
+      <a href="/course/django/python-para-backend/" class="next">Python para Backend →</a>
+    </nav>
+  </article>
+</Layout>

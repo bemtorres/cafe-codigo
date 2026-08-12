@@ -1,0 +1,61 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import DjangoQuizModal from '../../../../components/quizzes/DjangoQuizModal.astro';
+---
+
+<Layout title="Autenticación y Seguridad" description="Protege tu aplicación Django con usuarios, permisos y buenas prácticas de seguridad." courseSlug="django">
+  <article class="content-section">
+    <h1>7. Autenticación y Seguridad</h1>
+
+    <section class="mb-10">
+      <h2>Usuarios y sesiones</h2>
+      <p>
+        Django incluye un modelo de usuario listo para usar. El sistema de autenticación permite iniciar sesión, cerrar sesión y proteger rutas.
+      </p>
+      <CodeBlock
+        lang="python"
+        code={`from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
+
+
+@login_required
+def perfil(request):
+    return render(request, 'perfil.html', {'usuario': request.user})`}
+        title="views_seguridad.py"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Protección CSRF</h2>
+      <p>
+        Django protege los formularios con tokens CSRF. Siempre añade {"{% csrf_token %}"} a tus templates de formulario.
+      </p>
+      <CodeBlock
+        lang="html"
+        code={'<form method="post">\n  {% csrf_token %}\n  {{ form.as_p }}\n  <button type="submit">Enviar</button>\n</form>'}
+        title="formulario.html"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Buenas prácticas</h2>
+      <ul>
+        <li>No guardes contraseñas en texto plano.</li>
+        <li>Usa variables de entorno para claves secretas.</li>
+        <li>Protege endpoints sensibles con permisos.</li>
+      </ul>
+    </section>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>Verifica que entiendes los conceptos básicos de seguridad en Django.</p>
+      <DjangoQuizModal quizKey="seguridad" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/django/admin-crud/" class="prev">← Django Admin y CRUD</a>
+      <a href="/course/django/apis-restful/" class="next">APIs RESTful →</a>
+    </nav>
+  </article>
+</Layout>

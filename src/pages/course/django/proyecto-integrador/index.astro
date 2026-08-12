@@ -1,0 +1,63 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import DjangoQuizModal from '../../../../components/quizzes/DjangoQuizModal.astro';
+---
+
+<Layout title="Proyecto Integrador Django" description="Integra todos los conocimientos del curso en una solución backend completa con Django." courseSlug="django">
+  <article class="content-section">
+    <h1>10. Proyecto Integrador</h1>
+
+    <section class="mb-10">
+      <h2>Objetivo del proyecto</h2>
+      <p>
+        Crea una aplicación backend que incluya modelos, administración, CRUD, seguridad y una API RESTful. Esto permite ver el recorrido completo desde el proyecto inicial hasta una solución lista para usar.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Requisitos mínimos</h2>
+      <ul>
+        <li>Modelos relacionados con una problemática real.</li>
+        <li>CRUD completo con plantillas y/o vistas.</li>
+        <li>Administración de datos con Django Admin.</li>
+        <li>API RESTful segura con JWT.</li>
+      </ul>
+    </section>
+
+    <section class="mb-10">
+      <h2>Ejemplo de endpoints</h2>
+      <p>
+        Un proyecto típico puede exponer rutas para autenticación, usuarios, cursos e inscripciones.
+      </p>
+      <CodeBlock
+        lang="text"
+        code={`POST /api/auth/login/
+POST /api/auth/refresh/
+GET /api/cursos/
+GET /api/cursos/{id}/
+POST /api/inscripciones/
+DELETE /api/inscripciones/{id}/`}
+        title="endpoints_ejemplo.txt"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Cómo integrar el aprendizaje</h2>
+      <p>
+        Avanza en cada módulo integrando los conceptos: primero crea el proyecto, luego el modelo, después la interfaz de administración y el CRUD, y finalmente la API segura.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>Evalúa si tienes claridad sobre cómo completar el curso con un proyecto real.</p>
+      <DjangoQuizModal quizKey="proyecto-integrador" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/django/drf-jwt/" class="prev">← Django REST Framework y JWT</a>
+      <a href="/course/django/" class="next">← Volver al índice de Django</a>
+    </nav>
+  </article>
+</Layout>

@@ -1,0 +1,62 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import DjangoQuizModal from '../../../../components/quizzes/DjangoQuizModal.astro';
+---
+
+<Layout title="Introducción a Django" description="Configura tu primer proyecto Django y entiende su estructura básica." courseSlug="django">
+  <article class="content-section">
+    <h1>3. Introducción a Django</h1>
+
+    <section class="mb-10">
+      <h2>Instalación y proyecto inicial</h2>
+      <p>
+        Para empezar necesitas Python y un entorno virtual. Luego instalas Django y creas el proyecto base que contendrá tu backend.
+      </p>
+      <CodeBlock
+        lang="bash"
+        code={`python -m venv env
+source env/bin/activate  # Mac / Linux
+# env\Scripts\activate  # Windows
+pip install django
+
+django-admin startproject mi_proyecto
+cd mi_proyecto
+python manage.py runserver`}
+        title="instalar_django.sh"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Estructura del proyecto</h2>
+      <p>
+        Django genera carpetas como <code>manage.py</code>, <code>settings.py</code>, <code>urls.py</code> y una carpeta de aplicación. Cada pieza tiene un propósito claro.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Crear una aplicación</h2>
+      <p>
+        En Django, el proyecto es el contenedor general y las aplicaciones son módulos que agrupan funcionalidades concretas.
+      </p>
+      <CodeBlock
+        lang="bash"
+        code={`python manage.py startapp cursos
+
+# Luego registra 'cursos' en INSTALLED_APPS dentro de settings.py`}
+        title="crear_app.sh"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>Confirma que conoces la estructura inicial de un proyecto Django.</p>
+      <DjangoQuizModal quizKey="introduccion-django" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/django/python-para-backend/" class="prev">← Python para Backend</a>
+      <a href="/course/django/arquitectura-django/" class="next">Arquitectura Django →</a>
+    </nav>
+  </article>
+</Layout>

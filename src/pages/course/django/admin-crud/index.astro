@@ -1,0 +1,89 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import DjangoQuizModal from '../../../../components/quizzes/DjangoQuizModal.astro';
+---
+
+<Layout title="Django Admin y CRUD" description="Gestiona datos desde Django Admin y crea operaciones CRUD en vistas y formularios." courseSlug="django">
+  <article class="content-section">
+    <h1>6. Django Admin y CRUD</h1>
+
+    <section class="mb-10">
+      <h2>Django Admin</h2>
+      <p>
+        Django incluye un panel administrativo listo para usar. Solo necesitas registrar tus modelos para comenzar a administrarlos desde una interfaz web.
+      </p>
+      <CodeBlock
+        lang="python"
+        code={`from django.contrib import admin
+from .models import Curso, Alumno
+
+
+admin.site.register(Curso)
+admin.site.register(Alumno)`}
+        title="admin.py"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Operaciones CRUD</h2>
+      <p>
+        CRUD significa crear, leer, actualizar y eliminar. En Django se puede lograr con formularios, views y el ORM.
+      </p>
+      <CodeBlock
+        lang="python"
+        code={`from django.shortcuts import redirect, render
+from .models import Curso
+from .forms import CursoForm
+
+
+def crear_curso(request):
+    if request.method == 'POST':
+        form = CursoForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('lista_cursos')
+    else:
+        form = CursoForm()
+    return render(request, 'crear_curso.html', {'form': form})`}
+        title="views_crud.py"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Validaciones</h2>
+      <p>
+        Las validaciones del lado del servidor evitan que se guarde información incorrecta. Django Forms ayudan a controlar campos obligatorios y tipos de dato.
+      </p>
+      <CodeBlock
+        lang="python"
+        code={`from django import forms
+from .models import Curso
+
+
+class CursoForm(forms.ModelForm):
+    class Meta:
+        model = Curso
+        fields = ['nombre', 'descripcion', 'duracion']
+
+    def clean_duracion(self):
+        duracion = self.cleaned_data['duracion']
+        if duracion <= 0:
+            raise forms.ValidationError('La duración debe ser mayor que cero')
+        return duracion`}
+        title="forms.py"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>Repasa cómo implementar un CRUD con Django.</p>
+      <DjangoQuizModal quizKey="admin-crud" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/django/modelo-bd/" class="prev">← Modelos y Bases de Datos</a>
+      <a href="/course/django/seguridad/" class="next">Autenticación y Seguridad →</a>
+    </nav>
+  </article>
+</Layout>

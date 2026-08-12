@@ -1,0 +1,64 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import DjangoQuizModal from '../../../../components/quizzes/DjangoQuizModal.astro';
+---
+
+<Layout title="APIs RESTful" description="Aprende los conceptos fundamentales para diseñar servicios web que comunican datos entre aplicaciones." courseSlug="django">
+  <article class="content-section">
+    <h1>8. Introducción a APIs RESTful</h1>
+
+    <section class="mb-10">
+      <h2>¿Qué es una API?</h2>
+      <p>
+        Una API es una interfaz que permite a distintas aplicaciones comunicarse entre sí. En el backend, entregamos datos mediante endpoints que devuelven JSON.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Métodos HTTP</h2>
+      <ul>
+        <li><strong>GET:</strong> consultar recursos.</li>
+        <li><strong>POST:</strong> crear recursos.</li>
+        <li><strong>PUT/PATCH:</strong> actualizar recursos.</li>
+        <li><strong>DELETE:</strong> eliminar recursos.</li>
+      </ul>
+      <CodeBlock
+        lang="text"
+        code={`GET /api/cursos/
+POST /api/cursos/
+PUT /api/cursos/1/
+DELETE /api/cursos/1/`}
+        title="endpoints.txt"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>JSON como lenguaje de datos</h2>
+      <p>
+        JSON es el formato más común para intercambiar información entre cliente y servidor porque es legible y compatible con casi todos los lenguajes.
+      </p>
+      <CodeBlock
+        lang="json"
+        code={`{
+  "id": 1,
+  "nombre": "Fundamentos Django",
+  "duracion": 35,
+  "publicado": true
+}`}
+        title="curso.json"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>Revisa si comprendes los principios básicos de una API RESTful.</p>
+      <DjangoQuizModal quizKey="apis-restful" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/django/seguridad/" class="prev">← Autenticación y Seguridad</a>
+      <a href="/course/django/drf-jwt/" class="next">Django REST Framework y JWT →</a>
+    </nav>
+  </article>
+</Layout>
