@@ -64,7 +64,7 @@ export default function AcademicoCatalog() {
       } else if (selectedCategory === 'tools') {
         matchesCategory = course.category === 'tools' || ['git', 'terminal', 'linux-distros', 'excel'].includes(course.slug);
       } else if (selectedCategory === 'management') {
-        matchesCategory = course.category === 'management' || ['scrum', 'analisis-backlog', 'vision-producto'].includes(course.slug);
+        matchesCategory = (course.category as string) === 'management' || ['scrum', 'analisis-backlog', 'vision-producto'].includes(course.slug);
       } else if (selectedCategory === 'ai') {
         matchesCategory = ['desarrollo-ia', 'criptografia'].includes(course.slug);
       }
@@ -262,7 +262,7 @@ export default function AcademicoCatalog() {
                     </div>
 
                     <div className="px-5 pb-5 pt-2 border-t border-slate-100 flex items-center justify-between">
-                      <span className="text-xs font-bold text-slate-400">{course.lessons.length} Lecciones</span>
+                      <span className="text-xs font-bold text-slate-400">{course.lessons?.length ?? 0} Lecciones</span>
                       <a
                         href={`/course/${course.slug}/`}
                         className="text-xs font-black text-blue-600 hover:underline inline-flex items-center gap-1"
@@ -308,7 +308,7 @@ export default function AcademicoCatalog() {
                         <a href={`/course/${c.slug}/`} className="font-extrabold text-slate-900 hover:text-blue-600 transition text-sm block truncate">
                           {c.name}
                         </a>
-                        <span className="text-xs text-slate-400 block truncate">Especialización • {c.lessons.length} Lecciones</span>
+                        <span className="text-xs text-slate-400 block truncate">Especialización • {c.lessons?.length ?? 0} Lecciones</span>
                       </div>
                     </div>
                   ))}
@@ -338,7 +338,7 @@ export default function AcademicoCatalog() {
                         <a href={`/course/${c.slug}/`} className="font-extrabold text-slate-900 hover:text-sky-600 transition text-sm block truncate">
                           {c.name}
                         </a>
-                        <span className="text-xs text-slate-400 block truncate">Certificado profesional • {c.lessons.length} Lecciones</span>
+                        <span className="text-xs text-slate-400 block truncate">Certificado profesional • {c.lessons?.length ?? 0} Lecciones</span>
                       </div>
                     </div>
                   ))}
@@ -368,7 +368,7 @@ export default function AcademicoCatalog() {
                         <a href={`/course/${c.slug}/`} className="font-extrabold text-slate-900 hover:text-indigo-600 transition text-sm block truncate">
                           {c.name}
                         </a>
-                        <span className="text-xs text-slate-400 block truncate">Especialización • {c.lessons.length} Lecciones</span>
+                        <span className="text-xs text-slate-400 block truncate">Especialización • {c.lessons?.length ?? 0} Lecciones</span>
                       </div>
                     </div>
                   ))}
@@ -452,7 +452,7 @@ export default function AcademicoCatalog() {
                     </div>
 
                     <div className="px-6 pb-6 pt-2 border-t border-slate-100 flex items-center justify-between">
-                      <span className="text-xs font-bold text-slate-400">{course.lessons.length} Lecciones</span>
+                      <span className="text-xs font-bold text-slate-400">{course.lessons?.length ?? 0} Lecciones</span>
                       <a
                         href={`/course/${course.slug}/`}
                         className="text-xs font-black text-blue-600 hover:underline inline-flex items-center gap-1 group-hover:translate-x-1 transition"
