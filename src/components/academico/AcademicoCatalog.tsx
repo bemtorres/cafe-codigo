@@ -33,7 +33,7 @@ export default function AcademicoCatalog() {
   ];
 
   // Alternar destacado de un curso
-  const toggleFeatured = (slug: string, e?: React.MouseEvent) => {
+  const toggleFeatured = (slug: string, e?: React.MouseEvent<HTMLButtonElement>) => {
     if (e) e.stopPropagation();
     setFeaturedSlugs((prev) => {
       const next = new Set(prev);
