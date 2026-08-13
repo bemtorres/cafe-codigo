@@ -2,6 +2,12 @@
 
 Bienvenido al repositorio de `Aprende`. Aquí creamos rutas de aprendizaje tecnológicas (PSeInt, C#, Kotlin, etc.) enfocadas en Retos, Lógica y Evaluación Activa.
 
+## ☕ Apoya Café y Código
+
+Si mis proyectos, cursos y recursos te han ayudado, puedes apoyar el proyecto:
+
+[![Ko-fi](https://img.shields.io/badge/Apoya%20Café%20y%20Código-☕-ff5e5b?style=for-the-badge)](https://ko-fi.com/cafeycodigo)
+
 ## Estructura Estándar de los Cursos
 
 Para mantener la coherencia y garantizar la mejor experiencia de aprendizaje gamificada, **cada módulo o lección de cualquier curso debe seguir esta estructura fundamental**:
@@ -107,3 +113,5 @@ Las páginas `introduccion` **no** incluyen el bloque de dato curioso; el contex
 
 ---
 *Con consistencia arquitectónica formaremos mejores profesionales del software.*
+
+

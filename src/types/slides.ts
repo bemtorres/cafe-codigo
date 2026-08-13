@@ -119,7 +119,7 @@ export type QuizQuestion =
       kind: 'FillInTheBlank';
       title: string;
       questionText: string;
-      code: string;
+      code?: string;
       options: string[];
       correctOption: number;
       explanation: string;
@@ -129,7 +129,7 @@ export type QuizQuestion =
       kind: 'PredictOutput';
       title: string;
       questionText: string;
-      code: string;
+      code?: string;
       options: string[];
       correctOption: number;
       explanation: string;
@@ -139,7 +139,7 @@ export type QuizQuestion =
       kind: 'FindTheBug';
       title: string;
       questionText: string;
-      code: string;
+      code?: string;
       options: string[];
       correctOption: number;
       explanation: string;

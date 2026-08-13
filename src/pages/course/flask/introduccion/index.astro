@@ -1,0 +1,76 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import FlaskQuizModal from '../../../../components/quizzes/FlaskQuizModal.astro';
+---
+
+<Layout title="Introducción a Flask" description="Aprende qué es Flask, por qué se le considera un microframework y crea tu primer Hola Mundo." courseSlug="flask">
+  <article class="content-section">
+    <h1>1. Introducción a Flask</h1>
+
+    <section class="mb-10">
+      <h2>¿Qué es Flask?</h2>
+      <p>
+        <strong>Flask</strong> es un microframework ligero y flexible para Python desarrollado por Armin Ronacher (Pocoo). Su filosofía se basa en mantener un núcleo minimalista pero altamente extensible.
+      </p>
+      <ul>
+        <li><strong>Ligero:</strong> No fuerza una estructura de archivos rígida ni impone una base de datos o motor ORM específico.</li>
+        <li><strong>Extensible:</strong> Permite integrar librerías para bases de datos (SQLAlchemy), autenticación (Flask-Login), formularios (Flask-WTF) o APIs (Flask-CORS) según las necesidades del proyecto.</li>
+        <li><strong>Basado en estándares:</strong> Utiliza el servidor WSGI Werkzeug y el motor de plantillas Jinja2.</li>
+      </ul>
+    </section>
+
+    <section class="mb-10">
+      <h2>Instalación de Flask</h2>
+      <p>
+        Para comenzar a trabajar con Flask se recomienda crear un entorno virtual e instalar el paquete a través de <code>pip</code>.
+      </p>
+      <CodeBlock
+        lang="bash"
+        code={`python -m venv env
+source env/bin/activate  # En Linux / macOS
+# env\\Scripts\\activate  # En Windows
+
+pip install flask`}
+        title="instalacion_flask.sh"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Tu primer "Hola Mundo" en Flask</h2>
+      <p>
+        Una de las mayores ventajas de Flask es la rapidez con la que se puede poner en marcha un servidor funcional con pocas líneas de código.
+      </p>
+      <CodeBlock
+        lang="python"
+        code={`from flask import Flask
+
+app = Flask(__name__)
+
+
+@app.route('/')
+def hola_mundo():
+    return '¡Hola Mundo desde Flask!'
+
+
+if __name__ == '__main__':
+    app.run(debug=True)`}
+        title="app.py"
+      />
+      <p class="mt-4">
+        Al ejecutar <code>python app.py</code>, Flask iniciará un servidor web en <code>http://127.0.0.1:5000/</code> listo para recibir peticiones.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>Repasa los conceptos básicos de Flask respondiendo estas preguntas.</p>
+      <FlaskQuizModal quizKey="introduccion" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/flask/" class="prev">← Índice de Flask</a>
+      <a href="/course/flask/rutas-y-vistas/" class="next">Rutas y Parámetros →</a>
+    </nav>
+  </article>
+</Layout>

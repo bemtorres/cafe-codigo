@@ -1,0 +1,69 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import FlaskQuizModal from '../../../../components/quizzes/FlaskQuizModal.astro';
+---
+
+<Layout title="Proyecto Integrador Flask" description="Integra todos los contenidos aprendidos en la creación de una aplicación web real con Flask, Blueprints y SQLAlchemy." courseSlug="flask">
+  <article class="content-section">
+    <h1>7. Proyecto Integrador Flask</h1>
+
+    <section class="mb-10">
+      <h2>Objetivo del Proyecto</h2>
+      <p>
+        El objetivo de esta lección es consolidar todos los módulos aprendidos durante el curso: enrutamiento, plantillas con Jinja2, procesamiento de formularios, desarrollo de APIs RESTful y persistencia con SQLAlchemy en una sola aplicación completa.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Organización por Módulos con Blueprints</h2>
+      <p>
+        A medida que una aplicación Flask crece, se recomienda organizarla en módulos reutilizables llamados <strong>Blueprints</strong> en lugar de tener todo en un solo archivo <code>app.py</code>.
+      </p>
+      <CodeBlock
+        lang="python"
+        code={`# modulo_cursos.py
+from flask import Blueprint, render_template
+
+cursos_bp = Blueprint('cursos', __name__, url_prefix='/cursos')
+
+
+@cursos_bp.route('/')
+def listar():
+    return render_template('cursos/lista.html')`}
+        title="modulo_cursos.py"
+      />
+      <CodeBlock
+        lang="python"
+        code={`# app.py
+from flask import Flask
+from modulo_cursos import cursos_bp
+
+app = Flask(__name__)
+app.register_blueprint(cursos_bp)`}
+        title="app.py"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Requisitos del Proyecto Final</h2>
+      <ul>
+        <li><strong>Vistas y Formularios:</strong> Interfaz web para consultar y registrar elementos (CRUD completo).</li>
+        <li><strong>Base de Datos:</strong> Modelos integrados con Flask-SQLAlchemy para guardar la información.</li>
+        <li><strong>API REST JSON:</strong> Endpoints para consultar y crear datos en formato JSON.</li>
+        <li><strong>Estructura Limpia:</strong> Separación entre archivos <code>models.py</code>, plantillas en <code>templates/</code> y estáticos en <code>static/</code>.</li>
+      </ul>
+    </section>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>Evalúa si estás listo para completar tu proyecto integrador en Flask.</p>
+      <FlaskQuizModal quizKey="proyecto-integrador" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/flask/apis-json/" class="prev">← Creación de APIs REST con JSON</a>
+      <a href="/course/flask/" class="next">Volver al índice de Flask →</a>
+    </nav>
+  </article>
+</Layout>

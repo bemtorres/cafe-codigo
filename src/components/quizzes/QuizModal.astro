@@ -27,6 +27,7 @@ import { criptografiaQuizBank } from '../../data/criptografiaQuizBank';
 import { desarrolloIaQuizBank } from '../../data/desarrolloIaQuizBank';
 import { kotlinQuizBank } from '../../data/kotlinQuizBank';
 import { djangoQuizBank } from '../../data/djangoQuizBank';
+import { flaskQuizBank } from '../../data/flaskQuizBank';
 
 const QUIZ_BANKS: Record<string, any> = {
   python: pythonQuizBank,
@@ -59,6 +60,7 @@ const QUIZ_BANKS: Record<string, any> = {
   'desarrollo-ia': desarrolloIaQuizBank,
   kotlin: kotlinQuizBank,
   django: djangoQuizBank,
+  flask: flaskQuizBank,
 };
 
 type Props = {
@@ -83,8 +85,7 @@ const {
   brandingBg,
   brandingText,
   logo,
-  shuffleQuestions = true,
-  description
+  shuffleQuestions = true
 } = Astro.props as Props;
 
 const bank = QUIZ_BANKS[courseSlug];
@@ -263,7 +264,6 @@ const radiosNamePrefix = `universal_quiz_${courseSlug}_${quizKey}_q_`;
 
       const correctInput = qEl.querySelector(`input[type="radio"][value="${correct}"]`);
       const correctText = correctInput?.parentElement?.querySelector('span')?.textContent ?? '';
-      const selectedText = selected?.parentElement?.querySelector('span')?.textContent ?? '';
 
       const isCorrect = idx === correct;
       if (isCorrect) score++;

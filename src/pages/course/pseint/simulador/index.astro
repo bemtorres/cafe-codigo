@@ -1,4 +1,4 @@
-﻿---
+---
 import Layout from '../../../../layouts/Layout.astro';
 ---
 
@@ -106,25 +106,21 @@ import Layout from '../../../../layouts/Layout.astro';
   import { createPSeIntRunner } from '../../../../lib/pseint/interpreter.js';
   import { createMonacoPSeIntEditor } from '../../../../lib/pseint/monacoPseint.js';
 
-  /**
-   * @param {string} id
-   * @returns {HTMLElement}
-   */
-  function mustEl(id) {
+  function mustEl(id: string): HTMLElement {
     const node = document.getElementById(id);
     if (!node) throw new Error(`No se encontró el elemento #${id}`);
     return node;
   }
 
-  const $editorHost = /** @type {HTMLElement} */ (mustEl('editor'));
-  const $stdout = /** @type {HTMLElement} */ (mustEl('stdout'));
-  const $run = /** @type {HTMLButtonElement} */ (mustEl('btn-run'));
-  const $clear = /** @type {HTMLButtonElement} */ (mustEl('btn-clear'));
-  const $prompt = /** @type {HTMLElement} */ (mustEl('input-prompt'));
-  const $line = /** @type {HTMLElement} */ (mustEl('input-line'));
-  const $input = /** @type {HTMLInputElement} */ (mustEl('input-value'));
-  const $send = /** @type {HTMLButtonElement} */ (mustEl('btn-send'));
-  const $modal = /** @type {HTMLElement} */ (mustEl('modal-leer'));
+  const $editorHost = mustEl('editor');
+  const $stdout = mustEl('stdout');
+  const $run = mustEl('btn-run') as HTMLButtonElement;
+  const $clear = mustEl('btn-clear') as HTMLButtonElement;
+  const $prompt = mustEl('input-prompt');
+  const $line = mustEl('input-line');
+  const $input = mustEl('input-value') as HTMLInputElement;
+  const $send = mustEl('btn-send') as HTMLButtonElement;
+  const $modal = mustEl('modal-leer');
 
   const defaultProgram = `Algoritmo SumaDosNumeros
   Definir num1 Como Entero;
@@ -161,8 +157,7 @@ FinAlgoritmo`;
     }
   });
 
-  /** @param {string} line */
-  function appendOut(line) {
+  function appendOut(line: string) {
     $stdout.textContent += (line ?? '') + '\n';
   }
 
@@ -170,8 +165,7 @@ FinAlgoritmo`;
     $stdout.textContent = '';
   }
 
-  /** @param {{prompt: string, lineNo?: number} | null} wait */
-  function setWaitingUI(wait) {
+  function setWaitingUI(wait: { prompt: string; lineNo?: number } | null) {
     if (!wait) {
       $modal.style.display = 'none';
       $prompt.textContent = '';
@@ -186,21 +180,18 @@ FinAlgoritmo`;
     setTimeout(() => $input.focus(), 50);
   }
 
-  /** @param {boolean} isBusy */
-  function setBusy(isBusy) {
+  function setBusy(isBusy: boolean) {
     // Si estuviéramos en "Run", podríamos deshabilitarlo
     $run.disabled = isBusy;
   }
 
-  /** @typedef {ReturnType<typeof createPSeIntRunner>} Runner */
-  /** @type {Runner | null} */
-  let runner = null;
+  type Runner = ReturnType<typeof createPSeIntRunner>;
+  let runner: Runner | null = null;
 
-  /** @param {boolean} resetOutput */
-  function ensureRunner(resetOutput) {
+  function ensureRunner(resetOutput: boolean) {
     const code = editor ? editor.getValue() : localStorage.getItem('pseint.code') || '';
     if (resetOutput) clearOut();
-    runner = createPSeIntRunner(code, { onOutput: (line) => appendOut(line) });
+    runner = createPSeIntRunner(code, { onOutput: (line: string) => appendOut(line) });
     setWaitingUI(null);
   }
 

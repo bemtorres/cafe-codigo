@@ -187,6 +187,23 @@ export const courses: Course[] = [
     ],
   },
   {
+    slug: 'flask',
+    name: 'Flask',
+    description: 'Desarrollo web ligero con Python: rutas, plantillas Jinja2, formularios, ORM SQLAlchemy y APIs RESTful.',
+    category: 'advanced',
+    status: 'available',
+    color: '#000000',
+    lessons: [
+      { slug: 'introduccion', title: '1. Introducción a Flask', href: '/course/flask/introduccion/' },
+      { slug: 'rutas-y-vistas', title: '2. Rutas y Parámetros', href: '/course/flask/rutas-y-vistas/' },
+      { slug: 'plantillas-jinja2', title: '3. Plantillas con Jinja2', href: '/course/flask/plantillas-jinja2/' },
+      { slug: 'formularios-y-request', title: '4. Formularios y Peticiones', href: '/course/flask/formularios-y-request/' },
+      { slug: 'sqlalchemy-bd', title: '5. Bases de Datos con SQLAlchemy', href: '/course/flask/sqlalchemy-bd/' },
+      { slug: 'apis-json', title: '6. Creación de APIs REST con JSON', href: '/course/flask/apis-json/' },
+      { slug: 'proyecto-integrador', title: '7. Proyecto Integrador Flask', href: '/course/flask/proyecto-integrador/' },
+    ],
+  },
+  {
     slug: 'java',
     name: 'Java',
     description: 'Lenguaje robusto y multiplataforma, muy usado en desarrollo empresarial.',

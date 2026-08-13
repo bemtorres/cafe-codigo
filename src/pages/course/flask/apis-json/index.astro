@@ -1,0 +1,94 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import FlaskQuizModal from '../../../../components/quizzes/FlaskQuizModal.astro';
+---
+
+<Layout title="Creación de APIs REST con JSON en Flask" description="Aprende a responder JSON con jsonify, leer payloads con request.get_json y construir servicios web RESTful en Flask." courseSlug="flask">
+  <article class="content-section">
+    <h1>6. Creación de APIs REST con JSON</h1>
+
+    <section class="mb-10">
+      <h2>¿Qué es una API RESTful en Flask?</h2>
+      <p>
+        En lugar de renderizar plantillas HTML para navegadores, una API backend recibe y responde estructurando los datos en formato <strong>JSON</strong>. Esto permite conectar aplicaciones front-end modernas (React, Vue, Angular) o apps móviles (Android, iOS).
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Devolver JSON con jsonify</h2>
+      <p>
+        Flask provee la función <code>jsonify()</code> que serializa diccionarios o listas de Python a cadenas JSON y configura el encabezado HTTP <code>Content-Type: application/json</code>.
+      </p>
+      <CodeBlock
+        lang="python"
+        code={`from flask import Flask, jsonify
+
+app = Flask(__name__)
+
+
+@app.route('/api/estado')
+def obtener_estado():
+    return jsonify({
+        'status': 'online',
+        'version': '1.0.0',
+        'servidor': 'Flask WSGI'
+    })`}
+        title="api_basica.py"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Recibir JSON en peticiones POST/PUT</h2>
+      <p>
+        Para leer el payload JSON enviado por un cliente en el cuerpo de la petición, se utiliza <code>request.get_json()</code>.
+      </p>
+      <CodeBlock
+        lang="python"
+        code={`from flask import request
+
+
+@app.route('/api/productos', methods=['POST'])
+def crear_producto_api():
+    datos = request.get_json()
+
+    if not datos or 'nombre' not in datos:
+        return jsonify({'error': 'Falta el campo nombre'}), 400
+
+    nombre = datos['nombre']
+    precio = datos.get('precio', 0.0)
+
+    # Lógica de guardado...
+    return jsonify({
+        'mensaje': 'Producto creado con éxito',
+        'producto': {'nombre': nombre, 'precio': precio}
+    }), 201`}
+        title="api_post.py"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Diseño de Endpoints RESTful</h2>
+      <p>
+        Un diseño REST claro mapea las operaciones sobre recursos utilizando los métodos HTTP adecuados y códigos de estado (Status Codes):
+      </p>
+      <ul>
+        <li><code>GET /api/cursos/</code> (200 OK): Obtener todos los cursos.</li>
+        <li><code>POST /api/cursos/</code> (201 Created): Crear un nuevo curso.</li>
+        <li><code>GET /api/cursos/1/</code> (200 OK / 404 Not Found): Obtener detalle de un curso.</li>
+        <li><code>DELETE /api/cursos/1/</code> (200 OK / 204 No Content): Eliminar un curso.</li>
+      </ul>
+    </section>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>Comprueba tus conocimientos sobre creación de APIs en Flask.</p>
+      <FlaskQuizModal quizKey="apis-json" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/flask/sqlalchemy-bd/" class="prev">← Bases de Datos con SQLAlchemy</a>
+      <a href="/course/flask/proyecto-integrador/" class="next">Proyecto Integrador Flask →</a>
+    </nav>
+  </article>
+</Layout>

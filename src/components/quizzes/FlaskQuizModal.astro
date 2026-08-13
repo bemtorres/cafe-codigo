@@ -1,0 +1,19 @@
+---
+import QuizModal from './QuizModal.astro';
+
+type Props = {
+  quizKey: string;
+};
+
+const { quizKey } = Astro.props as Props;
+---
+
+<QuizModal
+  courseSlug="flask"
+  quizKey={quizKey}
+  title="Flask Quiz"
+  brandingColor="#000000"
+  brandingBg="#E2F1F8"
+  brandingText="#000000"
+  logo="🧪"
+/>

@@ -1,0 +1,84 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import FlaskQuizModal from '../../../../components/quizzes/FlaskQuizModal.astro';
+---
+
+<Layout title="Formularios y Peticiones en Flask" description="Procesa formularios HTML con POST, lee request.form, request.args y realiza redirecciones con redirect." courseSlug="flask">
+  <article class="content-section">
+    <h1>4. Formularios y Peticiones</h1>
+
+    <section class="mb-10">
+      <h2>El objeto global request</h2>
+      <p>
+        Flask provee el objeto global <code>request</code> que contiene toda la información de la petición HTTP recibida por el servidor (datos de formulario, parámetros de URL, headers, archivos, etc.).
+      </p>
+      <ul>
+        <li><code>request.form</code>: Diccionario con los datos enviados desde un formulario POST.</li>
+        <li><code>request.args</code>: Diccionario con los parámetros de consulta de la URL (query params en GET).</li>
+        <li><code>request.method</code>: El método HTTP utilizado ('GET', 'POST', etc.).</li>
+      </ul>
+    </section>
+
+    <section class="mb-10">
+      <h2>Procesar un formulario POST</h2>
+      <p>
+        Para recibir datos de un formulario HTML, la ruta debe aceptar el método <code>POST</code> y extraer los valores con <code>request.form['campo']</code> o <code>request.form.get('campo')</code>.
+      </p>
+      <CodeBlock
+        lang="python"
+        code={`from flask import Flask, redirect, render_template, request, url_for
+
+app = Flask(__name__)
+
+
+@app.route('/contacto', methods=['GET', 'POST'])
+def contacto():
+    if request.method == 'POST':
+        nombre = request.form.get('nombre')
+        email = request.form.get('email')
+        mensaje = request.form.get('mensaje')
+
+        # Procesar o guardar información...
+        print(f'Mensaje de {nombre} ({email}): {mensaje}')
+
+        return redirect(url_for('gracias'))
+
+    return render_template('contacto.html')
+
+
+@app.route('/gracias')
+def gracias():
+    return '<h1>¡Gracias por contactarnos!</h1>'`}
+        title="contacto.py"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Parámetros en URL (Query Parameters)</h2>
+      <p>
+        Cuando la URL incluye parámetros como <code>/buscar?q=flask&categoria=web</code>, se leen utilizando <code>request.args.get()</code>:
+      </p>
+      <CodeBlock
+        lang="python"
+        code={`@app.route('/buscar')
+def buscar():
+    query = request.args.get('q', '')
+    categoria = request.args.get('categoria', 'todas')
+    return f'Buscando "{query}" en la categoría "{categoria}"'`}
+        title="busqueda.py"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>Comprueba que entiendes el manejo de peticiones y formularios en Flask.</p>
+      <FlaskQuizModal quizKey="formularios-y-request" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/flask/plantillas-jinja2/" class="prev">← Plantillas con Jinja2</a>
+      <a href="/course/flask/sqlalchemy-bd/" class="next">Bases de Datos con SQLAlchemy →</a>
+    </nav>
+  </article>
+</Layout>

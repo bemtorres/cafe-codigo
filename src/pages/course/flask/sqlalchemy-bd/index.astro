@@ -1,0 +1,192 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import FlaskQuizModal from '../../../../components/quizzes/FlaskQuizModal.astro';
+---
+
+<Layout title="Bases de Datos con SQLAlchemy en Flask" description="Integra Flask-SQLAlchemy para definir modelos ORM, realizar migraciones y operaciones CRUD sobre tu base de datos." courseSlug="flask">
+  <article class="content-section">
+    <h1>5. Bases de Datos con SQLAlchemy</h1>
+
+    <section class="mb-10">
+      <h2>¿Qué es Flask-SQLAlchemy?</h2>
+      <p>
+        <strong>Flask-SQLAlchemy</strong> es una extensión que simplifica el uso del ORM (Mapeador Relacional de Objetos) SQLAlchemy dentro de aplicaciones Flask. Permite mapear clases de Python a tablas de la base de datos SQL sin escribir SQL manual.
+      </p>
+      <CodeBlock
+        lang="bash"
+        code={`pip install flask-sqlalchemy`}
+        title="instalar_sqlalchemy.sh"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Conexión a distintas Bases de Datos</h2>
+      <p>
+        La gran ventaja de Flask-SQLAlchemy es que la lógica del modelo no cambia; solo cambia la cadena de conexión <code>SQLALCHEMY_DATABASE_URI</code> en <code>app.config</code>.
+      </p>
+      <ul>
+        <li><strong>SQLite (Local):</strong> <code>sqlite:///mi_base.db</code> (ideal para pruebas rápidas).</li>
+        <li><strong>MySQL:</strong> <code>mysql+pymysql://usuario:password@localhost:3306/nombre_bd</code></li>
+        <li><strong>Supabase (Postgres):</strong> <code>postgresql://postgres.[ref]:[password]@aws-0-[region].pooler.supabase.com:6543/postgres</code></li>
+      </ul>
+    </section>
+
+    <section class="mb-10">
+      <h2>1. CRUD en Flask con MySQL</h2>
+      <p>
+        Para conectar Flask a un servidor **MySQL**, primero instalamos el driver <code>pymysql</code>:
+      </p>
+      <CodeBlock
+        lang="bash"
+        code={`pip install flask-sqlalchemy pymysql cryptography`}
+        title="instalar_mysql.sh"
+      />
+      <p class="mt-3">
+        Luego configuramos la URI de conexión y ejecutamos las operaciones CRUD:
+      </p>
+      <CodeBlock
+        lang="python"
+        code={`from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+
+app = Flask(__name__)
+
+# Configuración de conexión a MySQL local o servidor remoto
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:secreto123@localhost:3306/tienda_db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db = SQLAlchemy(app)
+
+
+# Modelo de datos en MySQL
+class Producto(db.Model):
+    __tablename__ = 'productos'
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(100), nullable=False)
+    precio = db.Column(db.Float, nullable=False)
+    stock = db.Column(db.Integer, default=0)
+
+
+# CRUD Completo en MySQL
+def crud_mysql():
+    with app.app_context():
+        db.create_all()  # Crea la tabla en MySQL si no existe
+
+        # --- CREATE ---
+        nuevo = Producto(nombre='Laptop Pro 15', precio=1200.00, stock=10)
+        db.session.add(nuevo)
+        db.session.commit()
+
+        # --- READ ---
+        productos = Producto.query.all()
+        item = Producto.query.filter_by(nombre='Laptop Pro 15').first()
+
+        # --- UPDATE ---
+        if item:
+            item.precio = 1150.00
+            db.session.commit()
+
+        # --- DELETE ---
+        if item:
+            db.session.delete(item)
+            db.session.commit()`}
+        title="flask_mysql_crud.py"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>2. CRUD en Flask con Supabase</h2>
+      <p>
+        <strong>Supabase</strong> es una alternativa Open Source a Firebase basada en PostgreSQL. Puedes conectar Flask a Supabase de dos formas: mediante **SQLAlchemy ORM (PostgreSQL)** o mediante la **Librería Oficial Supabase Python SDK**.
+      </p>
+
+      <h3 class="text-xl font-bold mt-6 mb-2">Opción A: Vía Flask-SQLAlchemy (PostgreSQL Connection String)</h3>
+      <CodeBlock
+        lang="bash"
+        code={`pip install flask-sqlalchemy psycopg2-binary`}
+        title="instalar_postgres.sh"
+      />
+      <CodeBlock
+        lang="python"
+        code={`# URI de conexión directa a PostgreSQL de Supabase
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres.xxx:tu_password@aws-0-sa-east-1.pooler.supabase.com:6543/postgres'
+
+# El código del modelo y las consultas db.session en SQLAlchemy se mantienen idénticos.`}
+        title="config_supabase_orm.py"
+      />
+
+      <h3 class="text-xl font-bold mt-6 mb-2">Opción B: Vía Supabase Python SDK (Client Directo)</h3>
+      <p>
+        Si deseas interactuar con las APIs automáticas, Row Level Security (RLS) y autenticación de Supabase desde Flask:
+      </p>
+      <CodeBlock
+        lang="bash"
+        code={`pip install supabase`}
+        title="instalar_supabase_sdk.sh"
+      />
+      <CodeBlock
+        lang="python"
+        code={`import os
+from flask import Flask, jsonify, request
+from supabase import create_client, Client
+
+app = Flask(__name__)
+
+SUPABASE_URL = "https://tu-proyecto.supabase.co"
+SUPABASE_KEY = "tu-anon-key-o-service-role-key"
+
+supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+
+
+# CRUD con el cliente de Supabase en Flask
+@app.route('/api/supabase/productos', methods=['GET'])
+def listar_productos_supabase():
+    # --- READ ---
+    response = supabase.table('productos').select('*').execute()
+    return jsonify(response.data)
+
+
+@app.route('/api/supabase/productos', methods=['POST'])
+def crear_producto_supabase():
+    data = request.get_json()
+    # --- CREATE ---
+    response = supabase.table('productos').insert({
+        'nombre': data['nombre'],
+        'precio': data['precio'],
+        'stock': data.get('stock', 0)
+    }).execute()
+    return jsonify(response.data), 201
+
+
+@app.route('/api/supabase/productos/<int:id>', methods=['PUT'])
+def actualizar_producto_supabase(id):
+    data = request.get_json()
+    # --- UPDATE ---
+    response = supabase.table('productos').update({
+        'precio': data['precio']
+    }).eq('id', id).execute()
+    return jsonify(response.data)
+
+
+@app.route('/api/supabase/productos/<int:id>', methods=['DELETE'])
+def eliminar_producto_supabase(id):
+    # --- DELETE ---
+    response = supabase.table('productos').delete().eq('id', id).execute()
+    return jsonify({'mensaje': 'Eliminado', 'data': response.data})`}
+        title="flask_supabase_sdk_crud.py"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>Verifica si comprendes la integración de bases de datos con SQLAlchemy en Flask.</p>
+      <FlaskQuizModal quizKey="sqlalchemy-bd" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/flask/formularios-y-request/" class="prev">← Formularios y Peticiones</a>
+      <a href="/course/flask/apis-json/" class="next">Creación de APIs REST con JSON →</a>
+    </nav>
+  </article>
+</Layout>

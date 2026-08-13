@@ -1,0 +1,104 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import FlaskQuizModal from '../../../../components/quizzes/FlaskQuizModal.astro';
+---
+
+<Layout title="Plantillas con Jinja2 en Flask" description="Aprende a renderizar HTML dinámico, variables, condicionales, loops y herencia de plantillas con Jinja2." courseSlug="flask">
+  <article class="content-section">
+    <h1>3. Plantillas con Jinja2</h1>
+
+    <section class="mb-10">
+      <h2>Renderizado con render_template</h2>
+      <p>
+        Flask utiliza el motor de plantillas <strong>Jinja2</strong> para separar la lógica de Python del diseño HTML. Por defecto, Flask busca los archivos HTML dentro del directorio <code>templates/</code>.
+      </p>
+      <CodeBlock
+        lang="python"
+        code={`from flask import Flask, render_template
+
+app = Flask(__name__)
+
+
+@app.route('/bienvenida')
+def bienvenida():
+    usuario = 'Carlos'
+    cursos = ['Python', 'Flask', 'Django']
+    return render_template('bienvenida.html', usuario=usuario, cursos=cursos)`}
+        title="app_render.py"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Sintaxis de Jinja2</h2>
+      <p>
+        Jinja2 utiliza marcadores especiales para inyectar datos y controlar la lógica dentro del archivo HTML:
+      </p>
+      <ul>
+        <li><code>&#123;&#123; variable &#125;&#125;</code>: Imprime el resultado de una variable o expresión.</li>
+        <li><code>&#123;% instruccion %&#125;</code>: Ejecuta estructuras de control como <code>if</code>, <code>for</code> o bloques.</li>
+        <li><code>&#123;# comentario #&#125;</code>: Comentarios que no se enviarán al HTML final.</li>
+      </ul>
+      <CodeBlock
+        lang="html"
+        code={`<!DOCTYPE html>
+<html lang="es">
+<head>
+  <title>Bienvenida</title>
+</head>
+<body>
+  <h1>¡Hola, {{ usuario }}!</h1>
+
+  {% if cursos %}
+    <h2>Tus cursos inscritos:</h2>
+    <ul>
+      {% for curso in cursos %}
+        <li>{{ curso }}</li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No tienes cursos actualmente.</p>
+  {% endif %}
+</body>
+</html>`}
+        title="templates/bienvenida.html"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Herencia de plantillas (Layout Base)</h2>
+      <p>
+        Para evitar repetir encabezados y menús en cada página HTML, Jinja2 permite crear una plantilla base con <code>&#123;% block contenido %&#125;&#123;% endblock %&#125;</code> y extenderla en las demás páginas con <code>&#123;% extends "base.html" %&#125;</code>.
+      </p>
+      <CodeBlock
+        lang="html"
+        code={`<!-- templates/base.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{% block titulo %}Mi App Flask{% endblock %}</title>
+</head>
+<body>
+  <nav><a href="/">Inicio</a> | <a href="/acerca">Acerca</a></nav>
+
+  <main>
+    {% block contenido %}{% endblock %}
+  </main>
+</body>
+</html>`}
+        title="templates/base.html"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>Evalúa tus conocimientos sobre Jinja2 y plantillas en Flask.</p>
+      <FlaskQuizModal quizKey="plantillas-jinja2" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/flask/rutas-y-vistas/" class="prev">← Rutas y Parámetros</a>
+      <a href="/course/flask/formularios-y-request/" class="next">Formularios y Peticiones →</a>
+    </nav>
+  </article>
+</Layout>

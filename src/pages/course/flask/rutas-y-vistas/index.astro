@@ -1,0 +1,95 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import FlaskQuizModal from '../../../../components/quizzes/FlaskQuizModal.astro';
+---
+
+<Layout title="Rutas y Parámetros en Flask" description="Aprende a mapear URLs dinámicas, converters de rutas y especificar métodos HTTP en Flask." courseSlug="flask">
+  <article class="content-section">
+    <h1>2. Rutas y Parámetros en Flask</h1>
+
+    <section class="mb-10">
+      <h2>El decorador @app.route</h2>
+      <p>
+        En Flask, las rutas asocian una URL del navegador con una función de Python (llamada función de vista o <em>view function</em>).
+      </p>
+      <CodeBlock
+        lang="python"
+        code={`@app.route('/acerca')
+def acerca():
+    return 'Página de información acerca de nosotros'`}
+        title="rutas_basicas.py"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Rutas dinámicas y convertidores</h2>
+      <p>
+        Puedes pasar parámetros directamente en la URL utilizando la sintaxis <code>&lt;tipo:nombre_variable&gt;</code>. Flask convertirá automáticamente el valor al tipo especificado.
+      </p>
+      <ul>
+        <li><code>string</code>: acepta texto sin barras (por defecto).</li>
+        <li><code>int</code>: acepta enteros positivos.</li>
+        <li><code>float</code>: acepta números con decimales.</li>
+        <li><code>path</code>: acepta texto incluyendo barras diagonales <code>/</code>.</li>
+      </ul>
+      <CodeBlock
+        lang="python"
+        code={`@app.route('/usuario/<string:nombre>')
+def perfil_usuario(nombre):
+    return f'Perfil del usuario: {nombre}'
+
+
+@app.route('/producto/<int:id>')
+def detalle_producto(id):
+    return f'Viendo el producto con ID #{id}'`}
+        title="rutas_dinamicas.py"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Métodos HTTP (GET, POST, PUT, DELETE)</h2>
+      <p>
+        Por defecto, las rutas en Flask solo aceptan peticiones <code>GET</code>. Para procesar formularios o peticiones POST, se especifica el argumento <code>methods</code>.
+      </p>
+      <CodeBlock
+        lang="python"
+        code={`from flask import request
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        return 'Procesando inicio de sesión...'
+    return 'Mostrando formulario de login'`}
+        title="metodos_http.py"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Generación de URLs con url_for</h2>
+      <p>
+        La función <code>url_for()</code> genera dinámicamente la URL para una función de vista dada, evitando escribir URLs fijas en el código.
+      </p>
+      <CodeBlock
+        lang="python"
+        code={`from flask import url_for
+
+# Genera: /producto/42
+url_producto = url_for('detalle_producto', id=42)`}
+        title="url_for_ejemplo.py"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>Verifica lo aprendido sobre rutas y parámetros en Flask.</p>
+      <FlaskQuizModal quizKey="rutas-y-vistas" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/flask/introduccion/" class="prev">← Introducción a Flask</a>
+      <a href="/course/flask/plantillas-jinja2/" class="next">Plantillas con Jinja2 →</a>
+    </nav>
+  </article>
+</Layout>
