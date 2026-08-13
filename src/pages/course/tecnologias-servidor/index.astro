@@ -1,0 +1,140 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import { courses } from '../../../data/courses';
+
+const serverCourse = courses.find((c) => c.slug === 'tecnologias-servidor');
+if (!serverCourse) {
+  throw new Error("No se encontró el curso 'tecnologias-servidor' en el archivo de datos.");
+}
+
+// Resumen de temas clave por lección para enriquecer las tarjetas
+const lessonTopics = [
+  ['Ciclo Request/Response', 'IP & Puertos', 'Cliente vs Servidor'],
+  ['Métodos HTTP', 'Headers & Body', 'Status Codes (200, 404, 500)'],
+  ['Cifrado SSL/TLS', 'Let\'s Encrypt', 'Certbot & Redirección 301'],
+  ['Registros A, CNAME, MX', 'Resolución IP', 'nslookup & dig'],
+  ['Anatomía URL', 'Subdominios', 'TLDs & Nameservers'],
+  ['Hosting Compartido', 'VPS Virtualización', 'Cloud Computing'],
+  ['Nginx & Apache', 'Reverse Proxy', 'Puerto 80 y 443'],
+  ['Django, Node.js, Laravel', 'Servidor de App', 'Base de Datos'],
+  ['Despliegue Linux VPS', 'Firewall UFW', 'Publicación SSL'],
+  ['DevTools Network', 'Headers & Cookies', 'Diagnóstico con curl & ping'],
+];
+---
+
+<Layout
+  title="Curso de Tecnologías del Lado del Servidor"
+  description="Aprende arquitectura cliente-servidor, HTTP/HTTPS, DNS, dominios, hosting VPS/Cloud, Nginx/Apache y publicación a producción."
+  courseSlug="tecnologias-servidor"
+>
+  <div class="bg-slate-50 min-h-screen pb-20">
+    
+    <!-- HERO HEADER MODERN DE IMPACTO -->
+    <header class="bg-gradient-to-r from-slate-900 via-blue-950 to-indigo-950 text-white border-b border-slate-800 py-14 px-5">
+      <div class="max-w-[1100px] mx-auto text-center space-y-5">
+        <div class="inline-flex items-center gap-2 bg-blue-500/20 text-blue-300 border border-blue-500/30 px-3.5 py-1 rounded-full text-xs font-black uppercase tracking-wider backdrop-blur">
+          <span>🌐</span>
+          <span>Ruta Especializada en Infraestructura Web</span>
+        </div>
+
+        <h1 class="text-4xl sm:text-5xl md:text-6xl font-black font-nunito tracking-tight leading-tight drop-shadow-md">
+          {serverCourse.name}
+        </h1>
+
+        <p class="text-base sm:text-lg text-slate-300 max-w-[800px] mx-auto font-medium leading-relaxed">
+          {serverCourse.description}
+        </p>
+
+        <!-- Badges de características -->
+        <div class="pt-2 flex flex-wrap items-center justify-center gap-4 text-xs font-bold text-slate-300">
+          <div class="bg-slate-900/80 px-4 py-2 rounded-xl border border-slate-800 flex items-center gap-2">
+            <span class="text-emerald-400">✓</span>
+            <span>10 Lecciones Interactivas</span>
+          </div>
+          <div class="bg-slate-900/80 px-4 py-2 rounded-xl border border-slate-800 flex items-center gap-2">
+            <span class="text-amber-400">★</span>
+            <span>4.9 Valoración Estudiantes</span>
+          </div>
+          <div class="bg-slate-900/80 px-4 py-2 rounded-xl border border-slate-800 flex items-center gap-2">
+            <span class="text-cyan-400">🛡️</span>
+            <span>Certificado HTTPS & Producción</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- ÍNDICE DE LECCIONES PRÉMIUM -->
+    <main class="max-w-[1100px] mx-auto px-5 pt-12 space-y-10">
+      <div class="flex items-center justify-between border-b border-slate-200 pb-4">
+        <div>
+          <h2 class="text-2xl font-black text-slate-900 tracking-tight font-nunito">
+            Contenido Curricular del Curso
+          </h2>
+          <p class="text-xs text-slate-500 font-medium">Sigue el orden recomendado para dominar la infraestructura del lado del servidor.</p>
+        </div>
+
+        <span class="text-xs font-extrabold text-blue-700 bg-blue-100/80 px-3.5 py-1.5 rounded-full">
+          {serverCourse.lessons?.length || 0} Lecciones
+        </span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {serverCourse.lessons?.map((lesson, index) => {
+          const topics = lessonTopics[index] || [];
+          const isProject = index === 8;
+
+          return (
+            <article class={`bg-white rounded-3xl border ${isProject ? 'border-indigo-400 shadow-indigo-100' : 'border-slate-200'} shadow-sm hover:shadow-xl transition-all duration-300 p-6 flex flex-col justify-between group hover:-translate-y-1 relative overflow-hidden`}>
+              {isProject && (
+                <div class="absolute top-0 right-0 bg-gradient-to-l from-indigo-600 to-blue-600 text-white text-[10px] font-black uppercase px-3 py-1 rounded-bl-xl tracking-wider">
+                  Proyecto Final Integrador
+                </div>
+              )}
+
+              <div class="space-y-4">
+                <div class="flex items-center justify-between">
+                  <div class="w-10 h-10 rounded-2xl bg-slate-900 text-white font-black text-sm flex items-center justify-center shadow-md">
+                    {(index + 1).toString().padStart(2, '0')}
+                  </div>
+
+                  <span class="text-[11px] font-extrabold text-slate-400">
+                    Lección {index + 1} de {serverCourse.lessons?.length}
+                  </span>
+                </div>
+
+                <h3 class="text-xl font-black text-slate-900 group-hover:text-blue-600 transition font-nunito leading-snug">
+                  {lesson.title}
+                </h3>
+
+                <!-- Chips de temas clave -->
+                <div class="flex flex-wrap gap-1.5 pt-1">
+                  {topics.map((t) => (
+                    <span class="text-[11px] font-semibold text-slate-600 bg-slate-100 px-2.5 py-1 rounded-lg">
+                      {t}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div class="pt-6 mt-4 border-t border-slate-100 flex items-center justify-between">
+                <span class="text-xs font-bold text-slate-500 flex items-center gap-1">
+                  <span>☕</span>
+                  <span>Evaluación Activa</span>
+                </span>
+
+                <a
+                  href={lesson.href}
+                  class="inline-flex items-center gap-2 text-xs font-black text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-xl transition shadow-md hover:shadow-lg"
+                >
+                  <span>Iniciar lección</span>
+                  <span>→</span>
+                </a>
+              </div>
+            </article>
+          );
+        })}
+      </div>
+
+    </main>
+  </div>
+</Layout>

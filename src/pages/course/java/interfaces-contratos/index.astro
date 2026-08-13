@@ -1,0 +1,131 @@
+---
+import Layout from "../../../../layouts/Layout.astro";
+import CodeBlock from "../../../../components/CodeBlock.astro";
+import JavaQuizModal from "../../../../components/quizzes/JavaQuizModal.astro";
+---
+
+<Layout
+  title="Interfaces y Contratos en Java"
+  description="Aprende a definir interfaces con métodos abstractos, atributos constantes e implementación múltiple en Java con implements."
+  courseSlug="java"
+>
+  <article class="content-section">
+    <h1>11. Interfaces y Contratos de Comportamiento</h1>
+
+    <section class="mb-10">
+      <h2>1. ¿Qué es una Interfaz en Java?</h2>
+      <p>
+        Una <strong>Intefaz</strong> en Java es un contrato 100% abstracto que define
+        qué métodos debe implementar una clase, sin especificar cómo deben realizarse.
+        Permite lograr <strong>herencia múltiple de comportamiento</strong>.
+      </p>
+
+      <CodeBlock
+        lang="java"
+        code={`// 1. Declaración de una Interfaz
+public interface Conducible {
+    // Atributo constante (public static final implícito)
+    int VELOCIDAD_LIMITE_URBANA = 60;
+
+    // Métodos abstractos sin cuerpo (public abstract implícito)
+    void encenderMotor();
+    void frenarDeEmergencia();
+}`}
+        title="Conducible.java (Interfaz)"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>2. Implementación Múltiple con implements</h2>
+      <p>
+        A diferencia de la herencia de clases (donde solo se permite <code>extends</code>
+        de un padre), en Java una clase puede implementar <strong>múltiples
+        interfaces</strong> separadas por comas:
+      </p>
+
+      <CodeBlock
+        lang="java"
+        code={`// 2. Segunda interfaz
+public interface Mantenible {
+    double calcularCostoMantenimiento();
+    void realizarRevisionTecnica();
+}
+
+// 3. Clase que implementa múltiples interfaces
+public class AutoElectrico implements Conducible, Mantenible {
+    private String marca;
+    private int bateriaPorcentaje;
+
+    public AutoElectrico(String marca, int bateriaPorcentaje) {
+        this.marca = marca;
+        this.bateriaPorcentaje = bateriaPorcentaje;
+    }
+
+    // Implementación obligatoria de Conducible
+    @Override
+    public void encenderMotor() {
+        System.out.println("⚡ " + marca + " silencia motor eléctrico. Batería: " + bateriaPorcentaje + "%");
+    }
+
+    @Override
+    public void frenarDeEmergencia() {
+        System.out.println("🛑 " + marca + " activa frenado regenerativo por debajo del límite (" + VELOCIDAD_LIMITE_URBANA + " km/h)");
+    }
+
+    // Implementación obligatoria de Mantenible
+    @Override
+    public double calcularCostoMantenimiento() {
+        return 150.0; // Costo fijo revisión de batería
+    }
+
+    @Override
+    public void realizarRevisionTecnica() {
+        System.out.println("🔧 Revisión de celdas de batería completada para " + marca);
+    }
+}`}
+        title="AutoElectrico.java (Implementación Múltiple)"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>3. Uso Práctico en el Método `main`</h2>
+      <CodeBlock
+        lang="java"
+        code={`public class MainInterfaces {
+    public static void main(String[] args) {
+        AutoElectrico tesla = new AutoElectrico("Tesla Model 3", 95);
+
+        // Usando referencia de la interfaz Conducible
+        Conducible vehiculo1 = tesla;
+        vehiculo1.encenderMotor();
+        vehiculo1.frenarDeEmergencia();
+
+        // Usando referencia de la interfaz Mantenible
+        Mantenible servicio = tesla;
+        servicio.realizarRevisionTecnica();
+        System.out.println("Costo total servicio: $" + servicio.calcularCostoMantenimiento());
+    }
+}`}
+        title="MainInterfaces.java"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>
+        Demuestra lo que has aprendido sobre contratos, constantes y la palabra
+        clave implements.
+      </p>
+      <JavaQuizModal quizKey="interfaces-contratos" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/java/herencia-polimorfismo/" class="prev"
+        >← Herencia y Polimorfismo</a
+      >
+      <a href="/course/java/composicion-agregacion/" class="next"
+        >Composición y Arreglos →</a
+      >
+    </nav>
+  </article>
+</Layout>

@@ -1,0 +1,145 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import JavaQuizModal from '../../../../components/quizzes/JavaQuizModal.astro';
+---
+
+<Layout
+  title="Herencia y Polimorfismo en Java: Vehículo, Auto, Moto y Bicicleta"
+  description="Aprende herencia en Java con la superclase Vehiculo y sus subclases Auto, Moto y Bicicleta, usando super(), extends y polimorfismo."
+  courseSlug="java"
+>
+  <article class="content-section">
+    <h1>10. Herencia y Polimorfismo en Java</h1>
+
+    <section class="mb-10">
+      <h2>1. Concepto de Herencia (extends) y la Superclase Vehiculo</h2>
+      <p>
+        La <strong>Herencia</strong> permite crear clases hijas (subclases) que reutilizan los atributos y métodos de una clase padre (superclase). Usamos la palabra reservada <code>extends</code>.
+      </p>
+
+      <CodeBlock
+        lang="java"
+        code={`// 1. Superclase Padre
+public class Vehiculo {
+    protected String marca;
+    protected String modelo;
+    protected int velocidadMax;
+
+    // Constructor de la superclase
+    public Vehiculo(String marca, String modelo, int velocidadMax) {
+        this.marca = marca;
+        this.modelo = modelo;
+        this.velocidadMax = velocidadMax;
+    }
+
+    public void acelerar() {
+        System.out.println(marca + " " + modelo + " está acelerando a " + velocidadMax + " km/h");
+    }
+
+    @Override
+    public String toString() {
+        return "Vehiculo { marca='" + marca + "', modelo='" + modelo + "', vMax=" + velocidadMax + " }";
+    }
+}`}
+        title="Vehiculo.java (Superclase Padre)"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>2. Subclases: Auto, Moto y Bicicleta con super()</h2>
+      <p>
+        Cada subclase extiende a <code>Vehiculo</code>, añade sus propios atributos específicos y llama al constructor padre mediante <code>super(...)</code>:
+      </p>
+
+      <CodeBlock
+        lang="java"
+        code={`// 2. Subclase Auto
+public class Auto extends Vehiculo {
+    private int cantidadPuertas;
+
+    public Auto(String marca, String modelo, int velocidadMax, int cantidadPuertas) {
+        super(marca, modelo, velocidadMax); // Invocación al constructor padre
+        this.cantidadPuertas = cantidadPuertas;
+    }
+
+    @Override
+    public void acelerar() {
+        System.out.println("🚗 Auto " + marca + " " + modelo + " (" + cantidadPuertas + " puertas) ruge el motor!");
+    }
+}
+
+// 3. Subclase Moto
+public class Moto extends Vehiculo {
+    private boolean tieneSidecar;
+
+    public Moto(String marca, String modelo, int velocidadMax, boolean tieneSidecar) {
+        super(marca, modelo, velocidadMax);
+        this.tieneSidecar = tieneSidecar;
+    }
+
+    @Override
+    public void acelerar() {
+        System.out.println("🏍️ Moto " + marca + " " + modelo + " acelera en 2 ruedas! Sidecar: " + tieneSidecar);
+    }
+}
+
+// 4. Subclase Bicicleta
+public class Bicicleta extends Vehiculo {
+    private int numeroMarchas;
+
+    public Bicicleta(String marca, String modelo, int velocidadMax, int numeroMarchas) {
+        super(marca, modelo, velocidadMax);
+        this.numeroMarchas = numeroMarchas;
+    }
+
+    @Override
+    public void acelerar() {
+        System.out.println("🚲 Bicicleta " + marca + " " + modelo + " pedalea a marcha " + numeroMarchas);
+    }
+}`}
+        title="Subclases Auto, Moto y Bicicleta"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>3. Polimorfismo en Acción: Arreglos de Superclase</h2>
+      <p>
+        El <strong>Polimorfismo</strong> permite tratar a objetos de distintas subclases de manera uniforme a través de la referencia de su clase padre (<code>Vehiculo</code>):
+      </p>
+
+      <CodeBlock
+        lang="java"
+        code={`public class MainGaraje {
+    public static void main(String[] args) {
+        // Arreglo de la superclase Vehiculo que contiene distintas subclases
+        Vehiculo[] garaje = new Vehiculo[3];
+        garaje[0] = new Auto("Toyota", "Corolla", 180, 4);
+        garaje[1] = new Moto("Yamaha", "MT-07", 210, false);
+        garaje[2] = new Bicicleta("Trek", "Marlin 7", 45, 12);
+
+        // Recorrido polimórfico: Cada objeto ejecuta su propia versión de acelerar()
+        System.out.println("--- PRUEBA DE POLIMORFISMO EN GARAJE ---");
+        for (Vehiculo v : garaje) {
+            System.out.println(v.toString());
+            v.acelerar(); // Polimorfismo dinámico
+            System.out.println("----------------------------------------");
+        }
+    }
+}`}
+        title="MainGaraje.java (Polimorfismo)"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>Verifica tu conocimiento sobre herencia con extends, uso de super() y polimorfismo dinámico.</p>
+      <JavaQuizModal quizKey="herencia-polimorfismo" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/java/poo-basico/" class="prev">← POO Clases y Atributos</a>
+      <a href="/course/java/interfaces-contratos/" class="next">Interfaces y Contratos →</a>
+    </nav>
+  </article>
+</Layout>

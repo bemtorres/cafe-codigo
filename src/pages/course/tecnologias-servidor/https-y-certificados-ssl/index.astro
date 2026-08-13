@@ -1,0 +1,63 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import TecnologiasServidorQuizModal from '../../../../components/quizzes/TecnologiasServidorQuizModal.astro';
+---
+
+<Layout title="HTTPS, Cifrado y Certificados SSL/TLS" description="Aprende por qué el cifrado HTTPS es imprescindible, cómo funcionan los certificados SSL/TLS y Let's Encrypt." courseSlug="tecnologias-servidor">
+  <article class="content-section">
+    <h1>3. HTTPS, Cifrado y Certificados SSL/TLS</h1>
+
+    <section class="mb-10">
+      <h2>HTTP vs. HTTPS</h2>
+      <p>
+        En HTTP plano, todos los datos (incluyendo contraseñas y tarjetas de crédito) se transmiten en texto plano expuesto a ataques de interceptación (Man-In-The-Middle). 
+        <strong>HTTPS (HTTP Secure)</strong> añade una capa de cifrado mediante **SSL/TLS**.
+      </p>
+      <CodeBlock
+        lang="plaintext"
+        code={`HTTP (Inseguro - Puerto 80)
+Usuario ─────────────────────► Servidor
+          "usuario:password" (Visible)
+
+HTTPS (Seguro - Puerto 443)
+Usuario ═════════════════════► Servidor
+          "e4b8a9c...3f" (Cifrado SSL/TLS)`}
+        title="comparativa_https.txt"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Certificados Digitales y Let's Encrypt</h2>
+      <p>
+        Un certificado digital es emitido por una **Autoridad Certificadora (CA)**. Valida la identidad del servidor y habilita llaves de encriptación asimétrica (clave pública y privada).
+      </p>
+      <ul>
+        <li><strong>Let's Encrypt:</strong> Autoridad certicadora automatizada y gratuita ampliamente utilizada en servidores Linux.</li>
+        <li><strong>Certbot:</strong> Herramienta CLI para instalar y renovar certificados SSL automáticamente en Nginx o Apache.</li>
+        <li><strong>Redirección 301:</strong> Configuración en el servidor para forzar que cualquier tráfico `http://` sea derivado automáticamente a `https://`.</li>
+      </ul>
+    </section>
+
+    <section class="mb-10">
+      <h2>Actividad Práctica: Inspección de Certificado en el Navegador</h2>
+      <ol class="list-decimal pl-5 space-y-2">
+        <li>Abre cualquier sitio seguro (ej: <code>https://github.com</code>).</li>
+        <li>Haz clic en el ícono del candado 🔒 al lado de la barra de direcciones.</li>
+        <li>Selecciona "El sitio es seguro" → "Certificado válido".</li>
+        <li>Verifica: Nombre de dominio, Autoridad Certificadora (CA) y Fecha de validez.</li>
+      </ol>
+    </section>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>Evalúa si entiendes la seguridad con HTTPS y certificados SSL/TLS.</p>
+      <TecnologiasServidorQuizModal quizKey="https-y-certificados-ssl" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/tecnologias-servidor/protocolo-http-metodos/" class="prev">← Protocolo HTTP y Métodos</a>
+      <a href="/course/tecnologias-servidor/dns-y-resolucion-ip/" class="next">DNS y Resolución IP →</a>
+    </nav>
+  </article>
+</Layout>

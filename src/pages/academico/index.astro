@@ -1,0 +1,12 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import AcademicoCatalog from '../../components/academico/AcademicoCatalog';
+---
+
+<Layout
+  title="Académico | Portal de Cursos y Rutas de Aprendizaje"
+  description="Explora todos los cursos interactivas de tecnología, programación, backend, bases de datos y DevOps en Café y Código con el nuevo portal estilo Coursera."
+  courseSlug="academico"
+>
+  <AcademicoCatalog client:load />
+</Layout>

@@ -1,0 +1,181 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import JavaQuizModal from '../../../../components/quizzes/JavaQuizModal.astro';
+---
+
+<Layout
+  title="Composición, Agregación y Objetos Anidados en Java"
+  description="Aprende relaciones 'Tiene-Un' en Java: un Usuario con un Perrito y un Usuario con múltiples mascotas usando arreglos Perrito[] y ArrayList."
+  courseSlug="java"
+>
+  <article class="content-section">
+    <h1>12. Composición, Agregación y Colecciones de Objetos</h1>
+
+    <section class="mb-10">
+      <h2>1. Relación "Tiene-Un": Objeto dentro de otro Objeto</h2>
+      <p>
+        En la <strong>Composición y Agregación</strong>, un objeto incluye a otro objeto como uno de sus atributos. Por ejemplo, una entidad <code>Usuario</code> tiene como atributo una mascota <code>Perrito</code>.
+      </p>
+
+      <CodeBlock
+        lang="java"
+        code={`// 1. Clase Perrito
+public class Perrito {
+    private String nombre;
+    private String raza;
+    private int edad;
+
+    public Perrito(String nombre, String raza, int edad) {
+        this.nombre = nombre;
+        this.raza = raza;
+        this.edad = edad;
+    }
+
+    public void ladrar() {
+        System.out.println("🐶 " + nombre + " (" + raza + ") dice: ¡Guau guau!");
+    }
+
+    @Override
+    public String toString() {
+        return "Perrito { nombre='" + nombre + "', raza='" + raza + "', edad=" + edad + " }";
+    }
+}
+
+// 2. Clase Usuario con un Perrito como atributo (1 a 1)
+public class Usuario {
+    private String nombre;
+    private Perrito mascota; // Atributo de tipo objeto Perrito
+
+    public Usuario(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public void setMascota(Perrito mascota) {
+        this.mascota = mascota;
+    }
+
+    public Perrito getMascota() {
+        return this.mascota;
+    }
+
+    public void mostrarPerfil() {
+        System.out.println("Usuario: " + nombre);
+        if (mascota != null) {
+            System.out.println("Mascota asignada: " + mascota.toString());
+            mascota.ladrar();
+        } else {
+            System.out.println("Aún no tiene mascota asignada.");
+        }
+    }
+}`}
+        title="Relación 1 a 1: Usuario y Perrito"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>2. Relación 1 a Muchos: Usuario con Arreglo de Objetos (Perrito[])</h2>
+      <p>
+        Si un <code>Usuario</code> puede tener <strong>varios perritos</strong>, declaramos un arreglo de tipo <code>Perrito[]</code> como atributo dentro de la clase:
+      </p>
+
+      <CodeBlock
+        lang="java"
+        code={`public class UsuarioConJuria {
+    private String nombre;
+    private Perrito[] mascotas; // Arreglo de objetos Perrito
+    private int contadorMascotas;
+
+    public UsuarioConJuria(String nombre, int capacidadMax) {
+        this.nombre = nombre;
+        this.mascotas = new Perrito[capacidadMax];
+        this.contadorMascotas = 0;
+    }
+
+    // Agregar un perrito al arreglo
+    public void agregarMascota(Perrito p) {
+        if (contadorMascotas < mascotas.length) {
+            mascotas[contadorMascotas] = p;
+            contadorMascotas++;
+            System.out.println("✅ " + p.toString() + " agregado a la lista de " + nombre);
+        } else {
+            System.out.println("⚠️ Capacidad máxima alcanzada.");
+        }
+    }
+
+    // Hacer ladrar a todas las mascotas con un bucle for-each
+    public void pasearMascotas() {
+        System.out.println("--- PASEO DE MASCOTAS DE " + nombre.toUpperCase() + " ---");
+        for (int i = 0; i < contadorMascotas; i++) {
+            Perrito p = mascotas[i];
+            p.ladrar();
+        }
+    }
+}`}
+        title="UsuarioConJuria.java (Arreglo de Objetos Perrito[])"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>3. Relación Dinámica con ArrayList&lt;Perrito&gt;</h2>
+      <p>
+        Para manejar una cantidad ilimitada y dinámica de objetos, utilizamos la colección <code>ArrayList&lt;Perrito&gt;</code>:
+      </p>
+
+      <CodeBlock
+        lang="java"
+        code={`import java.util.ArrayList;
+
+public class UsuarioDinamico {
+    private String nombre;
+    private ArrayList<Perrito> listaMascotas;
+
+    public UsuarioDinamico(String nombre) {
+        this.nombre = nombre;
+        this.listaMascotas = new ArrayList<>();
+    }
+
+    public void adoptarPerrito(Perrito p) {
+        listaMascotas.add(p);
+    }
+
+    public void listarTodos() {
+        System.out.println("Mascotas adoptadas por " + nombre + ":");
+        for (Perrito p : listaMascotas) {
+            System.out.println("- " + p);
+            p.ladrar();
+        }
+    }
+}
+
+// Ejemplo de Ejecución en Main:
+public class MainComposicion {
+    public static void main(String[] args) {
+        Perrito p1 = new Perrito("Max", "Golden Retriever", 3);
+        Perrito p2 = new Perrito("Rocky", "Bulldog", 2);
+        Perrito p3 = new Perrito("Toby", "Poodle", 1);
+
+        UsuarioDinamico usuario = new UsuarioDinamico("Carlos");
+        usuario.adoptarPerrito(p1);
+        usuario.adoptarPerrito(p2);
+        usuario.adoptarPerrito(p3);
+
+        usuario.listarTodos();
+    }
+}`}
+        title="MainComposicion.java (ArrayList de Objetos)"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>Comprueba tus conocimientos sobre objetos contenidos dentro de otros objetos y arreglos de instancias.</p>
+      <JavaQuizModal quizKey="composicion-agregacion" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/java/interfaces-contratos/" class="prev">← Interfaces y Contratos</a>
+      <a href="/course/java/introduccion/" class="next">Inicio del Curso →</a>
+    </nav>
+  </article>
+</Layout>

@@ -1,0 +1,99 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import TecnologiasServidorQuizModal from '../../../../components/quizzes/TecnologiasServidorQuizModal.astro';
+---
+
+<Layout title="Proyecto Práctico: Despliegue de Aplicación Web a Producción" description="Guía paso a paso en 5 etapas para publicar una aplicación web en un VPS Linux con dominio propio y certificado SSL." courseSlug="tecnologias-servidor">
+  <article class="content-section">
+    <h1>9. Proyecto Práctico: Despliegue de Aplicación Web a Producción</h1>
+
+    <section class="mb-10">
+      <h2>El Desafío de Producción</h2>
+      <p>
+        El objetivo de esta lección integradora es llevar una aplicación desarrollada en tu equipo local (localhost) hasta un **Servidor Linux accesible públicamente mediante HTTPS y un nombre de dominio**.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2>Etapa 1: Entorno Local (Development)</h2>
+      <p>Verifica que la aplicación web funcione correctamente con su base de datos local (ej: SQLite/PostgreSQL) antes de preparar el paquete de despliegue.</p>
+      <CodeBlock
+        lang="bash"
+        code={`git status
+# Asegúrate de incluir el archivo de dependencias
+pip freeze > requirements.txt  # Python
+# npm list --depth=0            # Node.js`}
+        title="1_preparacion_local.sh"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Etapa 2: Configuración del Servidor (VPS Linux)</h2>
+      <p>Accede a tu VPS por SSH, actualiza los paquetes del sistema e instala el servidor web Nginx y el firewall ufw:</p>
+      <CodeBlock
+        lang="bash"
+        code={`ssh usuario@IP_DEL_SERVIDOR
+
+# Actualizar sistema y Firewall
+sudo apt update && sudo apt upgrade -y
+sudo apt install nginx ufw -y
+
+# Permitir SSH, HTTP y HTTPS
+sudo ufw allow 22
+sudo ufw allow 80
+sudo ufw allow 443
+sudo ufw enable`}
+        title="2_configurar_servidor.sh"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Etapa 3: Configuración de Dominio y DNS</h2>
+      <p>En el panel del proveedor de tu dominio (ej: NIC Chile), crea un **Registro A** apuntando a la IP pública de tu VPS:</p>
+      <CodeBlock
+        lang="plaintext"
+        code={`Tipo    Nombre              Valor
+A       proyecto.cl         200.10.20.30
+CNAME   www.proyecto.cl     proyecto.cl`}
+        title="zona_dns_registro_a.txt"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Etapa 4: Certificado SSL Automático con Certbot (HTTPS)</h2>
+      <p>Ejecuta Certbot para obtener e instalar automáticamente un certificado SSL gratuito de Let's Encrypt:</p>
+      <CodeBlock
+        lang="bash"
+        code={`sudo apt install certbot python3-certbot-nginx -y
+sudo certbot --nginx -d proyecto.cl -d www.proyecto.cl`}
+        title="4_instalacion_ssl.sh"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Etapa 5: Demostración y Lista de Chequeo Final</h2>
+      <p>Para considerar exitosa la publicación en producción, el proyecto debe cumplir los 7 puntos de verificación:</p>
+      <ol class="list-decimal pl-5 space-y-1 font-bold text-slate-700">
+        <li>Dominio accesible vía web.</li>
+        <li>DNS resolviendo a la IP correcta.</li>
+        <li>Servidor Nginx activo y respondiendo.</li>
+        <li>Aplicación backend en ejecución.</li>
+        <li>Base de datos conectada sin errores.</li>
+        <li>HTTPS activo con candado verde 🔒.</li>
+        <li>Respuesta accesible para cualquier usuario en Internet.</li>
+      </ol>
+    </section>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>Evalúa si estás listo para completar el flujo de publicación a producción.</p>
+      <TecnologiasServidorQuizModal quizKey="proyecto-despliegue-produccion" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/tecnologias-servidor/stack-backend-y-tecnologias/" class="prev">← Stack Backend y BD</a>
+      <a href="/course/tecnologias-servidor/diagnostico-y-dev-tools/" class="next">Diagnóstico y Monitoreo Web →</a>
+    </nav>
+  </article>
+</Layout>

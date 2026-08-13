@@ -1,0 +1,105 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import TecnologiasServidorQuizModal from '../../../../components/quizzes/TecnologiasServidorQuizModal.astro';
+---
+
+<Layout title="El Protocolo HTTP: Métodos, Headers y Status Codes" description="Aprende la estructura de las peticiones y respuestas HTTP, verbos principales y la tabla de códigos de estado." courseSlug="tecnologias-servidor">
+  <article class="content-section">
+    <h1>2. El Protocolo HTTP: Métodos, Headers y Status Codes</h1>
+
+    <section class="mb-10">
+      <h2>¿Qué es el Protocolo HTTP?</h2>
+      <p>
+        <strong>HTTP (Hypertext Transfer Protocol)</strong> es el protocolo de capa de aplicación sin estado (stateless) utilizado para transmitir documentos hipertexto y datos en la Web.
+      </p>
+      <CodeBlock
+        lang="http"
+        code={`GET /productos/laptop-pro HTTP/1.1
+Host: ejemplo.cl
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64)
+Accept: text/html,application/xhtml+xml`}
+        title="ejemplo_peticion_http.txt"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Métodos HTTP (Verbos)</h2>
+      <ul>
+        <li><strong>GET:</strong> Solicita un recurso. No debe incluir datos en el cuerpo ni modificar el estado del servidor.</li>
+        <li><strong>POST:</strong> Envia datos al servidor para crear un nuevo recurso o procesar un formulario.</li>
+        <li><strong>PUT:</strong> Reemplaza por completo el recurso existente con los datos enviados.</li>
+        <li><strong>PATCH:</strong> Modifica parcialmente un recurso existente.</li>
+        <li><strong>DELETE:</strong> Elimina un recurso específico en el servidor.</li>
+      </ul>
+    </section>
+
+    <section class="mb-10">
+      <h2>Códigos de Estado HTTP (Status Codes)</h2>
+      <div style="overflow-x: auto; margin: 20px 0;">
+        <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 14px;">
+          <thead>
+            <tr style="background: #1e293b; color: #f8fafc;">
+              <th style="padding: 10px;">Código</th>
+              <th style="padding: 10px;">Significado</th>
+              <th style="padding: 10px;">Descripción / Ejemplo</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom: 1px solid #cbd5e1;">
+              <td style="padding: 10px; font-weight: bold; color: #16a34a;">200</td>
+              <td style="padding: 10px;">OK</td>
+              <td style="padding: 10px;">Solicitud procesada correctamente con éxito.</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #cbd5e1; background: #f8fafc;">
+              <td style="padding: 10px; font-weight: bold; color: #16a34a;">201</td>
+              <td style="padding: 10px;">Created</td>
+              <td style="padding: 10px;">Nuevo recurso creado exitosamente.</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #cbd5e1;">
+              <td style="padding: 10px; font-weight: bold; color: #2563eb;">301</td>
+              <td style="padding: 10px;">Moved Permanently</td>
+              <td style="padding: 10px;">Redirección permanente hacia una nueva URL.</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #cbd5e1; background: #f8fafc;">
+              <td style="padding: 10px; font-weight: bold; color: #dc2626;">400</td>
+              <td style="padding: 10px;">Bad Request</td>
+              <td style="padding: 10px;">Sintaxis de solicitud incorrecta por parte del cliente.</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #cbd5e1;">
+              <td style="padding: 10px; font-weight: bold; color: #dc2626;">401</td>
+              <td style="padding: 10px;">Unauthorized</td>
+              <td style="padding: 10px;">Requiere autenticación previa (falta login/token).</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #cbd5e1; background: #f8fafc;">
+              <td style="padding: 10px; font-weight: bold; color: #dc2626;">403</td>
+              <td style="padding: 10px;">Forbidden</td>
+              <td style="padding: 10px;">El cliente no tiene permisos suficientes para acceder.</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #cbd5e1;">
+              <td style="padding: 10px; font-weight: bold; color: #dc2626;">404</td>
+              <td style="padding: 10px;">Not Found</td>
+              <td style="padding: 10px;">El recurso o ruta no existe en el servidor.</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #cbd5e1; background: #f8fafc;">
+              <td style="padding: 10px; font-weight: bold; color: #b91c1c;">500</td>
+              <td style="padding: 10px;">Internal Server Error</td>
+              <td style="padding: 10px;">Excepción o error no controlado dentro del servidor backend.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>Evalúa tus conocimientos sobre peticiones HTTP y sus códigos de respuesta.</p>
+      <TecnologiasServidorQuizModal quizKey="protocolo-http-metodos" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/tecnologias-servidor/arquitectura-cliente-servidor/" class="prev">← Arquitectura Cliente-Servidor</a>
+      <a href="/course/tecnologias-servidor/https-y-certificados-ssl/" class="next">HTTPS y Certificados SSL/TLS →</a>
+    </nav>
+  </article>
+</Layout>

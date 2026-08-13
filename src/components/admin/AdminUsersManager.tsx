@@ -100,7 +100,7 @@ function AdminUsersContent() {
 
   const onToggleSuperAdmin = (row: ProfileAdminRow, next: boolean) => {
     if (next && !window.confirm(`¿Otorgar super admin a ${row.display_name ?? shortId(row.id)}?`)) return;
-    if (!next && row.id === user?.id && !window.confirm('¿Quitarte el rol super admin a vos mismo?')) return;
+    if (!next && row.id === user?.id && !window.confirm('¿Quitarte el rol super admin a ti mismo?')) return;
     void patchProfile(row.id, { is_super_admin: next });
   };
 

@@ -1,0 +1,283 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import JavaQuizModal from '../../../../components/quizzes/JavaQuizModal.astro';
+---
+
+<Layout
+  title="Proyecto Integrador: Carrito de Compras CRUD en Memoria (Java)"
+  description="Construye un sistema completo de Carrito de Compras en Java con Categoría, Producto, ItemCarrito, CarritoCompra y GestorTienda usando arreglos y listas en memoria RAM."
+  courseSlug="java"
+>
+  <article class="content-section">
+    <h1>13. Proyecto Integrador: Carrito de Compras CRUD en Memoria</h1>
+
+    <section class="mb-10">
+      <h2>1. Arquitectura del Proyecto en Memoria RAM</h2>
+      <p>
+        En este proyecto integrador aplicaremos <strong>POO, Encapsulamiento, Composición, Arreglos/ArrayLists y operaciones CRUD (Create, Read, Update, Delete)</strong> para simular el comportamiento de una tienda en línea guardando todo en la memoria RAM del sistema.
+      </p>
+
+      <ul class="mb-4 space-y-1 text-sm font-semibold">
+        <li>📦 <strong>Categoria</strong>: ID y nombre de la categoría del producto (ej: <em>"Electrónica"</em>, <em>"Alimentos"</em>).</li>
+        <li>🛒 <strong>Producto</strong>: ID, nombre, precio, stock y su <code>Categoria</code> asociada.</li>
+        <li>📋 <strong>ItemCarrito</strong>: Representa un producto añadido al carrito y su cantidad seleccionada (calculando subtotal).</li>
+        <li>🛍️ <strong>CarritoCompra</strong>: Maneja una lista dinámica de ítems con operaciones <strong>CRUD</strong> (Agregar, Listar, Modificar cantidad, Eliminar ítem, Vaciar).</li>
+        <li>🏬 <strong>TiendaManager</strong>: Almacena múltiples carritos independientes (ej: Carrito del cliente A vs Carrito del cliente B).</li>
+      </ul>
+    </section>
+
+    <section class="mb-10">
+      <h2>2. Clases Categoria y Producto</h2>
+      <CodeBlock
+        lang="java"
+        code={`// 1. Clase Categoria
+public class Categoria {
+    private int id;
+    private String nombre;
+
+    public Categoria(int id, String nombre) {
+        this.id = id;
+        this.nombre = nombre;
+    }
+
+    public int getId() { return id; }
+    public String getNombre() { return nombre; }
+
+    @Override
+    public String toString() {
+        return "[" + nombre + "]";
+    }
+}
+
+// 2. Clase Producto (Tiene una Categoria)
+public class Producto {
+    private int id;
+    private String nombre;
+    private double precio;
+    private int stock;
+    private Categoria categoria;
+
+    public Producto(int id, String nombre, double precio, int stock, Categoria categoria) {
+        this.id = id;
+        this.nombre = nombre;
+        this.precio = precio;
+        this.stock = stock;
+        this.categoria = categoria;
+    }
+
+    public int getId() { return id; }
+    public String getNombre() { return nombre; }
+    public double getPrecio() { return precio; }
+    public int getStock() { return stock; }
+    public void setStock(int stock) { this.stock = stock; }
+    public Categoria getCategoria() { return categoria; }
+
+    @Override
+    public String toString() {
+        return "#" + id + " " + nombre + " (" + categoria + ") - $" + precio + " [Stock: " + stock + "]";
+    }
+}`}
+        title="Categoria.java y Producto.java"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>3. Clase ItemCarrito y CarritoCompra (Operaciones CRUD)</h2>
+      <CodeBlock
+        lang="java"
+        code={`import java.util.ArrayList;
+
+// 3. Item en el Carrito
+public class ItemCarrito {
+    private Producto producto;
+    private int cantidad;
+
+    public ItemCarrito(Producto producto, int cantidad) {
+        this.producto = producto;
+        this.cantidad = cantidad;
+    }
+
+    public Producto getProducto() { return producto; }
+    public int getCantidad() { return cantidad; }
+    public void setCantidad(int cantidad) { this.cantidad = cantidad; }
+
+    public double getSubtotal() {
+        return producto.getPrecio() * cantidad;
+    }
+
+    @Override
+    public String toString() {
+        return producto.getNombre() + " x" + cantidad + " | Subtotal: $" + String.format("%.2f", getSubtotal());
+    }
+}
+
+// 4. CarritoCompra con Operaciones CRUD en Memoria
+public class CarritoCompra {
+    private int idCarrito;
+    private String cliente;
+    private ArrayList<ItemCarrito> items;
+
+    public CarritoCompra(int idCarrito, String cliente) {
+        this.idCarrito = idCarrito;
+        this.cliente = cliente;
+        this.items = new ArrayList<>();
+    }
+
+    public int getIdCarrito() { return idCarrito; }
+    public String getCliente() { return cliente; }
+
+    // [CREATE / UPDATE]: Añadir producto o incrementar si ya existe
+    public void agregarProducto(Producto p, int cantidad) {
+        if (cantidad <= 0 || p.getStock() < cantidad) {
+            System.out.println("❌ Stock insuficiente o cantidad inválida.");
+            return;
+        }
+
+        // Verificar si ya está en el carrito (UPDATE de cantidad)
+        for (ItemCarrito item : items) {
+            if (item.getProducto().getId() == p.getId()) {
+                item.setCantidad(item.getCantidad() + cantidad);
+                p.setStock(p.getStock() - cantidad);
+                System.out.println("✅ Cantidad actualizada en Carrito #" + idCarrito + ": " + item);
+                return;
+            }
+        }
+
+        // Si es nuevo en el carrito (CREATE)
+        items.add(new ItemCarrito(p, cantidad));
+        p.setStock(p.getStock() - cantidad);
+        System.out.println("✅ Producto agregado al Carrito #" + idCarrito + ": " + p.getNombre());
+    }
+
+    // [READ]: Listar contenido del carrito y total
+    public void mostrarCarrito() {
+        System.out.println("\n🛒 ================= CARRITO #" + idCarrito + " (" + cliente + ") =================");
+        if (items.isEmpty()) {
+            System.out.println("   El carrito está vacío.");
+        } else {
+            for (int i = 0; i < items.size(); i++) {
+                System.out.println("   " + (i + 1) + ". " + items.get(i));
+            }
+            System.out.println("------------------------------------------------------------");
+            System.out.println("💰 MONTO TOTAL A PAGAR: $" + String.format("%.2f", calcularTotal()));
+        }
+        System.out.println("============================================================\n");
+    }
+
+    // [UPDATE]: Modificar cantidad de un producto específico
+    public void modificarCantidad(int idProducto, int nuevaCantidad) {
+        for (ItemCarrito item : items) {
+            if (item.getProducto().getId() == idProducto) {
+                if (nuevaCantidad <= 0) {
+                    eliminarProducto(idProducto);
+                } else {
+                    int diferencia = nuevaCantidad - item.getCantidad();
+                    item.getProducto().setStock(item.getProducto().getStock() - diferencia);
+                    item.setCantidad(nuevaCantidad);
+                    System.out.println("🔄 Cantidad modificada a " + nuevaCantidad + " para " + item.getProducto().getNombre());
+                }
+                return;
+            }
+        }
+        System.out.println("❌ El producto no se encuentra en el carrito.");
+    }
+
+    // [DELETE]: Eliminar un producto del carrito
+    public void eliminarProducto(int idProducto) {
+        items.removeIf(item -> {
+            if (item.getProducto().getId() == idProducto) {
+                item.getProducto().setStock(item.getProducto().getStock() + item.getCantidad()); // Devuelve stock
+                System.out.println("🗑️ Producto " + item.getProducto().getNombre() + " eliminado del Carrito.");
+                return true;
+            }
+            return false;
+        });
+    }
+
+    // Calcular el total de la compra
+    public double calcularTotal() {
+        double total = 0;
+        for (ItemCarrito item : items) {
+            total += item.getSubtotal();
+        }
+        return total;
+    }
+}`}
+        title="ItemCarrito.java y CarritoCompra.java (CRUD)"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>4. Creación y Gestión de Múltiples Carritos en el Main</h2>
+      <CodeBlock
+        lang="java"
+        code={`import java.util.ArrayList;
+
+public class MainTienda {
+    public static void main(String[] args) {
+        // 1. Crear Categorías
+        Categoria catTech = new Categoria(1, "Tecnología");
+        Categoria catHogar = new Categoria(2, "Hogar");
+
+        // 2. Crear Catálogo de Productos
+        Producto p1 = new Producto(101, "Laptop Gaming", 1200.00, 10, catTech);
+        Producto p2 = new Producto(102, "Mouse Inalámbrico", 25.50, 50, catTech);
+        Producto p3 = new Producto(103, "Cafetera Espresso", 89.90, 15, catHogar);
+
+        // 3. Gestor de Múltiples Carritos en Memoria RAM
+        ArrayList<CarritoCompra> listaCarritosGlobal = new ArrayList<>();
+
+        // ----------------------------------------------------
+        // CREAR Y OPERAR EN EL CARRITO #1 (Cliente: Ana)
+        // ----------------------------------------------------
+        CarritoCompra carritoAna = new CarritoCompra(1, "Ana Pérez");
+        listaCarritosGlobal.add(carritoAna);
+
+        carritoAna.agregarProducto(p1, 1); // Laptop x1
+        carritoAna.agregarProducto(p2, 2); // Mouse x2
+        carritoAna.mostrarCarrito();
+
+        // Modificar cantidad (UPDATE)
+        carritoAna.modificarCantidad(102, 3); // Cambiar Mouse a x3
+        carritoAna.mostrarCarrito();
+
+        // ----------------------------------------------------
+        // CREAR OTRO CARRITO INDEPENDIENTE #2 (Cliente: Carlos)
+        // ----------------------------------------------------
+        CarritoCompra carritoCarlos = new CarritoCompra(2, "Carlos Gómez");
+        listaCarritosGlobal.add(carritoCarlos);
+
+        carritoCarlos.agregarProducto(p3, 2); // Cafetera x2
+        carritoCarlos.agregarProducto(p2, 1); // Mouse x1
+        carritoCarlos.mostrarCarrito();
+
+        // Eliminar producto (DELETE)
+        carritoCarlos.eliminarProducto(103); // Eliminar Cafetera
+        carritoCarlos.mostrarCarrito();
+
+        // ----------------------------------------------------
+        // LISTAR TODOS LOS CARRITOS ACTIVOS EN LA TIENDA
+        // ----------------------------------------------------
+        System.out.println("🏬 TOTAL DE CARRITOS ACTIVOS EN TIENDA: " + listaCarritosGlobal.size());
+        for (CarritoCompra c : listaCarritosGlobal) {
+            System.out.println("-> Carrito #" + c.getIdCarrito() + " | Cliente: " + c.getCliente() + " | Total: $" + c.calcularTotal());
+        }
+    }
+}`}
+        title="MainTienda.java (Múltiples Carritos en Memoria)"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>Verifica tu conocimiento sobre el proyecto CRUD en memoria RAM.</p>
+      <JavaQuizModal quizKey="proyecto-carrito-memoria" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/java/composicion-agregacion/" class="prev">← Composición y Objetos</a>
+      <a href="/course/java/" class="next">Índice del Curso Java →</a>
+    </nav>
+  </article>
+</Layout>

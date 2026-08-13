@@ -1,0 +1,19 @@
+---
+import QuizModal from './QuizModal.astro';
+
+type Props = {
+  quizKey: string;
+};
+
+const { quizKey } = Astro.props as Props;
+---
+
+<QuizModal
+  courseSlug="tecnologias-servidor"
+  quizKey={quizKey}
+  title="Quiz: Tecnologías del Lado del Servidor"
+  brandingColor="#1e293b"
+  brandingBg="#F1F5F9"
+  brandingText="#0f172a"
+  logo="🌐"
+/>

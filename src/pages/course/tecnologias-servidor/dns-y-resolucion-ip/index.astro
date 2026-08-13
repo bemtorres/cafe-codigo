@@ -1,0 +1,72 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import TecnologiasServidorQuizModal from '../../../../components/quizzes/TecnologiasServidorQuizModal.astro';
+---
+
+<Layout title="DNS: Resolución de Nombres a Direcciones IP" description="Comprende cómo los servidores DNS traducen nombres de dominio amigables a direcciones IP y cuáles son los registros principales." courseSlug="tecnologias-servidor">
+  <article class="content-section">
+    <h1>4. DNS: Resolución de Nombres a Direcciones IP</h1>
+
+    <section class="mb-10">
+      <h2>¿Cómo encuentra Internet a nuestro Servidor?</h2>
+      <p>
+        Los humanos recordamos nombres amigables como <code>www.misistema.cl</code>, pero los routers y servidores se comunican mediante direcciones numéricas IP (ej: <code>200.10.20.30</code>). 
+        El <strong>DNS (Domain Name System)</strong> actúa como la libreta de contactos global de Internet.
+      </p>
+      <CodeBlock
+        lang="plaintext"
+        code={`www.misistema.cl
+      │
+      ▼
+Servidores DNS (Resolución)
+      │
+      ▼
+ 200.10.20.30 (IP de Servidor)
+      │
+      ▼
+   SERVIDOR WEB`}
+        title="resolucion_dns.txt"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Registros DNS Principales</h2>
+      <ul>
+        <li><strong>Registro A (Address):</strong> Asigna un nombre de dominio o subdominio a una dirección IPv4 (ej: <code>misistema.cl → 200.10.20.30</code>).</li>
+        <li><strong>Registro AAAA:</strong> Asigna un dominio a una dirección IPv6 de 128 bits.</li>
+        <li><strong>Registro CNAME (Canonical Name):</strong> Crea un alias que apunta a otro nombre de dominio (ej: <code>www.misistema.cl → misistema.cl</code>).</li>
+        <li><strong>Registro MX (Mail Exchange):</strong> Especifica los servidores de correo responsables de recibir emails para el dominio.</li>
+        <li><strong>Registro TXT:</strong> Guarda información de texto libre, comúnmente usada para verificación de propiedad y seguridad SPF/DKIM.</li>
+      </ul>
+    </section>
+
+    <section class="mb-10">
+      <h2>Diagnóstico de Red con nslookup y dig</h2>
+      <p>
+        Puedes consultar los registros DNS de cualquier dominio público usando comandos de consola:
+      </p>
+      <CodeBlock
+        lang="bash"
+        code={`# Consulta básica con nslookup
+nslookup ejemplo.cl
+
+# Consulta detallada de registros DNS en Linux / macOS con dig
+dig ejemplo.cl A
+dig ejemplo.cl MX`}
+        title="comandos_dns.sh"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>Demuestra lo que has aprendido sobre el funcionamiento del sistema DNS.</p>
+      <TecnologiasServidorQuizModal quizKey="dns-y-resolucion-ip" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/tecnologias-servidor/https-y-certificados-ssl/" class="prev">← HTTPS y Certificados SSL/TLS</a>
+      <a href="/course/tecnologias-servidor/dominios-y-subdominios/" class="next">Dominios y Subdominios →</a>
+    </nav>
+  </article>
+</Layout>

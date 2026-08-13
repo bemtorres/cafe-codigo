@@ -1,0 +1,288 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import JavaQuizModal from '../../../../components/quizzes/JavaQuizModal.astro';
+---
+
+<Layout
+  title="Proyecto Integrador: Tienda MySQL y Patrón DAO en Java (JDBC)"
+  description="Aprende a conectar Java con MySQL usando JDBC, la clase Conexion.java en el paquete conn, la dependencia mysql-connector-java y el Patrón DAO (Data Access Object) con CRUD completo."
+  courseSlug="java"
+>
+  <article class="content-section">
+    <h1>14. Proyecto Integrador: Tienda MySQL & Patrón DAO (JDBC)</h1>
+
+    <section class="mb-10">
+      <h2>1. Dependencia Maven y Conexión MySQL (conn/Conexion.java)</h2>
+      <p>
+        Para conectar nuestra aplicación Java con una base de datos MySQL relacional, primero añadimos la dependencia oficial del conector JDBC en nuestro archivo <code>pom.xml</code>:
+      </p>
+
+      <CodeBlock
+        lang="xml"
+        code={`<dependency>
+    <groupId>mysql</groupId>
+    <artifactId>mysql-connector-java</artifactId>
+    <version>8.0.19</version>
+</dependency>`}
+        title="pom.xml (Dependencia MySQL Connector)"
+      />
+
+      <p class="mt-4">
+        Luego creamos el paquete <code>conn</code> y la clase <code>Conexion.java</code> encargada de administrar la conexión mediante <code>DriverManager.getConnection()</code>:
+      </p>
+
+      <CodeBlock
+        lang="java"
+        code={`package conn;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
+public class Conexion {
+    private static final String URL = "jdbc:mysql://localhost:3306/tienda_db?useSSL=false&serverTimezone=UTC";
+    private static final String USER = "root";
+    private static final String PASSWORD = "admin";
+
+    // Método para obtener una conexión activa
+    public static Connection getConexion() throws SQLException {
+        try {
+            // Cargar Driver JDBC de MySQL
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            return DriverManager.getConnection(URL, USER, PASSWORD);
+        } catch (ClassNotFoundException e) {
+            throw new SQLException("Driver MySQL no encontrado en el classpath.", e);
+        }
+    }
+}`}
+        title="conn/Conexion.java"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>2. Esquema Relacional SQL (schema.sql)</h2>
+      <p>
+        Creamos las tablas relacionales <code>categoria</code>, <code>producto</code>, <code>carrito</code> e <code>item_carrito</code> en MySQL:
+      </p>
+
+      <CodeBlock
+        lang="sql"
+        code={`CREATE DATABASE IF NOT EXISTS tienda_db;
+USE tienda_db;
+
+CREATE TABLE categoria (
+    id_categoria INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE producto (
+    id_producto INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(150) NOT NULL,
+    precio DECIMAL(10,2) NOT NULL,
+    stock INT NOT NULL,
+    id_categoria INT,
+    FOREIGN KEY (id_categoria) REFERENCES categoria(id_categoria)
+);
+
+CREATE TABLE carrito (
+    id_carrito INT AUTO_INCREMENT PRIMARY KEY,
+    cliente VARCHAR(100) NOT NULL,
+    fecha DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE item_carrito (
+    id_item INT AUTO_INCREMENT PRIMARY KEY,
+    id_carrito INT NOT NULL,
+    id_producto INT NOT NULL,
+    cantidad INT NOT NULL,
+    FOREIGN KEY (id_carrito) REFERENCES carrito(id_carrito) ON DELETE CASCADE,
+    FOREIGN KEY (id_producto) REFERENCES producto(id_producto)
+);`}
+        title="schema.sql (Tablas en MySQL)"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>3. Patrón DAO: Interfaces e Implementaciones JDBC</h2>
+      <p>
+        El <strong>Patrón DAO (Data Access Object)</strong> abstrae y separa la lógica de acceso a la base de datos de la lógica de negocio del sistema.
+      </p>
+
+      <CodeBlock
+        lang="java"
+        code={`package dao;
+
+import java.util.List;
+import models.Producto;
+
+public interface ProductoDAO {
+    boolean crear(Producto p);
+    Producto obtenerPorId(int id);
+    List<Producto> listarTodos();
+    boolean actualizarStock(int idProducto, int nuevoStock);
+    boolean eliminar(int id);
+}`}
+        title="dao/ProductoDAO.java (Interfaz DAO)"
+      />
+
+      <p class="mt-4">Implementación JDBC concreta con <code>PreparedStatement</code> y <code>ResultSet</code>:</p>
+
+      <CodeBlock
+        lang="java"
+        code={`package dao.impl;
+
+import conn.Conexion;
+import dao.ProductoDAO;
+import models.Categoria;
+import models.Producto;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class ProductoDAOImpl implements ProductoDAO {
+
+    @Override
+    public boolean crear(Producto p) {
+        String sql = "INSERT INTO producto (nombre, precio, stock, id_categoria) VALUES (?, ?, ?, ?)";
+        try (Connection con = Conexion.getConexion();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, p.getNombre());
+            ps.setDouble(2, p.getPrecio());
+            ps.setInt(3, p.getStock());
+            ps.setInt(4, p.getCategoria().getId());
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public List<Producto> listarTodos() {
+        List<Producto> lista = new ArrayList<>();
+        String sql = "SELECT p.id_producto, p.nombre, p.precio, p.stock, c.id_categoria, c.nombre as cat_nombre " +
+                     "FROM producto p JOIN categoria c ON p.id_categoria = c.id_categoria";
+        try (Connection con = Conexion.getConexion();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                Categoria cat = new Categoria(rs.getInt("id_categoria"), rs.getString("cat_nombre"));
+                Producto p = new Producto(
+                    rs.getInt("id_producto"),
+                    rs.getString("nombre"),
+                    rs.getDouble("precio"),
+                    rs.getInt("stock"),
+                    cat
+                );
+                lista.add(p);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return lista;
+    }
+
+    @Override
+    public Producto obtenerPorId(int id) {
+        String sql = "SELECT p.id_producto, p.nombre, p.precio, p.stock, c.id_categoria, c.nombre as cat_nombre " +
+                     "FROM producto p JOIN categoria c ON p.id_categoria = c.id_categoria WHERE p.id_producto = ?";
+        try (Connection con = Conexion.getConexion();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    Categoria cat = new Categoria(rs.getInt("id_categoria"), rs.getString("cat_nombre"));
+                    return new Producto(rs.getInt("id_producto"), rs.getString("nombre"), rs.getDouble("precio"), rs.getInt("stock"), cat);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public boolean actualizarStock(int idProducto, int nuevoStock) {
+        String sql = "UPDATE producto SET stock = ? WHERE id_producto = ?";
+        try (Connection con = Conexion.getConexion();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, nuevoStock);
+            ps.setInt(2, idProducto);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public boolean eliminar(int id) {
+        String sql = "DELETE FROM producto WHERE id_producto = ?";
+        try (Connection con = Conexion.getConexion();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+}`}
+        title="dao/impl/ProductoDAOImpl.java (Implementación CRUD JDBC)"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>4. Implementación del Carrito DAO y Prueba en Main</h2>
+      <CodeBlock
+        lang="java"
+        code={`package main;
+
+import dao.ProductoDAO;
+import dao.impl.ProductoDAOImpl;
+import models.Producto;
+
+import java.util.List;
+
+public class MainTiendaMySQL {
+    public static void main(String[] args) {
+        System.out.println("⚡ CONECTANDO A MYSQL Y PROBANDO PATRÓN DAO...");
+
+        // Instanciar DAO a través de su interfaz (Inversión de dependencias)
+        ProductoDAO productoDAO = new ProductoDAOImpl();
+
+        // 1. READ: Listar productos almacenados en MySQL
+        List<Producto> productosDB = productoDAO.listarTodos();
+        System.out.println("\n🛒 Catálogo en MySQL (" + productosDB.size() + " productos):");
+        for (Producto p : productosDB) {
+            System.out.println(" - " + p);
+        }
+
+        // 2. UPDATE: Actualizar stock en MySQL
+        if (!productosDB.isEmpty()) {
+            Producto primero = productosDB.get(0);
+            boolean exito = productoDAO.actualizarStock(primero.getId(), primero.getStock() - 1);
+            if (exito) {
+                System.out.println("✅ Stock actualizado en MySQL para " + primero.getNombre());
+            }
+        }
+    }
+}`}
+        title="main/MainTiendaMySQL.java"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>Demuestra tu dominio sobre el Patrón DAO, JDBC y la persistencia relacional en MySQL.</p>
+      <JavaQuizModal quizKey="proyecto-tienda-mysql-dao" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/java/proyecto-carrito-memoria/" class="prev">← Proyecto Carrito Memoria</a>
+      <a href="/course/java/" class="next">Índice del Curso Java →</a>
+    </nav>
+  </article>
+</Layout>

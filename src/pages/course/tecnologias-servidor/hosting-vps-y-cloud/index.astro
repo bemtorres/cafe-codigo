@@ -1,0 +1,70 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import TecnologiasServidorQuizModal from '../../../../components/quizzes/TecnologiasServidorQuizModal.astro';
+---
+
+<Layout title="Tipos de Hosting: Compartido, VPS, Dedicado y Cloud" description="Conoce las alternativas de infraestructura para alojar aplicaciones web: Hosting Compartido, VPS, Servidores Dedicados y Cloud Computing." courseSlug="tecnologias-servidor">
+  <article class="content-section">
+    <h1>6. Tipos de Hosting: Compartido, VPS, Dedicado y Cloud</h1>
+
+    <section class="mb-10">
+      <h2>1. Hosting Compartido (Shared Hosting)</h2>
+      <p>
+        Múltiples sitios web de distintos clientes residen en un único servidor físico compartiendo CPU, memoria RAM y dirección IP.
+      </p>
+      <CodeBlock
+        lang="plaintext"
+        code={`SERVIDOR COMPARTIDO (Mismos Recursos)
+├── sitio1.cl
+├── sitio2.cl
+├── sitio3.cl
+└── sitio4.cl`}
+        title="hosting_compartido.txt"
+      />
+      <p class="text-sm text-slate-500 mt-2">Ventaja: Económico y fácil. Desventaja: Menor rendimiento y aislamiento limitado.</p>
+    </section>
+
+    <section class="mb-10">
+      <h2>2. VPS (Virtual Private Server)</h2>
+      <p>
+        Mediante tecnología de virtualización (hipervisor), un servidor físico se divide en varias **máquinas virtuales privadas** aisladas. Cada cliente administra su propio sistema operativo (Linux/Ubuntu), usuarios y puertos.
+      </p>
+      <CodeBlock
+        lang="plaintext"
+        code={`SERVIDOR FÍSICO (Hipervisor)
+      │
+      ├── VPS 1 (Ubuntu / 2GB RAM / 1 CPU) -> Tu App Web
+      ├── VPS 2 (Debian / 4GB RAM / 2 CPU)
+      └── VPS 3 (CentOS / 8GB RAM / 4 CPU)`}
+        title="vps_virtualizacion.txt"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>3. Servidores Dedicados y Cloud Computing</h2>
+      <ul>
+        <li><strong>Servidor Dedicado:</strong> Un servidor físico completo alquilado exclusivamente para una sola organización. Alto costo y rendimiento máximo.</li>
+        <li><strong>Cloud Computing (AWS, DigitalOcean, GCP, Azure):</strong> Red global de servidores interconectados que ofrece recursos elásticos pagados por uso.</li>
+      </ul>
+      
+      <h3 class="text-xl font-bold mt-6 mb-2">Conceptos Clave del Cloud:</h3>
+      <ul>
+        <li><strong>Instancias / Máquinas Virtuales:</strong> Servidores bajo demanda creados en segundos.</li>
+        <li><strong>Escalabilidad Horizontal / Vertical:</strong> Capacidad de añadir más RAM/CPU o clonar servidores según el volumen de usuarios.</li>
+        <li><strong>Servicios Administrados:</strong> Bases de datos (RDS), almacenamiento de objetos (S3) y balanceadores de carga automáticos.</li>
+      </ul>
+    </section>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>Comprueba que comprendes las distintas alternativas de infraestructura y hosting web.</p>
+      <TecnologiasServidorQuizModal quizKey="hosting-vps-y-cloud" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/tecnologias-servidor/dominios-y-subdominios/" class="prev">← Dominios y Subdominios</a>
+      <a href="/course/tecnologias-servidor/servidores-web-nginx-apache/" class="next">Servidores Web (Nginx/Apache) →</a>
+    </nav>
+  </article>
+</Layout>

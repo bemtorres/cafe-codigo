@@ -290,33 +290,157 @@ export const javaQuizBank: Record<string, JavaQuizDefinition> = {
       }
     ]
   },
-  'poo-pilares': {
-    key: 'poo-pilares',
+  'herencia-polimorfismo': {
+    key: 'herencia-polimorfismo',
     title: 'Quiz: Herencia y Polimorfismo',
     questions: [
       {
-        prompt: "¿Qué palabra reservada se usa en Java para heredar de una clase (ej. Guerrero hereda de Personaje)?",
+        prompt: "¿Qué palabra reservada se utiliza en Java para heredar de una clase padre?",
         options: ["inherits", ":", "implements", "extends"],
         correctIndex: 3
       },
       {
-        prompt: "¿Para qué sirve la anotación @Override?",
-        options: ["Para sobrecargar un método", "Para indicar al compilador que se desea sobrescribir un método heredado del padre", "Para destruir la clase anterior", "Para detener la ejecución de errores silenciosos"],
-        correctIndex: 1
-      },
-      {
-        prompt: "¿Cómo se invoca un método o el constructor de la clase padre directamente desde la clase hija?",
-        options: ["Con la palabra 'super'", "Con 'this'", "Llamando directo clase.Padre()", "No es posible en Java"],
+        prompt: "Si la clase Auto hereda de Vehiculo, ¿cómo llama Auto al constructor de Vehiculo?",
+        options: ["super()", "this()", "parent()", "Vehiculo()"],
         correctIndex: 0
       },
       {
-        prompt: "¿Qué palabra clave se usa para crear un contrato donde solo hay declaración de comportamiento vacío y obligatorio?",
-        options: ["abstract", "interface", "virtual", "contract"],
+        prompt: "¿Qué permite el polimorfismo en Java?",
+        options: ["Guardar instancias de subclases (Auto, Moto, Bici) en una referencia de superclase (Vehiculo)", "Crear clases sin atributos", "Convertir Java a C++", "Ejecutar código sin JVM"],
+        correctIndex: 0
+      },
+      {
+        prompt: "¿Para qué sirve la anotación @Override?",
+        options: ["Sobrecargar métodos", "Indicar al compilador que se reescribe un método heredado de la clase padre", "Borrar un atributo", "Crear una constante"],
         correctIndex: 1
       },
       {
-        prompt: "¿Soporta Java la herencia múltiple de CLASES (extender de dos o más clases al mismo tiempo)?",
-        options: ["No, solo soporta heredar de una clase padre", "Sí, extendiendo separadas por coma", "Solo en JDK 17 o superior", "Sí, pero es mala práctica"],
+        prompt: "¿Java permite la herencia múltiple directa de clases con 'extends'?",
+        options: ["No, en Java una clase solo puede heredar de una única clase padre", "Sí, separadas por coma", "Solo en interfaces públicas", "Sí, usando public class"],
+        correctIndex: 0
+      }
+    ]
+  },
+  'interfaces-contratos': {
+    key: 'interfaces-contratos',
+    title: 'Quiz: Interfaces y Contratos',
+    questions: [
+      {
+        prompt: "¿Qué palabra reservada se usa para definir una interfaz en Java?",
+        options: ["contract", "interface", "abstract class", "implements"],
+        correctIndex: 1
+      },
+      {
+        prompt: "¿Qué palabra reservada usa una clase para implementar los métodos de una interfaz?",
+        options: ["extends", "uses", "implements", "requires"],
+        correctIndex: 2
+      },
+      {
+        prompt: "¿Puede una clase en Java implementar MÚLTIPLES interfaces a la vez?",
+        options: ["Sí, separadas por comas (ej: implements Conducible, Mantenible)", "No, máximo una interfaz", "Solo si es abstracta", "Solo con arreglos"],
+        correctIndex: 0
+      },
+      {
+        prompt: "Por defecto, los métodos declarados en una interfaz (sin body) son...",
+        options: ["private final", "public abstract", "protected static", "void default"],
+        correctIndex: 1
+      },
+      {
+        prompt: "¿Qué palabra clave permite agregar una implementación por defecto a un método dentro de una interfaz en Java 8+?",
+        options: ["default", "static", "final", "virtual"],
+        correctIndex: 0
+      }
+    ]
+  },
+  'composicion-agregacion': {
+    key: 'composicion-agregacion',
+    title: 'Quiz: Composición y Relaciones entre Objetos',
+    questions: [
+      {
+        prompt: "¿Qué es la composición/asociación entre clases en POO?",
+        options: ["Cuando una clase tiene como atributo una instancia de otra clase (relación Tiene-Un)", "Cuando una clase hereda de otra", "Cuando una función no retorna valor", "Cuando un arreglo tiene números"],
+        correctIndex: 0
+      },
+      {
+        prompt: "Si la clase Usuario tiene 'private Perrito mascota;', ¿cómo llamamos a un método de Perrito desde Usuario?",
+        options: ["mascota.ladrar()", "Perrito.ladrar()", "this.ladrar()", "Usuario.mascota.ladrar()"],
+        correctIndex: 0
+      },
+      {
+        prompt: "Si un Usuario puede tener MÚLTIPLES perritos, ¿qué estructura de datos se utiliza?",
+        options: ["Un arreglo 'Perrito[]' o una lista 'ArrayList<Perrito>'", "Un entero int", "Un String simple", "Un boolean"],
+        correctIndex: 0
+      },
+      {
+        prompt: "¿Cómo recorremos un arreglo 'Perrito[] mascotas' para hacerlos ladrar a todos?",
+        options: ["for (Perrito p : mascotas) { p.ladrar(); }", "mascotas.ladrarAll()", "while(mascotas) { ladrar(); }", "if(mascotas) { p.ladrar(); }"],
+        correctIndex: 0
+      },
+      {
+        prompt: "¿Qué ocurre si intentamos acceder a 'usuario.getMascota().ladrar()' cuando 'mascota' es null?",
+        options: ["Ocurre una excepción NullPointerException", "Imprime vacio", "No compila", "Retorna false"],
+        correctIndex: 0
+      }
+    ]
+  },
+  'proyecto-carrito-memoria': {
+    key: 'proyecto-carrito-memoria',
+    title: 'Quiz: Proyecto Carrito CRUD en Memoria',
+    questions: [
+      {
+        prompt: "En un CRUD en memoria, ¿dónde residen los datos durante la ejecución?",
+        options: ["En la memoria RAM mediante colecciones/arreglos de Java", "En un disco SSD externo", "En una base de datos MySQL", "En un archivo TXT remoto"],
+        correctIndex: 0
+      },
+      {
+        prompt: "Si deseamos agregar un ítem al carrito y el producto ya existe en él, ¿qué operación de CRUD realizamos sobre el ítem?",
+        options: ["Update (Actualizamos sumando la cantidad)", "Create (Duplicamos la entrada)", "Delete (Eliminamos el carrito)", "Read (Imprimimos solo el total)"],
+        correctIndex: 0
+      },
+      {
+        prompt: "¿Cómo eliminamos un producto específico de un ArrayList de ítems en Java?",
+        options: ["items.removeIf(item -> item.getProducto().getId() == targetId)", "items.deleteAll()", "items.clearMemory()", "items.popAll()"],
+        correctIndex: 0
+      },
+      {
+        prompt: "¿Cómo se calcula el monto total de un CarritoCompra que tiene 'ArrayList<ItemCarrito> items'?",
+        options: ["Sumando el subtotal (precio * cantidad) de cada item mediante un bucle for/for-each", "Multiplicando la cantidad de carritos", "Ejecutando SELECT SUM()", "Llamando a System.total()"],
+        correctIndex: 0
+      },
+      {
+        prompt: "¿Cómo gestionamos la creación de múltiples carritos independientes?",
+        options: ["Almacenando cada instancia de CarritoCompra dentro de una lista global de carritos (ArrayList<CarritoCompra>)", "Sobrescribiendo la misma variable siempre", "No es posible en Java", "Reiniciando la JVM"],
+        correctIndex: 0
+      }
+    ]
+  },
+  'proyecto-tienda-mysql-dao': {
+    key: 'proyecto-tienda-mysql-dao',
+    title: 'Quiz: Proyecto Tienda MySQL & Patrón DAO',
+    questions: [
+      {
+        prompt: "¿Cuál es el propósito del Patrón DAO (Data Access Object) en Java?",
+        options: ["Separar la lógica de negocio de la lógica de acceso y persistencia a la base de datos", "Crear las interfaces gráficas de usuario", "Compilar el código a lenguaje ensamblador", "Reemplazar el uso de la memoria RAM"],
+        correctIndex: 0
+      },
+      {
+        prompt: "¿Qué dependencia de Maven se requiere para conectar Java con MySQL?",
+        options: ["mysql-connector-java", "postgres-driver", "spring-boot-starter", "sqlite-jdbc"],
+        correctIndex: 0
+      },
+      {
+        prompt: "¿Qué clase de Java JDBC se utiliza para ejecutar consultas parametrizadas seguras contra inyección SQL?",
+        options: ["PreparedStatement", "SimpleStatement", "QueryExecutor", "SqlBuffer"],
+        correctIndex: 0
+      },
+      {
+        prompt: "En la clase Conn/Conexion.java, ¿qué método de JDBC establece la conexión física con MySQL?",
+        options: ["DriverManager.getConnection(url, user, password)", "Connection.open()", "MySQL.connect()", "System.getDatabase()"],
+        correctIndex: 0
+      },
+      {
+        prompt: "¿Qué interfaz se utiliza para almacenar los resultados de una consulta SELECT en JDBC?",
+        options: ["ResultSet", "DataRows", "SqlList", "QueryResult"],
         correctIndex: 0
       }
     ]

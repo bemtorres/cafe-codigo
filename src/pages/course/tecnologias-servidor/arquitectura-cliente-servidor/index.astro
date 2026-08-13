@@ -1,0 +1,69 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import TecnologiasServidorQuizModal from '../../../../components/quizzes/TecnologiasServidorQuizModal.astro';
+---
+
+<Layout title="Arquitectura Cliente-Servidor y Ciclo Request/Response" description="Comprende qué sucede desde que digitas una URL en el navegador hasta que recibes una respuesta del servidor web." courseSlug="tecnologias-servidor">
+  <article class="content-section">
+    <h1>1. Arquitectura Cliente-Servidor y Ciclo Request/Response</h1>
+
+    <section class="mb-10">
+      <h2>El Viaje de una Solicitud Web</h2>
+      <p>
+        ¿Qué ocurre exactamente cuando escribimos <code>https://ejemplo.cl</code> en la barra de direcciones de nuestro navegador y presionamos Enter? 
+        Se activa una cadena de eventos basada en el modelo <strong>Cliente-Servidor</strong>.
+      </p>
+      <CodeBlock
+        lang="plaintext"
+        code={`USUARIO
+   │
+   ▼
+NAVEGADOR (Cliente)
+   │
+   │ 1. Consulta nombre de dominio
+   ▼
+DNS (Sistema de Nombres de Dominio)
+   │
+   │ 2. Devuelve IP: 200.10.20.30
+   ▼
+INTERNET
+   │
+   │ 3. Petición HTTP/HTTPS (Request)
+   ▼
+SERVIDOR
+   ├── Web Server (Nginx / Apache)
+   ├── Aplicación Web (Django, Node.js, Laravel)
+   └── Base de Datos (PostgreSQL, MySQL)
+   │
+   │ 4. Respuesta HTTP (Response: HTML/JSON)
+   ▼
+NAVEGADOR (Renderizado final)`}
+        title="flujo_cliente_servidor.txt"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Conceptos Fundamentales de la Red</h2>
+      <ul>
+        <li><strong>Cliente:</strong> Aplicación que solicita datos (navegador web, app móvil, cliente HTTP como <code>curl</code> o Postman).</li>
+        <li><strong>Servidor:</strong> Equipo informático y programa que escucha peticiones en la red y entrega recursos.</li>
+        <li><strong>Request (Solicitud):</strong> Mensaje enviado por el cliente solicitando un recurso (página HTML, imagen, API).</li>
+        <li><strong>Response (Respuesta):</strong> Mensaje retornado por el servidor conteniendo el estado y los datos solicitados.</li>
+        <li><strong>Dirección IP:</strong> Identificador numérico único de un dispositivo en la red (ej: <code>192.168.1.1</code> en IPv4 o <code>2001:db8::1</code> en IPv6).</li>
+        <li><strong>Puerto:</strong> Punto de entrada virtual en el servidor para diferenciar servicios (ej: Puerto 80 para HTTP, Puerto 443 para HTTPS, Puerto 22 para SSH).</li>
+      </ul>
+    </section>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>Verifica tu comprensión sobre el ciclo de vida de una petición cliente-servidor.</p>
+      <TecnologiasServidorQuizModal quizKey="arquitectura-cliente-servidor" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/tecnologias-servidor/" class="prev">← Índice del Curso</a>
+      <a href="/course/tecnologias-servidor/protocolo-http-metodos/" class="next">El Protocolo HTTP y Métodos →</a>
+    </nav>
+  </article>
+</Layout>

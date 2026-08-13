@@ -1,0 +1,64 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import TecnologiasServidorQuizModal from '../../../../components/quizzes/TecnologiasServidorQuizModal.astro';
+---
+
+<Layout title="Estructura de URLs, Dominios y Subdominios" description="Aprende la anatomía de un URL, TLDs, delegación de Nameservers y diseño de la arquitectura de dominios para una organización." courseSlug="tecnologias-servidor">
+  <article class="content-section">
+    <h1>5. Estructura de URLs, Dominios y Subdominios</h1>
+
+    <section class="mb-10">
+      <h2>Anatomía de una URL</h2>
+      <p>
+        Una **URL (Uniform Resource Locator)** identifica la dirección completa de un recurso en Internet. Se compone de varias partes estructuradas:
+      </p>
+      <CodeBlock
+        lang="plaintext"
+        code={`https://www.ejemplo.cl/productos/laptop
+│       │       │       │
+│       │       │       └── Recurso / Ruta
+│       │       └────────── Dominio Principal
+│       └────────────────── Subdominio
+└────────────────────────── Protocolo (HTTPS)`}
+        title="estructura_url.txt"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Dominio de Nivel Superior (TLD) y Nameservers</h2>
+      <ul>
+        <li><strong>TLD Generales (gTLD):</strong> Extensions globales como <code>.com</code>, <code>.org</code>, <code>.net</code>, <code>.edu</code>.</li>
+        <li><strong>TLD Territoriales (ccTLD):</strong> Extensiones específicas de países como <code>.cl</code> (Chile - gestionado por NIC Chile), <code>.mx</code> (México), <code>.ar</code> (Argentina).</li>
+        <li><strong>Nameservers (NS):</strong> Servidores delegados por el registrador del dominio para gestionar la zona DNS (ej: <code>ns1.hosting.cl</code>, <code>ns2.hosting.cl</code>).</li>
+      </ul>
+    </section>
+
+    <section class="mb-10">
+      <h2>Diseño Práctico: Arquitectura de Dominios de Empresa</h2>
+      <p>
+        En proyectos profesionales se suelen separar los servicios utilizando **subdominios** bien definidos:
+      </p>
+      <CodeBlock
+        lang="plaintext"
+        code={`empresa.cl            # Dominio principal institucional
+├── www.empresa.cl    # Sitio web público comercial
+├── api.empresa.cl    # Backend de servicios API REST / GraphQL
+├── admin.empresa.cl  # Panel de administración interno
+└── dev.empresa.cl    # Entorno de pruebas y staging`}
+        title="arquitectura_dominios.txt"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>Verifica tu conocimiento sobre la jerarquía y estructura de dominios web.</p>
+      <TecnologiasServidorQuizModal quizKey="dominios-y-subdominios" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/tecnologias-servidor/dns-y-resolucion-ip/" class="prev">← DNS y Resolución IP</a>
+      <a href="/course/tecnologias-servidor/hosting-vps-y-cloud/" class="next">Hosting, VPS y Cloud →</a>
+    </nav>
+  </article>
+</Layout>

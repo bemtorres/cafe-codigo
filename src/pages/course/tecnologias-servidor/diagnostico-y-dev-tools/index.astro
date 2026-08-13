@@ -1,0 +1,72 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import TecnologiasServidorQuizModal from '../../../../components/quizzes/TecnologiasServidorQuizModal.astro';
+---
+
+<Layout title="Diagnóstico Web y Herramientas de Desarrollador" description="Aprende a diagnosticar peticiones web, analizar encabezados, latencia y auditar la salud de tus servidores en producción." courseSlug="tecnologias-servidor">
+  <article class="content-section">
+    <h1>10. Diagnóstico Web y Herramientas de Desarrollador</h1>
+
+    <section class="mb-10">
+      <h2>Uso Avanzado de la Pestaña Network (DevTools)</h2>
+      <p>
+        Al presionar <code>F12</code> o clic derecho → **Inspeccionar** en cualquier navegador, la pestaña **Network (Red)** te permite ver en tiempo real cada petición que realiza la página:
+      </p>
+      <ul>
+        <li><strong>Name & Path:</strong> Recurso solicitado (HTML, CSS, API endpoint).</li>
+        <li><strong>Status:</strong> Código de respuesta devuelto por el servidor (200, 304, 404, 500).</li>
+        <li><strong>Type & Initiator:</strong> Tipo de contenido e hilo o script que inició la llamada.</li>
+        <li><strong>Size & Time:</strong> Peso descargado y tiempo de latencia de red.</li>
+      </ul>
+    </section>
+
+    <section class="mb-10">
+      <h2>Inspección de Encabezados (Headers) y Cookies</h2>
+      <p>
+        Al seleccionar una petición en DevTools, la pestaña **Headers** revela información técnica fundamental:
+      </p>
+      <CodeBlock
+        lang="http"
+        code={`# Request Headers (Enviados por cliente)
+Host: proyecto.cl
+User-Agent: Mozilla/5.0
+Authorization: Bearer token_jwt_123
+
+# Response Headers (Retornados por servidor)
+HTTP/1.1 200 OK
+Content-Type: application/json
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+Server: nginx/1.18.0`}
+        title="headers_inspeccion.txt"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Comandos de Consola para Diagnóstico de Red</h2>
+      <CodeBlock
+        lang="bash"
+        code={`# Inspeccionar únicamente los encabezados HTTP retornado por un servidor
+curl -I https://proyecto.cl
+
+# Medir latencia de red y verificar que el servidor responda
+ping proyecto.cl
+
+# Diagnosticar puertos abiertos en el servidor
+nc -zv IP_SERVIDO 80 443 22`}
+        title="comandos_diagnostico.sh"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>Demuestra tu destreza en el diagnóstico y monitoreo de sitios web.</p>
+      <TecnologiasServidorQuizModal quizKey="diagnostico-y-dev-tools" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/tecnologias-servidor/proyecto-despliegue-produccion/" class="prev">← Proyecto de Despliegue Web</a>
+      <a href="/course/tecnologias-servidor/" class="next">Volver al índice del Curso →</a>
+    </nav>
+  </article>
+</Layout>

@@ -1,20 +1,20 @@
-﻿---
+---
 import Layout from '../../../layouts/Layout.astro';
 ---
 
-<Layout title="Curso Java" description="Guía completa de Java desde cero hasta POO" courseSlug="java">
+<Layout title="Curso Java Completo y POO Avanzada" description="Guía completa de Java desde los primitivos hasta POO, herencia de Vehículos/Autos/Motos, interfaces y colecciones de objetos Perrito." courseSlug="java">
   <div class="content-section" style="background: var(--bg-tertiary);">
     <h1 class="course-big-title course-big-title--brand">
       <span style="color: #E76F00; font-weight: 900; font-size: 1.1em; background: rgba(231, 111, 0, 0.15); padding: 0.2rem 1rem; border-radius: 12px; margin-right: 0.5rem;">Java</span>
-      <span>Curso Completo</span>
+      <span>Curso Completo & POO Avanzada</span>
     </h1>
     <p class="course-subtitle">
-      Aprende Java desde los fundamentos, variables e inputs estáticos, hasta abarcar colecciones dinámicas y dominar los Pilares Universales de la POO Empresarial.
+      Aprende Java desde los fundamentos hasta la Programación Orientada a Objetos avanzada: sobrecarga de constructores, herencia con Vehículos, Auto, Moto y Bicicleta, interfaces de contrato y colecciones de objetos con Usuario y Perrito.
     </p>
   </div>
 
   <section class="cards-grid" style="margin-top: 4rem;">
-    <!-- Módulo 1 -->
+    <!-- Módulo 1: Fundamentos -->
     <a href="/course/java/introduccion/" class="card-fun" style="background: white;">
       <h2>1. Introducción 🚀</h2>
       <p>JVM, JDK, JRE y estructura básica de la mítica clase Main.</p>
@@ -32,7 +32,7 @@ import Layout from '../../../layouts/Layout.astro';
       <p>Matemática, módulo y booleanos and/or super estrictos.</p>
     </a>
 
-    <!-- Módulo 2 -->
+    <!-- Módulo 2: Control y Estructuras -->
     <a href="/course/java/condicionales/" class="card-fun" style="background: #E3F2FD;">
       <h2>5. Condicionales 🔀</h2>
       <p>Decisiones de flujo: if, else if, y el tradicional switch.</p>
@@ -41,30 +41,44 @@ import Layout from '../../../layouts/Layout.astro';
       <h2>6. Ciclos 🔁</h2>
       <p>Repetición infinita o calculada usando while, do-while y el genial for.</p>
     </a>
-
-    <!-- Módulo 3 -->
     <a href="/course/java/colecciones/" class="card-fun" style="background: #FFFDE7;">
-      <h2>7. Colecciones 📚</h2>
-      <p>Array estáticos bloqueados versus los inmortales ArrayList genéricos.</p>
+      <h2>7. Arreglos y Listas 📚</h2>
+      <p>Arrays estáticos bloqueados versus los inmortales ArrayList genéricos.</p>
     </a>
     <a href="/course/java/funciones/" class="card-fun" style="background: #E0F7FA;">
       <h2>8. Funciones 🛠️</h2>
       <p>Métodos estáticos, paso por valor, múltiples parámetros y métodos void.</p>
     </a>
 
-    <!-- Módulo 4 -->
-    <a href="/course/java/poo-basico/" class="card-fun" style="background: var(--info); color: white; border-color: var(--border);">
-      <h2 style="color: white; text-shadow: 2px 2px 0px var(--border);">9. POO Básico 🧱</h2>
-      <p style="color: rgba(255,255,255,0.9);">Instancias, clases públicas, variables privadas y control por Getters/Setters.</p>
+    <!-- Módulo 3: POO Profunda -->
+    <a href="/course/java/poo-basico/" class="card-fun" style="background: #FFF8E1; border: 2px solid #FFA000;">
+      <h2>9. POO: Clases y Constructores 🧱</h2>
+      <p>Atributos privados, constructores sobrecargados (sin/con parámetros), getters/setters, toString() y System.out.println.</p>
     </a>
-    <a href="/course/java/poo-pilares/" class="card-fun" style="background: var(--border); color: white;">
-      <h2 style="color: var(--warning);">10. Pilares POO 🏛️</h2>
-      <p style="color: #ccc;">Anotación @Override, extends (Hijos) e implements (Interfaces de Contrato).</p>
+    <a href="/course/java/herencia-polimorfismo/" class="card-fun" style="background: #E8EAF6; border: 2px solid #3F51B5;">
+      <h2>10. Herencia y Polimorfismo 🚘</h2>
+      <p>Superclase Vehículo y subclases Auto, Moto y Bicicleta usando extends, super() y polimorfismo dinámico.</p>
+    </a>
+    <a href="/course/java/interfaces-contratos/" class="card-fun" style="background: #E0F2F1; border: 2px solid #009688;">
+      <h2>11. Interfaces y Contratos 📜</h2>
+      <p>Contratos con interface, métodos abstractos, atributos constantes e implementación múltiple con implements.</p>
+    </a>
+    <a href="/course/java/composicion-agregacion/" class="card-fun" style="background: #FCE4EC; border: 2px solid #E91E63;">
+      <h2>12. Composición y Arreglos de Objetos 🐶</h2>
+      <p>Relaciones 'Tiene-Un': Usuario con un Perrito y Usuario con arreglos Perrito[] / ArrayList de múltiples mascotas.</p>
+    </a>
+    <a href="/course/java/proyecto-carrito-memoria/" class="card-fun" style="background: #E8F5E9; border: 2px solid #2E7D32;">
+      <h2>13. Proyecto Integrador: Carrito CRUD en Memoria 🛒</h2>
+      <p>Construye un sistema completo con Producto, Categoria, ItemCarrito, CarritoCompra y gestión de múltiples carritos en memoria RAM.</p>
+    </a>
+    <a href="/course/java/proyecto-tienda-mysql-dao/" class="card-fun" style="background: #E0F7FA; border: 2px solid #00838F;">
+      <h2>14. Proyecto Integrador: Tienda MySQL & Patrón DAO 🗄️</h2>
+      <p>Persistencia real con MySQL Connector (v8.0.19), paquete conn/Conexion.java, JDBC PreparedStatement y el Patrón DAO.</p>
     </a>
   </section>
 
   <nav class="nav-bottom">
-    <a href="/" class="prev">← Menu Principal</a>
+    <a href="/" class="prev">← Menú Principal</a>
     <a href="/course/java/introduccion/" class="next">¡Empezar Introducción! 👾</a>
   </nav>
 </Layout>

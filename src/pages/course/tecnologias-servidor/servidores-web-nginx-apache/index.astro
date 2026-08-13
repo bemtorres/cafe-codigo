@@ -1,0 +1,78 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import TecnologiasServidorQuizModal from '../../../../components/quizzes/TecnologiasServidorQuizModal.astro';
+---
+
+<Layout title="Servidores Web: Nginx y Apache" description="Comprende el rol de los servidores web Nginx y Apache como Reverse Proxy, manejo de trafico y archivos estaticos." courseSlug="tecnologias-servidor">
+  <article class="content-section">
+    <h1>7. Servidores Web: Nginx y Apache</h1>
+
+    <section class="mb-10">
+      <h2>¿Qué función cumple un Servidor Web?</h2>
+      <p>
+        Un **Servidor Web** es el programa de infraestructura que escucha peticiones en los puertos públicos 80 (HTTP) y 443 (HTTPS), procesa los encabezados de red y decide cómo responder: entregando un archivo estático (CSS, JS, imágenes) o redirigiendo la petición hacia el backend.
+      </p>
+      <CodeBlock
+        lang="plaintext"
+        code={`Navegador (Cliente)
+    │
+    │ HTTPS :443
+    ▼
+Servidor Web (Nginx / Apache)
+    │
+    │ Reverse Proxy (Puerto 8000 / 3000)
+    ▼
+Aplicación Backend (Django, Node.js, Flask)
+    │
+    ▼
+Base de Datos (PostgreSQL / MySQL)`}
+        title="arquitectura_servidor_web.txt"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Nginx vs. Apache HTTP Server</h2>
+      <ul>
+        <li><strong>Nginx:</strong> Conocido por su arquitectura orientada a eventos e hiper-rápida. Excelente para servir archivos estáticos, balanceo de carga y actuar como Reverse Proxy.</li>
+        <li><strong>Apache:</strong> Servidor clásico y robusto. Utiliza una arquitectura basada en hilos/procesos por conexión y permite configuración dinámica local mediante archivos <code>.htaccess</code>.</li>
+      </ul>
+    </section>
+
+    <section class="mb-10">
+      <h2>Ejemplo de Configuración de Nginx (Reverse Proxy)</h2>
+      <p>
+        A continuación se muestra un bloque de servidor básico en <code>nginx.conf</code> que redirige el tráfico público del puerto 80 hacia una app corriendo internamente en el puerto 8000:
+      </p>
+      <CodeBlock
+        lang="nginx"
+        code={`server {
+    listen 80;
+    server_name mi-proyecto.cl www.mi-proyecto.cl;
+
+    location / {
+        proxy_pass http://127.0.0.1:8000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+
+    location /static/ {
+        alias /var/www/mi-proyecto/static/;
+    }
+}`}
+        title="sites-available/mi-proyecto.conf"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>Verifica si comprendes la diferencia y función de Nginx y Apache en producción.</p>
+      <TecnologiasServidorQuizModal quizKey="servidores-web-nginx-apache" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/tecnologias-servidor/hosting-vps-y-cloud/" class="prev">← Hosting, VPS y Cloud</a>
+      <a href="/course/tecnologias-servidor/stack-backend-y-tecnologias/" class="next">Stack Backend y BD →</a>
+    </nav>
+  </article>
+</Layout>

@@ -1,0 +1,85 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import TecnologiasServidorQuizModal from '../../../../components/quizzes/TecnologiasServidorQuizModal.astro';
+---
+
+<Layout title="Tecnologías Backend y Conexión a Base de Datos" description="Conecta los servidores web con frameworks de desarrollo (Django, Node.js, Laravel, Spring) y sistemas de bases de datos relacionales." courseSlug="tecnologias-servidor">
+  <article class="content-section">
+    <h1>8. Tecnologías Backend y Conexión a Base de Datos</h1>
+
+    <section class="mb-10">
+      <h2>El Ecosistema Completo Backend</h2>
+      <p>
+        El servidor web (Nginx / Apache) no procesa la lógica de negocios por sí solo. En su lugar, delega la ejecución de scripts al **Servidor de Aplicación / Framework Backend**, el cual interactúa con la **Base de Datos**.
+      </p>
+      <CodeBlock
+        lang="plaintext"
+        code={`Navegador (Cliente)
+    │ HTTP / HTTPS
+    ▼
+Nginx / Apache (Servidor Web)
+    │ WSGI / Proxy Pass
+    ▼
+Django (Python) / Node.js (JS) / Laravel (PHP)
+    │ URLs -> Views -> Models
+    ▼
+PostgreSQL / MySQL (Base de Datos)`}
+        title="ecosistema_backend.txt"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>Comparativa de Tecnologías del Lado del Servidor</h2>
+      <div style="overflow-x: auto; margin: 20px 0;">
+        <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 14px;">
+          <thead>
+            <tr style="background: #1e293b; color: #f8fafc;">
+              <th style="padding: 10px;">Tecnología</th>
+              <th style="padding: 10px;">Lenguaje</th>
+              <th style="padding: 10px;">Uso Principal / Casos de Éxito</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom: 1px solid #cbd5e1;">
+              <td style="padding: 10px; font-weight: bold; color: #0284c7;">Django / Flask</td>
+              <td style="padding: 10px;">Python</td>
+              <td style="padding: 10px;">Aplicaciones web seguras, APIs REST y ciencia de datos.</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #cbd5e1; background: #f8fafc;">
+              <td style="padding: 10px; font-weight: bold; color: #16a34a;">Express / NestJS</td>
+              <td style="padding: 10px;">JavaScript / TypeScript</td>
+              <td style="padding: 10px;">APIs en tiempo real, microservicios asíncronos y fullstack JS.</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #cbd5e1;">
+              <td style="padding: 10px; font-weight: bold; color: #dc2626;">Laravel</td>
+              <td style="padding: 10px;">PHP</td>
+              <td style="padding: 10px;">Aplicaciones web rápidas, plataformas e-commerce y CMS.</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #cbd5e1; background: #f8fafc;">
+              <td style="padding: 10px; font-weight: bold; color: #9333ea;">ASP.NET Core</td>
+              <td style="padding: 10px;">C#</td>
+              <td style="padding: 10px;">Sistemas empresariales de alto rendimiento y arquitectura Microsoft.</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #cbd5e1;">
+              <td style="padding: 10px; font-weight: bold; color: #ea580c;">Spring Boot</td>
+              <td style="padding: 10px;">Java</td>
+              <td style="padding: 10px;">Sistemas bancarios, corporativos y arquitecturas pesadas escalables.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>Comprueba que entiendes el stack backend y la interacción con bases de datos.</p>
+      <TecnologiasServidorQuizModal quizKey="stack-backend-y-tecnologias" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/tecnologias-servidor/servidores-web-nginx-apache/" class="prev">← Servidores Web (Nginx/Apache)</a>
+      <a href="/course/tecnologias-servidor/proyecto-despliegue-produccion/" class="next">Proyecto de Despliegue Web →</a>
+    </nav>
+  </article>
+</Layout>

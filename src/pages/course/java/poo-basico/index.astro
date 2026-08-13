@@ -1,150 +1,136 @@
-﻿---
+---
 import Layout from '../../../../layouts/Layout.astro';
 import CodeBlock from '../../../../components/CodeBlock.astro';
 import JavaQuizModal from '../../../../components/quizzes/JavaQuizModal.astro';
 ---
 
-<Layout title="Programación Orientada a Objetos" description="Clases, Instancias, Constructores y el inicio a la arquitectura Java" courseSlug="java">
+<Layout title="POO: Clases, Atributos y Constructores en Java" description="Aprende la estructura de atributos, sobrecarga de constructores sin/con parámetros, getters, setters, método toString() e impresión en consola." courseSlug="java">
   <article class="content-section">
-    <h1>9. La Magia de los Objetos (POO Básica)</h1>
+    <h1>9. Clases, Atributos y Constructores (POO)</h1>
 
     <section class="mb-10">
-      <h2>El Molde y las Galletas (Clase vs Objeto)</h2>
+      <h2>1. Estructura de Atributos y Encapsulamiento</h2>
       <p>
-        Hasta este momento veníamos escribiendo todas nuestras instrucciones como guiones largos. Con la <strong>Programación Orientada a Objetos (POO)</strong> subimos a la élite, estructurando el código mentalmente en <em>entidades de la vida real</em> (Coches, Usuarios, Conexiones...).
+        En Java, una <strong>Clase</strong> es la plantilla base para fabricar objetos. Los <strong>Atributos</strong> representan el estado o datos del objeto y deben declararse con el nivel de acceso <code>private</code> para aplicar el principio de encapsulamiento.
       </p>
-      <ul class="mb-4">
-        <li><strong>La Clase:</strong> Solo es la plantilla base de cómo fabricar un tipo de cosa (qué propiedades tiene, qué métodos ejecuta).</li>
-        <li><strong>El Objeto (Instancia):</strong> La materialización exacta de la Clase en la memoria de la PC de tu cliente, construida con la palabra reservada <code>new</code>.</li>
-      </ul>
-      <CodeBlock lang="java" code={`public class Mascota {
-    // 1. Atributos (lo que tiene)
-    public String nombre;
-    public int edad;
-
-    // 2. Comportamiento (lo que hace)
-    public void ladrar() {
-        System.out.println(this.nombre + " dice: ¡Guao!");
-    }
-}
-
-public class Main {
-    public static void main(String[] args) {
-        // Al crearla en 'new', "perro" se convierte en una instancia viva.
-        Mascota perro = new Mascota();
-        perro.nombre = "Firulais";
-        perro.edad = 4;
-        
-        perro.ladrar(); // "Firulais dice: ¡Guao!"
-    }
+      <CodeBlock
+        lang="java"
+        code={`public class Usuario {
+    // Atributos privados (Estado del objeto)
+    private String nombre;
+    private int edad;
+    private String email;
 }`}
-        title="Creación de Instancias Básica"
+        title="Usuario.java (Atributos)"
       />
     </section>
 
-    <div class="ejercicio">
-      <h3>👨‍💻 Ejercicio Práctico 1</h3>
-      <div class="pregunta-box">
-        <span class="pregunta-label">Misión:</span> Constructores en Acción
-      </div>
-      <p class="enunciado">No es buena práctica dejar atributos vacíos. Añade a tu clase <code>Mascota</code> un <strong>Constructor</strong> (un bloque parecido a un método que se nombra igual que la Clase), recibe datos <code>(String nom, int e)</code> y pásalos usando <code>this.propiedad = nom;</code> adentro.</p>
-      
-      <details>
-        <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock lang="java" code={`class Mascota {
-    public String nombre;
-    public int edad;
+    <section class="mb-10">
+      <h2>2. Constructores sin Parámetros, con Parámetros y Sobrecarga</h2>
+      <p>
+        Un <strong>Constructor</strong> es un método especial que tiene exactamente el mismo nombre de la clase y no retorna ningún valor. Se ejecuta automáticamente al instanciar la clase con la palabra reservada <code>new</code>.
+      </p>
+      <p>
+        La <strong>Sobrecarga de Constructores (Overloading)</strong> nos permite definir múltiples constructores dentro de la misma clase, diferenciados por la cantidad o tipo de sus parámetros.
+      </p>
+      <CodeBlock
+        lang="java"
+        code={`public class Usuario {
+    private String nombre;
+    private int edad;
 
-    // Nuestro Contrato inicial (Constructor)
-    public Mascota(String nom, int e) {
-        this.nombre = nom;
-        this.edad = e;
+    // 1. Constructor sin parámetros (Por defecto)
+    public Usuario() {
+        this.nombre = "Sin nombre";
+        this.edad = 0;
+    }
+
+    // 2. Constructor con parámetros (Sobrecargado)
+    public Usuario(String nombre, int edad) {
+        this.nombre = nombre;
+        this.edad = edad;
+    }
+}`}
+        title="Usuario.java (Sobrecarga de Constructores)"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>3. Métodos Getters y Setters</h2>
+      <p>
+        Para acceder y modificar los atributos privados desde fuera de la clase de manera controlada y segura, utilizamos los métodos <strong>Getters (Lectura)</strong> y <strong>Setters (Escritura)</strong>:
+      </p>
+      <CodeBlock
+        lang="java"
+        code={`// Getter para obtener el nombre
+public String getNombre() {
+    return this.nombre;
+}
+
+// Setter para modificar el nombre con validación opcional
+public void setNombre(String nombre) {
+    if (nombre != null && !nombre.isEmpty()) {
+        this.nombre = nombre;
     }
 }
 
-// Ahora nos exigirá los datos en la misma línea del new:
-Mascota perro = new Mascota("Rex", 2);`} />
-      </details>
-    </div>
+// Getter y Setter para edad
+public int getEdad() {
+    return this.edad;
+}
 
-    <div class="ejercicio" style="background: #FFF3E0;">
-      <h3>👨‍💻 Ejercicio Práctico 2</h3>
-      <div class="pregunta-box">
-        <span class="pregunta-label">Misión:</span> Encapsulamiento Absoluto
-      </div>
-      <p class="enunciado">Declara una clase <code>Libro</code>. Marca su atributo <code>titulo</code> como <code>private</code> y crea un método público <code>getTitulo()</code> para que solo los que lo manden llamar por ahí puedan obtenerlo, bloqueando al resto del sistema de alterarlo localmente.</p>
-      
-      <details>
-        <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock lang="java" code={`class Libro {
-    private String titulo;
-
-    public Libro(String miTitulo) {
-        this.titulo = miTitulo;
+public void setEdad(int edad) {
+    if (edad >= 0) {
+        this.edad = edad;
     }
+}`}
+        title="Usuario.java (Getters y Setters)"
+      />
+    </section>
 
-    public String getTitulo() {
-        return this.titulo;
+    <section class="mb-10">
+      <h2>4. El Método toString() e Impresión en Consola con System.out.println</h2>
+      <p>
+        En Java, todas las clases heredan de la clase base <code>Object</code>, la cual incluye el método <code>toString()</code>. Sobrescribir este método con <code>@Override</code> nos permite devolver una representación textual limpia del objeto al ejecutar <code>System.out.println()</code>.
+      </p>
+      <CodeBlock
+        lang="java"
+        code={`public class Main {
+    public static void main(String[] args) {
+        // Uso del constructor sobrecargado con parámetros
+        Usuario u1 = new Usuario("Carlos", 25);
+
+        // Uso del constructor sin parámetros
+        Usuario u2 = new Usuario();
+
+        // Modificando atributos a través de Setters
+        u2.setNombre("Ana");
+        u2.setEdad(30);
+
+        // Impresión en consola usando System.out.println y toString()
+        System.out.println(u1); // Llama automáticamente a u1.toString()
+        System.out.println("Detalle de U2: " + u2.toString());
     }
 }
 
-// Main...
-Libro x = new Libro("Un Mundo Fatal");
-System.out.println( x.getTitulo() );`} />
-      </details>
-    </div>
-
-    <div class="ejercicio" style="background: #FFF3E0;">
-      <h3>👨‍💻 Ejercicio Práctico 3</h3>
-      <div class="pregunta-box">
-        <span class="pregunta-label">Misión:</span> La Bóveda del Banco
-      </div>
-      <p class="enunciado">Crea la clase <code>CuentaBancaria</code>. Su atributo <code>saldo</code> como privado. Y un método público <code>depositar(int cantidad)</code> que intercepte y le sume al propio 'this.saldo'.</p>
-      
-      <details>
-        <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock lang="java" code={`class CuentaBancaria {
-    private int saldo = 0;
-
-    public void depositar(int cantidad) {
-        this.saldo += cantidad;
-        System.out.println("Saldo actualizado.");
-    }
-}`} />
-      </details>
-    </div>
-
-    <div class="ejercicio" style="background: #FFF3E0;">
-      <h3>👨‍💻 Ejercicio Práctico 4</h3>
-      <div class="pregunta-box">
-        <span class="pregunta-label">Misión:</span> Gemelos independientes
-      </div>
-      <p class="enunciado">Genera dos objetos (<code>a</code> y <code>b</code>) desde el main de una pequeña clase <code>ColorBox</code> con <code>public String hex;</code>. Demuestra que inyectarle datos al objeto A jamás tocará al B simultáneamente.</p>
-      
-      <details>
-        <summary>👁️ Ver solución propuesta</summary>
-        <CodeBlock lang="java" code={`class ColorBox { public String hex; }
-
-// En Main
-ColorBox a = new ColorBox();
-a.hex = "#FFF";
-
-ColorBox b = new ColorBox();
-b.hex = "#000";
-
-// A y B tienen asignaciones físicas separadas en RAM`} />
-      </details>
-    </div>
+// Dentro de la clase Usuario:
+@Override
+public String toString() {
+    return "Usuario { nombre='" + this.nombre + "', edad=" + this.edad + " }";
+}`}
+        title="Main.java (toString y System.out.println)"
+      />
+    </section>
 
     <section class="mb-10">
       <h2>Ponte a prueba</h2>
-      <p>Entendamos para qué sirven los Gets y los Sets que conforman un auténtico proyecto moderno de Java.</p>
+      <p>Pon a prueba tus conocimientos sobre clases, atributos, constructores sobrecargados y getters/setters.</p>
       <JavaQuizModal quizKey="poo-basico" />
     </section>
 
     <nav class="nav-bottom">
       <a href="/course/java/funciones/" class="prev">← Funciones</a>
-      <a href="/course/java/poo-pilares/" class="next">Pilares POO →</a>
+      <a href="/course/java/herencia-polimorfismo/" class="next">Herencia y Polimorfismo →</a>
     </nav>
   </article>
 </Layout>
