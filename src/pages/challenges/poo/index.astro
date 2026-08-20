@@ -1,0 +1,191 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import UmlClassDiagram from '../../../components/challenges/UmlClassDiagram.astro';
+import { pooChallenges, pooCourseLessons } from '../../../data/pooChallenges';
+---
+
+<Layout
+  title="Desafíos de POO"
+  description="Banco de ejercicios de programación orientada a objetos: herencia, diagramas de clases y práctica transversal."
+>
+  <article class="content-section">
+    <p class="kicker">Práctica transversal</p>
+    <h1>Desafíos de POO</h1>
+    <p>
+      Banco único de herencia para todos los cursos que enseñan clases. Cada ejercicio trae su
+      <strong>diagrama de clases</strong> (clase base + tres hijas). Implementalo en el lenguaje que estés estudiando:
+      Python, Java, C#, C++, Kotlin o PHP.
+    </p>
+    <p class="muted">
+      Ruta canónica: <code>/challenges/poo</code>. El progreso de las casillas se guarda en este navegador.
+    </p>
+
+    <section class="mb-10">
+      <h2>Lecciones de POO enlazadas</h2>
+      <ul class="lesson-links">
+        {pooCourseLessons.map((l) => (
+          <li>
+            <a href={l.href}>{l.course}: {l.title}</a>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <nav class="toc" aria-label="Índice de ejercicios">
+      <h2>Los 20 ejercicios</h2>
+      <ol>
+        {pooChallenges.map((ch) => (
+          <li>
+            <a href={`#${ch.slug}`}>{ch.title}</a>
+          </li>
+        ))}
+      </ol>
+    </nav>
+
+    <div id="exerciseList" class="exercise-list">
+      {pooChallenges.map((ch) => (
+        <article class="ex-card" id={ch.slug} data-ex-id={`poo-${ch.id}`}>
+          <h3>
+            {ch.id}. {ch.title}
+          </h3>
+          <p class="ex-statement">{ch.context}</p>
+          <p class="ex-task"><strong>Qué hacer:</strong> {ch.task}</p>
+
+          <UmlClassDiagram base={ch.base} subclasses={ch.children} />
+
+          <div class="ex-checks">
+            <span class="ex-progress" data-progress-for={`poo-${ch.id}`}></span>
+            <label class="chk"><input type="checkbox" data-check-id="diagrama" /> Leí el diagrama de clases</label>
+            <label class="chk"><input type="checkbox" data-check-id="base" /> Implementé la clase base</label>
+            <label class="chk"><input type="checkbox" data-check-id="hijas" /> Implementé las tres clases hijas</label>
+            <label class="chk"><input type="checkbox" data-check-id="probar" /> Instancie y probé al menos un método</label>
+          </div>
+        </article>
+      ))}
+    </div>
+  </article>
+
+  <script is:inline>
+    (function () {
+      const KEY = 'aprende_poo_challenges_v1';
+      const readStore = () => {
+        try {
+          return JSON.parse(localStorage.getItem(KEY) || '{}');
+        } catch {
+          return {};
+        }
+      };
+      const writeStore = (s) => localStorage.setItem(KEY, JSON.stringify(s));
+
+      const updateProgressFor = (exId) => {
+        const card = document.querySelector('.ex-card[data-ex-id="' + exId + '"]');
+        if (!card) return;
+        const boxes = card.querySelectorAll('input[type="checkbox"][data-check-id]');
+        const done = Array.from(boxes).filter((b) => b.checked).length;
+        const el = card.querySelector('[data-progress-for="' + exId + '"]');
+        if (el) el.textContent = done + ' / ' + boxes.length + ' pasos';
+      };
+
+      const store = readStore();
+      document.querySelectorAll('.ex-card[data-ex-id]').forEach((card) => {
+        const exId = card.getAttribute('data-ex-id');
+        const perEx = store[exId] || {};
+        card.querySelectorAll('input[type="checkbox"][data-check-id]').forEach((input) => {
+          const checkId = input.getAttribute('data-check-id');
+          input.checked = Boolean(perEx[checkId]);
+          input.addEventListener('change', () => {
+            const s = readStore();
+            if (!s[exId]) s[exId] = {};
+            s[exId][checkId] = input.checked;
+            writeStore(s);
+            updateProgressFor(exId);
+          });
+        });
+        updateProgressFor(exId);
+      });
+    })();
+  </script>
+
+  <style>
+    .kicker {
+      margin: 0;
+      font-size: 0.7rem;
+      font-weight: 900;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: #7c2d12;
+    }
+    .muted {
+      color: var(--text-muted);
+      font-weight: 650;
+      line-height: 1.6;
+    }
+    .lesson-links {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 0.35rem 1rem;
+      padding-left: 1.1rem;
+      font-weight: 700;
+    }
+    .toc ol {
+      columns: 2;
+      gap: 1.5rem;
+      padding-left: 1.2rem;
+      font-weight: 700;
+    }
+    @media (max-width: 640px) {
+      .toc ol {
+        columns: 1;
+      }
+    }
+    .exercise-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      margin-top: 1rem;
+    }
+    .ex-card {
+      border: 3px solid var(--border);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.82);
+      padding: 1.1rem 1.1rem 1rem;
+      box-shadow: 0 16px 34px rgba(30, 18, 16, 0.08);
+      scroll-margin-top: 1.25rem;
+    }
+    .ex-card h3 {
+      margin: 0 0 0.35rem;
+      color: #7c2d12;
+      font-size: 1.25rem;
+    }
+    .ex-statement,
+    .ex-task {
+      margin: 0 0 0.55rem;
+      color: var(--text-secondary);
+      font-weight: 650;
+      line-height: 1.55;
+    }
+    .ex-checks {
+      display: grid;
+      gap: 0.35rem;
+      margin-top: 0.9rem;
+    }
+    .ex-progress {
+      font-weight: 900;
+      font-family: 'Nunito', sans-serif;
+      color: var(--text-primary);
+      margin-bottom: 0.15rem;
+    }
+    .chk {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      color: var(--text-secondary);
+      font-weight: 650;
+    }
+    .chk input {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--success);
+    }
+  </style>
+</Layout>

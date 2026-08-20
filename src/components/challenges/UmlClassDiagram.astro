@@ -1,0 +1,150 @@
+---
+import type { UmlClassSpec } from '../../data/pooChallenges';
+
+interface Props {
+  base: UmlClassSpec;
+  subclasses: UmlClassSpec[];
+}
+
+const { base, subclasses } = Astro.props;
+---
+
+<figure class="uml-figure" aria-label={`Diagrama de clases: ${base.name}`}>
+  <div class="uml-tree">
+    <div class="uml-row uml-row-base">
+      <div class="uml-box uml-box-base">
+        <header>{base.name}</header>
+        <ul class="uml-attrs">
+          {base.attrs.map((a) => (
+            <li>+ {a}</li>
+          ))}
+        </ul>
+        <ul class="uml-methods">
+          {base.methods.map((m) => (
+            <li>+ {m}</li>
+          ))}
+        </ul>
+      </div>
+    </div>
+
+    <svg class="uml-arrows" viewBox="0 0 100 28" preserveAspectRatio="none" aria-hidden="true">
+      <line x1="50" y1="0" x2="50" y2="10" />
+      <line x1="16.6" y1="10" x2="83.4" y2="10" />
+      <line x1="16.6" y1="10" x2="16.6" y2="28" />
+      <line x1="50" y1="10" x2="50" y2="28" />
+      <line x1="83.4" y1="10" x2="83.4" y2="28" />
+    </svg>
+
+    <div class="uml-row uml-row-children">
+      {subclasses.map((child) => (
+        <div class="uml-box">
+          <header>{child.name}</header>
+          <ul class="uml-attrs">
+            {child.attrs.length > 0 ? child.attrs.map((a) => <li>+ {a}</li>) : <li class="muted-member">—</li>}
+          </ul>
+          <ul class="uml-methods">
+            {child.methods.length > 0 ? (
+              child.methods.map((m) => <li>+ {m}</li>)
+            ) : (
+              <li class="muted-member">(sin métodos extra)</li>
+            )}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </div>
+  <figcaption>
+    Herencia: <code>{base.name}</code> ▷ {subclasses.map((c) => c.name).join(' · ')}
+  </figcaption>
+</figure>
+
+<style>
+  .uml-figure {
+    margin: 0.85rem 0 0;
+  }
+  .uml-figure figcaption {
+    margin-top: 0.65rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+  }
+  .uml-tree {
+    background: rgba(255, 252, 247, 0.9);
+    border: 2px solid rgba(30, 18, 16, 0.14);
+    border-radius: 16px;
+    padding: 1rem 0.75rem 0.85rem;
+    overflow-x: auto;
+  }
+  .uml-row {
+    display: flex;
+    justify-content: center;
+    gap: 0.75rem;
+  }
+  .uml-row-children {
+    align-items: stretch;
+  }
+  .uml-arrows {
+    display: block;
+    width: 100%;
+    height: 28px;
+    margin: 0.15rem 0;
+    stroke: #1e1210;
+    stroke-width: 1.6;
+  }
+  .uml-box {
+    flex: 1 1 0;
+    min-width: 160px;
+    max-width: 260px;
+    background: #fff;
+    border: 2px solid #1e1210;
+    border-radius: 6px;
+    box-shadow: 3px 3px 0 rgba(30, 18, 16, 0.12);
+    font-family: ui-monospace, 'Cascadia Code', 'Consolas', monospace;
+    font-size: 0.78rem;
+    line-height: 1.35;
+  }
+  .uml-box-base {
+    flex: 0 1 280px;
+    max-width: 320px;
+  }
+  .uml-box header {
+    background: #1e1210;
+    color: #fff8ee;
+    text-align: center;
+    font-weight: 800;
+    padding: 0.4rem 0.5rem;
+    letter-spacing: 0.02em;
+  }
+  .uml-box-base header {
+    background: #7c2d12;
+  }
+  .uml-attrs,
+  .uml-methods {
+    list-style: none;
+    margin: 0;
+    padding: 0.4rem 0.55rem;
+  }
+  .uml-methods {
+    border-top: 1.5px solid #1e1210;
+  }
+  .uml-box li {
+    margin: 0;
+  }
+  .muted-member {
+    color: #8a7a74;
+    font-style: italic;
+  }
+  @media (max-width: 720px) {
+    .uml-row-children {
+      flex-direction: column;
+      align-items: center;
+    }
+    .uml-box {
+      width: 100%;
+      max-width: 100%;
+    }
+    .uml-arrows {
+      display: none;
+    }
+  }
+</style>

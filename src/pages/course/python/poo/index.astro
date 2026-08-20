@@ -2,6 +2,7 @@
 import Layout from '../../../../layouts/Layout.astro';
 import CodeBlock from '../../../../components/CodeBlock.astro';
 import PythonQuizModal from '../../../../components/quizzes/PythonQuizModal.astro';
+import PooChallengesCta from '../../../../components/challenges/PooChallengesCta.astro';
 ---
 
 <Layout title="POO: Clases y Objetos en Python" description="Aprende a modelar el mundo real con programación." courseSlug="python">
@@ -70,6 +71,8 @@ telsa.arrancar()`} title="Python" />
     <section class="mb-10">
       <PythonQuizModal quizKey="poo" />
     </section>
+
+    <PooChallengesCta />
 
     <nav class="nav-bottom">
       <a href="/course/python/crud-productos-expendedora/" class="prev">← CRUD: listas, dicts y expendedora</a>

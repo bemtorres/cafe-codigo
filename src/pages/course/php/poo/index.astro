@@ -2,6 +2,7 @@
 import Layout from '../../../../layouts/Layout.astro';
 import CodeBlock from '../../../../components/CodeBlock.astro';
 import PhpQuizModal from '../../../../components/quizzes/PhpQuizModal.astro';
+import PooChallengesCta from '../../../../components/challenges/PooChallengesCta.astro';
 ---
 
 <Layout title="Programación Orientada a Objetos en PHP" description="Domina las clases, constructores, métodos y objetos en PHP moderno." courseSlug="php">
@@ -97,6 +98,8 @@ echo $miTostado->obtenerFicha();`} title="Solución" />
       <p>Responde las preguntas de esta última lección para consolidar tu conocimiento sobre clases y objetos en PHP.</p>
       <PhpQuizModal quizKey="poo" />
     </section>
+
+    <PooChallengesCta />
 
     <nav class="nav-bottom">
       <a href="/course/php/arrays/" class="prev">← Arrays y Funciones</a>

@@ -2,6 +2,7 @@
 import Layout from '../../../../layouts/Layout.astro';
 import CodeBlock from '../../../../components/CodeBlock.astro';
 import JavaQuizModal from '../../../../components/quizzes/JavaQuizModal.astro';
+import PooChallengesCta from '../../../../components/challenges/PooChallengesCta.astro';
 ---
 
 <Layout title="POO: Clases, Atributos y Constructores en Java" description="Aprende la estructura de atributos, sobrecarga de constructores sin/con parámetros, getters, setters, método toString() e impresión en consola." courseSlug="java">
@@ -127,6 +128,8 @@ public String toString() {
       <p>Pon a prueba tus conocimientos sobre clases, atributos, constructores sobrecargados y getters/setters.</p>
       <JavaQuizModal quizKey="poo-basico" />
     </section>
+
+    <PooChallengesCta />
 
     <nav class="nav-bottom">
       <a href="/course/java/funciones/" class="prev">← Funciones</a>

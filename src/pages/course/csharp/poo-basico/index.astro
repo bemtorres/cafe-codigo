@@ -2,6 +2,7 @@
 import Layout from '../../../../layouts/Layout.astro';
 import CodeBlock from '../../../../components/CodeBlock.astro';
 import CsharpQuizModal from '../../../../components/quizzes/CsharpQuizModal.astro';
+import PooChallengesCta from '../../../../components/challenges/PooChallengesCta.astro';
 ---
 
 <Layout title="POO Básica en C#" description="El salto a la arquitectura: Clases y Objetos" courseSlug="csharp">
@@ -230,6 +231,8 @@ c2.Marca = "Mazda";
       <p>Comprueba tus conocimientos sobre este tema realizando nuestro pequeño test.</p>
       <CsharpQuizModal quizKey="poo-basico" />
     </section>
+
+    <PooChallengesCta />
 
     <nav class="nav-bottom">
       <a href="/course/csharp/funciones/" class="prev">← Funciones</a>

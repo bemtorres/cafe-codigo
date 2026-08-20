@@ -1,0 +1,58 @@
+---
+interface Props {
+  heading?: string;
+}
+
+const { heading = 'Banco de ejercicios de POO' } = Astro.props;
+---
+
+<aside class="poo-cta" aria-label="Ejercicios de programación orientada a objetos">
+  <p class="poo-cta-kicker">Práctica transversal</p>
+  <h3>{heading}</h3>
+  <p>
+    20 modelos de herencia con diagrama de clases. Sirven para Python, Java, C#, C++, Kotlin y PHP:
+    implementá la jerarquía en el lenguaje de esta lección.
+  </p>
+  <a href="/challenges/poo/">Ir a /challenges/poo →</a>
+</aside>
+
+<style>
+  .poo-cta {
+    margin: 1.5rem 0;
+    padding: 1.1rem 1.2rem;
+    border-radius: 18px;
+    background: linear-gradient(135deg, rgba(124, 45, 18, 0.12), rgba(255, 243, 224, 0.9));
+    border: 2px solid rgba(124, 45, 18, 0.28);
+    box-shadow: 0 14px 34px rgba(30, 18, 16, 0.08);
+  }
+  .poo-cta-kicker {
+    margin: 0;
+    font-size: 0.7rem;
+    font-weight: 900;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #7c2d12;
+  }
+  .poo-cta h3 {
+    margin: 0.2rem 0 0.45rem;
+    font-size: 1.15rem;
+  }
+  .poo-cta p {
+    margin: 0 0 0.85rem;
+    font-weight: 650;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+  .poo-cta a {
+    display: inline-block;
+    text-decoration: none;
+    font-weight: 900;
+    color: #fff8ee;
+    background: #7c2d12;
+    border-radius: 999px;
+    padding: 0.45rem 1rem;
+  }
+  .poo-cta a:hover {
+    background: #5c1f0c;
+  }
+</style>

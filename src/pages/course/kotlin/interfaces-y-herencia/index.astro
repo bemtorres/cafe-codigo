@@ -2,6 +2,7 @@
 import Layout from '../../../../layouts/Layout.astro';
 import CodeBlock from '../../../../components/CodeBlock.astro';
 import KotlinQuizModal from '../../../../components/quizzes/KotlinQuizModal.astro';
+import PooChallengesCta from '../../../../components/challenges/PooChallengesCta.astro';
 ---
 
 <Layout title="Interfaces y Polimorfismo en Kotlin" description="interface, abstract, sealed class y casting en Kotlin." courseSlug="kotlin">
@@ -101,6 +102,8 @@ fun main() {
       <h2>Pon a prueba tu polimorfismo</h2>
       <KotlinQuizModal quizKey="interfaces-y-herencia" />
     </section>
+
+    <PooChallengesCta />
 
     <nav class="nav-bottom">
       <a href="/course/kotlin/clases-y-objetos/" class="prev">← Clases y Objetos</a>

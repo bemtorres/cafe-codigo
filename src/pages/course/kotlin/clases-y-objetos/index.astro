@@ -2,6 +2,7 @@
 import Layout from '../../../../layouts/Layout.astro';
 import CodeBlock from '../../../../components/CodeBlock.astro';
 import KotlinQuizModal from '../../../../components/quizzes/KotlinQuizModal.astro';
+import PooChallengesCta from '../../../../components/challenges/PooChallengesCta.astro';
 ---
 
 <Layout title="Clases y Objetos en Kotlin" description="class, data class, constructores, propiedades y object (singleton)." courseSlug="kotlin">
@@ -96,6 +97,8 @@ fun main() {
       <h2>Pon a prueba tus clases</h2>
       <KotlinQuizModal quizKey="clases-y-objetos" />
     </section>
+
+    <PooChallengesCta />
 
     <nav class="nav-bottom">
       <a href="/course/kotlin/colecciones/" class="prev">← Colecciones</a>

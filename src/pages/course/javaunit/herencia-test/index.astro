@@ -2,6 +2,7 @@
 import Layout from '../../../../layouts/Layout.astro';
 import CodeBlock from '../../../../components/CodeBlock.astro';
 import JavaUnitQuizModal from '../../../../components/quizzes/JavaUnitQuizModal.astro';
+import PooChallengesCta from '../../../../components/challenges/PooChallengesCta.astro';
 ---
 
 <Layout title="Testing de Herencia en Java" description="Valores heredados y polimorfismo probados con JUnit 5." courseSlug="javaunit">
@@ -70,6 +71,8 @@ void testIdHeredado() {
       <p>¿Tus clases hijas son dignas sucesoras?</p>
       <JavaUnitQuizModal quizKey="herencia-test" />
     </section>
+
+    <PooChallengesCta />
 
     <nav class="nav-bottom">
       <a href="/course/javaunit/logica-negocio-test/" class="prev">← Negocio Test</a>

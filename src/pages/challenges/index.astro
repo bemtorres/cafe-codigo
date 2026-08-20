@@ -1,0 +1,53 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout
+  title="Desafíos de programación"
+  description="Bancos de ejercicios transversales: POO y más prácticas por tema."
+>
+  <article class="content-section">
+    <h1>Desafíos</h1>
+    <p>
+      Ejercicios que no pertenecen a un solo lenguaje: los usás desde cualquier curso que cubra el tema.
+    </p>
+    <div class="units-grid">
+      <a class="unit-card" href="/challenges/poo/">
+        <h3>POO y herencia</h3>
+        <p>20 jerarquías con diagrama de clases. Enlazado desde Python, Java, C#, C++, Kotlin y PHP.</p>
+      </a>
+    </div>
+  </article>
+
+  <style>
+    .units-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .unit-card {
+      text-decoration: none;
+      color: inherit;
+      background: rgba(255, 255, 255, 0.78);
+      border: 1px solid rgba(30, 18, 16, 0.12);
+      border-radius: 18px;
+      padding: 1.1rem;
+      box-shadow: 0 18px 44px rgba(30, 18, 16, 0.08);
+      display: block;
+    }
+    .unit-card:hover {
+      transform: translateY(-2px);
+      background: rgba(255, 255, 255, 0.92);
+    }
+    .unit-card h3 {
+      margin: 0 0 0.35rem;
+    }
+    .unit-card p {
+      margin: 0;
+      color: var(--text-secondary);
+      font-weight: 650;
+      line-height: 1.5;
+    }
+  </style>
+</Layout>
