@@ -1,0 +1,56 @@
+---
+interface Props {
+  heading?: string;
+}
+const { heading = 'Banco de ejercicios de Interfaces' } = Astro.props;
+---
+
+<aside class="poo-cta" aria-label="Ejercicios de interfaces">
+  <p class="poo-cta-kicker">Práctica transversal — Contratos</p>
+  <h3>{heading}</h3>
+  <p>
+    15 contratos <strong>«interface» + 3 implementaciones</strong> con diagrama UML. Practica desacoplamiento y polimorfismo por contrato.
+  </p>
+  <a href="/challenges/interface/">Ir a /challenges/interface →</a>
+</aside>
+
+<style>
+  .poo-cta {
+    margin: 1.5rem 0;
+    padding: 1.1rem 1.2rem;
+    border-radius: 18px;
+    background: linear-gradient(135deg, rgba(109, 40, 217, 0.10), rgba(245, 240, 255, 0.95));
+    border: 2px solid rgba(109, 40, 217, 0.22);
+    box-shadow: 0 14px 34px rgba(30, 18, 16, 0.08);
+  }
+  .poo-cta-kicker {
+    margin: 0;
+    font-size: 0.7rem;
+    font-weight: 900;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #6d28d9;
+  }
+  .poo-cta h3 {
+    margin: 0.2rem 0 0.45rem;
+    font-size: 1.15rem;
+  }
+  .poo-cta p {
+    margin: 0 0 0.85rem;
+    font-weight: 650;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+  .poo-cta a {
+    display: inline-block;
+    text-decoration: none;
+    font-weight: 900;
+    color: #fff8ee;
+    background: #6d28d9;
+    border-radius: 999px;
+    padding: 0.45rem 1rem;
+  }
+  .poo-cta a:hover {
+    background: #5b22b5;
+  }
+</style>

@@ -2,6 +2,7 @@
 import Layout from '../../../../layouts/Layout.astro';
 import CodeBlock from '../../../../components/CodeBlock.astro';
 import CsharpQuizModal from '../../../../components/quizzes/CsharpQuizModal.astro';
+import EcosistemasVariablesCta from '../../../../components/EcosistemasVariablesCta.astro';
 ---
 
 <Layout title="Variables en C#" description="Tipos de datos y guardado de información en C#" courseSlug="csharp">
@@ -161,6 +162,8 @@ Console.WriteLine(texto1 + texto2); // Imprime 510`} />
       <p>Comprueba tus conocimientos sobre este tema realizando nuestro pequeño test.</p>
       <CsharpQuizModal quizKey="variables" />
     </section>
+
+    <EcosistemasVariablesCta code="csharp" />
 
     <nav class="nav-bottom">
       <a href="/course/csharp/introduccion/" class="prev">← Introducción</a>

@@ -105,19 +105,34 @@ a { transition: transform 0.2s, color 0.2s; }
   .content-section h1 { font-size: 2.25rem; }
 }
 
-/* Code Inline */
-.content-section p code,
-.content-section li code,
-.ejercicio p code,
-.ejercicio li code,
-.ejercicio span code {
-  color: white;
-  background: var(--text-primary);
-  padding: 0.25rem 0.35rem;
-  border-radius: 8px;
-  border: 2px solid var(--border);
-  font-size: 0.9em;
-  margin: 0 2px;
+/* Code Inline (Párrafos, Listas, Note-boxes, Tablas, etc.) */
+:not(pre) > code,
+.content-section code:not(pre code),
+.note-box code,
+.ejercicio code:not(pre code) {
+  color: #fffdf7 !important;
+  background: #1E1210 !important;
+  padding: 0.18rem 0.45rem !important;
+  border-radius: 7px !important;
+  border: 1.5px solid #1E1210 !important;
+  font-family: 'JetBrains Mono', ui-monospace, monospace !important;
+  font-size: 0.88em !important;
+  font-weight: 700 !important;
+  margin: 0 3px !important;
+  display: inline-block !important;
+  line-height: 1.35 !important;
+  box-shadow: 2px 2px 0px rgba(30, 18, 16, 0.25) !important;
+  letter-spacing: -0.01em !important;
+}
+
+:global(.dark) :not(pre) > code,
+:global(.dark) .content-section code:not(pre code),
+:global(.dark) .note-box code,
+:global(.dark) .ejercicio code:not(pre code) {
+  background: #27272a !important;
+  color: #f4f4f5 !important;
+  border-color: #52525b !important;
+  box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.5) !important;
 }
 
 /* Code Blocks */
@@ -136,11 +151,13 @@ a { transition: transform 0.2s, color 0.2s; }
 }
 .content-section pre code,
 .ejercicio pre code {
-  color: var(--code-text);
-  background: none;
-  padding: 0;
-  border: none;
-  border-radius: 0;
+  color: var(--code-text) !important;
+  background: none !important;
+  padding: 0 !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  display: inline !important;
 }
 
 /* ── Ejercicio ── */

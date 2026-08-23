@@ -1,0 +1,126 @@
+---
+interface Props {
+  compact?: boolean;
+  code?: string;
+}
+const { compact = false, code } = Astro.props;
+const href = code ? `/course/ecosistemas/variables-convenciones/?code=${encodeURIComponent(code)}` : '/course/ecosistemas/variables-convenciones/';
+---
+
+<aside class="eco-var-cta" aria-label="Convenciones de nombres por lenguaje">
+  <div class="eco-var-cta-head">
+    <span class="eco-var-icon" aria-hidden="true">📐</span>
+    <div>
+      <p class="eco-var-kicker">Módulo transversal</p>
+      <h3>¿Cómo se escribe esto en otro lenguaje?</h3>
+    </div>
+  </div>
+  <p class="eco-var-desc">
+    Compara <strong>Python, Java, JavaScript, C#, PHP y C++</strong> lado a lado: clases en <code>PascalCase</code>, métodos y variables en <code>camelCase</code> o <code>snake_case</code>, constantes en <code>UPPER_SNAKE</code>.
+    Incluye tabla + laboratorio interactivo para cambiar de lenguaje al instante.
+  </p>
+  <a
+    href={href}
+    target="_blank"
+    rel="noopener noreferrer"
+    class="eco-var-btn"
+    aria-label="Abrir módulo de Variables y Convenciones en otra ventana"
+  >
+    Ver convenciones{code ? ` — ${code}` : ''}
+    <span aria-hidden="true" class="eco-var-arrow">↗</span>
+  </a>
+  <p class="eco-var-hint">Se abre en otra pestaña para que no pierdas tu avance aquí.</p>
+</aside>
+
+<style>
+  .eco-var-cta {
+    margin: 1.6rem 0;
+    padding: 1.15rem 1.2rem;
+    border-radius: 20px;
+    background: linear-gradient(135deg, rgba(239, 71, 111, 0.10), rgba(255, 249, 196, 0.92));
+    border: 3px solid var(--border);
+    box-shadow: 5px 5px 0 var(--border);
+  }
+  .eco-var-cta-head {
+    display:flex;
+    align-items:center;
+    gap:0.75rem;
+    margin-bottom:0.45rem;
+  }
+  .eco-var-icon {
+    flex-shrink:0;
+    width:42px;
+    height:42px;
+    display:grid;
+    place-items:center;
+    background:#1E1210;
+    color:#FFF9C4;
+    border:2px solid #1E1210;
+    border-radius:14px;
+    font-size:1.15rem;
+    box-shadow:2px 2px 0 rgba(30,18,16,0.14);
+  }
+  .eco-var-kicker {
+    margin:0;
+    font-size:0.66rem;
+    font-weight:900;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:#ef476f;
+    font-family:'Nunito', sans-serif;
+  }
+  .eco-var-cta h3 {
+    margin:0.12rem 0 0;
+    font-size:1.08rem;
+    line-height:1.2;
+    color:var(--text-primary);
+  }
+  .eco-var-desc {
+    margin:0.55rem 0 0.85rem;
+    font-weight:650;
+    color:var(--text-secondary);
+    line-height:1.55;
+    font-size:0.95rem;
+  }
+  .eco-var-desc code {
+    background:var(--text-primary);
+    color:white;
+    padding:0.12rem 0.32rem;
+    border-radius:6px;
+    font-size:0.85em;
+    border:1px solid var(--border);
+  }
+  .eco-var-btn {
+    display:inline-flex;
+    align-items:center;
+    gap:0.4rem;
+    text-decoration:none;
+    font-family:'Nunito', sans-serif;
+    font-weight:900;
+    font-size:0.88rem;
+    color:#1E1210;
+    background:#FFD166;
+    border:3px solid #1E1210;
+    border-radius:999px;
+    padding:0.48rem 0.95rem;
+    box-shadow:3px 3px 0 #1E1210;
+    transition:transform 0.12s, box-shadow 0.12s;
+  }
+  .eco-var-btn:hover {
+    transform:translateY(-1px);
+    box-shadow:4px 4px 0 #1E1210;
+    background:#ffdb4d;
+  }
+  .eco-var-btn:active {
+    transform:translate(1px,1px);
+    box-shadow:1px 1px 0 #1E1210;
+  }
+  .eco-var-arrow { transition:transform 0.12s; }
+  .eco-var-btn:hover .eco-var-arrow { transform:translate(2px,-2px); }
+  .eco-var-hint {
+    margin:0.55rem 0 0;
+    font-size:0.78rem;
+    font-weight:700;
+    color:var(--text-muted);
+  }
+</style>

@@ -18,6 +18,8 @@ const STATIC_PAGES: { path: string; priority: string; changefreq: string }[] = [
   { path: '/ejercicios/unidad-4/', priority: '0.6', changefreq: 'monthly' },
   { path: '/challenges/',          priority: '0.7', changefreq: 'weekly'  },
   { path: '/challenges/poo/',      priority: '0.8', changefreq: 'weekly'  },
+  { path: '/challenges/inheritance/', priority: '0.8', changefreq: 'weekly'  },
+  { path: '/challenges/interface/',   priority: '0.8', changefreq: 'weekly'  },
 ];
 
 function urlEntry(path: string, priority: string, changefreq: string): string {

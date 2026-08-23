@@ -2,6 +2,7 @@
 import Layout from '../../../../layouts/Layout.astro';
 import CodeBlock from '../../../../components/CodeBlock.astro';
 import KotlinQuizModal from '../../../../components/quizzes/KotlinQuizModal.astro';
+import EcosistemasVariablesCta from '../../../../components/EcosistemasVariablesCta.astro';
 ---
 
 <Layout title="Variables y tipos en Kotlin" description="val vs var, tipos de datos y la inferencia de tipos de Kotlin." courseSlug="kotlin">
@@ -77,6 +78,8 @@ println(desdeTexto) // 100`} title="conversiones.kt" />
       <h2>Pon a prueba tus variables</h2>
       <KotlinQuizModal quizKey="variables-y-tipos" />
     </section>
+
+    <EcosistemasVariablesCta />
 
     <nav class="nav-bottom">
       <a href="/course/kotlin/introduccion/" class="prev">← Introducción</a>

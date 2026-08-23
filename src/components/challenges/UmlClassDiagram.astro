@@ -4,57 +4,84 @@ import type { UmlClassSpec } from '../../data/pooChallenges';
 interface Props {
   base: UmlClassSpec;
   subclasses: UmlClassSpec[];
+  variant?: 'herencia' | 'interface' | 'clase';
 }
 
-const { base, subclasses } = Astro.props;
+const { base, subclasses, variant } = Astro.props;
+const isSingle = subclasses.length === 0;
+const isInterface = variant === 'interface' || base.name.toLowerCase().includes('interface');
+
+const fmt = (s: string) => {
+  const t = s.trim();
+  if (!t) return s;
+  const first = t[0];
+  if (first === '+' || first === '-' || first === '#' || first === '~') return t;
+  return `+ ${t}`;
+};
 ---
 
-<figure class="uml-figure" aria-label={`Diagrama de clases: ${base.name}`}>
+<figure class="uml-figure" aria-label={`Diagrama de clases: ${base.name}${isSingle ? ' (clase única)' : ''}`}>
   <div class="uml-tree">
     <div class="uml-row uml-row-base">
-      <div class="uml-box uml-box-base">
+      <div class:list={["uml-box", "uml-box-base", isSingle && "uml-box-single", isInterface && "uml-box-interface"]}>
         <header>{base.name}</header>
         <ul class="uml-attrs">
           {base.attrs.map((a) => (
-            <li>+ {a}</li>
+            <li>{fmt(a)}</li>
           ))}
         </ul>
         <ul class="uml-methods">
           {base.methods.map((m) => (
-            <li>+ {m}</li>
+            <li>{fmt(m)}</li>
           ))}
         </ul>
       </div>
     </div>
 
-    <svg class="uml-arrows" viewBox="0 0 100 28" preserveAspectRatio="none" aria-hidden="true">
-      <line x1="50" y1="0" x2="50" y2="10" />
-      <line x1="16.6" y1="10" x2="83.4" y2="10" />
-      <line x1="16.6" y1="10" x2="16.6" y2="28" />
-      <line x1="50" y1="10" x2="50" y2="28" />
-      <line x1="83.4" y1="10" x2="83.4" y2="28" />
-    </svg>
+    {!isSingle && (
+      <>
+        <svg class:list={["uml-arrows", isInterface && "uml-arrows-interface"]} viewBox="0 0 100 28" preserveAspectRatio="none" aria-hidden="true">
+          <line x1="50" y1="0" x2="50" y2="10" />
+          <line x1="16.6" y1="10" x2="83.4" y2="10" />
+          <line x1="16.6" y1="10" x2="16.6" y2="28" />
+          <line x1="50" y1="10" x2="50" y2="28" />
+          <line x1="83.4" y1="10" x2="83.4" y2="28" />
+        </svg>
 
-    <div class="uml-row uml-row-children">
-      {subclasses.map((child) => (
-        <div class="uml-box">
-          <header>{child.name}</header>
-          <ul class="uml-attrs">
-            {child.attrs.length > 0 ? child.attrs.map((a) => <li>+ {a}</li>) : <li class="muted-member">—</li>}
-          </ul>
-          <ul class="uml-methods">
-            {child.methods.length > 0 ? (
-              child.methods.map((m) => <li>+ {m}</li>)
-            ) : (
-              <li class="muted-member">(sin métodos extra)</li>
-            )}
-          </ul>
+        <div class="uml-row uml-row-children">
+          {subclasses.map((child) => (
+            <div class="uml-box">
+              <header>{child.name}</header>
+              <ul class="uml-attrs">
+                {child.attrs.length > 0 ? child.attrs.map((a) => <li>{fmt(a)}</li>) : <li class="muted-member">—</li>}
+              </ul>
+              <ul class="uml-methods">
+                {child.methods.length > 0 ? (
+                  child.methods.map((m) => <li>{fmt(m)}</li>)
+                ) : (
+                  <li class="muted-member">(sin métodos extra)</li>
+                )}
+              </ul>
+            </div>
+          ))}
         </div>
-      ))}
-    </div>
+      </>
+    )}
   </div>
   <figcaption>
-    Herencia: <code>{base.name}</code> ▷ {subclasses.map((c) => c.name).join(' · ')}
+    {isSingle ? (
+      <>
+        Clase única: <code>{base.name}</code> — sin herencia
+      </>
+    ) : isInterface ? (
+      <>
+        Contrato: <code>{base.name}</code> ◁┈ {subclasses.map((c) => c.name).join(' · ')} <span style="opacity:0.7">(implements)</span>
+      </>
+    ) : (
+      <>
+        Herencia: <code>{base.name}</code> ▷ {subclasses.map((c) => c.name).join(' · ')}
+      </>
+    )}
   </figcaption>
 </figure>
 
@@ -91,10 +118,14 @@ const { base, subclasses } = Astro.props;
     stroke: #1e1210;
     stroke-width: 1.6;
   }
+  .uml-arrows-interface {
+    stroke-dasharray: 5 4;
+    stroke: #6d28d9;
+  }
   .uml-box {
     flex: 1 1 0;
-    min-width: 160px;
-    max-width: 260px;
+    min-width: 220px;
+    max-width: 360px;
     background: #fff;
     border: 2px solid #1e1210;
     border-radius: 6px;
@@ -104,8 +135,8 @@ const { base, subclasses } = Astro.props;
     line-height: 1.35;
   }
   .uml-box-base {
-    flex: 0 1 280px;
-    max-width: 320px;
+    flex: 0 1 380px;
+    max-width: 440px;
   }
   .uml-box header {
     background: #1e1210;
@@ -117,6 +148,9 @@ const { base, subclasses } = Astro.props;
   }
   .uml-box-base header {
     background: #7c2d12;
+  }
+  .uml-box-interface header {
+    background: #6d28d9 !important;
   }
   .uml-attrs,
   .uml-methods {

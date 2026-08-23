@@ -2,7 +2,8 @@
 import Layout from '../../../../layouts/Layout.astro';
 import CodeBlock from '../../../../components/CodeBlock.astro';
 import CsharpQuizModal from '../../../../components/quizzes/CsharpQuizModal.astro';
-import PooChallengesCta from '../../../../components/challenges/PooChallengesCta.astro';
+import InheritanceChallengesCta from '../../../../components/challenges/InheritanceChallengesCta.astro';
+import InterfaceChallengesCta from '../../../../components/challenges/InterfaceChallengesCta.astro';
 ---
 
 <Layout title="Pilares de la POO" description="Profundiza en Herencia, Interfades y Polimorfismo" courseSlug="csharp">
@@ -239,11 +240,12 @@ m.Llantas = 2;`} />
       <CsharpQuizModal quizKey="poo-pilares" />
     </section>
 
-    <PooChallengesCta />
+    <InheritanceChallengesCta />
+    <InterfaceChallengesCta />
 
     <nav class="nav-bottom">
       <a href="/course/csharp/poo-basico/" class="prev">← POO Básico</a>
-      <a href="/challenges/poo/" class="next" style="background: var(--warning); color: #1e1210;">Desafíos POO →</a>
+      <a href="/challenges/inheritance/" class="next" style="background: var(--warning); color: #1e1210;">Desafíos POO →</a>
     </nav>
   </article>
 </Layout>

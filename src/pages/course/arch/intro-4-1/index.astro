@@ -2,50 +2,282 @@
 import Layout from '../../../../layouts/Layout.astro';
 import ArchQuizModal from '../../../../components/quizzes/ArchQuizModal.astro';
 import modelo41 from '../../../../assets/images/modelo_4_1/2_modelo4_1.png';
-
 ---
 
 <Layout title="El Modelo de Vistas 4+1" description="Introducción al modelo de Philippe Kruchten para describir arquitecturas de software." courseSlug="arch">
   <article class="content-section">
-    <h1>1. El Modelo 4+1: ¿Por qué tantas vistas?</h1>
+    <h1>Introducción al Modelo 4+1 de Kruchten</h1>
 
+    <p class="lead">
+      Antes de dibujar un solo diagrama, conviene responder una pregunta más simple:
+      <strong>¿por qué una arquitectura de software no cabe en una sola hoja?</strong>
+      En esta lección conoceremos el Modelo 4+1, un modelo de referencia creado por
+      <strong>Philippe Kruchten</strong> para explicar un mismo sistema desde varias perspectivas.
+    </p>
+
+    <!-- 1. EL PROBLEMA -->
     <section class="mb-10">
-      <h2>El caos de la arquitectura plana</h2>
+      <h2>1. El problema: un mismo sistema, muchas preguntas</h2>
       <p>
-        Cuando intentamos explicar un sistema complejo con un solo diagrama, fallamos. Los programadores quieren ver clases; los jefes quieren ver casos de uso; y los de sistemas quieren ver servidores.
+        Imagina que una empresa está desarrollando un sistema de ventas. En ese proyecto participan
+        muchas personas distintas:
       </p>
+      <ul>
+        <li><strong>Cliente / negocio:</strong> define qué debe hacer el producto.</li>
+        <li><strong>Analista:</strong> traduce las necesidades en requerimientos.</li>
+        <li><strong>Arquitecto de software:</strong> decide cómo se estructura el sistema.</li>
+        <li><strong>Desarrolladores:</strong> construyen el código.</li>
+        <li><strong>QA (aseguramiento de calidad):</strong> valida que funcione.</li>
+        <li><strong>DevOps:</strong> lleva el sistema a producción.</li>
+        <li><strong>Administradores de infraestructura:</strong> mantienen los servidores.</li>
+      </ul>
       <p>
-        <strong>Philippe Kruchten</strong> propuso en 1995 el <strong>Modelo de Vistas 4+1</strong> para separar estas preocupaciones en 5 dimensiones distintas.
+        Todas estas personas están mirando <strong>el mismo sistema</strong>, pero cada una necesita
+        responder preguntas muy diferentes:
       </p>
-      <div class="note-box" style="background: #F1F5F9; border-left: 5px solid #475569;">
-        <strong>Dato clave:</strong> El modelo se llama "4+1" porque hay 4 vistas principales que se unifican mediante una quinta (+1) llamada escenarios.
+
+      <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 mt-4">
+        <div class="border-2 border-[#4A3B22] rounded-xl p-4 bg-white shadow-[4px_4px_0px_#4A3B22]">
+          <p class="m-0 font-nunito font-black text-[#4A3B22]">Negocio</p>
+          <p class="m-0 mt-1 text-sm">"¿Qué puede hacer el sistema?"</p>
+        </div>
+        <div class="border-2 border-[#4A3B22] rounded-xl p-4 bg-white shadow-[4px_4px_0px_#4A3B22]">
+          <p class="m-0 font-nunito font-black text-[#4A3B22]">Desarrollador</p>
+          <p class="m-0 mt-1 text-sm">"¿Cómo está organizado el software?"</p>
+        </div>
+        <div class="border-2 border-[#4A3B22] rounded-xl p-4 bg-white shadow-[4px_4px_0px_#4A3B22]">
+          <p class="m-0 font-nunito font-black text-[#4A3B22]">Arquitecto</p>
+          <p class="m-0 mt-1 text-sm">"¿Cómo se relacionan sus componentes?"</p>
+        </div>
+        <div class="border-2 border-[#4A3B22] rounded-xl p-4 bg-white shadow-[4px_4px_0px_#4A3B22]">
+          <p class="m-0 font-nunito font-black text-[#4A3B22]">DevOps</p>
+          <p class="m-0 mt-1 text-sm">"¿Dónde se ejecutan los componentes?"</p>
+        </div>
+        <div class="border-2 border-[#4A3B22] rounded-xl p-4 bg-white shadow-[4px_4px_0px_#4A3B22]">
+          <p class="m-0 font-nunito font-black text-[#4A3B22]">QA</p>
+          <p class="m-0 mt-1 text-sm">"¿Cómo se comporta ante casos reales?"</p>
+        </div>
+        <div class="border-2 border-[#4A3B22] rounded-xl p-4 bg-white shadow-[4px_4px_0px_#4A3B22]">
+          <p class="m-0 font-nunito font-black text-[#4A3B22]">Infraestructura</p>
+          <p class="m-0 mt-1 text-sm">"¿Qué recursos necesita para funcionar?"</p>
+        </div>
       </div>
 
-      <div class="flex justify-center mb-8">
-        <img src={modelo41.src} alt="Modelo 4+1" class="rounded-xl shadow-lg max-w-[600px] w-full border-4 border-[#C5A059] bg-white p-2" />
+      <p class="mt-4">
+        Si intentamos responder todas esas preguntas en <strong>un único diagrama</strong>, el resultado
+        es un dibujo incomprensible: demasiada información, mezclada y sin orden. Ahí nace la necesidad
+        de <strong>múltiples vistas</strong>.
+      </p>
+    </section>
+
+    <!-- 2. LA IDEA CENTRAL -->
+    <section class="mb-10">
+      <h2>2. La idea central: un sistema, diferentes perspectivas</h2>
+      <p>
+        El Modelo 4+1 permite describir <strong>una misma arquitectura desde diferentes perspectivas</strong>.
+        No propone dibujar más cosas, sino dibujar <strong>lo correcto para cada quien</strong>.
+      </p>
+      <p>
+        Una buena analogía es un <strong>edificio</strong>. El mismo edificio puede tener un plano
+        arquitectónico, un plano eléctrico, un plano estructural y un plano de redes. No son edificios
+        diferentes: es <strong>el mismo edificio observado con propósitos distintos</strong>. El arquitecto,
+        el electricista y el ingeniero civil no necesitan la misma hoja.
+      </p>
+      <p>
+        Lo mismo ocurre con el software: el negocio, los desarrolladores y la infraestructura no necesitan
+        la misma vista. La idea que debe quedar grabada es:
+      </p>
+
+      <div class="note-box" style="background: #C5A059; border-left: 5px solid #4A3B22; color: #1E1210;">
+        <strong>Un sistema. Diferentes perspectivas.</strong> Cada vista responde a un grupo de
+        preguntas y a un grupo de personas, sin repetir ni mezclar lo que no corresponde.
+      </div>
+
+      <div class="flex justify-center mb-2 mt-6">
+        <img src={modelo41.src} alt="Modelo 4+1 de Kruchten" class="rounded-xl shadow-lg max-w-[600px] w-full border-4 border-[#C5A059] bg-white p-2" />
       </div>
     </section>
 
+    <!-- 3. LAS CINCO VISTAS EN UN VISTAZO -->
     <section class="mb-10">
-      <h2>Las 5 Vistas en un vistazo</h2>
+      <h2>3. Las cinco vistas en un vistazo</h2>
+      <p>
+        El modelo organiza la arquitectura en <strong>cinco vistas</strong>. Por ahora solo las
+        presentamos: nombre, perspectiva y la pregunta principal que responde cada una.
+        <strong>Más adelante estudiaremos cada vista en detalle.</strong>
+      </p>
+
+      <div class="grid gap-4 md:grid-cols-2 mt-4">
+        <div class="border-4 border-[#4A3B22] rounded-xl p-5 bg-white shadow-[6px_6px_0px_#4A3B22]">
+          <h3 class="text-[#4A3B22] !text-base m-0">Vista Lógica</h3>
+          <p class="mt-2 mb-1 text-sm"><strong>Perspectiva:</strong> los elementos conceptuales y funcionales del sistema.</p>
+          <p class="m-0 text-sm"><strong>Pregunta principal:</strong> ¿Qué elementos conceptuales y funcionales forman el sistema?</p>
+        </div>
+        <div class="border-4 border-[#4A3B22] rounded-xl p-5 bg-white shadow-[6px_6px_0px_#4A3B22]">
+          <h3 class="text-[#4A3B22] !text-base m-0">Vista de Desarrollo</h3>
+          <p class="mt-2 mb-1 text-sm"><strong>Perspectiva:</strong> la organización del software que será construido.</p>
+          <p class="m-0 text-sm"><strong>Pregunta principal:</strong> ¿Cómo está organizado el software que será construido?</p>
+        </div>
+        <div class="border-4 border-[#4A3B22] rounded-xl p-5 bg-white shadow-[6px_6px_0px_#4A3B22]">
+          <h3 class="text-[#4A3B22] !text-base m-0">Vista de Procesos</h3>
+          <p class="mt-2 mb-1 text-sm"><strong>Perspectiva:</strong> el comportamiento del sistema en ejecución.</p>
+          <p class="m-0 text-sm"><strong>Pregunta principal:</strong> ¿Cómo se comporta el sistema mientras está ejecutándose?</p>
+        </div>
+        <div class="border-4 border-[#4A3B22] rounded-xl p-5 bg-white shadow-[6px_6px_0px_#4A3B22]">
+          <h3 class="text-[#4A3B22] !text-base m-0">Vista Física</h3>
+          <p class="mt-2 mb-1 text-sm"><strong>Perspectiva:</strong> el despliegue sobre hardware y red.</p>
+          <p class="m-0 text-sm"><strong>Pregunta principal:</strong> ¿Dónde se ejecutan los componentes del sistema?</p>
+        </div>
+        <div class="border-4 border-[#C5A059] rounded-xl p-5 bg-[#FDF5E6] shadow-[6px_6px_0px_#C5A059] md:col-span-2">
+          <h3 class="text-[#8a6d1f] !text-base m-0">Vista de Escenarios (+1)</h3>
+          <p class="mt-2 mb-1 text-sm"><strong>Perspectiva:</strong> casos de uso reales que validan las otras vistas.</p>
+          <p class="m-0 text-sm"><strong>Pregunta principal:</strong> ¿Cómo se comporta la arquitectura frente a casos de uso reales?</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. EL +1 -->
+    <section class="mb-10">
+      <h2>4. ¿Por qué se llama 4+1?</h2>
+      <p>
+        Las <strong>cuatro primeras vistas</strong> (lógica, desarrollo, procesos y física) representan
+        distintas perspectivas <em>estructurales</em> y de <em>comportamiento</em> de la arquitectura.
+      </p>
+      <p>
+        Los <strong>escenarios</strong> funcionan como el <strong>"+1"</strong> porque no describen una
+        estructura más, sino que <strong>relacionan y validan</strong> las otras vistas mediante casos de
+        uso concretos. Un escenario típico es: "un cliente realiza una compra". Al recorrer ese caso de uso,
+        comprobamos que la vista lógica, la de desarrollo, la de procesos y la física encajan entre sí.
+      </p>
+      <div class="note-box" style="background: #F1F5F9; border-left: 5px solid #475569;">
+        <strong>Dato clave:</strong> El modelo se llama "4+1" porque hay 4 vistas principales que se
+        unifican y validan mediante una quinta (+1): los escenarios.
+      </div>
+    </section>
+
+    <!-- 5. MUNDO EMPRESARIAL -->
+    <section class="mb-10">
+      <h2>5. ¿Para qué sirve en una empresa?</h2>
+      <p>
+        Una arquitectura puede ser muy difícil de comprender si toda la información está mezclada en un
+        único documento o diagrama. El Modelo 4+1 ayuda a <strong>organizar la documentación</strong> para
+        que cada persona entienda aquello que le resulta relevante.
+      </p>
+      <p>
+        Por ejemplo, supongamos una empresa que desarrolla una <strong>plataforma de comercio electrónico</strong>:
+      </p>
       <ul>
-        <li><strong>Lógica:</strong> ¿Qué hace el sistema? (Clases, objetos).</li>
-        <li><strong>Desarrollo:</strong> ¿Cómo se organiza el código? (Módulos, paquetes).</li>
-        <li><strong>Proceso:</strong> ¿Cómo rinde y escala? (Hilos, flujos).</li>
-        <li><strong>Física:</strong> ¿Dónde corre? (Servidores, redes).</li>
-        <li><strong>Escenarios (+1):</strong> ¿Cómo funciona todo junto? (Casos de uso).</li>
+        <li>El <strong>área de negocio</strong> necesita entender las funcionalidades del sistema.</li>
+        <li>Los <strong>desarrolladores</strong> necesitan comprender la organización del software.</li>
+        <li>El <strong>equipo de infraestructura</strong> necesita conocer dónde se ejecutan los componentes.</li>
+        <li>Los <strong>arquitectos</strong> necesitan comprender cómo se relacionan las distintas partes.</li>
+      </ul>
+      <p>
+        El modelo permite documentar estas preocupaciones <strong>por separado, pero manteniendo la
+        relación entre ellas</strong>. (Más adelante veremos cómo se representa este comercio electrónico
+        en cada vista.)
+      </p>
+    </section>
+
+    <!-- 6. NO ES OBLIGATORIO -->
+    <section class="mb-10">
+      <h2>6. ¿Las empresas utilizan siempre las cinco vistas?</h2>
+      <p>
+        <strong>NO necesariamente.</strong> El Modelo 4+1 es un <strong>modelo de referencia</strong> para
+        describir arquitectura, no una receta obligatoria. Una organización puede:
+      </p>
+      <ul>
+        <li>Utilizar las cinco vistas.</li>
+        <li>Utilizar solamente algunas.</li>
+        <li>Adaptarlas a su contexto.</li>
+        <li>Combinar técnicas de otros modelos.</li>
+        <li>Crear vistas adicionales según las necesidades del sistema.</li>
+      </ul>
+      <p>
+        Por ejemplo, un <strong>proyecto pequeño</strong> puede requerir poca documentación; en cambio, un
+        <strong>sistema empresarial complejo</strong> puede necesitar perspectivas adicionales relacionadas con:
+      </p>
+      <div class="flex flex-wrap gap-2 mt-3">
+        <span class="px-3 py-1 rounded-full border-2 border-[#4A3B22] bg-white text-sm font-bold">Datos</span>
+        <span class="px-3 py-1 rounded-full border-2 border-[#4A3B22] bg-white text-sm font-bold">Seguridad</span>
+        <span class="px-3 py-1 rounded-full border-2 border-[#4A3B22] bg-white text-sm font-bold">Integraciones</span>
+        <span class="px-3 py-1 rounded-full border-2 border-[#4A3B22] bg-white text-sm font-bold">Infraestructura</span>
+        <span class="px-3 py-1 rounded-full border-2 border-[#4A3B22] bg-white text-sm font-bold">Disponibilidad</span>
+        <span class="px-3 py-1 rounded-full border-2 border-[#4A3B22] bg-white text-sm font-bold">Observabilidad</span>
+        <span class="px-3 py-1 rounded-full border-2 border-[#4A3B22] bg-white text-sm font-bold">Cumplimiento normativo</span>
+      </div>
+      <p class="mt-4">
+        La idea que debe aprender el estudiante es clara:
+        <strong>la arquitectura se documenta según las necesidades del proyecto y sus stakeholders</strong>,
+        no porque una empresa esté obligada a crear cinco diagramas y listo.
+      </p>
+    </section>
+
+    <!-- 7. VENTAJAS -->
+    <section class="mb-10">
+      <h2>7. Principales ventajas</h2>
+      <ul>
+        <li><strong>Reduce la complejidad:</strong> divide un problema grande en perspectivas manejables.</li>
+        <li><strong>Separa preocupaciones:</strong> cada vista aborda un tipo de preguntas distinto.</li>
+        <li><strong>Facilita la comunicación:</strong> cada rol encuentra la información que le importa.</li>
+        <li><strong>Ayuda a documentar decisiones:</strong> registra el razonamiento arquitectónico.</li>
+        <li><strong>Facilita la comprensión:</strong> los sistemas complejos se vuelven legibles.</li>
+        <li><strong>Relaciona estructura y comportamiento:</strong> las vistas se validan entre sí.</li>
+      </ul>
+    </section>
+
+    <!-- 8. LIMITACIONES -->
+    <section class="mb-10">
+      <h2>8. Limitaciones</h2>
+      <ul>
+        <li><strong>Puede generar demasiada documentación</strong> si no se controla.</li>
+        <li><strong>Requiere mantener las vistas actualizadas</strong> a medida que cambia el sistema.</li>
+        <li><strong>Puede ser innecesario</strong> para proyectos muy pequeños.</li>
+        <li><strong>No garantiza por sí solo una buena arquitectura:</strong> es una forma de describir, no de diseñar.</li>
+        <li><strong>Debe adaptarse al contexto:</strong> copiar el modelo sin criterio puede ser contraproducente.</li>
       </ul>
     </section>
 
     <div class="ejercicio" style="background: #F8FAFC; border: 2px solid #E2E8F0;">
       <h3>🤔 Reflexión de Arquitecto</h3>
-      <p class="enunciado">Si un cliente te pregunta "A qué servidor se conecta mi app", ¿en qué vista deberías buscar la respuesta?</p>
-      
+      <p class="enunciado">Si un cliente te pregunta "¿A qué servidor se conecta mi app?", ¿en qué vista deberías buscar la respuesta?</p>
+
       <details>
         <summary>👁️ Ver respuesta</summary>
         <p>En la <strong>Vista Física (o de Despliegue)</strong>, ya que ahí es donde se mapean los componentes de software sobre el hardware real.</p>
       </details>
     </div>
+
+    <!-- 9. CIERRE Y RECORRIDO -->
+    <section class="mb-10">
+      <h2>9. El recorrido que haremos</h2>
+      <p>
+        Ahora que conocemos la idea general, podemos estudiar cada perspectiva por separado. En las
+        siguientes lecciones profundizaremos en cada vista:
+      </p>
+      <ol class="recorrido space-y-2 list-none p-0 m-0">
+        <li class="border-2 border-[#4A3B22] rounded-xl px-4 py-3 bg-white shadow-[3px_3px_0px_#4A3B22]">
+          <span class="font-nunito font-black text-[#4A3B22]">01 —</span> <a href="/course/arch/vista-logica/" class="font-bold no-underline text-[#1E1210]">Vista Lógica</a>
+        </li>
+        <li class="border-2 border-[#4A3B22] rounded-xl px-4 py-3 bg-white shadow-[3px_3px_0px_#4A3B22]">
+          <span class="font-nunito font-black text-[#4A3B22]">02 —</span> <a href="/course/arch/vista-desarrollo/" class="font-bold no-underline text-[#1E1210]">Vista de Desarrollo</a>
+        </li>
+        <li class="border-2 border-[#4A3B22] rounded-xl px-4 py-3 bg-white shadow-[3px_3px_0px_#4A3B22]">
+          <span class="font-nunito font-black text-[#4A3B22]">03 —</span> <a href="/course/arch/vista-proceso/" class="font-bold no-underline text-[#1E1210]">Vista de Procesos</a>
+        </li>
+        <li class="border-2 border-[#4A3B22] rounded-xl px-4 py-3 bg-white shadow-[3px_3px_0px_#4A3B22]">
+          <span class="font-nunito font-black text-[#4A3B22]">04 —</span> <a href="/course/arch/vista-fisica/" class="font-bold no-underline text-[#1E1210]">Vista Física</a>
+        </li>
+        <li class="border-2 border-[#C5A059] rounded-xl px-4 py-3 bg-[#FDF5E6] shadow-[3px_3px_0px_#C5A059]">
+          <span class="font-nunito font-black text-[#8a6d1f]">05 —</span> <a href="/course/arch/escenarios/" class="font-bold no-underline text-[#1E1210]">Vista de Escenarios (+1)</a>
+        </li>
+      </ol>
+
+      <div class="note-box mt-6" style="background: #C5A059; border-left: 5px solid #4A3B22; color: #1E1210;">
+        <strong>Idea final:</strong> El Modelo 4+1 no intenta mostrar más información en un solo diagrama;
+        intenta mostrar la información correcta desde la perspectiva correcta.
+      </div>
+    </section>
 
     <section class="mb-10">
       <h2>Ponte a prueba</h2>

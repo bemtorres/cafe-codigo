@@ -14,6 +14,13 @@ export type CourseCategory =
   | 'database'
   | 'gamedev';
 
+export interface Lesson {
+  slug: string;
+  title: string;
+  href: string;
+  isSubItem?: boolean;
+}
+
 export interface Course {
   slug: string;
   name: string;
@@ -21,7 +28,7 @@ export interface Course {
   category: CourseCategory;
   status: CourseStatus;
   color: string;
-  lessons?: { slug: string; title: string; href: string }[];
+  lessons?: Lesson[];
   requiresPassword?: boolean;
   styleMode?: CourseStyleMode;
   /** Año de la primera versión pública orientada a la comunidad (p. ej. lenguajes). */
@@ -43,6 +50,7 @@ export const courses: Course[] = [
       { slug: 'web-javascript', title: '3. Web y JavaScript', href: '/course/ecosistemas/web-javascript/' },
       { slug: 'python-ia', title: '4. Python e IA', href: '/course/ecosistemas/python-ia/' },
       { slug: 'mobile-nativos', title: '5. Mobile y Nativos', href: '/course/ecosistemas/mobile-nativos/' },
+      { slug: 'variables-convenciones', title: '6. Variables y Convenciones', href: '/course/ecosistemas/variables-convenciones/' },
     ],
   },
   {
@@ -333,6 +341,7 @@ export const courses: Course[] = [
       { slug: 'intro-4-1', title: '1. El Modelo 4+1', href: '/course/arch/intro-4-1/' },
       { slug: 'escenarios', title: '2. Escenarios (+1)', href: '/course/arch/escenarios/' },
       { slug: 'vista-logica', title: '3. Vista Lógica', href: '/course/arch/vista-logica/' },
+      { slug: 'diagramas-clases', title: '3.1 Diagramas de Clases', href: '/course/arch/diagramas-clases/', isSubItem: true },
       { slug: 'vista-desarrollo', title: '4. Vista de Desarrollo', href: '/course/arch/vista-desarrollo/' },
       { slug: 'vista-proceso', title: '5. Vista de Proceso', href: '/course/arch/vista-proceso/' },
       { slug: 'vista-fisica', title: '6. Vista Física', href: '/course/arch/vista-fisica/' },

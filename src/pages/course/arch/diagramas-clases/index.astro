@@ -1,0 +1,1448 @@
+---
+import Layout from "../../../../layouts/Layout.astro";
+import CodeBlockMulti from "../../../../components/CodeBlockMulti.astro";
+import MermaidDiagram from "../../../../components/challenges/MermaidDiagram.astro";
+import ArchQuizModal from "../../../../components/quizzes/ArchQuizModal.astro";
+---
+
+<Layout
+  title="Diagramas de Clases — Clase, Constructor, Getters, Métodos y Override"
+  description="Domina el diagrama de clases UML: atributos, constructores con y sin parámetros, getters/setters, métodos personalizados y override en Python, Java, C# y C++."
+  courseSlug="arch"
+>
+  <article class="content-section">
+    <p class="arch-kicker">Módulo 1 de 4 — Vista Lógica</p>
+    <h1>3.1 Diagramas de Clases</h1>
+    <p class="arch-sub">
+      El <strong>diagrama de clases</strong> es el artefacto estrella de la <strong>Vista Lógica</strong>. Representa la <strong>estructura estática</strong> de un sistema orientado a objetos: qué elementos existen, qué información contienen, qué operaciones ejecutan y cómo colaboran entre sí.
+    </p>
+
+    <!-- 4 Preguntas Clave del Diagrama de Clases (Listado) -->
+    <div class="intro-questions-list">
+      <div class="intro-q-item">
+        <span class="intro-q-icon">📦</span>
+        <div class="intro-q-text">
+          <strong>¿Qué objetos existen?</strong>
+          <p>Las clases y entidades fundamentales que modelan el dominio del sistema.</p>
+        </div>
+      </div>
+
+      <div class="intro-q-item">
+        <span class="intro-q-icon">📋</span>
+        <div class="intro-q-text">
+          <strong>¿Qué datos contienen?</strong>
+          <p>Atributos, tipos de datos y niveles de visibilidad (<code>-</code> privado, <code>+</code> público, <code>#</code> protegido).</p>
+        </div>
+      </div>
+
+      <div class="intro-q-item">
+        <span class="intro-q-icon">⚡</span>
+        <div class="intro-q-text">
+          <strong>¿Qué pueden hacer?</strong>
+          <p>Constructores, métodos de negocio, getters/setters y firmas de retorno.</p>
+        </div>
+      </div>
+
+      <div class="intro-q-item">
+        <span class="intro-q-icon">🔗</span>
+        <div class="intro-q-text">
+          <strong>¿Cómo se relacionan?</strong>
+          <p>Herencia (<code>extends</code>), contratos (<code>implements</code>), asociación (◇) y composición (◆).</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="note-box" style="background:#FFF9EE; border-left:5px solid #E76F00; margin-bottom: 2rem;">
+      💡 <strong>El plano universal:</strong> El diagrama UML es exactamente el mismo sin importar el lenguaje. En cada sección verás cómo se traduce directamente a <strong>Java, Python, C# y C++</strong>.
+    </div>
+
+    <!-- ¿Qué es una clase? -->
+    <section class="mb-10 arch-section" style="background: rgba(255, 255, 255, 0.9);">
+      <h2>¿Qué es una clase?</h2>
+      <p>
+        Una <strong>clase</strong> es una representación o plantilla de un tipo de objeto dentro del sistema. En el modelado orientado a objetos y en UML, describe tres elementos fundamentales:
+      </p>
+
+      <div class="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-6 items-center my-5">
+        <!-- Diagrama visual explicativo -->
+        <div class="bg-[#1E1210] text-white p-5 rounded-2xl border-[3px] border-[#1E1210] shadow-[5px_5px_0px_#C5A059] font-mono text-[0.88rem] leading-relaxed max-w-sm mx-auto lg:mx-0 w-full">
+          <div class="text-[#E76F00] font-black text-center pb-2 border-b border-white/20">
+            Usuario <span class="text-xs text-white/60 block font-normal font-sans mt-0.5">← 1. Identidad (¿Qué es?)</span>
+          </div>
+          <div class="py-2.5 px-1 border-b border-white/20 text-[#A9D6E5]">
+            <div>- nombre: String</div>
+            <div>- email: String</div>
+            <span class="text-xs text-white/60 block font-sans font-semibold mt-1">← 2. Estado (¿Qué información tiene?)</span>
+          </div>
+          <div class="pt-2.5 px-1 text-[#80ED99]">
+            <div>+ login(): boolean</div>
+            <div>+ logout(): void</div>
+            <span class="text-xs text-white/60 block font-sans font-semibold mt-1">← 3. Comportamiento (¿Qué puede hacer?)</span>
+          </div>
+        </div>
+
+        <!-- Explicación de los 3 pilares -->
+        <div class="flex flex-col gap-3">
+          <div class="p-3.5 bg-[#FFF8EE] border-2 border-[#1E1210] rounded-xl shadow-[3px_3px_0px_#1E1210]">
+            <strong class="text-[#7c2d12] text-sm uppercase tracking-wide font-nunito flex items-center gap-1.5">
+              <span>🏷️</span> 1. Identidad (Nombre)
+            </strong>
+            <p class="text-sm text-textSecondary m-0 mt-1 font-medium">
+              El <strong>nombre de la clase</strong> permite identificar inequívocamente qué concepto del dominio representa en el sistema (ej. <code>Usuario</code>, <code>Libro</code>, <code>Factura</code>).
+            </p>
+          </div>
+
+          <div class="p-3.5 bg-[#EFF6FF] border-2 border-[#1E1210] rounded-xl shadow-[3px_3px_0px_#1E1210]">
+            <strong class="text-[#1e40af] text-sm uppercase tracking-wide font-nunito flex items-center gap-1.5">
+              <span>📊</span> 2. Estado (Atributos)
+            </strong>
+            <p class="text-sm text-textSecondary m-0 mt-1 font-medium">
+              Los <strong>atributos</strong> representan la información y valores que posee cada instancia (ej. <code>nombre</code>, <code>email</code>, <code>saldo</code>).
+            </p>
+          </div>
+
+          <div class="p-3.5 bg-[#F0FDF4] border-2 border-[#1E1210] rounded-xl shadow-[3px_3px_0px_#1E1210]">
+            <strong class="text-[#166534] text-sm uppercase tracking-wide font-nunito flex items-center gap-1.5">
+              <span>⚡</span> 3. Comportamiento (Métodos)
+            </strong>
+            <p class="text-sm text-textSecondary m-0 mt-1 font-medium">
+              Los <strong>métodos u operaciones</strong> representan las acciones y funciones que la clase puede ejecutar (ej. <code>login()</code>, <code>logout()</code>, <code>calcularTotal()</code>).
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-3 bg-white border-2 border-dashed border-[#1E1210] rounded-xl text-center font-nunito font-extrabold text-sm sm:text-base text-[#1E1210] shadow-[2px_2px_0px_#1E1210]">
+        ✨ <strong>Fórmula fundamental:</strong> <code>Clase = Identidad + Estado + Comportamiento</code>
+      </div>
+    </section>
+
+    <!-- 1. Clase y atributos -->
+    <section class="mb-10 arch-section">
+      <h2>1. Descripción de la clase y los atributos</h2>
+      <p>
+        Un rectángulo UML con <strong>3 compartimentos</strong>: nombre arriba,
+        atributos al medio, métodos abajo. <code>-</code> privado, <code>+</code
+        > público, <code>#</code> protegido.
+      </p>
+
+      <MermaidDiagram
+        title="Clase Libro — Atributos y Métodos"
+        code={`classDiagram
+    class Libro {
+        -String titulo
+        -String autor
+        -int paginas
+        -boolean prestado
+        +String getTitulo()
+        +void prestar()
+    }`}
+      />
+
+      <CodeBlockMulti
+        title="Libro"
+        tabs={[
+          {
+            label: "☕ Java",
+            lang: "java",
+            code: `public class Libro { // PascalCase
+    // - privado → private
+    private String titulo;
+    private String autor;
+    private int paginas;
+    private boolean prestado;
+
+    // UML: - titulo: String  →  private String titulo;
+}`,
+          },
+          {
+            label: "🐍 Python",
+            lang: "python",
+            code: `class Libro:  # PascalCase
+    def __init__(self):
+        self._titulo = ""      # _ indica "privado por convención"
+        self._autor = ""
+        self._paginas = 0
+        self._prestado = False
+
+    # atributos públicos en snake_case si no usas properties
+    # En Python no hay tipos obligatorios en el diagrama, pero los anotamos: titulo: str`,
+          },
+          {
+            label: "🎮 C#",
+            lang: "csharp",
+            code: `public class Libro { // PascalCase
+    private string titulo;  // camelCase o _titulo
+    private string autor;
+    private int paginas;
+    private bool prestado;
+
+    // En C# solemos exponer con Properties (ver sección 3)
+}`,
+          },
+          {
+            label: "⚙️ C++",
+            lang: "cpp",
+            code: `class Libro { // PascalCase
+private:
+    std::string titulo; // camelCase o titulo
+    std::string autor;
+    int paginas;
+    bool prestado;
+};`,
+          },
+        ]}
+      />
+
+      <div
+        class="note-box"
+        style="background:#F1F5F9; border-left:5px solid #475569;"
+      >
+        <strong>Regla UML:</strong>
+        <code>- titulo: String</code> = privado String titulo. Si ves <code
+          >+</code
+        > es público. El tipo va después de <code>:</code>.
+      </div>
+    </section>
+
+    <!-- 2. Constructores -->
+    <section class="mb-10 arch-section">
+      <h2>2. Constructor — con parámetro y sin parámetro</h2>
+      <p>
+        El constructor lleva el <strong>mismo nombre que la clase</strong> y <strong
+          >no tiene tipo de retorno</strong
+        >. Permite crear el objeto ya inicializado. Sobrecarga = dos
+        constructores con distinta firma.
+      </p>
+
+      <MermaidDiagram
+        title="Sobrecarga de Constructores"
+        code={`classDiagram
+    class Libro {
+        -String titulo
+        -String autor
+        +Libro()
+        +Libro(String titulo, String autor)
+        +Libro(String titulo, int paginas)
+    }`}
+      />
+
+      <CodeBlockMulti
+        title="Constructores"
+        tabs={[
+          {
+            label: "☕ Java",
+            lang: "java",
+            code: `public class Libro {
+    private String titulo;
+    private String autor;
+
+    public Libro() { // sin parámetros
+        this.titulo = "Sin título";
+        this.autor = "Anónimo";
+    }
+    public Libro(String titulo, String autor) { // con parámetros
+        this.titulo = titulo;
+        this.autor = autor;
+    }
+    public Libro(String titulo, int paginas) { // sobrecarga distinta
+        this.titulo = titulo;
+        this.paginas = paginas;
+    }
+}
+Libro l1 = new Libro();
+Libro l2 = new Libro("Cien años", "García Márquez");`,
+          },
+          {
+            label: "🐍 Python",
+            lang: "python",
+            code: `class Libro:
+    def __init__(self, titulo="", autor="", paginas=0):
+        # Python no sobrecarga: un solo __init__ con valores por defecto
+        self._titulo = titulo
+        self._autor = autor
+        self._paginas = paginas
+
+# sin parámetros → usa defaults
+l1 = Libro()
+# con parámetros
+l2 = Libro("Cien años", "García Márquez", 471)`,
+          },
+          {
+            label: "🎮 C#",
+            lang: "csharp",
+            code: `public class Libro {
+    private string titulo;
+    private string autor;
+
+    public Libro() {
+        titulo = "Sin título";
+        autor = "Anónimo";
+    }
+    public Libro(string titulo, string autor) {
+        this.titulo = titulo;
+        this.autor = autor;
+    }
+    // C# también permite constructor con this() para encadenar
+    public Libro(string titulo, int paginas) : this() {
+        this.titulo = titulo;
+        this.paginas = paginas;
+    }
+}`,
+          },
+          {
+            label: "⚙️ C++",
+            lang: "cpp",
+            code: `class Libro {
+private:
+    std::string titulo;
+    std::string autor;
+public:
+    Libro() : titulo("Sin título"), autor("Anónimo") {} // sin params, lista inicializadora
+    Libro(std::string t, std::string a) : titulo(t), autor(a) {} // con params
+    Libro(std::string t, int p) : titulo(t), paginas(p) {}
+private:
+    int paginas;
+};`,
+          },
+        ]}
+      />
+
+      <div
+        class="note-box"
+        style="background:#FFF9C4; border-left:5px solid #C5A059;"
+      >
+        <strong>⭐</strong> En UML el constructor se reconoce porque <strong
+          >se llama igual que la clase</strong
+        > y no muestra retorno. Si hay dos, es sobrecarga.
+      </div>
+    </section>
+
+    <!-- 3. Getters/Setters -->
+    <section class="mb-10 arch-section">
+      <h2>3. Setters and Getters — encapsulamiento</h2>
+      <p>
+        Atributos <code>private</code> + métodos <code
+          >getTitulo()/setTitulo()</code
+        > para controlar acceso y validación. En el diagrama: <code
+          >+ getTitulo(): String</code
+        > y <code>+ setTitulo(t:String): void</code>. <strong
+          >Excepción Java:</strong
+        > si el atributo es <code>boolean</code>, el getter se llama <code
+          >isPrestado()</code
+        > no <code>getPrestado()</code> (JavaBeans).
+      </p>
+
+      <MermaidDiagram
+        title="Encapsulamiento — Getters y Setters"
+        code={`classDiagram
+    class Libro {
+        -String titulo
+        -int paginas
+        -boolean prestado
+        +String getTitulo()
+        +void setTitulo(String t)
+        +int getPaginas()
+        +void setPaginas(int p)
+        +boolean isPrestado()
+        +void setPrestado(boolean p)
+    }`}
+      />
+
+      <CodeBlockMulti
+        title="Getters y Setters"
+        tabs={[
+          {
+            label: "☕ Java",
+            lang: "java",
+            code: `public class Libro {
+    private String titulo;
+    private int paginas;
+    private boolean prestado; // boolean → getter con 'is'
+
+    public String getTitulo() { // getter String/int → get
+        return titulo;
+    }
+    public void setTitulo(String titulo) { // setter con validación
+        if (titulo == null || titulo.isBlank()) throw new IllegalArgumentException();
+        this.titulo = titulo;
+    }
+    public int getPaginas() { return paginas; }
+    public void setPaginas(int paginas) {
+        if (paginas < 0) throw new IllegalArgumentException();
+        this.paginas = paginas;
+    }
+    // ¡Boolean usa 'is' en Java!
+    public boolean isPrestado() { // no getPrestado()
+        return prestado;
+    }
+    public void setPrestado(boolean prestado) {
+        this.prestado = prestado;
+    }
+}`,
+          },
+          {
+            label: "🐍 Python",
+            lang: "python",
+            code: `class Libro:
+    def __init__(self):
+        self._titulo = ""
+
+    @property
+    def titulo(self):          # getter → libro.titulo
+        return self._titulo
+
+    @titulo.setter
+    def titulo(self, valor):   # setter → libro.titulo = "X"
+        if not valor:
+            raise ValueError("título vacío")
+        self._titulo = valor
+
+l = Libro()
+l.titulo = "Rayuela"   # usa setter
+print(l.titulo)        # usa getter`,
+          },
+          {
+            label: "🎮 C#",
+            lang: "csharp",
+            code: `public class Libro {
+    private string titulo;
+    // Property → reemplaza getter/setter de Java
+    public string Titulo {
+        get => titulo;
+        set {
+            if (string.IsNullOrWhiteSpace(value)) throw new ArgumentException();
+            titulo = value;
+        }
+    }
+    // Auto-property corta:
+    public int Paginas { get; set; }
+}`,
+          },
+          {
+            label: "⚙️ C++",
+            lang: "cpp",
+            code: `class Libro {
+private:
+    std::string titulo;
+    int paginas;
+    bool prestado;
+public:
+    std::string getTitulo() const { return titulo; }
+    void setTitulo(const std::string& t) {
+        if (t.empty()) throw std::invalid_argument("vacío");
+        titulo = t;
+    }
+    int getPaginas() const { return paginas; }
+    void setPaginas(int p) { paginas = p; }
+    bool isPrestado() const { return prestado; } // en C++ también común is*
+    void setPrestado(bool p) { prestado = p; }
+};`,
+          },
+        ]}
+      />
+
+      <div
+        class="note-box"
+        style="background:#FFF9C4; border-left:5px solid #E76F00;"
+      >
+        <strong>☕ Java tip — boolean:</strong>
+        <code>isPrestado()</code> no <code>getPrestado()</code>. <code
+          >private boolean prestado;</code
+        > → <code>isPrestado()</code> / <code>setPrestado()</code>. Frameworks
+        (Spring, Jackson) lo esperan así.
+      </div>
+    </section>
+
+    <!-- 4. Métodos personalizados -->
+    <section class="mb-10 arch-section">
+      <h2>4. Métodos de clase personalizados</h2>
+      <p>
+        Más allá de getters/setters, la clase expone <strong
+          >comportamiento</strong
+        >: <code>prestar()</code>, <code>devolver()</code>, <code
+          >estaDisponible()</code
+        >.
+      </p>
+
+      <MermaidDiagram
+        title="Métodos Personalizados"
+        code={`classDiagram
+    class Libro {
+        -boolean prestado
+        +void prestar()
+        +void devolver()
+        +boolean estaDisponible()
+        +String descripcion()
+    }`}
+      />
+
+      <CodeBlockMulti
+        title="Métodos Personalizados"
+        tabs={[
+          {
+            label: "☕ Java",
+            lang: "java",
+            code: `public class Libro {
+    private boolean prestado;
+
+    public void prestar() { // camelCase
+        if (prestado) throw new IllegalStateException("Ya prestado");
+        prestado = true;
+    }
+    public void devolver() { prestado = false; }
+    public boolean estaDisponible() { return !prestado; }
+    public String descripcion() { return "Libro prestado=" + prestado; }
+}`,
+          },
+          {
+            label: "🐍 Python",
+            lang: "python",
+            code: `class Libro:
+    def __init__(self):
+        self._prestado = False
+
+    def prestar(self):          # snake_case
+        if self._prestado:
+            raise Exception("Ya prestado")
+        self._prestado = True
+
+    def devolver(self):
+        self._prestado = False
+
+    def esta_disponible(self) -> bool:
+        return not self._prestado
+
+    def descripcion(self) -> str:
+        return f"Libro prestado={self._prestado}"`,
+          },
+          {
+            label: "🎮 C#",
+            lang: "csharp",
+            code: `public class Libro {
+    private bool prestado;
+    public void Prestar() { // PascalCase en C#
+        if (prestado) throw new InvalidOperationException();
+        prestado = true;
+    }
+    public void Devolver() => prestado = false;
+    public bool EstaDisponible() => !prestado;
+    public string Descripcion() => $"Libro prestado={prestado}";
+}`,
+          },
+          {
+            label: "⚙️ C++",
+            lang: "cpp",
+            code: `class Libro {
+private:
+    bool prestado = false;
+public:
+    void prestar() {
+        if (prestado) throw std::logic_error("Ya prestado");
+        prestado = true;
+    }
+    void devolver() { prestado = false; }
+    bool estaDisponible() const { return !prestado; }
+    std::string descripcion() const { return prestado ? "prestado" : "disponible"; }
+};`,
+          },
+        ]}
+      />
+    </section>
+
+    <!-- 5. Override -->
+    <section class="mb-10 arch-section">
+      <h2>5. Override — reescribir el comportamiento</h2>
+      <p>
+        Una subclase <strong>reescribe</strong> un método heredado para especializarlo.
+        En UML se ve el mismo método en padre e hija; en código lleva anotación.
+      </p>
+
+      <MermaidDiagram
+        title="Override y Polimorfismo"
+        code={`classDiagram
+    class Publicacion {
+        -String titulo
+        +String mostrar()
+    }
+    class Libro {
+        -int paginas
+        +String mostrar()
+    }
+    class Revista {
+        -int numero
+        +String mostrar()
+    }
+    class EBook {
+        -double tamanoMb
+        +String mostrar()
+    }
+    Publicacion <|-- Libro
+    Publicacion <|-- Revista
+    Publicacion <|-- EBook`}
+      />
+
+      <CodeBlockMulti
+        title="Override y Herencia"
+        tabs={[
+          {
+            label: "☕ Java",
+            lang: "java",
+            code: `public class Publicacion {
+    protected String titulo;
+    public Publicacion(String titulo) { this.titulo = titulo; }
+    public String mostrar() { return "Publicación: " + titulo; }
+}
+public class Libro extends Publicacion {
+    private int paginas;
+    public Libro(String titulo, int paginas) {
+        super(titulo); this.paginas = paginas;
+    }
+    @Override // obligatorio para override
+    public String mostrar() {
+        return "Libro: " + titulo + " (" + paginas + " pág.)";
+    }
+}`,
+          },
+          {
+            label: "🐍 Python",
+            lang: "python",
+            code: `class Publicacion:
+    def __init__(self, titulo):
+        self.titulo = titulo
+    def mostrar(self) -> str:  # método base
+        return f"Publicación: {self.titulo}"
+
+class Libro(Publicacion):        # hereda
+    def __init__(self, titulo, paginas):
+        super().__init__(titulo)
+        self.paginas = paginas
+    def mostrar(self) -> str:   # override (mismo nombre)
+        return f"Libro: {self.titulo} ({self.paginas} pág.)"
+
+print(Libro("Rayuela", 300).mostrar())`,
+          },
+          {
+            label: "🎮 C#",
+            lang: "csharp",
+            code: `public class Publicacion {
+    protected string titulo;
+    public Publicacion(string titulo) => this.titulo = titulo;
+    public virtual string Mostrar() => $"Publicación: {titulo}"; // virtual
+}
+public class Libro : Publicacion {
+    private int paginas;
+    public Libro(string t, int p) : base(t) => paginas = p;
+    public override string Mostrar() => $"Libro: {titulo} ({paginas} pág.)"; // override
+}`,
+          },
+          {
+            label: "⚙️ C++",
+            lang: "cpp",
+            code: `class Publicacion {
+protected:
+    std::string titulo;
+public:
+    Publicacion(std::string t) : titulo(t) {}
+    virtual std::string mostrar() const { // virtual
+        return "Publicación: " + titulo;
+    }
+    virtual ~Publicacion() = default;
+};
+class Libro : public Publicacion {
+    int paginas;
+public:
+    Libro(std::string t, int p) : Publicacion(t), paginas(p) {}
+    std::string mostrar() const override { // override
+        return "Libro: " + titulo + " (" + std::to_string(paginas) + " pág.)";
+    }
+};`,
+          },
+        ]}
+      />
+
+      <div
+        class="note-box"
+        style="background:#FDF5E6; border:2px dashed #C5A059;"
+      >
+        <strong>⭐</strong>
+        <code>super()</code> / <code>super.mostrar()</code> llama al padre. <code
+          >@Override</code
+        > en Java y <code>override</code> en C++/C# evitan errores si cambias la firma.
+      </div>
+    </section>
+
+    <!-- 6. Conexiones — Asociación / Composición -->
+    <section class="mb-10 arch-section">
+      <h2>6. Conexiones — asociación y composición</h2>
+      <p>
+        Las clases rara vez viven solas. <strong>Una clase usa otra</strong> como
+        atributo:
+      </p>
+      <ul>
+        <li>
+          <strong>Asociación</strong> (◇—): una clase <em>tiene</em> otra pero no
+          la posee. <code>Libro</code> tiene <code>Etiqueta</code> → si borro el libro,
+          las etiquetas pueden seguir vivas.
+        </li>
+        <li>
+          <strong>Composición</strong> (◆—): una clase <em>posee</em> completamente
+          a otra. <code>Libro</code> compone <code>Autor</code> → si borro el libro,
+          su referencia al autor se destruye también.
+        </li>
+      </ul>
+      <p>
+        En UML: <strong>diamante vacío</strong> (◇) = asociación débil, <strong
+          >diamante lleno</strong
+        > (◆) = composición fuerte.
+      </p>
+
+      <MermaidDiagram
+        title="Relaciones — Asociación y Composición"
+        code={`classDiagram
+    class Libro {
+        -String titulo
+        +Autor getAutor()
+        +void addEtiqueta(Etiqueta e)
+    }
+    class Autor {
+        -String nombre
+    }
+    class Etiqueta {
+        -String nombre
+    }
+    Libro *-- Autor : composicion ◆
+    Libro o-- Etiqueta : asociacion ◇`}
+      />
+
+      <CodeBlockMulti
+        title="Asociación y Composición"
+        tabs={[
+          {
+            label: "☕ Java",
+            lang: "java",
+            code: `import java.util.ArrayList;
+import java.util.List;
+
+public class Libro {
+    private String titulo;
+    private Autor autor;                   // composición: un autor por libro
+    private List<Etiqueta> etiquetas;      // asociación: muchas etiquetas
+
+    public Libro(String titulo, Autor autor) {
+        this.titulo = titulo;
+        this.autor = autor;
+        this.etiquetas = new ArrayList<>();
+    }
+    public Autor getAutor() { return autor; }
+    public void addEtiqueta(Etiqueta e) { etiquetas.add(e); }
+}
+Libro l = new Libro("Rayuela", new Autor("Cortázar"));
+l.addEtiqueta(new Etiqueta("novela"))`,
+          },
+          {
+            label: "🐍 Python",
+            lang: "python",
+            code: `class Autor:
+    def __init__(self, nombre):
+        self.nombre = nombre
+
+class Etiqueta:
+    def __init__(self, nombre):
+        self.nombre = nombre
+
+class Libro:
+    def __init__(self, titulo, autor):
+        self.titulo = titulo
+        self.autor = autor           # composición: autor vive con el libro
+        self.etiquetas = []          # asociación: lista de etiquetas
+
+    def add_etiqueta(self, etiqueta):
+        self.etiquetas.append(etiqueta)
+
+a = Autor("García Márquez")
+l = Libro("Cien años", a)
+l.add_etiqueta(Etiqueta("realismo"))`,
+          },
+          {
+            label: "🎮 C#",
+            lang: "csharp",
+            code: `public class Libro {
+    private string titulo;
+    private Autor autor;                   // composición
+    private List<Etiqueta> etiquetas;      // asociación
+
+    public Libro(string titulo, Autor autor) {
+        this.titulo = titulo;
+        this.autor = autor;
+        this.etiquetas = new List<Etiqueta>();
+    }
+    public Autor Autor => autor;
+    public void AddEtiqueta(Etiqueta e) => etiquetas.Add(e);
+}
+var l = new Libro("Rayuela", new Autor("Cortázar"));
+l.AddEtiqueta(new Etiqueta("novela"))`,
+          },
+          {
+            label: "⚙️ C++",
+            lang: "cpp",
+            code: `#include <vector>
+#include <string>
+
+class Autor {
+public:
+    std::string nombre;
+    Autor(std::string n) : nombre(n) {}
+};
+
+class Etiqueta {
+public:
+    std::string nombre;
+    Etiqueta(std::string n) : nombre(n) {}
+};
+
+class Libro {
+    std::string titulo;
+    Autor autor;                    // composición (por valor)
+    std::vector<Etiqueta> etiquetas; // asociación (vector)
+public:
+    Libro(std::string t, Autor a) : titulo(t), autor(a) {}
+    Autor getAutor() const { return autor; }
+    void addEtiqueta(Etiqueta e) { etiquetas.push_back(e); }
+};`,
+          },
+        ]}
+      />
+
+      <div
+        class="note-box"
+        style="background:#FFF9C4; border-left:5px solid #C5A059;"
+      >
+        <strong>⭐</strong> En UML la <strong>línea con diamante</strong> va del contenedor
+        al contenido. Diamante vacío (◇) = asociación (etiquetas sobreviven). Diamante
+        lleno (◆) = composición (el contenido muere con el contenedor). El número
+        junto a la línea indica <strong>cardinalidad</strong>: <code>1</code>, <code
+          >0..*</code
+        >, <code>1..*</code>.
+      </div>
+    </section>
+
+    <!-- 7. Herencia — extends -->
+    <section class="mb-10 arch-section">
+      <h2>7. Herencia — class Libro extends Publicacion</h2>
+      <p>
+        La herencia permite <strong>reutilizar código</strong>: la subclase
+        hereda atributos y métodos del padre y puede añadir los suyos o
+        reescribirlos.
+      </p>
+      <p>
+        En UML: <strong>triángulo vacío</strong> (▽) apunta del hijo al padre. Relación
+        <strong>"es-un"</strong>: <code>Libro es una Publicacion</code>.
+      </p>
+
+      <MermaidDiagram
+        title="Jerarquía de Herencia — Publicación"
+        code={`classDiagram
+    class Publicacion {
+        -String titulo
+        -String isbn
+        +String getTitulo()
+        +String descripcion()
+    }
+    class Libro {
+        -int paginas
+        +int getPaginas()
+        +String descripcion()
+    }
+    class Revista {
+        -int numero
+        -String frecuencia
+        +int getNumero()
+        +String descripcion()
+    }
+    class EBook {
+        -double tamanoMb
+        +double getTamanoMb()
+        +String descripcion()
+    }
+    Publicacion <|-- Libro
+    Publicacion <|-- Revista
+    Publicacion <|-- EBook`}
+      />
+
+      <CodeBlockMulti
+        title="Herencia"
+        tabs={[
+          {
+            label: "☕ Java",
+            lang: "java",
+            code: `public class Publicacion {
+    protected String titulo;
+    protected String isbn;
+    public Publicacion(String titulo, String isbn) {
+        this.titulo = titulo;
+        this.isbn = isbn;
+    }
+    public String getTitulo() { return titulo; }
+    public String descripcion() { return "Publicación: " + titulo; }
+}
+
+public class Libro extends Publicacion {
+    private int paginas;
+    public Libro(String titulo, String isbn, int paginas) {
+        super(titulo, isbn);
+        this.paginas = paginas;
+    }
+    public int getPaginas() { return paginas; }
+    @Override
+    public String descripcion() {
+        return "Libro: " + titulo + " (" + paginas + " pág.)";
+    }
+}
+
+public class Revista extends Publicacion {
+    private int numero;
+    private String frecuencia;
+    public Revista(String titulo, String isbn, int numero, String frecuencia) {
+        super(titulo, isbn);
+        this.numero = numero;
+        this.frecuencia = frecuencia;
+    }
+    public int getNumero() { return numero; }
+    @Override
+    public String descripcion() {
+        return "Revista #" + numero + " (" + frecuencia + ")";
+    }
+}`,
+          },
+          {
+            label: "🐍 Python",
+            lang: "python",
+            code: `class Publicacion:
+    def __init__(self, titulo, isbn):
+        self.titulo = titulo
+        self.isbn = isbn
+    def descripcion(self):
+        return f"Publicación: {self.titulo}"
+
+class Libro(Publicacion):           # hereda de Publicacion
+    def __init__(self, titulo, isbn, paginas):
+        super().__init__(titulo, isbn)  # llama al padre
+        self.paginas = paginas
+    def descripcion(self):           # override
+        return f"Libro: {self.titulo} ({self.paginas} pág.)"
+
+class Revista(Publicacion):
+    def __init__(self, titulo, isbn, numero, frecuencia):
+        super().__init__(titulo, isbn)
+        self.numero = numero
+        self.frecuencia = frecuencia
+    def descripcion(self):           # override
+        return f"Revista #{self.numero} ({self.frecuencia})"
+
+class EBook(Publicacion):
+    def __init__(self, titulo, isbn, tamano_mb):
+        super().__init__(titulo, isbn)
+        self.tamano_mb = tamano_mb
+    def descripcion(self):           # override
+        return f"EBook: {self.titulo} ({self.tamano_mb} MB)"`,
+          },
+          {
+            label: "🎮 C#",
+            lang: "csharp",
+            code: `public class Publicacion {
+    protected string titulo;
+    protected string isbn;
+    public Publicacion(string titulo, string isbn) {
+        this.titulo = titulo;
+        this.isbn = isbn;
+    }
+    public string Titulo => titulo;
+    public virtual string Descripcion() => $"Publicación: {titulo}";
+}
+
+public class Libro : Publicacion {
+    private int paginas;
+    public Libro(string t, string isbn, int p) : base(t, isbn) => paginas = p;
+    public int Paginas => paginas;
+    public override string Descripcion() => $"Libro: {titulo} ({paginas} pág.)";
+}
+
+public class Revista : Publicacion {
+    private int numero;
+    private string frecuencia;
+    public Revista(string t, string isbn, int n, string f) : base(t, isbn) {
+        numero = n;
+        frecuencia = f;
+    }
+    public override string Descripcion() => $"Revista #{numero} ({frecuencia})";
+}`,
+          },
+          {
+            label: "⚙️ C++",
+            lang: "cpp",
+            code: `class Publicacion {
+protected:
+    std::string titulo;
+    std::string isbn;
+public:
+    Publicacion(std::string t, std::string i) : titulo(t), isbn(i) {}
+    std::string getTitulo() const { return titulo; }
+    virtual std::string descripcion() const {
+        return "Publicación: " + titulo;
+    }
+    virtual ~Publicacion() = default;
+};
+
+class Libro : public Publicacion {
+    int paginas;
+public:
+    Libro(std::string t, std::string i, int p)
+        : Publicacion(t, i), paginas(p) {}
+    int getPaginas() const { return paginas; }
+    std::string descripcion() const override {
+        return "Libro: " + titulo + " (" + std::to_string(paginas) + " pág.)";
+    }
+};
+
+class Revista : public Publicacion {
+    int numero;
+    std::string frecuencia;
+public:
+    Revista(std::string t, std::string i, int n, std::string f)
+        : Publicacion(t, i), numero(n), frecuencia(f) {}
+    std::string descripcion() const override {
+        return "Revista #" + std::to_string(numero) + " (" + frecuencia + ")";
+    }
+};`,
+          },
+        ]}
+      />
+
+      <div
+        class="note-box"
+        style="background:#FFF9C4; border-left:5px solid #1E1210;"
+      >
+        <strong>Herencia vs Composición:</strong> Usa herencia cuando la relación
+        es <strong>"es-un"</strong> (Libro <em>es</em> Publicación). Usa composición
+        cuando es <strong>"tiene-un"</strong> (Libro <em>tiene</em> Autor). Preferir
+        composición sobre herencia cuando sea posible.
+      </div>
+    </section>
+
+    <!-- 8. Interfaces — implements -->
+    <section class="mb-10 arch-section">
+      <h2>8. Interfaces — implements Imprimible</h2>
+      <p>
+        Una interfaz es un <strong>contrato</strong>: define qué métodos debe
+        tener una clase pero no cómo se implementan. Una clase puede implementar <strong
+          >múltiples interfaces</strong
+        > (a diferencia de heredar de un solo padre).
+      </p>
+      <p>
+        En UML: se escribe <code>&lt;&lt;interface&gt;&gt;</code> en la cabecera y
+        la flecha es <strong>línea punteada con triángulo</strong> (▽LineStyle::dashed).
+      </p>
+
+      <MermaidDiagram
+        title="Interfaces y Contratos"
+        code={`classDiagram
+    class Imprimible {
+        <<interface>>
+        +String imprimir()
+    }
+    class Libro {
+        -String titulo
+        +String imprimir()
+    }
+    class Revista {
+        -int numero
+        +String imprimir()
+    }
+    class Recibo {
+        -double monto
+        +String imprimir()
+    }
+    Imprimible <|.. Libro : implements
+    Imprimible <|.. Revista : implements
+    Imprimible <|.. Recibo : implements`}
+      />
+
+      <CodeBlockMulti
+        title="Interfaces"
+        tabs={[
+          {
+            label: "☕ Java",
+            lang: "java",
+            code: `public interface Imprimible {
+    String imprimir();  // todas las clases que implementen DEBEN tener imprimir()
+}
+
+public class Libro implements Imprimible {
+    private String titulo;
+    public Libro(String titulo) { this.titulo = titulo; }
+    @Override
+    public String imprimir() { return "Libro: " + titulo; }
+}
+
+public class Revista implements Imprimible {
+    private int numero;
+    public Revista(int numero) { this.numero = numero; }
+    @Override
+    public String imprimir() { return "Revista #" + numero; }
+}
+
+public class Recibo implements Imprimible {
+    private double monto;
+    public Recibo(double monto) { this.monto = monto; }
+    @Override
+    public String imprimir() { return "Recibo: $" + monto; }
+}
+
+// Polimorfismo
+Imprimible[] docs = { new Libro("Rayuela"), new Revista(42), new Recibo(2500) };
+for (Imprimible d : docs) {
+    System.out.println(d.imprimir());
+}`,
+          },
+          {
+            label: "🐍 Python",
+            lang: "python",
+            code: `from abc import ABC, abstractmethod
+
+class Imprimible(ABC):              # clase abstracta = interfaz
+    @abstractmethod
+    def imprimir(self) -> str:
+        pass
+
+class Libro(Imprimible):
+    def __init__(self, titulo):
+        self.titulo = titulo
+    def imprimir(self) -> str:      # implementa el contrato
+        return f"Libro: {self.titulo}"
+
+class Revista(Imprimible):
+    def __init__(self, numero):
+        self.numero = numero
+    def imprimir(self) -> str:
+        return f"Revista #{self.numero}"
+
+class Recibo(Imprimible):
+    def __init__(self, monto):
+        self.monto = monto
+    def imprimir(self) -> str:
+        return "Recibo: $" + str(self.monto)
+
+# Polimorfismo: todas se tratan como Imprimible
+docs = [Libro("Rayuela"), Revista(42), Recibo(2500)]
+for d in docs:
+    print(d.imprimir())`,
+          },
+          {
+            label: "🎮 C#",
+            lang: "csharp",
+            code: `public interface Imprimible {
+    string Imprimir();  // contrato
+}
+
+public class Libro : Imprimible {
+    private string titulo;
+    public Libro(string titulo) => this.titulo = titulo;
+    public string Imprimir() => $"Libro: {titulo}";
+}
+
+public class Revista : Imprimible {
+    private int numero;
+    public Revista(int numero) => this.numero = numero;
+    public string Imprimir() => $"Revista #{numero}";
+}
+
+public class Recibo : Imprimible {
+    private double monto;
+    public Recibo(double monto) => this.monto = monto;
+    public string Imprimir() => "Recibo: $" + monto;
+}
+
+// Polimorfismo
+Imprimible[] docs = { new Libro("Rayuela"), new Revista(42), new Recibo(2500) };
+foreach (var d in docs) Console.WriteLine(d.Imprimir());`,
+          },
+          {
+            label: "⚙️ C++",
+            lang: "cpp",
+            code: `class Imprimible {                // interfaz = clase con solo métodos virtuales puros
+public:
+    virtual std::string imprimir() const = 0;  // = 0 → pura
+    virtual ~Imprimible() = default;
+};
+
+class Libro : public Imprimible {
+    std::string titulo;
+public:
+    Libro(std::string t) : titulo(t) {}
+    std::string imprimir() const override {
+        return "Libro: " + titulo;
+    }
+};
+
+class Revista : public Imprimible {
+    int numero;
+public:
+    Revista(int n) : numero(n) {}
+    std::string imprimir() const override {
+        return "Revista #" + std::to_string(numero);
+    }
+};
+
+class Recibo : public Imprimible {
+    double monto;
+public:
+    Recibo(double m) : monto(m) {}
+    std::string imprimir() const override {
+        return "Recibo: $" + std::to_string(monto);
+    }
+};
+
+// Polimorfismo
+#include <vector>
+#include <memory>
+std::vector<std::unique_ptr<Imprimible>> docs;
+docs.push_back(std::make_unique<Libro>("Rayuela"));
+docs.push_back(std::make_unique<Revista>(42));
+docs.push_back(std::make_unique<Recibo>(2500));
+for (const auto& d : docs) {
+    std::cout << d->imprimir() << std::endl;
+}`,
+          },
+        ]}
+      />
+
+      <div
+        class="note-box"
+        style="background:#F5F0FF; border-left:5px solid #6d28d9;"
+      >
+        <strong>Herencia vs Interface:</strong> Herencia = <strong
+          >"es-un"</strong
+        > (un tipo). Interface = <strong>"puede-hacer"</strong> (un comportamiento).
+        Java/C# permiten heredar de <strong>un solo padre</strong> pero implementar
+        <strong>múltiples interfaces</strong>. Ej: <code
+          >class Libro extends Publicacion implements Imprimible, Serializable</code
+        >.
+      </div>
+    </section>
+
+    <!-- Roadmap resumen -->
+    <section
+      class="mb-10"
+      style="background:#fff; border:3px solid #1E1210; border-radius:18px; padding:1.1rem; box-shadow:5px 5px 0 #1E1210;"
+    >
+      <h2 style="margin-top:0; color:#475569;">
+        Resumen — Los 4 pilares de las Clases
+      </h2>
+      <div
+        style="display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:0.7rem; margin-top:0.7rem;"
+      >
+        <div
+          style="border:2px solid #7c2d12; border-radius:12px; padding:0.7rem; background:#FFF7ED;"
+        >
+          <strong style="color:#7c2d12;">1. Clase</strong><br />Atributos +
+          métodos + constructores + getters/setters
+        </div>
+        <div
+          style="border:2px solid #1e40af; border-radius:12px; padding:0.7rem; background:#EFF6FF;"
+        >
+          <strong style="color:#1e40af;">2. Conexiones</strong><br />Asociación
+          (◇) y Composición (◆)
+        </div>
+        <div
+          style="border:2px solid #166534; border-radius:12px; padding:0.7rem; background:#F0FDF4;"
+        >
+          <strong style="color:#166534;">3. Herencia</strong><br /><code
+            >extends</code
+          > — relación "es-un"
+        </div>
+        <div
+          style="border:2px solid #6d28d9; border-radius:12px; padding:0.7rem; background:#F5F0FF;"
+        >
+          <strong style="color:#6d28d9;">4. Interfaces</strong><br /><code
+            >implements</code
+          > — contrato "puede-hacer"
+        </div>
+      </div>
+      <p style="margin:0.85rem 0 0; font-size:0.9rem;">
+        Practica con los desafíos: <a href="/challenges/inheritance/"
+          >Herencia</a
+        > e <a href="/challenges/interface/">Interfaces</a>.
+      </p>
+    </section>
+
+    <div class="ejercicio">
+      <h3>🧱 Reto: Modela tu Libro completo</h3>
+      <p class="enunciado">
+        Crea una clase <code>Libro</code> con atributos <code
+          >titulo, autor, paginas, prestado</code
+        >, dos constructores (vacío y con <code>titulo/autor</code>),
+        getters/setters con validación, métodos <code>prestar()/devolver()</code
+        > y una subclase <code>LibroDigital</code> que haga <code>override</code
+        > de <code>mostrar()</code>.
+      </p>
+      <details>
+        <summary>👁️ Ver esquema UML esperado</summary>
+        <MermaidDiagram
+          title="Reto: Modelo Completo de Libro"
+          code={`classDiagram
+    class Libro {
+        -String titulo
+        -String autor
+        -int paginas
+        -boolean prestado
+        +Libro()
+        +Libro(String titulo, String autor)
+        +String getTitulo()
+        +void setTitulo(String t)
+        +void prestar()
+        +void devolver()
+        +String mostrar()
+    }
+    class LibroDigital {
+        -double tamanoMb
+        +String mostrar()
+    }
+    class LibroFisico {
+        -String estante
+        +String mostrar()
+    }
+    class Audiolibro {
+        -int duracionMin
+        +String mostrar()
+    }
+    Libro <|-- LibroDigital
+    Libro <|-- LibroFisico
+    Libro <|-- Audiolibro`}
+        />
+        <p>Implementa en el lenguaje del selector y compara.</p>
+      </details>
+    </div>
+
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <ArchQuizModal quizKey="diagramas-clases" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/arch/vista-logica/" class="prev">← Vista Lógica</a>
+      <a href="/course/arch/vista-desarrollo/" class="next">Vista de Desarrollo →</a>
+    </nav>
+  </article>
+
+  <style>
+    .arch-kicker {
+      margin: 0;
+      font-size: 0.68rem;
+      font-weight: 900;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #c5a059;
+      font-family: "Cinzel", serif;
+    }
+    .arch-sub {
+      color: var(--text-secondary);
+      font-weight: 650;
+      line-height: 1.6;
+    }
+    .arch-roadmap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      margin: 1rem 0;
+      padding: 0.75rem;
+      background: rgba(255, 255, 255, 0.75);
+      border: 3px solid var(--border);
+      border-radius: 16px;
+      box-shadow: 4px 4px 0 var(--border);
+    }
+    .roadmap-badge {
+      font-family: "Nunito", sans-serif;
+      font-weight: 900;
+      font-size: 0.72rem;
+      padding: 0.28rem 0.6rem;
+      border-radius: 999px;
+      border: 2px solid var(--border);
+      background: #fff;
+      color: var(--text-muted);
+    }
+    .roadmap-badge.is-active {
+      background: #1e1210;
+      color: #fff8ee;
+      border-color: #1e1210;
+    }
+    .arch-section {
+      border: 2px solid rgba(71, 85, 105, 0.14);
+      border-radius: 16px;
+      padding: 1.1rem;
+      background: rgba(255, 255, 255, 0.55);
+      margin-bottom: 1.5rem;
+    }
+    .arch-section h2 {
+      margin-top: 0;
+      color: #1e293b;
+      font-family: "Cinzel", serif;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .intro-questions-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      margin: 1.1rem 0 1.35rem;
+    }
+    .intro-q-item {
+      display: flex;
+      align-items: center;
+      gap: 0.9rem;
+      padding: 0.7rem 1rem;
+      background: rgba(255, 255, 255, 0.9);
+      border: 2px solid var(--border);
+      border-radius: 14px;
+      box-shadow: 3px 3px 0 var(--border);
+      transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+    }
+    .intro-q-item:hover {
+      transform: translateX(4px);
+      box-shadow: 4px 4px 0 var(--border);
+      background: #FFFFFF;
+    }
+    .intro-q-icon {
+      font-size: 1.35rem;
+      line-height: 1;
+      padding: 0.35rem;
+      background: #FFF8EE;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      flex-shrink: 0;
+    }
+    .intro-q-text {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 0.25rem 0.75rem;
+      flex: 1;
+    }
+    .intro-q-text strong {
+      color: #1E1210;
+      font-size: 0.95rem;
+      font-family: "Nunito", sans-serif;
+      font-weight: 800;
+      min-width: 190px;
+    }
+    .intro-q-text p {
+      margin: 0;
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      font-weight: 600;
+      line-height: 1.45;
+      flex: 1;
+      min-width: 250px;
+    }
+  </style>
+</Layout>

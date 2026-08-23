@@ -2,6 +2,7 @@
 import Layout from '../../../../layouts/Layout.astro';
 import CodeBlock from '../../../../components/CodeBlock.astro';
 import JavaScriptQuizModal from '../../../../components/quizzes/JavaScriptQuizModal.astro';
+import EcosistemasVariablesCta from '../../../../components/EcosistemasVariablesCta.astro';
 ---
 
 <Layout title="Variables escalables (let y const)" description="Aprende a guardar datos correctamente en JavaScript moderno." courseSlug="javascript">
@@ -51,6 +52,8 @@ let nivelActual = 42;`} title="JS" />
       <h2>Prueba sobre Variables JS</h2>
       <JavaScriptQuizModal quizKey="variables" />
     </section>
+
+    <EcosistemasVariablesCta code="javascript" />
 
     <nav class="nav-bottom">
       <a href="/course/javascript/introduccion/" class="prev">← Hola Mundo JS</a>

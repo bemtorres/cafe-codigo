@@ -188,7 +188,7 @@ const payload = JSON.stringify(
       if (copyBtn) copyBtn.style.borderRightColor = hex;
     }
 
-    function select(idx) {
+    function select(idx, broadcast = true) {
       const m = meta[idx];
       if (!m) return;
       tabs.forEach((btn, j) => {
@@ -216,14 +216,49 @@ const payload = JSON.stringify(
         badge.style.color = m.lang === 'javascript' ? '#1E1210' : 'white';
       }
       paintAccent(m.badgeColor);
+
+      if (broadcast) {
+        try {
+          localStorage.setItem('code_active_lang', m.lang);
+          localStorage.setItem('arch_class_lang', m.lang);
+        } catch(e) {}
+        window.dispatchEvent(new CustomEvent('code-lang-change', {
+          detail: { lang: m.lang, sourceRootId: rootId }
+        }));
+      }
     }
 
     tabs.forEach((btn) => {
       btn.addEventListener('click', () => {
         const i = Number(btn.getAttribute('data-cbm-tab'));
-        if (!Number.isNaN(i)) select(i);
+        if (!Number.isNaN(i)) select(i, true);
       });
     });
+
+    // Escuchar cambios de otros bloques de código
+    window.addEventListener('code-lang-change', (e) => {
+      const targetLang = e.detail?.lang?.toLowerCase();
+      if (!targetLang || e.detail?.sourceRootId === rootId) return;
+      const matchIdx = meta.findIndex((m) => m.lang.toLowerCase() === targetLang || m.label.toLowerCase().includes(targetLang));
+      if (matchIdx !== -1) {
+        select(matchIdx, false);
+      }
+    });
+
+    // Restaurar lenguaje guardado o parámetro URL
+    let initialLang = null;
+    try {
+      const urlParam = new URLSearchParams(window.location.search).get('lang');
+      initialLang = urlParam || localStorage.getItem('code_active_lang') || localStorage.getItem('arch_class_lang');
+    } catch(e) {}
+
+    if (initialLang) {
+      const clean = initialLang.toLowerCase();
+      const matchIdx = meta.findIndex((m) => m.lang.toLowerCase() === clean || m.label.toLowerCase().includes(clean));
+      if (matchIdx !== -1) {
+        select(matchIdx, false);
+      }
+    }
   }
 
   const el = document.getElementById(rootId);

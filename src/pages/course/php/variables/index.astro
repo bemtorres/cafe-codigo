@@ -2,6 +2,7 @@
 import Layout from '../../../../layouts/Layout.astro';
 import CodeBlock from '../../../../components/CodeBlock.astro';
 import PhpQuizModal from '../../../../components/quizzes/PhpQuizModal.astro';
+import EcosistemasVariablesCta from '../../../../components/EcosistemasVariablesCta.astro';
 ---
 
 <Layout title="Variables y Operadores en PHP" description="Aprende cómo declarar variables usando $ y los operadores básicos en PHP." courseSlug="php">
@@ -71,6 +72,8 @@ echo "El total de tu compra es de $$total USD.";`} title="Solución" />
       <p>Responde las preguntas de esta lección para asegurar que comprendiste el uso de variables y comillas en PHP.</p>
       <PhpQuizModal quizKey="variables" />
     </section>
+
+    <EcosistemasVariablesCta code="php" />
 
     <nav class="nav-bottom">
       <a href="/course/php/introduccion/" class="prev">← Introducción</a>

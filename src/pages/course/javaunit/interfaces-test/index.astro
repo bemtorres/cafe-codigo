@@ -2,6 +2,7 @@
 import Layout from '../../../../layouts/Layout.astro';
 import CodeBlock from '../../../../components/CodeBlock.astro';
 import JavaUnitQuizModal from '../../../../components/quizzes/JavaUnitQuizModal.astro';
+import InterfaceChallengesCta from '../../../../components/challenges/InterfaceChallengesCta.astro';
 ---
 
 <Layout title="Testing de Interfaces en Java" description="Crea pruebas genéricas para verificar que cualquier implementación de tu contrato sea válida." courseSlug="javaunit">
@@ -66,6 +67,8 @@ void testJSON() {
       <p>¿Tus clases cumplen con lo prometido?</p>
       <JavaUnitQuizModal quizKey="interfaces-test" />
     </section>
+
+    <InterfaceChallengesCta />
 
     <nav class="nav-bottom">
       <a href="/course/javaunit/herencia-test/" class="prev">← Herencia Test</a>

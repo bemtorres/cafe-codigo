@@ -1,0 +1,1609 @@
+---
+interface Props {
+  code: string;
+  title?: string;
+  caption?: string;
+  id?: string;
+  defaultFormat?: 'classic' | 'alt';
+}
+
+const { code, title, caption, id, defaultFormat = 'classic' } = Astro.props;
+const diagramId = id || `uml-${Math.random().toString(36).slice(2, 9)}`;
+
+// Parser de diagramas de clase UML para renderizado nativo HTML + SVG (100% sin truncado)
+interface UmlClass {
+  name: string;
+  stereotype?: string;
+  attrs: string[];
+  methods: string[];
+}
+
+interface UmlRel {
+  from: string;
+  to: string;
+  type: 'inheritance' | 'realization' | 'composition' | 'aggregation';
+  label?: string;
+}
+
+function parseUml(rawCode: string) {
+  const lines = rawCode.split('\n').map((l) => l.trim()).filter((l) => l && !l.startsWith('%%'));
+  const classMap = new Map<string, UmlClass>();
+  const relations: UmlRel[] = [];
+
+  let currentClass: string | null = null;
+
+  for (const line of lines) {
+    if (line.startsWith('classDiagram')) continue;
+
+    const classStart = line.match(/^class\s+([A-Za-z0-9_]+)(?:\s+<<(\w+)>>)?\s*\{?$/);
+    if (classStart) {
+      currentClass = classStart[1];
+      if (!classMap.has(currentClass)) {
+        classMap.set(currentClass, { name: currentClass, attrs: [], methods: [] });
+      }
+      if (classStart[2]) {
+        classMap.get(currentClass)!.stereotype = `<<${classStart[2]}>>`;
+      }
+      continue;
+    }
+    // Handle "class Name <<"stereotype>> {" without brace
+    const classStereotype = line.match(/^class\s+([A-Za-z0-9_]+)\s+<<(\w+)>>$/);
+    if (classStereotype) {
+      currentClass = classStereotype[1];
+      if (!classMap.has(currentClass)) {
+        classMap.set(currentClass, { name: currentClass, attrs: [], methods: [] });
+      }
+      classMap.get(currentClass)!.stereotype = `<<${classStereotype[2]}>>`;
+      continue;
+    }
+
+    if (line === '}') {
+      currentClass = null;
+      continue;
+    }
+
+    if (currentClass) {
+      const cls = classMap.get(currentClass)!;
+      const trimmedLine = line.trim();
+      if (trimmedLine.startsWith('<<') && trimmedLine.endsWith('>>')) {
+        cls.stereotype = trimmedLine;
+        continue;
+      }
+      if (line.includes('(') || line.includes(')')) {
+        cls.methods.push(line);
+      } else {
+        cls.attrs.push(line);
+      }
+      continue;
+    }
+
+    const relMatch = line.match(/^([A-Za-z0-9_]+)\s*(<\|--|<\|\.\.|\*--|o--)\s*([A-Za-z0-9_]+)(?:\s*:\s*(.*))?$/);
+    if (relMatch) {
+      const [, left, op, right, labelRaw] = relMatch;
+      const cleanLabel = labelRaw ? labelRaw.trim() : undefined;
+
+      if (!classMap.has(left)) classMap.set(left, { name: left, attrs: [], methods: [] });
+      if (!classMap.has(right)) classMap.set(right, { name: right, attrs: [], methods: [] });
+
+      if (op === '<|--') {
+        relations.push({ from: right, to: left, type: 'inheritance', label: cleanLabel || 'extends' });
+      } else if (op === '<|..') {
+        relations.push({ from: right, to: left, type: 'realization', label: cleanLabel || 'implements' });
+      } else if (op === '*--') {
+        relations.push({ from: left, to: right, type: 'composition', label: cleanLabel || 'composición ◆' });
+      } else if (op === 'o--') {
+        relations.push({ from: left, to: right, type: 'aggregation', label: cleanLabel || 'asociación ◇' });
+      }
+    }
+  }
+
+  const allClasses = Array.from(classMap.values());
+  const isInheritanceTree = relations.length > 0 && relations.every((r) => r.type === 'inheritance' || r.type === 'realization');
+  const isConnectionDiagram = relations.some((r) => r.type === 'composition' || r.type === 'aggregation');
+
+  let rootClass: UmlClass | null = null;
+  let childClasses: UmlClass[] = [];
+  let relType: 'inheritance' | 'realization' | null = null;
+
+  // Detect 3-tier: Interface → Abstract Parent → Children
+  const hasRealization = relations.some((r) => r.type === 'realization');
+  const hasInheritance = relations.some((r) => r.type === 'inheritance');
+  const isThreeTier = hasRealization && hasInheritance;
+
+  if (isInheritanceTree) {
+    const parentName = relations[0].to;
+    rootClass = classMap.get(parentName) || null;
+    relType = relations[0].type as 'inheritance' | 'realization';
+    childClasses = relations.map((r) => classMap.get(r.from)!).filter(Boolean);
+  }
+
+  return {
+    allClasses,
+    relations,
+    isInheritanceTree,
+    isConnectionDiagram,
+    isThreeTier,
+    rootClass,
+    childClasses,
+    relType,
+  };
+}
+
+const parsed = parseUml(code.trim());
+
+// Formateador dual: Clásico (nombre: Tipo, metodo(): Retorno) y Alternativo (Tipo nombre, Retorno metodo())
+function parseParams(paramsStr: string): string {
+  if (!paramsStr.trim()) return '';
+  const parts = paramsStr.split(',').map((p) => p.trim()).filter(Boolean);
+  const classicParts = parts.map((param) => {
+    if (param.includes(':')) return param;
+    const tokens = param.split(/\s+/);
+    if (tokens.length >= 2) {
+      const type = tokens.slice(0, -1).join(' ');
+      const name = tokens[tokens.length - 1];
+      return `${name}: ${type}`;
+    }
+    return param;
+  });
+  return classicParts.join(', ');
+}
+
+function convertMember(raw: string, className?: string) {
+  const t = raw.trim();
+  if (!t) return { vis: '', classic: '', alt: '' };
+  let vis = '+';
+  let rest = t;
+  const first = t[0];
+  if (first === '+' || first === '-' || first === '#' || first === '~') {
+    vis = first;
+    rest = t.slice(1).trim();
+  }
+
+  // Detección de Método buscando los paréntesis exactamente
+  const openParen = rest.indexOf('(');
+  const closeParen = rest.lastIndexOf(')');
+
+  if (openParen !== -1 && closeParen !== -1 && closeParen >= openParen) {
+    const params = rest.substring(openParen + 1, closeParen).trim();
+    const beforeParen = rest.substring(0, openParen).trim();
+    const classicParams = parseParams(params);
+
+    const tokens = beforeParen.split(/\s+/).filter(Boolean);
+    let methodName = '';
+    let returnType = '';
+
+    if (tokens.length === 1) {
+      methodName = tokens[0];
+      returnType = '';
+    } else if (tokens.length >= 2) {
+      methodName = tokens[tokens.length - 1];
+      returnType = tokens.slice(0, tokens.length - 1).join(' ');
+    }
+
+    const isConstructor = !returnType || methodName === className || returnType === methodName;
+
+    if (isConstructor) {
+      return {
+        vis,
+        classic: `${methodName}(${classicParams})`,
+        alt: `${methodName}(${params})`,
+      };
+    }
+
+    return {
+      vis,
+      classic: `${methodName}(${classicParams}): ${returnType}`,
+      alt: `${returnType} ${methodName}(${params})`,
+    };
+  }
+
+  // Si ya viene como "nombre: Tipo"
+  if (rest.includes(':')) {
+    const colonIdx = rest.indexOf(':');
+    const name = rest.substring(0, colonIdx).trim();
+    const type = rest.substring(colonIdx + 1).trim();
+    return {
+      vis,
+      classic: `${name}: ${type}`,
+      alt: `${type} ${name}`,
+    };
+  }
+
+  // Atributo "Tipo nombre" -> "nombre: Tipo"
+  const tokens = rest.split(/\s+/).filter(Boolean);
+  if (tokens.length >= 2) {
+    const name = tokens[tokens.length - 1];
+    const type = tokens.slice(0, tokens.length - 1).join(' ');
+    return {
+      vis,
+      classic: `${name}: ${type}`,
+      alt: `${type} ${name}`,
+    };
+  }
+
+  return {
+    vis,
+    classic: rest,
+    alt: rest,
+  };
+}
+
+const abstractParent = parsed.isThreeTier ? parsed.allClasses.find((c) => c.stereotype === '<<abstract>>') : null;
+const concreteChildren = parsed.isThreeTier ? parsed.allClasses.filter((c) => c.stereotype !== '<<abstract>>' && c.stereotype !== '<<interface>>') : [];
+---
+
+<figure class="uml-card" data-diagram-id={diagramId} data-format={defaultFormat} aria-label={title || 'Diagrama UML'}>
+  <div class="uml-header">
+    <div class="uml-title-wrap">
+      <span class="uml-badge">UML</span>
+      {title && <span class="uml-title-text">{title}</span>}
+    </div>
+
+    <div class="uml-actions">
+      <!-- Selector de formato: Clásico vs Alternativo -->
+      <div class="uml-format-switch" role="group" aria-label="Formato de notación">
+        <button type="button" class={`format-btn ${defaultFormat === 'classic' ? 'is-active' : ''}`} data-format-val="classic" title="Formato Clásico (nombre: Tipo, método(): Retorno)">
+          🏛️ Clásico
+        </button>
+        <button type="button" class={`format-btn ${defaultFormat === 'alt' ? 'is-active' : ''}`} data-format-val="alt" title="Formato Alternativo (Tipo nombre, Retorno método())">
+          ⚡ Alternativo
+        </button>
+      </div>
+
+      <button type="button" class="btn-copy-uml" data-code={code.trim()} title="Copiar código UML">
+        <span class="btn-icon">📋</span>
+        <span class="btn-label">Copiar</span>
+      </button>
+      <button type="button" class="btn-zoom-uml" title="Ampliar diagrama a pantalla completa">
+        <span class="btn-icon">🔍</span>
+        <span class="btn-label">Ampliar</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="uml-viewport" role="button" tabindex="0" title="Clic para ampliar y hacer zoom">
+    <div class="uml-stage-content">
+      {/* CASO 1B: 3 niveles — Interface → Abstract Parent → Children */}
+      {parsed.isInheritanceTree && parsed.isThreeTier && parsed.rootClass && (
+        <div class="uml-tree-layout uml-tree-three-tier">
+          {/* Nivel 1: Interface */}
+          <div class="uml-row-root">
+            <div class="uml-box uml-box-interface">
+              <div class="uml-box-head">
+                {parsed.rootClass.stereotype && <span class="uml-stereotype">{parsed.rootClass.stereotype}</span>}
+                <span class="uml-class-name">{parsed.rootClass.name}</span>
+              </div>
+              {parsed.rootClass.attrs.length > 0 && (
+                <div class="uml-box-section uml-attrs">
+                  {parsed.rootClass.attrs.map((a) => {
+                    const m = convertMember(a, parsed.rootClass?.name);
+                    return (
+                      <div class="uml-member">
+                        <span class={`uml-vis uml-vis-${m.vis === '+' ? 'pub' : m.vis === '-' ? 'priv' : 'prot'}`}>{m.vis}</span>
+                        <span class="uml-text uml-text-classic">{m.classic}</span>
+                        <span class="uml-text uml-text-alt">{m.alt}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+              {parsed.rootClass.methods.length > 0 && (
+                <div class="uml-box-section uml-methods">
+                  {parsed.rootClass.methods.map((meth) => {
+                    const m = convertMember(meth, parsed.rootClass?.name);
+                    return (
+                      <div class="uml-member">
+                        <span class={`uml-vis uml-vis-${m.vis === '+' ? 'pub' : m.vis === '-' ? 'priv' : 'prot'}`}>{m.vis}</span>
+                        <span class="uml-text uml-text-classic">{m.classic}</span>
+                        <span class="uml-text uml-text-alt">{m.alt}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Flecha implements */}
+          <div class="uml-arrow-connector">
+            <div class="uml-arrow-badge-wrap">
+              <div class="uml-arrow-triangle is-dashed">▲</div>
+              <span class="uml-arrow-tag">implements (interfaz)</span>
+            </div>
+            <div class="uml-arrow-stem is-dashed"></div>
+            <div class="uml-arrow-branch is-dashed"></div>
+          </div>
+
+          {/* Nivel 2: Clase Abstracta */}
+          {abstractParent && (
+            <div class="uml-row-root">
+              <div class="uml-box uml-box-parent">
+                <div class="uml-box-head">
+                  {abstractParent.stereotype && <span class="uml-stereotype">{abstractParent.stereotype}</span>}
+                  <span class="uml-class-name">{abstractParent.name}</span>
+                </div>
+                {abstractParent.attrs.length > 0 && (
+                  <div class="uml-box-section uml-attrs">
+                    {abstractParent.attrs.map((a) => {
+                      const m = convertMember(a, abstractParent.name);
+                      return (
+                        <div class="uml-member">
+                          <span class={`uml-vis uml-vis-${m.vis === '+' ? 'pub' : m.vis === '-' ? 'priv' : 'prot'}`}>{m.vis}</span>
+                          <span class="uml-text uml-text-classic">{m.classic}</span>
+                          <span class="uml-text uml-text-alt">{m.alt}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+                {abstractParent.methods.length > 0 && (
+                  <div class="uml-box-section uml-methods">
+                    {abstractParent.methods.map((meth) => {
+                      const m = convertMember(meth, abstractParent.name);
+                      return (
+                        <div class="uml-member">
+                          <span class={`uml-vis uml-vis-${m.vis === '+' ? 'pub' : m.vis === '-' ? 'priv' : 'prot'}`}>{m.vis}</span>
+                          <span class="uml-text uml-text-classic">{m.classic}</span>
+                          <span class="uml-text uml-text-alt">{m.alt}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Flecha extends */}
+          <div class="uml-arrow-connector">
+            <div class="uml-arrow-badge-wrap">
+              <div class="uml-arrow-triangle is-solid">▲</div>
+              <span class="uml-arrow-tag">extends (herencia)</span>
+            </div>
+            <div class="uml-arrow-stem is-solid"></div>
+            <div class="uml-arrow-branch is-solid"></div>
+          </div>
+
+          {/* Nivel 3: Clases Hijas */}
+          <div class="uml-row-children">
+            {concreteChildren.map((child) => (
+              <div class="uml-box uml-box-child">
+                <div class="uml-box-head">
+                  <span class="uml-class-name">{child.name}</span>
+                </div>
+                {child.attrs.length > 0 && (
+                  <div class="uml-box-section uml-attrs">
+                    {child.attrs.map((a) => {
+                      const m = convertMember(a, child.name);
+                      return (
+                        <div class="uml-member">
+                          <span class={`uml-vis uml-vis-${m.vis === '+' ? 'pub' : m.vis === '-' ? 'priv' : 'prot'}`}>{m.vis}</span>
+                          <span class="uml-text uml-text-classic">{m.classic}</span>
+                          <span class="uml-text uml-text-alt">{m.alt}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+                {child.methods.length > 0 && (
+                  <div class="uml-box-section uml-methods">
+                    {child.methods.map((meth) => {
+                      const m = convertMember(meth, child.name);
+                      return (
+                        <div class="uml-member">
+                          <span class={`uml-vis uml-vis-${m.vis === '+' ? 'pub' : m.vis === '-' ? 'priv' : 'prot'}`}>{m.vis}</span>
+                          <span class="uml-text uml-text-classic">{m.classic}</span>
+                          <span class="uml-text uml-text-alt">{m.alt}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+                {child.attrs.length === 0 && child.methods.length === 0 && (
+                  <div class="uml-box-section uml-empty-section">
+                    <span class="uml-empty-text">Hereda miembros</span>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* CASO 1A: Árbol simple — Interface/Parent → Children (sin 3 niveles) */}
+      {parsed.isInheritanceTree && !parsed.isThreeTier && parsed.rootClass && (
+        <div class="uml-tree-layout">
+          <div class="uml-row-root">
+            <div class={`uml-box ${parsed.relType === 'realization' || parsed.rootClass.stereotype ? 'uml-box-interface' : 'uml-box-parent'}`}>
+              <div class="uml-box-head">
+                {parsed.rootClass.stereotype && <span class="uml-stereotype">{parsed.rootClass.stereotype}</span>}
+                <span class="uml-class-name">{parsed.rootClass.name}</span>
+              </div>
+              {parsed.rootClass.attrs.length > 0 && (
+                <div class="uml-box-section uml-attrs">
+                  {parsed.rootClass.attrs.map((a) => {
+                    const m = convertMember(a, parsed.rootClass?.name);
+                    return (
+                      <div class="uml-member">
+                        <span class={`uml-vis uml-vis-${m.vis === '+' ? 'pub' : m.vis === '-' ? 'priv' : 'prot'}`}>{m.vis}</span>
+                        <span class="uml-text uml-text-classic">{m.classic}</span>
+                        <span class="uml-text uml-text-alt">{m.alt}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+              {parsed.rootClass.methods.length > 0 && (
+                <div class="uml-box-section uml-methods">
+                  {parsed.rootClass.methods.map((meth) => {
+                    const m = convertMember(meth, parsed.rootClass?.name);
+                    return (
+                      <div class="uml-member">
+                        <span class={`uml-vis uml-vis-${m.vis === '+' ? 'pub' : m.vis === '-' ? 'priv' : 'prot'}`}>{m.vis}</span>
+                        <span class="uml-text uml-text-classic">{m.classic}</span>
+                        <span class="uml-text uml-text-alt">{m.alt}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div class="uml-arrow-connector">
+            <div class="uml-arrow-badge-wrap">
+              <div class={`uml-arrow-triangle ${parsed.relType === 'realization' ? 'is-dashed' : 'is-solid'}`}>▲</div>
+              <span class="uml-arrow-tag">{parsed.relType === 'realization' ? 'implements (interfaz)' : 'extends (herencia)'}</span>
+            </div>
+            <div class={`uml-arrow-stem ${parsed.relType === 'realization' ? 'is-dashed' : 'is-solid'}`}></div>
+            <div class={`uml-arrow-branch ${parsed.relType === 'realization' ? 'is-dashed' : 'is-solid'}`}></div>
+          </div>
+
+          <div class="uml-row-children">
+            {parsed.childClasses.map((child) => (
+              <div class="uml-box uml-box-child">
+                <div class="uml-box-head">
+                  <span class="uml-class-name">{child.name}</span>
+                </div>
+                {child.attrs.length > 0 && (
+                  <div class="uml-box-section uml-attrs">
+                    {child.attrs.map((a) => {
+                      const m = convertMember(a, child.name);
+                      return (
+                        <div class="uml-member">
+                          <span class={`uml-vis uml-vis-${m.vis === '+' ? 'pub' : m.vis === '-' ? 'priv' : 'prot'}`}>{m.vis}</span>
+                          <span class="uml-text uml-text-classic">{m.classic}</span>
+                          <span class="uml-text uml-text-alt">{m.alt}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+                {child.methods.length > 0 && (
+                  <div class="uml-box-section uml-methods">
+                    {child.methods.map((meth) => {
+                      const m = convertMember(meth, child.name);
+                      return (
+                        <div class="uml-member">
+                          <span class={`uml-vis uml-vis-${m.vis === '+' ? 'pub' : m.vis === '-' ? 'priv' : 'prot'}`}>{m.vis}</span>
+                          <span class="uml-text uml-text-classic">{m.classic}</span>
+                          <span class="uml-text uml-text-alt">{m.alt}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+                {child.attrs.length === 0 && child.methods.length === 0 && (
+                  <div class="uml-box-section uml-empty-section">
+                    <span class="uml-empty-text">Hereda miembros</span>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* CASO 2: Diagrama de Conexiones (Composición ◆ y Asociación ◇) */}
+      {!parsed.isInheritanceTree && parsed.isConnectionDiagram && (
+        <div class="uml-connections-layout">
+          <div class="uml-conn-main">
+            {parsed.allClasses.filter((c) => c.name === 'Libro' || c.attrs.length > 1 || c.methods.length > 1).map((mainCls) => (
+              <div class="uml-box uml-box-main">
+                <div class="uml-box-head">
+                  <span class="uml-class-name">{mainCls.name}</span>
+                </div>
+                {mainCls.attrs.length > 0 && (
+                  <div class="uml-box-section uml-attrs">
+                    {mainCls.attrs.map((a) => {
+                      const m = convertMember(a, mainCls.name);
+                      return (
+                        <div class="uml-member">
+                          <span class={`uml-vis uml-vis-${m.vis === '+' ? 'pub' : m.vis === '-' ? 'priv' : 'prot'}`}>{m.vis}</span>
+                          <span class="uml-text uml-text-classic">{m.classic}</span>
+                          <span class="uml-text uml-text-alt">{m.alt}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+                {mainCls.methods.length > 0 && (
+                  <div class="uml-box-section uml-methods">
+                    {mainCls.methods.map((meth) => {
+                      const m = convertMember(meth, mainCls.name);
+                      return (
+                        <div class="uml-member">
+                          <span class={`uml-vis uml-vis-${m.vis === '+' ? 'pub' : m.vis === '-' ? 'priv' : 'prot'}`}>{m.vis}</span>
+                          <span class="uml-text uml-text-classic">{m.classic}</span>
+                          <span class="uml-text uml-text-alt">{m.alt}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+
+          <div class="uml-conn-side">
+            {parsed.relations.map((rel) => {
+              const targetCls = parsed.allClasses.find((c) => c.name === rel.to);
+              if (!targetCls) return null;
+              const isComp = rel.type === 'composition';
+              return (
+                <div class="uml-conn-item">
+                  <div class="uml-conn-bridge">
+                    <span class={`uml-conn-diamond ${isComp ? 'is-comp' : 'is-assoc'}`}>
+                      {isComp ? '◆' : '◇'}
+                    </span>
+                    <span class="uml-conn-line"></span>
+                    <span class="uml-conn-tag">{isComp ? 'Composición (◆)' : 'Asociación (◇)'}</span>
+                  </div>
+                  <div class="uml-box uml-box-connected">
+                    <div class="uml-box-head">
+                      <span class="uml-class-name">{targetCls.name}</span>
+                    </div>
+                    {targetCls.attrs.length > 0 && (
+                      <div class="uml-box-section uml-attrs">
+                        {targetCls.attrs.map((a) => {
+                          const m = convertMember(a, targetCls.name);
+                          return (
+                            <div class="uml-member">
+                              <span class={`uml-vis uml-vis-${m.vis === '+' ? 'pub' : m.vis === '-' ? 'priv' : 'prot'}`}>{m.vis}</span>
+                              <span class="uml-text uml-text-classic">{m.classic}</span>
+                              <span class="uml-text uml-text-alt">{m.alt}</span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                    {targetCls.methods.length > 0 && (
+                      <div class="uml-box-section uml-methods">
+                        {targetCls.methods.map((meth) => {
+                          const m = convertMember(meth, targetCls.name);
+                          return (
+                            <div class="uml-member">
+                              <span class={`uml-vis uml-vis-${m.vis === '+' ? 'pub' : m.vis === '-' ? 'priv' : 'prot'}`}>{m.vis}</span>
+                              <span class="uml-text uml-text-classic">{m.classic}</span>
+                              <span class="uml-text uml-text-alt">{m.alt}</span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* CASO 3: Clases individuales */}
+      {!parsed.isInheritanceTree && !parsed.isConnectionDiagram && (
+        <div class="uml-single-layout">
+          {parsed.allClasses.map((cls) => (
+            <div class={`uml-box ${cls.stereotype ? 'uml-box-interface' : 'uml-box-standalone'}`}>
+              <div class="uml-box-head">
+                {cls.stereotype && <span class="uml-stereotype">{cls.stereotype}</span>}
+                <span class="uml-class-name">{cls.name}</span>
+              </div>
+              {cls.attrs.length > 0 && (
+                <div class="uml-box-section uml-attrs">
+                  {cls.attrs.map((a) => {
+                    const m = convertMember(a, cls.name);
+                    return (
+                      <div class="uml-member">
+                        <span class={`uml-vis uml-vis-${m.vis === '+' ? 'pub' : m.vis === '-' ? 'priv' : 'prot'}`}>{m.vis}</span>
+                        <span class="uml-text uml-text-classic">{m.classic}</span>
+                        <span class="uml-text uml-text-alt">{m.alt}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+              {cls.methods.length > 0 && (
+                <div class="uml-box-section uml-methods">
+                  {cls.methods.map((meth) => {
+                    const m = convertMember(meth, cls.name);
+                    return (
+                      <div class="uml-member">
+                        <span class={`uml-vis uml-vis-${m.vis === '+' ? 'pub' : m.vis === '-' ? 'priv' : 'prot'}`}>{m.vis}</span>
+                        <span class="uml-text uml-text-classic">{m.classic}</span>
+                        <span class="uml-text uml-text-alt">{m.alt}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+
+    <div class="uml-hover-overlay">
+      <span>🔍 Clic para ampliar y hacer zoom</span>
+    </div>
+  </div>
+
+  {caption && <figcaption class="uml-caption">{caption}</figcaption>}
+
+  <!-- Modal Interactivo con Zoom & Paneado -->
+  <div class="uml-modal" id={`modal-${diagramId}`} aria-hidden="true" role="dialog" aria-modal="true" aria-label={title || 'Diagrama UML ampliado'}>
+    <div class="uml-modal-backdrop" data-close-modal></div>
+    <div class="uml-modal-container">
+      <div class="uml-modal-toolbar">
+        <div class="modal-info">
+          <span class="modal-badge">UML</span>
+          <span class="modal-title">{title || 'Diagrama de Clases UML'}</span>
+        </div>
+
+        <div class="modal-controls">
+          <div class="uml-format-switch modal-format-switch" role="group" aria-label="Formato en modal">
+            <button type="button" class="format-btn format-btn-modal-classic" data-format-val="classic">
+              🏛️ Clásico
+            </button>
+            <button type="button" class="format-btn format-btn-modal-alt" data-format-val="alt">
+              ⚡ Alternativo
+            </button>
+          </div>
+
+          <button type="button" class="ctrl-btn btn-zoom-out" title="Reducir zoom (tecla -)">−</button>
+          <span class="zoom-level-text">100%</span>
+          <button type="button" class="ctrl-btn btn-zoom-in" title="Aumentar zoom (tecla +)">+</button>
+          <button type="button" class="ctrl-btn btn-zoom-reset" title="Restablecer tamaño (tecla 0)">↺ 100%</button>
+          <button type="button" class="ctrl-btn ctrl-btn-close" data-close-modal title="Cerrar (Escape)">✕</button>
+        </div>
+      </div>
+      <div class="uml-modal-canvas" title="Arrastra para mover · Rueda del mouse para hacer zoom">
+        <div class="uml-modal-stage"></div>
+      </div>
+      <div class="uml-modal-footer">
+        <span>💡 Arrastra con el ratón para mover · Usa la rueda del mouse o botones para hacer zoom</span>
+      </div>
+    </div>
+  </div>
+</figure>
+
+<script is:inline>
+(function() {
+  function applyGlobalFormat(format) {
+    try { localStorage.setItem('uml_format_mode', format); } catch(e) {}
+    document.querySelectorAll('.uml-card').forEach(function(card) {
+      card.setAttribute('data-format', format);
+      card.querySelectorAll('.format-btn').forEach(function(btn) {
+        btn.classList.toggle('is-active', btn.getAttribute('data-format-val') === format);
+      });
+    });
+  }
+
+  function setupUmlViewer() {
+    var savedFormat = 'classic';
+    try {
+      var s = localStorage.getItem('uml_format_mode');
+      if (s === 'classic' || s === 'alt') savedFormat = s;
+    } catch(e) {}
+
+    var cards = document.querySelectorAll('.uml-card');
+    cards.forEach(function(card) {
+      if (card.getAttribute('data-uml-init') === 'true') return;
+      card.setAttribute('data-uml-init', 'true');
+
+      // Sync format
+      card.setAttribute('data-format', savedFormat);
+      card.querySelectorAll('.format-btn').forEach(function(btn) {
+        btn.classList.toggle('is-active', btn.getAttribute('data-format-val') === savedFormat);
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          var val = btn.getAttribute('data-format-val');
+          applyGlobalFormat(val);
+        });
+      });
+
+      var viewport = card.querySelector('.uml-viewport');
+      var copyBtn = card.querySelector('.btn-copy-uml');
+      var zoomBtn = card.querySelector('.btn-zoom-uml');
+      var modal = card.querySelector('.uml-modal');
+      var stageContent = card.querySelector('.uml-stage-content');
+
+      if (!modal || !stageContent) return;
+
+      var modalStage = modal.querySelector('.uml-modal-stage');
+      var modalCanvas = modal.querySelector('.uml-modal-canvas');
+      var zoomInBtn = modal.querySelector('.btn-zoom-in');
+      var zoomOutBtn = modal.querySelector('.btn-zoom-out');
+      var zoomResetBtn = modal.querySelector('.btn-zoom-reset');
+      var zoomLevelText = modal.querySelector('.zoom-level-text');
+      var closeBtns = modal.querySelectorAll('[data-close-modal]');
+
+      var currentZoom = 1;
+      var panX = 0;
+      var panY = 0;
+      var isDragging = false;
+      var startX = 0;
+      var startY = 0;
+
+      function updateTransform() {
+        if (!modalStage) return;
+        modalStage.style.transform = 'translate(' + panX + 'px, ' + panY + 'px) scale(' + currentZoom + ')';
+        if (zoomLevelText) {
+          zoomLevelText.textContent = Math.round(currentZoom * 100) + '%';
+        }
+      }
+
+      function setZoom(newZoom, centerX, centerY) {
+        newZoom = Math.max(0.3, Math.min(4, newZoom));
+        if (centerX !== undefined && centerY !== undefined && modalCanvas) {
+          var rect = modalCanvas.getBoundingClientRect();
+          var offsetX = centerX - rect.left - rect.width / 2;
+          var offsetY = centerY - rect.top - rect.height / 2;
+          panX -= (offsetX / currentZoom) * (newZoom - currentZoom);
+          panY -= (offsetY / currentZoom) * (newZoom - currentZoom);
+        }
+        currentZoom = newZoom;
+        updateTransform();
+      }
+
+      function resetView() {
+        currentZoom = 1;
+        panX = 0;
+        panY = 0;
+        updateTransform();
+      }
+
+      function openModal() {
+        modalStage.innerHTML = '';
+        var clone = stageContent.cloneNode(true);
+        modalStage.appendChild(clone);
+        resetView();
+        modal.classList.add('is-open');
+        modal.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeModal() {
+        modal.classList.remove('is-open');
+        modal.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+        if (modalStage) modalStage.innerHTML = '';
+      }
+
+      if (viewport) {
+        viewport.addEventListener('click', openModal);
+        viewport.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openModal(); }
+        });
+      }
+
+      if (zoomBtn) zoomBtn.addEventListener('click', function(e) { e.stopPropagation(); openModal(); });
+
+      closeBtns.forEach(function(b) { b.addEventListener('click', closeModal); });
+
+      if (copyBtn) {
+        copyBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          var raw = copyBtn.getAttribute('data-code') || '';
+          if (navigator.clipboard) {
+            navigator.clipboard.writeText(raw).then(function() {
+              var label = copyBtn.querySelector('.btn-label');
+              var prev = label ? label.textContent : '';
+              if (label) label.textContent = '¡Copiado!';
+              copyBtn.classList.add('is-copied');
+              setTimeout(function() {
+                if (label) label.textContent = prev;
+                copyBtn.classList.remove('is-copied');
+              }, 1800);
+            });
+          }
+        });
+      }
+
+      if (zoomInBtn) zoomInBtn.addEventListener('click', function() { setZoom(currentZoom + 0.25); });
+      if (zoomOutBtn) zoomOutBtn.addEventListener('click', function() { setZoom(currentZoom - 0.25); });
+      if (zoomResetBtn) zoomResetBtn.addEventListener('click', function() { resetView(); });
+
+      if (modalCanvas) {
+        modalCanvas.addEventListener('wheel', function(e) {
+          e.preventDefault();
+          var delta = e.deltaY < 0 ? 0.15 : -0.15;
+          setZoom(currentZoom + delta, e.clientX, e.clientY);
+        }, { passive: false });
+
+        modalCanvas.addEventListener('mousedown', function(e) {
+          if (e.button !== 0) return;
+          isDragging = true;
+          startX = e.clientX - panX;
+          startY = e.clientY - panY;
+          modalCanvas.classList.add('is-dragging');
+        });
+
+        window.addEventListener('mousemove', function(e) {
+          if (!isDragging) return;
+          panX = e.clientX - startX;
+          panY = e.clientY - startY;
+          updateTransform();
+        });
+
+        window.addEventListener('mouseup', function() {
+          if (isDragging) {
+            isDragging = false;
+            if (modalCanvas) modalCanvas.classList.remove('is-dragging');
+          }
+        });
+
+        modalCanvas.addEventListener('dblclick', function(e) {
+          if (currentZoom > 1.2) resetView();
+          else setZoom(1.8, e.clientX, e.clientY);
+        });
+      }
+    });
+  }
+
+  document.addEventListener('keydown', function(e) {
+    var openModal = document.querySelector('.uml-modal.is-open');
+    if (!openModal) return;
+    if (e.key === 'Escape') {
+      openModal.classList.remove('is-open');
+      openModal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    } else if (e.key === '+' || e.key === '=') {
+      var inBtn = openModal.querySelector('.btn-zoom-in');
+      if (inBtn) inBtn.click();
+    } else if (e.key === '-' || e.key === '_') {
+      var outBtn = openModal.querySelector('.btn-zoom-out');
+      if (outBtn) outBtn.click();
+    } else if (e.key === '0') {
+      var resBtn = openModal.querySelector('.btn-zoom-reset');
+      if (resBtn) resBtn.click();
+    }
+  });
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupUmlViewer);
+  } else {
+    setupUmlViewer();
+  }
+})();
+</script>
+
+<style>
+  .uml-card {
+    margin: 1.25rem 0 1.5rem;
+    background: #ffffff;
+    border: 2.5px solid #1E1210;
+    border-radius: 18px;
+    box-shadow: 5px 5px 0px #1E1210;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+  :global(.dark) .uml-card {
+    background: #18181b;
+    border-color: #3f3f46;
+    box-shadow: 5px 5px 0px #09090b;
+  }
+
+  .uml-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.55rem 0.95rem;
+    background: #FFFDF7;
+    border-bottom: 2px solid #1E1210;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  :global(.dark) .uml-header {
+    background: #27272a;
+    border-bottom-color: #3f3f46;
+  }
+
+  .uml-title-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 0;
+  }
+  .uml-badge {
+    display: inline-flex;
+    align-items: center;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.68rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.2rem 0.55rem;
+    background: #1E1210;
+    color: #FFFDF7;
+    border-radius: 6px;
+  }
+  :global(.dark) .uml-badge {
+    background: #6366f1;
+    color: #ffffff;
+  }
+  .uml-title-text {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .uml-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+  }
+
+  /* Switcher de Formato Clásico / Alternativo */
+  .uml-format-switch {
+    display: inline-flex;
+    background: #f1f5f9;
+    padding: 2px;
+    border-radius: 8px;
+    border: 1.5px solid #1E1210;
+    box-shadow: 2px 2px 0px rgba(30,18,16,0.15);
+  }
+  :global(.dark) .uml-format-switch {
+    background: #1e293b;
+    border-color: #52525b;
+  }
+  .format-btn {
+    border: none;
+    background: transparent;
+    padding: 0.22rem 0.55rem;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: var(--text-secondary);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.12s, color 0.12s, transform 0.1s;
+  }
+  :global(.dark) .format-btn {
+    color: #94a3b8;
+  }
+  .format-btn.is-active {
+    background: #1E1210;
+    color: #ffffff;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  }
+  :global(.dark) .format-btn.is-active {
+    background: #6366f1;
+    color: #ffffff;
+  }
+
+  .btn-copy-uml,
+  .btn-zoom-uml {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.3rem 0.6rem;
+    background: #ffffff;
+    border: 1.5px solid #1E1210;
+    border-radius: 8px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.76rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    cursor: pointer;
+    box-shadow: 2px 2px 0px #1E1210;
+    transition: transform 0.1s, box-shadow 0.1s, background-color 0.15s;
+  }
+  :global(.dark) .btn-copy-uml,
+  :global(.dark) .btn-zoom-uml {
+    background: #18181b;
+    border-color: #52525b;
+    box-shadow: 2px 2px 0px #09090b;
+    color: #f4f4f5;
+  }
+  .btn-copy-uml:hover,
+  .btn-zoom-uml:hover {
+    transform: translateY(-1px);
+    box-shadow: 3px 3px 0px #1E1210;
+    background: #FFF9C4;
+  }
+  :global(.dark) .btn-copy-uml:hover,
+  :global(.dark) .btn-zoom-uml:hover {
+    background: #3f3f46;
+    box-shadow: 3px 3px 0px #09090b;
+  }
+  .btn-copy-uml.is-copied {
+    background: #06D6A0 !important;
+    color: #1E1210 !important;
+  }
+  .btn-icon {
+    font-size: 0.82rem;
+    line-height: 1;
+  }
+
+  /* Control de visibilidad Clásico vs Alternativo */
+  .uml-card[data-format="classic"] .uml-text-alt,
+  .uml-card:not([data-format="alt"]) .uml-text-alt {
+    display: none;
+  }
+  .uml-card[data-format="classic"] .uml-text-classic,
+  .uml-card:not([data-format="alt"]) .uml-text-classic {
+    display: inline;
+  }
+
+  .uml-card[data-format="alt"] .uml-text-classic {
+    display: none;
+  }
+  .uml-card[data-format="alt"] .uml-text-alt {
+    display: inline;
+  }
+
+  /* Viewport */
+  .uml-viewport {
+    padding: 1.5rem 1rem;
+    background: #fafaf9;
+    overflow-x: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    cursor: zoom-in;
+    min-height: 140px;
+  }
+  :global(.dark) .uml-viewport {
+    background: #121214;
+  }
+
+  .uml-hover-overlay {
+    position: absolute;
+    bottom: 8px;
+    right: 12px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: #1a5ebd;
+    background: rgba(255, 255, 255, 0.92);
+    border: 1.5px solid #1a5ebd;
+    padding: 3px 10px;
+    border-radius: 999px;
+    box-shadow: 2px 2px 0px rgba(26, 94, 189, 0.3);
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    pointer-events: none;
+  }
+  :global(.dark) .uml-hover-overlay {
+    background: rgba(24, 24, 27, 0.92);
+    color: #93c5fd;
+    border-color: #60a5fa;
+  }
+  .uml-viewport:hover .uml-hover-overlay {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .uml-stage-content {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+
+  /* ── Cajas UML de 3 compartimentos ── */
+  .uml-box {
+    background: #ffffff;
+    border: 2px solid #1E1210;
+    border-radius: 10px;
+    box-shadow: 4px 4px 0px rgba(30, 18, 16, 0.15);
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 0.82rem;
+    line-height: 1.45;
+    min-width: 220px;
+    max-width: 100%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  :global(.dark) .uml-box {
+    background: #1e293b;
+    border-color: #475569;
+    box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.4);
+  }
+
+  .uml-box-head {
+    background: #1E1210;
+    color: #FFFDF7;
+    padding: 0.45rem 0.85rem;
+    text-align: center;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.15rem;
+  }
+  :global(.dark) .uml-box-head {
+    background: #334155;
+    color: #f8fafc;
+  }
+
+  .uml-box-parent .uml-box-head {
+    background: #7c2d12;
+  }
+  :global(.dark) .uml-box-parent .uml-box-head {
+    background: #9a3412;
+  }
+
+  .uml-box-interface .uml-box-head {
+    background: #6d28d9;
+  }
+  :global(.dark) .uml-box-interface .uml-box-head {
+    background: #7c3aed;
+  }
+
+  .uml-stereotype {
+    font-size: 0.68rem;
+    font-style: italic;
+    opacity: 0.88;
+    letter-spacing: 0.04em;
+  }
+  .uml-class-name {
+    font-size: 0.95rem;
+    letter-spacing: 0.02em;
+  }
+
+  .uml-box-section {
+    padding: 0.5rem 0.85rem;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  :global(.dark) .uml-box-section {
+    background: #1e293b;
+  }
+
+  .uml-methods {
+    border-top: 1.5px solid #1E1210;
+    background: #fafaf9;
+  }
+  :global(.dark) .uml-methods {
+    border-top-color: #475569;
+    background: #182234;
+  }
+
+  .uml-empty-section {
+    padding: 0.4rem 0.85rem;
+    background: #f8fafc;
+    border-top: 1.5px dashed rgba(30, 18, 16, 0.2);
+    text-align: center;
+  }
+  .uml-empty-text {
+    font-size: 0.72rem;
+    font-style: italic;
+    color: var(--text-muted);
+  }
+
+  .uml-member {
+    display: flex;
+    align-items: baseline;
+    gap: 0.4rem;
+    white-space: nowrap;
+  }
+  .uml-vis {
+    font-weight: 900;
+    font-size: 0.85rem;
+    width: 14px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+  .uml-vis-pub { color: #059669; }
+  .uml-vis-priv { color: #dc2626; }
+  .uml-vis-prot { color: #d97706; }
+  .uml-text {
+    color: var(--text-primary);
+    font-weight: 550;
+  }
+  :global(.dark) .uml-text {
+    color: #f1f5f9;
+  }
+
+  /* ── Layouts ── */
+  /* Single */
+  .uml-single-layout {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+  .uml-box-standalone {
+    min-width: 280px;
+    max-width: 440px;
+  }
+
+  /* Tree (Herencia / Interfaces) */
+  .uml-tree-layout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 850px;
+  }
+  .uml-row-root {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+  .uml-row-root .uml-box {
+    min-width: 240px;
+    max-width: 380px;
+  }
+
+  .uml-arrow-connector {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    margin: 0.35rem 0;
+  }
+  .uml-arrow-badge-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: #FFFDF7;
+    border: 1.5px solid #1E1210;
+    padding: 0.15rem 0.55rem;
+    border-radius: 999px;
+    box-shadow: 2px 2px 0px rgba(30,18,16,0.15);
+    z-index: 2;
+  }
+  :global(.dark) .uml-arrow-badge-wrap {
+    background: #27272a;
+    border-color: #52525b;
+  }
+  .uml-arrow-triangle {
+    font-size: 0.8rem;
+    line-height: 1;
+    color: #1E1210;
+  }
+  :global(.dark) .uml-arrow-triangle {
+    color: #f8fafc;
+  }
+  .uml-arrow-triangle.is-dashed {
+    color: #6d28d9;
+  }
+  :global(.dark) .uml-arrow-triangle.is-dashed {
+    color: #a78bfa;
+  }
+  .uml-arrow-tag {
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: var(--text-primary);
+  }
+  .uml-arrow-stem {
+    width: 2px;
+    height: 16px;
+    background: #1E1210;
+  }
+  :global(.dark) .uml-arrow-stem {
+    background: #94a3b8;
+  }
+  .uml-arrow-stem.is-dashed {
+    background: repeating-linear-gradient(to bottom, #6d28d9 0, #6d28d9 4px, transparent 4px, transparent 8px);
+  }
+  .uml-arrow-branch {
+    width: 70%;
+    height: 2px;
+    background: #1E1210;
+  }
+  :global(.dark) .uml-arrow-branch {
+    background: #94a3b8;
+  }
+  .uml-arrow-branch.is-dashed {
+    background: repeating-linear-gradient(to right, #6d28d9 0, #6d28d9 4px, transparent 4px, transparent 8px);
+  }
+
+  .uml-row-children {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    width: 100%;
+    flex-wrap: wrap;
+  }
+  .uml-box-child {
+    flex: 1 1 200px;
+    max-width: 260px;
+  }
+
+  /* Conexiones (Composición y Asociación) */
+  .uml-connections-layout {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    width: 100%;
+    max-width: 800px;
+    flex-wrap: wrap;
+  }
+  .uml-conn-main {
+    flex: 1 1 280px;
+    max-width: 360px;
+  }
+  .uml-conn-side {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    flex: 1 1 260px;
+    max-width: 360px;
+  }
+  .uml-conn-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+  .uml-conn-bridge {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: var(--text-secondary);
+  }
+  .uml-conn-diamond {
+    font-size: 1.1rem;
+    line-height: 1;
+  }
+  .uml-conn-diamond.is-comp { color: #1E1210; }
+  :global(.dark) .uml-conn-diamond.is-comp { color: #f8fafc; }
+  .uml-conn-diamond.is-assoc { color: #0284c7; }
+  .uml-conn-line {
+    flex: 1;
+    height: 2px;
+    background: #1E1210;
+  }
+  :global(.dark) .uml-conn-line { background: #64748b; }
+  .uml-conn-tag {
+    background: #FFFDF7;
+    border: 1.5px solid #1E1210;
+    padding: 0.1rem 0.45rem;
+    border-radius: 6px;
+  }
+  :global(.dark) .uml-conn-tag {
+    background: #27272a;
+    border-color: #52525b;
+  }
+
+  .uml-caption {
+    padding: 0.55rem 0.95rem;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    background: #FFFDF7;
+    border-top: 1.5px dashed rgba(30, 18, 16, 0.2);
+  }
+  :global(.dark) .uml-caption {
+    background: #18181b;
+    border-top-color: #3f3f46;
+  }
+
+  /* ── Modal Lightbox ── */
+  .uml-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    align-items: center;
+    justify-content: center;
+  }
+  .uml-modal.is-open { display: flex; }
+
+  .uml-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(8px);
+    cursor: pointer;
+  }
+
+  .uml-modal-container {
+    position: relative;
+    z-index: 1;
+    width: 95vw;
+    height: 90vh;
+    max-width: 1300px;
+    background: #ffffff;
+    border: 3px solid #1E1210;
+    border-radius: 20px;
+    box-shadow: 8px 8px 0px #1E1210;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  :global(.dark) .uml-modal-container {
+    background: #18181b;
+    border-color: #52525b;
+    box-shadow: 8px 8px 0px #09090b;
+  }
+
+  .uml-modal-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1.25rem;
+    background: #FFFDF7;
+    border-bottom: 2.5px solid #1E1210;
+    gap: 1rem;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+  }
+  :global(.dark) .uml-modal-toolbar {
+    background: #27272a;
+    border-bottom-color: #3f3f46;
+  }
+
+  .modal-info {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-width: 0;
+  }
+  .modal-badge {
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 900;
+    padding: 0.2rem 0.55rem;
+    background: #1E1210;
+    color: #ffffff;
+    border-radius: 6px;
+  }
+  :global(.dark) .modal-badge { background: #6366f1; }
+  .modal-title {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 1rem;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .modal-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+  }
+  .ctrl-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 34px;
+    height: 34px;
+    padding: 0 0.55rem;
+    background: #ffffff;
+    border: 2px solid #1E1210;
+    border-radius: 8px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    cursor: pointer;
+    box-shadow: 2px 2px 0px #1E1210;
+    transition: transform 0.1s, box-shadow 0.1s, background-color 0.15s;
+  }
+  :global(.dark) .ctrl-btn {
+    background: #18181b;
+    border-color: #52525b;
+    box-shadow: 2px 2px 0px #09090b;
+    color: #f4f4f5;
+  }
+  .ctrl-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 3px 3px 0px #1E1210;
+    background: #FFF9C4;
+  }
+  :global(.dark) .ctrl-btn:hover {
+    background: #3f3f46;
+    box-shadow: 3px 3px 0px #09090b;
+  }
+  .ctrl-btn-close {
+    background: #EF476F !important;
+    color: #ffffff !important;
+    margin-left: 0.4rem;
+  }
+  .ctrl-btn-close:hover { background: #e11d48 !important; }
+  .zoom-level-text {
+    font-family: ui-monospace, monospace;
+    font-weight: 800;
+    font-size: 0.85rem;
+    min-width: 48px;
+    text-align: center;
+    color: var(--text-primary);
+  }
+
+  .uml-modal-canvas {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    cursor: grab;
+    background: radial-gradient(circle, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+    background-size: 20px 20px;
+    background-color: #f8fafc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    padding: 2rem;
+  }
+  :global(.dark) .uml-modal-canvas {
+    background-color: #0f172a;
+    background-image: radial-gradient(circle, rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+  }
+  .uml-modal-canvas.is-dragging { cursor: grabbing; }
+
+  .uml-modal-stage {
+    transform-origin: center center;
+    transition: transform 0.05s ease-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    width: 100%;
+  }
+
+  .uml-modal-footer {
+    padding: 0.45rem 1rem;
+    background: #FFFDF7;
+    border-top: 1.5px solid rgba(30, 18, 16, 0.15);
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-align: center;
+  }
+  :global(.dark) .uml-modal-footer {
+    background: #27272a;
+    border-top-color: #3f3f46;
+    color: #a1a1aa;
+  }
+
+  @media (max-width: 640px) {
+    .uml-row-children {
+      flex-direction: column;
+      align-items: center;
+    }
+    .uml-box-child {
+      width: 100%;
+      max-width: 100%;
+    }
+    .uml-arrow-branch {
+      display: none;
+    }
+    .uml-connections-layout {
+      flex-direction: column;
+    }
+  }
+</style>

@@ -2,6 +2,7 @@
 import Layout from '../../../../layouts/Layout.astro';
 import CodeBlock from '../../../../components/CodeBlock.astro';
 import JavaQuizModal from '../../../../components/quizzes/JavaQuizModal.astro';
+import EcosistemasVariablesCta from '../../../../components/EcosistemasVariablesCta.astro';
 ---
 
 <Layout title="Variables en Java" description="Tipos primitivos y la magia de los Strings" courseSlug="java">
@@ -113,6 +114,8 @@ System.out.println(texto1 + texto2); // Imprime 510`} />
       <p>¿Recuerdas cuál es un Wrapper y cuál un Primitivo? ¡Supera el test!</p>
       <JavaQuizModal quizKey="variables" />
     </section>
+
+    <EcosistemasVariablesCta code="java" />
 
     <nav class="nav-bottom">
       <a href="/course/java/introduccion/" class="prev">← Introducción</a>

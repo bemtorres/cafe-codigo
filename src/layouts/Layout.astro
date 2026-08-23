@@ -132,7 +132,7 @@ const showLanguageCuriosity =
     {currentCourse?.requiresPassword && (
       <>
         <PasswordProtect courseSlug={currentCourse.slug} />
-        <CourseLoginUnlock client:load courseSlug={currentCourse.slug} />
+        <CourseLoginUnlock client:only="react" courseSlug={currentCourse.slug} />
       </>
     )}
     
@@ -172,21 +172,27 @@ const showLanguageCuriosity =
           </div>
           <!-- Lista de lecciones scrolleable -->
           <ul class="overflow-y-auto px-4 py-4 flex flex-col gap-2 m-0 list-none">
-            {currentCourse.lessons.filter(l => !l.href.includes('simulador')).map((lesson) => (
-              <li>
-                <a
-                  href={lesson.href}
-                  class={`flex items-center gap-3 px-4 py-3 rounded-2xl border-2 font-nunito font-extrabold text-[0.95rem] no-underline transition-all ${
-                    currentPath === lesson.href
-                      ? 'bg-[#06D6A0] text-white border-[#1E1210] shadow-[2px_2px_0px_#1E1210]'
-                      : 'bg-[#F8F8F8] text-[#1E1210] border-[#E5E5E5] hover:border-[#45B3E0] hover:bg-[#E0F7FA]'
-                  }`}
-                >
-                  {currentPath === lesson.href && <span class="shrink-0">▶</span>}
-                  {lesson.title}
-                </a>
-              </li>
-            ))}
+            {currentCourse.lessons.filter(l => !l.href.includes('simulador')).map((lesson) => {
+              const isMatch = currentPath === lesson.href || normalizedPath === lesson.href.replace(/\/$/, '');
+              return (
+                <li class={lesson.isSubItem ? 'pl-4 border-l-2 border-dashed border-[#45B3E0]/40 ml-2' : ''}>
+                  <a
+                    href={lesson.href}
+                    class={`flex items-center gap-3 px-4 py-3 rounded-2xl border-2 font-nunito font-extrabold text-[0.95rem] no-underline transition-all ${
+                      lesson.isSubItem ? 'text-[0.88rem] py-2 bg-[#F4F4F4]' : ''
+                    } ${
+                      isMatch
+                        ? 'bg-[#06D6A0] text-white border-[#1E1210] shadow-[2px_2px_0px_#1E1210]'
+                        : 'bg-[#F8F8F8] text-[#1E1210] border-[#E5E5E5] hover:border-[#45B3E0] hover:bg-[#E0F7FA]'
+                    }`}
+                  >
+                    {lesson.isSubItem && <span class="text-xs opacity-70">↳</span>}
+                    {isMatch && <span class="shrink-0">▶</span>}
+                    {lesson.title}
+                  </a>
+                </li>
+              );
+            })}
           </ul>
           <div class="h-safe-bottom pb-4"></div>
         </div>
@@ -232,8 +238,8 @@ const showLanguageCuriosity =
               <button type="button" class="bg-white/70 border border-black/10 rounded-full px-4 py-2 font-nunito font-extrabold text-textPrimary shadow-[0_14px_34px_rgba(30,18,16,0.08)] hover:-translate-y-0.5 hover:bg-white/95 transition-all outline-none" data-open-modal="langs" aria-haspopup="dialog" aria-controls="langsModal">
                 Explorar
               </button>
-              <a href="/ejercicios/" class="bg-white/70 border border-black/10 rounded-full px-4 py-2 font-nunito font-extrabold text-textPrimary shadow-[0_14px_34px_rgba(30,18,16,0.08)] hover:-translate-y-0.5 hover:bg-white/95 transition-all no-underline">Ejercicios</a>
-              <CafeDelDiaNavBtn client:load />
+              <a href="/challenges/" class="bg-white/70 border border-black/10 rounded-full px-4 py-2 font-nunito font-extrabold text-textPrimary shadow-[0_14px_34px_rgba(30,18,16,0.08)] hover:-translate-y-0.5 hover:bg-white/95 transition-all no-underline">Desafíos</a>
+              <CafeDelDiaNavBtn client:only="react" />
               <a href="https://link.mercadopago.cl/cafeycodigo" target="_blank" rel="noopener noreferrer" class="bg-gradient-to-r from-sky-500 to-blue-600 text-white border border-blue-600 rounded-full px-4 py-2 font-nunito font-extrabold shadow-[0_14px_34px_rgba(30,18,16,0.12)] hover:-translate-y-0.5 hover:shadow-lg transition-all no-underline flex items-center gap-1.5" title="Realizar un aporte al proyecto vía Mercado Pago (Chile)">
                 <span>💙</span> Aportar 🇨🇱
               </a>
@@ -248,7 +254,7 @@ const showLanguageCuriosity =
 
         <div class="flex items-center justify-end gap-4 row-start-1 sm:row-auto col-start-2 sm:col-auto">
           <div class="flex items-center gap-4">
-            <HeaderAuth client:load />
+            <HeaderAuth client:only="react" />
             {currentCourse && (
               <div class="flex items-center">
                 {currentCourse.slug === 'pseint' && (
@@ -552,13 +558,22 @@ const showLanguageCuriosity =
               </button>
             </h3>
             <ul class="flex flex-row lg:flex-col flex-wrap gap-2.5 m-0 p-0 overflow-hidden">
-              {currentCourse.lessons.filter(lesson => !lesson.href.includes('simulador')).map((lesson) => (
-                <li class="w-auto lg:w-full">
-                  <a href={lesson.href} class={`block px-4 py-2 bg-primary text-textPrimary no-underline font-bold text-[0.95rem] rounded-xl border-2 border-border hover:-translate-y-0.5 hover:shadow-[2px_2px_0px_#1E1210] hover:bg-secondary active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all ${currentPath === lesson.href ? 'bg-success text-white' : ''}`}>
-                    {lesson.title}
-                  </a>
-                </li>
-              ))}
+              {currentCourse.lessons.filter(lesson => !lesson.href.includes('simulador')).map((lesson) => {
+                const isMatch = currentPath === lesson.href || normalizedPath === lesson.href.replace(/\/$/, '');
+                return (
+                  <li class={`w-auto lg:w-full ${lesson.isSubItem ? 'lg:pl-3 lg:border-l-2 lg:border-dashed lg:border-[#1E1210]/30 lg:ml-2' : ''}`}>
+                    <a
+                      href={lesson.href}
+                      class={`block px-4 py-2 bg-primary text-textPrimary no-underline font-bold text-[0.95rem] rounded-xl border-2 border-border hover:-translate-y-0.5 hover:shadow-[2px_2px_0px_#1E1210] hover:bg-secondary active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all ${
+                        lesson.isSubItem ? 'text-[0.88rem] py-1.5 bg-[#FFF9EE]' : ''
+                      } ${isMatch ? 'bg-success text-white' : ''}`}
+                    >
+                      {lesson.isSubItem && <span class="text-xs mr-1 opacity-70">↳</span>}
+                      {lesson.title}
+                    </a>
+                  </li>
+                );
+              })}
             </ul>
           </div>
         </aside>
@@ -569,7 +584,7 @@ const showLanguageCuriosity =
         {isCourseHome && currentCourse && (
           <div class="embed-hide">
             <CourseFavoriteButton
-              client:load
+              client:only="react"
               courseSlug={currentCourse.slug}
               courseName={currentCourse.name}
             />
@@ -579,7 +594,7 @@ const showLanguageCuriosity =
           <div class="embed-hide flex items-center justify-between gap-3 mb-2 flex-wrap">
             <div class="flex-1 min-w-[220px]">
               <LessonBookmarkToggle
-                client:load
+                client:only="react"
                 courseSlug={currentCourse.slug}
                 lessonSlug={currentLesson.slug}
                 lessonTitle={currentLesson.title}
@@ -604,7 +619,7 @@ const showLanguageCuriosity =
         {currentCourse && currentLesson && (
           <div class="embed-hide mt-6 flex justify-end">
             <ShareEmbedButton
-              client:load
+              client:only="react"
               courseSlug={currentCourse.slug}
               lessonSlug={currentLesson.slug}
               courseName={currentCourse.name}
@@ -1964,7 +1979,7 @@ const showLanguageCuriosity =
             <span class="text-[10px] font-nunito font-extrabold tracking-wide">Ko-fi</span>
           </button>
 
-          <MobileNavProfile client:load />
+          <MobileNavProfile client:only="react" />
 
         </div>
       )}
@@ -2088,7 +2103,7 @@ const showLanguageCuriosity =
     </script>
 
     {/* Widget flotante del temporizador del café */}
-    <div class="embed-hide pdf-hide"><CoffeeTimerWidget client:load /></div>
+    <div class="embed-hide pdf-hide"><CoffeeTimerWidget client:only="react" /></div>
 
     {courseSlug === 'unity-prototipado' && (
       <>

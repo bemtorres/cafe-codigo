@@ -197,6 +197,62 @@ export const archQuizBank: Record<string, ArchQuizDefinition> = {
       }
     ]
   },
+  'diagramas-clases': {
+    key: 'diagramas-clases',
+    title: 'Quiz: Diagramas de Clases',
+    questions: [
+      {
+        prompt: "En UML, ¿qué compartimentos tiene el rectángulo de una clase?",
+        options: ["Solo el nombre", "Nombre, atributos y métodos", "Solo código", "Solo relaciones"],
+        correctIndex: 1
+      },
+      {
+        prompt: "¿Qué significa '-' delante de un atributo como - titulo: String?",
+        options: ["Público", "Privado", "Protegido", "Estático"],
+        correctIndex: 1
+      },
+      {
+        prompt: "¿Cómo se reconoce un constructor en el diagrama?",
+        options: ["Tiene tipo de retorno void", "Se llama igual que la clase y sin tipo de retorno", "Siempre es privado", "Lleva <<interface>>"],
+        correctIndex: 1
+      },
+      {
+        prompt: "En Java, si un atributo es boolean, ¿cómo se llama el getter?",
+        options: ["getPrestado()", "isPrestado()", "hasPrestado()", "checkPrestado()"],
+        correctIndex: 1
+      },
+      {
+        prompt: "¿Qué representa el diamante ◆ (lleno) en un diagrama UML?",
+        options: ["Herencia", "Composición — la parte no existe sin el todo", "Interface", "Asociación débil"],
+        correctIndex: 1
+      },
+      {
+        prompt: "¿Qué relación implica 'class Libro extends Publicacion'?",
+        options: ["Composición", "Herencia — Libro es una Publicacion", "Interface", "Asociación"],
+        correctIndex: 1
+      },
+      {
+        prompt: "¿Qué diferencia tiene una interface vs una clase abstracta en Java?",
+        options: ["No hay diferencia", "Una interface no tiene constructores ni atributos con estado", "Una interface es más lenta", "Una interface siempre es privada"],
+        correctIndex: 1
+      },
+      {
+        prompt: "¿Cuántas interfaces puede implementar una clase en Java?",
+        options: ["Solo una", "Ninguna", "Múltiples", "Depende del compilador"],
+        correctIndex: 2
+      },
+      {
+        prompt: "En el diagrama, ¿cómo se representa una interface?",
+        options: ["Con <<interface>> en la cabecera y flecha punteada", "Con un círculo", "Con un cuadrado negro", "No se puede representar"],
+        correctIndex: 0
+      },
+      {
+        prompt: "¿Cuál es la diferencia entre asociación (◇) y composición (◆)?",
+        options: ["No hay diferencia", "Asociación: la parte sobrevive al todo. Composición: la parte muere con el todo", "Composición es más rápida", "Asociación solo sirve para interfaces"],
+        correctIndex: 1
+      }
+    ]
+  },
   'conclusion': {
     key: 'conclusion',
     title: 'Quiz: Repaso General',

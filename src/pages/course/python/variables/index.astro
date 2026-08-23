@@ -2,6 +2,7 @@
 import Layout from '../../../../layouts/Layout.astro';
 import CodeBlock from '../../../../components/CodeBlock.astro';
 import PythonQuizModal from '../../../../components/quizzes/PythonQuizModal.astro';
+import EcosistemasVariablesCta from '../../../../components/EcosistemasVariablesCta.astro';
 ---
 
 <Layout title="Variables en Python" description="Tipos de datos y el poder de input() para interactuar." courseSlug="python">
@@ -120,6 +121,8 @@ print(f"Tienes o cumplirás {edad_actual} años")`} title="Python" />
       <h2>Prueba sobre Variables</h2>
       <PythonQuizModal quizKey="variables" />
     </section>
+
+    <EcosistemasVariablesCta code="python" />
 
     <nav class="nav-bottom">
       <a href="/course/python/introduccion/" class="prev">← El comienzo</a>

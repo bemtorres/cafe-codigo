@@ -165,5 +165,41 @@ export const ecosystemsQuizBank: Record<string, EcoQuizDefinition> = {
         correctIndex: 1
       }
     ]
+  },
+  'variables-convenciones': {
+    key: 'variables-convenciones',
+    title: 'Quiz: Variables y Convenciones',
+    questions: [
+      {
+        prompt: "En Python, ¿cómo se escribe correctamente una variable que guarda el saldo actual?",
+        options: ["saldoActual", "saldo_actual", "SaldoActual", "SALDO_ACTUAL"],
+        correctIndex: 1
+      },
+      {
+        prompt: "En Java y JavaScript, ¿qué estilo usan los métodos y variables?",
+        options: ["snake_case", "PascalCase", "camelCase", "kebab-case"],
+        correctIndex: 2
+      },
+      {
+        prompt: "¿Qué diferencia clave tiene C# respecto a Java en los métodos públicos?",
+        options: ["C# usa snake_case y Java camelCase", "C# usa PascalCase (CalcularTotal) y Java camelCase (calcularTotal)", "No hay diferencia", "C# usa kebab-case"],
+        correctIndex: 1
+      },
+      {
+        prompt: "En PHP, ¿cómo se reconoce una variable?",
+        options: ["Siempre empieza con $ y usa camelCase ($saldoActual)", "Sin símbolo, en PascalCase", "Con # y snake_case", "Con @ y UPPER_SNAKE"],
+        correctIndex: 0
+      },
+      {
+        prompt: "¿Cómo se escribe por convención una constante como MAX_LIMITE en casi todos los lenguajes?",
+        options: ["maxLimite", "MaxLimite", "MAX_LIMITE", "max_limite"],
+        correctIndex: 2
+      },
+      {
+        prompt: "En C++, ¿qué es lo más importante respecto a convenciones?",
+        options: ["Siempre usar snake_case", "Siempre usar camelCase", "Elegir un estilo (camelCase o snake_case) y ser consistente", "Usar PascalCase para todo"],
+        correctIndex: 2
+      }
+    ]
   }
 };

@@ -1,0 +1,56 @@
+---
+interface Props {
+  heading?: string;
+}
+const { heading = 'Banco de ejercicios de Herencia' } = Astro.props;
+---
+
+<aside class="poo-cta" aria-label="Ejercicios de herencia">
+  <p class="poo-cta-kicker">Práctica transversal — Herencia</p>
+  <h3>{heading}</h3>
+  <p>
+    20 jerarquías <strong>base + 3 hijas</strong> con diagrama de clases. Practica herencia y polimorfismo en Python, Java, C#, C++, Kotlin o PHP.
+  </p>
+  <a href="/challenges/inheritance/">Ir a /challenges/inheritance →</a>
+</aside>
+
+<style>
+  .poo-cta {
+    margin: 1.5rem 0;
+    padding: 1.1rem 1.2rem;
+    border-radius: 18px;
+    background: linear-gradient(135deg, rgba(30, 18, 16, 0.08), rgba(255, 249, 196, 0.92));
+    border: 2px solid rgba(30, 18, 16, 0.18);
+    box-shadow: 0 14px 34px rgba(30, 18, 16, 0.08);
+  }
+  .poo-cta-kicker {
+    margin: 0;
+    font-size: 0.7rem;
+    font-weight: 900;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #1e1210;
+  }
+  .poo-cta h3 {
+    margin: 0.2rem 0 0.45rem;
+    font-size: 1.15rem;
+  }
+  .poo-cta p {
+    margin: 0 0 0.85rem;
+    font-weight: 650;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+  .poo-cta a {
+    display: inline-block;
+    text-decoration: none;
+    font-weight: 900;
+    color: #fff8ee;
+    background: #1e1210;
+    border-radius: 999px;
+    padding: 0.45rem 1rem;
+  }
+  .poo-cta a:hover {
+    background: #2d2321;
+  }
+</style>

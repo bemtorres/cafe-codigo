@@ -1,4 +1,4 @@
-﻿---
+---
 import Layout from '../../../layouts/Layout.astro';
 import { courses } from '../../../data/courses';
 
@@ -29,15 +29,19 @@ if (!archCourse) {
     </header>
 
     <div class="cards-grid">
-      {archCourse.lessons?.map((lesson, index) => (
-        <a href={lesson.href} class="lesson-card">
-          <div class="lesson-card__number">{index + 1}</div>
-          <div class="lesson-card__content">
-            <h3 class="lesson-card__title">𓃠 {lesson.title}</h3>
-            <span class="lesson-card__cta">Descifrar pergamino →</span>
-          </div>
-        </a>
-      ))}
+      {archCourse.lessons?.map((lesson, index) => {
+        const numMatch = lesson.title.match(/^(\d+(\.\d+)?)/);
+        const displayNum = numMatch ? numMatch[1] : `${index + 1}`;
+        return (
+          <a href={lesson.href} class={`lesson-card ${lesson.isSubItem ? 'lesson-card--sub' : ''}`}>
+            <div class="lesson-card__number">{displayNum}</div>
+            <div class="lesson-card__content">
+              <h3 class="lesson-card__title">𓃠 {lesson.title}</h3>
+              <span class="lesson-card__cta">Descifrar pergamino →</span>
+            </div>
+          </a>
+        );
+      })}
     </div>
   </div>
 </Layout>

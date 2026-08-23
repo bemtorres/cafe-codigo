@@ -12,7 +12,11 @@ export type PooChallenge = {
   task: string;
   base: UmlClassSpec;
   children: UmlClassSpec[];
+  interfaceBase?: UmlClassSpec; // interfaz de nivel superior (3 niveles: interface → abstract → hijas)
+  abstractParent?: UmlClassSpec; // clase abstracta intermedia (3 niveles: interface → abstract → hijas)
 };
+
+export type PooLevel = 'basico' | 'herencia';
 
 export const pooCourseLessons: { course: string; title: string; href: string }[] = [
   { course: 'Python', title: '14. Clases y Objetos', href: '/course/python/poo/' },
@@ -28,7 +32,142 @@ export const pooCourseLessons: { course: string; title: string; href: string }[]
   { course: 'PHP', title: '4. POO en PHP', href: '/course/php/poo/' },
 ];
 
-export const pooChallenges: PooChallenge[] = [
+// ── BÁSICO: una sola clase por ejercicio (sin herencia) ──
+export const pooBasicChallenges: PooChallenge[] = [
+  {
+    id: 1,
+    slug: 'lampara-mesa',
+    title: 'Lámpara de Mesa',
+    context: 'Una lámpara con brillo regulable. Debe recordar si está encendida y en qué nivel está.',
+    task: 'Implementa la clase Lampara. Crea una lámpara, enciéndela, cambia el brillo a 2 y luego apágala. Valida que el nivel sea 1-3.',
+    base: {
+      name: 'Lampara',
+      attrs: ['color', 'esta_encendida', 'nivel_brillo: 1..3'],
+      methods: ['encender()', 'apagar()', 'cambiar_brillo(nuevo_nivel)'],
+    },
+    children: [],
+  },
+  {
+    id: 2,
+    slug: 'taza-cafe',
+    title: 'Taza de Café',
+    context: 'Una taza con capacidad fija que se llena, se bebe y se vacía.',
+    task: 'Implementa Taza. Llena con "café", bebe 80 ml, intenta beber más de lo disponible y vacíala.',
+    base: {
+      name: 'Taza',
+      attrs: ['capacidad_ml', 'cantidad_actual_ml', 'tipo_bebida'],
+      methods: ['llenar(tipo)', 'beber(ml_a_tomar)', 'vaciar()'],
+    },
+    children: [],
+  },
+  {
+    id: 3,
+    slug: 'semaforo',
+    title: 'Semáforo',
+    context: 'Un semáforo de calle que solo admite Rojo, Amarillo o Verde y puede quedar fuera de servicio.',
+    task: 'Implementa Semaforo. Cambia a Verde, luego a Amarillo y simula una falla con apagar_por_falla().',
+    base: {
+      name: 'Semaforo',
+      attrs: ['color_luz: Rojo|Amarillo|Verde', 'ubicacion_calle', 'esta_operativo'],
+      methods: ['cambiar_luz(nuevo_color)', 'apagar_por_falla()'],
+    },
+    children: [],
+  },
+  {
+    id: 4,
+    slug: 'termometro-digital',
+    title: 'Termómetro Digital',
+    context: 'Un termómetro que mide, convierte unidad y muestra la lectura.',
+    task: 'Implementa Termometro. Toma 36.6°C, muestra la lectura, cambia a Fahrenheit y vuelve a mostrar.',
+    base: {
+      name: 'Termometro',
+      attrs: ['temperatura_actual', 'unidad: Celsius|Fahrenheit'],
+      methods: ['tomar_temperatura(valor)', 'cambiar_unidad()', 'mostrar_lectura()'],
+    },
+    children: [],
+  },
+  {
+    id: 5,
+    slug: 'reloj-despertador',
+    title: 'Reloj Despertador',
+    context: 'Un despertador que guarda la hora actual, la alarma y si suena.',
+    task: 'Implementa RelojDespertador. Configura alarma a las 07:00, actívala y llama a sonar_alarma().',
+    base: {
+      name: 'RelojDespertador',
+      attrs: ['hora_actual', 'hora_alarma', 'alarma_activada'],
+      methods: ['configurar_alarma(hora)', 'activar_alarma()', 'sonar_alarma()'],
+    },
+    children: [],
+  },
+  {
+    id: 6,
+    slug: 'puerta-acceso',
+    title: 'Puerta de Acceso',
+    context: 'Una puerta que se abre/cierra y se bloquea con llave. No se puede abrir si está con llave.',
+    task: 'Implementa Puerta. Intenta abrir con llave puesta (debe fallar), quita la llave y abre.',
+    base: {
+      name: 'Puerta',
+      attrs: ['material', 'esta_abierta', 'esta_con_llave'],
+      methods: ['abrir()', 'cerrar()', 'poner_llave()', 'quitar_llave()'],
+    },
+    children: [],
+  },
+  {
+    id: 7,
+    slug: 'marcador-puntos',
+    title: 'Marcador de Puntos (Score)',
+    context: 'Marcador de dos jugadores con tiempo restante.',
+    task: 'Implementa MarcadorJuego. Suma 2 puntos a J1, 1 a J2, muestra el marcador y reinícialo.',
+    base: {
+      name: 'MarcadorJuego',
+      attrs: ['puntos_jugador_1', 'puntos_jugador_2', 'tiempo_restante_segundos'],
+      methods: ['sumar_punto_j1()', 'sumar_punto_j2()', 'reiniciar_marcador()'],
+    },
+    children: [],
+  },
+  {
+    id: 8,
+    slug: 'alcancia-ahorro',
+    title: 'Alcancía de Ahorro',
+    context: 'Alcancía que guarda dinero hasta su capacidad y se rompe para retirarlo.',
+    task: 'Implementa Alcancia. Guarda $5000, intenta exceder la capacidad (debe rechazar) y rompe la alcancía.',
+    base: {
+      name: 'Alcancia',
+      attrs: ['dueno', 'total_ahorrado', 'capacidad_maxima'],
+      methods: ['guardar_dinero(monto)', 'romper_alcancia()', 'ver_total()'],
+    },
+    children: [],
+  },
+  {
+    id: 9,
+    slug: 'billetera-simple',
+    title: 'Billetera Simple',
+    context: 'Billetera con saldo que se carga y se gasta. No permite gastar más de lo disponible.',
+    task: 'Implementa Billetera. Agrega $10000, gasta $3500, intenta gastar $10000 de nuevo (debe fallar) y consulta el saldo.',
+    base: {
+      name: 'Billetera',
+      attrs: ['titular', 'dinero_disponible'],
+      methods: ['agregar_dinero(monto)', 'gastar_dinero(monto)', 'consultar_plata()'],
+    },
+    children: [],
+  },
+  {
+    id: 10,
+    slug: 'ventilador',
+    title: 'Ventilador',
+    context: 'Ventilador con 4 velocidades (0 apagado .. 3 máxima) que puede girar oscilando.',
+    task: 'Implementa Ventilador. Sube a velocidad 2, activa el giro, baja a 1 y apaga.',
+    base: {
+      name: 'Ventilador',
+      attrs: ['marca', 'velocidad: 0..3', 'esta_girando'],
+      methods: ['subir_velocidad()', 'bajar_velocidad()', 'alternar_giro()', 'apagar()'],
+    },
+    children: [],
+  },
+];
+
+// ── HERENCIA / AVANZADO: jerarquías base + hijas (20 ejercicios) ──
+export const pooHerenciaChallenges: PooChallenge[] = [
   {
     id: 1,
     slug: 'personas-educativo',
@@ -288,12 +427,17 @@ export const pooChallenges: PooChallenge[] = [
     id: 16,
     slug: 'piezas-tablero',
     title: 'Entidades de Tablero en Juegos de Mesa',
-    context: 'Las piezas se mueven en una grilla; peón, caballo y dama no se mueven igual.',
-    task: 'Implementa mover() (puede ser un print de la nueva posición). El peón debe poder promoverse.',
+    context: 'Las piezas se mueven en una grilla; la interfaz define la capacidad de movimiento, la clase abstracta guarda las coordenadas comunes y peón, caballo o dama definen su cinemática.',
+    task: 'Implementa la interfaz Movible con mover() y estaEnTablero(). La clase abstracta PiezaJuego implementa Movible y guarda color y posición. PeonAjedrez, CaballoAjedrez y FichaDamas heredan de PiezaJuego.',
     base: {
+      name: '«interface» Movible',
+      attrs: [],
+      methods: ['mover()', 'estaEnTablero(): boolean'],
+    },
+    abstractParent: {
       name: 'PiezaJuego',
       attrs: ['color', 'posicion_fila', 'posicion_columna'],
-      methods: ['mover()'],
+      methods: ['mover()', 'estaEnTablero(): boolean'],
     },
     children: [
       { name: 'PeonAjedrez', attrs: ['es_primer_movimiento'], methods: ['promover()'] },
@@ -305,12 +449,17 @@ export const pooChallenges: PooChallenge[] = [
     id: 17,
     slug: 'publicaciones-redes',
     title: 'Publicaciones en Redes Sociales',
-    context: 'Todo post recibe likes; el contenido puede ser texto, video o una historia que expira.',
-    task: 'Da like a cada publicación. En la historia llama verificar_expiracion() con una fecha/hora simulada.',
+    context: 'Todo post recibe interacción; la interfaz define el contrato social, la clase abstracta centraliza el autor y fecha, y las publicaciones especializan su contenido.',
+    task: 'Implementa la interfaz Interactuable con dar_like() y compartir(). La clase abstracta Publicacion implementa el contrato y comparte metadatos. PostTexto, PostVideo e HistoriaTemporal heredan y especializan.',
     base: {
+      name: '«interface» Interactuable',
+      attrs: [],
+      methods: ['dar_like()', 'compartir()', 'getContadorLikes(): int'],
+    },
+    abstractParent: {
       name: 'Publicacion',
       attrs: ['id_post', 'autor', 'fecha_hora', 'contador_likes'],
-      methods: ['dar_like()'],
+      methods: ['dar_like()', 'compartir()', 'getContadorLikes(): int'],
     },
     children: [
       { name: 'PostTexto', attrs: ['contenido_caracteres'], methods: [] },
@@ -322,12 +471,17 @@ export const pooChallenges: PooChallenge[] = [
     id: 18,
     slug: 'habitaciones-hotel',
     title: 'Habitaciones de un Hotel',
-    context: 'El PMS reserva cualquier habitación igual; el tipo cambia camas, vista y amenities.',
-    task: 'Reserva las tres habitaciones. Imprime precio_noche y el detalle extra de cada hija.',
+    context: 'El PMS reserva cualquier estancia igual; la interfaz define el contrato de reserva, la abstracta almacena tarifa y limpieza, y cada tipo de habitación añade sus comodidades.',
+    task: 'Define el contrato Reservable con reservar() y getPrecioNoche(). La clase abstracta Habitacion gestiona número, precio y estado. HabitacionSimple, HabitacionDoble y SuitePresidencial heredan de Habitacion.',
     base: {
+      name: '«interface» Reservable',
+      attrs: [],
+      methods: ['reservar()', 'cancelarReserva()', 'getPrecioNoche(): double'],
+    },
+    abstractParent: {
       name: 'Habitacion',
       attrs: ['numero_habitacion', 'precio_noche', 'estado_limpieza'],
-      methods: ['reservar()'],
+      methods: ['reservar()', 'cancelarReserva()', 'getPrecioNoche(): double'],
     },
     children: [
       { name: 'HabitacionSimple', attrs: ['tamano_cama'], methods: [] },
@@ -339,12 +493,17 @@ export const pooChallenges: PooChallenge[] = [
     id: 19,
     slug: 'motores-bd',
     title: 'Trabajos / Conexiones en Base de Datos',
-    context: 'Los drivers hablan distinto, pero conectar y ejecutar consulta es el contrato común.',
-    task: 'Implementa conectar() y ejecutar_consulta() en la base (pueden ser prints). Instancia MySQL, PostgreSQL y MongoDB.',
+    context: 'Los drivers hablan protocolos distintos pero comparten el contrato de conectividad; la interfaz define conectar/ejecutar, la abstracta almacena credenciales y las clases concretas operan.',
+    task: 'Define la interfaz Conectable con conectar() y ejecutar_consulta(). La abstracta MotorBaseDatos guarda host/puerto/usuario. ConexionMySQL, ConexionPostgreSQL y ConexionMongoDB implementan la conexión.',
     base: {
+      name: '«interface» Conectable',
+      attrs: [],
+      methods: ['conectar()', 'desconectar()', 'ejecutar_consulta()'],
+    },
+    abstractParent: {
       name: 'MotorBaseDatos',
       attrs: ['host', 'puerto', 'usuario'],
-      methods: ['conectar()', 'ejecutar_consulta()'],
+      methods: ['conectar()', 'desconectar()', 'ejecutar_consulta()'],
     },
     children: [
       { name: 'ConexionMySQL', attrs: ['charset', 'autocommit'], methods: [] },
@@ -356,12 +515,17 @@ export const pooChallenges: PooChallenge[] = [
     id: 20,
     slug: 'plantas-vegetacion',
     title: 'Plantas y Vegetación',
-    context: 'El invernadero riega todas las plantas; cactus, frutales e interiores piden cuidados distintos.',
-    task: 'Riega las tres plantas. Ajusta el mensaje de regar() según el tipo (por ejemplo, el cactus avisa la frecuencia).',
+    context: 'El invernadero gestiona el cuidado botánico; la interfaz define el ciclo de cultivo, la clase abstracta modela nombre y humedad base, y cactus o frutales aplican cuidados específicos.',
+    task: 'Define la interfaz Cultivable con regar() y podar(). La clase abstracta Planta define las propiedades botánicas base. Cactus, ArbolFrutal y PlantaInterior heredan y personalizan su rutina.',
     base: {
+      name: '«interface» Cultivable',
+      attrs: [],
+      methods: ['regar()', 'podar()', 'getHumedad(): int'],
+    },
+    abstractParent: {
       name: 'Planta',
       attrs: ['nombre_cientifico', 'altura_cm', 'nivel_humedad'],
-      methods: ['regar()'],
+      methods: ['regar()', 'podar()', 'getHumedad(): int'],
     },
     children: [
       { name: 'Cactus', attrs: ['frecuencia_riego_dias', 'tiene_espinas'], methods: [] },
@@ -371,16 +535,56 @@ export const pooChallenges: PooChallenge[] = [
   },
 ];
 
+// Alias histórico: los 20 de herencia (compatibilidad)
+export const pooChallenges: PooChallenge[] = pooHerenciaChallenges;
+
 export function toMermaid(challenge: PooChallenge): string {
-  const block = (cls: UmlClassSpec) => {
-    const lines = [...cls.attrs.map((a) => `    +${a}`), ...cls.methods.map((m) => `    +${m}`)];
-    return `  class ${cls.name} {\n${lines.join('\n')}\n  }`;
+  const clean = (s: string) => s.trim().replace(/^([+\-#~])\s*/, '$1');
+  const fmtMember = (m: string) => {
+    const t = clean(m);
+    if (!t) return '';
+    if (t.startsWith('+') || t.startsWith('-') || t.startsWith('#') || t.startsWith('~')) return t;
+    return `+${t}`;
   };
-  return [
-    'classDiagram',
-    `  direction TB`,
-    block(challenge.base),
-    ...challenge.children.map(block),
-    ...challenge.children.map((child) => `  ${challenge.base.name} <|-- ${child.name}`),
-  ].join('\n');
+
+  const block = (cls: UmlClassSpec, stereotype?: string) => {
+    const cleanName = cls.name.replace(/«[^»]+»\s*/, '').trim();
+    const lines = [
+      ...cls.attrs.map((a) => `        ${fmtMember(a)}`),
+      ...cls.methods.map((m) => `        ${fmtMember(m)}`),
+    ];
+    const st = stereotype ? `\n        <<${stereotype}>>` : '';
+    return `    class ${cleanName} {${st}\n${lines.join('\n')}\n    }`;
+  };
+
+  const lines = ['classDiagram', '    direction TB'];
+  const baseName = challenge.base.name.replace(/«[^»]+»\s*/, '').trim();
+  const isBaseInterface = challenge.base.name.includes('«interface»') || !!challenge.interfaceBase;
+
+  if (challenge.abstractParent) {
+    const ifaceName = baseName;
+    const absName = challenge.abstractParent.name.replace(/«[^»]+»\s*/, '').trim();
+    lines.push(block({ ...challenge.base, name: ifaceName }, 'interface'));
+    lines.push(block({ ...challenge.abstractParent, name: absName }, 'abstract'));
+    lines.push(`    ${ifaceName} <|.. ${absName} : implements`);
+    for (const child of challenge.children) {
+      const childName = child.name.replace(/«[^»]+»\s*/, '').trim();
+      lines.push(block({ ...child, name: childName }));
+      lines.push(`    ${absName} <|-- ${childName}`);
+    }
+  } else if (challenge.children.length > 0) {
+    lines.push(block({ ...challenge.base, name: baseName }, isBaseInterface ? 'interface' : undefined));
+    const rel = isBaseInterface ? '<|..' : '<|--';
+    const label = isBaseInterface ? ' : implements' : '';
+    for (const child of challenge.children) {
+      const childName = child.name.replace(/«[^»]+»\s*/, '').trim();
+      lines.push(block({ ...child, name: childName }));
+      lines.push(`    ${baseName} ${rel} ${childName}${label}`);
+    }
+  } else {
+    // Clase única
+    lines.push(block({ ...challenge.base, name: baseName }));
+  }
+
+  return lines.join('\n');
 }
