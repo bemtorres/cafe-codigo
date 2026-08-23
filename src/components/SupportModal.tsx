@@ -8,22 +8,10 @@ export default function SupportModal() {
     const handleOpenModal = () => setIsOpen(true);
     window.addEventListener('open-support-modal', handleOpenModal);
 
-    // Revisar si ya se mostró en esta sesión o si se pidió no volver a mostrar hoy
-    const dontShowToday = localStorage.getItem('cyc_support_modal_dismissed_today');
-    const todayStr = new Date().toDateString();
-
-    if (dontShowToday === todayStr) {
-      return () => window.removeEventListener('open-support-modal', handleOpenModal);
-    }
-
-    // Auto-mostrar suavemente tras 1.8 segundos solo en el primer inicio de sesión
+    // Abrir automáticamente tras 1 segundo siempre que se ingrese al sitio
     const timer = setTimeout(() => {
-      const shownThisSession = sessionStorage.getItem('cyc_support_modal_shown');
-      if (!shownThisSession) {
-        setIsOpen(true);
-        sessionStorage.setItem('cyc_support_modal_shown', 'true');
-      }
-    }, 1800);
+      setIsOpen(true);
+    }, 1000);
 
     return () => {
       clearTimeout(timer);
@@ -122,10 +110,10 @@ export default function SupportModal() {
         {/* Footer del Modal */}
         <div className="flex items-center justify-between pt-3 border-t border-slate-200 text-xs font-bold text-slate-500">
           <button
-            onClick={handleDismissToday}
+            onClick={() => setIsOpen(false)}
             className="text-slate-400 hover:text-slate-600 underline cursor-pointer bg-transparent border-0 p-0 text-[0.72rem]"
           >
-            No volver a mostrar hoy
+            Cerrar
           </button>
           <a
             href="/colaboradores/"
