@@ -18,6 +18,7 @@ import MobileNavProfile from '../components/auth/MobileNavProfile';
 import LessonBookmarkToggle from '../components/auth/LessonBookmarkToggle';
 import CourseFavoriteButton from '../components/auth/CourseFavoriteButton';
 import CourseLoginUnlock from '../components/auth/CourseLoginUnlock';
+import SupportModal from '../components/SupportModal';
 import LanguageCuriosity from '../components/LanguageCuriosity.astro';
 import LayoutEmbedPdfHead from './LayoutEmbedPdfHead.astro';
 
@@ -240,9 +241,14 @@ const showLanguageCuriosity =
               </button>
               <a href="/challenges/" class="bg-white/70 border border-black/10 rounded-full px-4 py-2 font-nunito font-extrabold text-textPrimary shadow-[0_14px_34px_rgba(30,18,16,0.08)] hover:-translate-y-0.5 hover:bg-white/95 transition-all no-underline">Desafíos</a>
               <CafeDelDiaNavBtn client:only="react" />
-              <a href="https://link.mercadopago.cl/cafeycodigo" target="_blank" rel="noopener noreferrer" class="bg-gradient-to-r from-sky-500 to-blue-600 text-white border border-blue-600 rounded-full px-4 py-2 font-nunito font-extrabold shadow-[0_14px_34px_rgba(30,18,16,0.12)] hover:-translate-y-0.5 hover:shadow-lg transition-all no-underline flex items-center gap-1.5" title="Realizar un aporte al proyecto vía Mercado Pago (Chile)">
-                <span>💙</span> Aportar 🇨🇱
-              </a>
+              <button
+                type="button"
+                onclick="window.dispatchEvent(new Event('open-support-modal'))"
+                class="bg-gradient-to-r from-sky-500 to-blue-600 text-white border border-blue-600 rounded-full px-4 py-2 font-nunito font-extrabold shadow-[0_14px_34px_rgba(30,18,16,0.12)] hover:-translate-y-0.5 hover:shadow-lg transition-all flex items-center gap-1.5 cursor-pointer"
+                title="Aportar por Mercado Pago o Ko-fi"
+              >
+                <span>💙</span> Aportar
+              </button>
             </div>
           ) : currentCourse?.slug === 'pseint' ? (
             <span class="inline-flex items-center gap-1.5 bg-tertiary text-info border-2 border-info px-3 py-1 rounded-full text-sm font-extrabold font-nunito">
@@ -2102,8 +2108,9 @@ const showLanguageCuriosity =
       })();
     </script>
 
-    {/* Widget flotante del temporizador del café */}
+    {/* Widget flotante del temporizador del café y Modal de Aportes */}
     <div class="embed-hide pdf-hide"><CoffeeTimerWidget client:only="react" /></div>
+    <div class="embed-hide pdf-hide"><SupportModal client:only="react" /></div>
 
     {courseSlug === 'unity-prototipado' && (
       <>
