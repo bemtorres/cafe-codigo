@@ -169,15 +169,9 @@ export default function SponsorsWall() {
                 <img
                   src={sp.avatar}
                   alt={sp.name}
-                  className="w-10 h-10 rounded-xl border border-[#1E1210] object-cover shadow-[1px_1px_0px_#1E1210] bg-amber-50"
+                  className="w-10 h-10 rounded-3xl border border-[#1E1210] object-cover shadow-[1px_1px_0px_#1E1210] bg-amber-50"
                   loading="lazy"
                 />
-                <span
-                  className="absolute -bottom-1 -right-1 flex h-4.5 w-4.5 items-center justify-center rounded-full border border-[#1E1210] bg-amber-400 text-[0.6rem] shadow-xs"
-                  title={`${sp.coffeeCount} cafés donados`}
-                >
-                  ☕
-                </span>
               </div>
 
               <div className="min-w-0 flex-1">
