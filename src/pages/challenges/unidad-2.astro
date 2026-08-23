@@ -99,11 +99,17 @@ const exercises = [
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-2" id="quickList">
         {exercises.map((ex) => (
-          <a href={`#u2-${ex.id}`} class="quick-item search-target" data-keywords={ex.title.toLowerCase()}>
-            <span class="quick-num">{String(ex.id).padStart(2, '0')}</span>
-            <span class="quick-title">{ex.title}</span>
-            <span class="quick-arrow">↓</span>
-          </a>
+          <div class="quick-item search-target" data-keywords={ex.title.toLowerCase()} data-quick-id={`u2-${ex.id}`}>
+            <label class="flex items-center cursor-pointer p-0.5 shrink-0" title="Marcar como completado">
+              <input type="checkbox" data-complete-id={`u2-${ex.id}`} class="w-4 h-4 accent-emerald-600 rounded cursor-pointer" />
+            </label>
+            <a href={`#u2-${ex.id}`} class="quick-link flex items-center gap-2.5 flex-1 min-w-0 no-underline text-inherit">
+              <span class="quick-num">{String(ex.id).padStart(2, '0')}</span>
+              <span class="quick-title">{ex.title}</span>
+              <span class="quick-badge-done hidden text-[0.65rem] font-bold bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded border border-emerald-300">✓ Hecho</span>
+              <span class="quick-arrow">↓</span>
+            </a>
+          </div>
         ))}
       </div>
     </section>
@@ -118,13 +124,22 @@ const exercises = [
 
       <div id="exerciseList" class="flex flex-col gap-3">
         {exercises.map((ex) => (
-          <details class="ex-card border-2 border-[#1E1210] bg-white rounded-2xl p-4 shadow-[3px_3px_0px_#1E1210] search-target" id={`u2-${ex.id}`} data-ex-id={`u2-${ex.id}`} data-keywords={ex.title.toLowerCase()}>
+          <details class="ex-card border-2 border-[#1E1210] bg-white rounded-2xl p-4 shadow-[3px_3px_0px_#1E1210] search-target transition-all" id={`u2-${ex.id}`} data-ex-id={`u2-${ex.id}`} data-keywords={ex.title.toLowerCase()}>
             <summary class="ex-summary flex items-center justify-between cursor-pointer font-nunito font-black select-none">
               <div class="flex items-center gap-3 pr-2 min-w-0">
                 <span class="ex-num w-8 h-8 rounded-xl bg-[#10b981] text-white flex items-center justify-center text-xs shrink-0">{String(ex.id).padStart(2, '0')}</span>
-                <h3 class="m-0 text-sm sm:text-base text-[#1E1210] truncate">{ex.id}. {ex.title}</h3>
+                <h3 class="m-0 text-sm sm:text-base text-[#1E1210] truncate flex items-center gap-2">
+                  <span>{ex.id}. {ex.title}</span>
+                  <span class="card-done-tag hidden text-xs font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-md border border-emerald-300">✓ Completado</span>
+                </h3>
               </div>
-              <span class="ex-progress text-xs font-bold text-slate-500 shrink-0 bg-slate-100 px-2 py-1 rounded-lg border border-slate-200" data-progress-for={`u2-${ex.id}`}>0 / 7</span>
+              <div class="flex items-center gap-2 shrink-0">
+                <label class="flex items-center gap-1.5 text-xs font-extrabold bg-emerald-50 hover:bg-emerald-100 text-emerald-900 px-2.5 py-1 rounded-lg border border-emerald-200 cursor-pointer" onclick="event.stopPropagation()">
+                  <input type="checkbox" data-complete-id={`u2-${ex.id}`} class="w-4 h-4 accent-emerald-600 rounded cursor-pointer" />
+                  <span>Completado</span>
+                </label>
+                <span class="ex-progress text-xs font-bold text-slate-500 bg-slate-100 px-2 py-1 rounded-lg border border-slate-200" data-progress-for={`u2-${ex.id}`}>0 / 7</span>
+              </div>
             </summary>
 
             <div class="ex-body mt-3 pt-3 border-t border-slate-200">
@@ -183,6 +198,39 @@ const exercises = [
       const readStore = () => { try { return JSON.parse(localStorage.getItem(KEY) || '{}'); } catch { return {}; } };
       const writeStore = (s) => localStorage.setItem(KEY, JSON.stringify(s));
 
+      const syncCompleteStatus = (exId, isCompleted) => {
+        // Actualizar todos los checkboxes de completado rápido vinculados a este exId
+        document.querySelectorAll('input[data-complete-id="' + exId + '"]').forEach((chk) => {
+          chk.checked = isCompleted;
+        });
+
+        // Actualizar elemento en el listado rápido
+        const quickItem = document.querySelector('.quick-item[data-quick-id="' + exId + '"]');
+        if (quickItem) {
+          const badge = quickItem.querySelector('.quick-badge-done');
+          if (isCompleted) {
+            quickItem.classList.add('is-completed');
+            if (badge) badge.classList.remove('hidden');
+          } else {
+            quickItem.classList.remove('is-completed');
+            if (badge) badge.classList.add('hidden');
+          }
+        }
+
+        // Actualizar tarjeta desplegable
+        const card = document.querySelector('.ex-card[data-ex-id="' + exId + '"]');
+        if (card) {
+          const tag = card.querySelector('.card-done-tag');
+          if (isCompleted) {
+            card.classList.add('border-emerald-500', 'bg-emerald-50/30');
+            if (tag) tag.classList.remove('hidden');
+          } else {
+            card.classList.remove('border-emerald-500', 'bg-emerald-50/30');
+            if (tag) tag.classList.add('hidden');
+          }
+        }
+      };
+
       const updateProgressFor = (exId) => {
         const card = document.querySelector('.ex-card[data-ex-id="' + exId + '"]');
         if (!card) return;
@@ -200,11 +248,22 @@ const exercises = [
             el.classList.add('bg-slate-100', 'text-slate-500');
           }
         });
+
+        // Si los 7 sub-items se marcaron, marcar automáticamente como completado
+        const store = readStore();
+        if (done === total && total > 0) {
+          if (!store[exId]) store[exId] = {};
+          store[exId]['__completed__'] = true;
+          writeStore(store);
+          syncCompleteStatus(exId, true);
+        }
       };
 
+      // Inicialización de estado
       document.querySelectorAll('.ex-card[data-ex-id]').forEach((card) => {
         const exId = card.getAttribute('data-ex-id');
         const perEx = (readStore()[exId]) || {};
+        
         card.querySelectorAll('input[type="checkbox"][data-check-id]').forEach((input) => {
           const checkId = input.getAttribute('data-check-id');
           input.checked = Boolean(perEx[checkId]);
@@ -217,7 +276,34 @@ const exercises = [
             updateProgressFor(exId);
           });
         });
+
         updateProgressFor(exId);
+        syncCompleteStatus(exId, Boolean(perEx['__completed__']));
+      });
+
+      // Listener para checkboxes de completado directo (en el listado rápido y en el header de la tarjeta)
+      document.querySelectorAll('input[data-complete-id]').forEach((chk) => {
+        chk.addEventListener('change', (e) => {
+          const exId = chk.getAttribute('data-complete-id');
+          const isDone = chk.checked;
+          const s = readStore();
+          if (!s[exId]) s[exId] = {};
+          s[exId]['__completed__'] = isDone;
+
+          // Si se marca como completado directo, marcar también las 7 casillas internas
+          const card = document.querySelector('.ex-card[data-ex-id="' + exId + '"]');
+          if (card) {
+            card.querySelectorAll('input[type="checkbox"][data-check-id]').forEach((box) => {
+              box.checked = isDone;
+              const checkId = box.getAttribute('data-check-id');
+              s[exId][checkId] = isDone;
+            });
+          }
+
+          writeStore(s);
+          syncCompleteStatus(exId, isDone);
+          updateProgressFor(exId);
+        });
       });
 
       document.getElementById('expandAll')?.addEventListener('click', () => {
@@ -243,6 +329,13 @@ const exercises = [
   </script>
 
   <style>
+    .quick-item.is-completed {
+      background: #ECFDF5;
+      border-color: #10b981;
+    }
+    .quick-item.is-completed .quick-num {
+      background: #059669;
+    }
     .quick-item {
       display: flex;
       align-items: center;
