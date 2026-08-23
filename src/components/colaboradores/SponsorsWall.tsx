@@ -83,17 +83,6 @@ const FALLBACK_SPONSORS: SponsorDisplay[] = [
     tier: 'Coffee Backer',
   },
   {
-    id: 'f-7',
-    name: 'Rodrigo Araya',
-    role: 'Analista de Datos',
-    avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80',
-    badge: '📊 Data Supporter',
-    color: '#6366F1',
-    coffeeCount: 4,
-    message: 'Un café para mantener la plataforma rápida y sin publicidad.',
-    tier: 'Coffee Backer',
-  },
-  {
     id: 'f-8',
     name: 'Elena Gómez',
     role: 'Estudiante de Ingenería',
@@ -168,23 +157,23 @@ export default function SponsorsWall() {
     <div className="space-y-6">
 
       {/* Grid de Tarjetas de Colaboradores con Foto/Miniatura */}
-      <ul className="m-0 grid list-none grid-cols-1 gap-4 p-0 sm:grid-cols-2 lg:grid-cols-3">
+      <ul className="m-0 grid list-none grid-cols-1 gap-3 p-0 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {allSponsors.map((sp) => (
           <li
             key={sp.id}
-            className="group relative flex flex-col justify-between rounded-3xl border-3 border-[#1E1210] bg-white p-4 shadow-[4px_4px_0px_#1E1210] hover:-translate-y-1 transition-all duration-200 overflow-hidden"
+            className="group relative flex flex-col justify-between rounded-2xl border-2 border-[#1E1210] bg-white p-3 shadow-[3px_3px_0px_#1E1210] hover:-translate-y-0.5 transition-all duration-200 overflow-hidden"
           >
             {/* Header del Colaborador */}
-            <div className="flex items-start gap-3">
+            <div className="flex items-start gap-2.5">
               <div className="relative shrink-0">
                 <img
                   src={sp.avatar}
                   alt={sp.name}
-                  className="w-13 h-13 rounded-2xl border-2 border-[#1E1210] object-cover shadow-[2px_2px_0px_#1E1210] bg-amber-50"
+                  className="w-10 h-10 rounded-xl border border-[#1E1210] object-cover shadow-[1px_1px_0px_#1E1210] bg-amber-50"
                   loading="lazy"
                 />
                 <span
-                  className="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full border border-[#1E1210] bg-amber-400 text-xs shadow-sm"
+                  className="absolute -bottom-1 -right-1 flex h-4.5 w-4.5 items-center justify-center rounded-full border border-[#1E1210] bg-amber-400 text-[0.6rem] shadow-xs"
                   title={`${sp.coffeeCount} cafés donados`}
                 >
                   ☕
@@ -192,16 +181,14 @@ export default function SponsorsWall() {
               </div>
 
               <div className="min-w-0 flex-1">
-                <div className="flex items-center justify-between gap-1">
-                  <h3 className="m-0 font-nunito text-base font-black text-[#1E1210] truncate">
-                    {sp.name}
-                  </h3>
-                </div>
-                <p className="m-0 font-nunito text-xs font-bold text-slate-500 truncate">
+                <h3 className="m-0 font-nunito text-xs sm:text-sm font-black text-[#1E1210] truncate">
+                  {sp.name}
+                </h3>
+                <p className="m-0 font-nunito text-[0.7rem] font-bold text-slate-500 truncate">
                   {sp.role}
                 </p>
                 <span
-                  className="mt-1 inline-block rounded-lg px-2 py-0.5 font-nunito text-[0.68rem] font-extrabold text-white shadow-xs"
+                  className="mt-0.5 inline-block rounded-md px-1.5 py-0.2 font-nunito text-[0.62rem] font-extrabold text-white"
                   style={{ backgroundColor: sp.color }}
                 >
                   {sp.badge}
@@ -211,15 +198,15 @@ export default function SponsorsWall() {
 
             {/* Mensaje o Comentario */}
             {sp.message && (
-              <p className="mt-3 m-0 rounded-xl bg-slate-50 border border-slate-200 p-2.5 font-quicksand font-semibold text-xs text-slate-600 leading-snug italic">
+              <p className="mt-2 m-0 rounded-lg bg-slate-50 border border-slate-200 p-2 font-quicksand font-semibold text-[0.72rem] text-slate-600 leading-snug italic truncate">
                 "{sp.message}"
               </p>
             )}
 
             {/* Footer con cantidad de aportes */}
-            <div className="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between text-[0.7rem] font-nunito font-black text-slate-400">
-              <span>Nivel: {sp.tier}</span>
-              <span className="text-amber-600 font-extrabold flex items-center gap-1">
+            <div className="mt-2 pt-1.5 border-t border-slate-100 flex items-center justify-between text-[0.65rem] font-nunito font-black text-slate-400">
+              <span>{sp.tier}</span>
+              <span className="text-amber-600 font-extrabold flex items-center gap-0.5">
                 <span>{sp.coffeeCount} cafés</span> ☕
               </span>
             </div>

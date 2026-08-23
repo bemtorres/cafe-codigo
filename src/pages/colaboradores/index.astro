@@ -9,45 +9,40 @@ const KO_FI_URL = 'https://ko-fi.com/cafeycodigo';
   title="Colaboradores"
   description="Colaborá con cafeycodigo vía Ko-fi: insignia sponsor, muro de reconocimiento y zona exclusiva para quienes apoyan el proyecto."
 >
-  <div class="max-w-4xl mx-auto px-4 pt-6 pb-20">
-    <header class="mb-10 rounded-[28px] border-4 border-border bg-gradient-to-br from-[#fff7ed] via-white to-[#ecfdf5] p-8 shadow-neo-lg md:p-10">
-      <p class="font-nunito font-black text-sm uppercase tracking-[0.12em] text-[#c2410c] mb-2">Apoyo al proyecto</p>
-      <h1 class="font-nunito font-black text-3xl sm:text-4xl text-textPrimary mb-4 text-balance">
+  <div class="max-w-6xl mx-auto px-4 pt-4 pb-16">
+    <header class="mb-8 rounded-2xl border-3 border-border bg-gradient-to-br from-[#fff7ed] via-white to-[#ecfdf5] p-5 sm:p-6 shadow-neo">
+      <p class="font-nunito font-black text-xs uppercase tracking-widest text-[#c2410c] mb-1">Apoyo al proyecto</p>
+      <h1 class="font-nunito font-black text-xl sm:text-2xl text-textPrimary mb-2 text-balance">
         Colaboradores y sponsors
       </h1>
-      <p class="text-[1.08rem] leading-relaxed text-textSecondary font-[650] max-w-2xl m-0 mb-6">
-        cafeycodigo es gratuito en lo esencial. Quienes <strong class="text-textPrimary">invitan un café</strong> en Ko-fi
-        ayudan a hosting, dominio y tiempo para nuevas lecciones. A cambio, el proyecto reconoce a los colaboradores con
-        una <strong class="text-textPrimary">insignia</strong>, un lugar en el <strong class="text-textPrimary">muro público</strong> y
-        <strong class="text-textPrimary">acceso a una zona exclusiva</strong> en el sitio (paywall ligero vinculado a tu cuenta).
+      <p class="text-xs sm:text-sm leading-relaxed text-textSecondary font-semibold max-w-3xl m-0 mb-4">
+        cafeycodigo es gratuito en lo esencial. Quienes <strong class="text-textPrimary">invitan un café</strong> ayudan a mantener hosting, dominio y tiempo para nuevas lecciones. A cambio, destacamos a los colaboradores con una <strong class="text-textPrimary">insignia</strong>, un lugar en este <strong class="text-textPrimary">muro público</strong> y <strong class="text-textPrimary">acceso a una zona exclusiva</strong>.
       </p>
-      <div class="flex flex-wrap gap-3">
+      <div class="flex flex-wrap gap-2.5">
         <a
           href={KO_FI_URL}
           target="_blank"
           rel="noopener noreferrer"
-          class="inline-flex items-center justify-center gap-2 rounded-full border-[3px] border-border bg-[#FF5E5B] px-6 py-3.5 font-nunito font-black text-white no-underline shadow-neo hover:-translate-y-0.5 transition-transform"
+          class="inline-flex items-center justify-center gap-1.5 rounded-full border-2 border-border bg-[#FF5E5B] px-4 py-2 font-nunito font-black text-xs text-white no-underline shadow-neo hover:-translate-y-0.5 transition-transform"
         >
           Ir a Ko-fi
           <span aria-hidden>↗</span>
         </a>
         <a
           href="/colaboradores/zona/"
-          class="inline-flex items-center justify-center gap-2 rounded-full border-[3px] border-border bg-white px-6 py-3.5 font-nunito font-black text-textPrimary no-underline shadow-neo hover:-translate-y-0.5 transition-transform"
+          class="inline-flex items-center justify-center gap-1.5 rounded-full border-2 border-border bg-white px-4 py-2 font-nunito font-black text-xs text-textPrimary no-underline shadow-neo hover:-translate-y-0.5 transition-transform"
         >
           Zona exclusiva (sponsors)
         </a>
       </div>
     </header>
 
-    <section class="mb-12" aria-labelledby="wall-heading">
-      <h2 id="wall-heading" class="font-nunito font-black text-2xl sm:text-3xl text-textPrimary mb-2">
+    <section class="mb-10" aria-labelledby="wall-heading">
+      <h2 id="wall-heading" class="font-nunito font-black text-lg sm:text-xl text-textPrimary mb-1">
         Muro de reconocimiento
       </h2>
-      <p class="text-textSecondary font-[650] mb-6 max-w-2xl m-0">
-        Personas que colaboraron y eligieron aparecer listadas (nombre desde el perfil de cuenta). El equipo activa el
-        estado <code class="rounded bg-tertiary/80 px-1.5 py-0.5 font-mono text-sm">sponsor</code> en la base tras
-        verificar el aporte.
+      <p class="text-xs sm:text-sm text-textSecondary font-medium mb-4 max-w-3xl m-0">
+        Personas que colaboraron y eligieron aparecer listadas. El equipo activa la insignia en la base tras verificar el aporte.
       </p>
       <SponsorsWall client:load />
     </section>
