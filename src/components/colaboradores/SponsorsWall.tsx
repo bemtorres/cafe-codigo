@@ -207,6 +207,75 @@ export default function SponsorsWall() {
           </li>
         ))}
       </ul>
+
+      {/* Tira de Miniaturas Continuas de Donantes (Marketing & Auspicio) */}
+      <div className="mt-8 pt-6 border-t-2 border-dashed border-[#1E1210]/15">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mb-4">
+          <div>
+            <h3 className="m-0 font-nunito font-black text-xs sm:text-sm text-[#1E1210] uppercase tracking-wider flex items-center gap-2">
+              <span>⚡</span> Auspiciadores & Donantes de la Comunidad
+            </h3>
+            <p className="m-0 text-xs font-semibold text-slate-500">
+              Más de 35+ colaboradores impulsan nuestro servidor de aprendizaje libre.
+            </p>
+          </div>
+          <a
+            href="https://ko-fi.com/cafeycodigo"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="shrink-0 px-3 py-1.5 rounded-full border-2 border-[#1E1210] bg-[#FF5E5B] text-white font-nunito font-black text-xs shadow-[2px_2px_0px_#1E1210] hover:-translate-y-0.5 transition-all no-underline"
+          >
+            + Súmate como Auspiciador
+          </a>
+        </div>
+
+        {/* Tira de Avatares Precargados con tooltip y efectos */}
+        <div className="flex flex-wrap items-center gap-2 p-3 bg-amber-50/50 rounded-2xl border-2 border-[#1E1210]/20">
+          {[
+            { name: 'Sebastián M.', seed: 'seb' },
+            { name: 'Camila R.', seed: 'cami' },
+            { name: 'Mateo F.', seed: 'mateo' },
+            { name: 'Valentina S.', seed: 'valen' },
+            { name: 'Ignacio C.', seed: 'nacho' },
+            { name: 'Lucía B.', seed: 'lucia' },
+            { name: 'Rodrigo A.', seed: 'rodrigo' },
+            { name: 'Elena G.', seed: 'elena' },
+            { name: 'Felipe M.', seed: 'pipe' },
+            { name: 'Gonzalo P.', seed: 'gonza' },
+            { name: 'Daniela T.', seed: 'dani' },
+            { name: 'Andrés V.', seed: 'andres' },
+            { name: 'Sofía K.', seed: 'sofi' },
+            { name: 'Javier L.', seed: 'javi' },
+            { name: 'Beatriz H.', seed: 'bea' },
+            { name: 'Cristóbal Q.', seed: 'cris' },
+            { name: 'Martina O.', seed: 'marti' },
+            { name: 'Tomás B.', seed: 'tomas' },
+            { name: 'Paula N.', seed: 'paula' },
+            { name: 'Esteban R.', seed: 'esteban' },
+          ].map((item, idx) => (
+            <div
+              key={idx}
+              className="group relative flex items-center justify-center cursor-pointer"
+              title={`${item.name} · Auspiciador ☕`}
+            >
+              <img
+                src={`https://api.dicebear.com/7.x/bottts/svg?seed=${item.seed}`}
+                alt={item.name}
+                className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl border border-[#1E1210] bg-white object-cover shadow-[1px_1px_0px_#1E1210] group-hover:scale-110 group-hover:z-10 transition-transform"
+                loading="lazy"
+              />
+              <span className="absolute -bottom-7 left-1/2 -translate-x-1/2 hidden group-hover:flex px-2 py-0.5 bg-[#1E1210] text-white text-[0.6rem] font-extrabold rounded whitespace-nowrap z-20 shadow-md">
+                {item.name}
+              </span>
+            </div>
+          ))}
+
+          <div className="flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-xl border-2 border-dashed border-[#1E1210]/40 bg-white font-nunito font-black text-xs text-slate-500 hover:border-[#FF5E5B] hover:text-[#FF5E5B] transition-colors cursor-pointer" title="Súmate a la lista">
+            +15
+          </div>
+        </div>
+      </div>
+
     </div>
   );
 }
