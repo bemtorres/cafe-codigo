@@ -178,7 +178,7 @@ export default function CourseSlideViewer({
 
   // Efecto del Temporizador Regresivo
   useEffect(() => {
-    let interval: NodeJS.Timeout;
+    let interval: ReturnType<typeof setInterval>;
     if (isTimerActive && isTimerRunning && timerSeconds > 0) {
       interval = setInterval(() => {
         setTimerSeconds(prev => prev - 1);
@@ -244,7 +244,7 @@ export default function CourseSlideViewer({
       return;
     }
 
-    let timer: NodeJS.Timeout;
+    let timer: ReturnType<typeof setTimeout>;
     const handleMouseMove = () => {
       setIsBarVisible(true);
       clearTimeout(timer);
