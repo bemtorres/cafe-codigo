@@ -8,22 +8,21 @@ export default function SupportModal() {
     const handleOpenModal = () => setIsOpen(true);
     window.addEventListener('open-support-modal', handleOpenModal);
 
-    // Abrir automáticamente tras 1 segundo siempre que se ingrese al sitio
-    const timer = setTimeout(() => {
-      setIsOpen(true);
-    }, 1000);
+    // Abrir automáticamente tras 1 segundo SOLO si el usuario está en la página principal (/)
+    const isHomePage = window.location.pathname === '/' || window.location.pathname === '/index.html';
+    let timer: ReturnType<typeof setTimeout>;
+
+    if (isHomePage) {
+      timer = setTimeout(() => {
+        setIsOpen(true);
+      }, 1000);
+    }
 
     return () => {
-      clearTimeout(timer);
+      if (timer) clearTimeout(timer);
       window.removeEventListener('open-support-modal', handleOpenModal);
     };
   }, []);
-
-  const handleDismissToday = () => {
-    const todayStr = new Date().toDateString();
-    localStorage.setItem('cyc_support_modal_dismissed_today', todayStr);
-    setIsOpen(false);
-  };
 
   if (!isOpen) return null;
 
