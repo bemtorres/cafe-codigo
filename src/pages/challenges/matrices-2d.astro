@@ -1,0 +1,373 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+const exercises = [
+  { id: 1, title: 'Crear una matriz 3x3', statement: 'Declarar e inicializar una matriz bidimensional de 3 filas y 3 columnas con valores enteros e imprimirla en forma de grilla.' },
+  { id: 2, title: 'Mostrar matriz formateada', statement: 'Iterar con dos bucles anidados para imprimir la matriz fila por fila separando elementos por tabulación o espacios.' },
+  { id: 3, title: 'Mostrar una fila específica', statement: 'Dada una matriz y un número de fila F, imprimir únicamente los elementos de dicha fila.' },
+  { id: 4, title: 'Mostrar una columna específica', statement: 'Dada una matriz y un número de columna C, iterar sobre las filas e imprimir los elementos de la columna C.' },
+  { id: 5, title: 'Acceder a una posición arbitraria (Fila, Columna)', statement: 'Solicitar fila F y columna C al usuario e imprimir el elemento ubicado en matriz[F][C] previniendo errores de índice.' },
+  { id: 6, title: 'Recorrer por filas', statement: 'Escribir el algoritmo canónico de recorrido por filas utilizando un bucle exterior i (filas) y bucle interior j (columnas).' },
+  { id: 7, title: 'Recorrer por columnas', statement: 'Escribir el recorrido inverso: bucle exterior j (columnas) y bucle interior i (filas).' },
+  { id: 8, title: 'Sumar todos los elementos de la matriz', statement: 'Recorrer la matriz completa y calcular la suma acumulada de todos sus valores numéricos.' },
+  { id: 9, title: 'Calcular el promedio total', statement: 'Calcular la suma total de los elementos de la matriz y dividir por el producto (filas * columnas).' },
+  { id: 10, title: 'Encontrar el elemento mayor y su posición', statement: 'Determinar cuál es el valor máximo en la matriz y guardar las coordenadas (fila, columna) donde se ubica.' },
+  { id: 11, title: 'Contar pares e impares en la grilla', statement: 'Recorrer la matriz e incrementar contadores separados para números pares e impares.' },
+  { id: 12, title: 'Sumar elementos de una fila elegida', statement: 'Pedir al usuario el índice de una fila y calcular la suma de sus elementos.' },
+  { id: 13, title: 'Sumar elementos de una columna elegida', statement: 'Pedir al usuario el índice de una columna y calcular la suma de sus elementos.' },
+  { id: 14, title: 'Mayor elemento de cada fila', statement: 'Iterar por cada fila de la matriz y mostrar el número más grande de cada una de ellas.' },
+  { id: 15, title: 'Menor elemento de cada columna', statement: 'Iterar por cada columna y mostrar el valor mínimo encontrado en cada una.' },
+  { id: 16, title: 'Diagonal principal de una matriz cuadrada', statement: 'Dada una matriz NxN, imprimir los elementos de la diagonal principal donde fila == columna (matriz[i][i]).' },
+  { id: 17, title: 'Diagonal secundaria', statement: 'Imprimir los elementos de la diagonal secundaria de una matriz cuadrada (matriz[i][N - 1 - i]).' },
+  { id: 18, title: 'Sumar bordes o marco de la matriz', statement: 'Calcular la suma de los elementos ubicados en la primera fila, última fila, primera columna y última columna.' },
+  { id: 19, title: 'Transponer matriz (Intercambiar filas por columnas)', statement: 'Dada una matriz M de RxC, crear su matriz transpuesta T de CxR donde T[j][i] = M[i][j].' },
+  { id: 20, title: 'Estadísticas y mapa completo de la matriz', statement: 'Construir un programa completo que procese una matriz 4x4 calculando sumas de filas, columnas, diagonales y transposición.' },
+];
+---
+
+<Layout
+  title="Matrices 2D — Tablas y Grillas (20 Desafíos)"
+  description="Aprende a manipular matrices bidimensionales: filas, columnas, diagonales, acumuladores y transposición de tablas."
+>
+  <article class="content-section max-w-5xl mx-auto px-4 py-6">
+
+    <!-- HEADER DE LA PÁGINA -->
+    <div class="mb-6 pb-4 border-b-2 border-dashed border-[#1E1210]/15">
+      <div class="flex items-center gap-2 mb-1">
+        <a href="/challenges/" class="text-xs font-nunito font-extrabold text-[#059669] no-underline hover:underline">← Volver al Catálogo</a>
+        <span class="text-slate-300">•</span>
+        <span class="text-xs font-nunito font-extrabold uppercase tracking-widest text-[#059669]">Módulo 11 · Matrices 2D</span>
+      </div>
+      <h1 class="m-0 text-2xl sm:text-3xl font-nunito font-black text-[#1E1210]">
+        Matrices 2D (Tablas y Grillas)
+      </h1>
+      <p class="mt-2 text-sm text-slate-600 font-medium leading-relaxed">
+        20 desafíos interactivos para dominar grillas bidimensionales <code>[][]</code>: recorridos anidados, diagonales, sumas de bordes y transposición. Válido en <strong>Python, Java, C#, C++, JS, PHP y PSeInt</strong>.
+      </p>
+    </div>
+
+    <!-- CONTROLES -->
+    <div class="mb-6 flex flex-col md:flex-row items-center justify-between gap-4 bg-emerald-50/60 p-4 rounded-2xl border-2 border-[#1E1210]">
+      <div class="w-full md:w-auto flex flex-col sm:flex-row items-start sm:items-center gap-4">
+        <div>
+          <span class="text-xs font-nunito font-black text-emerald-900 uppercase tracking-wider block">🔍 Filtro de búsqueda</span>
+          <input
+            type="text"
+            id="searchBox"
+            placeholder="Buscar en la matriz..."
+            class="mt-1 w-full sm:w-64 px-3 py-2 rounded-xl border-2 border-[#1E1210] font-nunito font-bold text-xs bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+          />
+        </div>
+
+        <!-- TOGGLE SWITCH DE SUGERENCIAS PASO A PASO -->
+        <div class="flex items-center gap-2.5 bg-white px-3.5 py-2 rounded-xl border-2 border-[#1E1210] shadow-[2px_2px_0px_#1E1210] mt-1 sm:mt-5">
+          <input type="checkbox" id="toggleSuggestions" class="w-4 h-4 accent-emerald-600 rounded cursor-pointer" />
+          <label for="toggleSuggestions" class="text-xs font-nunito font-extrabold text-[#1E1210] cursor-pointer select-none">
+            💡 Activar sugerencias guiadas (Paso a Paso)
+          </label>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2 w-full md:w-auto justify-end">
+        <button type="button" id="expandAll" class="px-3.5 py-2 rounded-xl border-2 border-[#1E1210] bg-[#1E1210] text-white font-nunito font-black text-xs cursor-pointer shadow-[2px_2px_0px_#1E1210] hover:-translate-y-0.5">Expandir todos (20)</button>
+        <button type="button" id="collapseAll" class="px-3.5 py-2 rounded-xl border-2 border-[#1E1210] bg-white text-[#1E1210] font-nunito font-black text-xs cursor-pointer shadow-[2px_2px_0px_#1E1210] hover:-translate-y-0.5">Colapsar todos</button>
+      </div>
+    </div>
+
+    <!-- LISTADO RÁPIDO DE 20 EJERCICIOS -->
+    <section class="mb-10">
+      <div class="flex items-center justify-between mb-3 border-b-2 border-[#1E1210] pb-2">
+        <h2 class="text-base font-nunito font-black text-[#1E1210] m-0 flex items-center gap-2">
+          <span>📋</span> Listado Rápido (1 al 20)
+        </h2>
+        <span class="text-xs font-nunito font-bold bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded-full border border-emerald-300">20 ítems</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2" id="quickList">
+        {exercises.map((ex) => (
+          <div class="quick-item search-target" data-keywords={ex.title.toLowerCase()} data-quick-id={`mat2d-${ex.id}`}>
+            <label class="flex items-center cursor-pointer p-0.5 shrink-0" title="Marcar como completado">
+              <input type="checkbox" data-complete-id={`mat2d-${ex.id}`} class="w-4 h-4 accent-emerald-600 rounded cursor-pointer" />
+            </label>
+            <a href={`#mat2d-${ex.id}`} class="quick-link flex items-center gap-2.5 flex-1 min-w-0 no-underline text-inherit">
+              <span class="quick-num">{String(ex.id).padStart(2, '0')}</span>
+              <span class="quick-title">{ex.title}</span>
+              <span class="quick-badge-done hidden text-[0.65rem] font-bold bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded border border-emerald-300">✓ Hecho</span>
+              <span class="quick-arrow">↓</span>
+            </a>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- RESOLUCIÓN GUIADA CON CHECKLISTS -->
+    <section class="mb-8">
+      <div class="flex items-center justify-between mb-4 border-b-2 border-[#1E1210] pb-2">
+        <h2 class="text-base font-nunito font-black text-[#1E1210] m-0 flex items-center gap-2">
+          <span>🎯</span> Resolución Guiada y Checklists de Progreso
+        </h2>
+      </div>
+
+      <div id="exerciseList" class="flex flex-col gap-3">
+        {exercises.map((ex) => (
+          <details class="ex-card border-2 border-[#1E1210] bg-white rounded-2xl p-4 shadow-[3px_3px_0px_#1E1210] search-target transition-all" id={`mat2d-${ex.id}`} data-ex-id={`mat2d-${ex.id}`} data-keywords={ex.title.toLowerCase()}>
+            <summary class="ex-summary flex items-center justify-between cursor-pointer font-nunito font-black select-none">
+              <div class="flex items-center gap-3 pr-2 min-w-0">
+                <span class="ex-num w-8 h-8 rounded-xl bg-[#059669] text-white flex items-center justify-center text-xs shrink-0">{String(ex.id).padStart(2, '0')}</span>
+                <h3 class="m-0 text-sm sm:text-base text-[#1E1210] truncate flex items-center gap-2">
+                  <span>{ex.id}. {ex.title}</span>
+                  <span class="card-done-tag hidden text-xs font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-md border border-emerald-300">✓ Completado</span>
+                </h3>
+              </div>
+              <div class="flex items-center gap-2 shrink-0">
+                <label class="flex items-center gap-1.5 text-xs font-extrabold bg-emerald-50 hover:bg-emerald-100 text-emerald-900 px-2.5 py-1 rounded-lg border border-emerald-200 cursor-pointer" onclick="event.stopPropagation()">
+                  <input type="checkbox" data-complete-id={`mat2d-${ex.id}`} class="w-4 h-4 accent-emerald-600 rounded cursor-pointer" />
+                  <span>Completado</span>
+                </label>
+                <span class="ex-progress text-xs font-bold text-slate-500 bg-slate-100 px-2 py-1 rounded-lg border border-slate-200" data-progress-for={`mat2d-${ex.id}`}>0 / 5</span>
+              </div>
+            </summary>
+
+            <div class="ex-body mt-3 pt-3 border-t border-slate-200">
+              <p class="ex-statement font-quicksand font-bold text-sm text-slate-700 bg-slate-50 p-3 rounded-xl border border-slate-200">
+                <strong>Enunciado:</strong> {ex.statement}
+              </p>
+
+              <div class="ex-checks hidden flex flex-col gap-2 mt-3 text-xs font-nunito font-extrabold">
+                <label class="chk flex items-center gap-2.5 cursor-pointer hover:bg-emerald-50/50 p-1.5 rounded-lg transition-colors">
+                  <input type="checkbox" data-check-id="matriz" class="w-4 h-4 accent-emerald-600 rounded" />
+                  <span>1. Declaré e inicialicé la matriz bidimensional con las dimensiones adecuadas</span>
+                </label>
+
+                <label class="chk flex items-center gap-2.5 cursor-pointer hover:bg-emerald-50/50 p-1.5 rounded-lg transition-colors">
+                  <input type="checkbox" data-check-id="anidados" class="w-4 h-4 accent-emerald-600 rounded" />
+                  <span>2. Escribí los dos bucles anidados para recorrer filas y columnas</span>
+                </label>
+
+                <label class="chk flex items-center gap-2.5 cursor-pointer hover:bg-emerald-50/50 p-1.5 rounded-lg transition-colors">
+                  <input type="checkbox" data-check-id="coordenadas" class="w-4 h-4 accent-emerald-600 rounded" />
+                  <span>3. Accedí correctamente a la celda utilizando matriz[i][j]</span>
+                </label>
+
+                <label class="chk flex items-center gap-2.5 cursor-pointer hover:bg-emerald-50/50 p-1.5 rounded-lg transition-colors">
+                  <input type="checkbox" data-check-id="calculo" class="w-4 h-4 accent-emerald-600 rounded" />
+                  <span>4. Apliqué el cálculo (suma, mayor, menor, condición o diagonal)</span>
+                </label>
+
+                <label class="chk flex items-center gap-2.5 cursor-pointer hover:bg-emerald-50/50 p-1.5 rounded-lg transition-colors">
+                  <input type="checkbox" data-check-id="salida" class="w-4 h-4 accent-emerald-600 rounded" />
+                  <span>5. Imprimí el resultado de la matriz de forma formateada</span>
+                </label>
+              </div>
+            </div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+  </article>
+
+  <!-- SCRIPT DE LOCALSTORAGE Y SINCRONIZACIÓN -->
+  <script is:inline>
+    (function () {
+      const KEY = 'aprende_matrices_2d_v1';
+      const readStore = () => { try { return JSON.parse(localStorage.getItem(KEY) || '{}'); } catch { return {}; } };
+      const writeStore = (s) => localStorage.setItem(KEY, JSON.stringify(s));
+
+      const syncCompleteStatus = (exId, isCompleted) => {
+        document.querySelectorAll('input[data-complete-id="' + exId + '"]').forEach((chk) => { chk.checked = isCompleted; });
+        const quickItem = document.querySelector('.quick-item[data-quick-id="' + exId + '"]');
+        if (quickItem) {
+          const badge = quickItem.querySelector('.quick-badge-done');
+          if (isCompleted) {
+            quickItem.classList.add('is-completed');
+            if (badge) badge.classList.remove('hidden');
+          } else {
+            quickItem.classList.remove('is-completed');
+            if (badge) badge.classList.add('hidden');
+          }
+        }
+        const card = document.querySelector('.ex-card[data-ex-id="' + exId + '"]');
+        if (card) {
+          const tag = card.querySelector('.card-done-tag');
+          if (isCompleted) {
+            card.classList.add('border-emerald-500', 'bg-emerald-50/30');
+            if (tag) tag.classList.remove('hidden');
+          } else {
+            card.classList.remove('border-emerald-500', 'bg-emerald-50/30');
+            if (tag) tag.classList.add('hidden');
+          }
+        }
+      };
+
+      const updateProgressFor = (exId) => {
+        const card = document.querySelector('.ex-card[data-ex-id="' + exId + '"]');
+        if (!card) return;
+        const boxes = card.querySelectorAll('input[type="checkbox"][data-check-id]');
+        const done = Array.from(boxes).filter((b) => b.checked).length;
+        const total = boxes.length;
+        const els = card.querySelectorAll('[data-progress-for="' + exId + '"]');
+        els.forEach((el) => {
+          el.textContent = done + ' / ' + total;
+          if (done === total && total > 0) {
+            el.classList.add('bg-emerald-600', 'text-white');
+            el.classList.remove('bg-slate-100', 'text-slate-500');
+          } else {
+            el.classList.remove('bg-emerald-600', 'text-white');
+            el.classList.add('bg-slate-100', 'text-slate-500');
+          }
+        });
+
+        const store = readStore();
+        if (done === total && total > 0) {
+          if (!store[exId]) store[exId] = {};
+          store[exId]['__completed__'] = true;
+          writeStore(store);
+          syncCompleteStatus(exId, true);
+        }
+      };
+
+      document.querySelectorAll('.ex-card[data-ex-id]').forEach((card) => {
+        const exId = card.getAttribute('data-ex-id');
+        const perEx = (readStore()[exId]) || {};
+        card.querySelectorAll('input[type="checkbox"][data-check-id]').forEach((input) => {
+          const checkId = input.getAttribute('data-check-id');
+          input.checked = Boolean(perEx[checkId]);
+          input.addEventListener('click', (e) => e.stopPropagation());
+          input.addEventListener('change', () => {
+            const s = readStore();
+            if (!s[exId]) s[exId] = {};
+            s[exId][checkId] = input.checked;
+            writeStore(s);
+            updateProgressFor(exId);
+          });
+        });
+        updateProgressFor(exId);
+        syncCompleteStatus(exId, Boolean(perEx['__completed__']));
+      });
+
+      document.querySelectorAll('input[data-complete-id]').forEach((chk) => {
+        chk.addEventListener('change', () => {
+          const exId = chk.getAttribute('data-complete-id');
+          const isDone = chk.checked;
+          const s = readStore();
+          if (!s[exId]) s[exId] = {};
+          s[exId]['__completed__'] = isDone;
+
+          const card = document.querySelector('.ex-card[data-ex-id="' + exId + '"]');
+          if (card) {
+            card.querySelectorAll('input[type="checkbox"][data-check-id]').forEach((box) => {
+              box.checked = isDone;
+              const checkId = box.getAttribute('data-check-id');
+              s[exId][checkId] = isDone;
+            });
+          }
+
+          writeStore(s);
+          syncCompleteStatus(exId, isDone);
+          updateProgressFor(exId);
+        });
+      });
+
+      document.getElementById('expandAll')?.addEventListener('click', () => {
+        document.querySelectorAll('.ex-card[id]').forEach((d) => (d.open = true));
+      });
+      document.getElementById('collapseAll')?.addEventListener('click', () => {
+        document.querySelectorAll('.ex-card[id]').forEach((d) => (d.open = false));
+      });
+
+      const toggleBtn = document.getElementById('toggleSuggestions');
+      const SUGGESTIONS_KEY = 'aprende_show_step_suggestions';
+
+      const updateSuggestionsVisibility = (show) => {
+        document.querySelectorAll('.ex-checks').forEach((el) => {
+          if (show) {
+            el.classList.remove('hidden');
+          } else {
+            el.classList.add('hidden');
+          }
+        });
+      };
+
+      if (toggleBtn) {
+        const savedPref = localStorage.getItem(SUGGESTIONS_KEY);
+        const isEnabled = savedPref === 'true';
+        toggleBtn.checked = isEnabled;
+        updateSuggestionsVisibility(isEnabled);
+
+        toggleBtn.addEventListener('change', (e) => {
+          const checked = e.target.checked;
+          localStorage.setItem(SUGGESTIONS_KEY, String(checked));
+          updateSuggestionsVisibility(checked);
+        });
+      }
+
+      const searchBox = document.getElementById('searchBox');
+      if (searchBox) {
+        searchBox.addEventListener('input', (e) => {
+          const q = e.target.value.toLowerCase().trim();
+          document.querySelectorAll('.search-target').forEach((el) => {
+            const kw = el.getAttribute('data-keywords') || '';
+            const txt = el.textContent.toLowerCase();
+            el.style.display = (txt.includes(q) || kw.includes(q)) ? '' : 'none';
+          });
+        });
+      }
+    })();
+  </script>
+
+  <style>
+    .quick-item.is-completed {
+      background: #ECFDF5;
+      border-color: #059669;
+    }
+    .quick-item.is-completed .quick-num {
+      background: #047857;
+    }
+    .quick-item {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      padding: 0.55rem 0.85rem;
+      background: #ffffff;
+      border: 2px solid #1E1210;
+      border-radius: 12px;
+      text-decoration: none;
+      color: inherit;
+      box-shadow: 2px 2px 0 #1E1210;
+      transition: all 0.12s ease;
+    }
+    .quick-item:hover {
+      transform: translateX(3px);
+      box-shadow: 3px 3px 0 #1E1210;
+      background: #ECFDF5;
+    }
+    .quick-num {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      font-size: 0.72rem;
+      background: #059669;
+      color: #ffffff;
+      padding: 0.15rem 0.45rem;
+      border-radius: 6px;
+      flex-shrink: 0;
+    }
+    .quick-title {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      font-size: 0.88rem;
+      color: #1E1210;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      flex: 1;
+    }
+    .quick-arrow {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      font-size: 0.9rem;
+      color: #059669;
+      flex-shrink: 0;
+    }
+  </style>
+</Layout>

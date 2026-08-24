@@ -1,0 +1,373 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+const exercises = [
+  { id: 1, title: 'Sistema de Biblioteca Comunitaria', statement: 'Diseñar un sistema completo para administrar préstamos de libros, catálogo, usuarios y multas sin imponer una estructura rígida.' },
+  { id: 2, title: 'Sistema de Gestión Académica de Alumnos', statement: 'Construir un gestor de alumnos, asignaturas, notas parciales, asistencia y promedios finales.' },
+  { id: 3, title: 'Sistema de Ventas y Facturación de Minimarket', statement: 'Administrar productos, inventario, emisión de boletas/facturas y reporte diario de ventas.' },
+  { id: 4, title: 'Sistema de Control de Inventarios de Almacén', statement: 'Gestionar entradas, salidas, alertas de stock mínimo y valorización total del depósito.' },
+  { id: 5, title: 'Agenda Personal Inteligente de Contactos', statement: 'Administrar contactos con múltiples teléfonos, correos, categorías y recordatorios de fechas.' },
+  { id: 6, title: 'Sistema de Reservas de Hotel / Hospedaje', statement: 'Gestionar habitaciones, fechas de check-in / check-out, disponibilidad y cálculo de estadía.' },
+  { id: 7, title: 'Sistema de Gestión de Empleados y Liquidación de Sueldos', statement: 'Calcular salarios, horas extras, descuentos previsionales e impositivos de una nómina.' },
+  { id: 8, title: 'Sistema de Catálogo de Películas y Streamings', statement: 'Administrar un catálogo multimedia con recomendaciones por género, directores y calificaciones.' },
+  { id: 9, title: 'Carrito de Compras para Tienda Online', statement: 'Construir un carrito dinámico con cupones de descuento, cálculo de costo de envío e impuestos.' },
+  { id: 10, title: 'Mini Sistema Bancario de Cuentas y Transferencias', statement: 'Modelar cuentas corrientes/vista, depósitos, giros, transferencias entre cuentas y registro de movimientos.' },
+  { id: 11, title: 'Sistema de Estacionamiento Inteligente', statement: 'Controlar ingresos, salidas, patentes, tarifas por minuto y recaudación diaria del garaje.' },
+  { id: 12, title: 'Sistema de Turnos de Centro Médico', statement: 'Administrar doctores, especialidades, pacientes y la agenda diaria de citas médicas.' },
+  { id: 13, title: 'Sistema de Gestión de Restaurante / Delivery', statement: 'Administrar mesas, carta de platos, comensales, comanda de cocina y pago final.' },
+  { id: 14, title: 'Sistema de Gimnasio y Membresías', statement: 'Registrar socios, planes de suscripción mensual, pagos y control de acceso.' },
+  { id: 15, title: 'Sistema de Eventos y Venta de Entradas', statement: 'Gestionar recitales/eventos, ubicaciones, precios por zona y venta de entradas numeradas.' },
+  { id: 16, title: 'Sistema de Taller Mecánico de Vehículos', statement: 'Registrar recepción de vehículos, diagnósticos, repuestos utilizados y presupuesto final.' },
+  { id: 17, title: 'Sistema de Alquiler de Vehículos (Rent-a-Car)', statement: 'Administrar flota de autos, tarifas por día, kilometraje y contratos de arriendo.' },
+  { id: 18, title: 'Sistema de Torneo Deportivo y Tabla de Posiciones', statement: 'Registrar equipos, partidos jugados, goles a favor/en contra y puntos en la tabla de posiciones.' },
+  { id: 19, title: 'Sistema de Peaje y Cobro de Tag', statement: 'Modelar pasadas de vehículos por pórticos, tarifas según horario punta/normal y facturación.' },
+  { id: 20, title: 'Sistema Integrador Completo de Empresa (ERP Compacto)', statement: 'Construir una solución completa que integre clientes, ventas, inventario y balance contable sin imponer la estructura.' },
+];
+---
+
+<Layout
+  title="Desafíos Integradores de Sistema Completo (20 Sistemas)"
+  description="20 problemas integradores reales donde el estudiante decide de forma libre si usar Arreglos, Listas, Diccionarios u Objetos."
+>
+  <article class="content-section max-w-5xl mx-auto px-4 py-6">
+
+    <!-- HEADER DE LA PÁGINA -->
+    <div class="mb-6 pb-4 border-b-2 border-dashed border-[#1E1210]/15">
+      <div class="flex items-center gap-2 mb-1">
+        <a href="/challenges/" class="text-xs font-nunito font-extrabold text-[#431407] no-underline hover:underline">← Volver al Catálogo</a>
+        <span class="text-slate-300">•</span>
+        <span class="text-xs font-nunito font-extrabold uppercase tracking-widest text-[#431407]">Módulo 19 · Integrador Maestría</span>
+      </div>
+      <h1 class="m-0 text-2xl sm:text-3xl font-nunito font-black text-[#1E1210]">
+        Desafíos Integradores de Sistema Completo
+      </h1>
+      <p class="mt-2 text-sm text-slate-600 font-medium leading-relaxed">
+        20 proyectos completos de simulación donde el estudiante elige con total libertad las estructuras de datos y arquitectura a utilizar. Válido en <strong>Python, Java, C#, C++, JS, PHP y PSeInt</strong>.
+      </p>
+    </div>
+
+    <!-- CONTROLES -->
+    <div class="mb-6 flex flex-col md:flex-row items-center justify-between gap-4 bg-amber-50/60 p-4 rounded-2xl border-2 border-[#1E1210]">
+      <div class="w-full md:w-auto flex flex-col sm:flex-row items-start sm:items-center gap-4">
+        <div>
+          <span class="text-xs font-nunito font-black text-amber-900 uppercase tracking-wider block">🔍 Filtro de búsqueda</span>
+          <input
+            type="text"
+            id="searchBox"
+            placeholder="Buscar sistema..."
+            class="mt-1 w-full sm:w-64 px-3 py-2 rounded-xl border-2 border-[#1E1210] font-nunito font-bold text-xs bg-white focus:outline-none focus:ring-2 focus:ring-amber-500"
+          />
+        </div>
+
+        <!-- TOGGLE SWITCH DE SUGERENCIAS PASO A PASO -->
+        <div class="flex items-center gap-2.5 bg-white px-3.5 py-2 rounded-xl border-2 border-[#1E1210] shadow-[2px_2px_0px_#1E1210] mt-1 sm:mt-5">
+          <input type="checkbox" id="toggleSuggestions" class="w-4 h-4 accent-amber-600 rounded cursor-pointer" />
+          <label for="toggleSuggestions" class="text-xs font-nunito font-extrabold text-[#1E1210] cursor-pointer select-none">
+            💡 Activar sugerencias guiadas (Paso a Paso)
+          </label>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2 w-full md:w-auto justify-end">
+        <button type="button" id="expandAll" class="px-3.5 py-2 rounded-xl border-2 border-[#1E1210] bg-[#1E1210] text-white font-nunito font-black text-xs cursor-pointer shadow-[2px_2px_0px_#1E1210] hover:-translate-y-0.5">Expandir todos (20)</button>
+        <button type="button" id="collapseAll" class="px-3.5 py-2 rounded-xl border-2 border-[#1E1210] bg-white text-[#1E1210] font-nunito font-black text-xs cursor-pointer shadow-[2px_2px_0px_#1E1210] hover:-translate-y-0.5">Colapsar todos</button>
+      </div>
+    </div>
+
+    <!-- LISTADO RÁPIDO DE 20 EJERCICIOS -->
+    <section class="mb-10">
+      <div class="flex items-center justify-between mb-3 border-b-2 border-[#1E1210] pb-2">
+        <h2 class="text-base font-nunito font-black text-[#1E1210] m-0 flex items-center gap-2">
+          <span>📋</span> Listado Rápido (1 al 20)
+        </h2>
+        <span class="text-xs font-nunito font-bold bg-amber-100 text-amber-800 px-2.5 py-0.5 rounded-full border border-amber-300">20 ítems</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2" id="quickList">
+        {exercises.map((ex) => (
+          <div class="quick-item search-target" data-keywords={ex.title.toLowerCase()} data-quick-id={`integ-${ex.id}`}>
+            <label class="flex items-center cursor-pointer p-0.5 shrink-0" title="Marcar como completado">
+              <input type="checkbox" data-complete-id={`integ-${ex.id}`} class="w-4 h-4 accent-amber-600 rounded cursor-pointer" />
+            </label>
+            <a href={`#integ-${ex.id}`} class="quick-link flex items-center gap-2.5 flex-1 min-w-0 no-underline text-inherit">
+              <span class="quick-num">{String(ex.id).padStart(2, '0')}</span>
+              <span class="quick-title">{ex.title}</span>
+              <span class="quick-badge-done hidden text-[0.65rem] font-bold bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded border border-amber-300">✓ Hecho</span>
+              <span class="quick-arrow">↓</span>
+            </a>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- RESOLUCIÓN GUIADA CON CHECKLISTS -->
+    <section class="mb-8">
+      <div class="flex items-center justify-between mb-4 border-b-2 border-[#1E1210] pb-2">
+        <h2 class="text-base font-nunito font-black text-[#1E1210] m-0 flex items-center gap-2">
+          <span>🎯</span> Resolución Guiada y Checklists de Progreso
+        </h2>
+      </div>
+
+      <div id="exerciseList" class="flex flex-col gap-3">
+        {exercises.map((ex) => (
+          <details class="ex-card border-2 border-[#1E1210] bg-white rounded-2xl p-4 shadow-[3px_3px_0px_#1E1210] search-target transition-all" id={`integ-${ex.id}`} data-ex-id={`integ-${ex.id}`} data-keywords={ex.title.toLowerCase()}>
+            <summary class="ex-summary flex items-center justify-between cursor-pointer font-nunito font-black select-none">
+              <div class="flex items-center gap-3 pr-2 min-w-0">
+                <span class="ex-num w-8 h-8 rounded-xl bg-[#431407] text-white flex items-center justify-center text-xs shrink-0">{String(ex.id).padStart(2, '0')}</span>
+                <h3 class="m-0 text-sm sm:text-base text-[#1E1210] truncate flex items-center gap-2">
+                  <span>{ex.id}. {ex.title}</span>
+                  <span class="card-done-tag hidden text-xs font-bold text-amber-700 bg-amber-100 px-2 py-0.5 rounded-md border border-amber-300">✓ Completado</span>
+                </h3>
+              </div>
+              <div class="flex items-center gap-2 shrink-0">
+                <label class="flex items-center gap-1.5 text-xs font-extrabold bg-amber-50 hover:bg-amber-100 text-amber-900 px-2.5 py-1 rounded-lg border border-amber-200 cursor-pointer" onclick="event.stopPropagation()">
+                  <input type="checkbox" data-complete-id={`integ-${ex.id}`} class="w-4 h-4 accent-amber-600 rounded cursor-pointer" />
+                  <span>Completado</span>
+                </label>
+                <span class="ex-progress text-xs font-bold text-slate-500 bg-slate-100 px-2 py-1 rounded-lg border border-slate-200" data-progress-for={`integ-${ex.id}`}>0 / 5</span>
+              </div>
+            </summary>
+
+            <div class="ex-body mt-3 pt-3 border-t border-slate-200">
+              <p class="ex-statement font-quicksand font-bold text-sm text-slate-700 bg-slate-50 p-3 rounded-xl border border-slate-200">
+                <strong>Enunciado:</strong> {ex.statement}
+              </p>
+
+              <div class="ex-checks hidden flex flex-col gap-2 mt-3 text-xs font-nunito font-extrabold">
+                <label class="chk flex items-center gap-2.5 cursor-pointer hover:bg-amber-50/50 p-1.5 rounded-lg transition-colors">
+                  <input type="checkbox" data-check-id="arquitectura" class="w-4 h-4 accent-amber-600 rounded" />
+                  <span>1. Analicé el requerimiento y elegí la mejor combinación de estructuras (Arreglos/Listas/Diccionarios/Clases)</span>
+                </label>
+
+                <label class="chk flex items-center gap-2.5 cursor-pointer hover:bg-amber-50/50 p-1.5 rounded-lg transition-colors">
+                  <input type="checkbox" data-check-id="menu" class="w-4 h-4 accent-amber-600 rounded" />
+                  <span>2. Diseñé la interfaz del menú interactivo por consola con captura segura de datos</span>
+                </label>
+
+                <label class="chk flex items-center gap-2.5 cursor-pointer hover:bg-amber-50/50 p-1.5 rounded-lg transition-colors">
+                  <input type="checkbox" data-check-id="crud" class="w-4 h-4 accent-amber-600 rounded" />
+                  <span>3. Implementé las funciones/métodos para registrar, consultar, modificar y eliminar</span>
+                </label>
+
+                <label class="chk flex items-center gap-2.5 cursor-pointer hover:bg-amber-50/50 p-1.5 rounded-lg transition-colors">
+                  <input type="checkbox" data-check-id="excepciones" class="w-4 h-4 accent-amber-600 rounded" />
+                  <span>4. Envolví las operaciones en bloques de control de errores para prevenir caídas</span>
+                </label>
+
+                <label class="chk flex items-center gap-2.5 cursor-pointer hover:bg-amber-50/50 p-1.5 rounded-lg transition-colors">
+                  <input type="checkbox" data-check-id="salida" class="w-4 h-4 accent-amber-600 rounded" />
+                  <span>5. Validé el funcionamiento completo del sistema con casos de prueba reales</span>
+                </label>
+              </div>
+            </div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+  </article>
+
+  <!-- SCRIPT DE LOCALSTORAGE Y SINCRONIZACIÓN -->
+  <script is:inline>
+    (function () {
+      const KEY = 'aprende_desafios_integradores_v1';
+      const readStore = () => { try { return JSON.parse(localStorage.getItem(KEY) || '{}'); } catch { return {}; } };
+      const writeStore = (s) => localStorage.setItem(KEY, JSON.stringify(s));
+
+      const syncCompleteStatus = (exId, isCompleted) => {
+        document.querySelectorAll('input[data-complete-id="' + exId + '"]').forEach((chk) => { chk.checked = isCompleted; });
+        const quickItem = document.querySelector('.quick-item[data-quick-id="' + exId + '"]');
+        if (quickItem) {
+          const badge = quickItem.querySelector('.quick-badge-done');
+          if (isCompleted) {
+            quickItem.classList.add('is-completed');
+            if (badge) badge.classList.remove('hidden');
+          } else {
+            quickItem.classList.remove('is-completed');
+            if (badge) badge.classList.add('hidden');
+          }
+        }
+        const card = document.querySelector('.ex-card[data-ex-id="' + exId + '"]');
+        if (card) {
+          const tag = card.querySelector('.card-done-tag');
+          if (isCompleted) {
+            card.classList.add('border-amber-500', 'bg-amber-50/30');
+            if (tag) tag.classList.remove('hidden');
+          } else {
+            card.classList.remove('border-amber-500', 'bg-amber-50/30');
+            if (tag) tag.classList.add('hidden');
+          }
+        }
+      };
+
+      const updateProgressFor = (exId) => {
+        const card = document.querySelector('.ex-card[data-ex-id="' + exId + '"]');
+        if (!card) return;
+        const boxes = card.querySelectorAll('input[type="checkbox"][data-check-id]');
+        const done = Array.from(boxes).filter((b) => b.checked).length;
+        const total = boxes.length;
+        const els = card.querySelectorAll('[data-progress-for="' + exId + '"]');
+        els.forEach((el) => {
+          el.textContent = done + ' / ' + total;
+          if (done === total && total > 0) {
+            el.classList.add('bg-amber-600', 'text-white');
+            el.classList.remove('bg-slate-100', 'text-slate-500');
+          } else {
+            el.classList.remove('bg-amber-600', 'text-white');
+            el.classList.add('bg-slate-100', 'text-slate-500');
+          }
+        });
+
+        const store = readStore();
+        if (done === total && total > 0) {
+          if (!store[exId]) store[exId] = {};
+          store[exId]['__completed__'] = true;
+          writeStore(store);
+          syncCompleteStatus(exId, true);
+        }
+      };
+
+      document.querySelectorAll('.ex-card[data-ex-id]').forEach((card) => {
+        const exId = card.getAttribute('data-ex-id');
+        const perEx = (readStore()[exId]) || {};
+        card.querySelectorAll('input[type="checkbox"][data-check-id]').forEach((input) => {
+          const checkId = input.getAttribute('data-check-id');
+          input.checked = Boolean(perEx[checkId]);
+          input.addEventListener('click', (e) => e.stopPropagation());
+          input.addEventListener('change', () => {
+            const s = readStore();
+            if (!s[exId]) s[exId] = {};
+            s[exId][checkId] = input.checked;
+            writeStore(s);
+            updateProgressFor(exId);
+          });
+        });
+        updateProgressFor(exId);
+        syncCompleteStatus(exId, Boolean(perEx['__completed__']));
+      });
+
+      document.querySelectorAll('input[data-complete-id]').forEach((chk) => {
+        chk.addEventListener('change', () => {
+          const exId = chk.getAttribute('data-complete-id');
+          const isDone = chk.checked;
+          const s = readStore();
+          if (!s[exId]) s[exId] = {};
+          s[exId]['__completed__'] = isDone;
+
+          const card = document.querySelector('.ex-card[data-ex-id="' + exId + '"]');
+          if (card) {
+            card.querySelectorAll('input[type="checkbox"][data-check-id]').forEach((box) => {
+              box.checked = isDone;
+              const checkId = box.getAttribute('data-check-id');
+              s[exId][checkId] = isDone;
+            });
+          }
+
+          writeStore(s);
+          syncCompleteStatus(exId, isDone);
+          updateProgressFor(exId);
+        });
+      });
+
+      document.getElementById('expandAll')?.addEventListener('click', () => {
+        document.querySelectorAll('.ex-card[id]').forEach((d) => (d.open = true));
+      });
+      document.getElementById('collapseAll')?.addEventListener('click', () => {
+        document.querySelectorAll('.ex-card[id]').forEach((d) => (d.open = false));
+      });
+
+      const toggleBtn = document.getElementById('toggleSuggestions');
+      const SUGGESTIONS_KEY = 'aprende_show_step_suggestions';
+
+      const updateSuggestionsVisibility = (show) => {
+        document.querySelectorAll('.ex-checks').forEach((el) => {
+          if (show) {
+            el.classList.remove('hidden');
+          } else {
+            el.classList.add('hidden');
+          }
+        });
+      };
+
+      if (toggleBtn) {
+        const savedPref = localStorage.getItem(SUGGESTIONS_KEY);
+        const isEnabled = savedPref === 'true';
+        toggleBtn.checked = isEnabled;
+        updateSuggestionsVisibility(isEnabled);
+
+        toggleBtn.addEventListener('change', (e) => {
+          const checked = e.target.checked;
+          localStorage.setItem(SUGGESTIONS_KEY, String(checked));
+          updateSuggestionsVisibility(checked);
+        });
+      }
+
+      const searchBox = document.getElementById('searchBox');
+      if (searchBox) {
+        searchBox.addEventListener('input', (e) => {
+          const q = e.target.value.toLowerCase().trim();
+          document.querySelectorAll('.search-target').forEach((el) => {
+            const kw = el.getAttribute('data-keywords') || '';
+            const txt = el.textContent.toLowerCase();
+            el.style.display = (txt.includes(q) || kw.includes(q)) ? '' : 'none';
+          });
+        });
+      }
+    })();
+  </script>
+
+  <style>
+    .quick-item.is-completed {
+      background: #FEF3C7;
+      border-color: #431407;
+    }
+    .quick-item.is-completed .quick-num {
+      background: #78350f;
+    }
+    .quick-item {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      padding: 0.55rem 0.85rem;
+      background: #ffffff;
+      border: 2px solid #1E1210;
+      border-radius: 12px;
+      text-decoration: none;
+      color: inherit;
+      box-shadow: 2px 2px 0 #1E1210;
+      transition: all 0.12s ease;
+    }
+    .quick-item:hover {
+      transform: translateX(3px);
+      box-shadow: 3px 3px 0 #1E1210;
+      background: #FEF3C7;
+    }
+    .quick-num {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      font-size: 0.72rem;
+      background: #431407;
+      color: #ffffff;
+      padding: 0.15rem 0.45rem;
+      border-radius: 6px;
+      flex-shrink: 0;
+    }
+    .quick-title {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      font-size: 0.88rem;
+      color: #1E1210;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      flex: 1;
+    }
+    .quick-arrow {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      font-size: 0.9rem;
+      color: #431407;
+      flex-shrink: 0;
+    }
+  </style>
+</Layout>

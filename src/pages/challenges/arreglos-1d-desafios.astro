@@ -1,0 +1,373 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+const exercises = [
+  { id: 1, title: 'Invertir un arreglo', statement: 'Dado un arreglo de 5 elementos, crear un algoritmo que invierta el orden de sus elementos (el primero pasa a ser el último y viceversa).' },
+  { id: 2, title: 'Copiar un arreglo a otro', statement: 'Copiar todos los elementos de un arreglo A en un nuevo arreglo B e imprimir ambos para verificar.' },
+  { id: 3, title: 'Comparar dos arreglos de igual tamaño', statement: 'Determinar si dos arreglos contienen exactamente los mismos elementos en las mismas posiciones (retornar true o false).' },
+  { id: 4, title: 'Buscar la posición/índice de un elemento', statement: 'Dado un valor X, recorrer el arreglo y retornar la posición donde se encuentra por primera vez, o -1 si no existe.' },
+  { id: 5, title: 'Contar ocurrencias de un número', statement: 'Dado un arreglo numérico y un valor X, contar cuántas veces aparece X dentro del arreglo.' },
+  { id: 6, title: 'Contar números positivos y negativos', statement: 'Recorrer un arreglo de enteros e imprimir cuántos elementos son positivos y cuántos negativos.' },
+  { id: 7, title: 'Contar impares en un vector', statement: 'Recorrer el arreglo e incrementar un contador por cada elemento cuyo residuo con 2 sea distinto de 0.' },
+  { id: 8, title: 'Reemplazar elementos según condición', statement: 'Dado un arreglo numérico, reemplazar todos los números negativos por el valor 0.' },
+  { id: 9, title: 'Eliminar un elemento (desplazamiento)', statement: 'Dado un arreglo y una posición P, eliminar el elemento desplazando los elementos restantes hacia la izquierda.' },
+  { id: 10, title: 'Encontrar el segundo número mayor', statement: 'Recorrer un arreglo numérico sin ordenar y determinar cuál es el segundo valor más grande.' },
+  { id: 11, title: 'Encontrar elementos repetidos', statement: 'Imprimir cuáles números se repiten al menos una vez dentro del arreglo.' },
+  { id: 12, title: 'Encontrar elementos únicos', statement: 'Imprimir únicamente aquellos valores que aparecen exactamente una sola vez en el arreglo.' },
+  { id: 13, title: 'Frecuencia de todos los elementos', statement: 'Contar e imprimir la frecuencia o cantidad de apariciones de cada número dentro del vector.' },
+  { id: 14, title: 'Intersección entre dos arreglos', statement: 'Dado el arreglo A y el arreglo B, crear un nuevo arreglo C con los elementos comunes a ambos.' },
+  { id: 15, title: 'Unión de dos arreglos sin duplicados', statement: 'Combinar dos arreglos A y B en un nuevo arreglo evitando repetir elementos.' },
+  { id: 16, title: 'Rotar elementos a la derecha', statement: 'Desplazar todos los elementos una posición a la derecha (el último pasa a ser el primero).' },
+  { id: 17, title: 'Rotar elementos a la izquierda', statement: 'Desplazar todos los elementos una posición a la izquierda (el primero pasa al final).' },
+  { id: 18, title: 'Ordenamiento por Selección (Selection Sort)', statement: 'Ordenar los elementos de un arreglo de menor a mayor utilizando el algoritmo de selección.' },
+  { id: 19, title: 'Ordenamiento Burbuja (Bubble Sort)', statement: 'Implementar el algoritmo de burbuja para ordenar un arreglo numérico de forma ascendente.' },
+  { id: 20, title: 'Estadísticas completas de un vector', statement: 'Procesar un arreglo y calcular simultáneamente: suma, promedio, mayor, menor, cantidad de pares e impares.' },
+];
+---
+
+<Layout
+  title="Arreglos 1D — Desafíos de Manipulación (20 Desafíos)"
+  description="20 desafíos de manipulación de arreglos: inversión, búsqueda, conteos, eliminación de duplicados, frecuencias y ordenamientos."
+>
+  <article class="content-section max-w-5xl mx-auto px-4 py-6">
+
+    <!-- HEADER DE LA PÁGINA -->
+    <div class="mb-6 pb-4 border-b-2 border-dashed border-[#1E1210]/15">
+      <div class="flex items-center gap-2 mb-1">
+        <a href="/challenges/" class="text-xs font-nunito font-extrabold text-[#0891b2] no-underline hover:underline">← Volver al Catálogo</a>
+        <span class="text-slate-300">•</span>
+        <span class="text-xs font-nunito font-extrabold uppercase tracking-widest text-[#0891b2]">Módulo 08 · Arreglos 1D</span>
+      </div>
+      <h1 class="m-0 text-2xl sm:text-3xl font-nunito font-black text-[#1E1210]">
+        Arreglos 1D — Desafíos de Manipulación
+      </h1>
+      <p class="mt-2 text-sm text-slate-600 font-medium leading-relaxed">
+        20 desafíos interactivos para dominar la manipulación avanzada de vectores: búsquedas, inversiones, frecuencias, desplazamientos y algoritmos de ordenamiento. Válido en <strong>Python, Java, C#, C++, JS, PHP y PSeInt</strong>.
+      </p>
+    </div>
+
+    <!-- CONTROLES -->
+    <div class="mb-6 flex flex-col md:flex-row items-center justify-between gap-4 bg-cyan-50/60 p-4 rounded-2xl border-2 border-[#1E1210]">
+      <div class="w-full md:w-auto flex flex-col sm:flex-row items-start sm:items-center gap-4">
+        <div>
+          <span class="text-xs font-nunito font-black text-cyan-900 uppercase tracking-wider block">🔍 Filtro de búsqueda</span>
+          <input
+            type="text"
+            id="searchBox"
+            placeholder="Buscar desafío..."
+            class="mt-1 w-full sm:w-64 px-3 py-2 rounded-xl border-2 border-[#1E1210] font-nunito font-bold text-xs bg-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
+          />
+        </div>
+
+        <!-- TOGGLE SWITCH DE SUGERENCIAS PASO A PASO -->
+        <div class="flex items-center gap-2.5 bg-white px-3.5 py-2 rounded-xl border-2 border-[#1E1210] shadow-[2px_2px_0px_#1E1210] mt-1 sm:mt-5">
+          <input type="checkbox" id="toggleSuggestions" class="w-4 h-4 accent-cyan-600 rounded cursor-pointer" />
+          <label for="toggleSuggestions" class="text-xs font-nunito font-extrabold text-[#1E1210] cursor-pointer select-none">
+            💡 Activar sugerencias guiadas (Paso a Paso)
+          </label>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2 w-full md:w-auto justify-end">
+        <button type="button" id="expandAll" class="px-3.5 py-2 rounded-xl border-2 border-[#1E1210] bg-[#1E1210] text-white font-nunito font-black text-xs cursor-pointer shadow-[2px_2px_0px_#1E1210] hover:-translate-y-0.5">Expandir todos (20)</button>
+        <button type="button" id="collapseAll" class="px-3.5 py-2 rounded-xl border-2 border-[#1E1210] bg-white text-[#1E1210] font-nunito font-black text-xs cursor-pointer shadow-[2px_2px_0px_#1E1210] hover:-translate-y-0.5">Colapsar todos</button>
+      </div>
+    </div>
+
+    <!-- LISTADO RÁPIDO DE 20 EJERCICIOS -->
+    <section class="mb-10">
+      <div class="flex items-center justify-between mb-3 border-b-2 border-[#1E1210] pb-2">
+        <h2 class="text-base font-nunito font-black text-[#1E1210] m-0 flex items-center gap-2">
+          <span>📋</span> Listado Rápido (1 al 20)
+        </h2>
+        <span class="text-xs font-nunito font-bold bg-cyan-100 text-cyan-800 px-2.5 py-0.5 rounded-full border border-cyan-300">20 ítems</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2" id="quickList">
+        {exercises.map((ex) => (
+          <div class="quick-item search-target" data-keywords={ex.title.toLowerCase()} data-quick-id={`arr1d-d-${ex.id}`}>
+            <label class="flex items-center cursor-pointer p-0.5 shrink-0" title="Marcar como completado">
+              <input type="checkbox" data-complete-id={`arr1d-d-${ex.id}`} class="w-4 h-4 accent-cyan-600 rounded cursor-pointer" />
+            </label>
+            <a href={`#arr1d-d-${ex.id}`} class="quick-link flex items-center gap-2.5 flex-1 min-w-0 no-underline text-inherit">
+              <span class="quick-num">{String(ex.id).padStart(2, '0')}</span>
+              <span class="quick-title">{ex.title}</span>
+              <span class="quick-badge-done hidden text-[0.65rem] font-bold bg-cyan-100 text-cyan-800 px-1.5 py-0.5 rounded border border-cyan-300">✓ Hecho</span>
+              <span class="quick-arrow">↓</span>
+            </a>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- RESOLUCIÓN GUIADA CON CHECKLISTS -->
+    <section class="mb-8">
+      <div class="flex items-center justify-between mb-4 border-b-2 border-[#1E1210] pb-2">
+        <h2 class="text-base font-nunito font-black text-[#1E1210] m-0 flex items-center gap-2">
+          <span>🎯</span> Resolución Guiada y Checklists de Progreso
+        </h2>
+      </div>
+
+      <div id="exerciseList" class="flex flex-col gap-3">
+        {exercises.map((ex) => (
+          <details class="ex-card border-2 border-[#1E1210] bg-white rounded-2xl p-4 shadow-[3px_3px_0px_#1E1210] search-target transition-all" id={`arr1d-d-${ex.id}`} data-ex-id={`arr1d-d-${ex.id}`} data-keywords={ex.title.toLowerCase()}>
+            <summary class="ex-summary flex items-center justify-between cursor-pointer font-nunito font-black select-none">
+              <div class="flex items-center gap-3 pr-2 min-w-0">
+                <span class="ex-num w-8 h-8 rounded-xl bg-[#0891b2] text-white flex items-center justify-center text-xs shrink-0">{String(ex.id).padStart(2, '0')}</span>
+                <h3 class="m-0 text-sm sm:text-base text-[#1E1210] truncate flex items-center gap-2">
+                  <span>{ex.id}. {ex.title}</span>
+                  <span class="card-done-tag hidden text-xs font-bold text-cyan-700 bg-cyan-100 px-2 py-0.5 rounded-md border border-cyan-300">✓ Completado</span>
+                </h3>
+              </div>
+              <div class="flex items-center gap-2 shrink-0">
+                <label class="flex items-center gap-1.5 text-xs font-extrabold bg-cyan-50 hover:bg-cyan-100 text-cyan-900 px-2.5 py-1 rounded-lg border border-cyan-200 cursor-pointer" onclick="event.stopPropagation()">
+                  <input type="checkbox" data-complete-id={`arr1d-d-${ex.id}`} class="w-4 h-4 accent-cyan-600 rounded cursor-pointer" />
+                  <span>Completado</span>
+                </label>
+                <span class="ex-progress text-xs font-bold text-slate-500 bg-slate-100 px-2 py-1 rounded-lg border border-slate-200" data-progress-for={`arr1d-d-${ex.id}`}>0 / 5</span>
+              </div>
+            </summary>
+
+            <div class="ex-body mt-3 pt-3 border-t border-slate-200">
+              <p class="ex-statement font-quicksand font-bold text-sm text-slate-700 bg-slate-50 p-3 rounded-xl border border-slate-200">
+                <strong>Enunciado:</strong> {ex.statement}
+              </p>
+
+              <div class="ex-checks hidden flex flex-col gap-2 mt-3 text-xs font-nunito font-extrabold">
+                <label class="chk flex items-center gap-2.5 cursor-pointer hover:bg-cyan-50/50 p-1.5 rounded-lg transition-colors">
+                  <input type="checkbox" data-check-id="declara" class="w-4 h-4 accent-cyan-600 rounded" />
+                  <span>1. Declaré e inicialicé los vectores necesarios</span>
+                </label>
+
+                <label class="chk flex items-center gap-2.5 cursor-pointer hover:bg-cyan-50/50 p-1.5 rounded-lg transition-colors">
+                  <input type="checkbox" data-check-id="index" class="w-4 h-4 accent-cyan-600 rounded" />
+                  <span>2. Diseñé la estructura de iteración (for / while)</span>
+                </label>
+
+                <label class="chk flex items-center gap-2.5 cursor-pointer hover:bg-cyan-50/50 p-1.5 rounded-lg transition-colors">
+                  <input type="checkbox" data-check-id="bucle" class="w-4 h-4 accent-cyan-600 rounded" />
+                  <span>3. Apliqué la condición, intercambio o desplazamiento de elementos</span>
+                </label>
+
+                <label class="chk flex items-center gap-2.5 cursor-pointer hover:bg-cyan-50/50 p-1.5 rounded-lg transition-colors">
+                  <input type="checkbox" data-check-id="operacion" class="w-4 h-4 accent-cyan-600 rounded" />
+                  <span>4. Validé los casos límite (inicio, final, elementos repetidos)</span>
+                </label>
+
+                <label class="chk flex items-center gap-2.5 cursor-pointer hover:bg-cyan-50/50 p-1.5 rounded-lg transition-colors">
+                  <input type="checkbox" data-check-id="salida" class="w-4 h-4 accent-cyan-600 rounded" />
+                  <span>5. Imprimí el vector o resultado resultante por consola</span>
+                </label>
+              </div>
+            </div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+  </article>
+
+  <!-- SCRIPT DE LOCALSTORAGE Y SINCRONIZACIÓN -->
+  <script is:inline>
+    (function () {
+      const KEY = 'aprende_arr1d_desafios_v1';
+      const readStore = () => { try { return JSON.parse(localStorage.getItem(KEY) || '{}'); } catch { return {}; } };
+      const writeStore = (s) => localStorage.setItem(KEY, JSON.stringify(s));
+
+      const syncCompleteStatus = (exId, isCompleted) => {
+        document.querySelectorAll('input[data-complete-id="' + exId + '"]').forEach((chk) => { chk.checked = isCompleted; });
+        const quickItem = document.querySelector('.quick-item[data-quick-id="' + exId + '"]');
+        if (quickItem) {
+          const badge = quickItem.querySelector('.quick-badge-done');
+          if (isCompleted) {
+            quickItem.classList.add('is-completed');
+            if (badge) badge.classList.remove('hidden');
+          } else {
+            quickItem.classList.remove('is-completed');
+            if (badge) badge.classList.add('hidden');
+          }
+        }
+        const card = document.querySelector('.ex-card[data-ex-id="' + exId + '"]');
+        if (card) {
+          const tag = card.querySelector('.card-done-tag');
+          if (isCompleted) {
+            card.classList.add('border-cyan-500', 'bg-cyan-50/30');
+            if (tag) tag.classList.remove('hidden');
+          } else {
+            card.classList.remove('border-cyan-500', 'bg-cyan-50/30');
+            if (tag) tag.classList.add('hidden');
+          }
+        }
+      };
+
+      const updateProgressFor = (exId) => {
+        const card = document.querySelector('.ex-card[data-ex-id="' + exId + '"]');
+        if (!card) return;
+        const boxes = card.querySelectorAll('input[type="checkbox"][data-check-id]');
+        const done = Array.from(boxes).filter((b) => b.checked).length;
+        const total = boxes.length;
+        const els = card.querySelectorAll('[data-progress-for="' + exId + '"]');
+        els.forEach((el) => {
+          el.textContent = done + ' / ' + total;
+          if (done === total && total > 0) {
+            el.classList.add('bg-cyan-600', 'text-white');
+            el.classList.remove('bg-slate-100', 'text-slate-500');
+          } else {
+            el.classList.remove('bg-cyan-600', 'text-white');
+            el.classList.add('bg-slate-100', 'text-slate-500');
+          }
+        });
+
+        const store = readStore();
+        if (done === total && total > 0) {
+          if (!store[exId]) store[exId] = {};
+          store[exId]['__completed__'] = true;
+          writeStore(store);
+          syncCompleteStatus(exId, true);
+        }
+      };
+
+      document.querySelectorAll('.ex-card[data-ex-id]').forEach((card) => {
+        const exId = card.getAttribute('data-ex-id');
+        const perEx = (readStore()[exId]) || {};
+        card.querySelectorAll('input[type="checkbox"][data-check-id]').forEach((input) => {
+          const checkId = input.getAttribute('data-check-id');
+          input.checked = Boolean(perEx[checkId]);
+          input.addEventListener('click', (e) => e.stopPropagation());
+          input.addEventListener('change', () => {
+            const s = readStore();
+            if (!s[exId]) s[exId] = {};
+            s[exId][checkId] = input.checked;
+            writeStore(s);
+            updateProgressFor(exId);
+          });
+        });
+        updateProgressFor(exId);
+        syncCompleteStatus(exId, Boolean(perEx['__completed__']));
+      });
+
+      document.querySelectorAll('input[data-complete-id]').forEach((chk) => {
+        chk.addEventListener('change', () => {
+          const exId = chk.getAttribute('data-complete-id');
+          const isDone = chk.checked;
+          const s = readStore();
+          if (!s[exId]) s[exId] = {};
+          s[exId]['__completed__'] = isDone;
+
+          const card = document.querySelector('.ex-card[data-ex-id="' + exId + '"]');
+          if (card) {
+            card.querySelectorAll('input[type="checkbox"][data-check-id]').forEach((box) => {
+              box.checked = isDone;
+              const checkId = box.getAttribute('data-check-id');
+              s[exId][checkId] = isDone;
+            });
+          }
+
+          writeStore(s);
+          syncCompleteStatus(exId, isDone);
+          updateProgressFor(exId);
+        });
+      });
+
+      document.getElementById('expandAll')?.addEventListener('click', () => {
+        document.querySelectorAll('.ex-card[id]').forEach((d) => (d.open = true));
+      });
+      document.getElementById('collapseAll')?.addEventListener('click', () => {
+        document.querySelectorAll('.ex-card[id]').forEach((d) => (d.open = false));
+      });
+
+      const toggleBtn = document.getElementById('toggleSuggestions');
+      const SUGGESTIONS_KEY = 'aprende_show_step_suggestions';
+
+      const updateSuggestionsVisibility = (show) => {
+        document.querySelectorAll('.ex-checks').forEach((el) => {
+          if (show) {
+            el.classList.remove('hidden');
+          } else {
+            el.classList.add('hidden');
+          }
+        });
+      };
+
+      if (toggleBtn) {
+        const savedPref = localStorage.getItem(SUGGESTIONS_KEY);
+        const isEnabled = savedPref === 'true';
+        toggleBtn.checked = isEnabled;
+        updateSuggestionsVisibility(isEnabled);
+
+        toggleBtn.addEventListener('change', (e) => {
+          const checked = e.target.checked;
+          localStorage.setItem(SUGGESTIONS_KEY, String(checked));
+          updateSuggestionsVisibility(checked);
+        });
+      }
+
+      const searchBox = document.getElementById('searchBox');
+      if (searchBox) {
+        searchBox.addEventListener('input', (e) => {
+          const q = e.target.value.toLowerCase().trim();
+          document.querySelectorAll('.search-target').forEach((el) => {
+            const kw = el.getAttribute('data-keywords') || '';
+            const txt = el.textContent.toLowerCase();
+            el.style.display = (txt.includes(q) || kw.includes(q)) ? '' : 'none';
+          });
+        });
+      }
+    })();
+  </script>
+
+  <style>
+    .quick-item.is-completed {
+      background: #ECFEFF;
+      border-color: #0891b2;
+    }
+    .quick-item.is-completed .quick-num {
+      background: #0e7490;
+    }
+    .quick-item {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      padding: 0.55rem 0.85rem;
+      background: #ffffff;
+      border: 2px solid #1E1210;
+      border-radius: 12px;
+      text-decoration: none;
+      color: inherit;
+      box-shadow: 2px 2px 0 #1E1210;
+      transition: all 0.12s ease;
+    }
+    .quick-item:hover {
+      transform: translateX(3px);
+      box-shadow: 3px 3px 0 #1E1210;
+      background: #ECFEFF;
+    }
+    .quick-num {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      font-size: 0.72rem;
+      background: #0891b2;
+      color: #ffffff;
+      padding: 0.15rem 0.45rem;
+      border-radius: 6px;
+      flex-shrink: 0;
+    }
+    .quick-title {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      font-size: 0.88rem;
+      color: #1E1210;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      flex: 1;
+    }
+    .quick-arrow {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      font-size: 0.9rem;
+      color: #0891b2;
+      flex-shrink: 0;
+    }
+  </style>
+</Layout>
