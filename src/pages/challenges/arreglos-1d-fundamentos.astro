@@ -1,0 +1,326 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+const exercises = [
+  { id: 1, title: 'Crear un arreglo de números', statement: 'Declarar un arreglo unidimensional con 5 números enteros arbitrarios e imprimir el arreglo completo.' },
+  { id: 2, title: 'Mostrar todos los elementos', statement: 'Dado un arreglo de números, imprimir cada elemento en una línea separada.' },
+  { id: 3, title: 'Mostrar el primer elemento', statement: 'Acceder e imprimir el elemento ubicado en la posición o índice inicial (posición 0).' },
+  { id: 4, title: 'Mostrar el último elemento', statement: 'Acceder e imprimir el último elemento del arreglo utilizando la longitud total del arreglo (longitud - 1).' },
+  { id: 5, title: 'Recorrer el arreglo con ciclo for', statement: 'Utilizar un bucle for para iterar desde el índice 0 hasta el final del arreglo mostrando su posición y valor.' },
+  { id: 6, title: 'Calcular la suma total', statement: 'Recorrer un arreglo numérico acumular la suma de todos sus elementos e imprimir el resultado total.' },
+  { id: 7, title: 'Calcular el promedio', statement: 'Calcular la suma total de un arreglo y dividirla por la cantidad de elementos (longitud) para obtener el promedio.' },
+  { id: 8, title: 'Contar elementos pares', statement: 'Recorrer un arreglo de enteros e incrementar un contador cada vez que se encuentre un número par (residuo % 2 es 0).' },
+  { id: 9, title: 'Buscar un número específico', statement: 'Pedir un valor al usuario y recorrer el arreglo para determinar si el valor existe dentro del arreglo (retornar verdadero o falso).' },
+  { id: 10, title: 'Encontrar el elemento mayor y menor', statement: 'Inicializar dos variables con el primer elemento y recorrer el arreglo para encontrar el valor máximo y el valor mínimo.' },
+];
+---
+
+<Layout
+  title="Arreglos 1D — Fundamentos (10 Desafíos)"
+  description="Aprende a crear, acceder, recorrer por índice y calcular estadísticas en arreglos unidimensionales."
+>
+  <article class="content-section max-w-5xl mx-auto px-4 py-6">
+
+    <!-- HEADER DE LA PÁGINA -->
+    <div class="mb-6 pb-4 border-b-2 border-dashed border-[#1E1210]/15">
+      <div class="flex items-center gap-2 mb-1">
+        <a href="/challenges/" class="text-xs font-nunito font-extrabold text-[#2563eb] no-underline hover:underline">← Volver al Catálogo</a>
+        <span class="text-slate-300">•</span>
+        <span class="text-xs font-nunito font-extrabold uppercase tracking-widest text-[#2563eb]">Módulo 05 · Arreglos 1D</span>
+      </div>
+      <h1 class="m-0 text-2xl sm:text-3xl font-nunito font-black text-[#1E1210]">
+        Arreglos 1D — Fundamentos
+      </h1>
+      <p class="mt-2 text-sm text-slate-600 font-medium leading-relaxed">
+        10 desafíos fundamentales para aprender el uso de <code>[]</code>, posiciones, <code>índices</code>, bucles <code>for</code>, acumuladores y contadores. Válido en <strong>Python, Java, C#, C++, JS, PHP y PSeInt</strong>.
+      </p>
+    </div>
+
+    <!-- CONTROLES -->
+    <div class="mb-6 flex flex-col sm:flex-row items-center justify-between gap-4 bg-blue-50/60 p-4 rounded-2xl border-2 border-[#1E1210]">
+      <div class="w-full sm:w-auto">
+        <span class="text-xs font-nunito font-black text-blue-900 uppercase tracking-wider block">🔍 Filtro de búsqueda</span>
+        <input
+          type="text"
+          id="searchBox"
+          placeholder="Buscar ejercicio..."
+          class="mt-1 w-full sm:w-80 px-3 py-2 rounded-xl border-2 border-[#1E1210] font-nunito font-bold text-xs bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+      <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+        <button type="button" id="expandAll" class="px-3.5 py-2 rounded-xl border-2 border-[#1E1210] bg-[#1E1210] text-white font-nunito font-black text-xs cursor-pointer shadow-[2px_2px_0px_#1E1210] hover:-translate-y-0.5">Expandir todos (10)</button>
+        <button type="button" id="collapseAll" class="px-3.5 py-2 rounded-xl border-2 border-[#1E1210] bg-white text-[#1E1210] font-nunito font-black text-xs cursor-pointer shadow-[2px_2px_0px_#1E1210] hover:-translate-y-0.5">Colapsar todos</button>
+      </div>
+    </div>
+
+    <!-- LISTADO RÁPIDO DE 10 EJERCICIOS -->
+    <section class="mb-10">
+      <div class="flex items-center justify-between mb-3 border-b-2 border-[#1E1210] pb-2">
+        <h2 class="text-base font-nunito font-black text-[#1E1210] m-0 flex items-center gap-2">
+          <span>📋</span> Listado Rápido (1 al 10)
+        </h2>
+        <span class="text-xs font-nunito font-bold bg-blue-100 text-blue-800 px-2.5 py-0.5 rounded-full border border-blue-300">10 ítems</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2" id="quickList">
+        {exercises.map((ex) => (
+          <div class="quick-item search-target" data-keywords={ex.title.toLowerCase()} data-quick-id={`arr1d-f-${ex.id}`}>
+            <label class="flex items-center cursor-pointer p-0.5 shrink-0" title="Marcar como completado">
+              <input type="checkbox" data-complete-id={`arr1d-f-${ex.id}`} class="w-4 h-4 accent-blue-600 rounded cursor-pointer" />
+            </label>
+            <a href={`#arr1d-f-${ex.id}`} class="quick-link flex items-center gap-2.5 flex-1 min-w-0 no-underline text-inherit">
+              <span class="quick-num">{String(ex.id).padStart(2, '0')}</span>
+              <span class="quick-title">{ex.title}</span>
+              <span class="quick-badge-done hidden text-[0.65rem] font-bold bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded border border-blue-300">✓ Hecho</span>
+              <span class="quick-arrow">↓</span>
+            </a>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- RESOLUCIÓN GUIADA CON CHECKLISTS -->
+    <section class="mb-8">
+      <div class="flex items-center justify-between mb-4 border-b-2 border-[#1E1210] pb-2">
+        <h2 class="text-base font-nunito font-black text-[#1E1210] m-0 flex items-center gap-2">
+          <span>🎯</span> Resolución Guiada y Checklists de Progreso
+        </h2>
+      </div>
+
+      <div id="exerciseList" class="flex flex-col gap-3">
+        {exercises.map((ex) => (
+          <details class="ex-card border-2 border-[#1E1210] bg-white rounded-2xl p-4 shadow-[3px_3px_0px_#1E1210] search-target transition-all" id={`arr1d-f-${ex.id}`} data-ex-id={`arr1d-f-${ex.id}`} data-keywords={ex.title.toLowerCase()}>
+            <summary class="ex-summary flex items-center justify-between cursor-pointer font-nunito font-black select-none">
+              <div class="flex items-center gap-3 pr-2 min-w-0">
+                <span class="ex-num w-8 h-8 rounded-xl bg-[#2563eb] text-white flex items-center justify-center text-xs shrink-0">{String(ex.id).padStart(2, '0')}</span>
+                <h3 class="m-0 text-sm sm:text-base text-[#1E1210] truncate flex items-center gap-2">
+                  <span>{ex.id}. {ex.title}</span>
+                  <span class="card-done-tag hidden text-xs font-bold text-blue-700 bg-blue-100 px-2 py-0.5 rounded-md border border-blue-300">✓ Completado</span>
+                </h3>
+              </div>
+              <div class="flex items-center gap-2 shrink-0">
+                <label class="flex items-center gap-1.5 text-xs font-extrabold bg-blue-50 hover:bg-blue-100 text-blue-900 px-2.5 py-1 rounded-lg border border-blue-200 cursor-pointer" onclick="event.stopPropagation()">
+                  <input type="checkbox" data-complete-id={`arr1d-f-${ex.id}`} class="w-4 h-4 accent-blue-600 rounded cursor-pointer" />
+                  <span>Completado</span>
+                </label>
+                <span class="ex-progress text-xs font-bold text-slate-500 bg-slate-100 px-2 py-1 rounded-lg border border-slate-200" data-progress-for={`arr1d-f-${ex.id}`}>0 / 5</span>
+              </div>
+            </summary>
+
+            <div class="ex-body mt-3 pt-3 border-t border-slate-200">
+              <p class="ex-statement font-quicksand font-bold text-sm text-slate-700 bg-slate-50 p-3 rounded-xl border border-slate-200">
+                <strong>Enunciado:</strong> {ex.statement}
+              </p>
+
+              <div class="ex-checks flex flex-col gap-2 mt-3 text-xs font-nunito font-extrabold">
+                <label class="chk flex items-center gap-2.5 cursor-pointer hover:bg-blue-50/50 p-1.5 rounded-lg transition-colors">
+                  <input type="checkbox" data-check-id="declara" class="w-4 h-4 accent-blue-600 rounded" />
+                  <span>1. Declaré la estructura de arreglo con la sintaxis correcta</span>
+                </label>
+
+                <label class="chk flex items-center gap-2.5 cursor-pointer hover:bg-blue-50/50 p-1.5 rounded-lg transition-colors">
+                  <input type="checkbox" data-check-id="index" class="w-4 h-4 accent-blue-600 rounded" />
+                  <span>2. Identifiqué los índices de inicio (0) y final (longitud - 1)</span>
+                </label>
+
+                <label class="chk flex items-center gap-2.5 cursor-pointer hover:bg-blue-50/50 p-1.5 rounded-lg transition-colors">
+                  <input type="checkbox" data-check-id="bucle" class="w-4 h-4 accent-blue-600 rounded" />
+                  <span>3. Recorrí los elementos utilizando un bucle <code>for</code> / <code>para</code></span>
+                </label>
+
+                <label class="chk flex items-center gap-2.5 cursor-pointer hover:bg-blue-50/50 p-1.5 rounded-lg transition-colors">
+                  <input type="checkbox" data-check-id="operacion" class="w-4 h-4 accent-blue-600 rounded" />
+                  <span>4. Apliqué la condición o acumulador dentro de la iteración</span>
+                </label>
+
+                <label class="chk flex items-center gap-2.5 cursor-pointer hover:bg-blue-50/50 p-1.5 rounded-lg transition-colors">
+                  <input type="checkbox" data-check-id="salida" class="w-4 h-4 accent-blue-600 rounded" />
+                  <span>5. Imprimí el resultado final esperado por pantalla</span>
+                </label>
+              </div>
+            </div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+  </article>
+
+  <!-- SCRIPT DE LOCALSTORAGE Y SINCRONIZACIÓN -->
+  <script is:inline>
+    (function () {
+      const KEY = 'aprende_arr1d_fundamentos_v1';
+      const readStore = () => { try { return JSON.parse(localStorage.getItem(KEY) || '{}'); } catch { return {}; } };
+      const writeStore = (s) => localStorage.setItem(KEY, JSON.stringify(s));
+
+      const syncCompleteStatus = (exId, isCompleted) => {
+        document.querySelectorAll('input[data-complete-id="' + exId + '"]').forEach((chk) => { chk.checked = isCompleted; });
+        const quickItem = document.querySelector('.quick-item[data-quick-id="' + exId + '"]');
+        if (quickItem) {
+          const badge = quickItem.querySelector('.quick-badge-done');
+          if (isCompleted) {
+            quickItem.classList.add('is-completed');
+            if (badge) badge.classList.remove('hidden');
+          } else {
+            quickItem.classList.remove('is-completed');
+            if (badge) badge.classList.add('hidden');
+          }
+        }
+        const card = document.querySelector('.ex-card[data-ex-id="' + exId + '"]');
+        if (card) {
+          const tag = card.querySelector('.card-done-tag');
+          if (isCompleted) {
+            card.classList.add('border-blue-500', 'bg-blue-50/30');
+            if (tag) tag.classList.remove('hidden');
+          } else {
+            card.classList.remove('border-blue-500', 'bg-blue-50/30');
+            if (tag) tag.classList.add('hidden');
+          }
+        }
+      };
+
+      const updateProgressFor = (exId) => {
+        const card = document.querySelector('.ex-card[data-ex-id="' + exId + '"]');
+        if (!card) return;
+        const boxes = card.querySelectorAll('input[type="checkbox"][data-check-id]');
+        const done = Array.from(boxes).filter((b) => b.checked).length;
+        const total = boxes.length;
+        const els = card.querySelectorAll('[data-progress-for="' + exId + '"]');
+        els.forEach((el) => {
+          el.textContent = done + ' / ' + total;
+          if (done === total && total > 0) {
+            el.classList.add('bg-blue-600', 'text-white');
+            el.classList.remove('bg-slate-100', 'text-slate-500');
+          } else {
+            el.classList.remove('bg-blue-600', 'text-white');
+            el.classList.add('bg-slate-100', 'text-slate-500');
+          }
+        });
+
+        const store = readStore();
+        if (done === total && total > 0) {
+          if (!store[exId]) store[exId] = {};
+          store[exId]['__completed__'] = true;
+          writeStore(store);
+          syncCompleteStatus(exId, true);
+        }
+      };
+
+      document.querySelectorAll('.ex-card[data-ex-id]').forEach((card) => {
+        const exId = card.getAttribute('data-ex-id');
+        const perEx = (readStore()[exId]) || {};
+        card.querySelectorAll('input[type="checkbox"][data-check-id]').forEach((input) => {
+          const checkId = input.getAttribute('data-check-id');
+          input.checked = Boolean(perEx[checkId]);
+          input.addEventListener('click', (e) => e.stopPropagation());
+          input.addEventListener('change', () => {
+            const s = readStore();
+            if (!s[exId]) s[exId] = {};
+            s[exId][checkId] = input.checked;
+            writeStore(s);
+            updateProgressFor(exId);
+          });
+        });
+        updateProgressFor(exId);
+        syncCompleteStatus(exId, Boolean(perEx['__completed__']));
+      });
+
+      document.querySelectorAll('input[data-complete-id]').forEach((chk) => {
+        chk.addEventListener('change', () => {
+          const exId = chk.getAttribute('data-complete-id');
+          const isDone = chk.checked;
+          const s = readStore();
+          if (!s[exId]) s[exId] = {};
+          s[exId]['__completed__'] = isDone;
+
+          const card = document.querySelector('.ex-card[data-ex-id="' + exId + '"]');
+          if (card) {
+            card.querySelectorAll('input[type="checkbox"][data-check-id]').forEach((box) => {
+              box.checked = isDone;
+              const checkId = box.getAttribute('data-check-id');
+              s[exId][checkId] = isDone;
+            });
+          }
+
+          writeStore(s);
+          syncCompleteStatus(exId, isDone);
+          updateProgressFor(exId);
+        });
+      });
+
+      document.getElementById('expandAll')?.addEventListener('click', () => {
+        document.querySelectorAll('.ex-card[id]').forEach((d) => (d.open = true));
+      });
+      document.getElementById('collapseAll')?.addEventListener('click', () => {
+        document.querySelectorAll('.ex-card[id]').forEach((d) => (d.open = false));
+      });
+
+      const searchBox = document.getElementById('searchBox');
+      if (searchBox) {
+        searchBox.addEventListener('input', (e) => {
+          const q = e.target.value.toLowerCase().trim();
+          document.querySelectorAll('.search-target').forEach((el) => {
+            const kw = el.getAttribute('data-keywords') || '';
+            const txt = el.textContent.toLowerCase();
+            el.style.display = (txt.includes(q) || kw.includes(q)) ? '' : 'none';
+          });
+        });
+      }
+    })();
+  </script>
+
+  <style>
+    .quick-item.is-completed {
+      background: #EFF6FF;
+      border-color: #2563eb;
+    }
+    .quick-item.is-completed .quick-num {
+      background: #1d4ed8;
+    }
+    .quick-item {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      padding: 0.55rem 0.85rem;
+      background: #ffffff;
+      border: 2px solid #1E1210;
+      border-radius: 12px;
+      text-decoration: none;
+      color: inherit;
+      box-shadow: 2px 2px 0 #1E1210;
+      transition: all 0.12s ease;
+    }
+    .quick-item:hover {
+      transform: translateX(3px);
+      box-shadow: 3px 3px 0 #1E1210;
+      background: #EFF6FF;
+    }
+    .quick-num {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      font-size: 0.72rem;
+      background: #2563eb;
+      color: #ffffff;
+      padding: 0.15rem 0.45rem;
+      border-radius: 6px;
+      flex-shrink: 0;
+    }
+    .quick-title {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      font-size: 0.88rem;
+      color: #1E1210;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      flex: 1;
+    }
+    .quick-arrow {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      font-size: 0.9rem;
+      color: #2563eb;
+      flex-shrink: 0;
+    }
+  </style>
+</Layout>

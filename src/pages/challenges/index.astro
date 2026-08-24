@@ -1,183 +1,389 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+
+const modules = [
+  // BLOQUE 1: FUNDAMENTOS Y LÓGICA DE PROGRAMACIÓN
+  {
+    block: 'Bloque 1: Fundamentos de Lógica y Algoritmos',
+    items: [
+      {
+        slug: 'unidad-1',
+        title: '01. Entrada, Proceso y Salida (EPS)',
+        level: 'Inicial',
+        count: '10 Desafíos',
+        stars: '★☆☆☆☆☆☆☆☆☆',
+        icon: '📥',
+        color: '#0284c7',
+        bgIcon: '#E0F2FE',
+        desc: 'Operaciones secuenciales, asignación de variables, fórmulas aritméticas y muestra de resultados sin condicionales.',
+        keywords: 'unidad 1 eps entrada proceso salida basico variables secuencia',
+      },
+      {
+        slug: 'unidad-2',
+        title: '02. Condicionales y Tomas de Decisiones (If / Else)',
+        level: 'Básico',
+        count: '50 Desafíos',
+        stars: '★★☆☆☆☆☆☆☆☆',
+        icon: '🔀',
+        color: '#10b981',
+        bgIcon: '#D1FAE5',
+        desc: 'Evaluación de condiciones simples y compuestas con Si / Entonces / Sino en 50 situaciones de la vida real.',
+        keywords: 'unidad 2 decisiones si sino entonces condicionales flujo si-entonces',
+      },
+      {
+        slug: 'unidad-3',
+        title: '03. Decisiones Anidadas y Lógica Avanzada',
+        level: 'Intermedio',
+        count: '10 Desafíos',
+        stars: '★★★☆☆☆☆☆☆☆',
+        icon: '🧩',
+        color: '#d97706',
+        bgIcon: '#FEF3C7',
+        desc: 'Evaluación multi-criterio, operadores lógicos encadenados (Y/O) y reglas de negocio complejas.',
+        keywords: 'unidad 3 avanzado combinadas decisiones ramas complejo anidadas',
+      },
+      {
+        slug: 'unidad-4',
+        title: '04. Práctica Integradora de Flujo Lógico',
+        level: 'Intermedio+',
+        count: '5 Casos Reales',
+        stars: '★★★★☆☆☆☆☆☆',
+        icon: '🏆',
+        color: '#ec4899',
+        bgIcon: '#FCE7F3',
+        desc: 'Casos completos de simulación: Presupuesto familiar, supermercado, sistema de notas, luz y torneos.',
+        keywords: 'unidad 4 guia problemas integrador presupuesto supermercado notas luz torneo',
+      },
+    ],
+  },
+  // BLOQUE 2: ESTRUCTURAS DE DATOS PRIMARIAS Y COMBINADAS
+  {
+    block: 'Bloque 2: Estructuras de Datos Primarias y Combinadas',
+    items: [
+      {
+        slug: 'arreglos-1d-fundamentos',
+        title: '05. Arreglos 1D — Fundamentos',
+        level: 'Básico',
+        count: '10 Desafíos',
+        stars: '★★★☆☆☆☆☆☆☆',
+        icon: '📊',
+        color: '#2563eb',
+        bgIcon: '#EFF6FF',
+        desc: 'Aprende a declarar, recorrer por índice, acumular y encontrar valores extremos en arreglos unidimensionales.',
+        keywords: 'arreglos 1d vectores arrays posiciones indices for suma promedio min max',
+      },
+      {
+        slug: 'arreglos-1d-desafios',
+        title: '06. Arreglos 1D — Desafíos de Manipulación',
+        level: 'Intermedio',
+        count: '20 Desafíos',
+        stars: '★★★★☆☆☆☆☆☆',
+        icon: '🔄',
+        color: '#0891b2',
+        bgIcon: '#ECFEFF',
+        desc: 'Búsqueda de elementos, inversión de vectores, eliminación de duplicados, frecuencias y ordenamiento.',
+        keywords: 'arreglos 1d desafios busqueda invertir frecuencia ordenamiento elementos',
+      },
+      {
+        slug: 'diccionarios',
+        title: '07. Diccionarios y Mapas (Clave → Valor)',
+        level: 'Intermedio',
+        count: '20 Desafíos',
+        stars: '★★★★★☆☆☆☆☆',
+        icon: '📖',
+        color: '#8b5cf6',
+        bgIcon: '#F5F3FF',
+        desc: 'Estructuras asociativas clave-valor: agregar, consultar, eliminar, iterar y construir pequeñas agendas/sistemas.',
+        keywords: 'diccionarios mapas hashes clave valor asociativo dict hashtable',
+      },
+      {
+        slug: 'arreglos-diccionarios',
+        title: '08. Arreglos + Diccionarios (Estructuras Combinadas)',
+        level: 'Avanzado',
+        count: '20 Desafíos',
+        stars: '★★★★★★☆☆☆☆',
+        icon: '🗂️',
+        color: '#4f46e5',
+        bgIcon: '#EEF2FF',
+        desc: 'Colecciones de registros asociativos (Array de Diccionarios): modelado de listas de personas, productos y datos.',
+        keywords: 'arreglos diccionarios combinadas registros tablas objetos json',
+      },
+      {
+        slug: 'matrices-2d',
+        title: '09. Matrices 2D (Tablas y Grillas)',
+        level: 'Avanzado',
+        count: '20 Desafíos',
+        stars: '★★★★★★★☆☆☆',
+        icon: '🔲',
+        color: '#059669',
+        bgIcon: '#ECFDF5',
+        desc: 'Recorrido por filas y columnas, suma de bordes, diagonales principal/secundaria y transposición de matrices.',
+        keywords: 'matrices 2d bidimensional filas columnas grilla diagonal transponer',
+      },
+      {
+        slug: 'list-arraylist',
+        title: '10. Colecciones Dinámicas (List / ArrayList)',
+        level: 'Avanzado',
+        count: '20 Desafíos',
+        stars: '★★★★★★★☆☆☆',
+        icon: '📦',
+        color: '#d97706',
+        bgIcon: '#FFFBEB',
+        desc: 'Paso de arreglos fijos a colecciones de tamaño dinámico: inserción, borrado dinámico, filtrado y sorting.',
+        keywords: 'list arraylist listas dinamicas colecciones push pop remove add',
+      },
+      {
+        slug: 'list-diccionarios',
+        title: '11. List + Diccionario (Listas de Registros Dinámicos)',
+        level: 'Avanzado+',
+        count: '20 Desafíos',
+        stars: '★★★★★★★★☆☆',
+        icon: '📑',
+        color: '#7c3aed',
+        bgIcon: '#F5F3FF',
+        desc: 'Gestión de listas dinámicas con diccionarios: sistemas de pedidos, clientes, inventarios y notas.',
+        keywords: 'list diccionarios registros dinámicos clientes inventarios pedidos',
+      },
+    ],
+  },
+  // BLOQUE 3: PROGRAMACIÓN ORIENTADA A OBJETOS Y ARQUITECTURA
+  {
+    block: 'Bloque 3: Programación Orientada a Objetos (POO) & Arquitectura',
+    items: [
+      {
+        slug: 'poo',
+        title: '12. POO Básico — Clases Únicas',
+        level: 'POO Inicial',
+        count: '10 Desafíos',
+        stars: '★★★★★☆☆☆☆☆',
+        icon: '🧱',
+        color: '#7c2d12',
+        bgIcon: '#FFF7ED',
+        desc: '10 clases independientes sin herencia: atributos, métodos, constructores, encapsulamiento y diagramas UML.',
+        keywords: 'poo basico clases unicas instancias atributos metodos 10 ejercicios',
+      },
+      {
+        slug: 'inheritance',
+        title: '13. Herencia y Polimorfismo — Jerarquías',
+        level: 'POO Avanzado',
+        count: '20 Desafíos',
+        stars: '★★★★★★★★☆☆',
+        icon: '🌳',
+        color: '#1e1210',
+        bgIcon: '#F4EBD0',
+        desc: '20 jerarquías completas (Clase base + 3 hijas y 3 niveles: Interfaz → Abstracta → Hijas).',
+        keywords: 'herencia polimorfismo jerarquias 20 ejercicios niveles abstracto',
+      },
+      {
+        slug: 'interface',
+        title: '14. Interfaces y Contratos — Desacoplamiento',
+        level: 'POO Avanzado',
+        count: '20 Desafíos',
+        stars: '★★★★★★★★☆☆',
+        icon: '🔌',
+        color: '#6d28d9',
+        bgIcon: '#F5F0FF',
+        desc: '20 contratos con implementaciones múltiples para desacoplamiento y polimorfismo por interfaz.',
+        keywords: 'interfaces contratos desacoplamiento 20 ejercicios arquitectura polimorfismo',
+      },
+      {
+        slug: 'poo-list',
+        title: '15. POO + Colecciones Dinámicas (List<Objeto>)',
+        level: 'POO Experto',
+        count: '20 Desafíos',
+        stars: '★★★★★★★★★☆',
+        icon: '👥',
+        color: '#be185d',
+        bgIcon: '#FDF2F8',
+        desc: 'Gestión de listas de objetos instanciados: List<Persona>, List<Alumno>, List<Producto> e itinerancia.',
+        keywords: 'poo list arraylist objetos colecciones list<objeto> gestor',
+      },
+      {
+        slug: 'poo-combinadas',
+        title: '16. POO + Estructuras Combinadas (1 a N)',
+        level: 'POO Experto+',
+        count: '20 Desafíos',
+        stars: '★★★★★★★★★★',
+        icon: '🏢',
+        color: '#0369a1',
+        bgIcon: '#F0F9FF',
+        desc: 'Relaciones entre clases completas: Cliente → List<Pedido> → List<Producto>. Agregación y composición real.',
+        keywords: 'poo combinadas relaciones 1 a n agregacion composicion cliente pedido producto',
+      },
+      {
+        slug: 'desafios-integradores',
+        title: '17. Desafíos Integradores de Sistema Completo',
+        level: 'Maestría',
+        count: '20 Sistemas',
+        stars: '★★★★★★★★★★',
+        icon: '🚀',
+        color: '#431407',
+        bgIcon: '#FEF3C7',
+        desc: 'Sistemas reales sin estructura impuesta: el estudiante decide si usar Arreglos, Listas, Diccionarios u Objetos.',
+        keywords: 'desafios integradores sistemas tienda biblioteca banco reservas carrito inventario',
+      },
+    ],
+  },
+];
 ---
 
 <Layout
-  title="Desafíos de programación"
-  description="Catálogo en lista de ejercicios y desafíos de lógica por unidades y POO."
+  title="Ruta de Desafíos de Programación — Estructuras de Datos y POO"
+  description="Ruta pedagógica progresiva de desafíos de programación: desde lógica básica y condicionales hasta Arreglos, Diccionarios, Matrices y POO."
 >
-  <article class="content-section max-w-4xl mx-auto px-2 sm:px-4 py-4">
-    <!-- Header principal -->
-    <div class="mb-4 pb-3 border-b-2 border-dashed border-[#1E1210]/15 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-      <div>
-        <p class="m-0 text-[0.7rem] font-nunito font-extrabold uppercase tracking-widest text-[#7c2d12]">Catálogo Completo</p>
-        <h1 class="m-0 text-2xl sm:text-3xl font-nunito font-black text-[#1E1210]">Desafíos de Programación</h1>
+  <article class="content-section max-w-5xl mx-auto px-3 sm:px-4 py-6">
+
+    <!-- HEADER PRINCIPAL DEL CATÁLOGO -->
+    <div class="mb-6 pb-4 border-b-2 border-dashed border-[#1E1210]/15">
+      <div class="flex items-center gap-2 mb-1">
+        <span class="text-xs font-nunito font-extrabold uppercase tracking-widest text-[#7c2d12] bg-amber-100 px-2.5 py-0.5 rounded-full border border-amber-200">
+          Ruta Pedagógica Progresiva
+        </span>
       </div>
+      <h1 class="m-0 text-2xl sm:text-4xl font-nunito font-black text-[#1E1210]">
+        Desafíos de Programación & Estructuras de Datos
+      </h1>
+      <p class="mt-2 text-sm sm:text-base text-slate-600 font-medium leading-relaxed max-w-3xl">
+        Una ruta ordenada desde <strong>conceptos iniciales de algoritmos</strong> hasta <strong>estructuras de datos compuestas y POO</strong>. Válido para practicar en <strong>Python, Java, C#, C++, JavaScript, PHP o PSeInt</strong>.
+      </p>
     </div>
 
-    <!-- Buscador destacado -->
-    <div class="mb-5">
+    <!-- BUSCADOR INTERACTIVO DESTACADO -->
+    <div class="mb-8">
       <div class="relative w-full">
         <input
           type="text"
           id="challengeSearch"
-          placeholder="🔍 Buscar desafío por palabra clave (ej: POO, Si, entrada, herencia, contratos)..."
-          class="w-full pl-4 pr-10 py-3 rounded-2xl border-[3px] border-[#1E1210] font-nunito font-bold text-sm bg-white shadow-[4px_4px_0px_#1E1210] focus:outline-none focus:ring-2 focus:ring-[#EF476F]"
+          placeholder="🔍 Buscar por tema u objetivo (ej: arreglos, diccionarios, matrices, POO, si-entonces)..."
+          class="w-full pl-4 pr-10 py-3.5 rounded-2xl border-[3px] border-[#1E1210] font-nunito font-bold text-sm bg-white shadow-[4px_4px_0px_#1E1210] focus:outline-none focus:ring-2 focus:ring-[#10b981]"
         />
         <button
           type="button"
           id="clearSearch"
-          class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-xs font-nunito font-black bg-gray-200 hover:bg-gray-300 rounded-full w-5 h-5 items-center justify-center text-gray-700 cursor-pointer"
+          class="hidden absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-nunito font-black bg-slate-200 hover:bg-slate-300 rounded-full w-6 h-6 items-center justify-center text-slate-700 cursor-pointer"
         >✕</button>
       </div>
     </div>
 
-    <!-- CONTENEDOR EN LISTA VERTICAL -->
-    <div class="flex flex-col gap-2.5" id="challengesContainer">
-
-      <!-- GRUPO 1: LÓGICA -->
-      <div class="group-header text-xs font-nunito font-black uppercase tracking-wider text-[#64748b] mt-1 mb-0.5 flex items-center gap-1.5 border-b border-[#CBD5E1] pb-1">
-        <span>⚡</span> Lógica de Programación por Unidades
-      </div>
-
-      <a href="/challenges/unidad-1/" class="list-item search-target" data-keywords="unidad 1 eps entrada proceso salida basico variables">
-        <div class="item-accent" style="background: #0284c7;"></div>
-        <div class="item-icon" style="background: #E0F2FE; color: #0284c7;">📥</div>
-        <div class="item-main">
-          <div class="item-header">
-            <h3 class="item-title">Unidad 1 — Entrada, Proceso y Salida (EPS)</h3>
-            <span class="item-tag" style="background: #0284c7;">Lógica · U1</span>
+    <!-- BLOQUES PEDAGÓGICOS -->
+    <div class="space-y-10" id="challengesContainer">
+      {modules.map((blk) => (
+        <section class="block-group">
+          <div class="flex items-center gap-2 mb-3 pb-1 border-b-2 border-[#1E1210]">
+            <h2 class="text-base sm:text-lg font-nunito font-black text-[#1E1210] m-0">
+              {blk.block}
+            </h2>
           </div>
-          <p class="item-desc">Operaciones básicas, asignación de variables y algoritmos secuenciales sin decisiones complejas.</p>
-        </div>
-        <div class="item-arrow" style="color: #0284c7;">→</div>
-      </a>
 
-      <a href="/challenges/unidad-2/" class="list-item search-target" data-keywords="unidad 2 decisiones si sino entonces condicionales flujo">
-        <div class="item-accent" style="background: #10b981;"></div>
-        <div class="item-icon" style="background: #D1FAE5; color: #10b981;">🔀</div>
-        <div class="item-main">
-          <div class="item-header">
-            <h3 class="item-title">Unidad 2 — Decisiones y Condicionales</h3>
-            <span class="item-tag" style="background: #10b981;">Decisiones · U2</span>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+            {blk.items.map((item) => (
+              <a
+                href={`/challenges/${item.slug}/`}
+                class="module-card search-target group relative flex flex-col justify-between rounded-2xl border-2 border-[#1E1210] bg-white p-4 shadow-[3px_3px_0px_#1E1210] hover:-translate-y-1 transition-all no-underline text-inherit overflow-hidden"
+                data-keywords={item.keywords}
+              >
+                <!-- Franja de color superior -->
+                <div class="absolute top-0 left-0 right-0 h-1.5" style={`background: ${item.color}`}></div>
+
+                <div>
+                  <div class="flex items-start justify-between gap-2 mb-2">
+                    <div class="flex items-center gap-2.5">
+                      <span
+                        class="w-10 h-10 rounded-xl flex items-center justify-center text-xl shrink-0 border border-[#1E1210]/20 shadow-xs"
+                        style={`background: ${item.bgIcon}; color: ${item.color};`}
+                      >
+                        {item.icon}
+                      </span>
+                      <div>
+                        <h3 class="m-0 font-nunito text-base font-black text-[#1E1210] group-hover:text-emerald-700 transition-colors">
+                          {item.title}
+                        </h3>
+                        <span class="text-[0.68rem] font-nunito font-extrabold text-slate-400">
+                          {item.level}
+                        </span>
+                      </div>
+                    </div>
+                    <span
+                      class="text-[0.7rem] font-nunito font-black px-2.5 py-0.5 rounded-full border shrink-0"
+                      style={`background: ${item.bgIcon}; color: ${item.color}; border-color: ${item.color}40`}
+                    >
+                      {item.count}
+                    </span>
+                  </div>
+
+                  <p class="m-0 font-quicksand font-semibold text-xs text-slate-600 leading-relaxed">
+                    {item.desc}
+                  </p>
+                </div>
+
+                <!-- Footer de la Tarjeta de Módulo -->
+                <div class="mt-4 pt-2.5 border-t border-slate-100 flex items-center justify-between">
+                  <span class="text-[0.65rem] tracking-wider text-amber-500 font-bold select-none">
+                    {item.stars}
+                  </span>
+                  <span
+                    class="font-nunito font-black text-xs flex items-center gap-1 group-hover:translate-x-1 transition-transform"
+                    style={`color: ${item.color}`}
+                  >
+                    Explorar módulo →
+                  </span>
+                </div>
+              </a>
+            ))}
           </div>
-          <p class="item-desc">Control de flujo condicional con <code>Si / Entonces / Sino</code> y evaluación de condiciones.</p>
-        </div>
-        <div class="item-arrow" style="color: #10b981;">→</div>
-      </a>
-
-      <a href="/challenges/unidad-3/" class="list-item search-target" data-keywords="unidad 3 avanzado combinadas decisiones ramas complejo">
-        <div class="item-accent" style="background: #d97706;"></div>
-        <div class="item-icon" style="background: #FEF3C7; color: #d97706;">🧩</div>
-        <div class="item-main">
-          <div class="item-header">
-            <h3 class="item-title">Unidad 3 — Desafíos de Lógica Avanzada</h3>
-            <span class="item-tag" style="background: #d97706;">Avanzado · U3</span>
-          </div>
-          <p class="item-desc">Problemas combinados de alta complejidad lógica con múltiples variables y decisiones.</p>
-        </div>
-        <div class="item-arrow" style="color: #d97706;">→</div>
-      </a>
-
-      <a href="/challenges/unidad-4/" class="list-item search-target" data-keywords="unidad 4 guia problemas integrador presupuesto supermercado notas luz torneo">
-        <div class="item-accent" style="background: #ec4899;"></div>
-        <div class="item-icon" style="background: #FCE7F3; color: #ec4899;">🏆</div>
-        <div class="item-main">
-          <div class="item-header">
-            <h3 class="item-title">Unidad 4 — Guía Integradora (5 Problemas)</h3>
-            <span class="item-tag" style="background: #ec4899;">Integrador · U4</span>
-          </div>
-          <p class="item-desc">Presupuesto, supermercado, sistema de notas, factura de luz y torneo de deportes.</p>
-        </div>
-        <div class="item-arrow" style="color: #ec4899;">→</div>
-      </a>
-
-      <!-- GRUPO 2: POO Y UML -->
-      <div class="group-header text-xs font-nunito font-black uppercase tracking-wider text-[#64748b] mt-4 mb-0.5 flex items-center gap-1.5 border-b border-[#CBD5E1] pb-1">
-        <span>🧱</span> Programación Orientada a Objetos (POO & UML)
-      </div>
-
-      <a href="/challenges/poo/" class="list-item search-target" data-keywords="poo basico clases unicas instancias atributos metodos 10 ejercicios">
-        <div class="item-accent" style="background: #7c2d12;"></div>
-        <div class="item-icon" style="background: #FFF7ED; color: #7c2d12;">🧱</div>
-        <div class="item-main">
-          <div class="item-header">
-            <h3 class="item-title">POO Básico — Clases Únicas</h3>
-            <span class="item-tag" style="background: #7c2d12;">10 Ejercicios</span>
-          </div>
-          <p class="item-desc">10 clases independientes sin herencia: atributos, métodos, encapsulamiento y objetos.</p>
-        </div>
-        <div class="item-arrow" style="color: #7c2d12;">→</div>
-      </a>
-
-      <a href="/challenges/inheritance/" class="list-item search-target" data-keywords="herencia polimorfismo jerarquias 20 ejercicios niveles abstracto">
-        <div class="item-accent" style="background: #1e1210;"></div>
-        <div class="item-icon" style="background: #F4EBD0; color: #1e1210;">🌳</div>
-        <div class="item-main">
-          <div class="item-header">
-            <h3 class="item-title">Herencia y Polimorfismo — Jerarquías</h3>
-            <span class="item-tag" style="background: #1e1210;">20 Ejercicios</span>
-          </div>
-          <p class="item-desc">20 jerarquías completas (Base + 3 hijas y 3 niveles: Interfaz → Abstracta → Hijas).</p>
-        </div>
-        <div class="item-arrow" style="color: #1e1210;">→</div>
-      </a>
-
-      <a href="/challenges/interface/" class="list-item search-target" data-keywords="interfaces contratos desacoplamiento 20 ejercicios arquitectura polimorfismo">
-        <div class="item-accent" style="background: #6d28d9;"></div>
-        <div class="item-icon" style="background: #F5F0FF; color: #6d28d9;">🔌</div>
-        <div class="item-main">
-          <div class="item-header">
-            <h3 class="item-title">Interfaces y Contratos — Desacoplamiento</h3>
-            <span class="item-tag" style="background: #6d28d9;">20 Ejercicios</span>
-          </div>
-          <p class="item-desc">20 contratos con implementaciones múltiples y jerarquías de 3 niveles para desacoplar.</p>
-        </div>
-        <div class="item-arrow" style="color: #6d28d9;">→</div>
-      </a>
+        </section>
+      ))}
 
       <!-- Mensaje cuando no hay resultados de búsqueda -->
-      <div id="noResults" class="hidden text-center py-8 bg-gray-50 border-2 border-dashed border-gray-300 rounded-2xl mt-2">
-        <p class="font-nunito font-bold text-gray-600 m-0">No se encontraron desafíos que coincidan con tu búsqueda.</p>
-        <button type="button" onclick="document.getElementById('challengeSearch').value=''; document.getElementById('challengeSearch').dispatchEvent(new Event('input'))" class="mt-2 text-xs font-nunito font-black text-blue-600 underline cursor-pointer">Ver todos los desafíos</button>
+      <div id="noResults" class="hidden text-center py-10 bg-slate-50 border-2 border-dashed border-slate-300 rounded-2xl">
+        <p class="font-nunito font-bold text-slate-600 m-0">No se encontraron módulos de desafíos que coincidan con tu búsqueda.</p>
+        <button
+          type="button"
+          onclick="document.getElementById('challengeSearch').value=''; document.getElementById('challengeSearch').dispatchEvent(new Event('input'))"
+          class="mt-2 text-xs font-nunito font-black text-emerald-600 underline cursor-pointer"
+        >Ver todos los módulos</button>
       </div>
 
     </div>
+
   </article>
 
+  <!-- SCRIPT DE FILTRADO EN TIEMPO REAL -->
   <script is:inline>
     const searchInput = document.getElementById('challengeSearch');
     const clearBtn = document.getElementById('clearSearch');
+    const targets = document.querySelectorAll('.search-target');
+    const groups = document.querySelectorAll('.block-group');
     const noResults = document.getElementById('noResults');
 
     if (searchInput) {
       searchInput.addEventListener('input', (e) => {
         const query = e.target.value.toLowerCase().trim();
-        const items = document.querySelectorAll('.search-target');
-        const headers = document.querySelectorAll('.group-header');
         let visibleCount = 0;
 
-        if (clearBtn) {
-          if (query.length > 0) clearBtn.classList.remove('hidden');
-          else clearBtn.classList.add('hidden');
+        if (query.length > 0) {
+          clearBtn.classList.remove('hidden');
+          clearBtn.classList.add('flex');
+        } else {
+          clearBtn.classList.add('hidden');
+          clearBtn.classList.remove('flex');
         }
 
-        items.forEach((item) => {
-          const keywords = item.getAttribute('data-keywords') || '';
-          const text = item.textContent.toLowerCase();
-          const matches = text.includes(query) || keywords.includes(query);
-          
-          if (matches) {
-            item.style.display = 'flex';
+        targets.forEach((card) => {
+          const keywords = card.getAttribute('data-keywords') || '';
+          const text = card.textContent.toLowerCase();
+          if (text.includes(query) || keywords.includes(query)) {
+            card.style.display = '';
             visibleCount++;
           } else {
-            item.style.display = 'none';
+            card.style.display = 'none';
           }
         });
 
-        // Ocultar cabeceras si se busca algo específico
-        headers.forEach((h) => {
-          h.style.display = query ? 'none' : 'flex';
+        // Ocultar bloques enteros si no tienen ítems visibles
+        groups.forEach((grp) => {
+          const visibleCards = grp.querySelectorAll('.search-target:not([style*="display: none"])');
+          grp.style.display = visibleCards.length > 0 ? '' : 'none';
         });
 
         if (noResults) {
@@ -194,129 +400,4 @@ import Layout from '../../layouts/Layout.astro';
       }
     }
   </script>
-
-  <style>
-    /* ITEM DE LISTA ULTRA-LIMPIO Y HORIZONTAL */
-    .list-item {
-      position: relative;
-      display: flex;
-      align-items: center;
-      gap: 0.85rem;
-      background: #FFFFFF;
-      border: 2px solid #1E1210;
-      border-radius: 14px;
-      padding: 0.75rem 1rem 0.75rem 1.1rem;
-      box-shadow: 3px 3px 0px #1E1210;
-      text-decoration: none;
-      color: inherit;
-      overflow: hidden;
-      transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
-    }
-
-    .list-item:hover {
-      transform: translateX(4px);
-      box-shadow: 4px 4px 0px #1E1210;
-      background: #FAFAFA;
-    }
-
-    .item-accent {
-      position: absolute;
-      left: 0;
-      top: 0;
-      bottom: 0;
-      width: 6px;
-    }
-
-    .item-icon {
-      font-size: 1.35rem;
-      width: 40px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: 1.5px solid #1E1210;
-      border-radius: 10px;
-      flex-shrink: 0;
-      box-shadow: 1px 1px 0px #1E1210;
-    }
-
-    .item-main {
-      flex: 1;
-      min-width: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 0.15rem;
-    }
-
-    .item-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 0.5rem;
-    }
-
-    .item-title {
-      font-family: 'Nunito', sans-serif;
-      font-weight: 900;
-      font-size: 0.98rem;
-      color: #1E1210;
-      margin: 0;
-      line-height: 1.25;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .item-tag {
-      color: #FFFFFF;
-      font-family: 'Nunito', sans-serif;
-      font-weight: 800;
-      font-size: 0.65rem;
-      text-transform: uppercase;
-      letter-spacing: 0.03em;
-      padding: 0.12rem 0.5rem;
-      border-radius: 999px;
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-
-    .item-desc {
-      font-family: 'Quicksand', sans-serif;
-      font-weight: 600;
-      font-size: 0.8rem;
-      color: #475569;
-      margin: 0;
-      line-height: 1.35;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .item-arrow {
-      font-family: 'Nunito', sans-serif;
-      font-weight: 900;
-      font-size: 1.3rem;
-      flex-shrink: 0;
-      transition: transform 0.12s ease;
-      padding-left: 0.25rem;
-    }
-
-    .list-item:hover .item-arrow {
-      transform: translateX(3px);
-    }
-
-    @media (max-width: 640px) {
-      .item-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.2rem;
-      }
-      .item-desc {
-        white-space: normal;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-      }
-    }
-  </style>
 </Layout>
