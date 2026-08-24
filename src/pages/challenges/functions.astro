@@ -3,68 +3,668 @@ import Layout from '../../layouts/Layout.astro';
 
 const exercises = [
   // SECCIÓN 1: SIN PARÁMETROS Y SIN RETORNO (10 EJERCICIOS)
-  { id: 1, section: '1. Sin Parámetros y Sin Retorno', title: 'Mostrar un saludo simple', statement: 'Crear una función saludar() que imprima "¡Hola, bienvenido al curso de programación!" por pantalla sin recibir parámetros ni retornar valores.' },
-  { id: 2, section: '1. Sin Parámetros y Sin Retorno', title: 'Mostrar datos de un curso', statement: 'Crear una función mostrarInfoCurso() que imprima el nombre del curso, duración y profesor responsable.' },
-  { id: 3, section: '1. Sin Parámetros y Sin Retorno', title: 'Mostrar mensaje de bienvenida', statement: 'Crear una función mostrarBienvenida() que imprima un encabezado decorado con asterisco o guiones para el sistema.' },
-  { id: 4, section: '1. Sin Parámetros y Sin Retorno', title: 'Mostrar tabla del 5', statement: 'Crear una función mostrarTablaDelCinco() que utilice un bucle for interno para imprimir la tabla de multiplicar del 5 (del 1 al 10).' },
-  { id: 5, section: '1. Sin Parámetros y Sin Retorno', title: 'Mostrar números del 1 al 10', statement: 'Crear una función contarHastaDiez() que imprima secuencialmente los números enteros del 1 al 10.' },
-  { id: 6, section: '1. Sin Parámetros y Sin Retorno', title: 'Mostrar números pares del 1 al 20', statement: 'Crear una función mostrarPares() que recorra los enteros del 1 al 20 e imprima únicamente aquellos que sean pares.' },
-  { id: 7, section: '1. Sin Parámetros y Sin Retorno', title: 'Mostrar menú principal', statement: 'Crear una función mostrarMenuPrincipal() que imprima un menú con 4 opciones (1. Iniciar, 2. Cargar, 3. Opciones, 4. Salir).' },
-  { id: 8, section: '1. Sin Parámetros y Sin Retorno', title: 'Mostrar menú de opciones', statement: 'Crear una función mostrarOpcionesConfiguracion() que presente opciones de ajuste (Idioma, Tema, Sonido, Volver).' },
-  { id: 9, section: '1. Sin Parámetros y Sin Retorno', title: 'Mostrar información de un producto', statement: 'Crear una función mostrarProductoEjemplo() que imprima la ficha de un producto (Nombre, Código, Precio ficticio).' },
-  { id: 10, section: '1. Sin Parámetros y Sin Retorno', title: 'Mostrar menú completo de sistema', statement: 'Crear una función mostrarMenuSistema() que imprima el encabezado del sistema, fecha ficticia y 5 opciones operativas.' },
+  {
+    id: 1,
+    section: '1. Sin Parámetros y Sin Retorno',
+    title: 'Mostrar un saludo simple',
+    statement: 'Crear una función saludar() que imprima "¡Hola, bienvenido al curso de programación!" por pantalla sin recibir parámetros ni retornar valores.',
+    steps: [
+      { id: 'step1', title: 'Comprendí el objetivo', desc: 'Entendí que la función solo muestra un texto fijo por pantalla.' },
+      { id: 'step2', title: 'Declaré la función', desc: 'Definí def saludar(): o public static void saludar().' },
+      { id: 'step3', title: 'Escribí el print()', desc: 'Agregué la instrucción de impresión dentro del cuerpo de la función.' },
+      { id: 'step4', title: 'Sin parámetros ni return', desc: 'Verifiqué que los paréntesis están vacíos () y no usé return.' },
+      { id: 'step5', title: 'Invoqué la función', desc: 'Llamé a saludar() desde el programa principal para probarla.' },
+    ],
+  },
+  {
+    id: 2,
+    section: '1. Sin Parámetros y Sin Retorno',
+    title: 'Mostrar datos de un curso',
+    statement: 'Crear una función mostrarInfoCurso() que imprima el nombre del curso, duración y profesor responsable.',
+    steps: [
+      { id: 'step1', title: 'Comprendí el objetivo', desc: 'Entendí que la función muestra varios datos estáticos del curso.' },
+      { id: 'step2', title: 'Declaré la función', desc: 'Definí mostrarInfoCurso() sin parámetros de entrada.' },
+      { id: 'step3', title: 'Imprimí las líneas', desc: 'Agregué los prints con Nombre, Duración y Profesor.' },
+      { id: 'step4', title: 'Verifiqué el formato', desc: 'Aseguré que la salida se ve limpia y estructurada.' },
+      { id: 'step5', title: 'Ejecuté la invocación', desc: 'Llamé a mostrarInfoCurso() y comprobé la consola.' },
+    ],
+  },
+  {
+    id: 3,
+    section: '1. Sin Parámetros y Sin Retorno',
+    title: 'Mostrar mensaje de bienvenida',
+    statement: 'Crear una función mostrarBienvenida() que imprima un encabezado decorado con asteriscos o guiones para el sistema.',
+    steps: [
+      { id: 'step1', title: 'Comprendí el objetivo', desc: 'Diseñar un encabezado visual con guiones/asteriscos.' },
+      { id: 'step2', title: 'Declaré mostrarBienvenida()', desc: 'Definí la función sin argumentos ni valor de retorno.' },
+      { id: 'step3', title: 'Diseñé las líneas decorativas', desc: 'Agregué marcas como "=================================".' },
+      { id: 'step4', title: 'Imprimí el mensaje central', desc: 'Puse el título del sistema centrado entre las decoraciones.' },
+      { id: 'step5', title: 'Invoqué y probé', desc: 'Ejecuté mostrarBienvenida() y verifiqué la presentación.' },
+    ],
+  },
+  {
+    id: 4,
+    section: '1. Sin Parámetros y Sin Retorno',
+    title: 'Mostrar tabla del 5',
+    statement: 'Crear una función mostrarTablaDelCinco() que utilice un bucle for interno para imprimir la tabla de multiplicar del 5 (del 1 al 10).',
+    steps: [
+      { id: 'step1', title: 'Comprendí el objetivo', desc: 'Imprimir la tabla del 5 del 1 al 10 mediante un bucle interno.' },
+      { id: 'step2', title: 'Declaré la función', desc: 'Definí mostrarTablaDelCinco().' },
+      { id: 'step3', title: 'Implementé el ciclo for', desc: 'Escribí un bucle desde i = 1 hasta 10.' },
+      { id: 'step4', title: 'Imprimí el producto', desc: 'Hice print(f"5 x {i} = {5 * i}").' },
+      { id: 'step5', title: 'Invoqué la función', desc: 'Llamé a la función e inspeccioné los 10 resultados.' },
+    ],
+  },
+  {
+    id: 5,
+    section: '1. Sin Parámetros y Sin Retorno',
+    title: 'Mostrar números del 1 al 10',
+    statement: 'Crear una función contarHastaDiez() que imprima secuencialmente los números enteros del 1 al 10.',
+    steps: [
+      { id: 'step1', title: 'Comprendí el objetivo', desc: 'Imprimir del 1 al 10 en secuencia.' },
+      { id: 'step2', title: 'Declaré contarHastaDiez()', desc: 'Definí la firma vacía.' },
+      { id: 'step3', title: 'Escribí el bucle', desc: 'Utilicé for o while para contar de 1 a 10.' },
+      { id: 'step4', title: 'Imprimí cada número', desc: 'Mostré cada valor en una línea.' },
+      { id: 'step5', title: 'Probé la ejecución', desc: 'Llamé a la función y revisé la salida.' },
+    ],
+  },
+  {
+    id: 6,
+    section: '1. Sin Parámetros y Sin Retorno',
+    title: 'Mostrar números pares del 1 al 20',
+    statement: 'Crear una función mostrarPares() que recorra los enteros del 1 al 20 e imprima únicamente aquellos que sean pares.',
+    steps: [
+      { id: 'step1', title: 'Comprendí el objetivo', desc: 'Filtrar e imprimir solo pares entre 1 y 20.' },
+      { id: 'step2', title: 'Declaré mostrarPares()', desc: 'Definí la función void sin parámetros.' },
+      { id: 'step3', title: 'Recorrí con for', desc: 'Ciclé de 1 a 20.' },
+      { id: 'step4', title: 'Evalué residuo (i % 2 == 0)', desc: 'Imprimí i solo cuando fuera par.' },
+      { id: 'step5', title: 'Validé la salida', desc: 'Comprobé que imprimió 2, 4, 6... 20.' },
+    ],
+  },
+  {
+    id: 7,
+    section: '1. Sin Parámetros y Sin Retorno',
+    title: 'Mostrar menú principal',
+    statement: 'Crear una función mostrarMenuPrincipal() que imprima un menú con 4 opciones (1. Iniciar, 2. Cargar, 3. Opciones, 4. Salir).',
+    steps: [
+      { id: 'step1', title: 'Comprendí el objetivo', desc: 'Encapsular la presentación de las opciones principales.' },
+      { id: 'step2', title: 'Declaré mostrarMenuPrincipal()', desc: 'Definí la función sin retorno.' },
+      { id: 'step3', title: 'Escribí las opciones 1 a 4', desc: 'Agregué cada ítem numerado.' },
+      { id: 'step4', title: 'Estructuré el diseño', desc: 'Dejé espacios y bordes limpios.' },
+      { id: 'step5', title: 'Invoqué la función', desc: 'Comprobé la renderización del menú.' },
+    ],
+  },
+  {
+    id: 8,
+    section: '1. Sin Parámetros y Sin Retorno',
+    title: 'Mostrar menú de opciones',
+    statement: 'Crear una función mostrarOpcionesConfiguracion() que presente opciones de ajuste (Idioma, Tema, Sonido, Volver).',
+    steps: [
+      { id: 'step1', title: 'Comprendí el objetivo', desc: 'Presentar el submenú de configuración.' },
+      { id: 'step2', title: 'Declaré la función', desc: 'Definí mostrarOpcionesConfiguracion().' },
+      { id: 'step3', title: 'Imprimí las 4 opciones', desc: 'Agregué Idioma, Tema, Sonido y Volver.' },
+      { id: 'step4', title: 'Verifiqué la claridad', desc: 'Aseguré textos entendibles.' },
+      { id: 'step5', title: 'Probé la llamada', desc: 'Ejecuté la función desde el programa.' },
+    ],
+  },
+  {
+    id: 9,
+    section: '1. Sin Parámetros y Sin Retorno',
+    title: 'Mostrar información de un producto',
+    statement: 'Crear una función mostrarProductoEjemplo() que imprima la ficha de un producto (Nombre, Código, Precio ficticio).',
+    steps: [
+      { id: 'step1', title: 'Comprendí el objetivo', desc: 'Mostrar los datos de un producto de demostración.' },
+      { id: 'step2', title: 'Declaré mostrarProductoEjemplo()', desc: 'Definí la función sin parámetros.' },
+      { id: 'step3', title: 'Escribí la ficha', desc: 'Imprimí Nombre, Código y Precio.' },
+      { id: 'step4', title: 'Formateé montos', desc: 'Puse signo de moneda al precio.' },
+      { id: 'step5', title: 'Invoqué y verifiqué', desc: 'Ejecuté la función por consola.' },
+    ],
+  },
+  {
+    id: 10,
+    section: '1. Sin Parámetros y Sin Retorno',
+    title: 'Mostrar menú completo de sistema',
+    statement: 'Crear una función mostrarMenuSistema() que imprima el encabezado del sistema, fecha ficticia y 5 opciones operativas.',
+    steps: [
+      { id: 'step1', title: 'Comprendí el objetivo', desc: 'Generar un menú completo con encabezado y 5 opciones.' },
+      { id: 'step2', title: 'Declaré mostrarMenuSistema()', desc: 'Definí la función.' },
+      { id: 'step3', title: 'Agregué fecha e información', desc: 'Imprimí cabecera institucional.' },
+      { id: 'step4', title: 'Listé las 5 opciones', desc: 'Registrar, Consultar, Modificar, Eliminar y Salir.' },
+      { id: 'step5', title: 'Probé la ejecución', desc: 'Verifiqué el menú desplegado.' },
+    ],
+  },
 
   // SECCIÓN 2: CON PARÁMETROS Y SIN RETORNO (10 EJERCICIOS)
-  { id: 11, section: '2. Con Parámetros y Sin Retorno', title: 'Saludar a una persona', statement: 'Crear una función saludarPersona(nombre) que reciba un nombre como parámetro e imprima "Hola [nombre], ¿cómo estás?".' },
-  { id: 12, section: '2. Con Parámetros y Sin Retorno', title: 'Mostrar nombre completo', statement: 'Crear una función mostrarNombreCompleto(nombre, apellido) que reciba dos cadenas e imprima el nombre formateado.' },
-  { id: 13, section: '2. Con Parámetros y Sin Retorno', title: 'Mostrar edad y estado', statement: 'Crear una función mostrarEdad(edad) que reciba la edad e imprima "Tienes X años" indicando si es mayor o menor de edad.' },
-  { id: 14, section: '2. Con Parámetros y Sin Retorno', title: 'Mostrar ficha de producto', statement: 'Crear una función mostrarDetalleProducto(nombre, precio) que imprima el nombre del producto y su costo.' },
-  { id: 15, section: '2. Con Parámetros y Sin Retorno', title: 'Mostrar precio con IVA incluido', statement: 'Crear una función mostrarPrecioConIVA(precioNeto) que calcule el 19% de IVA e imprima el desglose neto y total.' },
-  { id: 16, section: '2. Con Parámetros y Sin Retorno', title: 'Tabla de multiplicar de N', statement: 'Crear una función mostrarTabla(numero) que reciba un entero N e imprima su tabla de multiplicar completa del 1 al 10.' },
-  { id: 17, section: '2. Con Parámetros y Sin Retorno', title: 'Mostrar números hasta N', statement: 'Crear una función contarHastaN(limite) que imprima los números desde el 1 hasta el valor límite pasado por parámetro.' },
-  { id: 18, section: '2. Con Parámetros y Sin Retorno', title: 'Mostrar números pares hasta N', statement: 'Crear una función mostrarParesHastaN(limite) que imprima los pares comprendidos entre 1 y N.' },
-  { id: 19, section: '2. Con Parámetros y Sin Retorno', title: 'Mostrar ficha de alumno', statement: 'Crear una función mostrarAlumno(nombre, edad, carrera) que reciba tres parámetros e imprima su ficha académica.' },
-  { id: 20, section: '2. Con Parámetros y Sin Retorno', title: 'Mostrar factura de compra', statement: 'Crear una función mostrarFactura(cliente, total, descuento) e imprimir el comprobante desglosado.' },
+  {
+    id: 11,
+    section: '2. Con Parámetros y Sin Retorno',
+    title: 'Saludar a una persona',
+    statement: 'Crear una función saludarPersona(nombre) que reciba un nombre como parámetro e imprima "Hola [nombre], ¿cómo estás?".',
+    steps: [
+      { id: 'step1', title: 'Comprendí el parámetro', desc: 'Identifiqué que la función debe recibir una variable nombre.' },
+      { id: 'step2', title: 'Declaré la firma', desc: 'Definí saludarPersona(nombre).' },
+      { id: 'step3', title: 'Concatené el mensaje', desc: 'Escribí print(f"Hola {nombre}, ¿cómo estás?").' },
+      { id: 'step4', title: 'Verifiqué sin return', desc: 'Confirmé que solo imprime por pantalla.' },
+      { id: 'step5', title: 'Llamé pasando un argumento', desc: 'Ejecuté saludarPersona("Carlos") y probé.' },
+    ],
+  },
+  {
+    id: 12,
+    section: '2. Con Parámetros y Sin Retorno',
+    title: 'Mostrar nombre completo',
+    statement: 'Crear una función mostrarNombreCompleto(nombre, apellido) que reciba dos cadenas e imprima el nombre formateado.',
+    steps: [
+      { id: 'step1', title: 'Comprendí los 2 parámetros', desc: 'Identifiqué nombre y apellido.' },
+      { id: 'step2', title: 'Declaré mostrarNombreCompleto(nombre, apellido)', desc: 'Definí la firma con 2 argumentos.' },
+      { id: 'step3', title: 'Formateé la salida', desc: 'Imprimí "Nombre completo: [nombre] [apellido]".' },
+      { id: 'step4', title: 'Sin return', desc: 'Aseguré que la función no retorna datos.' },
+      { id: 'step5', title: 'Invoqué con 2 valores', desc: 'Llamé con mostrarNombreCompleto("Ana", "Pérez").' },
+    ],
+  },
+  {
+    id: 13,
+    section: '2. Con Parámetros y Sin Retorno',
+    title: 'Mostrar edad y estado',
+    statement: 'Crear una función mostrarEdad(edad) que reciba la edad e imprima "Tienes X años" indicando si es mayor o menor de edad.',
+    steps: [
+      { id: 'step1', title: 'Comprendí la condición interna', desc: 'Evaluar edad >= 18 dentro de la función.' },
+      { id: 'step2', title: 'Declaré mostrarEdad(edad)', desc: 'Recibí el entero edad.' },
+      { id: 'step3', title: 'Imprimí los años', desc: 'Mostré "Tienes X años".' },
+      { id: 'step4', title: 'Agregué if/else interno', desc: 'Imprimí si es mayor o menor de edad.' },
+      { id: 'step5', title: 'Probé con varios valores', desc: 'Llamé con 15 y con 22 para verificar.' },
+    ],
+  },
+  {
+    id: 14,
+    section: '2. Con Parámetros y Sin Retorno',
+    title: 'Mostrar ficha de producto',
+    statement: 'Crear una función mostrarDetalleProducto(nombre, precio) que imprima el nombre del producto y su costo.',
+    steps: [
+      { id: 'step1', title: 'Comprendí parámetros', desc: 'Recibir cadena nombre y número precio.' },
+      { id: 'step2', title: 'Declaré mostrarDetalleProducto(nombre, precio)', desc: 'Definí la firma.' },
+      { id: 'step3', title: 'Imprimí el detalle', desc: 'Mostré "Producto: [nombre] | Precio: $[precio]".' },
+      { id: 'step4', title: 'Revisé la salida', desc: 'Confirmé la estética del texto.' },
+      { id: 'step5', title: 'Probé la llamada', desc: 'Invoqué mostrarDetalleProducto("Teclado", 15000).' },
+    ],
+  },
+  {
+    id: 15,
+    section: '2. Con Parámetros y Sin Retorno',
+    title: 'Mostrar precio con IVA incluido',
+    statement: 'Crear una función mostrarPrecioConIVA(precioNeto) que calcule el 19% de IVA e imprima el desglose neto y total.',
+    steps: [
+      { id: 'step1', title: 'Comprendí el cálculo', desc: 'Calcular iva = precioNeto * 0.19 y total = precioNeto + iva.' },
+      { id: 'step2', title: 'Declaré mostrarPrecioConIVA(precioNeto)', desc: 'Recibí precioNeto.' },
+      { id: 'step3', title: 'Calculé internamente', desc: 'Saqué los valores en variables locales.' },
+      { id: 'step4', title: 'Imprimí el desglose', desc: 'Mostré Neto, IVA y Total.' },
+      { id: 'step5', title: 'Invoqué la función', desc: 'Llamé con mostrarPrecioConIVA(10000).' },
+    ],
+  },
+  {
+    id: 16,
+    section: '2. Con Parámetros y Sin Retorno',
+    title: 'Tabla de multiplicar de N',
+    statement: 'Crear una función mostrarTabla(numero) que reciba un entero N e imprima su tabla de multiplicar completa del 1 al 10.',
+    steps: [
+      { id: 'step1', title: 'Comprendí el parámetro N', desc: 'Recibir el número base de la tabla.' },
+      { id: 'step2', title: 'Declaré mostrarTabla(numero)', desc: 'Firma con 1 parámetro entero.' },
+      { id: 'step3', title: 'Bucle for de 1 a 10', desc: 'Iteré multiplicando numero * i.' },
+      { id: 'step4', title: 'Imprimí cada resultado', desc: 'Mostré "N x i = resultado".' },
+      { id: 'step5', title: 'Probé con N = 7', desc: 'Verifiqué la tabla del 7.' },
+    ],
+  },
+  {
+    id: 17,
+    section: '2. Con Parámetros y Sin Retorno',
+    title: 'Mostrar números hasta N',
+    statement: 'Crear una función contarHastaN(limite) que imprima los números desde el 1 hasta el valor límite pasado por parámetro.',
+    steps: [
+      { id: 'step1', title: 'Comprendí el parámetro limite', desc: 'Definir el techo del conteo.' },
+      { id: 'step2', title: 'Declaré contarHastaN(limite)', desc: 'Recibí limite.' },
+      { id: 'step3', title: 'Escribí el bucle', desc: 'Iteré de 1 a limite.' },
+      { id: 'step4', title: 'Imprimí los valores', desc: 'Mostré cada número en pantalla.' },
+      { id: 'step5', title: 'Probé con 15', desc: 'Comprobé que contó de 1 a 15.' },
+    ],
+  },
+  {
+    id: 18,
+    section: '2. Con Parámetros y Sin Retorno',
+    title: 'Mostrar números pares hasta N',
+    statement: 'Crear una función mostrarParesHastaN(limite) que imprima los pares comprendidos entre 1 y N.',
+    steps: [
+      { id: 'step1', title: 'Comprendí límite y filtro', desc: 'Filtrar pares hasta llegar a N.' },
+      { id: 'step2', title: 'Declaré mostrarParesHastaN(limite)', desc: 'Definí la firma.' },
+      { id: 'step3', title: 'Bucle con if (i % 2 == 0)', desc: 'Evalué cada número.' },
+      { id: 'step4', title: 'Imprimí solo pares', desc: 'Mostré los valores filtrados.' },
+      { id: 'step5', title: 'Probé con limite = 30', desc: 'Verifiqué la salida.' },
+    ],
+  },
+  {
+    id: 19,
+    section: '2. Con Parámetros y Sin Retorno',
+    title: 'Mostrar ficha de alumno',
+    statement: 'Crear una función mostrarAlumno(nombre, edad, carrera) que reciba tres parámetros e imprima su ficha académica.',
+    steps: [
+      { id: 'step1', title: 'Comprendí los 3 argumentos', desc: 'Recibir nombre, edad y carrera.' },
+      { id: 'step2', title: 'Declaré mostrarAlumno(nombre, edad, carrera)', desc: 'Firma con 3 parámetros.' },
+      { id: 'step3', title: 'Diseñé la tarjeta', desc: 'Imprimí los 3 datos en un formato legible.' },
+      { id: 'step4', title: 'Verifiqué sin return', desc: 'Confirmé que solo imprime.' },
+      { id: 'step5', title: 'Invoqué la función', desc: 'Probé con ("Laura", 20, "Informática").' },
+    ],
+  },
+  {
+    id: 20,
+    section: '2. Con Parámetros y Sin Retorno',
+    title: 'Mostrar factura de compra',
+    statement: 'Crear una función mostrarFactura(cliente, total, descuento) e imprimir el comprobante desglosado.',
+    steps: [
+      { id: 'step1', title: 'Comprendí el cálculo', desc: 'Calcular montoDescuento = total * (descuento / 100) y final = total - montoDescuento.' },
+      { id: 'step2', title: 'Declaré mostrarFactura(cliente, total, descuento)', desc: 'Recibí los 3 valores.' },
+      { id: 'step3', title: 'Calculé montos', desc: 'Procesé el descuento e IVA.' },
+      { id: 'step4', title: 'Imprimí el recibo', desc: 'Mostré Cliente, Subtotal, Descuento y Total Final.' },
+      { id: 'step5', title: 'Invoqué la función', desc: 'Verifiqué el comprobante por consola.' },
+    ],
+  },
 
   // SECCIÓN 3: SIN PARÁMETROS Y CON RETORNO (10 EJERCICIOS)
-  { id: 21, section: '3. Sin Parámetros y Con Retorno', title: 'Obtener un número fijo', statement: 'Crear una función obtenerNumeroMagico() que no reciba parámetros y retorne el valor entero 42.' },
-  { id: 22, section: '3. Sin Parámetros y Con Retorno', title: 'Obtener nombre de la aplicación', statement: 'Crear una función obtenerNombreApp() que retorne la cadena "Café y Código v2.0".' },
-  { id: 23, section: '3. Sin Parámetros y Con Retorno', title: 'Obtener valor de PI', statement: 'Crear una función obtenerPi() que retorne el valor flotante 3.14159265.' },
-  { id: 24, section: '3. Sin Parámetros y Con Retorno', title: 'Obtener número aleatorio (1-100)', statement: 'Crear una función obtenerNumeroAleatorio() que genere y retorne un entero entre 1 y 100.' },
-  { id: 25, section: '3. Sin Parámetros y Con Retorno', title: 'Obtener año actual', statement: 'Crear una función obtenerAnioActual() que retorne el año en curso como entero.' },
-  { id: 26, section: '3. Sin Parámetros y Con Retorno', title: 'Obtener estado del servidor', statement: 'Crear una función obtenerEstadoServidor() que retorne el booleano true.' },
-  { id: 27, section: '3. Sin Parámetros y Con Retorno', title: 'Obtener tasa de impuesto estándar', statement: 'Crear una función obtenerTasaIVA() que retorne el decimal 0.19.' },
-  { id: 28, section: '3. Sin Parámetros y Con Retorno', title: 'Obtener mensaje del día', statement: 'Crear una función obtenerMensajeDelDia() que retorne una frase motivacional en cadena de texto.' },
-  { id: 29, section: '3. Sin Parámetros y Con Retorno', title: 'Obtener código secreto por defecto', statement: 'Crear una función obtenerCodigoSecreto() que retorne la cadena "ADM-2026".' },
-  { id: 30, section: '3. Sin Parámetros y Con Retorno', title: 'Obtener selección por defecto de menú', statement: 'Crear una función obtenerOpcionPorDefecto() que retorne el entero 1.' },
+  {
+    id: 21,
+    section: '3. Sin Parámetros y Con Retorno',
+    title: 'Obtener un número fijo',
+    statement: 'Crear una función obtenerNumeroMagico() que no reciba parámetros y retorne el valor entero 42.',
+    steps: [
+      { id: 'step1', title: 'Comprendí la cláusula return', desc: 'Entendí que la función debe devolver un dato con return.' },
+      { id: 'step2', title: 'Declaré obtenerNumeroMagico()', desc: 'Firma sin parámetros.' },
+      { id: 'step3', title: 'Escribí return 42', desc: 'Retorné el número directamente.' },
+      { id: 'step4', title: 'Capturé el retorno', desc: 'En el programa principal guardé: valor = obtenerNumeroMagico().' },
+      { id: 'step5', title: 'Imprimí la variable', desc: 'Verifiqué que valor contenía 42.' },
+    ],
+  },
+  {
+    id: 22,
+    section: '3. Sin Parámetros y Con Retorno',
+    title: 'Obtener nombre de la aplicación',
+    statement: 'Crear una función obtenerNombreApp() que retorne la cadena "Café y Código v2.0".',
+    steps: [
+      { id: 'step1', title: 'Comprendí retorno de String', desc: 'Retornar una cadena de texto fija.' },
+      { id: 'step2', title: 'Declaré obtenerNombreApp()', desc: 'Definí la función.' },
+      { id: 'step3', title: 'Escribí return "Café y Código v2.0"', desc: 'Devolví el texto.' },
+      { id: 'step4', title: 'Asigné a variable', desc: 'Hice app = obtenerNombreApp().' },
+      { id: 'step5', title: 'Probé la salida', desc: 'Imprimí app por pantalla.' },
+    ],
+  },
+  {
+    id: 23,
+    section: '3. Sin Parámetros y Con Retorno',
+    title: 'Obtener valor de PI',
+    statement: 'Crear una función obtenerPi() que retorne el valor flotante 3.14159265.',
+    steps: [
+      { id: 'step1', title: 'Comprendí retorno decimal', desc: 'Retornar un número con coma / punto flotante.' },
+      { id: 'step2', title: 'Declaré obtenerPi()', desc: 'Definí la función.' },
+      { id: 'step3', title: 'Escribí return 3.14159265', desc: 'Devolví el valor constante.' },
+      { id: 'step4', title: 'Usé en expresión', desc: 'Hice area = obtenerPi() * (r ** 2).' },
+      { id: 'step5', title: 'Verifiqué el cálculo', desc: 'Comprobé que el retorno sirvió para operar.' },
+    ],
+  },
+  {
+    id: 24,
+    section: '3. Sin Parámetros y Con Retorno',
+    title: 'Obtener número aleatorio (1-100)',
+    statement: 'Crear una función obtenerNumeroAleatorio() que genere y retorne un entero entre 1 y 100.',
+    steps: [
+      { id: 'step1', title: 'Comprendí generación aleatoria', desc: 'Usar módulo random / Math.random().' },
+      { id: 'step2', title: 'Declaré obtenerNumeroAleatorio()', desc: 'Definí la función.' },
+      { id: 'step3', title: 'Generé el entero', desc: 'Procesé un valor en el rango 1-100.' },
+      { id: 'step4', title: 'Escribí return', desc: 'Devolví el aleatorio generado.' },
+      { id: 'step5', title: 'Llamé varias veces', desc: 'Comprobé que los retornos variaban.' },
+    ],
+  },
+  {
+    id: 25,
+    section: '3. Sin Parámetros y Con Retorno',
+    title: 'Obtener año actual',
+    statement: 'Crear una función obtenerAnioActual() que retorne el año en curso como entero.',
+    steps: [
+      { id: 'step1', title: 'Comprendí retorno entero', desc: 'Devolver el año actual (ej. 2026).' },
+      { id: 'step2', title: 'Declaré obtenerAnioActual()', desc: 'Definí la firma.' },
+      { id: 'step3', title: 'Escribí return 2026', desc: 'Retorné el entero.' },
+      { id: 'step4', title: 'Asigné a variable', desc: 'Guardé anio = obtenerAnioActual().' },
+      { id: 'step5', title: 'Imprimí el resultado', desc: 'Verifiqué por consola.' },
+    ],
+  },
+  {
+    id: 26,
+    section: '3. Sin Parámetros y Con Retorno',
+    title: 'Obtener estado del servidor',
+    statement: 'Crear una función obtenerEstadoServidor() que retorne el booleano true.',
+    steps: [
+      { id: 'step1', title: 'Comprendí retorno booleano', desc: 'Devolver true o false.' },
+      { id: 'step2', title: 'Declaré obtenerEstadoServidor()', desc: 'Definí la función.' },
+      { id: 'step3', title: 'Escribí return true', desc: 'Retorné el estado.' },
+      { id: 'step4', title: 'Evalué en un if', desc: 'Hice if obtenerEstadoServidor(): ...' },
+      { id: 'step5', title: 'Comprobé el flujo', desc: 'Verifiqué la rama ejecutada.' },
+    ],
+  },
+  {
+    id: 27,
+    section: '3. Sin Parámetros y Con Retorno',
+    title: 'Obtener tasa de impuesto estándar',
+    statement: 'Crear una función obtenerTasaIVA() que retorne el decimal 0.19.',
+    steps: [
+      { id: 'step1', title: 'Comprendí retorno de tasa', desc: 'Devolver 0.19.' },
+      { id: 'step2', title: 'Declaré obtenerTasaIVA()', desc: 'Firma vacía.' },
+      { id: 'step3', title: 'Escribí return 0.19', desc: 'Retorné la tasa.' },
+      { id: 'step4', title: 'Multipliqué por monto', desc: 'Hice iva = monto * obtenerTasaIVA().' },
+      { id: 'step5', title: 'Verifiqué el resultado', desc: 'Comprobé el cálculo.' },
+    ],
+  },
+  {
+    id: 28,
+    section: '3. Sin Parámetros y Con Retorno',
+    title: 'Obtener mensaje del día',
+    statement: 'Crear una función obtenerMensajeDelDia() que retorne una frase motivacional en cadena de texto.',
+    steps: [
+      { id: 'step1', title: 'Comprendí retorno de frase', desc: 'Devolver texto motivacional.' },
+      { id: 'step2', title: 'Declaré obtenerMensajeDelDia()', desc: 'Definí la firma.' },
+      { id: 'step3', title: 'Escribí return frase', desc: 'Retorné la cadena.' },
+      { id: 'step4', title: 'Imprimí el retorno', desc: 'Mostré el mensaje.' },
+      { id: 'step5', title: 'Probé la ejecución', desc: 'Verifiqué la consola.' },
+    ],
+  },
+  {
+    id: 29,
+    section: '3. Sin Parámetros y Con Retorno',
+    title: 'Obtener código secreto por defecto',
+    statement: 'Crear una función obtenerCodigoSecreto() que retorne la cadena "ADM-2026".',
+    steps: [
+      { id: 'step1', title: 'Comprendí el código clave', desc: 'Devolver "ADM-2026".' },
+      { id: 'step2', title: 'Declaré obtenerCodigoSecreto()', desc: 'Definí la función.' },
+      { id: 'step3', title: 'Escribí return "ADM-2026"', desc: 'Retorné el código.' },
+      { id: 'step4', title: 'Comparé con entrada', desc: 'Verifiqué si clave_usuario == obtenerCodigoSecreto().' },
+      { id: 'step5', title: 'Probé la comparación', desc: 'Validé el acceso.' },
+    ],
+  },
+  {
+    id: 30,
+    section: '3. Sin Parámetros y Con Retorno',
+    title: 'Obtener selección por defecto de menú',
+    statement: 'Crear una función obtenerOpcionPorDefecto() que retorne el entero 1.',
+    steps: [
+      { id: 'step1', title: 'Comprendí el valor por defecto', desc: 'Devolver opción 1.' },
+      { id: 'step2', title: 'Declaré obtenerOpcionPorDefecto()', desc: 'Definí la función.' },
+      { id: 'step3', title: 'Escribí return 1', desc: 'Retorné el entero 1.' },
+      { id: 'step4', title: 'Asigné a variable', desc: 'Hice opcion = obtenerOpcionPorDefecto().' },
+      { id: 'step5', title: 'Verifiqué el contenido', desc: 'Comprobé que opcion valía 1.' },
+    ],
+  },
 
   // SECCIÓN 4: CON PARÁMETROS Y CON RETORNO (20 EJERCICIOS CENTRALES)
-  { id: 31, section: '4. Con Parámetros y Con Retorno', title: 'Sumar dos números', statement: 'Crear una función sumar(a, b) que reciba dos números y retorne la suma de ambos.' },
-  { id: 32, section: '4. Con Parámetros y Con Retorno', title: 'Restar dos números', statement: 'Crear una función restar(a, b) que reciba dos números y retorne la diferencia.' },
-  { id: 33, section: '4. Con Parámetros y Con Retorno', title: 'Multiplicar dos números', statement: 'Crear una función multiplicar(a, b) que reciba dos valores y retorne su producto.' },
-  { id: 34, section: '4. Con Parámetros y Con Retorno', title: 'Dividir dos números con validación', statement: 'Crear una función dividir(a, b) que retorne el cociente a/b, o 0 si b es cero.' },
-  { id: 35, section: '4. Con Parámetros y Con Retorno', title: 'Calcular promedio de tres notas', statement: 'Crear una función calcularPromedio(n1, n2, n3) que retorne el promedio aritmético de las tres notas.' },
-  { id: 36, section: '4. Con Parámetros y Con Retorno', title: 'Determinar el mayor de dos números', statement: 'Crear una función obtenerMayor(a, b) que retorne el número más alto entre a y b.' },
-  { id: 37, section: '4. Con Parámetros y Con Retorno', title: 'Determinar el menor de dos números', statement: 'Crear una función obtenerMenor(a, b) que retorne el menor de dos valores.' },
-  { id: 38, section: '4. Con Parámetros y Con Retorno', title: 'Es número par (Booleano)', statement: 'Crear una función esPar(numero) que retorne true si el número es par o false en caso contrario.' },
-  { id: 39, section: '4. Con Parámetros y Con Retorno', title: 'Es número positivo (Booleano)', statement: 'Crear una función esPositivo(numero) que retorne true si numero > 0 o false en caso contrario.' },
-  { id: 40, section: '4. Con Parámetros y Con Retorno', title: 'Convertir Celsius a Fahrenheit', statement: 'Crear una función convertirCelsiusAFahrenheit(celsius) que retorne (celsius * 9/5) + 32.' },
-  { id: 41, section: '4. Con Parámetros y Con Retorno', title: 'Calcular descuento de compra', statement: 'Crear una función calcularDescuento(monto, porcentaje) que retorne el valor del descuento aplicado.' },
-  { id: 42, section: '4. Con Parámetros y Con Retorno', title: 'Calcular valor final con IVA', statement: 'Crear una función calcularTotalConIVA(montoNeto) que retorne montoNeto * 1.19.' },
-  { id: 43, section: '4. Con Parámetros y Con Retorno', title: 'Validar si es mayor de edad', statement: 'Crear una función esMayorDeEdad(edad) que retorne true si edad >= 18.' },
-  { id: 44, section: '4. Con Parámetros y Con Retorno', title: 'Validar longitud de contraseña', statement: 'Crear una función esClaveSegura(clave) que retorne true si la longitud de la clave es mayor o igual a 8 caracteres.' },
-  { id: 45, section: '4. Con Parámetros y Con Retorno', title: 'Buscar valor en arreglo', statement: 'Crear una función buscarEnArreglo(arreglo, valor) que retorne true si valor se encuentra en el arreglo.' },
-  { id: 46, section: '4. Con Parámetros y Con Retorno', title: 'Contar pares en un arreglo', statement: 'Crear una función contarParesArreglo(arreglo) que recorra el arreglo y retorne la cantidad total de pares.' },
-  { id: 47, section: '4. Con Parámetros y Con Retorno', title: 'Encontrar el mayor de un arreglo', statement: 'Crear una función obtenerMayorArreglo(arreglo) que retorne el valor numérico máximo del arreglo.' },
-  { id: 48, section: '4. Con Parámetros y Con Retorno', title: 'Encontrar el menor de un arreglo', statement: 'Crear una función obtenerMenorArreglo(arreglo) que retorne el valor mínimo de un arreglo.' },
-  { id: 49, section: '4. Con Parámetros y Con Retorno', title: 'Calcular promedio de un arreglo', statement: 'Crear una función calcularPromedioArreglo(arreglo) que sume sus elementos y retorne su promedio.' },
-  { id: 50, section: '4. Con Parámetros y Con Retorno', title: 'Filtrar mayores a un umbral', statement: 'Crear una función filtrarMayores(arreglo, umbral) que retorne una nueva lista con los números mayores al umbral.' },
+  {
+    id: 31,
+    section: '4. Con Parámetros y Con Retorno',
+    title: 'Sumar dos números',
+    statement: 'Crear una función sumar(a, b) que reciba dos números y retorne la suma de ambos.',
+    steps: [
+      { id: 'step1', title: 'Comprendí entradas y salida', desc: 'Recibir a y b, retornar a + b.' },
+      { id: 'step2', title: 'Declaré sumar(a, b)', desc: 'Firma con 2 parámetros.' },
+      { id: 'step3', title: 'Escribí return a + b', desc: 'Retorné el resultado de la adición.' },
+      { id: 'step4', title: 'Asigné a resultado', desc: 'Hice res = sumar(10, 15).' },
+      { id: 'step5', title: 'Imprimí res', desc: 'Verifiqué que res valía 25.' },
+    ],
+  },
+  {
+    id: 32,
+    section: '4. Con Parámetros y Con Retorno',
+    title: 'Restar dos números',
+    statement: 'Crear una función restar(a, b) que reciba dos números y retorne la diferencia.',
+    steps: [
+      { id: 'step1', title: 'Comprendí la resta', desc: 'Recibir a y b, retornar a - b.' },
+      { id: 'step2', title: 'Declaré restar(a, b)', desc: 'Definí la firma.' },
+      { id: 'step3', title: 'Escribí return a - b', desc: 'Retorné la resta.' },
+      { id: 'step4', title: 'Invoqué con valores', desc: 'Hice res = restar(50, 20).' },
+      { id: 'step5', title: 'Comprobé que res es 30', desc: 'Verifiqué en consola.' },
+    ],
+  },
+  {
+    id: 33,
+    section: '4. Con Parámetros y Con Retorno',
+    title: 'Multiplicar dos números',
+    statement: 'Crear una función multiplicar(a, b) que reciba dos valores y retorne su producto.',
+    steps: [
+      { id: 'step1', title: 'Comprendí el producto', desc: 'Recibir a y b, retornar a * b.' },
+      { id: 'step2', title: 'Declaré multiplicar(a, b)', desc: 'Definí la función.' },
+      { id: 'step3', title: 'Escribí return a * b', desc: 'Devolví el producto.' },
+      { id: 'step4', title: 'Probé con 4 y 5', desc: 'Hice res = multiplicar(4, 5).' },
+      { id: 'step5', title: 'Verifiqué que dio 20', desc: 'Comprobé el valor devuelto.' },
+    ],
+  },
+  {
+    id: 34,
+    section: '4. Con Parámetros y Con Retorno',
+    title: 'Dividir dos números con validación',
+    statement: 'Crear una función dividir(a, b) que retorne el cociente a/b, o 0 si b es cero.',
+    steps: [
+      { id: 'step1', title: 'Comprendí la validación', desc: 'Evaluar if b == 0 antes de dividir.' },
+      { id: 'step2', title: 'Declaré dividir(a, b)', desc: 'Firma con 2 parámetros.' },
+      { id: 'step3', title: 'Agregué if (b == 0) return 0', desc: 'Evité la división por cero.' },
+      { id: 'step4', title: 'Escribí return a / b', desc: 'Retorné el cociente si b != 0.' },
+      { id: 'step5', title: 'Probé dividiendo por cero', desc: 'Verifiqué que retornó 0 sin caerse.' },
+    ],
+  },
+  {
+    id: 35,
+    section: '4. Con Parámetros y Con Retorno',
+    title: 'Calcular promedio de tres notas',
+    statement: 'Crear una función calcularPromedio(n1, n2, n3) que retorne el promedio aritmético de las tres notas.',
+    steps: [
+      { id: 'step1', title: 'Comprendí los 3 parámetros', desc: 'Recibir n1, n2, n3.' },
+      { id: 'step2', title: 'Declaré calcularPromedio(n1, n2, n3)', desc: 'Definí la firma.' },
+      { id: 'step3', title: 'Calculé (n1 + n2 + n3) / 3', desc: 'Sumé y dividí entre 3.' },
+      { id: 'step4', title: 'Escribí return promedio', desc: 'Retorné el promedio con decimales.' },
+      { id: 'step5', title: 'Probé con (6.0, 5.0, 7.0)', desc: 'Verifiqué que dio 6.0.' },
+    ],
+  },
+  {
+    id: 36,
+    section: '4. Con Parámetros y Con Retorno',
+    title: 'Determinar el mayor de dos números',
+    statement: 'Crear una función obtenerMayor(a, b) que retorne el número más alto entre a y b.',
+    steps: [
+      { id: 'step1', title: 'Comprendí la comparación', desc: 'Evaluar if a > b.' },
+      { id: 'step2', title: 'Declaré obtenerMayor(a, b)', desc: 'Definí la función.' },
+      { id: 'step3', title: 'Escribí la lógica de retorno', desc: 'return a if a > b else b.' },
+      { id: 'step4', title: 'Probé con (15, 42)', desc: 'Verifiqué que retornó 42.' },
+      { id: 'step5', title: 'Probé con (100, 20)', desc: 'Verifiqué que retornó 100.' },
+    ],
+  },
+  {
+    id: 37,
+    section: '4. Con Parámetros y Con Retorno',
+    title: 'Determinar el menor de dos números',
+    statement: 'Crear una función obtenerMenor(a, b) que retorne el menor de dos valores.',
+    steps: [
+      { id: 'step1', title: 'Comprendí la comparación', desc: 'Evaluar if a < b.' },
+      { id: 'step2', title: 'Declaré obtenerMenor(a, b)', desc: 'Firma con 2 parámetros.' },
+      { id: 'step3', title: 'Escribí el return adecuado', desc: 'return a si es menor, sino b.' },
+      { id: 'step4', title: 'Probé con (8, 3)', desc: 'Verifiqué que devolvió 3.' },
+      { id: 'step5', title: 'Probé con (-5, 10)', desc: 'Verifiqué que devolvió -5.' },
+    ],
+  },
+  {
+    id: 38,
+    section: '4. Con Parámetros y Con Retorno',
+    title: 'Es número par (Booleano)',
+    statement: 'Crear una función esPar(numero) que retorne true si el número es par o false en caso contrario.',
+    steps: [
+      { id: 'step1', title: 'Comprendí retorno booleano', desc: 'Evaluar numero % 2 == 0.' },
+      { id: 'step2', title: 'Declaré esPar(numero)', desc: 'Definí la firma.' },
+      { id: 'step3', title: 'Escribí return (numero % 2 == 0)', desc: 'Retorné el resultado de la condición.' },
+      { id: 'step4', title: 'Probé con 4', desc: 'Verifiqué que devolvió true.' },
+      { id: 'step5', title: 'Probé con 7', desc: 'Verifiqué que devolvió false.' },
+    ],
+  },
+  {
+    id: 39,
+    section: '4. Con Parámetros y Con Retorno',
+    title: 'Es número positivo (Booleano)',
+    statement: 'Crear una función esPositivo(numero) que retorne true si numero > 0 o false en caso contrario.',
+    steps: [
+      { id: 'step1', title: 'Comprendí la condición > 0', desc: 'Evaluar el signo del número.' },
+      { id: 'step2', title: 'Declaré esPositivo(numero)', desc: 'Definí la función.' },
+      { id: 'step3', title: 'Escribí return numero > 0', desc: 'Retorné el booleano.' },
+      { id: 'step4', title: 'Probé con 10', desc: 'Verifiqué true.' },
+      { id: 'step5', title: 'Probé con -5', desc: 'Verifiqué false.' },
+    ],
+  },
+  {
+    id: 40,
+    section: '4. Con Parámetros y Con Retorno',
+    title: 'Convertir Celsius a Fahrenheit',
+    statement: 'Crear una función convertirCelsiusAFahrenheit(celsius) que retorne (celsius * 9/5) + 32.',
+    steps: [
+      { id: 'step1', title: 'Comprendí la fórmula', desc: 'F = (C * 9/5) + 32.' },
+      { id: 'step2', title: 'Declaré convertirCelsiusAFahrenheit(celsius)', desc: 'Recibí la temperatura C.' },
+      { id: 'step3', title: 'Calculé y retorne', desc: 'Escribí return (celsius * 9 / 5) + 32.' },
+      { id: 'step4', title: 'Probé con 0 °C', desc: 'Verifiqué que dio 32 °F.' },
+      { id: 'step5', title: 'Probé con 100 °C', desc: 'Verifiqué que dio 212 °F.' },
+    ],
+  },
+  {
+    id: 41,
+    section: '4. Con Parámetros y Con Retorno',
+    title: 'Calcular descuento de compra',
+    statement: 'Crear una función calcularDescuento(monto, porcentaje) que retorne el valor del descuento aplicado.',
+    steps: [
+      { id: 'step1', title: 'Comprendí porcentaje', desc: 'descuento = monto * (porcentaje / 100).' },
+      { id: 'step2', title: 'Declaré calcularDescuento(monto, porcentaje)', desc: 'Definí 2 parámetros.' },
+      { id: 'step3', title: 'Escribí return monto * (porcentaje / 100)', desc: 'Retorné el monto ahorrado.' },
+      { id: 'step4', title: 'Probé con ($10.000, 20%)', desc: 'Verifiqué que devolvió $2.000.' },
+      { id: 'step5', title: 'Comprobé en programa', desc: 'Usé el retorno para restar del total.' },
+    ],
+  },
+  {
+    id: 42,
+    section: '4. Con Parámetros y Con Retorno',
+    title: 'Calcular valor final con IVA',
+    statement: 'Crear una función calcularTotalConIVA(montoNeto) que retorne montoNeto * 1.19.',
+    steps: [
+      { id: 'step1', title: 'Comprendí el factor 1.19', desc: 'Sumar el 19% de IVA al neto.' },
+      { id: 'step2', title: 'Declaré calcularTotalConIVA(montoNeto)', desc: 'Definí la firma.' },
+      { id: 'step3', title: 'Escribí return montoNeto * 1.19', desc: 'Retorné el total bruto.' },
+      { id: 'step4', title: 'Probé con 1000', desc: 'Verifiqué 1190.' },
+      { id: 'step5', title: 'Verifiqué con formato decimal', desc: 'Comprobé los ceros.' },
+    ],
+  },
+  {
+    id: 43,
+    section: '4. Con Parámetros y Con Retorno',
+    title: 'Validar si es mayor de edad',
+    statement: 'Crear una función esMayorDeEdad(edad) que retorne true si edad >= 18.',
+    steps: [
+      { id: 'step1', title: 'Comprendí edad >= 18', desc: 'Evaluar umbral legal.' },
+      { id: 'step2', title: 'Declaré esMayorDeEdad(edad)', desc: 'Definí la función.' },
+      { id: 'step3', title: 'Escribí return edad >= 18', desc: 'Retorné el booleano.' },
+      { id: 'step4', title: 'Probé con 17', desc: 'Verifiqué false.' },
+      { id: 'step5', title: 'Probé con 18', desc: 'Verifiqué true.' },
+    ],
+  },
+  {
+    id: 44,
+    section: '4. Con Parámetros y Con Retorno',
+    title: 'Validar longitud de contraseña',
+    statement: 'Crear una función esClaveSegura(clave) que retorne true si la longitud de la clave es mayor o igual a 8 caracteres.',
+    steps: [
+      { id: 'step1', title: 'Comprendí len(clave) >= 8', desc: 'Medir la cantidad de caracteres.' },
+      { id: 'step2', title: 'Declaré esClaveSegura(clave)', desc: 'Firma con parámetro String.' },
+      { id: 'step3', title: 'Escribí return len(clave) >= 8', desc: 'Retorné la evaluación de largo.' },
+      { id: 'step4', title: 'Probé con "12345"', desc: 'Verifiqué false.' },
+      { id: 'step5', title: 'Probé con "secret123"', desc: 'Verifiqué true.' },
+    ],
+  },
+  {
+    id: 45,
+    section: '4. Con Parámetros y Con Retorno',
+    title: 'Buscar valor en arreglo',
+    statement: 'Crear una función buscarEnArreglo(arreglo, valor) que retorne true si valor se encuentra en el arreglo.',
+    steps: [
+      { id: 'step1', title: 'Comprendí la búsqueda', desc: 'Iterar por el arreglo buscando coincidencia.' },
+      { id: 'step2', title: 'Declaré buscarEnArreglo(arreglo, valor)', desc: 'Recibí colección y buscado.' },
+      { id: 'step3', title: 'Bucle con if (elem == valor) return true', desc: 'Retorné true al hallar.' },
+      { id: 'step4', title: 'Retorné false al final', desc: 'Si terminó el bucle, devolví false.' },
+      { id: 'step5', title: 'Probé con [1, 5, 9] y buscando 5', desc: 'Verifiqué true.' },
+    ],
+  },
+  {
+    id: 46,
+    section: '4. Con Parámetros y Con Retorno',
+    title: 'Contar pares en un arreglo',
+    statement: 'Crear una función contarParesArreglo(arreglo) que recorra el arreglo y retorne la cantidad total de pares.',
+    steps: [
+      { id: 'step1', title: 'Comprendí el contador', desc: 'Inicializar contador = 0 e incrementar.' },
+      { id: 'step2', title: 'Declaré contarParesArreglo(arreglo)', desc: 'Definí la firma.' },
+      { id: 'step3', title: 'Recorrí con for y evalué % 2 == 0', desc: 'Sumé a contador.' },
+      { id: 'step4', title: 'Escribí return contador', desc: 'Devolví el acumulado.' },
+      { id: 'step5', title: 'Probé con [2, 3, 4, 6]', desc: 'Verifiqué que devolvió 3.' },
+    ],
+  },
+  {
+    id: 47,
+    section: '4. Con Parámetros y Con Retorno',
+    title: 'Encontrar el mayor de un arreglo',
+    statement: 'Crear una función obtenerMayorArreglo(arreglo) que retorne el valor numérico máximo del arreglo.',
+    steps: [
+      { id: 'step1', title: 'Comprendí máximo', desc: 'Inicializar mayor = arreglo[0].' },
+      { id: 'step2', title: 'Declaré obtenerMayorArreglo(arreglo)', desc: 'Definí la función.' },
+      { id: 'step3', title: 'Iteré comparando if elem > mayor', desc: 'Actualicé mayor.' },
+      { id: 'step4', title: 'Escribí return mayor', desc: 'Devolví el máximo.' },
+      { id: 'step5', title: 'Probé con [10, 45, 3, 99, 12]', desc: 'Verifiqué que dio 99.' },
+    ],
+  },
+  {
+    id: 48,
+    section: '4. Con Parámetros y Con Retorno',
+    title: 'Encontrar el menor de un arreglo',
+    statement: 'Crear una función obtenerMenorArreglo(arreglo) que retorne el valor mínimo de un arreglo.',
+    steps: [
+      { id: 'step1', title: 'Comprendí mínimo', desc: 'Inicializar menor = arreglo[0].' },
+      { id: 'step2', title: 'Declaré obtenerMenorArreglo(arreglo)', desc: 'Firma con colección.' },
+      { id: 'step3', title: 'Iteré comparando if elem < menor', desc: 'Actualicé menor.' },
+      { id: 'step4', title: 'Escribí return menor', desc: 'Devolví el mínimo.' },
+      { id: 'step5', title: 'Probé con [7, 2, 19, -4, 5]', desc: 'Verifiqué que dio -4.' },
+    ],
+  },
+  {
+    id: 49,
+    section: '4. Con Parámetros y Con Retorno',
+    title: 'Calcular promedio de un arreglo',
+    statement: 'Crear una función calcularPromedioArreglo(arreglo) que sume sus elementos y retorne su promedio.',
+    steps: [
+      { id: 'step1', title: 'Comprendí acumulación', desc: 'Sumar elementos y dividir por len(arreglo).' },
+      { id: 'step2', title: 'Declaré calcularPromedioArreglo(arreglo)', desc: 'Definí la función.' },
+      { id: 'step3', title: 'Sumé en un bucle', desc: 'Acumulé suma.' },
+      { id: 'step4', title: 'Escribí return suma / len(arreglo)', desc: 'Retorné el promedio.' },
+      { id: 'step5', title: 'Probé con [10, 20, 30]', desc: 'Verifiqué que dio 20.' },
+    ],
+  },
+  {
+    id: 50,
+    section: '4. Con Parámetros y Con Retorno',
+    title: 'Filtrar mayores a un umbral',
+    statement: 'Crear una función filtrarMayores(arreglo, umbral) que retorne una nueva lista con los números mayores al umbral.',
+    steps: [
+      { id: 'step1', title: 'Comprendí el nuevo arreglo', desc: 'Crear lista vacía resultado = [].' },
+      { id: 'step2', title: 'Declaré filtrarMayores(arreglo, umbral)', desc: 'Recibí arreglo y umbral.' },
+      { id: 'step3', title: 'Iteré con if elem > umbral', desc: 'Agregué resultado.append(elem).' },
+      { id: 'step4', title: 'Escribí return resultado', desc: 'Retorné la nueva lista.' },
+      { id: 'step5', title: 'Probé con [5, 12, 18, 3] y umbral = 10', desc: 'Verifiqué [12, 18].' },
+    ],
+  },
 ];
 ---
 
 <Layout
   title="Funciones y Métodos — Parámetros y Retorno (50 Desafíos)"
-  description="Domina el diseño de funciones y métodos: sin/con parámetros, sin/con retorno y lógica de modularización."
+  description="Domina el diseño de funciones y métodos: sin/con parámetros, sin/con retorno y lógica de modularización paso a paso."
 >
   <article class="content-section max-w-5xl mx-auto px-4 py-6">
 
@@ -79,7 +679,7 @@ const exercises = [
         Funciones y Métodos (Parámetros y Retorno)
       </h1>
       <p class="mt-2 text-sm text-slate-600 font-medium leading-relaxed">
-        50 desafíos progresivos ordenados en 4 niveles de modularización: sin/con parámetros y sin/con declaración de <code>return</code>. Válido en <strong>Python, Java, C#, C++, JS, PHP y PSeInt</strong>.
+        50 desafíos progresivos con <strong>checklists paso a paso</strong> para dominar modularización: sin/con parámetros y sin/con declaración de <code>return</code>. Válido en <strong>Python, Java, C#, C++, JS, PHP y PSeInt</strong>.
       </p>
     </div>
 
@@ -126,11 +726,11 @@ const exercises = [
       </div>
     </section>
 
-    <!-- RESOLUCIÓN GUIADA CON CHECKLISTS -->
+    <!-- RESOLUCIÓN GUIADA CON CHECKLISTS DETALLADOS PASO A PASO -->
     <section class="mb-8">
       <div class="flex items-center justify-between mb-4 border-b-2 border-[#1E1210] pb-2">
         <h2 class="text-base font-nunito font-black text-[#1E1210] m-0 flex items-center gap-2">
-          <span>🎯</span> Resolución Guiada y Checklists de Progreso
+          <span>🎯</span> Resolución Guiada y Checklists Paso a Paso
         </h2>
       </div>
 
@@ -162,31 +762,17 @@ const exercises = [
                 <strong>Enunciado:</strong> {ex.statement}
               </p>
 
+              <!-- PASO A PASO ESPECÍFICO DE CADA EJERCICIO -->
               <div class="ex-checks flex flex-col gap-2 mt-3 text-xs font-nunito font-extrabold">
-                <label class="chk flex items-center gap-2.5 cursor-pointer hover:bg-sky-50/50 p-1.5 rounded-lg transition-colors">
-                  <input type="checkbox" data-check-id="firma" class="w-4 h-4 accent-sky-600 rounded" />
-                  <span>1. Declaré la firma de la función/método con el nombre y parámetros requeridos</span>
-                </label>
-
-                <label class="chk flex items-center gap-2.5 cursor-pointer hover:bg-sky-50/50 p-1.5 rounded-lg transition-colors">
-                  <input type="checkbox" data-check-id="param" class="w-4 h-4 accent-sky-600 rounded" />
-                  <span>2. Pasé e identifiqué los parámetros de entrada dentro de la función</span>
-                </label>
-
-                <label class="chk flex items-center gap-2.5 cursor-pointer hover:bg-sky-50/50 p-1.5 rounded-lg transition-colors">
-                  <input type="checkbox" data-check-id="proceso" class="w-4 h-4 accent-sky-600 rounded" />
-                  <span>3. Implementé el cuerpo del algoritmo o cálculo modularizado</span>
-                </label>
-
-                <label class="chk flex items-center gap-2.5 cursor-pointer hover:bg-sky-50/50 p-1.5 rounded-lg transition-colors">
-                  <input type="checkbox" data-check-id="retorno" class="w-4 h-4 accent-sky-600 rounded" />
-                  <span>4. Retorné el valor con <code>return</code> (o imprimí si era sin retorno)</span>
-                </label>
-
-                <label class="chk flex items-center gap-2.5 cursor-pointer hover:bg-sky-50/50 p-1.5 rounded-lg transition-colors">
-                  <input type="checkbox" data-check-id="invocacion" class="w-4 h-4 accent-sky-600 rounded" />
-                  <span>5. Invoqué la función desde el programa principal y verifiqué la salida</span>
-                </label>
+                {ex.steps.map((st, idx) => (
+                  <label class="chk flex items-start gap-2.5 cursor-pointer hover:bg-sky-50/60 p-2 rounded-xl border border-slate-100 hover:border-sky-200 transition-colors">
+                    <input type="checkbox" data-check-id={st.id} class="w-4 h-4 accent-sky-600 rounded mt-0.5 shrink-0 cursor-pointer" />
+                    <div>
+                      <span class="text-sky-900 font-black block">{idx + 1}. {st.title}</span>
+                      <span class="text-slate-500 font-semibold text-[0.78rem] block leading-snug">{st.desc}</span>
+                    </div>
+                  </label>
+                ))}
               </div>
             </div>
           </details>
@@ -199,7 +785,7 @@ const exercises = [
   <!-- SCRIPT DE LOCALSTORAGE Y SINCRONIZACIÓN -->
   <script is:inline>
     (function () {
-      const KEY = 'aprende_funciones_metodos_v1';
+      const KEY = 'aprende_funciones_metodos_v2';
       const readStore = () => { try { return JSON.parse(localStorage.getItem(KEY) || '{}'); } catch { return {}; } };
       const writeStore = (s) => localStorage.setItem(KEY, JSON.stringify(s));
 
