@@ -2,6 +2,13 @@
 import Layout from '../../../../layouts/Layout.astro';
 import CodeBlock from '../../../../components/CodeBlock.astro';
 import DjangoQuizModal from '../../../../components/quizzes/DjangoQuizModal.astro';
+import VideoGridWithCheck from '../../../../components/VideoGridWithCheck';
+
+const djangoVideos = [
+  { id: 'Hp1TYOhvIBM', title: 'Introducción a Django - Video 1' },
+  { id: '709hxD7BsPw', title: 'Introducción a Django - Video 2' },
+  { id: 'Xb0PpWWY8RE', title: 'Introducción a Django - Video 3' },
+];
 ---
 
 <Layout title="Introducción a Django" description="Configura tu primer proyecto Django y entiende su estructura básica." courseSlug="django">
@@ -17,7 +24,7 @@ import DjangoQuizModal from '../../../../components/quizzes/DjangoQuizModal.astr
         lang="bash"
         code={`python -m venv env
 source env/bin/activate  # Mac / Linux
-# env\Scripts\activate  # Windows
+# env\\Scripts\\activate  # Windows
 pip install django
 
 django-admin startproject mi_proyecto
@@ -46,6 +53,11 @@ python manage.py runserver`}
 # Luego registra 'cursos' en INSTALLED_APPS dentro de settings.py`}
         title="crear_app.sh"
       />
+    </section>
+
+    <section class="mb-10">
+      <h2>Videotutoriales recomendados</h2>
+      <VideoGridWithCheck client:load videos={djangoVideos} pageKey="django-introduccion" />
     </section>
 
     <section class="mb-10">

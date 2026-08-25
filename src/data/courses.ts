@@ -28,6 +28,7 @@ export interface Course {
   category: CourseCategory;
   status: CourseStatus;
   color: string;
+  image?: string;
   lessons?: Lesson[];
   requiresPassword?: boolean;
   styleMode?: CourseStyleMode;
@@ -52,6 +53,7 @@ export const courses: Course[] = [
       { slug: 'mobile-nativos', title: '5. Mobile y Nativos', href: '/course/ecosistemas/mobile-nativos/' },
       { slug: 'variables-convenciones', title: '6. Variables y Convenciones', href: '/course/ecosistemas/variables-convenciones/' },
     ],
+    image: '/images/ark2.jpg',
   },
   {
     slug: 'pseint',
@@ -95,6 +97,7 @@ export const courses: Course[] = [
       { slug: 'poo-basico', title: '9. POO básico', href: '/course/cpp/poo-basico/' },
       { slug: 'poo-pilares', title: '10. Herencia y polimorfismo', href: '/course/cpp/poo-pilares/' },
     ],
+    image: '/images/cplusplus.jpg',
   },
   // Ejercicios por unidades: NO listar aquí con slug `ejercicios`. Las rutas reales son `/ejercicios/…`
   // (src/pages/ejercicios/). Si `ejercicios` estuviera en `courses`, el middleware redirigiría
@@ -120,6 +123,7 @@ export const courses: Course[] = [
       { slug: 'poo-basico', title: '9. POO Básico', href: '/course/csharp/poo-basico/' },
       { slug: 'poo-pilares', title: '10. Pilares POO', href: '/course/csharp/poo-pilares/' },
     ],
+    image: '/images/csharp.jpg',
   },
   {
     slug: 'python',
@@ -128,6 +132,7 @@ export const courses: Course[] = [
     category: 'language',
     status: 'available',
     color: '#3776ab',
+    image: '/images/python.jpg',
     communityReleaseYear: 1991,
     lessons: [
       { slug: 'introduccion', title: '1. El comienzo', href: '/course/python/introduccion/' },
@@ -255,6 +260,7 @@ export const courses: Course[] = [
       { slug: 'proyecto-carrito-memoria', title: '13. Proyecto Integrador: Carrito de Compras CRUD en Memoria', href: '/course/java/proyecto-carrito-memoria/' },
       { slug: 'proyecto-tienda-mysql-dao', title: '14. Proyecto Integrador: Tienda MySQL & Patrón DAO (JDBC)', href: '/course/java/proyecto-tienda-mysql-dao/' },
     ],
+    image: '/images/java.jpg',
   },
   {
     slug: 'estructuras-datos',
@@ -347,6 +353,7 @@ export const courses: Course[] = [
       { slug: 'vista-fisica', title: '6. Vista Física', href: '/course/arch/vista-fisica/' },
       { slug: 'conclusion', title: '7. Conclusión', href: '/course/arch/conclusion/' },
     ],
+    image: '/images/ark.jpg',
   },
   {
     slug: 'c4',
@@ -355,7 +362,7 @@ export const courses: Course[] = [
     category: 'engineering',
     status: 'available',
     /** Si añadís otro curso con candado, actualizá también `PASSWORD_PROTECTED_SLUGS` en `src/lib/courseUnlock.ts`. */
-    requiresPassword: true,
+    // requiresPassword: true,
     color: '#1a5ebd',
     lessons: [
       { slug: 'introduccion', title: '1. ¿Qué es C4?', href: '/course/c4/introduccion/' },
@@ -521,6 +528,8 @@ export const courses: Course[] = [
       { slug: 'eventos', title: '9. Eventos y Click', href: '/course/javascript/eventos/' },
       { slug: 'async', title: '10. Fetch y Promesas', href: '/course/javascript/async/' },
     ],
+    image: '/images/js.jpg',
+
   },
   {
     slug: 'ruby',
@@ -540,6 +549,7 @@ export const courses: Course[] = [
       { slug: 'metodos', title: '6. Métodos y parámetros', href: '/course/ruby/metodos/' },
       { slug: 'arrays-y-hashes', title: '7. Arrays y Hashes', href: '/course/ruby/arrays-y-hashes/' },
     ],
+    image: '/images/ruby.jpg',
   },
   {
     slug: 'kotlin',
@@ -565,6 +575,7 @@ export const courses: Course[] = [
       { slug: 'proyecto-agenda', title: '13. Proyecto - Agenda de Contactos 📱', href: '/course/kotlin/proyecto-agenda/' },
       { slug: 'coroutines-intro', title: '14. Introducción a Coroutines ⚡', href: '/course/kotlin/coroutines-intro/' },
     ],
+    image: '/images/kotlin.jpg',
   },
   {
     slug: 'modelamiento-db',
@@ -684,6 +695,7 @@ export const courses: Course[] = [
       { slug: 'arrays', title: '3. Arrays y Funciones', href: '/course/php/arrays/' },
       { slug: 'poo', title: '4. POO en PHP', href: '/course/php/poo/' },
     ],
+    image: '/images/php.jpg',
   },
   {
     slug: 'criptografia',

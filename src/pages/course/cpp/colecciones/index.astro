@@ -3,57 +3,343 @@ import Layout from '../../../../layouts/Layout.astro';
 import CodeBlock from '../../../../components/CodeBlock.astro';
 ---
 
-<Layout title="Arreglos y vector en C++" description="Arrays C y std::vector" courseSlug="cpp">
+<Layout title="Arreglos y std::vector en C++" description="Aprende a dominar colecciones en C++: arreglos fijos, std::vector, métodos principales, recorrido por referencias y un CRUD paso a paso." courseSlug="cpp">
   <article class="content-section">
-    <h1>7. Arreglos y <code>vector</code></h1>
+    <h1>7. Arreglos y <code>std::vector</code></h1>
+
+    <p class="intro-text">
+      En C++ existen dos formas principales de trabajar con secuencias de datos: los <strong>arreglos estáticos tradicionales (C-style arrays)</strong>, cuyo tamaño queda fijo en tiempo de compilación, y <strong><code>std::vector</code></strong> (de la Standard Template Library o STL), que es un arreglo dinámico capaz de crecer o reducirse en tiempo de ejecución.
+    </p>
 
     <section class="mb-10">
-      <h2>Arreglo fijo (C-style)</h2>
+      <h2>1. Arreglo fijo (C-style array)</h2>
+      <p>
+        Son bloques continuos en memoria con tamaño predefinido. Resultan eficientes, pero no permiten agregar ni eliminar elementos dinámicamente.
+      </p>
       <CodeBlock
         lang="cpp"
         code={`#include <iostream>
 
 int main() {
-    int a[5] = { 10, 20, 30, 40, 50 };
+    // Declaración e inicialización
+    int notas[5] = { 85, 90, 78, 92, 88 };
+
+    // Acceso por índice (basado en 0)
+    std::cout << "Primera nota: " << notas[0] << "\\n";
+
+    // Recorrido con bucle for clásico
     for (int i = 0; i < 5; i++) {
-        std::cout << a[i] << " ";
+        std::cout << "Nota " << i + 1 << ": " << notas[i] << "\\n";
     }
-    std::cout << "\\n";
+
     return 0;
 }`}
-        title="int a[5]"
+        title="Arreglo Estático en C++"
       />
     </section>
 
     <section class="mb-10">
-      <h2><code>std::vector</code></h2>
-      <p>Arreglo dinámico de la STL: tamaño variable, métodos <code>push_back</code>, <code>size()</code>, etc.</p>
+      <h2>2. <code>std::vector</code>: El Arreglo Dinámico Estándar</h2>
+      <p>
+        Para usar <code>std::vector</code> se debe incluir la librería <code>#include &lt;vector&gt;</code>. Los vectores gestionan la memoria automáticamente y ofrecen una gran variedad de métodos esenciales.
+      </p>
       <CodeBlock
         lang="cpp"
         code={`#include <iostream>
 #include <vector>
 
 int main() {
-    std::vector<int> v;
-    v.push_back(1);
-    v.push_back(2);
-    v.push_back(3);
+    // Crear un vector vacío de enteros
+    std::vector<int> numeros;
 
-    for (int x : v) {
-        std::cout << x << " ";
-    }
-    std::cout << "\\n";
+    // Agregar elementos al final
+    numeros.push_back(10);
+    numeros.push_back(20);
+    numeros.push_back(30);
+
+    std::cout << "Cantidad de elementos: " << numeros.size() << "\\n";
     return 0;
 }`}
-        title="vector"
+        title="Inicialización y push_back"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>3. Propiedades y Métodos Más Usados de <code>std::vector</code></h2>
+      <p>
+        A continuación se resumen las operaciones y propiedades fundamentales para operar vectores eficientemente:
+      </p>
+      
+      <div class="overflow-x-auto mb-6">
+        <table class="w-full border-collapse border border-gray-300 my-4 text-left">
+          <thead>
+            <tr class="bg-gray-100 dark:bg-gray-800">
+              <th class="border border-gray-300 p-2 font-bold">Método / Propiedad</th>
+              <th class="border border-gray-300 p-2 font-bold">Descripción</th>
+              <th class="border border-gray-300 p-2 font-bold">Ejemplo</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="border border-gray-300 p-2"><code>v.size()</code></td>
+              <td class="border border-gray-300 p-2">Retorna la cantidad actual de elementos en el vector.</td>
+              <td class="border border-gray-300 p-2"><code>int n = v.size();</code></td>
+            </tr>
+            <tr>
+              <td class="border border-gray-300 p-2"><code>v.empty()</code></td>
+              <td class="border border-gray-300 p-2">Devuelve <code>true</code> si el vector no contiene elementos.</td>
+              <td class="border border-gray-300 p-2"><code>if (v.empty()) ...</code></td>
+            </tr>
+            <tr>
+              <td class="border border-gray-300 p-2"><code>v.push_back(val)</code></td>
+              <td class="border border-gray-300 p-2">Inserta un elemento al final del vector.</td>
+              <td class="border border-gray-300 p-2"><code>v.push_back(50);</code></td>
+            </tr>
+            <tr>
+              <td class="border border-gray-300 p-2"><code>v.pop_back()</code></td>
+              <td class="border border-gray-300 p-2">Elimina el último elemento del vector.</td>
+              <td class="border border-gray-300 p-2"><code>v.pop_back();</code></td>
+            </tr>
+            <tr>
+              <td class="border border-gray-300 p-2"><code>v.front()</code> / <code>v.back()</code></td>
+              <td class="border border-gray-300 p-2">Retorna una referencia al primer o último elemento.</td>
+              <td class="border border-gray-300 p-2"><code>int ult = v.back();</code></td>
+            </tr>
+            <tr>
+              <td class="border border-gray-300 p-2"><code>v.at(i)</code> o <code>v[i]</code></td>
+              <td class="border border-gray-300 p-2">Accede al elemento en la posición <code>i</code> (<code>.at()</code> valida límites).</td>
+              <td class="border border-gray-300 p-2"><code>std::cout &lt;&lt; v.at(0);</code></td>
+            </tr>
+            <tr>
+              <td class="border border-gray-300 p-2"><code>v.clear()</code></td>
+              <td class="border border-gray-300 p-2">Elimina todos los elementos del vector.</td>
+              <td class="border border-gray-300 p-2"><code>v.clear();</code></td>
+            </tr>
+            <tr>
+              <td class="border border-gray-300 p-2"><code>v.erase(iterador)</code></td>
+              <td class="border border-gray-300 p-2">Elimina el elemento en una posición arbitraria mediante un iterador.</td>
+              <td class="border border-gray-300 p-2"><code>v.erase(v.begin() + i);</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <CodeBlock
+        lang="cpp"
+        code={`#include <iostream>
+#include <vector>
+
+int main() {
+    std::vector<string> lenguajes = {"C++", "Python", "Java"};
+
+    // Inspeccionar propiedades
+    std::cout << "Tamaño inicial: " << lenguajes.size() << "\\n"; // 3
+    std::cout << "Primer elemento: " << lenguajes.front() << "\\n"; // C++
+    std::cout << "Último elemento: " << lenguajes.back() << "\\n";   // Java
+
+    // Eliminar el último
+    lenguajes.pop_back(); // Elimina "Java"
+
+    std::cout << "Nuevo tamaño: " << lenguajes.size() << "\\n"; // 2
+    return 0;
+}`}
+        title="Demostración de Métodos Frecuentes"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>4. Formas de Recorrer un <code>std::vector</code></h2>
+      <p>
+        Es fundamental saber cómo iterar un vector, especialmente la diferencia entre copiar el valor y modificarlo por referencia:
+      </p>
+      <CodeBlock
+        lang="cpp"
+        code={`#include <iostream>
+#include <vector>
+
+int main() {
+    std::vector<int> precios = { 100, 250, 500 };
+
+    // 1. For por rango (Lectura - solo copia)
+    for (int p : precios) {
+        std::cout << p << " ";
+    }
+    std::cout << "\\n";
+
+    // 2. For por rango usando REFERENCIA (&) para MODIFICAR los valores directos
+    for (int &p : precios) {
+        p += 50; // Aplica un aumento a cada precio original
+    }
+
+    // 3. For clásico por índice
+    for (size_t i = 0; i < precios.size(); i++) {
+        std::cout << "Precio [" << i << "]: $" << precios[i] << "\\n";
+    }
+
+    return 0;
+}`}
+        title="Modificación por Referencia vs Copia"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>5. Ejemplo Completo: CRUD con <code>std::vector</code></h2>
+      <p>
+        Un sistema <strong>CRUD</strong> (Create, Read, Update, Delete) nos permite poner en práctica todas las operaciones reales sobre una colección dinámicamente gestionada en C++:
+      </p>
+      <CodeBlock
+        lang="cpp"
+        code={`#include <iostream>
+#include <vector>
+#include <string>
+
+// Estructura de producto
+struct Producto {
+    int id;
+    std::string nombre;
+    double precio;
+};
+
+// CREATE
+void agregarProducto(std::vector<Producto>& inventario, int id, std::string nombre, double precio) {
+    inventario.push_back({id, nombre, precio});
+    std::cout << "-> Producto '" << nombre << "' agregado exitosamente.\\n";
+}
+
+// READ
+void listarProductos(const std::vector<Producto>& inventario) {
+    if (inventario.empty()) {
+        std::cout << "El inventario está vacío.\\n";
+        return;
+    }
+    std::cout << "\\n--- LISTA DE PRODUCTOS (Total: " << inventario.size() << ") ---\\n";
+    for (const auto& p : inventario) {
+        std::cout << "ID: " << p.id << " | Nombre: " << p.nombre << " | Precio: $" << p.precio << "\\n";
+    }
+}
+
+// UPDATE
+bool actualizarPrecio(std::vector<Producto>& inventario, int id, double nuevoPrecio) {
+    for (auto& p : inventario) {
+        if (p.id == id) {
+            p.precio = nuevoPrecio;
+            std::cout << "-> Precio de ID " << id << " actualizado a $" << nuevoPrecio << ".\\n";
+            return true;
+        }
+    }
+    std::cout << "-> Producto con ID " << id << " no encontrado.\\n";
+    return false;
+}
+
+// DELETE
+bool eliminarProducto(std::vector<Producto>& inventario, int id) {
+    for (auto it = inventario.begin(); it != inventario.end(); ++it) {
+        if (it->id == id) {
+            std::cout << "-> Producto '" << it->nombre << "' (ID " << id << ") eliminado.\\n";
+            inventario.erase(it);
+            return true;
+        }
+    }
+    std::cout << "-> Producto con ID " << id << " no encontrado.\\n";
+    return false;
+}
+
+int main() {
+    std::vector<Producto> inventario;
+
+    // 1. Create
+    agregarProducto(inventario, 101, "Teclado Mecánico", 45.99);
+    agregarProducto(inventario, 102, "Mouse Gamer", 25.50);
+    agregarProducto(inventario, 103, "Monitor 24''", 150.00);
+
+    // 2. Read
+    listarProductos(inventario);
+
+    // 3. Update
+    actualizarPrecio(inventario, 102, 29.99);
+
+    // 4. Delete
+    eliminarProducto(inventario, 101);
+
+    // Read final
+    listarProductos(inventario);
+
+    return 0;
+}`}
+        title="CRUD Completo de Inventario en C++"
       />
     </section>
 
     <div class="ejercicio">
-      <h3>Ejercicio</h3>
+      <h3>👨‍💻 Ejercicio Práctico 1</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> Contador de elementos e inserción dinámica
+      </div>
       <p class="enunciado">
-        Leer <code>n</code> y luego <code>n</code> enteros en un <code>vector</code>; mostrar la suma.
+        Crea un <code>std::vector&lt;std::string&gt;</code> llamado <code>ciudades</code>. Agrega 4 ciudades usando <code>push_back()</code>. Luego imprime el tamaño total usando <code>.size()</code>, elimina la última ciudad agregada con <code>pop_back()</code> y muestra las ciudades restantes con un bucle por rango.
       </p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock lang="cpp" code={`#include <iostream>
+#include <vector>
+#include <string>
+
+int main() {
+    std::vector<std::string> ciudades;
+    ciudades.push_back("Santiago");
+    ciudades.push_back("Buenos Aires");
+    ciudades.push_back("Lima");
+    ciudades.push_back("Bogotá");
+
+    std::cout << "Total ciudades iniciales: " << ciudades.size() << "\\n";
+
+    ciudades.pop_back(); // Elimina Bogotá
+
+    std::cout << "Ciudades restantes:\\n";
+    for (const std::string& c : ciudades) {
+        std::cout << "- " << c << "\\n";
+    }
+
+    return 0;
+}`} />
+      </details>
     </div>
+
+    <div class="ejercicio" style="background: #F4E8F4;">
+      <h3>👨‍💻 Ejercicio Práctico 2</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> Modificación masiva por referencia
+      </div>
+      <p class="enunciado">
+        Dado un <code>std::vector&lt;double&gt;</code> con los valores <code>&#123;10.0, 20.0, 30.0&#125;</code>, aplica un descuento del 10% a todos los elementos usando un bucle <code>for (double &precio : precios)</code> y luego imprime el vector resultante.
+      </p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock lang="cpp" code={`#include <iostream>
+#include <vector>
+
+int main() {
+    std::vector<double> precios = { 10.0, 20.0, 30.0 };
+
+    for (double &precio : precios) {
+        precio *= 0.90; // Aplica 10% de descuento
+    }
+
+    for (double p : precios) {
+        std::cout << "Precio final: $" << p << "\\n";
+    }
+
+    return 0;
+}`} />
+      </details>
+    </div>
+
+    <nav class="nav-bottom">
+      <a href="/course/cpp/ciclos/" class="prev">← Bucles</a>
+      <a href="/course/cpp/funciones/" class="next">Funciones →</a>
+    </nav>
   </article>
 </Layout>
+

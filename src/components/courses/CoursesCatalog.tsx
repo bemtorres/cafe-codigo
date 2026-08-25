@@ -276,15 +276,39 @@ export default function CoursesCatalog() {
     const href = course.status === 'coming' ? '#' : courseHomePath(course.slug);
 
     const inner = (
-      <div className="relative z-10 p-4 sm:p-5">
-        <div className="mb-2 flex flex-wrap items-start justify-between gap-2">
-          <h3 className="font-nunito text-lg font-black text-textPrimary">{course.name}</h3>
-          <CourseBadges course={course} />
+      <div className="relative z-10 flex flex-col h-full overflow-hidden rounded-[13px]">
+        {/* Cover / Image header */}
+        <div className="relative aspect-video w-full overflow-hidden bg-gray-100 border-b-2 border-border/10">
+          {course.image ? (
+            <img
+              src={course.image}
+              alt={course.name}
+              className="h-full w-full object-cover grayscale transition-all duration-300 group-hover:grayscale-0 group-hover:scale-105"
+            />
+          ) : (
+            <div
+              className="flex h-full w-full items-center justify-center p-4 transition-transform duration-300 group-hover:scale-105"
+              style={{
+                background: `linear-gradient(135deg, ${course.color}22 0%, ${course.color}66 100%)`,
+              }}
+            >
+              <span className="font-nunito text-2xl font-black tracking-wider text-textPrimary/80 drop-shadow-sm">
+                {course.name}
+              </span>
+            </div>
+          )}
         </div>
-        {course.communityReleaseYear != null && (
-          <p className="m-0 mb-2 font-nunito text-xs font-extrabold text-textMuted">Comunidad · {course.communityReleaseYear}</p>
-        )}
-        <p className="m-0 line-clamp-3 font-nunito text-sm font-[650] leading-relaxed text-textSecondary">{course.description}</p>
+
+        <div className="flex flex-1 flex-col p-3.5 sm:p-4">
+          <div className="mb-1.5 flex flex-wrap items-start justify-between gap-1.5">
+            <h3 className="font-nunito text-base font-black text-textPrimary leading-tight">{course.name}</h3>
+            <CourseBadges course={course} />
+          </div>
+          {course.communityReleaseYear != null && (
+            <p className="m-0 mb-1.5 font-nunito text-[0.7rem] font-extrabold text-textMuted">Comunidad · {course.communityReleaseYear}</p>
+          )}
+          <p className="m-0 line-clamp-2 font-nunito text-xs font-[650] leading-relaxed text-textSecondary">{course.description}</p>
+        </div>
       </div>
     );
 
@@ -381,7 +405,7 @@ export default function CoursesCatalog() {
 
   return (
     <div>
-      {/* Barra de pestañas y tipo de vista (compacta) */}
+      {/* Barra de pestañas */}
       <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="inline-flex rounded-2xl border-2 border-border bg-white p-1 shadow-neo">
           <button
@@ -409,35 +433,6 @@ export default function CoursesCatalog() {
             Todos los Cursos ({courses.length})
           </button>
         </div>
-
-        {activeTab === 'all' && (
-          <div
-            className="inline-flex rounded-2xl border-2 border-border bg-white p-1 shadow-neo self-start sm:self-auto"
-            role="group"
-            aria-label="Tipo de vista"
-          >
-            <button
-              type="button"
-              onClick={() => persistView('grid')}
-              className={`rounded-xl px-3 py-1.5 font-nunito text-xs font-extrabold transition-colors ${
-                view === 'grid' ? 'bg-info text-white' : 'text-textSecondary hover:bg-tertiary/50'
-              }`}
-              aria-pressed={view === 'grid'}
-            >
-              ▦ Cuadrícula
-            </button>
-            <button
-              type="button"
-              onClick={() => persistView('list')}
-              className={`rounded-xl px-3 py-1.5 font-nunito text-xs font-extrabold transition-colors ${
-                view === 'list' ? 'bg-info text-white' : 'text-textSecondary hover:bg-tertiary/50'
-              }`}
-              aria-pressed={view === 'list'}
-            >
-              ☰ Lista
-            </button>
-          </div>
-        )}
       </div>
 
       {activeTab === 'routes' && (
@@ -742,17 +737,9 @@ export default function CoursesCatalog() {
           {filteredGrouped.map(({ cat, label, items }) => (
             <section key={cat} className="mb-12 last:mb-0">
               <h2 className="mb-4 font-nunito text-2xl font-extrabold text-textPrimary">{label}</h2>
-              {view === 'grid' ? (
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-                  {items.map((course, i) => renderCard(course, i))}
-                </div>
-              ) : (
-                <ul className="m-0 flex list-none flex-col gap-2 p-0">
-                  {items.map((course) => (
-                    <li key={course.slug}>{renderRow(course)}</li>
-                  ))}
-                </ul>
-              )}
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+                {items.map((course, i) => renderCard(course, i))}
+              </div>
             </section>
           ))}
         </div>
