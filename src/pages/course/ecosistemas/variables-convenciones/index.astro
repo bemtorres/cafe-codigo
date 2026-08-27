@@ -1,73 +1,153 @@
 ---
-import Layout from '../../../../layouts/Layout.astro';
-import CodeBlock from '../../../../components/CodeBlock.astro';
-import EcosystemsQuizModal from '../../../../components/quizzes/EcosystemsQuizModal.astro';
+import Layout from "../../../../layouts/Layout.astro";
+import CodeBlock from "../../../../components/CodeBlock.astro";
+import EcosystemsQuizModal from "../../../../components/quizzes/EcosystemsQuizModal.astro";
 ---
 
-<Layout title="Variables y Convenciones por Lenguaje" description="Aprende cómo se declaran variables, clases, métodos y constantes en Python, Java, JavaScript, C#, PHP y C++ y por qué cada lenguaje tiene su estilo." courseSlug="ecosistemas">
+<Layout
+  title="Variables y Convenciones por Lenguaje"
+  description="Aprende cómo se declaran variables, clases, métodos y constantes en Python, Java, JavaScript, C#, PHP y C++ y por qué cada lenguaje tiene su estilo."
+  courseSlug="ecosistemas"
+>
   <article class="content-section">
     <h1>6. Variables y Convenciones: El ADN del código</h1>
 
     <section class="mb-10">
       <p>
-        Si los lenguajes fueran personas, las <strong>convenciones de nombres</strong> serían su forma de vestir.
-        Todos hacen lo mismo —guardar datos en <strong>variables</strong>—, pero cada uno lo escribe distinto.
-        Entenderlo te evita errores al saltar de Python a Java o de JavaScript a C#.
+        Si los lenguajes fueran personas, las <strong
+          >convenciones de nombres</strong
+        > serían su forma de vestir. Todos hacen lo mismo —guardar datos en <strong
+          >variables</strong
+        >—, pero cada uno lo escribe distinto. Entenderlo te evita errores al
+        saltar de Python a Java o de JavaScript a C#.
       </p>
-      <div class="note-box" style="background:#FFF9C4; border:3px solid #1E1210; border-radius:16px; padding:1rem 1.2rem;">
-        <strong>💡 Ruta progresiva:</strong> primero tipos de datos → luego funciones → luego una clase simple → herencia → crear objetos.
-        Usa el selector de lenguaje y ve el <em>mismo</em> ejemplo escrito en 6 sabores.
+      <div
+        class="note-box"
+        style="background:#FFF9C4; border:3px solid #1E1210; border-radius:16px; padding:1rem 1.2rem;"
+      >
+        <strong>💡 Ruta progresiva:</strong> primero tipos de datos → luego funciones
+        → luego una clase simple → herencia → crear objetos. Usa el selector de lenguaje
+        y ve el <em>mismo</em> ejemplo escrito en 6 sabores.
       </div>
     </section>
 
     <section class="mb-10">
       <h2>¿Cómo se declara una variable? — paso a paso</h2>
       <p>
-        La lógica siempre es <code>nombre = valor</code> (con <code>tipo</code> si el lenguaje lo exige). Aprende en orden:
-        <strong>1. tipos → 2. métodos → 3. clase → 4. herencia → 5. instancias</strong>.
+        La lógica siempre es <code>nombre = valor</code> (con <code>tipo</code> si
+        el lenguaje lo exige). Aprende en orden:
+        <strong
+          >1. tipos → 2. métodos → 3. clase → 4. herencia → 5. instancias</strong
+        >.
       </p>
 
       <!-- Selector de lenguaje -->
-      <div class="lang-switcher" role="tablist" aria-label="Selector de lenguaje">
-        <button role="tab" aria-selected="true" data-lang="python" class="lang-tab is-active" style="--c:#3776ab">🐍 Python</button>
-        <button role="tab" aria-selected="false" data-lang="java" class="lang-tab" style="--c:#E76F00">☕ Java</button>
-        <button role="tab" aria-selected="false" data-lang="javascript" class="lang-tab" style="--c:#F7DF1E; color:#1E1210">🟨 JavaScript</button>
-        <button role="tab" aria-selected="false" data-lang="csharp" class="lang-tab" style="--c:#6d28d9">🎮 C#</button>
-        <button role="tab" aria-selected="false" data-lang="php" class="lang-tab" style="--c:#777BB4">🐘 PHP</button>
-        <button role="tab" aria-selected="false" data-lang="cpp" class="lang-tab" style="--c:#00599C">⚙️ C++</button>
+      <div
+        class="lang-switcher"
+        role="tablist"
+        aria-label="Selector de lenguaje"
+      >
+        <button
+          role="tab"
+          aria-selected="true"
+          data-lang="python"
+          class="lang-tab is-active"
+          style="--c:#3776ab">🐍 Python</button
+        >
+        <button
+          role="tab"
+          aria-selected="false"
+          data-lang="java"
+          class="lang-tab"
+          style="--c:#E76F00">☕ Java</button
+        >
+        <button
+          role="tab"
+          aria-selected="false"
+          data-lang="javascript"
+          class="lang-tab"
+          style="--c:#F7DF1E; color:#1E1210">🟨 JavaScript</button
+        >
+        <button
+          role="tab"
+          aria-selected="false"
+          data-lang="csharp"
+          class="lang-tab"
+          style="--c:#6d28d9">🎮 C#</button
+        >
+        <button
+          role="tab"
+          aria-selected="false"
+          data-lang="php"
+          class="lang-tab"
+          style="--c:#777BB4">🐘 PHP</button
+        >
+        <button
+          role="tab"
+          aria-selected="false"
+          data-lang="cpp"
+          class="lang-tab"
+          style="--c:#00599C">⚙️ C++</button
+        >
       </div>
 
       <div class="lang-panels">
         <!-- PYTHON -->
         <div data-panel="python" class="lang-panel is-active">
           <div class="step-block">
-            <h4><span class="step-num">1</span> Tipos de datos — lo más básico</h4>
-            <p>Python es <strong>dinámico</strong>: no escribes el tipo, solo <code>nombre = valor</code> en <code>snake_case</code>.</p>
-            <CodeBlock lang="python" title="tipos.py" code={`edad = 25              # int
+            <h4>
+              <span class="step-num">1</span> Tipos de datos — lo más básico
+            </h4>
+            <p>
+              Python es <strong>dinámico</strong>: no escribes el tipo, solo <code
+                >nombre = valor</code
+              > en <code>snake_case</code>.
+            </p>
+            <CodeBlock
+              lang="python"
+              title="tipos.py"
+              code={`edad = 25              # int
 precio = 19.99           # float
 nombre = "Ana"           # str
 activo = True            # bool
 nada = None              # NoneType
 
 # constante → UPPER_SNAKE_CASE (convención)
-MAX_LIMITE = 10000`} />
+MAX_LIMITE = 10000`}
+            />
           </div>
           <div class="step-block">
             <h4><span class="step-num">2</span> Métodos / Funciones</h4>
-            <p>Funciones sueltas con <code>def</code> y <code>snake_case</code>. Siempre con <code>:</code> y indentación.</p>
-            <CodeBlock lang="python" title="funciones.py" code={`def saludar(nombre):
+            <p>
+              Funciones sueltas con <code>def</code> y <code>snake_case</code>.
+              Siempre con <code>:</code> y indentación.
+            </p>
+            <CodeBlock
+              lang="python"
+              title="funciones.py"
+              code={`def saludar(nombre):
     return f"Hola {nombre}"
 
 def sumar(a, b):
     return a + b
 
 print(saludar("Ana"))  # Hola Ana
-print(sumar(2, 3))     # 5`} />
+print(sumar(2, 3))     # 5`}
+            />
           </div>
           <div class="step-block">
-            <h4><span class="step-num">3</span> POO — una clase con atributos y métodos</h4>
-            <p>Clase en <code>PascalCase</code>, atributos y métodos en <code>snake_case</code>. <code>self</code> es la propia caja.</p>
-            <CodeBlock lang="python" title="clase.py" code={`class CuentaBancaria:  # PascalCase
+            <h4>
+              <span class="step-num">3</span> POO — una clase con atributos y métodos
+            </h4>
+            <p>
+              Clase en <code>PascalCase</code>, atributos y métodos en <code
+                >snake_case</code
+              >. <code>self</code> es la propia caja.
+            </p>
+            <CodeBlock
+              lang="python"
+              title="clase.py"
+              code={`class CuentaBancaria:  # PascalCase
     def __init__(self):
         self.saldo_actual = 0      # snake_case
         self.titular = ""
@@ -76,49 +156,83 @@ print(sumar(2, 3))     # 5`} />
         self.saldo_actual += monto
 
     def consultar_saldo(self):
-        return self.saldo_actual`} />
+        return self.saldo_actual`}
+            />
           </div>
           <div class="step-block">
             <h4><span class="step-num">4</span> Herencia</h4>
-            <p>Una clase hija <strong>extiende</strong> a la base con <code>(Padre)</code> y usa <code>super()</code>.</p>
-            <CodeBlock lang="python" title="herencia.py" code={`class CuentaAhorro(CuentaBancaria):  # hereda
+            <p>
+              Una clase hija <strong>extiende</strong> a la base con <code
+                >(Padre)</code
+              > y usa <code>super()</code>.
+            </p>
+            <CodeBlock
+              lang="python"
+              title="herencia.py"
+              code={`class CuentaAhorro(CuentaBancaria):  # hereda
     def __init__(self):
         super().__init__()
         self.tasa_interes = 0.02
 
     def calcular_interes(self):
-        return self.saldo_actual * self.tasa_interes`} />
+        return self.saldo_actual * self.tasa_interes`}
+            />
           </div>
           <div class="step-block">
             <h4><span class="step-num">5</span> Crear instancias (objetos)</h4>
-            <p>Instanciar es <code>Clase()</code> sin <code>new</code>. Luego llamas a sus métodos con <code>.</code>.</p>
-            <CodeBlock lang="python" title="instancias.py" code={`# crear objetos
+            <p>
+              Instanciar es <code>Clase()</code> sin <code>new</code>. Luego
+              llamas a sus métodos con <code>.</code>.
+            </p>
+            <CodeBlock
+              lang="python"
+              title="instancias.py"
+              code={`# crear objetos
 cuenta = CuentaBancaria()
 cuenta.depositar(1000)
 print(cuenta.consultar_saldo())  # 1000
 
 ahorro = CuentaAhorro()
 ahorro.depositar(1000)
-print(ahorro.calcular_interes())  # 20.0`} />
+print(ahorro.calcular_interes())  # 20.0`}
+            />
           </div>
-          <p class="lang-hint">PEP 8: <strong>todo en snake_case excepto clases</strong>. Si ves <code>saldoActual</code> en Python, es code smell.</p>
+          <p class="lang-hint">
+            PEP 8: <strong>todo en snake_case excepto clases</strong>. Si ves <code
+              >saldoActual</code
+            > en Python, es code smell.
+          </p>
         </div>
 
         <!-- JAVA -->
         <div data-panel="java" class="lang-panel">
           <div class="step-block">
             <h4><span class="step-num">1</span> Tipos de datos</h4>
-            <p>Java es <strong>estático</strong>: debes decir <code>tipo nombre = valor;</code> en <code>camelCase</code>.</p>
-            <CodeBlock lang="java" title="Tipos.java" code={`int edad = 25;
+            <p>
+              Java es <strong>estático</strong>: debes decir <code
+                >tipo nombre = valor;</code
+              > en <code>camelCase</code>.
+            </p>
+            <CodeBlock
+              lang="java"
+              title="Tipos.java"
+              code={`int edad = 25;
 double precio = 19.99;
 String nombre = "Ana";   // String con mayúscula
 boolean activo = true;
-final int MAX_LIMITE = 10000; // constante → UPPER_SNAKE + final`} />
+final int MAX_LIMITE = 10000; // constante → UPPER_SNAKE + final`}
+            />
           </div>
           <div class="step-block">
             <h4><span class="step-num">2</span> Métodos / Funciones</h4>
-            <p>Métodos siempre dentro de una clase, en <code>camelCase</code>. Necesitan tipo de retorno y parámetros tipados.</p>
-            <CodeBlock lang="java" title="Metodos.java" code={`public class Util {
+            <p>
+              Métodos siempre dentro de una clase, en <code>camelCase</code>.
+              Necesitan tipo de retorno y parámetros tipados.
+            </p>
+            <CodeBlock
+              lang="java"
+              title="Metodos.java"
+              code={`public class Util {
     // método estático → camelCase
     public static String saludar(String nombre) {
         return "Hola " + nombre;
@@ -127,12 +241,22 @@ final int MAX_LIMITE = 10000; // constante → UPPER_SNAKE + final`} />
         return a + b;
     }
 }
-// uso: Util.saludar("Ana")`} />
+// uso: Util.saludar("Ana")`}
+            />
           </div>
           <div class="step-block">
-            <h4><span class="step-num">3</span> POO — clase con atributos y métodos</h4>
-            <p>Clase en <code>PascalCase</code>, atributos/métodos en <code>camelCase</code>.</p>
-            <CodeBlock lang="java" title="CuentaBancaria.java" code={`public class CuentaBancaria { // PascalCase
+            <h4>
+              <span class="step-num">3</span> POO — clase con atributos y métodos
+            </h4>
+            <p>
+              Clase en <code>PascalCase</code>, atributos/métodos en <code
+                >camelCase</code
+              >.
+            </p>
+            <CodeBlock
+              lang="java"
+              title="CuentaBancaria.java"
+              code={`public class CuentaBancaria { // PascalCase
     private int saldoActual = 0;      // camelCase
     private String titular = "";
 
@@ -142,60 +266,99 @@ final int MAX_LIMITE = 10000; // constante → UPPER_SNAKE + final`} />
     public int consultarSaldo() {
         return saldoActual;
     }
-}`} />
+}`}
+            />
           </div>
           <div class="step-block">
             <h4><span class="step-num">4</span> Herencia</h4>
-            <p>Se usa <code>extends</code>. La hija hereda atributos y métodos de la base.</p>
-            <CodeBlock lang="java" title="CuentaAhorro.java" code={`public class CuentaAhorro extends CuentaBancaria {
+            <p>
+              Se usa <code>extends</code>. La hija hereda atributos y métodos de
+              la base.
+            </p>
+            <CodeBlock
+              lang="java"
+              title="CuentaAhorro.java"
+              code={`public class CuentaAhorro extends CuentaBancaria {
     private double tasaInteres = 0.02;
 
     public double calcularInteres() {
         return consultarSaldo() * tasaInteres;
     }
-}`} />
+}`}
+            />
           </div>
           <div class="step-block">
             <h4><span class="step-num">5</span> Crear instancias</h4>
             <p>Siempre con <code>new Clase()</code>.</p>
-            <CodeBlock lang="java" title="Main.java" code={`CuentaBancaria cuenta = new CuentaBancaria();
+            <CodeBlock
+              lang="java"
+              title="Main.java"
+              code={`CuentaBancaria cuenta = new CuentaBancaria();
 cuenta.depositar(1000);
 System.out.println(cuenta.consultarSaldo()); // 1000
 
 CuentaAhorro ahorro = new CuentaAhorro();
 ahorro.depositar(1000);
-System.out.println(ahorro.calcularInteres()); // 20.0`} />
+System.out.println(ahorro.calcularInteres()); // 20.0`}
+            />
           </div>
-          <p class="lang-hint">Java exige <strong>tipo + punto y coma</strong>. Olvidar <code>;</code> es error inmediato.</p>
+          <p class="lang-hint">
+            Java exige <strong>tipo + punto y coma</strong>. Olvidar <code
+              >;</code
+            > es error inmediato.
+          </p>
         </div>
 
         <!-- JAVASCRIPT -->
         <div data-panel="javascript" class="lang-panel">
           <div class="step-block">
             <h4><span class="step-num">1</span> Tipos de datos</h4>
-            <p>Dinámico como Python, pero con <code>let/const</code> y <code>camelCase</code>.</p>
-            <CodeBlock lang="javascript" title="tipos.js" code={`let edad = 25;          // number
+            <p>
+              Dinámico como Python, pero con <code>let/const</code> y <code
+                >camelCase</code
+              >.
+            </p>
+            <CodeBlock
+              lang="javascript"
+              title="tipos.js"
+              code={`let edad = 25;          // number
 let precio = 19.99;
 let nombre = "Ana";       // string
 let activo = true;        // boolean
 let nada = null;
-const MAX_LIMITE = 10000; // constante → UPPER_SNAKE`} />
+const MAX_LIMITE = 10000; // constante → UPPER_SNAKE`}
+            />
           </div>
           <div class="step-block">
             <h4><span class="step-num">2</span> Funciones</h4>
-            <p>Con <code>function</code> o arrow <code>=&gt;</code>, siempre <code>camelCase</code>.</p>
-            <CodeBlock lang="javascript" title="funciones.js" code={`function saludar(nombre) {
+            <p>
+              Con <code>function</code> o arrow <code>=&gt;</code>, siempre <code
+                >camelCase</code
+              >.
+            </p>
+            <CodeBlock
+              lang="javascript"
+              title="funciones.js"
+              code={`function saludar(nombre) {
   return \`Hola \${nombre}\`;
 }
 function sumar(a, b) {
   return a + b;
 }
-const saludarArrow = (nombre) => \`Hola \${nombre}\`;`} />
+const saludarArrow = (nombre) => \`Hola \${nombre}\`;`}
+            />
           </div>
           <div class="step-block">
             <h4><span class="step-num">3</span> POO — clase</h4>
-            <p>Clase <code>PascalCase</code>, atributos/métodos <code>camelCase</code>. <code>constructor()</code> inicializa.</p>
-            <CodeBlock lang="javascript" title="CuentaBancaria.js" code={`class CuentaBancaria { // PascalCase
+            <p>
+              Clase <code>PascalCase</code>, atributos/métodos <code
+                >camelCase</code
+              >. <code>constructor()</code> inicializa.
+            </p>
+            <CodeBlock
+              lang="javascript"
+              title="CuentaBancaria.js"
+              code={`class CuentaBancaria { // PascalCase
   constructor() {
     this.saldoActual = 0;   // camelCase
     this.titular = "";
@@ -206,12 +369,18 @@ const saludarArrow = (nombre) => \`Hola \${nombre}\`;`} />
   consultarSaldo() {
     return this.saldoActual;
   }
-}`} />
+}`}
+            />
           </div>
           <div class="step-block">
             <h4><span class="step-num">4</span> Herencia</h4>
-            <p>Con <code>extends</code> y <code>super()</code> igual que Java.</p>
-            <CodeBlock lang="javascript" title="herencia.js" code={`class CuentaAhorro extends CuentaBancaria {
+            <p>
+              Con <code>extends</code> y <code>super()</code> igual que Java.
+            </p>
+            <CodeBlock
+              lang="javascript"
+              title="herencia.js"
+              code={`class CuentaAhorro extends CuentaBancaria {
   constructor() {
     super();
     this.tasaInteres = 0.02;
@@ -219,48 +388,77 @@ const saludarArrow = (nombre) => \`Hola \${nombre}\`;`} />
   calcularInteres() {
     return this.consultarSaldo() * this.tasaInteres;
   }
-}`} />
+}`}
+            />
           </div>
           <div class="step-block">
             <h4><span class="step-num">5</span> Crear instancias</h4>
-            <CodeBlock lang="javascript" title="instancias.js" code={`const cuenta = new CuentaBancaria();
+            <CodeBlock
+              lang="javascript"
+              title="instancias.js"
+              code={`const cuenta = new CuentaBancaria();
 cuenta.depositar(1000);
 console.log(cuenta.consultarSaldo()); // 1000
 
 const ahorro = new CuentaAhorro();
 ahorro.depositar(1000);
-console.log(ahorro.calcularInteres()); // 20`} />
+console.log(ahorro.calcularInteres()); // 20`}
+            />
           </div>
-          <p class="lang-hint">JS = Java sin tipos. <strong>PascalCase solo para clases</strong>, resto <code>camelCase</code>.</p>
+          <p class="lang-hint">
+            JS = Java sin tipos. <strong>PascalCase solo para clases</strong>,
+            resto <code>camelCase</code>.
+          </p>
         </div>
 
         <!-- C# -->
         <div data-panel="csharp" class="lang-panel">
           <div class="step-block">
             <h4><span class="step-num">1</span> Tipos de datos</h4>
-            <p>Estático como Java, pero con <code>string</code> minúscula y convención mixta.</p>
-            <CodeBlock lang="csharp" title="Tipos.cs" code={`int edad = 25;
+            <p>
+              Estático como Java, pero con <code>string</code> minúscula y convención
+              mixta.
+            </p>
+            <CodeBlock
+              lang="csharp"
+              title="Tipos.cs"
+              code={`int edad = 25;
 double precio = 19.99;
 string nombre = "Ana";
 bool activo = true;
-const int MAX_LIMITE = 10000; // o MaxLimite en PascalCase`} />
+const int MAX_LIMITE = 10000; // o MaxLimite en PascalCase`}
+            />
           </div>
           <div class="step-block">
             <h4><span class="step-num">2</span> Métodos</h4>
-            <p><strong>¡Diferencia clave!</strong> Métodos públicos en <code>PascalCase</code>.</p>
-            <CodeBlock lang="csharp" title="Metodos.cs" code={`public class Util {
+            <p>
+              <strong>¡Diferencia clave!</strong> Métodos públicos en <code
+                >PascalCase</code
+              >.
+            </p>
+            <CodeBlock
+              lang="csharp"
+              title="Metodos.cs"
+              code={`public class Util {
     public static string Saludar(string nombre) { // PascalCase
         return $"Hola {nombre}";
     }
     public static int Sumar(int a, int b) {
         return a + b;
     }
-}`} />
+}`}
+            />
           </div>
           <div class="step-block">
             <h4><span class="step-num">3</span> POO — clase</h4>
-            <p>Clase y métodos públicos en <code>PascalCase</code>, campos privados en <code>_camelCase</code>.</p>
-            <CodeBlock lang="csharp" title="CuentaBancaria.cs" code={`public class CuentaBancaria { // PascalCase
+            <p>
+              Clase y métodos públicos en <code>PascalCase</code>, campos
+              privados en <code>_camelCase</code>.
+            </p>
+            <CodeBlock
+              lang="csharp"
+              title="CuentaBancaria.cs"
+              code={`public class CuentaBancaria { // PascalCase
     private int saldoActual = 0;      // o _saldoActual
     private string titular = "";
 
@@ -272,59 +470,90 @@ const int MAX_LIMITE = 10000; // o MaxLimite en PascalCase`} />
     }
     // propiedad pública → PascalCase
     public int SaldoActual { get; set; }
-}`} />
+}`}
+            />
           </div>
           <div class="step-block">
             <h4><span class="step-num">4</span> Herencia</h4>
             <p>Con <code>:</code> en lugar de <code>extends</code>.</p>
-            <CodeBlock lang="csharp" title="CuentaAhorro.cs" code={`public class CuentaAhorro : CuentaBancaria { // : hereda
+            <CodeBlock
+              lang="csharp"
+              title="CuentaAhorro.cs"
+              code={`public class CuentaAhorro : CuentaBancaria { // : hereda
     private double tasaInteres = 0.02;
     public double CalcularInteres() {
         return ConsultarSaldo() * tasaInteres;
     }
-}`} />
+}`}
+            />
           </div>
           <div class="step-block">
             <h4><span class="step-num">5</span> Crear instancias</h4>
-            <CodeBlock lang="csharp" title="Program.cs" code={`var cuenta = new CuentaBancaria();
+            <CodeBlock
+              lang="csharp"
+              title="Program.cs"
+              code={`var cuenta = new CuentaBancaria();
 cuenta.Depositar(1000);
 Console.WriteLine(cuenta.ConsultarSaldo()); // 1000
 
 var ahorro = new CuentaAhorro();
 ahorro.Depositar(1000);
-Console.WriteLine(ahorro.CalcularInteres()); // 20`} />
+Console.WriteLine(ahorro.CalcularInteres()); // 20`}
+            />
           </div>
-          <p class="lang-hint">C# ama el <strong>PascalCase para lo público</strong>. Usa <code>_saldoActual</code> para lo privado.</p>
+          <p class="lang-hint">
+            C# ama el <strong>PascalCase para lo público</strong>. Usa <code
+              >_saldoActual</code
+            > para lo privado.
+          </p>
         </div>
 
         <!-- PHP -->
         <div data-panel="php" class="lang-panel">
           <div class="step-block">
             <h4><span class="step-num">1</span> Tipos de datos</h4>
-            <p>Todo lleva <code>$</code> y <code>camelCase</code>. Tipado opcional desde PHP 7.</p>
-            <CodeBlock lang="php" title="tipos.php" code={`<?php
+            <p>
+              Todo lleva <code>$</code> y <code>camelCase</code>. Tipado
+              opcional desde PHP 7.
+            </p>
+            <CodeBlock
+              lang="php"
+              title="tipos.php"
+              code={`<?php
 $edad = 25;              // int
 $precio = 19.99;         // float
 $nombre = "Ana";         // string
 $activo = true;          // bool
 const MAX_LIMITE = 10000; // constante
-?>`} />
+?>`}
+            />
           </div>
           <div class="step-block">
             <h4><span class="step-num">2</span> Funciones</h4>
-            <CodeBlock lang="php" title="funciones.php" code={`<?php
+            <CodeBlock
+              lang="php"
+              title="funciones.php"
+              code={`<?php
 function saludar(string $nombre): string { // camelCase, $ en params
     return "Hola $nombre";
 }
 function sumar(int $a, int $b): int {
     return $a + $b;
 }
-?>`} />
+?>`}
+            />
           </div>
           <div class="step-block">
             <h4><span class="step-num">3</span> POO — clase</h4>
-            <p>Clase <code>PascalCase</code>, atributos/métodos <code>camelCase</code> con <code>$</code> y <code>$this</code>.</p>
-            <CodeBlock lang="php" title="CuentaBancaria.php" code={`<?php
+            <p>
+              Clase <code>PascalCase</code>, atributos/métodos <code
+                >camelCase</code
+              > con <code>$</code> y <code>$this</code>.
+            </p>
+            <CodeBlock
+              lang="php"
+              title="CuentaBancaria.php"
+              code={`<?php
 class CuentaBancaria { // PascalCase
     private int $saldoActual = 0; // $camelCase
     private string $titular = "";
@@ -336,22 +565,30 @@ class CuentaBancaria { // PascalCase
         return $this->saldoActual;
     }
 }
-?>`} />
+?>`}
+            />
           </div>
           <div class="step-block">
             <h4><span class="step-num">4</span> Herencia</h4>
-            <CodeBlock lang="php" title="CuentaAhorro.php" code={`<?php
+            <CodeBlock
+              lang="php"
+              title="CuentaAhorro.php"
+              code={`<?php
 class CuentaAhorro extends CuentaBancaria {
     private float $tasaInteres = 0.02;
     public function calcularInteres(): float {
         return $this->consultarSaldo() * $this->tasaInteres;
     }
 }
-?>`} />
+?>`}
+            />
           </div>
           <div class="step-block">
             <h4><span class="step-num">5</span> Crear instancias</h4>
-            <CodeBlock lang="php" title="uso.php" code={`<?php
+            <CodeBlock
+              lang="php"
+              title="uso.php"
+              code={`<?php
 $cuenta = new CuentaBancaria();
 $cuenta->depositar(1000);
 echo $cuenta->consultarSaldo(); // 1000
@@ -359,35 +596,54 @@ echo $cuenta->consultarSaldo(); // 1000
 $ahorro = new CuentaAhorro();
 $ahorro->depositar(1000);
 echo $ahorro->calcularInteres(); // 20
-?>`} />
+?>`}
+            />
           </div>
-          <p class="lang-hint">PHP = Java + <code>$</code>. Olvidar <code>-></code> o <code>$</code> es error inmediato.</p>
+          <p class="lang-hint">
+            PHP = Java + <code>$</code>. Olvidar <code>-></code> o <code>$</code
+            > es error inmediato.
+          </p>
         </div>
 
         <!-- C++ -->
         <div data-panel="cpp" class="lang-panel">
           <div class="step-block">
             <h4><span class="step-num">1</span> Tipos de datos</h4>
-            <p>Estático y con <code>;</code>. Elige <code>camelCase</code> o <code>snake_case</code> y sé consistente.</p>
-            <CodeBlock lang="cpp" title="tipos.cpp" code={`int edad = 25;
+            <p>
+              Estático y con <code>;</code>. Elige <code>camelCase</code> o <code
+                >snake_case</code
+              > y sé consistente.
+            </p>
+            <CodeBlock
+              lang="cpp"
+              title="tipos.cpp"
+              code={`int edad = 25;
 double precio = 19.99;
 std::string nombre = "Ana";
 bool activo = true;
-const int MAX_LIMITE = 10000; // UPPER_SNAKE`} />
+const int MAX_LIMITE = 10000; // UPPER_SNAKE`}
+            />
           </div>
           <div class="step-block">
             <h4><span class="step-num">2</span> Funciones</h4>
-            <CodeBlock lang="cpp" title="funciones.cpp" code={`#include <string>
+            <CodeBlock
+              lang="cpp"
+              title="funciones.cpp"
+              code={`#include <string>
 std::string saludar(std::string nombre) { // camelCase o snake_case
     return "Hola " + nombre;
 }
 int sumar(int a, int b) {
     return a + b;
-}`} />
+}`}
+            />
           </div>
           <div class="step-block">
             <h4><span class="step-num">3</span> POO — clase</h4>
-            <CodeBlock lang="cpp" title="CuentaBancaria.cpp" code={`class CuentaBancaria { // PascalCase
+            <CodeBlock
+              lang="cpp"
+              title="CuentaBancaria.cpp"
+              code={`class CuentaBancaria { // PascalCase
 private:
     int saldoActual = 0; // o saldo_actual
     std::string titular = "";
@@ -398,22 +654,30 @@ public:
     int consultarSaldo() {
         return saldoActual;
     }
-};`} />
+};`}
+            />
           </div>
           <div class="step-block">
             <h4><span class="step-num">4</span> Herencia</h4>
-            <CodeBlock lang="cpp" title="CuentaAhorro.cpp" code={`class CuentaAhorro : public CuentaBancaria { // : public
+            <CodeBlock
+              lang="cpp"
+              title="CuentaAhorro.cpp"
+              code={`class CuentaAhorro : public CuentaBancaria { // : public
 private:
     double tasaInteres = 0.02;
 public:
     double calcularInteres() {
         return consultarSaldo() * tasaInteres;
     }
-};`} />
+};`}
+            />
           </div>
           <div class="step-block">
             <h4><span class="step-num">5</span> Crear instancias</h4>
-            <CodeBlock lang="cpp" title="main.cpp" code={`int main() {
+            <CodeBlock
+              lang="cpp"
+              title="main.cpp"
+              code={`int main() {
     CuentaBancaria cuenta;
     cuenta.depositar(1000);
     // std::cout << cuenta.consultarSaldo();
@@ -422,19 +686,28 @@ public:
     ahorro.depositar(1000);
     // ahorro.calcularInteres()
     return 0;
-}`} />
+}`}
+            />
           </div>
-          <p class="lang-hint">C++: sin <code>new</code> para objetos en stack. Elige un estilo y no lo mezcles.</p>
+          <p class="lang-hint">
+            C++: sin <code>new</code> para objetos en stack. Elige un estilo y no
+            lo mezcles.
+          </p>
         </div>
       </div>
     </section>
 
     <section class="mb-10">
       <h2>La tabla que te salva en cualquier codebase</h2>
-      <p>Guárdala. Es lo que los reclutadores revisan en segundos en tu GitHub:</p>
+      <p>
+        Guárdala. Es lo que los reclutadores revisan en segundos en tu GitHub:
+      </p>
 
       <div class="table-wrap">
-        <table class="content-table" aria-label="Convenciones de nombres por lenguaje">
+        <table
+          class="content-table"
+          aria-label="Convenciones de nombres por lenguaje"
+        >
           <thead>
             <tr>
               <th>Lenguaje</th>
@@ -446,46 +719,156 @@ public:
           </thead>
           <tbody>
             <tr>
-              <td><span class="lang-badge" style="background:#3776ab">Python</span></td>
-              <td><code>PascalCase</code><br/><span class="ex">CuentaBancaria</span></td>
-              <td><code>snake_case</code><br/><span class="ex">calcular_total()</span></td>
-              <td><code>snake_case</code><br/><span class="ex">saldo_actual</span></td>
-              <td><code>UPPER_SNAKE</code><br/><span class="ex">MAX_LIMITE</span></td>
+              <td
+                ><span class="lang-badge" style="background:#3776ab"
+                  >Python</span
+                ></td
+              >
+              <td
+                ><code>PascalCase</code><br /><span class="ex"
+                  >CuentaBancaria</span
+                ></td
+              >
+              <td
+                ><code>snake_case</code><br /><span class="ex"
+                  >calcular_total()</span
+                ></td
+              >
+              <td
+                ><code>snake_case</code><br /><span class="ex"
+                  >saldo_actual</span
+                ></td
+              >
+              <td
+                ><code>UPPER_SNAKE</code><br /><span class="ex">MAX_LIMITE</span
+                ></td
+              >
             </tr>
             <tr>
-              <td><span class="lang-badge" style="background:#E76F00">Java</span></td>
-              <td><code>PascalCase</code><br/><span class="ex">CuentaBancaria</span></td>
-              <td><code>camelCase</code><br/><span class="ex">calcularTotal()</span></td>
-              <td><code>camelCase</code><br/><span class="ex">saldoActual</span></td>
-              <td><code>UPPER_SNAKE</code><br/><span class="ex">MAX_LIMITE</span></td>
+              <td
+                ><span class="lang-badge" style="background:#E76F00">Java</span
+                ></td
+              >
+              <td
+                ><code>PascalCase</code><br /><span class="ex"
+                  >CuentaBancaria</span
+                ></td
+              >
+              <td
+                ><code>camelCase</code><br /><span class="ex"
+                  >calcularTotal()</span
+                ></td
+              >
+              <td
+                ><code>camelCase</code><br /><span class="ex">saldoActual</span
+                ></td
+              >
+              <td
+                ><code>UPPER_SNAKE</code><br /><span class="ex">MAX_LIMITE</span
+                ></td
+              >
             </tr>
             <tr>
-              <td><span class="lang-badge" style="background:#F7DF1E; color:#1E1210; border-color:#1E1210">JavaScript</span></td>
-              <td><code>PascalCase</code><br/><span class="ex">CuentaBancaria</span></td>
-              <td><code>camelCase</code><br/><span class="ex">calcularTotal()</span></td>
-              <td><code>camelCase</code><br/><span class="ex">saldoActual</span></td>
-              <td><code>UPPER_SNAKE</code><br/><span class="ex">MAX_LIMITE</span></td>
+              <td
+                ><span
+                  class="lang-badge"
+                  style="background:#F7DF1E; color:#1E1210; border-color:#1E1210"
+                  >JavaScript</span
+                ></td
+              >
+              <td
+                ><code>PascalCase</code><br /><span class="ex"
+                  >CuentaBancaria</span
+                ></td
+              >
+              <td
+                ><code>camelCase</code><br /><span class="ex"
+                  >calcularTotal()</span
+                ></td
+              >
+              <td
+                ><code>camelCase</code><br /><span class="ex">saldoActual</span
+                ></td
+              >
+              <td
+                ><code>UPPER_SNAKE</code><br /><span class="ex">MAX_LIMITE</span
+                ></td
+              >
             </tr>
             <tr>
-              <td><span class="lang-badge" style="background:#6d28d9">C#</span></td>
-              <td><code>PascalCase</code><br/><span class="ex">CuentaBancaria</span></td>
-              <td><code>PascalCase</code><br/><span class="ex">CalcularTotal()</span></td>
-              <td><code>camelCase</code><br/><span class="ex">saldoActual / _saldoActual</span></td>
-              <td><code>PascalCase</code> / <code>UPPER_SNAKE</code><br/><span class="ex">MaxLimite</span></td>
+              <td
+                ><span class="lang-badge" style="background:#6d28d9">C#</span
+                ></td
+              >
+              <td
+                ><code>PascalCase</code><br /><span class="ex"
+                  >CuentaBancaria</span
+                ></td
+              >
+              <td
+                ><code>PascalCase</code><br /><span class="ex"
+                  >CalcularTotal()</span
+                ></td
+              >
+              <td
+                ><code>camelCase</code><br /><span class="ex"
+                  >saldoActual / _saldoActual</span
+                ></td
+              >
+              <td
+                ><code>PascalCase</code> / <code>UPPER_SNAKE</code><br /><span
+                  class="ex">MaxLimite</span
+                ></td
+              >
             </tr>
             <tr>
-              <td><span class="lang-badge" style="background:#777BB4">PHP</span></td>
-              <td><code>PascalCase</code><br/><span class="ex">CuentaBancaria</span></td>
-              <td><code>camelCase</code><br/><span class="ex">calcularTotal()</span></td>
-              <td><code>camelCase</code><br/><span class="ex">$saldoActual</span></td>
-              <td><code>UPPER_SNAKE</code><br/><span class="ex">MAX_LIMITE</span></td>
+              <td
+                ><span class="lang-badge" style="background:#777BB4">PHP</span
+                ></td
+              >
+              <td
+                ><code>PascalCase</code><br /><span class="ex"
+                  >CuentaBancaria</span
+                ></td
+              >
+              <td
+                ><code>camelCase</code><br /><span class="ex"
+                  >calcularTotal()</span
+                ></td
+              >
+              <td
+                ><code>camelCase</code><br /><span class="ex">$saldoActual</span
+                ></td
+              >
+              <td
+                ><code>UPPER_SNAKE</code><br /><span class="ex">MAX_LIMITE</span
+                ></td
+              >
             </tr>
             <tr>
-              <td><span class="lang-badge" style="background:#00599C">C++</span></td>
-              <td><code>PascalCase</code><br/><span class="ex">CuentaBancaria</span></td>
-              <td><code>camelCase</code> o <code>snake_case</code><br/><span class="ex">calcularTotal() / calcular_total()</span></td>
-              <td><code>camelCase</code> o <code>snake_case</code><br/><span class="ex">saldoActual / saldo_actual / m_saldoActual</span></td>
-              <td><code>UPPER_SNAKE</code><br/><span class="ex">MAX_LIMITE</span></td>
+              <td
+                ><span class="lang-badge" style="background:#00599C">C++</span
+                ></td
+              >
+              <td
+                ><code>PascalCase</code><br /><span class="ex"
+                  >CuentaBancaria</span
+                ></td
+              >
+              <td
+                ><code>camelCase</code> o <code>snake_case</code><br /><span
+                  class="ex">calcularTotal() / calcular_total()</span
+                ></td
+              >
+              <td
+                ><code>camelCase</code> o <code>snake_case</code><br /><span
+                  class="ex">saldoActual / saldo_actual / m_saldoActual</span
+                ></td
+              >
+              <td
+                ><code>UPPER_SNAKE</code><br /><span class="ex">MAX_LIMITE</span
+                ></td
+              >
             </tr>
           </tbody>
         </table>
@@ -494,55 +877,103 @@ public:
 
     <section class="mb-10">
       <h2>Detalles clave (para no mezclar)</h2>
-      <div class="cards-grid" style="grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));">
+      <div
+        class="cards-grid"
+        style="grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));"
+      >
         <div class="card-fun" style="border-left:4px solid #3776ab">
           <h3>🐍 Python (PEP 8)</h3>
-          <p>El único donde <strong>todo lo ejecutable</strong> (funciones, métodos, variables, atributos) va en <code>snake_case</code>. Solo las clases usan <code>PascalCase</code>. Si ves <code>calcularTotal</code> en Python, es code smell.</p>
+          <p>
+            El único donde <strong>todo lo ejecutable</strong> (funciones, métodos,
+            variables, atributos) va en <code>snake_case</code>. Solo las clases
+            usan <code>PascalCase</code>. Si ves <code>calcularTotal</code> en Python,
+            es code smell.
+          </p>
         </div>
         <div class="card-fun" style="border-left:4px solid #E76F00">
           <h3>☕ Java</h3>
-          <p>El estándar absoluto: <code>PascalCase</code> para clases, <code>camelCase</code> para todo lo demás (métodos, variables, parámetros). <code>MAX_LIMITE</code> siempre en mayúsculas.</p>
+          <p>
+            El estándar absoluto: <code>PascalCase</code> para clases, <code
+              >camelCase</code
+            > para todo lo demás (métodos, variables, parámetros). <code
+              >MAX_LIMITE</code
+            > siempre en mayúsculas.
+          </p>
         </div>
         <div class="card-fun" style="border-left:4px solid #F7DF1E">
           <h3>🟨 JavaScript</h3>
-          <p>Mismo estándar que Java. La confusión típica: usar <code>snake_case</code> por costumbre de Python. En JS profesional, todo es <code>camelCase</code> excepto clases.</p>
+          <p>
+            Mismo estándar que Java. La confusión típica: usar <code
+              >snake_case</code
+            > por costumbre de Python. En JS profesional, todo es <code
+              >camelCase</code
+            > excepto clases.
+          </p>
         </div>
         <div class="card-fun" style="border-left:4px solid #6d28d9">
           <h3>🎮 C#</h3>
-          <p>La gran diferencia: <strong>métodos y propiedades públicas en <code>PascalCase</code></strong> (<code>CalcularTotal()</code>, <code>SaldoActual &#123; get; set; &#125;</code>). Lo privado usa <code>_saldoActual</code>.</p>
+          <p>
+            La gran diferencia: <strong
+              >métodos y propiedades públicas en <code>PascalCase</code></strong
+            > (<code>CalcularTotal()</code>, <code
+              >SaldoActual &#123; get; set; &#125;</code
+            >). Lo privado usa <code>_saldoActual</code>.
+          </p>
         </div>
         <div class="card-fun" style="border-left:4px solid #777BB4">
           <h3>🐘 PHP (PSR-12)</h3>
-          <p>Clases <code>PascalCase</code>, métodos y variables <code>camelCase</code> con <code>$</code>. Olvidar el <code>$</code> es error de sintaxis inmediato.</p>
+          <p>
+            Clases <code>PascalCase</code>, métodos y variables <code
+              >camelCase</code
+            > con <code>$</code>. Olvidar el <code>$</code> es error de sintaxis inmediato.
+          </p>
         </div>
         <div class="card-fun" style="border-left:4px solid #00599C">
           <h3>⚙️ C++</h3>
-          <p>Conviven dos escuelas: Google/Qt (<code>camelCase</code>) y STL (<code>snake_case</code>). Lo importante: <strong>elige una y sé consistente</strong> en todo el archivo.</p>
+          <p>
+            Conviven dos escuelas: Google/Qt (<code>camelCase</code>) y STL (<code
+              >snake_case</code
+            >). Lo importante: <strong>elige una y sé consistente</strong> en todo
+            el archivo.
+          </p>
         </div>
       </div>
     </section>
 
     <div class="ejercicio">
       <h3>🧪 Mini reto: traduce el nombre</h3>
-      <p class="enunciado">Tienes la variable <code>saldo actual del usuario</code> y el método <code>calcular total del carrito</code>. Escríbelos como se verían en Python vs Java:</p>
+      <p class="enunciado">
+        Tienes la variable <code>saldo actual del usuario</code> y el método <code
+          >calcular total del carrito</code
+        >. Escríbelos como se verían en Python vs Java:
+      </p>
       <details>
-        <summary>👁️ Ver solución</summary>
+        <summary>Ver solución</summary>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
           <div>
             <strong>Python</strong>
-            <CodeBlock lang="python" code={`saldo_actual_usuario = 0
+            <CodeBlock
+              lang="python"
+              code={`saldo_actual_usuario = 0
 def calcular_total_carrito():
-    return saldo_actual_usuario`} />
+    return saldo_actual_usuario`}
+            />
           </div>
           <div>
             <strong>Java</strong>
-            <CodeBlock lang="java" code={`int saldoActualUsuario = 0;
+            <CodeBlock
+              lang="java"
+              code={`int saldoActualUsuario = 0;
 int calcularTotalCarrito() {
     return saldoActualUsuario;
-}`} />
+}`}
+            />
           </div>
         </div>
-        <p class="mt-3"><strong>Pista C#:</strong> sería <code>CalcularTotalCarrito()</code> (PascalCase) y <code>saldoActualUsuario</code> o <code>_saldoActualUsuario</code>.</p>
+        <p class="mt-3">
+          <strong>Pista C#:</strong> sería <code>CalcularTotalCarrito()</code> (PascalCase)
+          y <code>saldoActualUsuario</code> o <code>_saldoActualUsuario</code>.
+        </p>
       </details>
     </div>
 
@@ -553,24 +984,42 @@ int calcularTotalCarrito() {
     </section>
 
     <nav class="nav-bottom">
-      <a href="/course/ecosistemas/mobile-nativos/" class="prev">← Mobile y Nativos</a>
+      <a href="/course/ecosistemas/mobile-nativos/" class="prev"
+        >← Mobile y Nativos</a
+      >
       <a href="/course/ecosistemas/" class="next">Ecosistemas →</a>
     </nav>
   </article>
 
   <script is:inline>
-    (function() {
-      const tabs = document.querySelectorAll('.lang-tab[data-lang]');
-      const panels = document.querySelectorAll('.lang-panel[data-panel]');
+    (function () {
+      const tabs = document.querySelectorAll(".lang-tab[data-lang]");
+      const panels = document.querySelectorAll(".lang-panel[data-panel]");
       const alias = {
-        python: 'python', py: 'python',
-        java: 'java',
-        javascript: 'javascript', js: 'javascript',
-        csharp: 'csharp', 'c#': 'csharp', cs: 'csharp', c_sharp: 'csharp',
-        php: 'php',
-        cpp: 'cpp', 'c++': 'cpp', 'c%2b%2b': 'cpp', cplusplus: 'cpp', 'c_plus_plus': 'cpp'
+        python: "python",
+        py: "python",
+        java: "java",
+        javascript: "javascript",
+        js: "javascript",
+        csharp: "csharp",
+        "c#": "csharp",
+        cs: "csharp",
+        c_sharp: "csharp",
+        php: "php",
+        cpp: "cpp",
+        "c++": "cpp",
+        "c%2b%2b": "cpp",
+        cplusplus: "cpp",
+        c_plus_plus: "cpp",
       };
-      const toCode = { python: 'python', java: 'java', javascript: 'javascript', csharp: 'csharp', php: 'php', cpp: 'c++' };
+      const toCode = {
+        python: "python",
+        java: "java",
+        javascript: "javascript",
+        csharp: "csharp",
+        php: "php",
+        cpp: "c++",
+      };
       const normalize = (raw) => {
         if (!raw) return null;
         const k = String(raw).trim().toLowerCase();
@@ -578,142 +1027,207 @@ int calcularTotalCarrito() {
       };
       const activate = (lang, opts = {}) => {
         const updateUrl = opts.updateUrl !== false;
-        tabs.forEach(t => {
-          const on = t.getAttribute('data-lang') === lang;
-          t.classList.toggle('is-active', on);
-          t.setAttribute('aria-selected', String(on));
+        tabs.forEach((t) => {
+          const on = t.getAttribute("data-lang") === lang;
+          t.classList.toggle("is-active", on);
+          t.setAttribute("aria-selected", String(on));
         });
-        panels.forEach(p => {
-          const on = p.getAttribute('data-panel') === lang;
-          p.classList.toggle('is-active', on);
-          if (on) p.removeAttribute('hidden'); else p.setAttribute('hidden', '');
+        panels.forEach((p) => {
+          const on = p.getAttribute("data-panel") === lang;
+          p.classList.toggle("is-active", on);
+          if (on) p.removeAttribute("hidden");
+          else p.setAttribute("hidden", "");
         });
-        try { localStorage.setItem('eco_var_lang', lang); } catch {}
+        try {
+          localStorage.setItem("eco_var_lang", lang);
+        } catch {}
         if (updateUrl) {
           try {
             const url = new URL(location.href);
-            url.searchParams.set('code', toCode[lang] || lang);
-            history.replaceState(null, '', url.toString());
+            url.searchParams.set("code", toCode[lang] || lang);
+            history.replaceState(null, "", url.toString());
           } catch {}
         }
       };
-      tabs.forEach(t => t.addEventListener('click', () => activate(t.getAttribute('data-lang'))));
+      tabs.forEach((t) =>
+        t.addEventListener("click", () =>
+          activate(t.getAttribute("data-lang")),
+        ),
+      );
 
       // Prioridad: ?code= → localStorage → default python
       // Lee ?code= preservando '+' (URLSearchParams decodifica '+' como espacio, rompería c++)
       let raw = null;
       const codeMatch = location.search.match(/[?&]code=([^&#]*)/i);
       if (codeMatch) {
-        try { raw = decodeURIComponent(codeMatch[1]); } catch { raw = codeMatch[1]; }
+        try {
+          raw = decodeURIComponent(codeMatch[1]);
+        } catch {
+          raw = codeMatch[1];
+        }
       } else {
         const params = new URLSearchParams(location.search);
-        raw = params.get('lang') || params.get('l');
+        raw = params.get("lang") || params.get("l");
       }
       const fromUrl = normalize(raw);
-      if (fromUrl && document.querySelector(`.lang-tab[data-lang="${fromUrl}"]`)) {
+      if (
+        fromUrl &&
+        document.querySelector(`.lang-tab[data-lang="${fromUrl}"]`)
+      ) {
         activate(fromUrl, { updateUrl: false });
       } else {
         let saved = null;
-        try { saved = localStorage.getItem('eco_var_lang'); } catch {}
-        if (saved && document.querySelector(`.lang-tab[data-lang="${saved}"]`)) activate(saved, { updateUrl: false });
+        try {
+          saved = localStorage.getItem("eco_var_lang");
+        } catch {}
+        if (saved && document.querySelector(`.lang-tab[data-lang="${saved}"]`))
+          activate(saved, { updateUrl: false });
       }
     })();
   </script>
 
   <style>
-    .table-wrap { overflow-x:auto; margin:1.5rem 0; border-radius:16px; }
-    .content-table { min-width:720px; }
-    .content-table td { vertical-align:top; font-size:0.95rem; }
-    .content-table .ex { font-size:0.82rem; color:var(--text-muted); font-family:'JetBrains Mono', monospace; font-weight:700; }
+    .table-wrap {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      border-radius: 16px;
+    }
+    .content-table {
+      min-width: 720px;
+    }
+    .content-table td {
+      vertical-align: top;
+      font-size: 0.95rem;
+    }
+    .content-table .ex {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      font-family: "JetBrains Mono", monospace;
+      font-weight: 700;
+    }
     .lang-badge {
-      display:inline-block;
-      color:white;
-      font-family:'Nunito', sans-serif;
-      font-weight:900;
-      font-size:0.78rem;
-      padding:0.18rem 0.5rem;
-      border-radius:999px;
-      border:2px solid transparent;
-      white-space:nowrap;
+      display: inline-block;
+      color: white;
+      font-family: "Nunito", sans-serif;
+      font-weight: 900;
+      font-size: 0.78rem;
+      padding: 0.18rem 0.5rem;
+      border-radius: 999px;
+      border: 2px solid transparent;
+      white-space: nowrap;
     }
     .lang-switcher {
-      display:flex;
-      flex-wrap:wrap;
-      gap:0.5rem;
-      margin:1rem 0 0.5rem;
-      padding:0.6rem;
-      background:rgba(255,255,255,0.7);
-      border:3px solid var(--border);
-      border-radius:18px;
-      box-shadow:4px 4px 0 var(--border);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin: 1rem 0 0.5rem;
+      padding: 0.6rem;
+      background: rgba(255, 255, 255, 0.7);
+      border: 3px solid var(--border);
+      border-radius: 18px;
+      box-shadow: 4px 4px 0 var(--border);
     }
     .lang-tab {
-      appearance:none;
-      border:2px solid var(--border);
-      border-radius:999px;
-      padding:0.42rem 0.85rem;
-      font-family:'Nunito', sans-serif;
-      font-weight:900;
-      font-size:0.85rem;
-      cursor:pointer;
-      background:white;
-      color:var(--text-primary);
-      box-shadow:2px 2px 0 var(--border);
-      transition:transform 0.12s, box-shadow 0.12s, background 0.12s, color 0.12s;
+      appearance: none;
+      border: 2px solid var(--border);
+      border-radius: 999px;
+      padding: 0.42rem 0.85rem;
+      font-family: "Nunito", sans-serif;
+      font-weight: 900;
+      font-size: 0.85rem;
+      cursor: pointer;
+      background: white;
+      color: var(--text-primary);
+      box-shadow: 2px 2px 0 var(--border);
+      transition:
+        transform 0.12s,
+        box-shadow 0.12s,
+        background 0.12s,
+        color 0.12s;
     }
     .lang-tab.is-active {
-      background:var(--c, #1E1210);
-      color:white;
-      transform:translateY(-1px);
-      box-shadow:3px 3px 0 var(--border);
+      background: var(--c, #1e1210);
+      color: white;
+      transform: translateY(-1px);
+      box-shadow: 3px 3px 0 var(--border);
     }
-    .lang-tab[data-lang="javascript"].is-active { color:#1E1210; }
-    .lang-panels { margin-top:0.75rem; }
-    .lang-panel { display:none; }
-    .lang-panel.is-active { display:block; animation:fadeIn 0.18s ease; }
-    @keyframes fadeIn { from{opacity:0; transform:translateY(4px)} to{opacity:1; transform:translateY(0)} }
+    .lang-tab[data-lang="javascript"].is-active {
+      color: #1e1210;
+    }
+    .lang-panels {
+      margin-top: 0.75rem;
+    }
+    .lang-panel {
+      display: none;
+    }
+    .lang-panel.is-active {
+      display: block;
+      animation: fadeIn 0.18s ease;
+    }
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(4px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
     .step-block {
-      background:rgba(255,255,255,0.82);
-      border:2px solid rgba(30,18,16,0.10);
-      border-radius:16px;
-      padding:1rem 1rem 0.2rem;
-      margin:0.9rem 0 1.1rem;
-      box-shadow:0 8px 18px rgba(30,18,16,0.06);
+      background: rgba(255, 255, 255, 0.82);
+      border: 2px solid rgba(30, 18, 16, 0.1);
+      border-radius: 16px;
+      padding: 1rem 1rem 0.2rem;
+      margin: 0.9rem 0 1.1rem;
+      box-shadow: 0 8px 18px rgba(30, 18, 16, 0.06);
     }
     .step-block h4 {
-      margin:0 0 0.3rem;
-      font-size:1.02rem;
-      color:var(--text-primary);
-      display:flex;
-      align-items:center;
-      gap:0.55rem;
+      margin: 0 0 0.3rem;
+      font-size: 1.02rem;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
     }
     .step-num {
-      flex-shrink:0;
-      width:26px;
-      height:26px;
-      display:grid;
-      place-items:center;
-      background:var(--border);
-      color:white;
-      border-radius:999px;
-      font-size:0.82rem;
-      font-weight:900;
+      flex-shrink: 0;
+      width: 26px;
+      height: 26px;
+      display: grid;
+      place-items: center;
+      background: var(--border);
+      color: white;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 900;
     }
-    .step-block p { margin:0 0 0.4rem; font-size:0.92rem; color:var(--text-secondary); font-weight:650; line-height:1.5; }
+    .step-block p {
+      margin: 0 0 0.4rem;
+      font-size: 0.92rem;
+      color: var(--text-secondary);
+      font-weight: 650;
+      line-height: 1.5;
+    }
     .lang-hint {
-      margin:0.4rem 0 1.2rem;
-      font-size:0.88rem;
-      font-weight:700;
-      color:var(--text-secondary);
-      background:#FFF9C4;
-      border-left:4px solid var(--border);
-      padding:0.5rem 0.75rem;
-      border-radius:0 12px 12px 0;
+      margin: 0.4rem 0 1.2rem;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      background: #fff9c4;
+      border-left: 4px solid var(--border);
+      padding: 0.5rem 0.75rem;
+      border-radius: 0 12px 12px 0;
     }
-    @media (max-width:640px){
-      .lang-switcher{ gap:0.4rem; padding:0.5rem; }
-      .lang-tab{ font-size:0.78rem; padding:0.35rem 0.6rem; }
+    @media (max-width: 640px) {
+      .lang-switcher {
+        gap: 0.4rem;
+        padding: 0.5rem;
+      }
+      .lang-tab {
+        font-size: 0.78rem;
+        padding: 0.35rem 0.6rem;
+      }
     }
   </style>
 </Layout>
