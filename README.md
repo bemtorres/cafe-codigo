@@ -54,6 +54,11 @@ Para financiar los costos de servidor, hosting, dominio y la creación continua 
 - 💳 **Mercado Pago (Chile 🇨🇱)**: Aportes directos con tarjeta de débito, crédito o transferencia a través de [link.mercadopago.cl/cafeycodigo](https://link.mercadopago.cl/cafeycodigo).
 - ☕ **Ko-fi (Internacional 🌎)**: Apóyanos invitándonos un café desde cualquier país con PayPal o tarjeta en [ko-fi.com/cafeycodigo](https://ko-fi.com/cafeycodigo).
 
+### 🏅 ¡Sé parte del Muro de Colaboradores y la Comunidad!
+Al realizar tu aporte económico o contribuir activamente al proyecto:
+- **Formarás parte oficial del Grupo de Colaboradores** con tu reconocible **Insignia de Sponsor** y mención de honor en nuestro Muro de Colaboradores.
+- **Fomentamos el desarrollo colaborativo**: Puedes aportar con ideas para nuevos simuladores, proponer mejoras en la plataforma, enviar sugerencias de cursos o contribuir directamente al ecosistema para que sigamos creciendo juntos.
+
 ---
 
 ## 🎯 Diseñado para Estudiantes y Educadores
