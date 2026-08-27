@@ -1,117 +1,55 @@
-# Aprende - Sistema de Cursos Interactivos 🚀
+# ☕ Café y Código — Plataforma Interactiva de Aprendizaje en Programación
 
-Bienvenido al repositorio de `Aprende`. Aquí creamos rutas de aprendizaje tecnológicas (PSeInt, C#, Kotlin, etc.) enfocadas en Retos, Lógica y Evaluación Activa.
+¡Bienvenido a **Café y Código**! La plataforma de aprendizaje diseñada para hacer que dominar la programación sea una experiencia **vibrante, interactiva, dinámica y libre de frustraciones**.
 
-## ☕ Apoya Café y Código
-
-Si mis proyectos, cursos y recursos te han ayudado, puedes apoyar el proyecto:
-
-[![Ko-fi](https://img.shields.io/badge/Apoya%20Café%20y%20Código-☕-ff5e5b?style=for-the-badge)](https://ko-fi.com/cafeycodigo)
-
-## Estructura Estándar de los Cursos
-
-Para mantener la coherencia y garantizar la mejor experiencia de aprendizaje gamificada, **cada módulo o lección de cualquier curso debe seguir esta estructura fundamental**:
-
-1. **Introducción y Motivación (`<section>`)**
-   - Título claro de la lección usando la etiqueta `<h1>`.
-   - Una breve explicación de por qué es importante aprender este concepto.
-
-2. **Desarrollo del Contenido y Ejemplos Activos (`<CodeBlock>`)**
-   - El contenido principal separado en subtítulos `<h2>`.
-   - Se debe utilizar obligatoriamente el componente `<CodeBlock>` para cualquier fragmento de código. Esto garantiza colores consistentes, insignias (badges) interactivas, y soporte nativo usando *Shiki* en toda la plataforma.
-
-3. **Demostración Práctica**
-   - Cuanto más complejo es el tema, es ideal inyectar un caso de uso breve simulando una aplicación real para aterrizar el conocimiento.
-
-4. **Ponte a Prueba (Sección Final)**
-   - Esta última sección debe ubicarse ANTES de la barra de navegación lateral e inferior (`<nav class="nav-bottom">`).
-   - Sirve como la validación interactiva que cierra el proceso:
-   ```astro
-   <section class="mb-10">
-     <h2>Ponte a prueba</h2>
-     <p>Comprueba tus conocimientos sobre este tema realizando nuestro pequeño test (5 preguntas).</p>
-     <QuizModal quizKey="llave-de-esta-leccion" />
-   </section>
-   ```
-
-5. **Banco de Preguntas (`QuizBank`)**
-   - Para que la sección interactiva funcione, cada curso **debe tener su propio archivo de banco de preguntas** en la carpeta `src/data/` (por ejemplo: `pseintQuizBank.ts` o `csharpQuizBank.ts`).
-   - Allí residen objetos de preguntas de opción múltiple, con propiedades `prompt`, arreglo `options` y un `correctIndex`.
-   - Se debe invocar su componente Modal correspondiente (p.e: `<CsharpQuizModal />`) importándolo en la parte superior del archivo `.astro`.
-   - Auditoría local: `npm run audit:lessons` lista lecciones que podrían faltar `CodeBlock`, quiz o la mención «Ponte a prueba» (revisar manualmente los casos límite).
-
-## Rutas de Aprendizaje ("La Carta de Cafés") 🧭☕
-
-Para guiar mejor a los alumnos en su camino de aprendizaje, la plataforma incorpora un sistema interactivo de **Rutas de Aprendizaje** en la página del catálogo principal (`/cursos/`).
-
-### Estructura de las Rutas
-El catálogo está dividido en un selector de pestañas de estética neobrutalista:
-1. **🧭 Rutas de Aprendizaje (Activa por defecto)**: Presenta la "Carta de Cafés", cuatro caminos de especialización ordenados secuencialmente de inicio a fin:
-   - **Ruta del Expreso** ☕ (Lógica y Fundamentos): El punto de partida de absoluto cero. (`pseint`, `ecosistemas`, `terminal`, `git`)
-   - **Ruta del Capuchino** 🎨 (Desarrollo Frontend): Estructura, diseño e interactividad web. (`html`, `css`, `javascript`, `git`)
-   - **Ruta de la Prensa Francesa** 🐍 (Backend y Datos con Python): Python, testing y bases de datos relacionales/NoSQL. (`python`, `modelamiento-db`, `consultas-sql`, `python-testing`, `nosql`)
-   - **Ruta del Macchiato** 🏗️ (Ingeniería y Arquitectura): Arquitectura de software, agilidad y estructuras avanzadas. (`vision-producto`, `analisis-backlog`, `scrum-prototipado`, `estructuras-datos`, `patrones-diseno`, `c4`)
-2. **📚 Todos los Cursos**: Mantiene el catálogo completo con buscador en tiempo real y selector de vista en cuadrícula o lista.
-
-### Configuración y Visualizador
-Las rutas se definen dentro del componente [CoursesCatalog.tsx](file:///c:/Users/benja/Desktop/EDUCK%202026/aprende/src/components/courses/CoursesCatalog.tsx) mediante la constante `COFFEE_ROUTES`:
-- **Propiedades**: Cada ruta posee un `id`, `name`, `subtitle`, `emoji`, `description`, `color` (tono principal), `accent` (color de contraste para los nodos) y `courseSlugs` (un arreglo con la secuencia ordenada de los cursos que componen la ruta).
-- **El Camino de tu Café**: Cuando el usuario selecciona una ruta, se renderiza un visualizador de roadmap en formato de tubería vertical con conectores discontinuos de colores dinámicos y nodos interactivos numerados (`1`, `2`, `3`...) completamente responsivos que conducen a los cursos.
-
-## Parámetros de URL (embed, PDF, quiz)
-
-Referencia de query string (`?embed=true`, `?pdf=true`, etc.): [docs/parametros-url-get.md](docs/parametros-url-get.md).
-
-Herramienta interna: `/admin/embed` (solo “oculta” por URL) permite seleccionar una lección y generar enlaces de embed con los parámetros GET soportados.
-
-Ejemplos rápidos:
-
-```text
-# Incrustar una lección sin chrome del sitio
-/course/python/introduccion/?embed=true
-
-# Igual, sin quiz (LMS que no quiere el test en el iframe)
-/course/python/introduccion/?embed=true&quiz=false
-
-# Modo PDF/impresión (fondo blanco solo al imprimir; en pantalla mantiene el fondo normal)
-/course/python/introduccion/?pdf=true
-/course/python/introduccion/?embed=true&pdf=true
-
-# Embed con datos (institución / alumno)
-/course/python/introduccion/?embed=true&title=INSTITUCI%C3%93N&name=NOMBRE&email=CORREO
-
-# Personalizar cabecera embed: logo + fondo (URL) + color base (solo cabecera)
-/course/python/introduccion/?embed=true&title=INSTITUCI%C3%93N&logo=https%3A%2F%2Fejemplo.com%2Flogo.png&background=https%3A%2F%2Fejemplo.com%2Ffondo.jpg&color=%232b1d1b
-
-# background también puede ser color (recordá URL-encode de '#')
-/course/python/introduccion/?embed=true&title=INSTITUCI%C3%93N&background=%23f3f3f3
-```
-
-Nota: si usás `title`, `name` o `email` con espacios/tildes, generá la URL con `encodeURIComponent`.
-
-## Acerca de los Componentes Universales
-
-- **`<Layout>`**: Envuelve a cada lección para inyectar los metadatos SEO, el menú lateral y la lógica de estado local.
-- **`<CodeBlock code={...} title="..." lang="..." />`**: Renderiza el código. Si no entregas `lang`, utiliza una heurística interna mediante RegExp para averiguar de qué lenguaje se trata y auto-asignar iconos, bordes coloreados y su parser correspondiente.
-
-## Cursos de lenguaje (`category: 'language'`)
-
-Los cursos marcados como lenguaje en `src/data/courses.ts` (por ejemplo C++, C#, Java, Python, JavaScript) comparten:
-
-- **`communityReleaseYear`** (opcional): año de referencia de la primera difusión pública a la comunidad; se usa en el catálogo `/cursos/` y en el modal «Elige un curso» del layout (`Layout.astro`) como texto «Comunidad · año».
-- **Pie «Dato curioso»**: al final del `<main>` se renderiza `LanguageCuriosity` (`src/components/LanguageCuriosity.astro`), con datos en `src/data/languageCuriosityMeta.ts` (una frase corta + enlace a Wikipedia).
-
-### Reglas del pie «Dato curioso»
-
-- Se muestra en la **portada del curso** (`/course/{slug}/`) y en **todas las lecciones** de ese curso **excepto** la lección cuyo slug es `introduccion`.
-- No se muestra en cursos que no sean de categoría `language`.
-- Para añadir o editar textos: `src/data/languageCuriosityMeta.ts` (una entrada por `slug` del curso). El componente es deliberadamente minimalista (párrafo + enlace).
-
-### Lección `introduccion`
-
-Las páginas `introduccion` **no** incluyen el bloque de dato curioso; el contexto histórico queda en `languageCuriosityMeta` y aparece en el resto de lecciones y en la portada. No dupliques bloques de origen en el `.astro` de la intro salvo que el contenido pedagógico lo exija explícitamente.
+Con una propuesta estética única en estilo *Neobrutalista*, gamificación y simuladores visuales en tiempo real, aquí transformarás conceptos abstractos en habilidades reales de código.
 
 ---
-*Con consistencia arquitectónica formaremos mejores profesionales del software.*
 
+## 🌟 ¿Qué hace a Café y Código una experiencia única?
 
+### ⏱️ Reloj y Temporizador de Desafíos Personalizable (Drag & Drop)
+Entrena tu agilidad mental y velocidad de resolución. Cada sección de retos cuenta con un **reloj flotante interactivo** que puedes:
+- 🎯 **Configurar en Minutos o Segundos** según la complejidad del reto.
+- 🖐️ **Soltar y arrastrar** con libertad a cualquier lugar de la pantalla.
+- 📐 **Ajustar en tamaño** (de 70% a 150%) para adaptarse perfecto a tu PC, Tablet o Smartphone.
+
+### 🏛️ Diagramas UML Interactivos & Soluciones Multilenguaje
+No te limites a memorizar código. En nuestros talleres avanzados de Programación Orientada a Objetos e Interfaces:
+- Visualiza la **arquitectura del sistema en tiempo real** mediante Diagramas de Clases UML interactivos.
+- Desbloquea soluciones estructuradas con conmutadores instantáneos para comparar el mismo sistema en **☕ Java**, **🐍 Python**, **🎮 C#** y **⚙️ C++**.
+
+### ☕ Rutas de Aprendizaje Guiadas ("La Carta de Cafés")
+¿No sabes por dónde empezar? Elige tu especialidad según tus metas:
+- ☕ **Ruta del Expreso** *(Lógica y Fundamentos)*: Construye pensamiento lógico desde cero con diagramas y algoritmos.
+- 🎨 **Ruta del Capuchino** *(Desarrollo Frontend)*: Domina la creación de interfaces web modernas y dinámicas.
+- 🐍 **Ruta de la Prensa Francesa** *(Backend y Ciencia de Datos)*: Domina Python, bases de datos relacionales y NoSQL.
+- 🏗️ **Ruta del Macchiato** *(Ingeniería y Arquitectura)*: Patrones de diseño, estructuras avanzadas y visión de software profesional.
+
+### 🧩 Desafíos Prácticos y Autoevaluaciones Rápidas
+Aprende haciendo. Cada lección incluye:
+- **Casos de estudio reales**: Sistemas de reserva de hoteles, plataformas de streaming, hospitales, vehículos autónomos y más.
+- **Checklists de verificación paso a paso**: Marca tus progresos a medida que creas clases, interfaces y métodos.
+- **Tests interactivos de evaluación**: Pon a prueba lo aprendido al finalizar cada lección.
+
+---
+
+## 📚 Lenguajes y Tecnologías que Aprenderás
+
+- ☕ **Java**: Programación Orientada a Objetos, Herencia, Interfaces y Arquitectura.
+- 🐍 **Python**: Sintaxis limpia, estructuras de datos, testing y backend.
+- ⚙️ **C++**: Control de memoria, punteros, colecciones y alto rendimiento.
+- 🎮 **C#**: Desarrollo estructurado, tipado fuerte y POO moderna.
+- 🫖 **PSeInt**: Lógica de programación, pseudocódigo y diagramas de flujo interactivos.
+- 🌐 **Desarrollo Web**: HTML5, CSS3, JavaScript moderno y metodologías ágiles.
+
+---
+
+## 🎯 Diseñado para Estudiantes y Educadores
+
+Ya sea que estés dando tus primeros pasos en la universidad, preparándote para tu primer empleo en tecnología o buscando reforzar tus fundamentos de arquitectura de software, **Café y Código** te ofrece un entorno divertido, visual y directo al grano.
+
+¡Prepárate un buen café y acompañanos a programar! 💖☕
+
+---
+[![Apoya Café y Código](https://img.shields.io/badge/Apoya%20Café%20y%20Código-☕-ff5e5b?style=for-the-badge)](https://ko-fi.com/cafeycodigo)
