@@ -1,0 +1,1027 @@
+---
+import Layout from "../../../../layouts/Layout.astro";
+import CodeBlock from "../../../../components/CodeBlock.astro";
+import MermaidDiagram from "../../../../components/challenges/MermaidDiagram.astro";
+---
+
+<Layout
+  title="Entrenador de POO Completa en Java (1 Padre + 3 Hijas + Interfaz + Composición)"
+  description="Desafíos de POO estricta en Java: 1 Padre, 3 Hijas, 1 Interfaz y 1 Composición externa en niveles Básico, Medio y Complejo con solución desglosada."
+  courseSlug="java"
+>
+  <article class="content-section" style="max-width: 900px; margin: 0 auto;">
+    <div class="header-box">
+      <span class="badge-tag">Módulo 12</span>
+      <h1>Taller Práctico de POO Completa en Java</h1>
+      <p class="subtitle">
+        Diseño orientado a objetos bajo la estructura fija obligatoria: <strong>1 Clase Padre + 3 Clases Hijas + 1 Interfaz + 1 Clase de Composición Externa</strong>.
+      </p>
+    </div>
+
+    <!-- Reglas fijas -->
+    <section class="rules-card">
+      <h2>📌 Estructura Fija Obligatoria de Cada Ejercicio</h2>
+      <ul class="rules-grid">
+        <li><strong>1.</strong> Una clase padre que define el estado y conducta base.</li>
+        <li><strong>2.</strong> Exactamente 3 clases hijas (`extends`).</li>
+        <li><strong>3.</strong> Hija 1 implementa al menos 1 interfaz (`implements`).</li>
+        <li><strong>4.</strong> Hija 2 contiene un objeto externo como atributo (Composición).</li>
+        <li><strong>5.</strong> Hija 3 tiene atributos y comportamientos propios especializados.</li>
+        <li><strong>6.</strong> Demostración en clase `Main` usando referencias polimórficas del tipo Padre.</li>
+      </ul>
+    </section>
+
+    <!-- Ejercicio 1: Básico -->
+    <section class="exercise-section mb-12">
+      <div class="level-badge level-badge--basic">NIVEL BÁSICO</div>
+      <h2>Ejercicio 1: Sistema de Gestión de Préstamos en Biblioteca</h2>
+      
+      <p class="context-text">
+        <strong>Contexto:</strong> Una biblioteca municipal necesita categorizar y gestionar los recursos disponibles en su catálogo digital (libros impresos, audiolibros y revistas académicas). Todos los recursos comparten datos básicos de registro, pero cada formato opera de forma distinta.
+      </p>
+
+      <div class="structure-box">
+        <h3>📐 Estructura de Clases</h3>
+        <ul>
+          <li><strong>Clase Padre:</strong> <code>RecursoBiblioteca</code></li>
+          <li><strong>Clases Hijas:</strong> <code>LibroImpreso</code> (propios), <code>AudioLibro</code> (con clase externa), <code>RevistaAcademica</code> (con interfaz)</li>
+          <li><strong>Interfaz:</strong> <code>Descargable</code> (método <code>descargar()</code>)</li>
+          <li><strong>Clase Externa:</strong> <code>SoporteTecnico</code></li>
+        </ul>
+      </div>
+
+      <MermaidDiagram
+        title="Diagrama UML - Ejercicio Básico (Biblioteca)"
+        code={`classDiagram
+    class RecursoBiblioteca {
+        - String id
+        - String titulo
+        - boolean disponible
+        + prestar(): void
+    }
+    class Descargable {
+        <<interface>>
+        + descargar(): void
+    }
+    class SoporteTecnico {
+        - String nombreFormato
+        - boolean requiereConexion
+    }
+    class LibroImpreso {
+        - int numeroPaginas
+        - String tipoTapa
+        + prestar(): void
+    }
+    class AudioLibro {
+        - double duracionMinutos
+        - SoporteTecnico soporte
+        + prestar(): void
+        + reproducirMuestra(): void
+    }
+    class RevistaAcademica {
+        - int numeroEdicion
+        - String doiLicencia
+        + prestar(): void
+        + descargar(): void
+    }
+
+    RecursoBiblioteca <|-- LibroImpreso
+    RecursoBiblioteca <|-- AudioLibro
+    RecursoBiblioteca <|-- RevistaAcademica
+    Descargable <|.. RevistaAcademica : implements
+    AudioLibro *-- SoporteTecnico : tiene`}
+      />
+
+      <div class="solution-trigger-wrap">
+        <button type="button" class="solution-btn open-solution-btn" data-target-solution="sol-1">
+          🔒 Ingresa la clave para ver los resultados
+        </button>
+      </div>
+
+      <div id="sol-1" class="solution-content-hidden" style="display:none;">
+          <h3>1. Interfaz: Descargable.java</h3>
+          <CodeBlock
+            lang="java"
+            code={`public interface Descargable {
+    void descargar();
+}`}
+            title="Descargable.java"
+          />
+
+          <h3>2. Clase Externa: SoporteTecnico.java</h3>
+          <CodeBlock
+            lang="java"
+            code={`public class SoporteTecnico {
+    private String nombreFormato;
+    private boolean requiereConexion;
+
+    public SoporteTecnico(String nombreFormato, boolean requiereConexion) {
+        this.nombreFormato = nombreFormato;
+        this.requiereConexion = requiereConexion;
+    }
+
+    public String getNombreFormato() { return nombreFormato; }
+    public boolean isRequiereConexion() { return requiereConexion; }
+}`}
+            title="SoporteTecnico.java"
+          />
+
+          <h3>3. Clase Padre: RecursoBiblioteca.java</h3>
+          <CodeBlock
+            lang="java"
+            code={`public class RecursoBiblioteca {
+    private String id;
+    private String titulo;
+    private boolean disponible;
+
+    public RecursoBiblioteca(String id, String titulo) {
+        this.id = id;
+        this.titulo = titulo;
+        this.disponible = true;
+    }
+
+    public void prestar() {
+        if (disponible) {
+            disponible = false;
+            System.out.println("📖 Recurso '" + titulo + "' prestado con éxito.");
+        } else {
+            System.out.println("⚠️ El recurso '" + titulo + "' ya se encuentra prestado.");
+        }
+    }
+
+    public String getId() { return id; }
+    public String getTitulo() { return titulo; }
+    public boolean isDisponible() { return disponible; }
+}`}
+            title="RecursoBiblioteca.java"
+          />
+
+          <h3>4. Clase Hija 1: LibroImpreso.java (Características Propias)</h3>
+          <CodeBlock
+            lang="java"
+            code={`public class LibroImpreso extends RecursoBiblioteca {
+    private int numeroPaginas;
+    private String tipoTapa;
+
+    public LibroImpreso(String id, String titulo, int numeroPaginas, String tipoTapa) {
+        super(id, titulo);
+        this.numeroPaginas = numeroPaginas;
+        this.tipoTapa = tipoTapa;
+    }
+
+    @Override
+    public void prestar() {
+        if (isDisponible()) {
+            super.prestar();
+            System.out.println("   └─ Entregando libro físico (" + numeroPaginas + " págs, tapa " + tipoTapa + ") en mostrador.");
+        } else {
+            super.prestar();
+        }
+    }
+}`}
+            title="LibroImpreso.java"
+          />
+
+          <h3>5. Clase Hija 2: AudioLibro.java (Con Clase Externa)</h3>
+          <CodeBlock
+            lang="java"
+            code={`public class AudioLibro extends RecursoBiblioteca {
+    private double duracionMinutos;
+    private SoporteTecnico soporte;
+
+    public AudioLibro(String id, String titulo, double duracionMinutos, SoporteTecnico soporte) {
+        super(id, titulo);
+        this.duracionMinutos = duracionMinutos;
+        this.soporte = soporte;
+    }
+
+    @Override
+    public void prestar() {
+        if (isDisponible()) {
+            super.prestar();
+            System.out.println("   └─ Habilitando stream digital en soporte: " + soporte.getNombreFormato());
+        } else {
+            super.prestar();
+        }
+    }
+
+    public void reproducirMuestra() {
+        System.out.println("🔊 Reproduciendo muestra de 30 seg de '" + getTitulo() + "' en " + soporte.getNombreFormato());
+    }
+}`}
+            title="AudioLibro.java"
+          />
+
+          <h3>6. Clase Hija 3: RevistaAcademica.java (Implementa Interfaz)</h3>
+          <CodeBlock
+            lang="java"
+            code={`public class RevistaAcademica extends RecursoBiblioteca implements Descargable {
+    private int numeroEdicion;
+    private String doiLicencia;
+
+    public RevistaAcademica(String id, String titulo, int numeroEdicion, String doiLicencia) {
+        super(id, titulo);
+        this.numeroEdicion = numeroEdicion;
+        this.doiLicencia = doiLicencia;
+    }
+
+    @Override
+    public void prestar() {
+        if (isDisponible()) {
+            super.prestar();
+            System.out.println("   └─ Asignando acceso a Revista Edición N°" + numeroEdicion);
+        } else {
+            super.prestar();
+        }
+    }
+
+    @Override
+    public void descargar() {
+        System.out.println("⬇️ Descargando PDF de la revista '" + getTitulo() + "' usando licencia DOI: " + doiLicencia);
+    }
+}`}
+            title="RevistaAcademica.java"
+          />
+
+          <h3>7. Clase Principal: Main.java</h3>
+          <CodeBlock
+            lang="java"
+            code={`public class Main {
+    public static void main(String[] args) {
+        System.out.println("=== 1. CREACIÓN DE OBJETOS Y COMPOSICIÓN ===");
+        SoporteTecnico reproductor = new SoporteTecnico("App Audible MP3", true);
+        
+        LibroImpreso libro = new LibroImpreso("L001", "Cien Años de Soledad", 471, "Dura");
+        AudioLibro audio = new AudioLibro("A002", "El Principito Audio", 120.5, reproductor);
+        RevistaAcademica revista = new RevistaAcademica("R003", "IEEE Software Eng", 45, "10.1109/MS.2023.01");
+
+        System.out.println("\\n=== 2. POLIMORFISMO CON REFERENCIAS DEL PADRE ===");
+        RecursoBiblioteca[] catalogo = { libro, audio, revista };
+
+        for (RecursoBiblioteca recurso : catalogo) {
+            recurso.prestar();
+        }
+
+        System.out.println("\\n=== 3. USO DE LA INTERFAZ (DESCARGABLE) ===");
+        Descargable elementoDigital = revista;
+        elementoDigital.descargar();
+
+        System.out.println("\\n=== 4. USO DEL ATRIBUTO EXTERNO ===");
+        audio.reproducirMuestra();
+    }
+}`}
+            title="Main.java"
+          />
+        </div>
+    </section>
+
+    <!-- Ejercicio 2: Medio -->
+    <section class="exercise-section mb-12">
+      <div class="level-badge level-badge--medium">NIVEL MEDIO</div>
+      <h2>Ejercicio 2: Sistema de Atención Médica Hospitalaria</h2>
+      
+      <p class="context-text">
+        <strong>Contexto:</strong> Un hospital privado necesita gestionar las consultas de sus pacientes clasificándolas según el área de atención (Medicina General, Cirugía de Urgencia y Telemedicina). Todas las atenciones requieren diagnóstico pero el cobro y procedimiento varían sensiblemente.
+      </p>
+
+      <div class="structure-box">
+        <h3>📐 Estructura de Clases</h3>
+        <ul>
+          <li><strong>Clase Padre Abstracta:</strong> <code>AtencionMedica</code> (con método abstracto <code>calcularCostoTotal()</code>)</li>
+          <li><strong>Clases Hijas:</strong> <code>ConsultaGeneral</code> (propia), <code>CirugiaUrgencia</code> (con clase externa <code>Quirofano</code>), <code>Telemedicina</code> (implementa <code>FacturableDigital</code>)</li>
+          <li><strong>Interfaz:</strong> <code>FacturableDigital</code> (métodos <code>generarFacturaXML()</code> y <code>enviarPorCorreo()</code>)</li>
+          <li><strong>Clase Externa:</strong> <code>Quirofano</code></li>
+        </ul>
+      </div>
+
+      <MermaidDiagram
+        title="Diagrama UML - Ejercicio Medio (Hospital)"
+        code={`classDiagram
+    class AtencionMedica {
+        <<abstract>>
+        - String idAtencion
+        - String nombrePaciente
+        - double costoBase
+        + calcularCostoTotal()* double
+        + registrarDiagnostico(String d): void
+    }
+    class FacturableDigital {
+        <<interface>>
+        + generarFacturaXML(): String
+        + enviarPorCorreo(String email): void
+    }
+    class Quirofano {
+        - String codigoSala
+        - boolean esterilizado
+    }
+    class ConsultaGeneral {
+        - boolean esRevisiónRutina
+        + calcularCostoTotal(): double
+    }
+    class CirugiaUrgencia {
+        - double horasDuracion
+        - Quirofano quirofanoAsignado
+        + calcularCostoTotal(): double
+    }
+    class Telemedicina {
+        - String plataformaVideo
+        + calcularCostoTotal(): double
+        + generarFacturaXML(): String
+        + enviarPorCorreo(String email): void
+    }
+
+    AtencionMedica <|-- ConsultaGeneral
+    AtencionMedica <|-- CirugiaUrgencia
+    AtencionMedica <|-- Telemedicina
+    FacturableDigital <|.. Telemedicina : implements
+    CirugiaUrgencia *-- Quirofano : tiene`}
+      />
+
+      <div class="solution-trigger-wrap">
+        <button type="button" class="solution-btn open-solution-btn" data-target-solution="sol-2">
+          🔒 Ingresa la clave para ver los resultados
+        </button>
+      </div>
+
+      <div id="sol-2" class="solution-content-hidden" style="display:none;">
+          <h3>1. Interfaz: FacturableDigital.java</h3>
+          <CodeBlock
+            lang="java"
+            code={`public interface FacturableDigital {
+    String generarFacturaXML();
+    void enviarPorCorreo(String emailDestino);
+}`}
+            title="FacturableDigital.java"
+          />
+
+          <h3>2. Clase Externa: Quirofano.java</h3>
+          <CodeBlock
+            lang="java"
+            code={`public class Quirofano {
+    private String codigoSala;
+    private boolean esterilizado;
+
+    public Quirofano(String codigoSala, boolean esterilizado) {
+        this.codigoSala = codigoSala;
+        this.esterilizado = esterilizado;
+    }
+
+    public String getCodigoSala() { return codigoSala; }
+    public boolean isEsterilizado() { return esterilizado; }
+}`}
+            title="Quirofano.java"
+          />
+
+          <h3>3. Clase Padre Abstracta: AtencionMedica.java</h3>
+          <CodeBlock
+            lang="java"
+            code={`public abstract class AtencionMedica {
+    private String idAtencion;
+    private String nombrePaciente;
+    private double costoBase;
+
+    public AtencionMedica(String idAtencion, String nombrePaciente, double costoBase) {
+        this.idAtencion = idAtencion;
+        this.nombrePaciente = nombrePaciente;
+        this.costoBase = costoBase;
+    }
+
+    // Método abstracto que obliga sobrescritura en hijas
+    public abstract double calcularCostoTotal();
+
+    public void registrarDiagnostico(String diagnostico) {
+        System.out.println("🩺 Diagnóstico de " + nombrePaciente + ": " + diagnostico);
+    }
+
+    public String getIdAtencion() { return idAtencion; }
+    public String getNombrePaciente() { return nombrePaciente; }
+    public double getCostoBase() { return costoBase; }
+}`}
+            title="AtencionMedica.java"
+          />
+
+          <h3>4. Clase Hija 1: ConsultaGeneral.java</h3>
+          <CodeBlock
+            lang="java"
+            code={`public class ConsultaGeneral extends AtencionMedica {
+    private boolean esRevisionRutina;
+
+    public ConsultaGeneral(String id, String paciente, double costoBase, boolean esRevisionRutina) {
+        super(id, paciente, costoBase);
+        this.esRevisionRutina = esRevisionRutina;
+    }
+
+    @Override
+    public double calcularCostoTotal() {
+        // Descuento del 20% si es revisión preventiva de rutina
+        return esRevisionRutina ? getCostoBase() * 0.80 : getCostoBase();
+    }
+}`}
+            title="ConsultaGeneral.java"
+          />
+
+          <h3>5. Clase Hija 2: CirugiaUrgencia.java (Con Clase Externa Quirofano)</h3>
+          <CodeBlock
+            lang="java"
+            code={`public class CirugiaUrgencia extends AtencionMedica {
+    private double horasDuracion;
+    private Quirofano quirofanoAsignado;
+
+    public CirugiaUrgencia(String id, String paciente, double costoBase, double horas, Quirofano q) {
+        super(id, paciente, costoBase);
+        this.horasDuracion = horas;
+        this.quirofanoAsignado = q;
+    }
+
+    @Override
+    public double calcularCostoTotal() {
+        // Recargo de $150 por cada hora de Quirófano
+        return getCostoBase() + (horasDuracion * 150.0);
+    }
+
+    public Quirofano getQuirofanoAsignado() { return quirofanoAsignado; }
+}`}
+            title="CirugiaUrgencia.java"
+          />
+
+          <h3>6. Clase Hija 3: Telemedicina.java (Implementa Interfaz)</h3>
+          <CodeBlock
+            lang="java"
+            code={`public class Telemedicina extends AtencionMedica implements FacturableDigital {
+    private String plataformaVideo;
+
+    public Telemedicina(String id, String paciente, double costoBase, String plataformaVideo) {
+        super(id, paciente, costoBase);
+        this.plataformaVideo = plataformaVideo;
+    }
+
+    @Override
+    public double calcularCostoTotal() {
+        // Tarifa fija de servidor +$10
+        return getCostoBase() + 10.0;
+    }
+
+    @Override
+    public String generarFacturaXML() {
+        return "<factura id='" + getIdAtencion() + "'><paciente>" + getNombrePaciente() + "</paciente><monto>" + calcularCostoTotal() + "</monto></factura>";
+    }
+
+    @Override
+    public void enviarPorCorreo(String emailDestino) {
+        System.out.println("📧 Factura enviada a " + emailDestino + " vía plataforma " + plataformaVideo);
+    }
+}`}
+            title="Telemedicina.java"
+          />
+
+          <h3>7. Clase Principal: Main.java</h3>
+          <CodeBlock
+            lang="java"
+            code={`public class Main {
+    public static void main(String[] args) {
+        Quirofano q1 = new Quirofano("SALA-A1", true);
+
+        AtencionMedica[] fichaMedica = {
+            new ConsultaGeneral("CG-101", "Carlos Mendoza", 50.0, true),
+            new CirugiaUrgencia("CU-202", "Ana Beltrán", 800.0, 3.5, q1),
+            new Telemedicina("TM-303", "Roberto Gómez", 40.0, "Zoom Medical")
+        };
+
+        System.out.println("=== POLIMORFISMO: CÁLCULO DE COSTOS EN HOSPITAL ===");
+        for (AtencionMedica atencion : fichaMedica) {
+            System.out.println("Paciente: " + atencion.getNombrePaciente() + " | Total a pagar: $" + atencion.calcularCostoTotal());
+        }
+
+        System.out.println("\\n=== INTERFAZ DE FACTURACIÓN DIGITAL ===");
+        Telemedicina consultaOnline = (Telemedicina) fichaMedica[2];
+        System.out.println("XML: " + consultaOnline.generarFacturaXML());
+        consultaOnline.enviarPorCorreo("roberto@email.com");
+    }
+}`}
+            title="Main.java"
+          />
+        </div>
+    </section>
+
+    <!-- Ejercicio 3: Complejo -->
+    <section class="exercise-section mb-12">
+      <div class="level-badge level-badge--complex">NIVEL COMPLEJO</div>
+      <h2>Ejercicio 3: Sistema de Reserva y Operaciones en Hotel de Lujo</h2>
+      
+      <p class="context-text">
+        <strong>Contexto:</strong> Un resort 5 estrellas administra sus habitaciones bajo un sistema automatizado de tarifas y estados. Hay habitaciones Estándar, Penthouse de Lujo y Suites Temáticas. El sistema debe controlar el servicio de limpieza, la seguridad y el cálculo de checkout con impuestos adicionales.
+      </p>
+
+      <div class="structure-box">
+        <h3>📐 Estructura de Clases</h3>
+        <ul>
+          <li><strong>Clase Padre Abstracta:</strong> <code>HabitacionHotel</code></li>
+          <li><strong>Clases Hijas:</strong> <code>HabitacionEstandar</code> (propia), <code>SuitePenthouse</code> (con clase externa <code>ServicioMayordomo</code>), <code>SuiteTematica</code> (implementa <code>SanitizableAutomatico</code>)</li>
+          <li><strong>Interfaz:</strong> <code>SanitizableAutomatico</code> (métodos <code>iniciarCicloDesinfeccion()</code>, <code>obtenerReporteSeguridad()</code>)</li>
+          <li><strong>Clase Externa:</strong> <code>ServicioMayordomo</code></li>
+        </ul>
+      </div>
+
+      <MermaidDiagram
+        title="Diagrama UML - Ejercicio Complejo (Hotel)"
+        code={`classDiagram
+    class HabitacionHotel {
+        <<abstract>>
+        - int numeroHabitacion
+        - double precioNocheBase
+        - boolean ocupada
+        + calcularCostoEstadia(int noches)* double
+        + realizarCheckIn(): void
+    }
+    class SanitizableAutomatico {
+        <<interface>>
+        + iniciarCicloDesinfeccion(): boolean
+        + obtenerReporteSeguridad(): String
+    }
+    class ServicioMayordomo {
+        - String nombreMayordomo
+        - int turnosDisponibles
+    }
+    class HabitacionEstandar {
+        - int cantidadCamas
+        + calcularCostoEstadia(int noches): double
+    }
+    class SuitePenthouse {
+        - boolean incluyeJacuzzi
+        - ServicioMayordomo mayordomoAsignado
+        + calcularCostoEstadia(int noches): double
+    }
+    class SuiteTematica {
+        - String tematicaDecoracion
+        + calcularCostoEstadia(int noches): double
+        + iniciarCicloDesinfeccion(): boolean
+        + obtenerReporteSeguridad(): String
+    }
+
+    HabitacionHotel <|-- HabitacionEstandar
+    HabitacionHotel <|-- SuitePenthouse
+    HabitacionHotel <|-- SuiteTematica
+    SanitizableAutomatico <|.. SuiteTematica : implements
+    SuitePenthouse *-- ServicioMayordomo : tiene`}
+      />
+
+      <div class="solution-trigger-wrap">
+        <button type="button" class="solution-btn open-solution-btn" data-target-solution="sol-3">
+          🔒 Ingresa la clave para ver los resultados
+        </button>
+      </div>
+
+      <div id="sol-3" class="solution-content-hidden" style="display:none;">
+          <h3>1. Interfaz: SanitizableAutomatico.java</h3>
+          <CodeBlock
+            lang="java"
+            code={`public interface SanitizableAutomatico {
+    boolean iniciarCicloDesinfeccion();
+    String obtenerReporteSeguridad();
+}`}
+            title="SanitizableAutomatico.java"
+          />
+
+          <h3>2. Clase Externa: ServicioMayordomo.java</h3>
+          <CodeBlock
+            lang="java"
+            code={`public class ServicioMayordomo {
+    private String nombreMayordomo;
+    private int turnosDisponibles;
+
+    public ServicioMayordomo(String nombreMayordomo, int turnosDisponibles) {
+        this.nombreMayordomo = nombreMayordomo;
+        this.turnosDisponibles = turnosDisponibles;
+    }
+
+    public String getNombreMayordomo() { return nombreMayordomo; }
+    public int getTurnosDisponibles() { return turnosDisponibles; }
+}`}
+            title="ServicioMayordomo.java"
+          />
+
+          <h3>3. Clase Padre Abstracta: HabitacionHotel.java</h3>
+          <CodeBlock
+            lang="java"
+            code={`public abstract class HabitacionHotel {
+    private int numeroHabitacion;
+    private double precioNocheBase;
+    private boolean ocupada;
+
+    public HabitacionHotel(int numeroHabitacion, double precioNocheBase) {
+        this.numeroHabitacion = numeroHabitacion;
+        this.precioNocheBase = precioNocheBase;
+        this.ocupada = false;
+    }
+
+    public abstract double calcularCostoEstadia(int noches);
+
+    public void realizarCheckIn() {
+        if (!ocupada) {
+            ocupada = true;
+            System.out.println("🔑 Check-in exitoso en habitación N° " + numeroHabitacion);
+        } else {
+            System.out.println("❌ Habitación " + numeroHabitacion + " se encuentra ocupada.");
+        }
+    }
+
+    public int getNumeroHabitacion() { return numeroHabitacion; }
+    public double getPrecioNocheBase() { return precioNocheBase; }
+    public boolean isOcupada() { return ocupada; }
+}`}
+            title="HabitacionHotel.java"
+          />
+
+          <h3>4. Clase Hija 1: HabitacionEstandar.java</h3>
+          <CodeBlock
+            lang="java"
+            code={`public class HabitacionEstandar extends HabitacionHotel {
+    private int cantidadCamas;
+
+    public HabitacionEstandar(int numero, double precioBase, int camas) {
+        super(numero, precioBase);
+        this.cantidadCamas = camas;
+    }
+
+    @Override
+    public double calcularCostoEstadia(int noches) {
+        return getPrecioNocheBase() * noches;
+    }
+}`}
+            title="HabitacionEstandar.java"
+          />
+
+          <h3>5. Clase Hija 2: SuitePenthouse.java (Con Clase Externa ServicioMayordomo)</h3>
+          <CodeBlock
+            lang="java"
+            code={`public class SuitePenthouse extends HabitacionHotel {
+    private boolean incluyeJacuzzi;
+    private ServicioMayordomo mayordomoAsignado;
+
+    public SuitePenthouse(int numero, double precioBase, boolean jacuzzi, ServicioMayordomo m) {
+        super(numero, precioBase);
+        this.incluyeJacuzzi = jacuzzi;
+        this.mayordomoAsignado = m;
+    }
+
+    @Override
+    public double calcularCostoEstadia(int noches) {
+        // Recargo del 35% de tasa de lujo + tarifa fija de mayordomo ($100/noche)
+        double base = getPrecioNocheBase() * noches * 1.35;
+        return base + (noches * 100.0);
+    }
+
+    public ServicioMayordomo getMayordomoAsignado() { return mayordomoAsignado; }
+}`}
+            title="SuitePenthouse.java"
+          />
+
+          <h3>6. Clase Hija 3: SuiteTematica.java (Implementa Interfaz)</h3>
+          <CodeBlock
+            lang="java"
+            code={`public class SuiteTematica extends HabitacionHotel implements SanitizableAutomatico {
+    private String tematicaDecoracion;
+
+    public SuiteTematica(int numero, double precioBase, String tematica) {
+        super(numero, precioBase);
+        this.tematicaDecoracion = tematica;
+    }
+
+    @Override
+    public double calcularCostoEstadia(int noches) {
+        return (getPrecioNocheBase() * noches) + 80.0; // $80 comisión por ambientación
+    }
+
+    @Override
+    public boolean iniciarCicloDesinfeccion() {
+        System.out.println("🤖 Activando lámparas UV y vaporización de ozono en Suite " + getTematicaDecoracion());
+        return true;
+    }
+
+    @Override
+    public String obtenerReporteSeguridad() {
+        return "OK - Habitación temáticas '" + tematicaDecoracion + "' desinfectada al 99.9%.";
+    }
+
+    public String getTematicaDecoracion() { return tematicaDecoracion; }
+}`}
+            title="SuiteTematica.java"
+          />
+
+          <h3>7. Clase Principal: Main.java</h3>
+          <CodeBlock
+            lang="java"
+            code={`public class Main {
+    public static void main(String[] args) {
+        ServicioMayordomo mayordomoVIP = new ServicioMayordomo("Jean-Luc", 5);
+
+        HabitacionHotel[] resort = {
+            new HabitacionEstandar(101, 80.0, 2),
+            new SuitePenthouse(501, 350.0, true, mayordomoVIP),
+            new SuiteTematica(302, 180.0, "Egipto Antiguo")
+        };
+
+        System.out.println("=== CONTROL POLIMÓRFICO DE HABITACIONES ===");
+        for (HabitacionHotel h : resort) {
+            h.realizarCheckIn();
+            System.out.println("   Costos por 3 noches: $" + h.calcularCostoEstadia(3));
+        }
+
+        System.out.println("\\n=== INTERFAZ DE SANITIZACIÓN AUTOMÁTICA ===");
+        SanitizableAutomatico suiteHigienica = (SuiteTematica) resort[2];
+        suiteHigienica.iniciarCicloDesinfeccion();
+        System.out.println(suiteHigienica.obtenerReporteSeguridad());
+    }
+}`}
+            title="Main.java"
+          />
+        </div>
+    </section>
+
+    <!-- Navegación inferior -->
+    <!-- Modal de Contraseña para Desbloquear Resultados -->
+    <div id="passwordModal" class="poo-modal" aria-hidden="true">
+      <div class="poo-modal-backdrop" id="closePassModalBackdrop"></div>
+      <div class="poo-modal-panel" role="dialog" aria-modal="true" style="max-width: 420px; text-align: center; padding: 2rem;">
+        <div class="modal-lock-icon" style="font-size: 2.5rem; margin-bottom: 0.5rem;">🔐</div>
+        <h3 style="margin-bottom: 0.5rem; font-size: 1.3rem;">Acceso Privado a Resultados</h3>
+        <p style="font-size: 0.92rem; color: var(--text-secondary); margin-bottom: 1.5rem;">
+          Ingresa la clave para ver los resultados
+        </p>
+
+        <form id="passForm" style="display: flex; flex-direction: column; gap: 1rem;">
+          <input
+            type="password"
+            id="passInput"
+            placeholder="Clave (ej: 26082026)"
+            required
+            style="padding: 0.75rem 1rem; border-radius: 8px; border: 2px solid var(--border-color); font-size: 1.1rem; text-align: center; font-weight: 700; background: var(--bg-primary); color: var(--text-primary);"
+          />
+          <p id="passErrorMsg" style="color: #ef4444; font-weight: 700; font-size: 0.88rem; display: none; margin: 0;">
+            ⚠️ Clave incorrecta. Inténtalo de nuevo.
+          </p>
+          <div style="display: flex; gap: 0.75rem; justify-content: center; margin-top: 0.5rem;">
+            <button type="button" id="btnCancelPass" style="padding: 0.6rem 1.2rem; border-radius: 8px; border: 1.5px solid var(--border-color); background: transparent; color: var(--text-primary); font-weight: 700; cursor: pointer;">
+              Cancelar
+            </button>
+            <button type="submit" style="padding: 0.6rem 1.4rem; border-radius: 8px; border: none; background: #e65100; color: white; font-weight: 800; cursor: pointer;">
+              Desbloquear 🔓
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <nav class="nav-bottom">
+      <a href="/course/java/interfaces-contratos/" class="prev">← Interfaces y Contratos</a>
+      <a href="/course/java/composicion-agregacion/" class="next">Composición y Arreglos →</a>
+    </nav>
+  </article>
+</Layout>
+
+<script is:inline>
+(function() {
+  var targetSolId = null;
+  var modal = document.getElementById('passwordModal');
+  var passForm = document.getElementById('passForm');
+  var passInput = document.getElementById('passInput');
+  var passErrorMsg = document.getElementById('passErrorMsg');
+  var backdrop = document.getElementById('closePassModalBackdrop');
+  var btnCancel = document.getElementById('btnCancelPass');
+
+  function getExpectedKey() {
+    var now = new Date();
+    var dd = String(now.getDate()).padStart(2, '0');
+    var mm = String(now.getMonth() + 1).padStart(2, '0');
+    var yyyy = now.getFullYear();
+    return dd + mm + yyyy; // Ej: 26082026
+  }
+
+  function openModal(solId) {
+    targetSolId = solId;
+    passInput.value = '';
+    passErrorMsg.style.display = 'none';
+    modal.setAttribute('aria-hidden', 'false');
+    modal.style.display = 'flex';
+    setTimeout(function() { passInput.focus(); }, 100);
+  }
+
+  function closeModal() {
+    modal.setAttribute('aria-hidden', 'true');
+    modal.style.display = 'none';
+    targetSolId = null;
+  }
+
+  document.querySelectorAll('.open-solution-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var solId = btn.getAttribute('data-target-solution');
+      var targetDiv = document.getElementById(solId);
+      if (targetDiv && targetDiv.style.display !== 'none') {
+        // Si ya está visible, se vuelve a ocultar
+        targetDiv.style.display = 'none';
+        btn.textContent = '🔒 Ingresa la clave para ver los resultados';
+        return;
+      }
+      openModal(solId);
+    });
+  });
+
+  if (backdrop) backdrop.addEventListener('click', closeModal);
+  if (btnCancel) btnCancel.addEventListener('click', closeModal);
+
+  if (passForm) {
+    passForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      var enteredKey = passInput.value.trim();
+      var expectedKey = getExpectedKey();
+
+      if (enteredKey === expectedKey) {
+        if (targetSolId) {
+          var targetDiv = document.getElementById(targetSolId);
+          if (targetDiv) {
+            targetDiv.style.display = 'block';
+            var triggerBtn = document.querySelector('[data-target-solution="' + targetSolId + '"]');
+            if (triggerBtn) {
+              triggerBtn.textContent = '🔓 Ocultar Resultados';
+            }
+          }
+        }
+        closeModal();
+      } else {
+        passErrorMsg.style.display = 'block';
+        passInput.select();
+      }
+    });
+  }
+})();
+</script>
+
+<style>
+  .header-box {
+    background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+    border: 2px solid #e65100;
+    padding: 2rem;
+    border-radius: 16px;
+    margin-bottom: 2rem;
+  }
+  :global(.dark) .header-box {
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    border-color: #f97316;
+  }
+  .badge-tag {
+    background: #e65100;
+    color: white;
+    font-weight: 800;
+    font-size: 0.8rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    text-transform: uppercase;
+  }
+  .rules-card {
+    background: var(--bg-secondary);
+    border: 1.5px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 2.5rem;
+  }
+  .rules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 0.8rem;
+    list-style: none;
+    padding: 0;
+    margin-top: 1rem;
+  }
+  .rules-grid li {
+    background: var(--bg-primary);
+    padding: 0.8rem 1rem;
+    border-radius: 8px;
+    font-size: 0.92rem;
+    border: 1px solid var(--border-color);
+  }
+  .exercise-section {
+    background: var(--bg-primary);
+    border: 2px solid var(--border-color);
+    border-radius: 16px;
+    padding: 2rem;
+    position: relative;
+  }
+  .level-badge {
+    display: inline-block;
+    font-weight: 900;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    padding: 0.3rem 0.8rem;
+    border-radius: 6px;
+    color: white;
+    margin-bottom: 0.75rem;
+  }
+  .level-badge--basic { background: #2e7d32; }
+  .level-badge--medium { background: #ed6c02; }
+  .level-badge--complex { background: #d32f2f; }
+
+  .context-text {
+    font-size: 1.05rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+  }
+  .structure-box {
+    background: #fff8e1;
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    border: 2px solid #ffa000;
+    border-left: 6px solid #ff6f00;
+  }
+  :global(.dark) .structure-box {
+    background: #1e293b;
+    border-color: #f97316;
+    border-left-color: #ea580c;
+  }
+  .structure-box h3 {
+    margin-top: 0;
+    font-size: 1.15rem;
+    color: #b71c1c;
+  }
+  :global(.dark) .structure-box h3 {
+    color: #fb923c;
+  }
+  .structure-box ul {
+    margin: 0.75rem 0 0 1rem;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+  .structure-box li {
+    font-size: 0.98rem;
+    line-height: 1.5;
+  }
+  .structure-box code {
+    background: #1e1210;
+    color: #38edf6;
+    padding: 0.2rem 0.6rem;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 0.9em;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  :global(.dark) .structure-box code {
+    background: #0f172a;
+    color: #38bdf8;
+    border-color: #334155;
+  }
+  .solution-details {
+    margin-top: 1.5rem;
+  }
+  .solution-btn {
+    background: #e65100;
+    color: white;
+    font-weight: 800;
+    padding: 0.8rem 1.2rem;
+    border-radius: 10px;
+    cursor: pointer;
+    user-select: none;
+    list-style: none;
+    display: inline-block;
+    transition: transform 0.1s, background-color 0.15s;
+  }
+  .solution-btn:hover {
+    background: #bf360c;
+    transform: translateY(-1px);
+  }
+  .solution-content {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 2px dashed var(--border-color);
+  }
+
+  /* Estilos del modal de contraseña */
+  .poo-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+  }
+  .poo-modal[aria-hidden="false"] {
+    display: flex !important;
+  }
+  .poo-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(30, 18, 16, 0.5);
+    backdrop-filter: blur(6px);
+  }
+  .poo-modal-panel {
+    position: relative;
+    width: min(100%, 420px);
+    background: var(--bg-primary);
+    border: 3px solid var(--border-color);
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    z-index: 2;
+  }
+</style>

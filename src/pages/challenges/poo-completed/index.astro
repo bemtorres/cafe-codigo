@@ -1,0 +1,808 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import MermaidDiagram from '../../../components/challenges/MermaidDiagram.astro';
+import CodeBlock from '../../../components/CodeBlock.astro';
+import { pooCompletedChallenges, toMermaidCompleted } from '../../../data/pooCompletedChallenges';
+import { generateJavaCode, generatePythonCode, generateCsharpCode, generateCppCode } from '../../../lib/pooCodeGenerators';
+
+const totalChallenges = pooCompletedChallenges.length;
+---
+
+<Layout
+  title="Taller Práctico de POO Completa — 20 Desafíos Avanzados"
+  description="20 ejercicios de Programación Orientada a Objetos en Java con la estructura estricta: 1 Padre + 3 Hijas + 1 Interfaz + 1 Clase Externa + 1 Propia."
+>
+  <article class="content-section">
+    <p class="kicker">POO Completa y Arquitectura</p>
+    <h1>Desafíos de POO Completa</h1>
+    <p>
+      20 sistemas reales diseñados con la <strong>estructura técnica estricta</strong>: 
+      <strong>1 Clase Padre + 3 Clases Hijas + 1 Interfaz + 1 Clase Externa (Composición) + 1 Clase con comportamiento propio</strong>. 
+      Cada desafío incluye su <strong>Diagrama UML interactivo</strong> y su <strong>solución completa en Java protegida por clave</strong>.
+    </p>
+    <p class="muted">
+      Ruta canónica: <code>/challenges/poo-completed</code> · Progreso guardado como <code>aprende_poo_completed_challenges_v1</code> en este navegador.
+    </p>
+
+    <!-- Banner Neobrutalista de Reglas de Arquitectura -->
+    <div class="rules-card">
+      <div class="rules-card-header">
+        <span class="rules-badge">ESTRUCTURA TÉCNICA ESTRICTA</span>
+        <h3>🏛️ Reglas Arquitectónicas de cada Desafío</h3>
+      </div>
+      <ul class="rules-grid">
+        <li><strong>1. Clase Padre:</strong> 1 Clase base o abstracta con atributos encauzados y métodos polimórficos.</li>
+        <li><strong>2. Herencia:</strong> Exactamente 3 Clases Hijas que extienden de la clase padre.</li>
+        <li><strong>3. Contratos:</strong> Al menos 1 de las Clases Hijas implementa una Interfaz con su contrato explícito.</li>
+        <li><strong>4. Composición:</strong> 1 de las Clases Hijas contiene un objeto de una Clase Externa independiente.</li>
+        <li><strong>5. Especialización:</strong> 1 de las Clases Hijas define atributos o comportamientos propios únicos.</li>
+        <li><strong>6. Main Completo:</strong> Ejecución polimórfica demostrando la instanciación y llamadas a métodos.</li>
+      </ul>
+    </div>
+
+    <!-- Barra de Herramientas -->
+    <div class="exercise-toolbar">
+      <p class="exercise-toolbar-hint">20 desafíos con arquitectura completa · clic para expandir diagrama y checklist</p>
+      <div class="exercise-toolbar-actions">
+        <button type="button" id="expandAll" class="toolbar-btn">Expandir todo</button>
+        <button type="button" id="collapseAll" class="toolbar-btn toolbar-btn--ghost">Colapsar todo</button>
+      </div>
+    </div>
+
+    <!-- Lista de Desafíos Neobrutalistas -->
+    <div id="exerciseList" class="exercise-list">
+      {pooCompletedChallenges.map((ch) => {
+        const metaText = `${ch.parent.name} → [${ch.ownClassSpec.name}, ${ch.children[1].name} (*-- ${ch.externalClass.name}), ${ch.children[2].name} (<|.. ${ch.interfaceSpec.name})]`;
+        return (
+          <details class="ex-card ex-card--completed" id={ch.slug} data-ex-id={`poo-comp-${ch.id}`}>
+            <summary class="ex-summary">
+              <span class="ex-num" aria-hidden="true">{String(ch.id).padStart(2, '0')}</span>
+              <div class="ex-summary-main">
+                <h3>{ch.title}</h3>
+                <span class="ex-summary-meta">{metaText}</span>
+              </div>
+              <span class="ex-progress" data-progress-for={`poo-comp-${ch.id}`}>0 / 5</span>
+              <span class="ex-chevron" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6" /></svg>
+              </span>
+            </summary>
+
+            <div class="ex-body">
+              <p class="ex-statement"><strong>Contexto:</strong> {ch.context}</p>
+              <p class="ex-task"><strong>Qué hacer:</strong> {ch.task}</p>
+
+              <!-- Resumen visual de clases neobrutalista -->
+              <div class="structure-box">
+                <h4>📐 Componentes del Sistema:</h4>
+                <ul>
+                  <li><strong>Padre Abstracto:</strong> <code>{ch.parent.name}</code></li>
+                  <li><strong>Interfaz Contrato:</strong> <code>{ch.interfaceSpec.name}</code></li>
+                  <li><strong>Clase Externa:</strong> <code>{ch.externalClass.name}</code></li>
+                  <li><strong>Hija con Propio:</strong> <code>{ch.ownClassSpec.name}</code></li>
+                </ul>
+              </div>
+
+              <!-- Diagrama UML -->
+              <MermaidDiagram title={`Diagrama UML — ${ch.title}`} code={toMermaidCompleted(ch)} />
+
+              <!-- Checklist del desafío -->
+              <div class="ex-checks">
+                <label class="chk"><input type="checkbox" data-check-id="padre" /> Creé la clase padre <code>{ch.parent.name}</code></label>
+                <label class="chk"><input type="checkbox" data-check-id="interfaz" /> Creé la interfaz <code>{ch.interfaceSpec.name}</code></label>
+                <label class="chk"><input type="checkbox" data-check-id="externa" /> Usé la clase externa <code>{ch.externalClass.name}</code></label>
+                <label class="chk"><input type="checkbox" data-check-id="hijas" /> Implementé las 3 clases hijas</label>
+                <label class="chk"><input type="checkbox" data-check-id="main" /> Probé polimorfismo en <code>Main.java</code></label>
+              </div>
+
+              <!-- Solución protegida por contraseña inline abajo del ejercicio -->
+              <div class="solution-trigger-wrap" style="margin-top: 1rem;">
+                <button type="button" class="solution-btn open-solution-btn" data-target-solution={`pooc-sol-${ch.id}`}>
+                  🔒 Ingresa la clave para ver los resultados
+                </button>
+              </div>
+
+              <div id={`pooc-sol-${ch.id}`} class="solution-content-hidden" style="display:none; margin-top: 1.25rem; padding: 1.25rem; background: var(--bg-secondary); border-radius: 14px; border: 2px solid #e65100;">
+                <h4 style="margin-top: 0; color: #e65100; font-size: 1.15rem; display: flex; align-items: center; gap: 0.4rem;">
+                  <span>💡 Soluciones del Sistema:</span> <span>{ch.title}</span>
+                </h4>
+
+                <!-- Pestañas de Lenguaje -->
+                <div class="lang-tabs" style="display: flex; gap: 0.4rem; margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; flex-wrap: wrap;">
+                  <button type="button" class="tab-btn is-active" data-lang="java" data-ch={ch.id} style="padding: 0.4rem 0.8rem; border-radius: 6px; font-weight: 800; border: 1px solid var(--border-color); background: #e65100; color: white; cursor: pointer;">☕ Java</button>
+                  <button type="button" class="tab-btn" data-lang="python" data-ch={ch.id} style="padding: 0.4rem 0.8rem; border-radius: 6px; font-weight: 800; border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary); cursor: pointer;">🐍 Python</button>
+                  <button type="button" class="tab-btn" data-lang="csharp" data-ch={ch.id} style="padding: 0.4rem 0.8rem; border-radius: 6px; font-weight: 800; border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary); cursor: pointer;">🎮 C#</button>
+                  <button type="button" class="tab-btn" data-lang="cpp" data-ch={ch.id} style="padding: 0.4rem 0.8rem; border-radius: 6px; font-weight: 800; border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary); cursor: pointer;">⚙️ C++</button>
+                </div>
+
+                <div class="lang-panels" data-ch-panels={ch.id}>
+                  <div class="panel-item panel-java" style="display: block;">
+                    <CodeBlock lang="java" code={generateJavaCode(ch)} title={`${ch.parent.name}Sistema.java`} />
+                  </div>
+                  <div class="panel-item panel-python" style="display: none;">
+                    <CodeBlock lang="python" code={generatePythonCode(ch)} title={`${ch.slug}_sistema.py`} />
+                  </div>
+                  <div class="panel-item panel-csharp" style="display: none;">
+                    <CodeBlock lang="csharp" code={generateCsharpCode(ch)} title={`${ch.parent.name}Sistema.cs`} />
+                  </div>
+                  <div class="panel-item panel-cpp" style="display: none;">
+                    <CodeBlock lang="cpp" code={generateCppCode(ch)} title={`${ch.slug}_sistema.cpp`} />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </details>
+        );
+      })}
+    </div>
+
+    <!-- Modal de Contraseña para Desbloquear Resultados -->
+    <div id="passwordModal" class="poo-modal" aria-hidden="true">
+      <div class="poo-modal-backdrop" id="closePassModalBackdrop"></div>
+      <div class="poo-modal-panel" role="dialog" aria-modal="true">
+        <div class="modal-lock-icon">🔐</div>
+        <h3>Acceso Privado a Resultados</h3>
+        <p class="modal-subtext">Ingresa la clave para ver los resultados</p>
+
+        <form id="passForm" class="modal-form">
+          <input
+            type="password"
+            id="passInput"
+            placeholder="Clave (ej: 27082026)"
+            required
+          />
+          <p id="passErrorMsg" class="modal-error">
+            ⚠️ Clave incorrecta. Inténtalo de nuevo.
+          </p>
+          <div class="modal-actions">
+            <button type="button" id="btnCancelPass" class="modal-btn modal-btn--cancel">
+              Cancelar
+            </button>
+            <button type="submit" class="modal-btn modal-btn--submit">
+              Desbloquear 🔓
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Navegación inferior neobrutalista -->
+    <div class="next-modules">
+      <a href="/challenges/inheritance/" class="unit-card">
+        <h3>← Desafíos de Herencia</h3>
+        <p>20 jerarquías de 3 niveles y colecciones polimórficas.</p>
+      </a>
+      <a href="/challenges/interface/" class="unit-card">
+        <h3>Desafíos de Interfaces →</h3>
+        <p>20 contratos de interfaces con implementaciones múltiples.</p>
+      </a>
+    </div>
+  </article>
+</Layout>
+
+<script is:inline>
+(function() {
+  const KEY = 'aprende_poo_completed_challenges_v1';
+  const readStore = () => {
+    try { return JSON.parse(localStorage.getItem(KEY) || '{}'); } catch { return {}; }
+  };
+  const writeStore = (s) => localStorage.setItem(KEY, JSON.stringify(s));
+  const updateProgressFor = (exId) => {
+    const card = document.querySelector('.ex-card[data-ex-id="' + exId + '"]');
+    if (!card) return;
+    const boxes = card.querySelectorAll('input[type="checkbox"][data-check-id]');
+    const done = Array.from(boxes).filter((b) => b.checked).length;
+    const total = boxes.length;
+    const els = card.querySelectorAll('[data-progress-for="' + exId + '"]');
+    els.forEach((el) => {
+      el.textContent = done + ' / ' + total;
+      el.classList.toggle('is-done', done === total && total > 0);
+    });
+  };
+
+  document.querySelectorAll('.ex-card[data-ex-id]').forEach((card) => {
+    const exId = card.getAttribute('data-ex-id');
+    const perEx = (readStore()[exId]) || {};
+    card.querySelectorAll('input[type="checkbox"][data-check-id]').forEach((input) => {
+      const checkId = input.getAttribute('data-check-id');
+      input.checked = Boolean(perEx[checkId]);
+      input.addEventListener('click', (e) => e.stopPropagation());
+      input.addEventListener('change', () => {
+        const s = readStore();
+        if (!s[exId]) s[exId] = {};
+        s[exId][checkId] = input.checked;
+        writeStore(s);
+        updateProgressFor(exId);
+      });
+    });
+    updateProgressFor(exId);
+  });
+
+  document.getElementById('expandAll')?.addEventListener('click', () => {
+    document.querySelectorAll('.ex-card[id]').forEach((d) => (d.open = true));
+  });
+  document.getElementById('collapseAll')?.addEventListener('click', () => {
+    document.querySelectorAll('.ex-card[id]').forEach((d) => (d.open = false));
+  });
+
+  // Lógica de contraseña para ver solución inline
+  let targetSolId = null;
+  const passModal = document.getElementById('passwordModal');
+  const passForm = document.getElementById('passForm');
+  const passInput = document.getElementById('passInput');
+  const passErrorMsg = document.getElementById('passErrorMsg');
+  const backdrop = document.getElementById('closePassModalBackdrop');
+  const btnCancelPass = document.getElementById('btnCancelPass');
+
+  function getExpectedKey() {
+    const now = new Date();
+    const dd = String(now.getDate()).padStart(2, '0');
+    const mm = String(now.getMonth() + 1).padStart(2, '0');
+    const yyyy = now.getFullYear();
+    return dd + mm + yyyy; // Ej: 27082026
+  }
+
+  function openPassModal(solId) {
+    targetSolId = solId;
+    if (passInput) passInput.value = '';
+    if (passErrorMsg) passErrorMsg.style.display = 'none';
+    if (passModal) {
+      passModal.classList.add('is-open');
+      passModal.setAttribute('aria-hidden', 'false');
+      setTimeout(() => passInput?.focus(), 100);
+    }
+  }
+
+  function closePassModal() {
+    if (passModal) {
+      passModal.classList.remove('is-open');
+      passModal.setAttribute('aria-hidden', 'true');
+    }
+    targetSolId = null;
+  }
+
+  document.querySelectorAll('.open-solution-btn').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const solId = btn.getAttribute('data-target-solution');
+      const targetDiv = document.getElementById(solId);
+      if (targetDiv && targetDiv.style.display !== 'none') {
+        targetDiv.style.display = 'none';
+        btn.textContent = '🔒 Ingresa la clave para ver los resultados';
+        return;
+      }
+      openPassModal(solId);
+    });
+  });
+
+  if (backdrop) backdrop.addEventListener('click', closePassModal);
+  if (btnCancelPass) btnCancelPass.addEventListener('click', closePassModal);
+
+  if (passForm) {
+    passForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const enteredKey = passInput.value.trim();
+      const expectedKey = getExpectedKey();
+
+      if (enteredKey === expectedKey) {
+        if (targetSolId) {
+          const targetDiv = document.getElementById(targetSolId);
+          if (targetDiv) {
+            targetDiv.style.display = 'block';
+            const triggerBtn = document.querySelector('[data-target-solution="' + targetSolId + '"]');
+            if (triggerBtn) {
+              triggerBtn.textContent = '🔓 Ocultar Resultados';
+            }
+          }
+        }
+        closePassModal();
+      } else {
+        if (passErrorMsg) passErrorMsg.style.display = 'block';
+        passInput?.select();
+      }
+    });
+  }
+
+  // Manejo de Pestañas Multilenguaje
+  document.querySelectorAll('.tab-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const lang = btn.getAttribute('data-lang');
+      const chId = btn.getAttribute('data-ch');
+      const container = document.querySelector('[data-ch-panels="' + chId + '"]');
+      if (!container) return;
+
+      const parentWrap = btn.parentElement;
+      if (parentWrap) {
+        parentWrap.querySelectorAll('.tab-btn').forEach((b) => {
+          b.classList.remove('is-active');
+          b.style.background = 'var(--bg-primary)';
+          b.style.color = 'var(--text-primary)';
+        });
+      }
+      btn.classList.add('is-active');
+      btn.style.background = '#e65100';
+      btn.style.color = 'white';
+
+      container.querySelectorAll('.panel-item').forEach((panel) => {
+        if (panel.classList.contains('panel-' + lang)) {
+          panel.style.display = 'block';
+        } else {
+          panel.style.display = 'none';
+        }
+      });
+    });
+  });
+
+  const openFromHash = () => {
+    const hash = location.hash.replace(/^#/, '');
+    if (!hash) return;
+    const target = document.getElementById(hash);
+    if (target && target.classList.contains('ex-card') && 'open' in target) {
+      target.open = true;
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+  window.addEventListener('hashchange', openFromHash);
+  if (location.hash) setTimeout(openFromHash, 80);
+})();
+</script>
+
+<style>
+  .kicker { margin: 0; font-size: 0.7rem; font-weight: 900; letter-spacing: 0.16em; text-transform: uppercase; color: #e65100; }
+  .muted { color: var(--text-muted); font-weight: 650; line-height: 1.6; }
+  
+  .rules-card {
+    background: linear-gradient(135deg, rgba(255, 243, 224, 0.9) 0%, rgba(255, 255, 255, 0.95) 100%);
+    border: 3px solid #1e1210;
+    border-radius: 18px;
+    padding: 1.25rem 1.5rem;
+    margin: 1.25rem 0 1.5rem;
+    box-shadow: 0 16px 34px rgba(30, 18, 16, 0.08);
+  }
+  :global(.dark) .rules-card {
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%);
+    border-color: #f97316;
+  }
+  .rules-card-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    margin-bottom: 0.85rem;
+  }
+  .rules-badge {
+    align-self: flex-start;
+    background: #e65100;
+    color: white;
+    font-weight: 900;
+    font-size: 0.65rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    letter-spacing: 0.05em;
+  }
+  .rules-card h3 {
+    margin: 0;
+    color: #e65100;
+    font-size: 1.25rem;
+    font-weight: 900;
+  }
+  :global(.dark) .rules-card h3 {
+    color: #f97316;
+  }
+  .rules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 0.65rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .rules-grid li {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 0.65rem 0.85rem;
+    border-radius: 12px;
+    font-size: 0.86rem;
+    line-height: 1.45;
+    border: 2px solid #1e1210;
+    box-shadow: 2px 2px 0 rgba(30, 18, 16, 0.1);
+  }
+  :global(.dark) .rules-grid li {
+    background: #1e293b;
+    border-color: #334155;
+    color: #f8fafc;
+  }
+
+  .exercise-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin: 1.25rem 0 0.9rem;
+  }
+  .exercise-toolbar-hint {
+    margin: 0;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+  .exercise-toolbar-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+  .toolbar-btn {
+    appearance: none;
+    border: 2px solid #1e1210;
+    background: #e65100;
+    color: #fff;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    font-size: 0.82rem;
+    padding: 0.42rem 0.85rem;
+    border-radius: 999px;
+    cursor: pointer;
+    box-shadow: 3px 3px 0 #1e1210;
+    transition: transform 0.1s;
+  }
+  .toolbar-btn:hover {
+    transform: translateY(-1px);
+  }
+  .toolbar-btn--ghost {
+    background: #fff;
+    color: #1e1210;
+  }
+
+  .exercise-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+  .ex-card {
+    border: 3px solid var(--border);
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.88);
+    box-shadow: 0 16px 34px rgba(30, 18, 16, 0.08);
+    scroll-margin-top: 1.25rem;
+    overflow: hidden;
+  }
+  :global(.dark) .ex-card {
+    background: var(--bg-primary);
+  }
+  .ex-card[open] {
+    background: #fff;
+  }
+  :global(.dark) .ex-card[open] {
+    background: var(--bg-primary);
+  }
+  .ex-summary {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.85rem 0.9rem;
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+  }
+  .ex-summary::-webkit-details-marker { display: none; }
+  .ex-summary::marker { display: none; }
+  
+  .ex-num {
+    flex-shrink: 0;
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    background: #1e1210;
+    color: #fff8ee;
+    border: 2px solid #1e1210;
+    border-radius: 12px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    font-size: 0.82rem;
+    box-shadow: 2px 2px 0 rgba(30, 18, 16, 0.14);
+  }
+  .ex-card[open] .ex-num {
+    background: #e65100;
+  }
+  .ex-summary-main {
+    flex: 1;
+    min-width: 0;
+  }
+  .ex-summary-main h3 {
+    margin: 0;
+    color: #e65100;
+    font-size: 1.02rem;
+    line-height: 1.25;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 900;
+  }
+  :global(.dark) .ex-summary-main h3 {
+    color: #f97316;
+  }
+  .ex-summary-meta {
+    display: block;
+    margin-top: 0.1rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .ex-progress {
+    flex-shrink: 0;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    font-size: 0.78rem;
+    color: #1e1210;
+    background: #fff9c4;
+    border: 2px solid #1e1210;
+    border-radius: 999px;
+    padding: 0.2rem 0.55rem;
+    min-width: 74px;
+    text-align: center;
+    box-shadow: 2px 2px 0 rgba(30, 18, 16, 0.1);
+  }
+  .ex-progress.is-done {
+    background: #06d6a0;
+    color: #fff;
+  }
+  .ex-chevron {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    display: grid;
+    place-items: center;
+    background: #fff;
+    border: 2px solid #1e1210;
+    border-radius: 999px;
+    box-shadow: 2px 2px 0 rgba(30, 18, 16, 0.1);
+    transition: transform 0.2s, background 0.2s;
+    color: #1e1210;
+  }
+  .ex-card[open] .ex-chevron {
+    transform: rotate(180deg);
+    background: #ffd166;
+  }
+
+  .ex-body {
+    padding: 0.9rem 1.1rem 1rem;
+    border-top: 2px dashed rgba(30, 18, 16, 0.12);
+    background: rgba(255, 255, 255, 0.35);
+  }
+  :global(.dark) .ex-body {
+    background: rgba(15, 23, 42, 0.4);
+  }
+  .ex-statement, .ex-task {
+    margin: 0 0 0.55rem;
+    color: var(--text-secondary);
+    font-weight: 650;
+    line-height: 1.55;
+  }
+
+  .structure-box {
+    background: #fff3e0;
+    padding: 0.9rem 1.1rem;
+    border-radius: 14px;
+    margin: 0.85rem 0 1rem;
+    border: 2px solid #1e1210;
+    box-shadow: 3px 3px 0 rgba(30, 18, 16, 0.1);
+  }
+  :global(.dark) .structure-box {
+    background: #1e293b;
+    border-color: #334155;
+  }
+  .structure-box h4 {
+    margin: 0 0 0.4rem;
+    color: #e65100;
+    font-size: 0.95rem;
+    font-weight: 900;
+  }
+  :global(.dark) .structure-box h4 {
+    color: #f97316;
+  }
+  .structure-box ul {
+    margin: 0;
+    padding-left: 1.1rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 0.4rem;
+  }
+  .structure-box li {
+    font-size: 0.85rem;
+  }
+  .structure-box code {
+    background: #1e1210;
+    color: #38edf6;
+    padding: 0.15rem 0.45rem;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 0.85em;
+  }
+
+  .ex-checks {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+    margin-top: 1rem;
+    background: var(--bg-secondary);
+    padding: 1rem;
+    border-radius: 12px;
+    border: 1.5px solid var(--border-color);
+  }
+  .chk {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    color: var(--text-primary);
+    font-weight: 650;
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+  .chk input {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    accent-color: #e65100;
+    cursor: pointer;
+  }
+  .chk code {
+    background: #1e1210;
+    color: #38edf6;
+    padding: 0.15rem 0.45rem;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 0.85em;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .solution-btn {
+    background: #e65100;
+    color: #ffffff;
+    border: 2px solid #1e1210;
+    font-weight: 900;
+    padding: 0.6rem 1.1rem;
+    border-radius: 10px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.86rem;
+    box-shadow: 3px 3px 0 #1e1210;
+    transition: transform 0.1s;
+  }
+  .solution-btn:hover {
+    transform: translateY(-1px);
+  }
+
+  /* Modal de Contraseña */
+  .poo-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+  }
+  .poo-modal.is-open {
+    display: flex !important;
+  }
+  .poo-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(30, 18, 16, 0.5);
+    backdrop-filter: blur(6px);
+  }
+  .poo-modal-panel {
+    position: relative;
+    width: min(100%, 420px);
+    background: #fffdf7;
+    border: 3px solid #1e1210;
+    border-radius: 20px;
+    box-shadow: 8px 8px 0 #1e1210;
+    padding: 2rem;
+    text-align: center;
+    z-index: 2;
+  }
+  :global(.dark) .poo-modal-panel {
+    background: #0f172a;
+    border-color: #f97316;
+    box-shadow: 8px 8px 0 #f97316;
+  }
+  .modal-lock-icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+  }
+  .poo-modal-panel h3 {
+    margin: 0 0 0.5rem;
+    font-size: 1.3rem;
+    color: #e65100;
+    font-weight: 900;
+  }
+  .modal-subtext {
+    font-size: 0.92rem;
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+  }
+  .modal-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .modal-form input {
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    border: 2px solid #1e1210;
+    font-size: 1.1rem;
+    text-align: center;
+    font-weight: 700;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+  }
+  .modal-error {
+    color: #ef4444;
+    font-weight: 700;
+    font-size: 0.88rem;
+    margin: 0;
+  }
+  .modal-actions {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+    margin-top: 0.5rem;
+  }
+  .modal-btn {
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    font-weight: 900;
+    cursor: pointer;
+    border: 2px solid #1e1210;
+  }
+  .modal-btn--cancel {
+    background: transparent;
+    color: var(--text-primary);
+  }
+  .modal-btn--submit {
+    background: #e65100;
+    color: white;
+    box-shadow: 3px 3px 0 #1e1210;
+  }
+
+  .next-modules {
+    margin-top: 2.5rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1rem;
+  }
+  .unit-card {
+    text-decoration: none;
+    background: #fff;
+    border: 3px solid #1e1210;
+    border-radius: 16px;
+    padding: 1.2rem;
+    box-shadow: 4px 4px 0 #1e1210;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .unit-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 6px 6px 0 #1e1210;
+  }
+  :global(.dark) .unit-card {
+    background: var(--bg-primary);
+    border-color: var(--border-color);
+  }
+  .unit-card h3 {
+    margin: 0 0 0.4rem;
+    font-size: 1.05rem;
+    font-weight: 900;
+  }
+  .unit-card p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 0.88rem;
+    font-weight: 650;
+  }
+</style>

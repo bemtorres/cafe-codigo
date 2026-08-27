@@ -127,10 +127,95 @@ const totalLangs = new Set(pooCourseLessons.map((l) => l.course)).size;
                 <label class="chk"><input type="checkbox" data-check-id="hijas" /> Implementé las tres clases hijas ({ch.children.map(c => c.name).join(', ')})</label>
                 <label class="chk"><input type="checkbox" data-check-id="probar" /> Instancié y probé el polimorfismo</label>
               </div>
+
+              <!-- Solución protegida por contraseña directamente abajo del ejercicio -->
+              <div class="solution-trigger-wrap" style="margin-top: 1rem;">
+                <button type="button" class="solution-btn open-solution-btn" data-target-solution={`inh-sol-${ch.id}`} style="background: #7c2d12; color: white; border: none; font-weight: 800; padding: 0.6rem 1rem; border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.85rem;">
+                  🔒 Ingresa la clave para ver la solución en Java
+                </button>
+              </div>
+
+              <div id={`inh-sol-${ch.id}`} class="solution-content-hidden" style="display:none; margin-top: 1rem; padding: 1.25rem; background: var(--bg-secondary); border-radius: 12px; border: 2px solid #7c2d12;">
+                <h4 style="margin-top: 0; color: #7c2d12; font-size: 1.1rem; display: flex; align-items: center; gap: 0.4rem;">
+                  <span>💡 Solución de la Jerarquía:</span> <span>{ch.title}</span>
+                </h4>
+                <p style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-secondary);">
+                  Estructura completa de herencia y polimorfismo en Java:
+                </p>
+                <pre style="background: #1e1210; color: #38edf6; padding: 1rem; border-radius: 8px; font-size: 0.88rem; overflow-x: auto; max-height: 450px; border: 1.5px solid #1e1210;"><code>{`// 1. Clase Padre / Base
+public class ${ch.base.name.replace('«interface» ', '')} {
+${ch.base.attrs.map(a => '    private ' + a.replace('-', '').trim() + ';').join('\n')}
+
+    public ${ch.base.name.replace('«interface» ', '')}() {}
+
+${ch.base.methods.map(m => `    public ${m.replace('+', '').trim()} {
+        System.out.println("Ejecutando ${m.replace('+', '').trim()} en ${ch.base.name.replace('«interface» ', '')}...");
+    }`).join('\n\n')}
+}
+
+${ap ? `// Clase Abstracta Intermedia
+public abstract class ${ap.name} extends ${ch.base.name.replace('«interface» ', '')} {
+${ap.attrs.map(a => '    private ' + a.replace('-', '').trim() + ';').join('\n')}
+}
+` : ''}
+// 2. Clases Hijas
+${ch.children.map(c => `public class ${c.name} extends ${ap ? ap.name : ch.base.name.replace('«interface» ', '')} {
+${c.attrs.map(a => '    private ' + a.replace('-', '').trim() + ';').join('\n')}
+    @Override
+    ${ch.base.methods[0] ? 'public ' + ch.base.methods[0].replace('+', '').trim() : 'public void ejecutar()'} {
+        System.out.println("Comportamiento especializado en ${c.name}");
+    }
+}`).join('\n\n')}
+
+// 3. Demostración de Polimorfismo en Main
+public class Main {
+    public static void main(String[] args) {
+        ${ch.base.name.replace('«interface» ', '')}[] lista = {
+${ch.children.map(c => `            new ${c.name}()`).join(',\n')}
+        };
+        for (${ch.base.name.replace('«interface» ', '')} obj : lista) {
+            ${ch.base.methods[0] ? 'obj.' + ch.base.methods[0].replace('+', '').split('(')[0].trim() + '();' : 'System.out.println(obj.toString());'}
+        }
+    }
+}`}</code></pre>
+              </div>
             </div>
           </details>
         );
       })}
+    </div>
+
+    <!-- Modal de Contraseña para Herencia -->
+    <div id="passwordModal" class="poo-modal" aria-hidden="true">
+      <div class="poo-modal-backdrop" id="closePassModalBackdrop"></div>
+      <div class="poo-modal-panel" role="dialog" aria-modal="true" style="max-width: 420px; text-align: center; padding: 2rem;">
+        <div class="modal-lock-icon" style="font-size: 2.5rem; margin-bottom: 0.5rem;">🔐</div>
+        <h3 style="margin-bottom: 0.5rem; font-size: 1.3rem;">Acceso Privado a Resultados</h3>
+        <p style="font-size: 0.92rem; color: var(--text-secondary); margin-bottom: 1.5rem;">
+          Ingresa la clave para ver los resultados
+        </p>
+
+        <form id="passForm" style="display: flex; flex-direction: column; gap: 1rem;">
+          <input
+            type="password"
+            id="passInput"
+            placeholder="Clave (ej: 27082026)"
+            required
+            style="padding: 0.75rem 1rem; border-radius: 8px; border: 2px solid var(--border-color); font-size: 1.1rem; text-align: center; font-weight: 700; background: var(--bg-primary); color: var(--text-primary);"
+          />
+          <p id="passErrorMsg" style="color: #ef4444; font-weight: 700; font-size: 0.88rem; display: none; margin: 0;">
+            ⚠️ Clave incorrecta. Inténtalo de nuevo.
+          </p>
+          <div style="display: flex; gap: 0.75rem; justify-content: center; margin-top: 0.5rem;">
+            <button type="button" id="btnCancelPass" style="padding: 0.6rem 1.2rem; border-radius: 8px; border: 1.5px solid var(--border-color); background: transparent; color: var(--text-primary); font-weight: 700; cursor: pointer;">
+              Cancelar
+            </button>
+            <button type="submit" style="padding: 0.6rem 1.4rem; border-radius: 8px; border: none; background: #7c2d12; color: white; font-weight: 800; cursor: pointer;">
+              Desbloquear 🔓
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   </article>
 
@@ -198,6 +283,84 @@ const totalLangs = new Set(pooCourseLessons.map((l) => l.course)).size;
       document.getElementById('collapseAll')?.addEventListener('click', () => {
         document.querySelectorAll('.ex-card[id]').forEach((d) => (d.open = false));
       });
+
+      // Lógica de contraseña para soluciones inline
+      let targetSolId = null;
+      const passModal = document.getElementById('passwordModal');
+      const passForm = document.getElementById('passForm');
+      const passInput = document.getElementById('passInput');
+      const passErrorMsg = document.getElementById('passErrorMsg');
+      const passBackdrop = document.getElementById('closePassModalBackdrop');
+      const btnCancelPass = document.getElementById('btnCancelPass');
+
+      function getExpectedKey() {
+        const now = new Date();
+        const dd = String(now.getDate()).padStart(2, '0');
+        const mm = String(now.getMonth() + 1).padStart(2, '0');
+        const yyyy = now.getFullYear();
+        return dd + mm + yyyy; // Ej: 27082026
+      }
+
+      function openPassModal(solId) {
+        targetSolId = solId;
+        if (passInput) passInput.value = '';
+        if (passErrorMsg) passErrorMsg.style.display = 'none';
+        if (passModal) {
+          passModal.classList.add('is-open');
+          passModal.setAttribute('aria-hidden', 'false');
+          setTimeout(() => passInput?.focus(), 100);
+        }
+      }
+
+      function closePassModal() {
+        if (passModal) {
+          passModal.classList.remove('is-open');
+          passModal.setAttribute('aria-hidden', 'true');
+        }
+        targetSolId = null;
+      }
+
+      document.querySelectorAll('.open-solution-btn').forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const solId = btn.getAttribute('data-target-solution');
+          const targetDiv = document.getElementById(solId);
+          if (targetDiv && targetDiv.style.display !== 'none') {
+            targetDiv.style.display = 'none';
+            btn.textContent = '🔒 Ingresa la clave para ver la solución en Java';
+            return;
+          }
+          openPassModal(solId);
+        });
+      });
+
+      if (passBackdrop) passBackdrop.addEventListener('click', closePassModal);
+      if (btnCancelPass) btnCancelPass.addEventListener('click', closePassModal);
+
+      if (passForm) {
+        passForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const enteredKey = passInput.value.trim();
+          const expectedKey = getExpectedKey();
+
+          if (enteredKey === expectedKey) {
+            if (targetSolId) {
+              const targetDiv = document.getElementById(targetSolId);
+              if (targetDiv) {
+                targetDiv.style.display = 'block';
+                const triggerBtn = document.querySelector('[data-target-solution="' + targetSolId + '"]');
+                if (triggerBtn) {
+                  triggerBtn.textContent = '🔓 Ocultar Solución';
+                }
+              }
+            }
+            closePassModal();
+          } else {
+            if (passErrorMsg) passErrorMsg.style.display = 'block';
+            passInput?.select();
+          }
+        });
+      }
       const openFromHash = () => {
         const hash = location.hash.replace(/^#/, '');
         if (!hash) return;

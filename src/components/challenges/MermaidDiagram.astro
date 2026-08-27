@@ -98,8 +98,9 @@ function parseUml(rawCode: string) {
   }
 
   const allClasses = Array.from(classMap.values());
-  const isInheritanceTree = relations.length > 0 && relations.every((r) => r.type === 'inheritance' || r.type === 'realization');
-  const isConnectionDiagram = relations.some((r) => r.type === 'composition' || r.type === 'aggregation');
+  const hasInheritanceOrRealization = relations.some((r) => r.type === 'inheritance' || r.type === 'realization');
+  const isConnectionDiagram = relations.some((r) => r.type === 'composition' || r.type === 'aggregation') && !hasInheritanceOrRealization;
+  const isInheritanceTree = hasInheritanceOrRealization;
 
   let rootClass: UmlClass | null = null;
   let childClasses: UmlClass[] = [];
@@ -111,10 +112,16 @@ function parseUml(rawCode: string) {
   const isThreeTier = hasRealization && hasInheritance;
 
   if (isInheritanceTree) {
-    const parentName = relations[0].to;
-    rootClass = classMap.get(parentName) || null;
-    relType = relations[0].type as 'inheritance' | 'realization';
-    childClasses = relations.map((r) => classMap.get(r.from)!).filter(Boolean);
+    // Find the main parent class (the target of inheritance or realization)
+    const treeRel = relations.find((r) => r.type === 'inheritance' || r.type === 'realization');
+    if (treeRel) {
+      const parentName = treeRel.to;
+      rootClass = classMap.get(parentName) || null;
+      relType = treeRel.type as 'inheritance' | 'realization';
+      
+      const childRels = relations.filter((r) => (r.type === 'inheritance' || r.type === 'realization') && r.to === parentName);
+      childClasses = childRels.map((r) => classMap.get(r.from)!).filter(Boolean);
+    }
   }
 
   return {

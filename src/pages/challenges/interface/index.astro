@@ -129,10 +129,89 @@ const totalInterfaceLessons = interfaceLessons.length;
                 <label class="chk"><input type="checkbox" data-check-id="polimorfismo" /> Usé polimorfismo (lista de interfaz)</label>
                 <label class="chk"><input type="checkbox" data-check-id="probar" /> Instancie y probé cada implementación</label>
               </div>
+
+              <!-- Solución protegida por contraseña directamente abajo del ejercicio -->
+              <div class="solution-trigger-wrap" style="margin-top: 1rem;">
+                <button type="button" class="solution-btn open-solution-btn" data-target-solution={`iface-sol-${ch.id}`} style="background: #6d28d9; color: white; border: none; font-weight: 800; padding: 0.6rem 1rem; border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.85rem;">
+                  🔒 Ingresa la clave para ver la solución en Java
+                </button>
+              </div>
+
+              <div id={`iface-sol-${ch.id}`} class="solution-content-hidden" style="display:none; margin-top: 1rem; padding: 1.25rem; background: var(--bg-secondary); border-radius: 12px; border: 2px solid #6d28d9;">
+                <h4 style="margin-top: 0; color: #6d28d9; font-size: 1.1rem; display: flex; align-items: center; gap: 0.4rem;">
+                  <span>💡 Solución en Código Java:</span> <span>{ch.title}</span>
+                </h4>
+                <p style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-secondary);">
+                  Implementación completa del contrato con sus clases correspondientes:
+                </p>
+                <pre style="background: #1e1210; color: #38edf6; padding: 1rem; border-radius: 8px; font-size: 0.88rem; overflow-x: auto; max-height: 450px; border: 1.5px solid #1e1210;"><code>{`// 1. Declaración de la Interfaz
+public interface ${ch.base.name.replace('«interface» ', '')} {
+${ch.base.methods.map(m => '    ' + m.replace('+', 'public ') + ';').join('\n')}
+}
+
+${ch.abstractParent ? `// 2. Clase Abstracta Intermedia
+public abstract class ${ch.abstractParent.name} implements ${ch.base.name.replace('«interface» ', '')} {
+${ch.abstractParent.attrs.map(a => '    private ' + a.replace('-', '').trim() + ';').join('\n')}
+}
+` : ''}
+// 3. Clases Implementadoras
+${ch.children.map(c => `public class ${c.name} ${ch.abstractParent ? 'extends ' + ch.abstractParent.name : 'implements ' + ch.base.name.replace('«interface» ', '')} {
+${c.attrs.map(a => '    private ' + a.replace('-', '').trim() + ';').join('\n')}
+    @Override
+    ${ch.base.methods[0] ? ch.base.methods[0].replace('+', 'public ') : 'public void ejecutar()'} {
+        System.out.println("Ejecutando ${c.name}...");
+    }
+}`).join('\n\n')}
+
+// 4. Ejemplo de prueba en Main
+public class Main {
+    public static void main(String[] args) {
+        ${ch.base.name.replace('«interface» ', '')}[] objetos = {
+${ch.children.map(c => `            new ${c.name}()`).join(',\n')}
+        };
+        for (${ch.base.name.replace('«interface» ', '')} obj : objetos) {
+            System.out.println(obj.toString());
+        }
+    }
+}`}</code></pre>
+              </div>
             </div>
           </details>
         );
       })}
+    </div>
+
+    <!-- Modal de Contraseña para Desbloquear Resultados de Interfaces -->
+    <div id="passwordModal" class="poo-modal" aria-hidden="true">
+      <div class="poo-modal-backdrop" id="closePassModalBackdrop"></div>
+      <div class="poo-modal-panel" role="dialog" aria-modal="true" style="max-width: 420px; text-align: center; padding: 2rem;">
+        <div class="modal-lock-icon" style="font-size: 2.5rem; margin-bottom: 0.5rem;">🔐</div>
+        <h3 style="margin-bottom: 0.5rem; font-size: 1.3rem;">Acceso Privado a Resultados</h3>
+        <p style="font-size: 0.92rem; color: var(--text-secondary); margin-bottom: 1.5rem;">
+          Ingresa la clave para ver los resultados
+        </p>
+
+        <form id="passForm" style="display: flex; flex-direction: column; gap: 1rem;">
+          <input
+            type="password"
+            id="passInput"
+            placeholder="Clave (ej: 27082026)"
+            required
+            style="padding: 0.75rem 1rem; border-radius: 8px; border: 2px solid var(--border-color); font-size: 1.1rem; text-align: center; font-weight: 700; background: var(--bg-primary); color: var(--text-primary);"
+          />
+          <p id="passErrorMsg" style="color: #ef4444; font-weight: 700; font-size: 0.88rem; display: none; margin: 0;">
+            ⚠️ Clave incorrecta. Inténtalo de nuevo.
+          </p>
+          <div style="display: flex; gap: 0.75rem; justify-content: center; margin-top: 0.5rem;">
+            <button type="button" id="btnCancelPass" style="padding: 0.6rem 1.2rem; border-radius: 8px; border: 1.5px solid var(--border-color); background: transparent; color: var(--text-primary); font-weight: 700; cursor: pointer;">
+              Cancelar
+            </button>
+            <button type="submit" style="padding: 0.6rem 1.4rem; border-radius: 8px; border: none; background: #6d28d9; color: white; font-weight: 800; cursor: pointer;">
+              Desbloquear 🔓
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   </article>
 
@@ -200,6 +279,154 @@ const totalInterfaceLessons = interfaceLessons.length;
       document.getElementById('collapseAll')?.addEventListener('click', () => {
         document.querySelectorAll('.ex-card[id]').forEach((d) => (d.open = false));
       });
+      // Lógica de modal de clave para soluciones de interfaz
+      let targetSolId = null;
+      const passModal = document.getElementById('passwordModal');
+      const passForm = document.getElementById('passForm');
+      const passInput = document.getElementById('passInput');
+      const passErrorMsg = document.getElementById('passErrorMsg');
+      const passBackdrop = document.getElementById('closePassModalBackdrop');
+      const btnCancelPass = document.getElementById('btnCancelPass');
+
+      function getExpectedKey() {
+        const now = new Date();
+        const dd = String(now.getDate()).padStart(2, '0');
+        const mm = String(now.getMonth() + 1).padStart(2, '0');
+        const yyyy = now.getFullYear();
+        return dd + mm + yyyy; // Ej: 27082026
+      }
+
+      function openPassModal(solId) {
+        targetSolId = solId;
+        if (passInput) passInput.value = '';
+        if (passErrorMsg) passErrorMsg.style.display = 'none';
+        if (passModal) {
+          passModal.classList.add('is-open');
+          passModal.setAttribute('aria-hidden', 'false');
+          setTimeout(() => passInput?.focus(), 100);
+        }
+      }
+
+      function closePassModal() {
+        if (passModal) {
+          passModal.classList.remove('is-open');
+          passModal.setAttribute('aria-hidden', 'true');
+        }
+        targetSolId = null;
+      }
+
+      document.querySelectorAll('.open-solution-btn').forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const solId = btn.getAttribute('data-target-solution');
+          const targetDiv = document.getElementById(solId);
+          if (targetDiv && targetDiv.style.display !== 'none') {
+            targetDiv.style.display = 'none';
+            btn.textContent = '🔒 Ingresa la clave para ver la solución en Java';
+            return;
+          }
+          openPassModal(solId);
+        });
+      });
+
+      if (passBackdrop) passBackdrop.addEventListener('click', closePassModal);
+      if (btnCancelPass) btnCancelPass.addEventListener('click', closePassModal);
+
+      // Modal de Solución Multilenguaje
+      const solModal = document.getElementById('solutionModal');
+      const solModalTitle = document.getElementById('solModalTitle');
+      const btnCloseSolModal = document.getElementById('btnCloseSolModal');
+      const closeSolModalBackdrop = document.getElementById('closeSolModalBackdrop');
+      let currentChId = null;
+
+      function openSolModal(chId, title) {
+        currentChId = chId;
+        if (solModalTitle) solModalTitle.textContent = '💡 Solución del Contrato: ' + title;
+        
+        // Cargar código de los 5 lenguajes
+        const codeJavaEl = document.getElementById('codeJava');
+        const codePyEl = document.getElementById('codePython');
+        const codeCsEl = document.getElementById('codeCsharp');
+        const codeCppEl = document.getElementById('codeCpp');
+        const codeTsEl = document.getElementById('codeTs');
+
+        if (codeJavaEl) {
+          codeJavaEl.textContent = `// ==========================================\n// 1. CONTRATO EN JAVA\n// ==========================================\npublic interface Notificable {\n    boolean enviar(String mensaje);\n    boolean validarDestino();\n}\n\n// 2. IMPLEMENTACIONES EN JAVA\npublic class NotificacionEmail implements Notificable {\n    private String email;\n    private String asunto;\n\n    public NotificacionEmail(String email, String asunto) {\n        this.email = email;\n        this.asunto = asunto;\n    }\n\n    public boolean validarEmail() {\n        return email != null && email.contains("@");\n    }\n\n    @Override\n    public boolean validarDestino() {\n        return validarEmail();\n    }\n\n    @Override\n    public boolean enviar(String mensaje) {\n        if (!validarDestino()) return false;\n        System.out.println("📧 Enviando Email a " + email + " | Asunto: " + asunto + " | Msg: " + mensaje);\n        return true;\n    }\n}\n\npublic class NotificacionSMS implements Notificable {\n    private String telefono;\n    private String operador;\n\n    public NotificacionSMS(String telefono, String operador) {\n        this.telefono = telefono;\n        this.operador = operador;\n    }\n\n    @Override\n    public boolean validarDestino() {\n        return telefono != null && telefono.length() >= 8;\n    }\n\n    @Override\n    public boolean enviar(String mensaje) {\n        if (!validarDestino()) return false;\n        System.out.println("📱 Enviando SMS vía " + operador + " a " + telefono + ": " + mensaje);\n        return true;\n    }\n}\n\npublic class NotificacionPush implements Notificable {\n    private String deviceToken;\n    private String plataforma;\n\n    public NotificacionPush(String deviceToken, String plataforma) {\n        this.deviceToken = deviceToken;\n        this.plataforma = plataforma;\n    }\n\n    @Override\n    public boolean validarDestino() {\n        return deviceToken != null && !deviceToken.isEmpty();\n    }\n\n    @Override\n    public boolean enviar(String mensaje) {\n        if (!validarDestino()) return false;\n        System.out.println("🔔 Push (" + plataforma + ") Token [" + deviceToken + "]: " + mensaje);\n        return true;\n    }\n}\n\n// 3. MAIN POLIMÓRFICO\npublic class Main {\n    public static void main(String[] args) {\n        Notificable[] canales = {\n            new NotificacionEmail("user@dominio.com", "Bienvenida"),\n            new NotificacionSMS("+56912345678", "Entel"),\n            new NotificacionPush("TOKEN-ABC-123", "iOS")\n        };\n\n        for (Notificable n : canales) {\n            n.enviar("Tu código de verificación es 9942");\n        }\n    }\n}`;
+        }
+
+        if (codePyEl) {
+          codePyEl.textContent = `# ==========================================\n# 1. CONTRATO EN PYTHON (ABC / Protocol)\n# ==========================================\nfrom abc import ABC, abstractmethod\n\nclass Notificable(ABC):\n    @abstractmethod\n    def enviar(self, mensaje: str) -> bool:\n        pass\n\n    @abstractmethod\n    def validar_destino(self) -> bool:\n        pass\n\n# 2. IMPLEMENTACIONES EN PYTHON\nclass NotificacionEmail(Notificable):\n    def __init__(self, email: str, asunto: str):\n        self.email = email\n        self.asunto = asunto\n\n    def validar_destino(self) -> bool:\n        return "@" in self.email\n\n    def enviar(self, mensaje: str) -> bool:\n        if not self.validar_destino():\n            return False\n        print(f"📧 Email a {self.email} | {self.asunto}: {mensaje}")\n        return True\n\nclass NotificacionSMS(Notificable):\n    def __init__(self, telefono: str, operador: str):\n        self.telefono = telefono\n        self.operador = operador\n\n    def validar_destino(self) -> bool:\n        return len(self.telefono) >= 8\n\n    def enviar(self, mensaje: str) -> bool:\n        if not self.validar_destino():\n            return False\n        print(f"📱 SMS [{self.operador}] a {self.telefono}: {mensaje}")\n        return True\n\nclass NotificacionPush(Notificable):\n    def __init__(self, device_token: str, plataforma: str):\n        self.device_token = device_token\n        self.plataforma = plataforma\n\n    def validar_destino(self) -> bool:\n        return bool(self.device_token)\n\n    def enviar(self, mensaje: str) -> bool:\n        if not self.validar_destino():\n            return False\n        print(f"🔔 Push ({self.plataforma}): {mensaje}")\n        return True\n\n# 3. USO POLIMÓRFICO\ncanales = [\n    NotificacionEmail("user@dominio.com", "Bienvenida"),\n    NotificacionSMS("+56912345678", "Entel"),\n    NotificacionPush("TOKEN-ABC-123", "iOS")\n]\nfor c in canales:\n    c.enviar("Tu código es 9942")`;
+        }
+
+        if (codeCsEl) {
+          codeCsEl.textContent = `// ==========================================\n// 1. CONTRATO EN C# (interface)\n// ==========================================\npublic interface INotificable {\n    bool Enviar(string mensaje);\n    bool ValidarDestino();\n}\n\n// 2. IMPLEMENTACIONES EN C#\npublic class NotificacionEmail : INotificable {\n    private string email;\n    private string asunto;\n\n    public NotificacionEmail(string email, string asunto) {\n        this.email = email;\n        this.asunto = asunto;\n    }\n\n    public bool ValidarDestino() => !string.IsNullOrEmpty(email) && email.Contains("@");\n\n    public bool Enviar(string mensaje) {\n        if (!ValidarDestino()) return false;\n        Console.WriteLine($"📧 Email enviado a {email}: {mensaje}");\n        return true;\n    }\n}\n\npublic class NotificacionSMS : INotificable {\n    private string telefono;\n    private string operador;\n\n    public NotificacionSMS(string telefono, string operador) {\n        this.telefono = telefono;\n        this.operador = operador;\n    }\n\n    public bool ValidarDestino() => !string.IsNullOrEmpty(telefono) && telefono.Length >= 8;\n\n    public bool Enviar(string mensaje) {\n        if (!ValidarDestino()) return false;\n        Console.WriteLine($"📱 SMS [{operador}] a {telefono}: {mensaje}");\n        return true;\n    }\n}\n\npublic class NotificacionPush : INotificable {\n    private string deviceToken;\n    private string plataforma;\n\n    public NotificacionPush(string deviceToken, string plataforma) {\n        this.deviceToken = deviceToken;\n        this.plataforma = plataforma;\n    }\n\n    public bool ValidarDestino() => !string.IsNullOrEmpty(deviceToken);\n\n    public bool Enviar(string mensaje) {\n        if (!ValidarDestino()) return false;\n        Console.WriteLine($"🔔 Push ({plataforma}): {mensaje}");\n        return true;\n    }\n}\n\n// 3. MAIN C#\nclass Program {\n    static void Main() {\n        var canales = new INotificable[] {\n            new NotificacionEmail("user@dominio.com", "Bienvenida"),\n            new NotificacionSMS("+56912345678", "Entel"),\n            new NotificacionPush("TOKEN-ABC-123", "iOS")\n        };\n        foreach (var c in canales) c.Enviar("Tu código es 9942");\n    }\n}`;
+        }
+
+        if (codeCppEl) {
+          codeCppEl.textContent = `// ==========================================\n// 1. CONTRATO EN C++ (Clase Abstracta Pura)\n// ==========================================\n#include <iostream>\n#include <vector>\n#include <string>\n\nclass Notificable {\npublic:\n    virtual ~Notificable() = default;\n    virtual bool enviar(const std::string& mensaje) = 0;\n    virtual bool validarDestino() const = 0;\n};\n\n// 2. IMPLEMENTACIONES EN C++\nclass NotificacionEmail : public Notificable {\nprivate:\n    std::string email;\n    std::string asunto;\npublic:\n    NotificacionEmail(std::string e, std::string a) : email(e), asunto(a) {}\n    bool validarDestino() const override { return email.find('@') != std::string::npos; }\n    bool enviar(const std::string& mensaje) override {\n        if (!validarDestino()) return false;\n        std::cout << "📧 Email a " << email << ": " << mensaje << "\\n";\n        return true;\n    }\n};\n\nclass NotificacionSMS : public Notificable {\nprivate:\n    std::string telefono;\n    std::string operador;\npublic:\n    NotificacionSMS(std::string t, std::string o) : telefono(t), operador(o) {}\n    bool validarDestino() const override { return telefono.length() >= 8; }\n    bool enviar(const std::string& mensaje) override {\n        if (!validarDestino()) return false;\n        std::cout << "📱 SMS a " << telefono << ": " << mensaje << "\\n";\n        return true;\n    }\n};\n\nint main() {\n    std::vector<Notificable*> canales = {\n        new NotificacionEmail("user@dominio.com", "Bienvenida"),\n        new NotificacionSMS("+56912345678", "Entel")\n    };\n    for (auto c : canales) { c->enviar("Código: 9942"); delete c; }\n    return 0;\n}`;
+        }
+
+        if (codeTsEl) {
+          codeTsEl.textContent = `// ==========================================\n// 1. CONTRATO EN TYPESCRIPT (interface)\n// ==========================================\nexport interface Notificable {\n    enviar(mensaje: string): boolean;\n    validarDestino(): boolean;\n}\n\n// 2. IMPLEMENTACIONES EN TYPESCRIPT\nexport class NotificacionEmail implements Notificable {\n    constructor(private email: string, private asunto: string) {}\n\n    validarDestino(): boolean {\n        return this.email.includes("@");\n    }\n\n    enviar(mensaje: string): boolean {\n        if (!this.validarDestino()) return false;\n        console.log(\`📧 Email a \${this.email} [\${this.asunto}]: \${mensaje}\`);\n        return true;\n    }\n}\n\nexport class NotificacionSMS implements Notificable {\n    constructor(private telefono: string, private operador: string) {}\n\n    validarDestino(): boolean {\n        return this.telefono.length >= 8;\n    }\n\n    enviar(mensaje: string): boolean {\n        if (!this.validarDestino()) return false;\n        console.log(\`📱 SMS a \${this.telefono}: \${mensaje}\`);\n        return true;\n    }\n}\n\n// 3. MAIN TYPESCRIPT\nconst canales: Notificable[] = [\n    new NotificacionEmail("user@dominio.com", "Bienvenida"),\n    new NotificacionSMS("+56912345678", "Entel")\n];\ncanales.forEach(c => c.enviar("Código 9942"));`;
+        }
+
+        if (solModal) {
+          solModal.classList.add('is-open');
+          solModal.setAttribute('aria-hidden', 'false');
+        }
+      }
+
+      function closeSolModal() {
+        if (solModal) {
+          solModal.classList.remove('is-open');
+          solModal.setAttribute('aria-hidden', 'true');
+        }
+      }
+
+      // Manejo de pestañas del modal de solución
+      document.querySelectorAll('.lang-tab-btn').forEach((tabBtn) => {
+        tabBtn.addEventListener('click', () => {
+          const lang = tabBtn.getAttribute('data-lang');
+          document.querySelectorAll('.lang-tab-btn').forEach((b) => {
+            b.classList.remove('is-active');
+            b.style.background = 'var(--bg-secondary)';
+            b.style.color = 'var(--text-primary)';
+          });
+          tabBtn.classList.add('is-active');
+          tabBtn.style.background = '#6d28d9';
+          tabBtn.style.color = 'white';
+
+          document.querySelectorAll('.lang-panel').forEach((p) => {
+            p.style.display = p.getAttribute('data-panel') === lang ? 'block' : 'none';
+          });
+        });
+      });
+
+      if (btnCloseSolModal) btnCloseSolModal.addEventListener('click', closeSolModal);
+      if (closeSolModalBackdrop) closeSolModalBackdrop.addEventListener('click', closeSolModal);
+
+      if (passForm) {
+        passForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const enteredKey = passInput.value.trim();
+          const expectedKey = getExpectedKey();
+
+          if (enteredKey === expectedKey) {
+            closePassModal();
+            if (targetSolId) {
+              const chId = targetSolId.replace('iface-sol-', '');
+              const chCard = document.querySelector('[data-ex-id="iface-' + chId + '"]');
+              const titleEl = chCard ? chCard.querySelector('h3') : null;
+              const title = titleEl ? titleEl.textContent : 'Contrato Notificable';
+              openSolModal(chId, title);
+            }
+          } else {
+            if (passErrorMsg) passErrorMsg.style.display = 'block';
+            passInput?.select();
+          }
+        });
+      }
+
       const openFromHash = () => {
         const hash = location.hash.replace(/^#/, '');
         if (!hash) return;

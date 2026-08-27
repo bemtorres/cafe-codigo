@@ -13,6 +13,7 @@ import kofiLogo from '../assets/images/kofi.png';
 import HeaderAuth from '../components/auth/HeaderAuth';
 import CafeDelDiaNavBtn from '../components/CafeDelDiaNavBtn';
 import CoffeeTimerWidget from '../components/CoffeeTimerWidget';
+import ChallengeTimerWidget from '../components/ChallengeTimerWidget';
 import ShareEmbedButton from '../components/ShareEmbedButton';
 import MobileNavProfile from '../components/auth/MobileNavProfile';
 import LessonBookmarkToggle from '../components/auth/LessonBookmarkToggle';
@@ -39,6 +40,7 @@ const menuLanguageCourses = [...courses.filter((c) => c.category === 'language')
 const pseintCourse = courses.find((c) => c.slug === 'pseint');
 const currentPath = Astro.url.pathname;
 const normalizedPath = currentPath.replace(/\/$/, '');
+const isChallengeView = normalizedPath.startsWith('/challenges');
 /** Banner “café y programemos” solo en la portada */
 const showHomeCoffeeBanner = normalizedPath === '' || normalizedPath === '/';
 /** Selector de tema de código solo en páginas de cursos (/course/…), no en inicio ni resto del sitio */
@@ -2110,6 +2112,7 @@ const showLanguageCuriosity =
 
     {/* Widget flotante del temporizador del café y Modal de Aportes */}
     <div class="embed-hide pdf-hide"><CoffeeTimerWidget client:only="react" /></div>
+    {isChallengeView && <div class="embed-hide pdf-hide"><ChallengeTimerWidget client:only="react" /></div>}
     <div class="embed-hide pdf-hide"><SupportModal client:only="react" /></div>
 
     {courseSlug === 'unity-prototipado' && (
