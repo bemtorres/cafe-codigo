@@ -45,6 +45,17 @@ Aprende haciendo. Cada lección incluye:
 
 ---
 
+## 💙 Financiamiento Abierto: 100% Gratuito y Libre de Publicidad
+
+**Café y Código** es un proyecto educativo independiente que nace con un compromiso inamovible: **ser siempre 100% gratuito y 100% libre de publicidad molesta o banners invasivos**.
+
+Para financiar los costos de servidor, hosting, dominio y la creación continua de nuevos cursos y simuladores, la comunidad puede apoyar voluntariamente:
+
+- 💳 **Mercado Pago (Chile 🇨🇱)**: Aportes directos con tarjeta de débito, crédito o transferencia a través de [link.mercadopago.cl/cafeycodigo](https://link.mercadopago.cl/cafeycodigo).
+- ☕ **Ko-fi (Internacional 🌎)**: Apóyanos invitándonos un café desde cualquier país con PayPal o tarjeta en [ko-fi.com/cafeycodigo](https://ko-fi.com/cafeycodigo).
+
+---
+
 ## 🎯 Diseñado para Estudiantes y Educadores
 
 Ya sea que estés dando tus primeros pasos en la universidad, preparándote para tu primer empleo en tecnología o buscando reforzar tus fundamentos de arquitectura de software, **Café y Código** te ofrece un entorno divertido, visual y directo al grano.
@@ -52,4 +63,10 @@ Ya sea que estés dando tus primeros pasos en la universidad, preparándote para
 ¡Prepárate un buen café y acompañanos a programar! 💖☕
 
 ---
-[![Apoya Café y Código](https://img.shields.io/badge/Apoya%20Café%20y%20Código-☕-ff5e5b?style=for-the-badge)](https://ko-fi.com/cafeycodigo)
+
+<div align="center">
+
+[![Mercado Pago](https://img.shields.io/badge/Aportar%20por%20Mercado%20Pago-💳%20🇨🇱-009EE3?style=for-the-badge)](https://link.mercadopago.cl/cafeycodigo)
+[![Ko-fi](https://img.shields.io/badge/Invitar%20un%20café%20en%20Ko--fi-☕%20🌎-FF5E5B?style=for-the-badge)](https://ko-fi.com/cafeycodigo)
+
+</div>
