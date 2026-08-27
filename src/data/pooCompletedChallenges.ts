@@ -663,6 +663,11 @@ export const pooCompletedChallenges: PooCompletedChallenge[] = [
 export function toMermaidCompleted(ch: PooCompletedChallenge): string {
   const lines: string[] = ['classDiagram', '    direction TB'];
 
+  // Métodos abstractos del padre (sin el carácter '*')
+  const parentAbstractMethods = ch.parent.methods
+    .filter((m) => m.includes('*'))
+    .map((m) => m.replace('*', ''));
+
   // Clase Padre
   lines.push(`    class ${ch.parent.name} {`);
   lines.push('        <<abstract>>');
@@ -686,7 +691,17 @@ export function toMermaidCompleted(ch: PooCompletedChallenge): string {
   ch.children.forEach((child) => {
     lines.push(`    class ${child.name} {`);
     child.attrs.forEach((a) => lines.push(`        ${a}`));
-    child.methods.forEach((m) => lines.push(`        ${m}`));
+
+    // Combinar métodos propios con la implementación de métodos abstractos del padre sin duplicar
+    const combinedMethods = [...child.methods];
+    parentAbstractMethods.forEach((pam) => {
+      const pName = pam.split('(')[0].replace('+', '').replace('-', '').trim();
+      if (!combinedMethods.some((cm) => cm.includes(pName))) {
+        combinedMethods.unshift(pam);
+      }
+    });
+
+    combinedMethods.forEach((m) => lines.push(`        ${m}`));
     lines.push('    }');
 
     // Herencia Padre -> Hija

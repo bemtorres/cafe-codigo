@@ -105,13 +105,51 @@ function parseUml(rawCode: string) {
   let rootClass: UmlClass | null = null;
   let childClasses: UmlClass[] = [];
   let relType: 'inheritance' | 'realization' | null = null;
+  let interfaceClass: UmlClass | null = null;
+  let abstractParent: UmlClass | null = null;
+  let concreteChildren: UmlClass[] = [];
+  const compositionMap = new Map<string, UmlClass>();
 
   // Detect 3-tier: Interface → Abstract Parent → Children
   const hasRealization = relations.some((r) => r.type === 'realization');
   const hasInheritance = relations.some((r) => r.type === 'inheritance');
   const isThreeTier = hasRealization && hasInheritance;
 
-  if (isInheritanceTree) {
+  if (isThreeTier) {
+    interfaceClass = allClasses.find((c) => c.stereotype === '<<interface>>') || null;
+    if (!interfaceClass) {
+      const realRel = relations.find((r) => r.type === 'realization');
+      if (realRel) interfaceClass = classMap.get(realRel.to) || null;
+    }
+
+    abstractParent = allClasses.find((c) => c.stereotype === '<<abstract>>') || null;
+    if (!abstractParent) {
+      const inhRel = relations.find((r) => r.type === 'inheritance');
+      if (inhRel) abstractParent = classMap.get(inhRel.to) || null;
+    }
+
+    if (abstractParent) {
+      const childRels = relations.filter((r) => r.type === 'inheritance' && r.to === abstractParent!.name);
+      concreteChildren = childRels.map((r) => classMap.get(r.from)!).filter(Boolean);
+    }
+
+    if (concreteChildren.length === 0) {
+      concreteChildren = allClasses.filter((c) => c !== interfaceClass && c !== abstractParent);
+    }
+
+    const compRels = relations.filter((r) => r.type === 'composition');
+    compRels.forEach((rel) => {
+      const extCls = classMap.get(rel.to);
+      if (extCls) {
+        compositionMap.set(rel.from, extCls);
+      }
+    });
+
+    const extValues = Array.from(compositionMap.values());
+    concreteChildren = concreteChildren.filter((c) => !extValues.includes(c));
+  }
+
+  if (isInheritanceTree && !isThreeTier) {
     // Find the main parent class (the target of inheritance or realization)
     const treeRel = relations.find((r) => r.type === 'inheritance' || r.type === 'realization');
     if (treeRel) {
@@ -132,6 +170,10 @@ function parseUml(rawCode: string) {
     isThreeTier,
     rootClass,
     childClasses,
+    interfaceClass,
+    abstractParent,
+    concreteChildren,
+    compositionMap,
     relType,
   };
 }
@@ -249,8 +291,9 @@ function convertMember(raw: string, className?: string) {
   };
 }
 
-const abstractParent = parsed.isThreeTier ? parsed.allClasses.find((c) => c.stereotype === '<<abstract>>') : null;
-const concreteChildren = parsed.isThreeTier ? parsed.allClasses.filter((c) => c.stereotype !== '<<abstract>>' && c.stereotype !== '<<interface>>') : [];
+const interfaceClass = parsed.interfaceClass || (parsed.isThreeTier ? parsed.allClasses.find((c) => c.stereotype === '<<interface>>') : null);
+const abstractParent = parsed.abstractParent || (parsed.isThreeTier ? parsed.allClasses.find((c) => c.stereotype === '<<abstract>>') : null);
+const concreteChildren = parsed.concreteChildren.length > 0 ? parsed.concreteChildren : (parsed.isThreeTier ? parsed.allClasses.filter((c) => c.stereotype !== '<<abstract>>' && c.stereotype !== '<<interface>>') : []);
 ---
 
 <figure class="uml-card" data-diagram-id={diagramId} data-format={defaultFormat} aria-label={title || 'Diagrama UML'}>
@@ -290,19 +333,19 @@ const concreteChildren = parsed.isThreeTier ? parsed.allClasses.filter((c) => c.
   <div class="uml-viewport" role="button" tabindex="0" title="Clic para ampliar y hacer zoom">
     <div class="uml-stage-content">
       {/* CASO 1B: 3 niveles — Interface → Abstract Parent → Children */}
-      {parsed.isInheritanceTree && parsed.isThreeTier && parsed.rootClass && (
+      {parsed.isInheritanceTree && parsed.isThreeTier && interfaceClass && (
         <div class="uml-tree-layout uml-tree-three-tier">
           {/* Nivel 1: Interface */}
           <div class="uml-row-root">
             <div class="uml-box uml-box-interface">
               <div class="uml-box-head">
-                {parsed.rootClass.stereotype && <span class="uml-stereotype">{parsed.rootClass.stereotype}</span>}
-                <span class="uml-class-name">{parsed.rootClass.name}</span>
+                {interfaceClass.stereotype && <span class="uml-stereotype">{interfaceClass.stereotype}</span>}
+                <span class="uml-class-name">{interfaceClass.name}</span>
               </div>
-              {parsed.rootClass.attrs.length > 0 && (
+              {interfaceClass.attrs.length > 0 && (
                 <div class="uml-box-section uml-attrs">
-                  {parsed.rootClass.attrs.map((a) => {
-                    const m = convertMember(a, parsed.rootClass?.name);
+                  {interfaceClass.attrs.map((a) => {
+                    const m = convertMember(a, interfaceClass.name);
                     return (
                       <div class="uml-member">
                         <span class={`uml-vis uml-vis-${m.vis === '+' ? 'pub' : m.vis === '-' ? 'priv' : 'prot'}`}>{m.vis}</span>
@@ -315,10 +358,10 @@ const concreteChildren = parsed.isThreeTier ? parsed.allClasses.filter((c) => c.
                   })}
                 </div>
               )}
-              {parsed.rootClass.methods.length > 0 && (
+              {interfaceClass.methods.length > 0 && (
                 <div class="uml-box-section uml-methods">
-                  {parsed.rootClass.methods.map((meth) => {
-                    const m = convertMember(meth, parsed.rootClass?.name);
+                  {interfaceClass.methods.map((meth) => {
+                    const m = convertMember(meth, interfaceClass.name);
                     return (
                       <div class="uml-member">
                         <span class={`uml-vis uml-vis-${m.vis === '+' ? 'pub' : m.vis === '-' ? 'priv' : 'prot'}`}>{m.vis}</span>
@@ -396,50 +439,101 @@ const concreteChildren = parsed.isThreeTier ? parsed.allClasses.filter((c) => c.
 
           {/* Nivel 3: Clases Hijas */}
           <div class="uml-row-children">
-            {concreteChildren.map((child) => (
-              <div class="uml-box uml-box-child">
-                <div class="uml-box-head">
-                  <span class="uml-class-name">{child.name}</span>
+            {concreteChildren.map((child) => {
+              const compClass = parsed.compositionMap.get(child.name);
+              return (
+                <div class="uml-child-col">
+                  <div class="uml-box uml-box-child">
+                    <div class="uml-box-head">
+                      {child.stereotype && <span class="uml-stereotype">{child.stereotype}</span>}
+                      <span class="uml-class-name">{child.name}</span>
+                    </div>
+                    {child.attrs.length > 0 && (
+                      <div class="uml-box-section uml-attrs">
+                        {child.attrs.map((a) => {
+                          const m = convertMember(a, child.name);
+                          return (
+                            <div class="uml-member">
+                              <span class={`uml-vis uml-vis-${m.vis === '+' ? 'pub' : m.vis === '-' ? 'priv' : 'prot'}`}>{m.vis}</span>
+                              <span class="uml-text uml-text-classic">{m.classic}</span>
+                              <span class="uml-text uml-text-alt">{m.alt}</span>
+                              <span class="uml-text uml-text-classic-notype">{m.classicNoType}</span>
+                              <span class="uml-text uml-text-alt-notype">{m.altNoType}</span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                    {child.methods.length > 0 && (
+                      <div class="uml-box-section uml-methods">
+                        {child.methods.map((meth) => {
+                          const m = convertMember(meth, child.name);
+                          return (
+                            <div class="uml-member">
+                              <span class={`uml-vis uml-vis-${m.vis === '+' ? 'pub' : m.vis === '-' ? 'priv' : 'prot'}`}>{m.vis}</span>
+                              <span class="uml-text uml-text-classic">{m.classic}</span>
+                              <span class="uml-text uml-text-alt">{m.alt}</span>
+                              <span class="uml-text uml-text-classic-notype">{m.classicNoType}</span>
+                              <span class="uml-text uml-text-alt-notype">{m.altNoType}</span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+
+                  {compClass && (
+                    <div class="uml-comp-wrap">
+                      <div class="uml-arrow-connector uml-arrow-comp">
+                        <div class="uml-arrow-badge-wrap">
+                          <span class="uml-conn-diamond is-comp">◆</span>
+                          <span class="uml-arrow-tag">tiene (composición)</span>
+                        </div>
+                        <div class="uml-arrow-stem is-solid"></div>
+                      </div>
+                      <div class="uml-box uml-box-external">
+                        <div class="uml-box-head uml-head-external">
+                          <span class="uml-stereotype">&lt;&lt;externa&gt;&gt;</span>
+                          <span class="uml-class-name">{compClass.name}</span>
+                        </div>
+                        {compClass.attrs.length > 0 && (
+                          <div class="uml-box-section uml-attrs">
+                            {compClass.attrs.map((a) => {
+                              const m = convertMember(a, compClass.name);
+                              return (
+                                <div class="uml-member">
+                                  <span class={`uml-vis uml-vis-${m.vis === '+' ? 'pub' : m.vis === '-' ? 'priv' : 'prot'}`}>{m.vis}</span>
+                                  <span class="uml-text uml-text-classic">{m.classic}</span>
+                                  <span class="uml-text uml-text-alt">{m.alt}</span>
+                                  <span class="uml-text uml-text-classic-notype">{m.classicNoType}</span>
+                                  <span class="uml-text uml-text-alt-notype">{m.altNoType}</span>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        )}
+                        {compClass.methods.length > 0 && (
+                          <div class="uml-box-section uml-methods">
+                            {compClass.methods.map((meth) => {
+                              const m = convertMember(meth, compClass.name);
+                              return (
+                                <div class="uml-member">
+                                  <span class={`uml-vis uml-vis-${m.vis === '+' ? 'pub' : m.vis === '-' ? 'priv' : 'prot'}`}>{m.vis}</span>
+                                  <span class="uml-text uml-text-classic">{m.classic}</span>
+                                  <span class="uml-text uml-text-alt">{m.alt}</span>
+                                  <span class="uml-text uml-text-classic-notype">{m.classicNoType}</span>
+                                  <span class="uml-text uml-text-alt-notype">{m.altNoType}</span>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
                 </div>
-                {child.attrs.length > 0 && (
-                  <div class="uml-box-section uml-attrs">
-                    {child.attrs.map((a) => {
-                      const m = convertMember(a, child.name);
-                      return (
-                        <div class="uml-member">
-                          <span class={`uml-vis uml-vis-${m.vis === '+' ? 'pub' : m.vis === '-' ? 'priv' : 'prot'}`}>{m.vis}</span>
-                          <span class="uml-text uml-text-classic">{m.classic}</span>
-                          <span class="uml-text uml-text-alt">{m.alt}</span>
-                          <span class="uml-text uml-text-classic-notype">{m.classicNoType}</span>
-                          <span class="uml-text uml-text-alt-notype">{m.altNoType}</span>
-                        </div>
-                      );
-                    })}
-                  </div>
-                )}
-                {child.methods.length > 0 && (
-                  <div class="uml-box-section uml-methods">
-                    {child.methods.map((meth) => {
-                      const m = convertMember(meth, child.name);
-                      return (
-                        <div class="uml-member">
-                          <span class={`uml-vis uml-vis-${m.vis === '+' ? 'pub' : m.vis === '-' ? 'priv' : 'prot'}`}>{m.vis}</span>
-                          <span class="uml-text uml-text-classic">{m.classic}</span>
-                          <span class="uml-text uml-text-alt">{m.alt}</span>
-                          <span class="uml-text uml-text-classic-notype">{m.classicNoType}</span>
-                          <span class="uml-text uml-text-alt-notype">{m.altNoType}</span>
-                        </div>
-                      );
-                    })}
-                  </div>
-                )}
-                {child.attrs.length === 0 && child.methods.length === 0 && (
-                  <div class="uml-box-section uml-empty-section">
-                    <span class="uml-empty-text">Hereda miembros</span>
-                  </div>
-                )}
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       )}
@@ -1466,13 +1560,42 @@ const concreteChildren = parsed.isThreeTier ? parsed.allClasses.filter((c) => c.
   .uml-row-children {
     display: flex;
     justify-content: center;
+    align-items: flex-start;
     gap: 1rem;
     width: 100%;
     flex-wrap: wrap;
   }
-  .uml-box-child {
-    flex: 1 1 200px;
-    max-width: 260px;
+  .uml-child-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1 1 210px;
+    max-width: 270px;
+  }
+  .uml-child-col .uml-box-child {
+    width: 100%;
+  }
+  .uml-comp-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    margin-top: 0.35rem;
+  }
+  .uml-arrow-comp {
+    margin: 0.2rem 0;
+  }
+  .uml-box-external {
+    width: 100%;
+    border-color: #0f766e !important;
+  }
+  .uml-head-external {
+    background: #0f766e !important;
+    color: #ffffff !important;
+  }
+  :global(.dark) .uml-head-external {
+    background: #14b8a6 !important;
+    color: #0f172a !important;
   }
 
   /* Conexiones (Composición y Asociación) */
