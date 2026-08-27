@@ -83,6 +83,10 @@ const totalBasicLangs = new Set(basicLessons.map((l) => l.course)).size;
     <div class="exercise-toolbar">
       <p class="exercise-toolbar-hint">10 clases · clic para expandir diagrama y checklist</p>
       <div class="exercise-toolbar-actions">
+        <div class="global-uml-switch" role="group" aria-label="Notación UML global">
+          <button type="button" class="global-format-btn" data-global-format="classic" title="Formato Clásico (nombre: Tipo)">🏛️ Clásico</button>
+          <button type="button" class="global-format-btn" data-global-format="alt" title="Formato Alternativo (Tipo nombre)">⚡ Alternativo</button>
+        </div>
         <button type="button" id="expandAll" class="toolbar-btn">Expandir todo</button>
         <button type="button" id="collapseAll" class="toolbar-btn toolbar-btn--ghost">Colapsar todo</button>
       </div>

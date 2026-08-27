@@ -42,8 +42,8 @@ export const pooBasicChallenges: PooChallenge[] = [
     task: 'Implementa la clase Lampara. Crea una lámpara, enciéndela, cambia el brillo a 2 y luego apágala. Valida que el nivel sea 1-3.',
     base: {
       name: 'Lampara',
-      attrs: ['color', 'esta_encendida', 'nivel_brillo: 1..3'],
-      methods: ['encender()', 'apagar()', 'cambiar_brillo(nuevo_nivel)'],
+      attrs: ['- color: String', '- esta_encendida: boolean', '- nivel_brillo: int'],
+      methods: ['+ encender(): void', '+ apagar(): void', '+ cambiar_brillo(nuevo_nivel: int): void'],
     },
     children: [],
   },
@@ -55,8 +55,8 @@ export const pooBasicChallenges: PooChallenge[] = [
     task: 'Implementa Taza. Llena con "café", bebe 80 ml, intenta beber más de lo disponible y vacíala.',
     base: {
       name: 'Taza',
-      attrs: ['capacidad_ml', 'cantidad_actual_ml', 'tipo_bebida'],
-      methods: ['llenar(tipo)', 'beber(ml_a_tomar)', 'vaciar()'],
+      attrs: ['- capacidad_ml: double', '- cantidad_actual_ml: double', '- tipo_bebida: String'],
+      methods: ['+ llenar(tipo: String): void', '+ beber(ml_a_tomar: double): void', '+ vaciar(): void'],
     },
     children: [],
   },
@@ -68,8 +68,8 @@ export const pooBasicChallenges: PooChallenge[] = [
     task: 'Implementa Semaforo. Cambia a Verde, luego a Amarillo y simula una falla con apagar_por_falla().',
     base: {
       name: 'Semaforo',
-      attrs: ['color_luz: Rojo|Amarillo|Verde', 'ubicacion_calle', 'esta_operativo'],
-      methods: ['cambiar_luz(nuevo_color)', 'apagar_por_falla()'],
+      attrs: ['- color_luz: String', '- ubicacion_calle: String', '- esta_operativo: boolean'],
+      methods: ['+ cambiar_luz(nuevo_color: String): void', '+ apagar_por_falla(): void'],
     },
     children: [],
   },
@@ -81,8 +81,8 @@ export const pooBasicChallenges: PooChallenge[] = [
     task: 'Implementa Termometro. Toma 36.6°C, muestra la lectura, cambia a Fahrenheit y vuelve a mostrar.',
     base: {
       name: 'Termometro',
-      attrs: ['temperatura_actual', 'unidad: Celsius|Fahrenheit'],
-      methods: ['tomar_temperatura(valor)', 'cambiar_unidad()', 'mostrar_lectura()'],
+      attrs: ['- temperatura_actual: double', '- unidad: String'],
+      methods: ['+ tomar_temperatura(valor: double): void', '+ cambiar_unidad(): void', '+ mostrar_lectura(): String'],
     },
     children: [],
   },
@@ -94,8 +94,8 @@ export const pooBasicChallenges: PooChallenge[] = [
     task: 'Implementa RelojDespertador. Configura alarma a las 07:00, actívala y llama a sonar_alarma().',
     base: {
       name: 'RelojDespertador',
-      attrs: ['hora_actual', 'hora_alarma', 'alarma_activada'],
-      methods: ['configurar_alarma(hora)', 'activar_alarma()', 'sonar_alarma()'],
+      attrs: ['- hora_actual: String', '- hora_alarma: String', '- alarma_activada: boolean'],
+      methods: ['+ configurar_alarma(hora: String): void', '+ activar_alarma(): void', '+ sonar_alarma(): void'],
     },
     children: [],
   },
@@ -107,8 +107,8 @@ export const pooBasicChallenges: PooChallenge[] = [
     task: 'Implementa Puerta. Intenta abrir con llave puesta (debe fallar), quita la llave y abre.',
     base: {
       name: 'Puerta',
-      attrs: ['material', 'esta_abierta', 'esta_con_llave'],
-      methods: ['abrir()', 'cerrar()', 'poner_llave()', 'quitar_llave()'],
+      attrs: ['- material: String', '- esta_abierta: boolean', '- esta_con_llave: boolean'],
+      methods: ['+ abrir(): void', '+ cerrar(): void', '+ poner_llave(): void', '+ quitar_llave(): void'],
     },
     children: [],
   },
@@ -120,8 +120,8 @@ export const pooBasicChallenges: PooChallenge[] = [
     task: 'Implementa MarcadorJuego. Suma 2 puntos a J1, 1 a J2, muestra el marcador y reinícialo.',
     base: {
       name: 'MarcadorJuego',
-      attrs: ['puntos_jugador_1', 'puntos_jugador_2', 'tiempo_restante_segundos'],
-      methods: ['sumar_punto_j1()', 'sumar_punto_j2()', 'reiniciar_marcador()'],
+      attrs: ['- puntos_jugador_1: int', '- puntos_jugador_2: int', '- tiempo_restante_segundos: int'],
+      methods: ['+ sumar_punto_j1(): void', '+ sumar_punto_j2(): void', '+ reiniciar_marcador(): void'],
     },
     children: [],
   },
@@ -133,8 +133,8 @@ export const pooBasicChallenges: PooChallenge[] = [
     task: 'Implementa Alcancia. Guarda $5000, intenta exceder la capacidad (debe rechazar) y rompe la alcancía.',
     base: {
       name: 'Alcancia',
-      attrs: ['dueno', 'total_ahorrado', 'capacidad_maxima'],
-      methods: ['guardar_dinero(monto)', 'romper_alcancia()', 'ver_total()'],
+      attrs: ['- dueno: String', '- total_ahorrado: double', '- capacidad_maxima: double'],
+      methods: ['+ guardar_dinero(monto: double): void', '+ romper_alcancia(): void', '+ ver_total(): double'],
     },
     children: [],
   },
@@ -146,8 +146,8 @@ export const pooBasicChallenges: PooChallenge[] = [
     task: 'Implementa Billetera. Agrega $10000, gasta $3500, intenta gastar $10000 de nuevo (debe fallar) y consulta el saldo.',
     base: {
       name: 'Billetera',
-      attrs: ['titular', 'dinero_disponible'],
-      methods: ['agregar_dinero(monto)', 'gastar_dinero(monto)', 'consultar_plata()'],
+      attrs: ['- titular: String', '- dinero_disponible: double'],
+      methods: ['+ agregar_dinero(monto: double): void', '+ gastar_dinero(monto: double): boolean', '+ consultar_plata(): double'],
     },
     children: [],
   },
@@ -159,8 +159,8 @@ export const pooBasicChallenges: PooChallenge[] = [
     task: 'Implementa Ventilador. Sube a velocidad 2, activa el giro, baja a 1 y apaga.',
     base: {
       name: 'Ventilador',
-      attrs: ['marca', 'velocidad: 0..3', 'esta_girando'],
-      methods: ['subir_velocidad()', 'bajar_velocidad()', 'alternar_giro()', 'apagar()'],
+      attrs: ['- marca: String', '- velocidad: int', '- esta_girando: boolean'],
+      methods: ['+ subir_velocidad(): void', '+ bajar_velocidad(): void', '+ alternar_giro(): void', '+ apagar(): void'],
     },
     children: [],
   },
@@ -176,13 +176,13 @@ export const pooHerenciaChallenges: PooChallenge[] = [
     task: 'Implementa la jerarquía. Instancia un estudiante, un docente y un administrativo, y llama al menos un método heredado y uno propio.',
     base: {
       name: 'Persona',
-      attrs: ['rut', 'nombre', 'email'],
-      methods: ['iniciar_sesion()'],
+      attrs: ['- rut: String', '- nombre: String', '- email: String'],
+      methods: ['+ iniciar_sesion(): void'],
     },
     children: [
-      { name: 'Estudiante', attrs: ['matricula', 'promedio_notas'], methods: ['inscribir_ramo()'] },
-      { name: 'Docente', attrs: ['codigo_profesor', 'departamento'], methods: ['subir_nota()'] },
-      { name: 'Administrativo', attrs: ['cargo', 'horario_turno'], methods: [] },
+      { name: 'Estudiante', attrs: ['- matricula: String', '- promedio_notas: double'], methods: ['+ inscribir_ramo(): boolean'] },
+      { name: 'Docente', attrs: ['- codigo_profesor: String', '- departamento: String'], methods: ['+ subir_nota(): void'] },
+      { name: 'Administrativo', attrs: ['- cargo: String', '- horario_turno: String'], methods: [] },
     ],
   },
   {
@@ -193,13 +193,13 @@ export const pooHerenciaChallenges: PooChallenge[] = [
     task: 'Modela la herencia. Crea un arreglo (o lista) de tipo Envio con las tres hijas y recórrelo llamando actualizar_estado().',
     base: {
       name: 'Envio',
-      attrs: ['codigo_seguimiento', 'remitente', 'destinatario'],
-      methods: ['actualizar_estado()'],
+      attrs: ['- codigo_seguimiento: String', '- remitente: String', '- destinatario: String'],
+      methods: ['+ actualizar_estado(): void'],
     },
     children: [
-      { name: 'EnvioEstandar', attrs: ['dias_habiles_entrega'], methods: [] },
-      { name: 'EnvioExpress', attrs: ['garantia_mismo_dia', 'recargo_urgencia'], methods: [] },
-      { name: 'EnvioInternacional', attrs: ['pais_destino', 'impuesto_aduanero'], methods: [] },
+      { name: 'EnvioEstandar', attrs: ['- dias_habiles_entrega: int'], methods: [] },
+      { name: 'EnvioExpress', attrs: ['- garantia_mismo_dia: boolean', '- recargo_urgencia: double'], methods: [] },
+      { name: 'EnvioInternacional', attrs: ['- pais_destino: String', '- impuesto_aduanero: double'], methods: [] },
     ],
   },
   {
@@ -210,13 +210,13 @@ export const pooHerenciaChallenges: PooChallenge[] = [
     task: 'Implementa las tres cuentas. El administrador debe poder bloquear a un usuario registrado (simúlalo con un método).',
     base: {
       name: 'Usuario',
-      attrs: ['username', 'password', 'ultimo_acceso'],
-      methods: ['autenticar()'],
+      attrs: ['- username: String', '- password: String', '- ultimo_acceso: String'],
+      methods: ['+ autenticar(): boolean'],
     },
     children: [
-      { name: 'UsuarioInvitado', attrs: ['tiempo_expiracion_sesion'], methods: [] },
-      { name: 'UsuarioRegistrado', attrs: ['historial_actividad', 'avatar_url'], methods: [] },
-      { name: 'UsuarioAdministrador', attrs: ['nivel_acceso'], methods: ['bloquear_usuario()'] },
+      { name: 'UsuarioInvitado', attrs: ['- tiempo_expiracion_sesion: int'], methods: [] },
+      { name: 'UsuarioRegistrado', attrs: ['- historial_actividad: String', '- avatar_url: String'], methods: [] },
+      { name: 'UsuarioAdministrador', attrs: ['- nivel_acceso: int'], methods: ['+ bloquear_usuario(): void'] },
     ],
   },
   {
@@ -227,13 +227,13 @@ export const pooHerenciaChallenges: PooChallenge[] = [
     task: 'Sobrescribe preparar() en cada hija (polimorfismo). En Cafe agrega agregar_shot_espresso().',
     base: {
       name: 'Bebida',
-      attrs: ['nombre', 'tamano_ml', 'temperatura'],
-      methods: ['preparar()'],
+      attrs: ['- nombre: String', '- tamano_ml: int', '- temperatura: String'],
+      methods: ['+ preparar(): void'],
     },
     children: [
-      { name: 'Cafe', attrs: ['tipo_grano', 'nivel_tueste'], methods: ['agregar_shot_espresso()'] },
-      { name: 'Te', attrs: ['variedad_hoja', 'tiempo_infusion'], methods: [] },
-      { name: 'JugoNatural', attrs: ['fruta_principal', 'tiene_azucar_anadida'], methods: [] },
+      { name: 'Cafe', attrs: ['- tipo_grano: String', '- nivel_tueste: String'], methods: ['+ agregar_shot_espresso(): void'] },
+      { name: 'Te', attrs: ['- variedad_hoja: String', '- tiempo_infusion: int'], methods: [] },
+      { name: 'JugoNatural', attrs: ['- fruta_principal: String', '- tiene_azucar_anadida: boolean'], methods: [] },
     ],
   },
   {
@@ -244,13 +244,13 @@ export const pooHerenciaChallenges: PooChallenge[] = [
     task: 'Implementa renovar() en la base. Cada plan debe imprimir un resumen de beneficios al renovar.',
     base: {
       name: 'Suscripcion',
-      attrs: ['id_cliente', 'costo_mensual', 'estado'],
-      methods: ['renovar()'],
+      attrs: ['- id_cliente: String', '- costo_mensual: double', '- estado: String'],
+      methods: ['+ renovar(): boolean'],
     },
     children: [
-      { name: 'PlanGratuito', attrs: ['limite_anuncios_por_hora'], methods: [] },
-      { name: 'PlanIndividual', attrs: ['calidad_streaming_hd'], methods: [] },
-      { name: 'PlanFamiliar', attrs: ['max_perfiles_simultaneos', 'control_parental'], methods: [] },
+      { name: 'PlanGratuito', attrs: ['- limite_anuncios_por_hora: int'], methods: [] },
+      { name: 'PlanIndividual', attrs: ['- calidad_streaming_hd: boolean'], methods: [] },
+      { name: 'PlanFamiliar', attrs: ['- max_perfiles_simultaneos: int', '- control_parental: boolean'], methods: [] },
     ],
   },
   {
@@ -261,13 +261,13 @@ export const pooHerenciaChallenges: PooChallenge[] = [
     task: 'Llama utilizar() de forma polimórfica. Las hijas con métodos extra (aplicar_fuerza, cambiar_velocidad) deben usarlos al menos una vez.',
     base: {
       name: 'Herramienta',
-      attrs: ['nombre', 'material', 'peso_gramos'],
-      methods: ['utilizar()'],
+      attrs: ['- nombre: String', '- material: String', '- peso_gramos: double'],
+      methods: ['+ utilizar(): void'],
     },
     children: [
-      { name: 'HerramientaManual', attrs: ['tipo_mango'], methods: ['aplicar_fuerza()'] },
-      { name: 'HerramientaElectrica', attrs: ['voltaje', 'consumo_watts'], methods: ['cambiar_velocidad()'] },
-      { name: 'HerramientaMedicion', attrs: ['unidad_medida', 'margen_error'], methods: [] },
+      { name: 'HerramientaManual', attrs: ['- tipo_mango: String'], methods: ['+ aplicar_fuerza(): void'] },
+      { name: 'HerramientaElectrica', attrs: ['- voltaje: int', '- consumo_watts: int'], methods: ['+ cambiar_velocidad(): void'] },
+      { name: 'HerramientaMedicion', attrs: ['- unidad_medida: String', '- margen_error: double'], methods: [] },
     ],
   },
   {
@@ -278,13 +278,13 @@ export const pooHerenciaChallenges: PooChallenge[] = [
     task: 'Crea un zoológico (colección de Animal) con un mamífero, un ave y un reptil. Alimenta a todos recorriendo la colección.',
     base: {
       name: 'Animal',
-      attrs: ['chip_id', 'especie', 'edad', 'peso'],
-      methods: ['alimentar()'],
+      attrs: ['- chip_id: String', '- especie: String', '- edad: int', '- peso: double'],
+      methods: ['+ alimentar(): void'],
     },
     children: [
-      { name: 'Mamifero', attrs: ['tipo_pelaje', 'periodo_gestacion'], methods: [] },
-      { name: 'Ave', attrs: ['envergadura_alas', 'puede_volar'], methods: [] },
-      { name: 'Reptil', attrs: ['temperatura_corporal_optima', 'tipo_escama'], methods: [] },
+      { name: 'Mamifero', attrs: ['- tipo_pelaje: String', '- periodo_gestacion: int'], methods: [] },
+      { name: 'Ave', attrs: ['- envergadura_alas: double', '- puede_volar: boolean'], methods: [] },
+      { name: 'Reptil', attrs: ['- temperatura_corporal_optima: double', '- tipo_escama: String'], methods: [] },
     ],
   },
   {
@@ -295,13 +295,13 @@ export const pooHerenciaChallenges: PooChallenge[] = [
     task: 'Implementa cerrar_caso() en la base. Instancia un ticket de cada canal y ciérralos.',
     base: {
       name: 'CanalAtencion',
-      attrs: ['id_ticket', 'fecha_creacion'],
-      methods: ['cerrar_caso()'],
+      attrs: ['- id_ticket: String', '- fecha_creacion: String'],
+      methods: ['+ cerrar_caso(): void'],
     },
     children: [
-      { name: 'TicketWeb', attrs: ['ip_usuario', 'navegador'], methods: [] },
-      { name: 'LlamadaTelefonica', attrs: ['numero_origen', 'grabacion_llamada_url'], methods: [] },
-      { name: 'ChatBot', attrs: ['intencion_detectada', 'transferido_a_humano'], methods: [] },
+      { name: 'TicketWeb', attrs: ['- ip_usuario: String', '- navegador: String'], methods: [] },
+      { name: 'LlamadaTelefonica', attrs: ['- numero_origen: String', '- grabacion_llamada_url: String'], methods: [] },
+      { name: 'ChatBot', attrs: ['- intencion_detectada: String', '- transferido_a_humano: boolean'], methods: [] },
     ],
   },
   {
@@ -312,13 +312,13 @@ export const pooHerenciaChallenges: PooChallenge[] = [
     task: 'Sobrescribe atacar() en cada hija. Usa bloquear() y recargar() desde el tipo concreto (no solo desde Arma).',
     base: {
       name: 'Arma',
-      attrs: ['nombre', 'peso', 'durabilidad'],
-      methods: ['atacar()'],
+      attrs: ['- nombre: String', '- peso: double', '- durabilidad: int'],
+      methods: ['+ atacar(): int'],
     },
     children: [
-      { name: 'ArmaCuerpoACuerpo', attrs: ['filo_ataque'], methods: ['bloquear()'] },
-      { name: 'ArmaFuego', attrs: ['calibre', 'capacidad_cargador'], methods: ['recargar()'] },
-      { name: 'ArmaMagica', attrs: ['costo_mana', 'tipo_elemento'], methods: [] },
+      { name: 'ArmaCuerpoACuerpo', attrs: ['- filo_ataque: int'], methods: ['+ bloquear(): void'] },
+      { name: 'ArmaFuego', attrs: ['- calibre: String', '- capacidad_cargador: int'], methods: ['+ recargar(): void'] },
+      { name: 'ArmaMagica', attrs: ['- costo_mana: int', '- tipo_elemento: String'], methods: [] },
     ],
   },
   {
@@ -329,13 +329,13 @@ export const pooHerenciaChallenges: PooChallenge[] = [
     task: 'Implementa leer_dato() (puedes devolver un número simulado). El de movimiento y el de humo deben usar sus métodos de alerta.',
     base: {
       name: 'Sensor',
-      attrs: ['id_dispositivo', 'ubicacion', 'bateria_porcentaje'],
-      methods: ['leer_dato()'],
+      attrs: ['- id_dispositivo: String', '- ubicacion: String', '- bateria_porcentaje: int'],
+      methods: ['+ leer_dato(): double'],
     },
     children: [
-      { name: 'SensorTemperatura', attrs: ['escala_celsius', 'rango_maximo'], methods: [] },
-      { name: 'SensorMovimiento', attrs: ['rango_vision_metros'], methods: ['detectar_presencia()'] },
-      { name: 'SensorHumo', attrs: ['umbral_alarma_ppm'], methods: ['activar_sirena()'] },
+      { name: 'SensorTemperatura', attrs: ['- escala_celsius: boolean', '- rango_maximo: double'], methods: [] },
+      { name: 'SensorMovimiento', attrs: ['- rango_vision_metros: double'], methods: ['+ detectar_presencia(): boolean'] },
+      { name: 'SensorHumo', attrs: ['- umbral_alarma_ppm: int'], methods: ['+ activar_sirena(): void'] },
     ],
   },
   {
@@ -346,13 +346,13 @@ export const pooHerenciaChallenges: PooChallenge[] = [
     task: 'Crea un menú del día con un plato de cada tipo y marca todos como disponibles.',
     base: {
       name: 'Plato',
-      attrs: ['nombre', 'precio', 'tiempo_coccion_min'],
-      methods: ['marcar_disponible()'],
+      attrs: ['- nombre: String', '- precio: double', '- tiempo_coccion_min: int'],
+      methods: ['+ marcar_disponible(): void'],
     },
     children: [
-      { name: 'Entrada', attrs: ['es_fria', 'para_compartir'], methods: [] },
-      { name: 'PlatoFondo', attrs: ['guarnicion_incluida', 'punto_coccion'], methods: [] },
-      { name: 'Postre', attrs: ['calorias', 'es_sin_azucar'], methods: [] },
+      { name: 'Entrada', attrs: ['- es_fria: boolean', '- para_compartir: boolean'], methods: [] },
+      { name: 'PlatoFondo', attrs: ['- guarnicion_incluida: String', '- punto_coccion: String'], methods: [] },
+      { name: 'Postre', attrs: ['- calorias: int', '- es_sin_azucar: boolean'], methods: [] },
     ],
   },
   {
@@ -363,13 +363,13 @@ export const pooHerenciaChallenges: PooChallenge[] = [
     task: 'Enciende la sirena de los tres vehículos desde una lista de VehiculoEmergencia (polimorfismo).',
     base: {
       name: 'VehiculoEmergencia',
-      attrs: ['patente', 'base_operativa'],
-      methods: ['encender_sirena()'],
+      attrs: ['- patente: String', '- base_operativa: String'],
+      methods: ['+ encender_sirena(): void'],
     },
     children: [
-      { name: 'Ambulancia', attrs: ['equipamiento_uci', 'personal_medico_a_bordo'], methods: [] },
-      { name: 'CarroBomba', attrs: ['capacidad_estanque_agua', 'largo_escala'], methods: [] },
-      { name: 'PatrullaPolicial', attrs: ['camara_abordo', 'blindaje_nivel'], methods: [] },
+      { name: 'Ambulancia', attrs: ['- equipamiento_uci: boolean', '- personal_medico_a_bordo: int'], methods: [] },
+      { name: 'CarroBomba', attrs: ['- capacidad_estanque_agua: double', '- largo_escala: double'], methods: [] },
+      { name: 'PatrullaPolicial', attrs: ['- camara_abordo: boolean', '- blindaje_nivel: int'], methods: [] },
     ],
   },
   {
@@ -380,13 +380,13 @@ export const pooHerenciaChallenges: PooChallenge[] = [
     task: 'Completa una tarea de cada tipo. Imprime título, estado y el dato específico de la hija.',
     base: {
       name: 'Tarea',
-      attrs: ['titulo', 'fecha_limite', 'estado'],
-      methods: ['completar()'],
+      attrs: ['- titulo: String', '- fecha_limite: String', '- estado: String'],
+      methods: ['+ completar(): void'],
     },
     children: [
-      { name: 'BugReport', attrs: ['severidad', 'pasos_para_reproducir'], methods: [] },
-      { name: 'NuevaCaracteristica', attrs: ['criterios_aceptacion', 'puntos_historia'], methods: [] },
-      { name: 'TareaMantenimiento', attrs: ['sistema_afectado', 'ventana_horaria'], methods: [] },
+      { name: 'BugReport', attrs: ['- severidad: String', '- pasos_para_reproducir: String'], methods: [] },
+      { name: 'NuevaCaracteristica', attrs: ['- criterios_aceptacion: String', '- puntos_historia: int'], methods: [] },
+      { name: 'TareaMantenimiento', attrs: ['- sistema_afectado: String', '- ventana_horaria: String'], methods: [] },
     ],
   },
   {
@@ -397,13 +397,13 @@ export const pooHerenciaChallenges: PooChallenge[] = [
     task: 'Emite un documento de cada tipo y luego anula la factura (el método vive en la clase base).',
     base: {
       name: 'DocumentoComercial',
-      attrs: ['numero_folio', 'fecha_emision', 'rut_emisor'],
-      methods: ['anular()'],
+      attrs: ['- numero_folio: int', '- fecha_emision: String', '- rut_emisor: String'],
+      methods: ['+ anular(): boolean'],
     },
     children: [
-      { name: 'Factura', attrs: ['monto_neto', 'iva', 'rut_receptor'], methods: [] },
-      { name: 'Boleta', attrs: ['monto_total_bruto'], methods: [] },
-      { name: 'GuiaDespacho', attrs: ['direccion_entrega', 'patente_transportista'], methods: [] },
+      { name: 'Factura', attrs: ['- monto_neto: double', '- iva: double', '- rut_receptor: String'], methods: [] },
+      { name: 'Boleta', attrs: ['- monto_total_bruto: double'], methods: [] },
+      { name: 'GuiaDespacho', attrs: ['- direccion_entrega: String', '- patente_transportista: String'], methods: [] },
     ],
   },
   {
@@ -414,13 +414,13 @@ export const pooHerenciaChallenges: PooChallenge[] = [
     task: 'Genera el informe de los tres exámenes. En sangre y resonancia considera los flags de ayuno/contraste en el texto del informe.',
     base: {
       name: 'ExamenMedico',
-      attrs: ['codigo_fonasa', 'paciente_rut', 'fecha_toma'],
-      methods: ['generar_informe()'],
+      attrs: ['- codigo_fonasa: String', '- paciente_rut: String', '- fecha_toma: String'],
+      methods: ['+ generar_informe(): String'],
     },
     children: [
-      { name: 'ExamenSangre', attrs: ['requiere_ayuno_horas', 'tubos_muestra'], methods: [] },
-      { name: 'Radiografia', attrs: ['zona_cuerpo', 'dosis_radiacion'], methods: [] },
-      { name: 'ResonanciaMagnetica', attrs: ['duracion_minutos', 'requiere_contraste'], methods: [] },
+      { name: 'ExamenSangre', attrs: ['- requiere_ayuno_horas: int', '- tubos_muestra: int'], methods: [] },
+      { name: 'Radiografia', attrs: ['- zona_cuerpo: String', '- dosis_radiacion: double'], methods: [] },
+      { name: 'ResonanciaMagnetica', attrs: ['- duracion_minutos: int', '- requiere_contraste: boolean'], methods: [] },
     ],
   },
   {
@@ -432,17 +432,17 @@ export const pooHerenciaChallenges: PooChallenge[] = [
     base: {
       name: '«interface» Movible',
       attrs: [],
-      methods: ['mover()', 'estaEnTablero(): boolean'],
+      methods: ['+ mover(): void', '+ estaEnTablero(): boolean'],
     },
     abstractParent: {
       name: 'PiezaJuego',
-      attrs: ['color', 'posicion_fila', 'posicion_columna'],
-      methods: ['mover()', 'estaEnTablero(): boolean'],
+      attrs: ['- color: String', '- posicion_fila: int', '- posicion_columna: int'],
+      methods: ['+ mover(): void', '+ estaEnTablero(): boolean'],
     },
     children: [
-      { name: 'PeonAjedrez', attrs: ['es_primer_movimiento'], methods: ['promover()'] },
-      { name: 'CaballoAjedrez', attrs: ['puede_saltar'], methods: [] },
-      { name: 'FichaDamas', attrs: ['es_reina'], methods: [] },
+      { name: 'PeonAjedrez', attrs: ['- es_primer_movimiento: boolean'], methods: ['+ promover(): void'] },
+      { name: 'CaballoAjedrez', attrs: ['- puede_saltar: boolean'], methods: [] },
+      { name: 'FichaDamas', attrs: ['- es_reina: boolean'], methods: [] },
     ],
   },
   {
@@ -454,17 +454,17 @@ export const pooHerenciaChallenges: PooChallenge[] = [
     base: {
       name: '«interface» Interactuable',
       attrs: [],
-      methods: ['dar_like()', 'compartir()', 'getContadorLikes(): int'],
+      methods: ['+ dar_like(): void', '+ compartir(): void', '+ getContadorLikes(): int'],
     },
     abstractParent: {
       name: 'Publicacion',
-      attrs: ['id_post', 'autor', 'fecha_hora', 'contador_likes'],
-      methods: ['dar_like()', 'compartir()', 'getContadorLikes(): int'],
+      attrs: ['- id_post: String', '- autor: String', '- fecha_hora: String', '- contador_likes: int'],
+      methods: ['+ dar_like(): void', '+ compartir(): void', '+ getContadorLikes(): int'],
     },
     children: [
-      { name: 'PostTexto', attrs: ['contenido_caracteres'], methods: [] },
-      { name: 'PostVideo', attrs: ['resolucion_video', 'duracion_segundos'], methods: [] },
-      { name: 'HistoriaTemporal', attrs: ['duracion_horas_activa'], methods: ['verificar_expiracion()'] },
+      { name: 'PostTexto', attrs: ['- contenido_caracteres: String'], methods: [] },
+      { name: 'PostVideo', attrs: ['- resolucion_video: String', '- duracion_segundos: int'], methods: [] },
+      { name: 'HistoriaTemporal', attrs: ['- duracion_horas_activa: int'], methods: ['+ verificar_expiracion(): boolean'] },
     ],
   },
   {
@@ -476,17 +476,17 @@ export const pooHerenciaChallenges: PooChallenge[] = [
     base: {
       name: '«interface» Reservable',
       attrs: [],
-      methods: ['reservar()', 'cancelarReserva()', 'getPrecioNoche(): double'],
+      methods: ['+ reservar(): void', '+ cancelarReserva(): void', '+ getPrecioNoche(): double'],
     },
     abstractParent: {
       name: 'Habitacion',
-      attrs: ['numero_habitacion', 'precio_noche', 'estado_limpieza'],
-      methods: ['reservar()', 'cancelarReserva()', 'getPrecioNoche(): double'],
+      attrs: ['- numero_habitacion: int', '- precio_noche: double', '- estado_limpieza: String'],
+      methods: ['+ reservar(): void', '+ cancelarReserva(): void', '+ getPrecioNoche(): double'],
     },
     children: [
-      { name: 'HabitacionSimple', attrs: ['tamano_cama'], methods: [] },
-      { name: 'HabitacionDoble', attrs: ['cantidad_camas', 'tiene_vista_al_mar'], methods: [] },
-      { name: 'SuitePresidencial', attrs: ['incluye_jacuzzi', 'servicio_habitacion_24h'], methods: [] },
+      { name: 'HabitacionSimple', attrs: ['- tamano_cama: String'], methods: [] },
+      { name: 'HabitacionDoble', attrs: ['- cantidad_camas: int', '- tiene_vista_al_mar: boolean'], methods: [] },
+      { name: 'SuitePresidencial', attrs: ['- incluye_jacuzzi: boolean', '- servicio_habitacion_24h: boolean'], methods: [] },
     ],
   },
   {
@@ -498,17 +498,17 @@ export const pooHerenciaChallenges: PooChallenge[] = [
     base: {
       name: '«interface» Conectable',
       attrs: [],
-      methods: ['conectar()', 'desconectar()', 'ejecutar_consulta()'],
+      methods: ['+ conectar(): boolean', '+ desconectar(): void', '+ ejecutar_consulta(sql: String): boolean'],
     },
     abstractParent: {
       name: 'MotorBaseDatos',
-      attrs: ['host', 'puerto', 'usuario'],
-      methods: ['conectar()', 'desconectar()', 'ejecutar_consulta()'],
+      attrs: ['- host: String', '- puerto: int', '- usuario: String'],
+      methods: ['+ conectar(): boolean', '+ desconectar(): void', '+ ejecutar_consulta(sql: String): boolean'],
     },
     children: [
-      { name: 'ConexionMySQL', attrs: ['charset', 'autocommit'], methods: [] },
-      { name: 'ConexionPostgreSQL', attrs: ['schema_default', 'ssl_mode'], methods: [] },
-      { name: 'ConexionMongoDB', attrs: ['nombre_cluster', 'write_concern'], methods: [] },
+      { name: 'ConexionMySQL', attrs: ['- charset: String', '- autocommit: boolean'], methods: [] },
+      { name: 'ConexionPostgreSQL', attrs: ['- schema_default: String', '- ssl_mode: String'], methods: [] },
+      { name: 'ConexionMongoDB', attrs: ['- nombre_cluster: String', '- write_concern: String'], methods: [] },
     ],
   },
   {
@@ -520,17 +520,17 @@ export const pooHerenciaChallenges: PooChallenge[] = [
     base: {
       name: '«interface» Cultivable',
       attrs: [],
-      methods: ['regar()', 'podar()', 'getHumedad(): int'],
+      methods: ['+ regar(): void', '+ podar(): void', '+ getHumedad(): int'],
     },
     abstractParent: {
       name: 'Planta',
-      attrs: ['nombre_cientifico', 'altura_cm', 'nivel_humedad'],
-      methods: ['regar()', 'podar()', 'getHumedad(): int'],
+      attrs: ['- nombre_cientifico: String', '- altura_cm: double', '- nivel_humedad: int'],
+      methods: ['+ regar(): void', '+ podar(): void', '+ getHumedad(): int'],
     },
     children: [
-      { name: 'Cactus', attrs: ['frecuencia_riego_dias', 'tiene_espinas'], methods: [] },
-      { name: 'ArbolFrutal', attrs: ['estacion_cosecha', 'kilos_produccion'], methods: [] },
-      { name: 'PlantaInterior', attrs: ['requiere_luz_directa', 'toxicidad_mascotas'], methods: [] },
+      { name: 'Cactus', attrs: ['- frecuencia_riego_dias: int', '- tiene_espinas: boolean'], methods: [] },
+      { name: 'ArbolFrutal', attrs: ['- estacion_cosecha: String', '- kilos_produccion: double'], methods: [] },
+      { name: 'PlantaInterior', attrs: ['- requiere_luz_directa: boolean', '- toxicidad_mascotas: boolean'], methods: [] },
     ],
   },
 ];

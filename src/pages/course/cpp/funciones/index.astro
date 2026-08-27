@@ -3,62 +3,388 @@ import Layout from '../../../../layouts/Layout.astro';
 import CodeBlock from '../../../../components/CodeBlock.astro';
 ---
 
-<Layout title="Funciones en C++" description="Declaración, definición y paso de parámetros" courseSlug="cpp">
+<Layout title="Funciones y Tipos de Retorno en C++" description="Aprende funciones en C++ desde cero con ejemplos sencillos (calculadora, concatenación de nombre, validación de estado) hasta retornos avanzados (std::pair, std::tuple, std::optional, vectores y objetos)." courseSlug="cpp">
   <article class="content-section">
-    <h1>8. Funciones</h1>
+    <h1>8. Funciones y Tipos de Retorno</h1>
+
+    <p class="intro-text">
+      Una función es un bloque de código reutilizable diseñado para realizar una tarea específica. En C++, cada función declara explícitamente su <strong>tipo de retorno</strong> (qué valor devuelve al terminar) y sus <strong>parámetros</strong> (qué datos necesita para trabajar).
+    </p>
 
     <section class="mb-10">
-      <h2>Función con retorno</h2>
+      <h2>1. Ejemplos Fundamentales y Sencillos</h2>
+
+      <p>Comencemos observando funciones básicas con los casos de uso más cotidianos:</p>
+
+      <h3>A. Suma de dos números (Retorno <code>int</code> o <code>double</code>)</h3>
+      <p>Una función de tipo <code>int</code> toma dos enteros y devuelve la suma resultante con la palabra clave <code>return</code>.</p>
       <CodeBlock
         lang="cpp"
         code={`#include <iostream>
 
-int cuadrado(int x) {
-    return x * x;
+// Función que recibe dos enteros y devuelve su suma
+int sumar(int a, int b) {
+    return a + b;
 }
 
 int main() {
-    std::cout << cuadrado(5) << "\\n";  // 25
+    int resultado = sumar(15, 30);
+    std::cout << "La suma es: " << resultado << "\\n"; // 45
     return 0;
 }`}
-        title="Ejemplo"
+        title="Suma de dos números"
+      />
+
+      <h3>B. Calculadora básica (Retornos según la operación)</h3>
+      <p>Podemos crear funciones para cada operación de una calculadora (sumar, restar, multiplicar, dividir):</p>
+      <CodeBlock
+        lang="cpp"
+        code={`#include <iostream>
+
+double multiplicar(double a, double b) {
+    return a * b;
+}
+
+double dividir(double a, double b) {
+    if (b == 0) {
+        std::cout << "Error: No se puede dividir por cero.\\n";
+        return 0.0;
+    }
+    return a / b;
+}
+
+int main() {
+    std::cout << "Multiplicación: " << multiplicar(4.5, 2.0) << "\\n"; // 9.0
+    std::cout << "División: " << dividir(10.0, 4.0) << "\\n";        // 2.5
+    return 0;
+}`}
+        title="Operaciones de Calculadora"
+      />
+
+      <h3>C. Formatear Nombre Completo (Retorno <code>std::string</code>)</h3>
+      <p>Una función que recibe el nombre y el apellido y los une (concatena) devolviendo un <code>std::string</code> completo:</p>
+      <CodeBlock
+        lang="cpp"
+        code={`#include <iostream>
+#include <string>
+
+std::string obtenerNombreCompleto(std::string nombre, std::string apellido) {
+    return nombre + " " + apellido;
+}
+
+int main() {
+    std::string cliente = obtenerNombreCompleto("María", "González");
+    std::cout << "Cliente registrado: " << cliente << "\\n"; // María González
+    return 0;
+}`}
+        title="Concatenar Nombre Completo"
+      />
+
+      <h3>D. Verificación de Estado (Retorno <code>bool</code>)</h3>
+      <p>Las funciones de tipo <code>bool</code> devuelven <code>true</code> o <code>false</code> y son muy útiles para evaluar condiciones:</p>
+      <CodeBlock
+        lang="cpp"
+        code={`#include <iostream>
+
+// Verifica si el usuario es mayor de edad
+bool esMayorDeEdad(int edad) {
+    return edad >= 18;
+}
+
+// Verifica si un servidor está activo según su código de estado
+bool esEstadoActivo(int codigoEstado) {
+    return codigoEstado == 200; // 200 OK
+}
+
+int main() {
+    int edadUsuario = 20;
+    if (esMayorDeEdad(edadUsuario)) {
+        std::cout << "Acceso permitido.\\n";
+    }
+
+    int estadoHttp = 200;
+    if (esEstadoActivo(estadoHttp)) {
+        std::cout << "Servidor en línea (Estado 200 OK).\\n";
+    }
+
+    return 0;
+}`}
+        title="Validación de Estado con Booleano"
+      />
+
+      <h3>E. Función sin Retorno (<code>void</code>)</h3>
+      <p>Cuando una función solo realiza acciones (imprimir en consola, guardar datos) y no necesita entregar un valor de regreso, su tipo de retorno debe ser <code>void</code>.</p>
+      <CodeBlock
+        lang="cpp"
+        code={`#include <iostream>
+
+void saludarUsuario(std::string nombre) {
+    std::cout << "¡Hola, " << nombre << "! Bienvenido al curso de C++.\\n";
+    // No requiere instrucción return
+}
+
+int main() {
+    saludarUsuario("Lucas");
+    return 0;
+}`}
+        title="Función void (sin retorno)"
       />
     </section>
 
     <section class="mb-10">
-      <h2>Prototipo y definición</h2>
-      <p>En proyectos grandes se declara el prototipo arriba y la definición puede ir en otro archivo <code>.cpp</code>.</p>
+      <h2>2. Anatomía de una Función y Prototipos</h2>
+      <p>
+        En C++ las funciones deben declararse antes de ser utilizadas. En programas o librerías grandes es una buena práctica separar la declaración (<strong>prototipo</strong>) de la <strong>definición</strong> (cuerpo de la función).
+      </p>
       <CodeBlock
         lang="cpp"
-        code={`int maximo(int a, int b);  // prototipo
+        code={`#include <iostream>
+
+// 1. Prototipo (declaración)
+int restar(int a, int b);
 
 int main() {
-    std::cout << maximo(3, 7) << "\\n";
+    int diff = restar(50, 20);
+    std::cout << "Diferencia: " << diff << "\\n"; // 30
     return 0;
 }
 
-int maximo(int a, int b) {
-    return (a > b) ? a : b;
+// 2. Definición (cuerpo)
+int restar(int a, int b) {
+    return a - b;
 }`}
-        title="Prototipo + definición"
+        title="Prototipo y Definición"
       />
     </section>
 
     <section class="mb-10">
-      <h2>Paso por valor vs referencia</h2>
-      <p>Por defecto los argumentos se copian. Para modificar una variable externa usá referencia <code>&amp;</code>.</p>
+      <h2>3. Resumen de Todos los Tipos de Retorno Posibles en C++</h2>
+
+      <p>A medida que avanzas en C++, descubrirás que las funciones pueden retornar tipos de datos mucho más complejos:</p>
+
+      <div class="overflow-x-auto mb-6">
+        <table class="w-full border-collapse border border-gray-300 my-4 text-left">
+          <thead>
+            <tr class="bg-gray-100 dark:bg-gray-800">
+              <th class="border border-gray-300 p-2 font-bold">Tipo de Retorno</th>
+              <th class="border border-gray-300 p-2 font-bold">Descripción / Caso de Uso</th>
+              <th class="border border-gray-300 p-2 font-bold">Sintaxis / Ejemplo</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="border border-gray-300 p-2"><code>void</code></td>
+              <td class="border border-gray-300 p-2">No devuelve ningún valor (solo ejecuta acciones).</td>
+              <td class="border border-gray-300 p-2"><code>void saludar()</code></td>
+            </tr>
+            <tr>
+              <td class="border border-gray-300 p-2">Tipos Primitivos (<code>int</code>, <code>double</code>, <code>bool</code>, <code>char</code>)</td>
+              <td class="border border-gray-300 p-2">Devuelven un único valor numérico, lógico o carácter.</td>
+              <td class="border border-gray-300 p-2"><code>int sumar(int a, int b)</code></td>
+            </tr>
+            <tr>
+              <td class="border border-gray-300 p-2">Cadenas (<code>std::string</code>)</td>
+              <td class="border border-gray-300 p-2">Devuelve un texto formateado o procesado.</td>
+              <td class="border border-gray-300 p-2"><code>std::string getNombre()</code></td>
+            </tr>
+            <tr>
+              <td class="border border-gray-300 p-2">Estructuras / Clases (<code>struct</code> / <code>class</code>)</td>
+              <td class="border border-gray-300 p-2">Devuelve un objeto personalizado agrupando varios campos.</td>
+              <td class="border border-gray-300 p-2"><code>Persona crearPersona()</code></td>
+            </tr>
+            <tr>
+              <td class="border border-gray-300 p-2">Colecciones (<code>std::vector</code>)</td>
+              <td class="border border-gray-300 p-2">Devuelve un arreglo dinámico o lista completa de datos.</td>
+              <td class="border border-gray-300 p-2"><code>std::vector&lt;int&gt; obtenerPares()</code></td>
+            </tr>
+            <tr>
+              <td class="border border-gray-300 p-2"><code>std::pair&lt;T1, T2&gt;</code></td>
+              <td class="border border-gray-300 p-2">Devuelve exactamente <strong>dos valores</strong> a la vez.</td>
+              <td class="border border-gray-300 p-2"><code>std::pair&lt;int, bool&gt; buscar()</code></td>
+            </tr>
+            <tr>
+              <td class="border border-gray-300 p-2"><code>std::tuple&lt;T1, T2, T3...&gt;</code></td>
+              <td class="border border-gray-300 p-2">Devuelve <strong>tres o más valores</strong> sin crear un struct.</td>
+              <td class="border border-gray-300 p-2"><code>std::tuple&lt;string, int, double&gt;</code></td>
+            </tr>
+            <tr>
+              <td class="border border-gray-300 p-2"><code>std::optional&lt;T&gt;</code> (C++17)</td>
+              <td class="border border-gray-300 p-2">Devuelve un valor que <strong>puede o no existir</strong> (búsquedas o cálculos fallidos).</td>
+              <td class="border border-gray-300 p-2"><code>std::optional&lt;double&gt; dividir()</code></td>
+            </tr>
+            <tr>
+              <td class="border border-gray-300 p-2">Referencias (<code>T&amp;</code> o <code>const T&amp;</code>)</td>
+              <td class="border border-gray-300 p-2">Devuelve un alias directo al objeto original para modificarlo o evitar copias.</td>
+              <td class="border border-gray-300 p-2"><code>const std::string&amp; getNombre()</code></td>
+            </tr>
+            <tr>
+              <td class="border border-gray-300 p-2">Deducción de Tipo (<code>auto</code>) (C++14)</td>
+              <td class="border border-gray-300 p-2">El compilador deduce automáticamente el tipo de retorno.</td>
+              <td class="border border-gray-300 p-2"><code>auto multiplicar(double a, double b)</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2>4. Retornos Avanzados en Código</h2>
+
+      <h3>A. Retorno de Múltiples Valores (<code>std::pair</code> y <code>std::tuple</code>)</h3>
       <CodeBlock
         lang="cpp"
-        code={`void duplicar(int& x) {
-    x *= 2;
+        code={`#include <iostream>
+#include <utility> // std::pair
+#include <tuple>   // std::tuple
+
+// Retorna el mínimo y el máximo de dos números
+std::pair<int, int> obtenerMinMax(int a, int b) {
+    if (a < b) return { a, b };
+    return { b, a };
+}
+
+// Retorna tres datos: (Nombre, Edad, Calificación)
+std::tuple<std::string, int, double> obtenerFichaEstudiante() {
+    return { "Ana Gómez", 21, 9.5 };
+}
+
+int main() {
+    // Desempaquetado con Structured Binding (C++17)
+    auto [minimo, maximo] = obtenerMinMax(42, 18);
+    std::cout << "Mínimo: " << minimo << ", Máximo: " << maximo << "\\n";
+
+    auto [nombre, edad, promedio] = obtenerFichaEstudiante();
+    std::cout << nombre << " tiene " << edad << " años. Promedio: " << promedio << "\\n";
+
+    return 0;
 }`}
-        title="Referencia"
+        title="Retorno Múltiple con Pair y Tuple"
+      />
+
+      <h3>B. Búsqueda y Manejo de Errores con <code>std::optional</code> (C++17)</h3>
+      <CodeBlock
+        lang="cpp"
+        code={`#include <iostream>
+#include <optional>
+
+// Devuelve un resultado opcional
+std::optional<double> dividirSeguro(double a, double b) {
+    if (b == 0.0) return std::nullopt; // Indica ausencia de resultado
+    return a / b;
+}
+
+int main() {
+    auto res1 = dividirSeguro(10.0, 2.0);
+    if (res1.has_value()) {
+        std::cout << "Resultado de la división: " << res1.value() << "\\n"; // 5
+    }
+
+    auto res2 = dividirSeguro(5.0, 0.0);
+    if (!res2) {
+        std::cout << "Operación fallida: División por cero.\\n";
+    }
+
+    return 0;
+}`}
+        title="Operaciones Seguras con std::optional"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>5. Paso de Parámetros: Valor, Referencia y <code>const</code></h2>
+      <p>
+        Al definir los argumentos de una función:
+      </p>
+      <ul>
+        <li><strong>Por Valor (<code>int x</code>):</strong> Se crea una copia independiente.</li>
+        <li><strong>Por Referencia (<code>int &amp;x</code>):</strong> Modificar <code>x</code> cambia la variable original.</li>
+        <li><strong>Por Referencia Constante (<code>const std::string &amp;s</code>):</strong> No hace copias pesadas y garantiza que el valor original no sea modificado.</li>
+      </ul>
+
+      <CodeBlock
+        lang="cpp"
+        code={`#include <iostream>
+#include <string>
+
+void duplicar(int& n) {
+    n *= 2; // Altera la variable original
+}
+
+void mostrarMensaje(const std::string& msj) {
+    std::cout << "Mensaje: " << msj << "\\n"; // Eficiente y seguro
+}
+
+int main() {
+    int valor = 20;
+    duplicar(valor);
+    std::cout << "Valor duplicado: " << valor << "\\n"; // 40
+
+    std::string texto = "Aprendiendo C++";
+    mostrarMensaje(texto);
+
+    return 0;
+}`}
+        title="Parámetros por Referencia y Const"
       />
     </section>
 
     <div class="ejercicio">
-      <h3>Ejercicio</h3>
-      <p class="enunciado">Escribir una función <code>es_primo(int n)</code> que devuelva <code>bool</code>.</p>
+      <h3>👨‍💻 Ejercicio Práctico 1</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> Función de Calculadora Básica
+      </div>
+      <p class="enunciado">
+        Escribe una función <code>double calcularAreaTriangulo(double base, double altura)</code> que devuelva el área de un triángulo (<code>(base * altura) / 2</code>). Pruébala en <code>main()</code>.
+      </p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock lang="cpp" code={`#include <iostream>
+
+double calcularAreaTriangulo(double base, double altura) {
+    return (base * altura) / 2.0;
+}
+
+int main() {
+    double area = calcularAreaTriangulo(10.0, 5.0);
+    std::cout << "El área del triángulo es: " << area << "\\n"; // 25.0
+    return 0;
+}`} />
+      </details>
     </div>
+
+    <div class="ejercicio" style="background: #F4E8F4;">
+      <h3>👨‍💻 Ejercicio Práctico 2</h3>
+      <div class="pregunta-box">
+        <span class="pregunta-label">Misión:</span> Verificación de Estado de Usuario
+      </div>
+      <p class="enunciado">
+        Crea una función <code>bool esCuentaValida(std::string usuario, std::string clave)</code> que devuelva <code>true</code> solo si el usuario es <code>"admin"</code> y la clave es <code>"1234"</code>.
+      </p>
+      
+      <details>
+        <summary>👁️ Ver solución propuesta</summary>
+        <CodeBlock lang="cpp" code={`#include <iostream>
+#include <string>
+
+bool esCuentaValida(std::string usuario, std::string clave) {
+    return (usuario == "admin" && clave == "1234");
+}
+
+int main() {
+    if (esCuentaValida("admin", "1234")) {
+        std::cout << "¡Bienvenido Administrador!\\n";
+    } else {
+        std::cout << "Credenciales incorrectas.\\n";
+    }
+    return 0;
+}`} />
+      </details>
+    </div>
+
+    <nav class="nav-bottom">
+      <a href="/course/cpp/colecciones/" class="prev">← Arreglos y vector</a>
+      <a href="/course/cpp/poo-basico/" class="next">POO básico →</a>
+    </nav>
   </article>
 </Layout>

@@ -1,5 +1,9 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import CodeBlock from '../../components/CodeBlock.astro';
+import { functionSolutions } from '../../data/functionSolutions';
+import { highlightLine, idePalettes, langColors } from '../../lib/codeHighlight';
+
 
 const exercises = [
   // SECCIÓN 1: SIN PARÁMETROS Y SIN RETORNO (10 EJERCICIOS)
@@ -763,6 +767,9 @@ const exercises = [
                 </div>
               </div>
               <div class="flex items-center gap-2 shrink-0">
+                <button type="button" data-modal-trigger data-ex-id={ex.id} data-ex-title={ex.title} class="open-solution-modal-btn px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-800 font-nunito font-black text-xs rounded-xl border-2 border-[#1E1210] shadow-[2px_2px_0px_#1E1210] transition-all cursor-pointer flex items-center gap-1">
+                  Ver solución
+                </button>
                 <label class="flex items-center gap-1.5 text-xs font-extrabold bg-sky-50 hover:bg-sky-100 text-sky-900 px-2.5 py-1 rounded-lg border border-sky-200 cursor-pointer" onclick="event.stopPropagation()">
                   <input type="checkbox" data-complete-id={`fn-${ex.id}`} class="w-4 h-4 accent-sky-600 rounded cursor-pointer" />
                   <span>Completado</span>
@@ -793,6 +800,189 @@ const exercises = [
         ))}
       </div>
     </section>
+
+    <!-- MODAL PILOTO DE VER SOLUCIÓN CON DESAFÍO MATEMÁTICO -->
+    <div id="solutionModal" class="fixed inset-0 z-[100] bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4 sm:p-6">
+      <div class="bg-white border-[3px] border-[#1E1210] rounded-3xl w-full max-w-4xl max-h-[92vh] flex flex-col shadow-[10px_10px_0px_#1E1210] overflow-hidden animate-in fade-in zoom-in duration-150">
+        
+        <!-- CABECERA DEL MODAL -->
+        <div class="bg-[#F0F9FF] border-b-2 border-[#1E1210] p-4 sm:p-5 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <span id="modalExNum" class="w-10 h-10 rounded-2xl bg-[#0284c7] text-white flex items-center justify-center font-black text-base shadow-[2px_2px_0px_#1E1210]">01</span>
+            <div>
+              <span class="text-[0.7rem] text-sky-800 font-extrabold uppercase block tracking-wider">Solución del Desafío</span>
+              <h3 id="modalExTitle" class="m-0 font-nunito font-black text-base sm:text-lg text-[#1E1210]">Ejercicio 1: Mostrar un saludo simple</h3>
+            </div>
+          </div>
+          <button type="button" id="closeSolutionModal" class="w-9 h-9 rounded-xl bg-white border-2 border-[#1E1210] font-black text-base text-[#1E1210] flex items-center justify-center cursor-pointer shadow-[2px_2px_0px_#1E1210] hover:bg-rose-100 hover:text-rose-700 transition-colors">✕</button>
+        </div>
+
+        <!-- CONTENIDO INTERACTIVO -->
+        <div class="p-5 sm:p-6 overflow-y-auto flex-1 font-nunito">
+          
+          <!-- PASO 1: VERIFICACIÓN MATEMÁTICA -->
+          <div id="mathVerificationStep" class="bg-amber-50 border-2 border-amber-300 rounded-3xl p-6 sm:p-8 text-center my-4">
+            <div class="text-4xl mb-2">🔐</div>
+            <h4 class="font-black text-amber-950 text-lg sm:text-xl m-0 mb-1">Verificación para desbloquear la solución</h4>
+            <p class="text-xs sm:text-sm font-bold text-amber-800 m-0 mb-4 max-w-md mx-auto">Resuelve la siguiente operación matemática para visualizar el código resuelto en todos los lenguajes soportados:</p>
+            
+            <div class="inline-flex items-center justify-center gap-3 bg-white px-6 py-3.5 rounded-2xl border-2 border-[#1E1210] shadow-[4px_4px_0px_#1E1210] mb-4">
+              <span id="mathChallengeText" class="font-black text-xl sm:text-2xl text-sky-950">12 + 8 =</span>
+              <input type="number" id="mathAnswerInput" class="w-24 px-3 py-2 rounded-xl border-2 border-[#1E1210] font-black text-xl text-center outline-none focus:ring-2 focus:ring-sky-400" placeholder="?" />
+            </div>
+
+            <div>
+              <button type="button" id="verifyMathBtn" class="px-6 py-3 bg-[#0284c7] hover:bg-sky-700 text-white font-black text-sm rounded-xl border-2 border-[#1E1210] shadow-[3px_3px_0px_#1E1210] hover:-translate-y-0.5 transition-all cursor-pointer">
+                🔓 Comprobar y Desbloquear Solución
+              </button>
+            </div>
+            <p id="mathErrorMessage" class="text-xs sm:text-sm font-black text-rose-600 m-0 mt-3 hidden">❌ Respuesta incorrecta. ¡Inténtalo de nuevo!</p>
+          </div>
+
+          <!-- PASO 2: CÓDIGO DESBLOQUEADO -->
+          <div id="solutionCodeStep" class="hidden flex-col gap-4">
+            <!-- <div class="flex items-center justify-between bg-emerald-50 border-2 border-emerald-300 p-3 rounded-2xl text-emerald-950 text-xs sm:text-sm font-black">
+              <span>✅ ¡Operación verificada con éxito! Solución desbloqueada.</span>
+              <span class="text-xs font-bold text-emerald-700 bg-emerald-100 px-2.5 py-1 rounded-lg">7 Lenguajes</span>
+            </div> -->
+
+            <!-- SELECTOR DE LENGUAJE -->
+            <div class="bg-slate-50 border-2 border-[#1E1210] p-3 rounded-2xl shadow-[3px_3px_0px_#1E1210]">
+              <label class="block text-xs font-black text-[#1E1210] mb-2 uppercase tracking-wider">Selecciona el lenguaje de programación:</label>
+              <div class="flex flex-wrap gap-2" id="langSelectorGroup">
+                <button type="button" data-lang="python" class="lang-tab-btn active px-4 py-2 rounded-xl border-2 border-[#1E1210] font-black text-xs cursor-pointer shadow-[2px_2px_0px_#1E1210] bg-[#1E1210] text-white">🐍 Python</button>
+                <button type="button" data-lang="java" class="lang-tab-btn px-4 py-2 rounded-xl border-2 border-[#1E1210] font-black text-xs cursor-pointer bg-white text-[#1E1210]">☕ Java</button>
+                <button type="button" data-lang="csharp" class="lang-tab-btn px-4 py-2 rounded-xl border-2 border-[#1E1210] font-black text-xs cursor-pointer bg-white text-[#1E1210]">🔷 C#</button>
+                <button type="button" data-lang="cpp" class="lang-tab-btn px-4 py-2 rounded-xl border-2 border-[#1E1210] font-black text-xs cursor-pointer bg-white text-[#1E1210]">⚙️ C++</button>
+                <button type="button" data-lang="javascript" class="lang-tab-btn px-4 py-2 rounded-xl border-2 border-[#1E1210] font-black text-xs cursor-pointer bg-white text-[#1E1210]">⚡ JavaScript</button>
+                <button type="button" data-lang="php" class="lang-tab-btn px-4 py-2 rounded-xl border-2 border-[#1E1210] font-black text-xs cursor-pointer bg-white text-[#1E1210]">🐘 PHP</button>
+                <button type="button" data-lang="pseint" class="lang-tab-btn px-4 py-2 rounded-xl border-2 border-[#1E1210] font-black text-xs cursor-pointer bg-white text-[#1E1210]">📝 PSeInt</button>
+              </div>
+            </div>
+
+            <!-- BLOQUES DE CÓDIGO CON RESALTADO DE SINTAXIS OFICIAL -->
+            <div id="codeBlocksContainer" class="mt-1">
+              <div class="code-panel" data-lang-panel="python">
+                <CodeBlock
+                  lang="python"
+                  title="Solución en Python 3.x"
+                  code={`# Solución en Python
+def saludar():
+    print("¡Hola, bienvenido al curso de programación!")
+
+# Invocación principal
+saludar()`}
+                />
+              </div>
+
+              <div class="code-panel hidden" data-lang-panel="java">
+                <CodeBlock
+                  lang="java"
+                  title="Solución en Java (JDK 11+)"
+                  code={`// Solución en Java
+public class Main {
+    public static void saludar() {
+        System.out.println("¡Hola, bienvenido al curso de programación!");
+    }
+
+    public static void main(String[] args) {
+        saludar();
+    }
+}`}
+                />
+              </div>
+
+              <div class="code-panel hidden" data-lang-panel="csharp">
+                <CodeBlock
+                  lang="csharp"
+                  title="Solución en C# (.NET Core)"
+                  code={`// Solución en C#
+using System;
+
+class Program {
+    static void Saludar() {
+        Console.WriteLine("¡Hola, bienvenido al curso de programación!");
+    }
+
+    static void Main() {
+        Saludar();
+    }
+}`}
+                />
+              </div>
+
+              <div class="code-panel hidden" data-lang-panel="cpp">
+                <CodeBlock
+                  lang="cpp"
+                  title="Solución en C++ (C++11/17/20)"
+                  code={`// Solución en C++
+#include <iostream>
+
+void saludar() {
+    std::cout << "¡Hola, bienvenido al curso de programación!" << std::endl;
+}
+
+int main() {
+    saludar();
+    return 0;
+}`}
+                />
+              </div>
+
+              <div class="code-panel hidden" data-lang-panel="javascript">
+                <CodeBlock
+                  lang="javascript"
+                  title="Solución en JavaScript (ES6+)"
+                  code={`// Solución en JavaScript
+function saludar() {
+    console.log("¡Hola, bienvenido al curso de programación!");
+}
+
+// Invocación principal
+saludar();`}
+                />
+              </div>
+
+              <div class="code-panel hidden" data-lang-panel="php">
+                <CodeBlock
+                  lang="php"
+                  title="Solución en PHP (8.x)"
+                  code={`<?php
+// Solución en PHP
+function saludar() {
+    echo "¡Hola, bienvenido al curso de programación!\\n";
+}
+
+// Invocación principal
+saludar();
+?>`}
+                />
+              </div>
+
+              <div class="code-panel hidden" data-lang-panel="pseint">
+                <CodeBlock
+                  lang="pseint"
+                  title="Solución en PSeInt (Pseudocódigo)"
+                  code={`// Solución en PSeInt
+SubProceso saludar()
+    Escribir "¡Hola, bienvenido al curso de programación!"
+FinSubProceso
+
+Algoritmo EjemploFunciones
+    saludar()
+FinAlgoritmo`}
+                />
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script is:inline define:vars={{ rawSolutions: functionSolutions }}>
+      window.ALL_FUNCTIONS_SOLUTIONS = rawSolutions;
+    </script>
 
   </article>
 
@@ -932,6 +1122,172 @@ const exercises = [
           updateSuggestionsVisibility(checked);
         });
       }
+
+      // Lógica interactiva del Modal Piloto de Ver Solución con Desafío Matemático
+      (function setupSolutionModal() {
+        const ALL_SOLUTIONS = window.ALL_FUNCTIONS_SOLUTIONS || {};
+        const modal = document.getElementById('solutionModal');
+        const closeBtn = document.getElementById('closeSolutionModal');
+        const openBtns = document.querySelectorAll('.open-solution-modal-btn');
+        
+        const modalExNum = document.getElementById('modalExNum');
+        const modalExTitle = document.getElementById('modalExTitle');
+
+        const mathStep = document.getElementById('mathVerificationStep');
+        const codeStep = document.getElementById('solutionCodeStep');
+        
+        const challengeText = document.getElementById('mathChallengeText');
+        const answerInput = document.getElementById('mathAnswerInput');
+        const verifyBtn = document.getElementById('verifyMathBtn');
+        const errorMsg = document.getElementById('mathErrorMessage');
+
+        let currentExpectedAnswer = 0;
+        let activeExId = 1;
+
+        // Genera un ejercicio de matemáticas aleatorio: suma, resta, multiplicación o división
+        const generateMathChallenge = () => {
+          const ops = ['+', '-', '*', '/'];
+          const op = ops[Math.floor(Math.random() * ops.length)];
+          let num1 = 0;
+          let num2 = 0;
+
+          if (op === '+') {
+            num1 = Math.floor(Math.random() * 20) + 5;
+            num2 = Math.floor(Math.random() * 20) + 5;
+            currentExpectedAnswer = num1 + num2;
+          } else if (op === '-') {
+            num1 = Math.floor(Math.random() * 30) + 15;
+            num2 = Math.floor(Math.random() * 14) + 1;
+            currentExpectedAnswer = num1 - num2;
+          } else if (op === '*') {
+            num1 = Math.floor(Math.random() * 9) + 2;
+            num2 = Math.floor(Math.random() * 9) + 2;
+            currentExpectedAnswer = num1 * num2;
+          } else if (op === '/') {
+            num2 = Math.floor(Math.random() * 8) + 2;
+            const factor = Math.floor(Math.random() * 9) + 2;
+            num1 = num2 * factor;
+            currentExpectedAnswer = factor;
+          }
+
+          const symbolMap = { '+': '+', '-': '-', '*': '×', '/': '÷' };
+          if (challengeText) {
+            challengeText.textContent = `${num1} ${symbolMap[op]} ${num2} =`;
+          }
+          if (answerInput) {
+            answerInput.value = '';
+          }
+          if (errorMsg) {
+            errorMsg.classList.add('hidden');
+          }
+        };
+
+        const renderCodeForExercise = (exId) => {
+          const sol = ALL_SOLUTIONS[exId];
+          if (!sol) return;
+
+          const panels = document.querySelectorAll('#codeBlocksContainer .code-panel');
+          panels.forEach((p) => {
+            const lang = p.getAttribute('data-lang-panel');
+            const codeContent = sol[lang];
+            const codeEl = p.querySelector('.code-viewer span.whitespace-pre');
+            const linesContainer = p.querySelector('.code-viewer');
+            
+            // Si el bloque CodeBlock ya se encuentra renderizado dinámicamente
+            if (codeContent && linesContainer) {
+              const lines = codeContent.split('\n');
+              linesContainer.innerHTML = lines.map((line, idx) => {
+                const escapedLine = line.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                return `<div class="code-line flex px-2 leading-[1.65] text-[0.93rem] hover:bg-white/5 min-w-max">
+                  <span class="line-num text-right select-none min-w-[2.2rem] pr-3 mr-3 opacity-40 shrink-0 border-r border-white/10">${idx + 1}</span>
+                  <span class="whitespace-pre">${escapedLine}</span>
+                </div>`;
+              }).join('');
+            }
+          });
+        };
+
+        const openModal = (e) => {
+          if (e) e.stopPropagation();
+          const btn = e.currentTarget;
+          const exId = parseInt(btn.getAttribute('data-ex-id') || '1', 10);
+          const exTitle = btn.getAttribute('data-ex-title') || '';
+          activeExId = exId;
+
+          if (modalExNum) modalExNum.textContent = String(exId).padStart(2, '0');
+          if (modalExTitle) modalExTitle.textContent = `Ejercicio ${exId}: ${exTitle}`;
+
+          renderCodeForExercise(exId);
+
+          generateMathChallenge();
+          if (mathStep) mathStep.classList.remove('hidden');
+          if (codeStep) codeStep.classList.add('hidden');
+          if (modal) {
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+          }
+        };
+
+        const closeModal = () => {
+          if (modal) {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+          }
+        };
+
+        openBtns.forEach((btn) => btn.addEventListener('click', openModal));
+        if (closeBtn) closeBtn.addEventListener('click', closeModal);
+        if (modal) {
+          modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
+          });
+        }
+
+        // Verificación de la respuesta del usuario
+        if (verifyBtn && answerInput) {
+          const doVerify = () => {
+            const val = parseInt(answerInput.value, 10);
+            if (!isNaN(val) && val === currentExpectedAnswer) {
+              if (mathStep) mathStep.classList.add('hidden');
+              if (codeStep) codeStep.classList.remove('hidden');
+              if (errorMsg) errorMsg.classList.add('hidden');
+            } else {
+              if (errorMsg) errorMsg.classList.remove('hidden');
+            }
+          };
+
+          verifyBtn.addEventListener('click', doVerify);
+          answerInput.addEventListener('keyup', (e) => {
+            if (e.key === 'Enter') doVerify();
+          });
+        }
+
+        // Cambio de Pestañas de Lenguajes (Python, Java, C#, C++, JS, PHP, PSeInt)
+        const tabBtns = document.querySelectorAll('.lang-tab-btn');
+        const codePanels = document.querySelectorAll('.code-panel');
+
+        tabBtns.forEach((tab) => {
+          tab.addEventListener('click', () => {
+            const targetLang = tab.getAttribute('data-lang');
+            
+            tabBtns.forEach((t) => {
+              t.classList.remove('active', 'bg-[#1E1210]', 'text-white', 'shadow-[2px_2px_0px_#1E1210]');
+              t.classList.add('bg-white', 'text-[#1E1210]');
+            });
+
+            tab.classList.add('active', 'bg-[#1E1210]', 'text-white', 'shadow-[2px_2px_0px_#1E1210]');
+            tab.classList.remove('bg-white', 'text-[#1E1210]');
+
+            codePanels.forEach((p) => {
+              if (p.getAttribute('data-lang-panel') === targetLang) {
+                p.classList.remove('hidden');
+              } else {
+                p.classList.add('hidden');
+              }
+            });
+          });
+        });
+      })();
 
       const searchBox = document.getElementById('searchBox');
       if (searchBox) {

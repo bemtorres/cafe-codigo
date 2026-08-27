@@ -132,16 +132,19 @@ function parseUml(rawCode: string) {
 const parsed = parseUml(code.trim());
 
 // Formateador dual: Clásico (nombre: Tipo, metodo(): Retorno) y Alternativo (Tipo nombre, Retorno metodo())
-function parseParams(paramsStr: string): string {
+function parseParams(paramsStr: string, includeTypes: boolean = true): string {
   if (!paramsStr.trim()) return '';
   const parts = paramsStr.split(',').map((p) => p.trim()).filter(Boolean);
   const classicParts = parts.map((param) => {
-    if (param.includes(':')) return param;
+    if (param.includes(':')) {
+      if (!includeTypes) return param.split(':')[0].trim();
+      return param;
+    }
     const tokens = param.split(/\s+/);
     if (tokens.length >= 2) {
       const type = tokens.slice(0, -1).join(' ');
       const name = tokens[tokens.length - 1];
-      return `${name}: ${type}`;
+      return includeTypes ? `${name}: ${type}` : name;
     }
     return param;
   });
@@ -150,7 +153,7 @@ function parseParams(paramsStr: string): string {
 
 function convertMember(raw: string, className?: string) {
   const t = raw.trim();
-  if (!t) return { vis: '', classic: '', alt: '' };
+  if (!t) return { vis: '', classic: '', alt: '', classicNoType: '', altNoType: '' };
   let vis = '+';
   let rest = t;
   const first = t[0];
@@ -166,7 +169,8 @@ function convertMember(raw: string, className?: string) {
   if (openParen !== -1 && closeParen !== -1 && closeParen >= openParen) {
     const params = rest.substring(openParen + 1, closeParen).trim();
     const beforeParen = rest.substring(0, openParen).trim();
-    const classicParams = parseParams(params);
+    const classicParams = parseParams(params, true);
+    const noTypeParams = parseParams(params, false);
 
     const tokens = beforeParen.split(/\s+/).filter(Boolean);
     let methodName = '';
@@ -187,6 +191,8 @@ function convertMember(raw: string, className?: string) {
         vis,
         classic: `${methodName}(${classicParams})`,
         alt: `${methodName}(${params})`,
+        classicNoType: `${methodName}(${noTypeParams})`,
+        altNoType: `${methodName}(${noTypeParams})`,
       };
     }
 
@@ -194,6 +200,8 @@ function convertMember(raw: string, className?: string) {
       vis,
       classic: `${methodName}(${classicParams}): ${returnType}`,
       alt: `${returnType} ${methodName}(${params})`,
+      classicNoType: `${methodName}(${noTypeParams})`,
+      altNoType: `${methodName}(${noTypeParams})`,
     };
   }
 
@@ -206,6 +214,8 @@ function convertMember(raw: string, className?: string) {
       vis,
       classic: `${name}: ${type}`,
       alt: `${type} ${name}`,
+      classicNoType: name,
+      altNoType: name,
     };
   }
 
@@ -218,6 +228,8 @@ function convertMember(raw: string, className?: string) {
       vis,
       classic: `${name}: ${type}`,
       alt: `${type} ${name}`,
+      classicNoType: name,
+      altNoType: name,
     };
   }
 
@@ -225,6 +237,8 @@ function convertMember(raw: string, className?: string) {
     vis,
     classic: rest,
     alt: rest,
+    classicNoType: rest,
+    altNoType: rest,
   };
 }
 
@@ -249,6 +263,11 @@ const concreteChildren = parsed.isThreeTier ? parsed.allClasses.filter((c) => c.
           ⚡ Alternativo
         </button>
       </div>
+
+      <button type="button" class="btn-toggle-types is-active" title="Activar/Desactivar tipos de datos en el diagrama">
+        <span class="btn-icon">🏷️</span>
+        <span class="types-label">Tipos: ON</span>
+      </button>
 
       <button type="button" class="btn-copy-uml" data-code={code.trim()} title="Copiar código UML">
         <span class="btn-icon">📋</span>
@@ -282,6 +301,8 @@ const concreteChildren = parsed.isThreeTier ? parsed.allClasses.filter((c) => c.
                         <span class={`uml-vis uml-vis-${m.vis === '+' ? 'pub' : m.vis === '-' ? 'priv' : 'prot'}`}>{m.vis}</span>
                         <span class="uml-text uml-text-classic">{m.classic}</span>
                         <span class="uml-text uml-text-alt">{m.alt}</span>
+                        <span class="uml-text uml-text-classic-notype">{m.classicNoType}</span>
+                        <span class="uml-text uml-text-alt-notype">{m.altNoType}</span>
                       </div>
                     );
                   })}
@@ -296,6 +317,8 @@ const concreteChildren = parsed.isThreeTier ? parsed.allClasses.filter((c) => c.
                         <span class={`uml-vis uml-vis-${m.vis === '+' ? 'pub' : m.vis === '-' ? 'priv' : 'prot'}`}>{m.vis}</span>
                         <span class="uml-text uml-text-classic">{m.classic}</span>
                         <span class="uml-text uml-text-alt">{m.alt}</span>
+                        <span class="uml-text uml-text-classic-notype">{m.classicNoType}</span>
+                        <span class="uml-text uml-text-alt-notype">{m.altNoType}</span>
                       </div>
                     );
                   })}
@@ -380,6 +403,8 @@ const concreteChildren = parsed.isThreeTier ? parsed.allClasses.filter((c) => c.
                           <span class={`uml-vis uml-vis-${m.vis === '+' ? 'pub' : m.vis === '-' ? 'priv' : 'prot'}`}>{m.vis}</span>
                           <span class="uml-text uml-text-classic">{m.classic}</span>
                           <span class="uml-text uml-text-alt">{m.alt}</span>
+                          <span class="uml-text uml-text-classic-notype">{m.classicNoType}</span>
+                          <span class="uml-text uml-text-alt-notype">{m.altNoType}</span>
                         </div>
                       );
                     })}
@@ -394,6 +419,8 @@ const concreteChildren = parsed.isThreeTier ? parsed.allClasses.filter((c) => c.
                           <span class={`uml-vis uml-vis-${m.vis === '+' ? 'pub' : m.vis === '-' ? 'priv' : 'prot'}`}>{m.vis}</span>
                           <span class="uml-text uml-text-classic">{m.classic}</span>
                           <span class="uml-text uml-text-alt">{m.alt}</span>
+                          <span class="uml-text uml-text-classic-notype">{m.classicNoType}</span>
+                          <span class="uml-text uml-text-alt-notype">{m.altNoType}</span>
                         </div>
                       );
                     })}
@@ -428,6 +455,8 @@ const concreteChildren = parsed.isThreeTier ? parsed.allClasses.filter((c) => c.
                         <span class={`uml-vis uml-vis-${m.vis === '+' ? 'pub' : m.vis === '-' ? 'priv' : 'prot'}`}>{m.vis}</span>
                         <span class="uml-text uml-text-classic">{m.classic}</span>
                         <span class="uml-text uml-text-alt">{m.alt}</span>
+                        <span class="uml-text uml-text-classic-notype">{m.classicNoType}</span>
+                        <span class="uml-text uml-text-alt-notype">{m.altNoType}</span>
                       </div>
                     );
                   })}
@@ -442,6 +471,8 @@ const concreteChildren = parsed.isThreeTier ? parsed.allClasses.filter((c) => c.
                         <span class={`uml-vis uml-vis-${m.vis === '+' ? 'pub' : m.vis === '-' ? 'priv' : 'prot'}`}>{m.vis}</span>
                         <span class="uml-text uml-text-classic">{m.classic}</span>
                         <span class="uml-text uml-text-alt">{m.alt}</span>
+                        <span class="uml-text uml-text-classic-notype">{m.classicNoType}</span>
+                        <span class="uml-text uml-text-alt-notype">{m.altNoType}</span>
                       </div>
                     );
                   })}
@@ -474,6 +505,8 @@ const concreteChildren = parsed.isThreeTier ? parsed.allClasses.filter((c) => c.
                           <span class={`uml-vis uml-vis-${m.vis === '+' ? 'pub' : m.vis === '-' ? 'priv' : 'prot'}`}>{m.vis}</span>
                           <span class="uml-text uml-text-classic">{m.classic}</span>
                           <span class="uml-text uml-text-alt">{m.alt}</span>
+                          <span class="uml-text uml-text-classic-notype">{m.classicNoType}</span>
+                          <span class="uml-text uml-text-alt-notype">{m.altNoType}</span>
                         </div>
                       );
                     })}
@@ -488,6 +521,8 @@ const concreteChildren = parsed.isThreeTier ? parsed.allClasses.filter((c) => c.
                           <span class={`uml-vis uml-vis-${m.vis === '+' ? 'pub' : m.vis === '-' ? 'priv' : 'prot'}`}>{m.vis}</span>
                           <span class="uml-text uml-text-classic">{m.classic}</span>
                           <span class="uml-text uml-text-alt">{m.alt}</span>
+                          <span class="uml-text uml-text-classic-notype">{m.classicNoType}</span>
+                          <span class="uml-text uml-text-alt-notype">{m.altNoType}</span>
                         </div>
                       );
                     })}
@@ -522,6 +557,8 @@ const concreteChildren = parsed.isThreeTier ? parsed.allClasses.filter((c) => c.
                           <span class={`uml-vis uml-vis-${m.vis === '+' ? 'pub' : m.vis === '-' ? 'priv' : 'prot'}`}>{m.vis}</span>
                           <span class="uml-text uml-text-classic">{m.classic}</span>
                           <span class="uml-text uml-text-alt">{m.alt}</span>
+                          <span class="uml-text uml-text-classic-notype">{m.classicNoType}</span>
+                          <span class="uml-text uml-text-alt-notype">{m.altNoType}</span>
                         </div>
                       );
                     })}
@@ -536,6 +573,8 @@ const concreteChildren = parsed.isThreeTier ? parsed.allClasses.filter((c) => c.
                           <span class={`uml-vis uml-vis-${m.vis === '+' ? 'pub' : m.vis === '-' ? 'priv' : 'prot'}`}>{m.vis}</span>
                           <span class="uml-text uml-text-classic">{m.classic}</span>
                           <span class="uml-text uml-text-alt">{m.alt}</span>
+                          <span class="uml-text uml-text-classic-notype">{m.classicNoType}</span>
+                          <span class="uml-text uml-text-alt-notype">{m.altNoType}</span>
                         </div>
                       );
                     })}
@@ -572,6 +611,8 @@ const concreteChildren = parsed.isThreeTier ? parsed.allClasses.filter((c) => c.
                               <span class={`uml-vis uml-vis-${m.vis === '+' ? 'pub' : m.vis === '-' ? 'priv' : 'prot'}`}>{m.vis}</span>
                               <span class="uml-text uml-text-classic">{m.classic}</span>
                               <span class="uml-text uml-text-alt">{m.alt}</span>
+                              <span class="uml-text uml-text-classic-notype">{m.classicNoType}</span>
+                              <span class="uml-text uml-text-alt-notype">{m.altNoType}</span>
                             </div>
                           );
                         })}
@@ -586,6 +627,8 @@ const concreteChildren = parsed.isThreeTier ? parsed.allClasses.filter((c) => c.
                               <span class={`uml-vis uml-vis-${m.vis === '+' ? 'pub' : m.vis === '-' ? 'priv' : 'prot'}`}>{m.vis}</span>
                               <span class="uml-text uml-text-classic">{m.classic}</span>
                               <span class="uml-text uml-text-alt">{m.alt}</span>
+                              <span class="uml-text uml-text-classic-notype">{m.classicNoType}</span>
+                              <span class="uml-text uml-text-alt-notype">{m.altNoType}</span>
                             </div>
                           );
                         })}
@@ -617,6 +660,8 @@ const concreteChildren = parsed.isThreeTier ? parsed.allClasses.filter((c) => c.
                         <span class={`uml-vis uml-vis-${m.vis === '+' ? 'pub' : m.vis === '-' ? 'priv' : 'prot'}`}>{m.vis}</span>
                         <span class="uml-text uml-text-classic">{m.classic}</span>
                         <span class="uml-text uml-text-alt">{m.alt}</span>
+                        <span class="uml-text uml-text-classic-notype">{m.classicNoType}</span>
+                        <span class="uml-text uml-text-alt-notype">{m.altNoType}</span>
                       </div>
                     );
                   })}
@@ -631,6 +676,8 @@ const concreteChildren = parsed.isThreeTier ? parsed.allClasses.filter((c) => c.
                         <span class={`uml-vis uml-vis-${m.vis === '+' ? 'pub' : m.vis === '-' ? 'priv' : 'prot'}`}>{m.vis}</span>
                         <span class="uml-text uml-text-classic">{m.classic}</span>
                         <span class="uml-text uml-text-alt">{m.alt}</span>
+                        <span class="uml-text uml-text-classic-notype">{m.classicNoType}</span>
+                        <span class="uml-text uml-text-alt-notype">{m.altNoType}</span>
                       </div>
                     );
                   })}
@@ -688,6 +735,23 @@ const concreteChildren = parsed.isThreeTier ? parsed.allClasses.filter((c) => c.
 
 <script is:inline>
 (function() {
+  function applyGlobalTypes(showTypes) {
+    try { localStorage.setItem('uml_show_types', showTypes ? 'true' : 'false'); } catch(e) {}
+    document.querySelectorAll('.uml-card').forEach(function(card) {
+      card.setAttribute('data-show-types', showTypes ? 'true' : 'false');
+      var tBtn = card.querySelector('.btn-toggle-types');
+      if (tBtn) {
+        tBtn.classList.toggle('is-active', showTypes);
+        var label = tBtn.querySelector('.types-label');
+        if (label) label.textContent = showTypes ? 'Tipos: ON' : 'Tipos: OFF';
+      }
+    });
+    document.querySelectorAll('.global-types-btn').forEach(function(gBtn) {
+      gBtn.classList.toggle('is-active', showTypes);
+      gBtn.textContent = showTypes ? '🏷️ Tipos: ON' : '🏷️ Tipos: OFF';
+    });
+  }
+
   function applyGlobalFormat(format) {
     try { localStorage.setItem('uml_format_mode', format); } catch(e) {}
     document.querySelectorAll('.uml-card').forEach(function(card) {
@@ -696,22 +760,62 @@ const concreteChildren = parsed.isThreeTier ? parsed.allClasses.filter((c) => c.
         btn.classList.toggle('is-active', btn.getAttribute('data-format-val') === format);
       });
     });
+    document.querySelectorAll('.global-format-btn').forEach(function(gBtn) {
+      gBtn.classList.toggle('is-active', gBtn.getAttribute('data-global-format') === format);
+    });
   }
 
   function setupUmlViewer() {
     var savedFormat = 'classic';
+    var savedTypes = true;
     try {
       var s = localStorage.getItem('uml_format_mode');
       if (s === 'classic' || s === 'alt') savedFormat = s;
+      var t = localStorage.getItem('uml_show_types');
+      if (t === 'false') savedTypes = false;
     } catch(e) {}
 
-    var cards = document.querySelectorAll('.uml-card');
-    cards.forEach(function(card) {
+    document.querySelectorAll('.global-types-btn').forEach(function(tBtn) {
+      if (tBtn.getAttribute('data-types-init') === 'true') return;
+      tBtn.setAttribute('data-types-init', 'true');
+      tBtn.classList.toggle('is-active', savedTypes);
+      tBtn.textContent = savedTypes ? '🏷️ Tipos: ON' : '🏷️ Tipos: OFF';
+      tBtn.addEventListener('click', function() {
+        var current = tBtn.classList.contains('is-active');
+        applyGlobalTypes(!current);
+      });
+    });
+
+    document.querySelectorAll('.global-format-btn').forEach(function(gBtn) {
+      if (gBtn.getAttribute('data-global-init') === 'true') return;
+      gBtn.setAttribute('data-global-init', 'true');
+      gBtn.classList.toggle('is-active', gBtn.getAttribute('data-global-format') === savedFormat);
+      gBtn.addEventListener('click', function() {
+        var val = gBtn.getAttribute('data-global-format');
+        applyGlobalFormat(val);
+      });
+    });
+
+    document.querySelectorAll('.uml-card').forEach(function(card) {
       if (card.getAttribute('data-uml-init') === 'true') return;
       card.setAttribute('data-uml-init', 'true');
 
-      // Sync format
+      // Sync format & types
       card.setAttribute('data-format', savedFormat);
+      card.setAttribute('data-show-types', savedTypes ? 'true' : 'false');
+
+      var typesBtn = card.querySelector('.btn-toggle-types');
+      if (typesBtn) {
+        typesBtn.classList.toggle('is-active', savedTypes);
+        var label = typesBtn.querySelector('.types-label');
+        if (label) label.textContent = savedTypes ? 'Tipos: ON' : 'Tipos: OFF';
+        typesBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          var current = typesBtn.classList.contains('is-active');
+          applyGlobalTypes(!current);
+        });
+      }
+
       card.querySelectorAll('.format-btn').forEach(function(btn) {
         btn.classList.toggle('is-active', btn.getAttribute('data-format-val') === savedFormat);
         btn.addEventListener('click', function(e) {
@@ -962,6 +1066,7 @@ const concreteChildren = parsed.isThreeTier ? parsed.allClasses.filter((c) => c.
   }
 
   /* Switcher de Formato Clásico / Alternativo */
+  :global(.global-uml-switch),
   .uml-format-switch {
     display: inline-flex;
     background: #f1f5f9;
@@ -970,10 +1075,13 @@ const concreteChildren = parsed.isThreeTier ? parsed.allClasses.filter((c) => c.
     border: 1.5px solid #1E1210;
     box-shadow: 2px 2px 0px rgba(30,18,16,0.15);
   }
+  :global(.dark) :global(.global-uml-switch),
   :global(.dark) .uml-format-switch {
     background: #1e293b;
     border-color: #52525b;
   }
+  :global(.global-format-btn),
+  :global(.global-types-btn),
   .format-btn {
     border: none;
     background: transparent;
@@ -986,19 +1094,30 @@ const concreteChildren = parsed.isThreeTier ? parsed.allClasses.filter((c) => c.
     cursor: pointer;
     transition: background-color 0.12s, color 0.12s, transform 0.1s;
   }
+  :global(.global-types-btn) {
+    border-left: 1.5px solid rgba(30, 18, 16, 0.2);
+    border-radius: 0 6px 6px 0;
+  }
+  :global(.dark) :global(.global-types-btn) {
+    border-left-color: rgba(255, 255, 255, 0.2);
+  }
+  :global(.dark) :global(.global-format-btn),
   :global(.dark) .format-btn {
     color: #94a3b8;
   }
+  :global(.global-format-btn.is-active),
   .format-btn.is-active {
     background: #1E1210;
     color: #ffffff;
     box-shadow: 0 1px 2px rgba(0,0,0,0.1);
   }
+  :global(.dark) :global(.global-format-btn.is-active),
   :global(.dark) .format-btn.is-active {
     background: #6366f1;
     color: #ffffff;
   }
 
+  .btn-toggle-types,
   .btn-copy-uml,
   .btn-zoom-uml {
     display: inline-flex;
@@ -1016,6 +1135,7 @@ const concreteChildren = parsed.isThreeTier ? parsed.allClasses.filter((c) => c.
     box-shadow: 2px 2px 0px #1E1210;
     transition: transform 0.1s, box-shadow 0.1s, background-color 0.15s;
   }
+  :global(.dark) .btn-toggle-types,
   :global(.dark) .btn-copy-uml,
   :global(.dark) .btn-zoom-uml {
     background: #18181b;
@@ -1023,12 +1143,14 @@ const concreteChildren = parsed.isThreeTier ? parsed.allClasses.filter((c) => c.
     box-shadow: 2px 2px 0px #09090b;
     color: #f4f4f5;
   }
+  .btn-toggle-types:hover,
   .btn-copy-uml:hover,
   .btn-zoom-uml:hover {
     transform: translateY(-1px);
     box-shadow: 3px 3px 0px #1E1210;
     background: #FFF9C4;
   }
+  :global(.dark) .btn-toggle-types:hover,
   :global(.dark) .btn-copy-uml:hover,
   :global(.dark) .btn-zoom-uml:hover {
     background: #3f3f46;
@@ -1043,21 +1165,30 @@ const concreteChildren = parsed.isThreeTier ? parsed.allClasses.filter((c) => c.
     line-height: 1;
   }
 
-  /* Control de visibilidad Clásico vs Alternativo */
-  .uml-card[data-format="classic"] .uml-text-alt,
-  .uml-card:not([data-format="alt"]) .uml-text-alt {
-    display: none;
-  }
-  .uml-card[data-format="classic"] .uml-text-classic,
-  .uml-card:not([data-format="alt"]) .uml-text-classic {
-    display: inline;
+  /* Control de visibilidad Clásico vs Alternativo y Con/Sin Tipos */
+  .uml-card .uml-text-classic,
+  .uml-card .uml-text-alt,
+  .uml-card .uml-text-classic-notype,
+  .uml-card .uml-text-alt-notype {
+    display: none !important;
   }
 
-  .uml-card[data-format="alt"] .uml-text-classic {
-    display: none;
+  /* Con tipos de datos ON (default) */
+  .uml-card:not([data-show-types="false"])[data-format="classic"] .uml-text-classic,
+  .uml-card:not([data-show-types="false"]):not([data-format="alt"]) .uml-text-classic {
+    display: inline !important;
   }
-  .uml-card[data-format="alt"] .uml-text-alt {
-    display: inline;
+  .uml-card:not([data-show-types="false"])[data-format="alt"] .uml-text-alt {
+    display: inline !important;
+  }
+
+  /* Sin tipos de datos (data-show-types="false") */
+  .uml-card[data-show-types="false"][data-format="classic"] .uml-text-classic-notype,
+  .uml-card[data-show-types="false"]:not([data-format="alt"]) .uml-text-classic-notype {
+    display: inline !important;
+  }
+  .uml-card[data-show-types="false"][data-format="alt"] .uml-text-alt-notype {
+    display: inline !important;
   }
 
   /* Viewport */

@@ -212,11 +212,16 @@ export async function createMonacoPSeIntEditor(container, initialValue) {
   function insertSnippet(text) {
     const ed = editor;
     ed.focus();
-    const selection = ed.getSelection();
-    if (!selection) return;
-    ed.executeEdits('insert-snippet', [
-      { range: selection, text, forceMoveMarkers: true },
-    ]);
+    const contrib = ed.getContribution('snippetController2');
+    if (contrib && typeof contrib.insert === 'function') {
+      contrib.insert(text);
+    } else {
+      const selection = ed.getSelection();
+      if (!selection) return;
+      ed.executeEdits('insert-snippet', [
+        { range: selection, text, forceMoveMarkers: true },
+      ]);
+    }
   }
 
   return { monaco, editor, insertSnippet };

@@ -1,7 +1,7 @@
 ---
-import Layout from '../../../../layouts/Layout.astro';
-import CodeBlock from '../../../../components/CodeBlock.astro';
-import DesarrolloIaQuizModal from '../../../../components/quizzes/DesarrolloIaQuizModal.astro';
+import Layout from "../../../../layouts/Layout.astro";
+import CodeBlock from "../../../../components/CodeBlock.astro";
+import DesarrolloIaQuizModal from "../../../../components/quizzes/DesarrolloIaQuizModal.astro";
 ---
 
 <Layout
@@ -15,34 +15,58 @@ import DesarrolloIaQuizModal from '../../../../components/quizzes/DesarrolloIaQu
     <section class="mb-10">
       <h2>¿Qué es un token y por qué te importa?</h2>
       <p>
-        Los modelos de IA no leen "palabras": procesan <strong>tokens</strong>, que son fragmentos de texto
-        (a veces una palabra, a veces una sílaba, a veces un símbolo). Cada prompt que envías y cada respuesta
-        que recibes consume tokens. Esto tiene consecuencias directas:
+        Los modelos de IA no leen "palabras": procesan <strong>tokens</strong>,
+        que son fragmentos de texto (a veces una palabra, a veces una sílaba, a
+        veces un símbolo). Cada prompt que envías y cada respuesta que recibes
+        consume tokens. Esto tiene consecuencias directas:
       </p>
       <ul>
-        <li><strong>Costo:</strong> Los tokens de entrada y salida se facturan en APIs de pago.</li>
-        <li><strong>Velocidad:</strong> Más tokens = más tiempo de procesamiento.</li>
-        <li><strong>Calidad:</strong> Si saturas la ventana de contexto con código irrelevante, el modelo "olvida" o ignora las instrucciones importantes.</li>
+        <li>
+          <strong>Costo:</strong> Los tokens de entrada y salida se facturan en APIs
+          de pago.
+        </li>
+        <li>
+          <strong>Velocidad:</strong> Más tokens = más tiempo de procesamiento.
+        </li>
+        <li>
+          <strong>Calidad:</strong> Si saturas la ventana de contexto con código irrelevante,
+          el modelo "olvida" o ignora las instrucciones importantes.
+        </li>
       </ul>
       <blockquote>
-        "Enviarle todo tu proyecto a la IA es como darle a un mecánico las llaves de toda la ciudad cuando solo necesitas cambiar una rueda."
+        "Enviarle todo tu proyecto a la IA es como darle a un mecánico las
+        llaves de toda la ciudad cuando solo necesitas cambiar una rueda."
       </blockquote>
     </section>
 
     <section class="mb-10">
       <h2>El flujo de trabajo en 5 pasos</h2>
       <p>
-        Antes de abrir el chat con cualquier IA, sigue este flujo para maximizar la calidad de la respuesta
-        y minimizar el desperdicio de recursos:
+        Antes de abrir el chat con cualquier IA, sigue este flujo para maximizar
+        la calidad de la respuesta y minimizar el desperdicio de recursos:
       </p>
       <div class="ejercicio" style="background: #DBEAFE;">
         <h3>🧭 Los 5 pasos</h3>
         <ol class="enunciado" style="margin:0;">
-          <li><strong>Análisis autónomo previo:</strong> Piensa qué quieres lograr. Si no sabes qué pedirle a la IA, la respuesta será genérica.</li>
-          <li><strong>Preparación del contexto:</strong> Selecciona <em>solo</em> el archivo o la función relevante, no el proyecto completo.</li>
-          <li><strong>Prompting preciso:</strong> Definí rol, entrada y salida esperada.</li>
-          <li><strong>Revisión crítica:</strong> Antes de aceptar, aplica el checklist de validación (lección 4).</li>
-          <li><strong>Integración local:</strong> Adapta nombres de variables al estilo del proyecto y corre pruebas.</li>
+          <li>
+            <strong>Análisis autónomo previo:</strong> Piensa qué quieres lograr.
+            Si no sabes qué pedirle a la IA, la respuesta será genérica.
+          </li>
+          <li>
+            <strong>Preparación del contexto:</strong> Selecciona <em>solo</em> el
+            archivo o la función relevante, no el proyecto completo.
+          </li>
+          <li>
+            <strong>Prompting preciso:</strong> Definí rol, entrada y salida esperada.
+          </li>
+          <li>
+            <strong>Revisión crítica:</strong> Antes de aceptar, aplica el checklist
+            de validación (lección 4).
+          </li>
+          <li>
+            <strong>Integración local:</strong> Adapta nombres de variables al estilo
+            del proyecto y corre pruebas.
+          </li>
         </ol>
       </div>
     </section>
@@ -50,22 +74,33 @@ import DesarrolloIaQuizModal from '../../../../components/quizzes/DesarrolloIaQu
     <section class="mb-10">
       <h2>Paso 1: Análisis autónomo previo</h2>
       <p>
-        <strong>Antes de escribir el prompt</strong>, dedica un momento a pensar por tu cuenta:
+        <strong>Antes de escribir el prompt</strong>, dedica un momento a pensar
+        por tu cuenta:
       </p>
       <ul>
-        <li>¿Qué lógica necesito? ¿Es un filtro, una transformación, una validación?</li>
+        <li>
+          ¿Qué lógica necesito? ¿Es un filtro, una transformación, una
+          validación?
+        </li>
         <li>¿Qué datos recibe la función y qué debería devolver?</li>
-        <li>¿Qué casos límite existen (lista vacía, valores nulos, datos inválidos)?</li>
+        <li>
+          ¿Qué casos límite existen (lista vacía, valores nulos, datos
+          inválidos)?
+        </li>
       </ul>
       <p>
-        Si puedes responder estas preguntas, tu prompt será específico y la IA te dará una respuesta útil al
-        primer intento. Si no puedes, la IA te dará algo genérico que probablemente no encaje.
+        Si puedes responder estas preguntas, tu prompt será específico y la IA
+        te dará una respuesta útil al primer intento. Si no puedes, la IA te
+        dará algo genérico que probablemente no encaje.
       </p>
     </section>
 
     <section class="mb-10">
       <h2>Paso 2: Preparación del contexto</h2>
-      <p>No selecciones carpetas enteras ni copies archivos completos. Usa las herramientas que cada IDE ofrece:</p>
+      <p>
+        No selecciones carpetas enteras ni copies archivos completos. Usa las
+        herramientas que cada IDE ofrece:
+      </p>
       <div class="table-responsive">
         <table>
           <thead>
@@ -77,15 +112,24 @@ import DesarrolloIaQuizModal from '../../../../components/quizzes/DesarrolloIaQu
           <tbody>
             <tr>
               <td><strong>Cursor</strong></td>
-              <td>Usa <code>@archivo.ts</code> para referenciar un archivo específico en el chat.</td>
+              <td
+                >Usa <code>@archivo.ts</code> para referenciar un archivo específico
+                en el chat.</td
+              >
             </tr>
             <tr>
               <td><strong>Antigravity</strong></td>
-              <td>Selecciona el código relevante directamente o usa <code>@</code> para agregar archivos.</td>
+              <td
+                >Selecciona el código relevante directamente o usa <code>@</code
+                > para agregar archivos.</td
+              >
             </tr>
             <tr>
               <td><strong>Copilot Chat</strong></td>
-              <td>Usa <code>#file:archivo.ts</code> o selecciona código antes de abrir el chat.</td>
+              <td
+                >Usa <code>#file:archivo.ts</code> o selecciona código antes de abrir
+                el chat.</td
+              >
             </tr>
             <tr>
               <td><strong>ChatGPT / Claude Web</strong></td>
@@ -99,7 +143,9 @@ import DesarrolloIaQuizModal from '../../../../components/quizzes/DesarrolloIaQu
     <section class="mb-10">
       <h2>Paso 3: Prompting preciso</h2>
       <p>
-        Un buen prompt tiene tres componentes: <strong>Rol</strong>, <strong>Entrada</strong> y <strong>Salida esperada</strong>.
+        Un buen prompt tiene tres componentes: <strong>Rol</strong>, <strong
+          >Entrada</strong
+        > y <strong>Salida esperada</strong>.
       </p>
       <CodeBlock
         lang="text"
@@ -117,16 +163,27 @@ Solo devuelve el código de la función, sin explicaciones.`}
       />
       <p>Nota las diferencias clave:</p>
       <ul>
-        <li><strong>Rol:</strong> "Actúa como desarrollador TypeScript" elimina ambigüedad del lenguaje.</li>
-        <li><strong>Entrada:</strong> La firma exacta de la función (<code>validateEmail(email: string): boolean</code>).</li>
-        <li><strong>Salida:</strong> "Solo devuelve el código, sin explicaciones" ahorra tokens de respuesta.</li>
+        <li>
+          <strong>Rol:</strong> "Actúa como desarrollador TypeScript" elimina ambigüedad
+          del lenguaje.
+        </li>
+        <li>
+          <strong>Entrada:</strong> La firma exacta de la función (<code
+            >validateEmail(email: string): boolean</code
+          >).
+        </li>
+        <li>
+          <strong>Salida:</strong> "Solo devuelve el código, sin explicaciones" ahorra
+          tokens de respuesta.
+        </li>
       </ul>
     </section>
 
     <section class="mb-10">
       <h2>Cuándo reiniciar el chat</h2>
       <p>
-        Una conversación larga acumula todo el historial como tokens de entrada en cada nuevo mensaje.
+        Una conversación larga acumula todo el historial como tokens de entrada
+        en cada nuevo mensaje.
         <strong>Reinicia el chat cuando:</strong>
       </p>
       <ul>
@@ -139,7 +196,8 @@ Solo devuelve el código de la función, sin explicaciones.`}
     <div class="ejercicio" style="background: #EDE9FE;">
       <h3>⚡ Desafío: Optimiza un prompt</h3>
       <p class="enunciado">
-        Transforma este prompt vago en uno preciso con los 3 componentes (rol, entrada, salida):
+        Transforma este prompt vago en uno preciso con los 3 componentes (rol,
+        entrada, salida):
       </p>
       <CodeBlock
         lang="text"
@@ -147,7 +205,7 @@ Solo devuelve el código de la función, sin explicaciones.`}
         code={`Ayúdame a hacer un login con base de datos`}
       />
       <details>
-        <summary>👁️ Ver solución sugerida</summary>
+        <summary>Ver solución sugerida</summary>
         <CodeBlock
           lang="text"
           title="Prompt optimizado"
@@ -169,8 +227,12 @@ No incluyas la configuración de la app ni la conexión a la BD.`}
     </section>
 
     <nav class="nav-bottom">
-      <a href="/course/desarrollo-ia/seguridad-datos/" class="prev">← Privacidad y Datos</a>
-      <a href="/course/desarrollo-ia/validacion-codigo/" class="next">Checklist de Validación →</a>
+      <a href="/course/desarrollo-ia/seguridad-datos/" class="prev"
+        >← Privacidad y Datos</a
+      >
+      <a href="/course/desarrollo-ia/validacion-codigo/" class="next"
+        >Checklist de Validación →</a
+      >
     </nav>
   </article>
 </Layout>
