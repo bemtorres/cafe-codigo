@@ -1,22 +1,74 @@
 const DEFAULT_LIMITS = Object.freeze({
-  maxSteps: 50_000,
+  maxSteps: 100_000,
 });
 
 function normalizeKeyword(s) {
-  return s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase();
+  return String(s ?? '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toUpperCase()
+    .trim();
 }
 
-/** Quita comentarios // de una línea (respeta cadenas entre comillas dobles). Usado por el intérprete para ignorar comentarios. */
-function stripInlineComment(line) {
+function normalizeVarName(s) {
+  return String(s ?? '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .trim();
+}
+
+/** Quita comentarios // y /* ... *\/ respetando cadenas entre comillas */
+function stripComments(code) {
+  let result = '';
   let inString = false;
-  for (let i = 0; i < line.length - 1; i++) {
-    const ch = line[i];
-    if (ch === '"') inString = !inString;
-    if (!inString && line[i] === '/' && line[i + 1] === '/') {
-      return line.slice(0, i).trimEnd();
+  let inBlockComment = false;
+  const s = String(code ?? '');
+
+  for (let i = 0; i < s.length; i++) {
+    const ch = s[i];
+    const next = s[i + 1];
+
+    if (inBlockComment) {
+      if (ch === '*' && next === '/') {
+        inBlockComment = false;
+        i++;
+      }
+      continue;
     }
+
+    if (inString) {
+      result += ch;
+      if (ch === '"' || ch === "'") {
+        inString = false;
+      }
+      continue;
+    }
+
+    if (ch === '"' || ch === "'") {
+      inString = true;
+      result += ch;
+      continue;
+    }
+
+    if (ch === '/' && next === '*') {
+      inBlockComment = true;
+      i++;
+      continue;
+    }
+
+    if (ch === '/' && next === '/') {
+      // comentario de línea: saltar hasta el salto de línea
+      while (i < s.length && s[i] !== '\n') {
+        i++;
+      }
+      if (i < s.length) result += '\n';
+      continue;
+    }
+
+    result += ch;
   }
-  return line;
+  return result;
 }
 
 function splitTopLevelCommas(s) {
@@ -24,21 +76,29 @@ function splitTopLevelCommas(s) {
   let cur = '';
   let depth = 0;
   let inString = false;
+  let strChar = '';
+
   for (let i = 0; i < s.length; i++) {
     const ch = s[i];
-    if (ch === '"') {
-      inString = !inString;
+    if (inString) {
+      cur += ch;
+      if (ch === strChar) inString = false;
+      continue;
+    }
+
+    if (ch === '"' || ch === "'") {
+      inString = true;
+      strChar = ch;
       cur += ch;
       continue;
     }
-    if (!inString) {
-      if (ch === '(') depth++;
-      else if (ch === ')') depth = Math.max(0, depth - 1);
-      else if (ch === ',' && depth === 0) {
-        parts.push(cur.trim());
-        cur = '';
-        continue;
-      }
+
+    if (ch === '(' || ch === '[') depth++;
+    else if (ch === ')' || ch === ']') depth = Math.max(0, depth - 1);
+    else if (ch === ',' && depth === 0) {
+      parts.push(cur.trim());
+      cur = '';
+      continue;
     }
     cur += ch;
   }
@@ -46,10 +106,15 @@ function splitTopLevelCommas(s) {
   return parts;
 }
 
+// ─────────────────────────────────────────────────────────────
+// PARSER Y EVALUADOR DE EXPRESIONES
+// ─────────────────────────────────────────────────────────────
+
 function tokenizeExpr(expr) {
   const tokens = [];
-  const s = expr.trim();
+  const s = String(expr ?? '').trim();
   let i = 0;
+
   while (i < s.length) {
     const ch = s[i];
     if (/\s/.test(ch)) {
@@ -57,35 +122,43 @@ function tokenizeExpr(expr) {
       continue;
     }
 
-    if (ch === '"') {
+    // Cadenas con comillas dobles o simples
+    if (ch === '"' || ch === "'") {
+      const quote = ch;
       let j = i + 1;
       let str = '';
-      while (j < s.length) {
-        const cj = s[j];
-        if (cj === '"') break;
-        str += cj;
+      while (j < s.length && s[j] !== quote) {
+        str += s[j];
         j++;
       }
-      if (j >= s.length) throw new Error('Cadena sin cerrar (")');
+      if (j >= s.length) throw new Error('Cadena sin cerrar');
       tokens.push({ type: 'string', value: str });
       i = j + 1;
       continue;
     }
 
+    // Operadores de 2 caracteres
     const two = s.slice(i, i + 2);
-    if (two === '<=' || two === '>=' || two === '<>') {
+    if (two === '<=' || two === '>=' || two === '<>' || two === '!=' || two === '==' || two === '&&' || two === '||' || two === '**' || two === '<-') {
       tokens.push({ type: 'op', value: two });
       i += 2;
       continue;
     }
 
-    if ('()+-*/^=<>' .includes(ch)) {
-      if (ch === '(' || ch === ')') tokens.push({ type: 'paren', value: ch });
-      else tokens.push({ type: 'op', value: ch });
+    // Operadores de 1 carácter y puntuación
+    if ('()[],+-*/^=<>%~!&|'.includes(ch)) {
+      if (ch === '(' || ch === ')' || ch === '[' || ch === ']') {
+        tokens.push({ type: 'paren', value: ch });
+      } else if (ch === ',') {
+        tokens.push({ type: 'comma', value: ',' });
+      } else {
+        tokens.push({ type: 'op', value: ch });
+      }
       i++;
       continue;
     }
 
+    // Números (enteros y decimales)
     if (/[0-9]/.test(ch) || (ch === '.' && /[0-9]/.test(s[i + 1] ?? ''))) {
       let j = i + 1;
       while (j < s.length && /[0-9.]/.test(s[j])) j++;
@@ -96,233 +169,382 @@ function tokenizeExpr(expr) {
       continue;
     }
 
+    // Identificadores, palabras clave y funciones
     if (/[A-Za-z_ÁÉÍÓÚÜÑáéíóúüñ]/.test(ch)) {
       let j = i + 1;
       while (j < s.length && /[A-Za-z0-9_ÁÉÍÓÚÜÑáéíóúüñ]/.test(s[j])) j++;
       const raw = s.slice(i, j);
       const kw = normalizeKeyword(raw);
-      if (kw === 'Y' || kw === 'O' || kw === 'NO') {
-        tokens.push({ type: 'op', value: kw });
-      } else if (kw === 'VERDADERO' || kw === 'FALSO') {
-        tokens.push({ type: 'bool', value: kw === 'VERDADERO' });
-      } else {
-        tokens.push({ type: 'ident', value: raw });
-      }
+
+      if (kw === 'Y' || kw === 'AND') tokens.push({ type: 'op', value: 'Y' });
+      else if (kw === 'O' || kw === 'OR') tokens.push({ type: 'op', value: 'O' });
+      else if (kw === 'NO' || kw === 'NOT') tokens.push({ type: 'op', value: 'NO' });
+      else if (kw === 'MOD') tokens.push({ type: 'op', value: 'MOD' });
+      else if (kw === 'VERDADERO' || kw === 'TRUE' || kw === 'V') tokens.push({ type: 'bool', value: true });
+      else if (kw === 'FALSO' || kw === 'FALSE' || kw === 'F') tokens.push({ type: 'bool', value: false });
+      else tokens.push({ type: 'ident', value: raw, norm: normalizeVarName(raw) });
+
       i = j;
       continue;
     }
 
     throw new Error(`Carácter inesperado en expresión: ${JSON.stringify(ch)}`);
   }
+
   return tokens;
 }
 
-const OP_INFO = Object.freeze({
-  // precedence: higher binds tighter
-  NO: { prec: 5, assoc: 'right', arity: 1 },
-  'u-': { prec: 5, assoc: 'right', arity: 1 },
-  '^': { prec: 4, assoc: 'right', arity: 2 },
-  '*': { prec: 3, assoc: 'left', arity: 2 },
-  '/': { prec: 3, assoc: 'left', arity: 2 },
-  '+': { prec: 2, assoc: 'left', arity: 2 },
-  '-': { prec: 2, assoc: 'left', arity: 2 },
-  '=': { prec: 1, assoc: 'left', arity: 2 },
-  '<>': { prec: 1, assoc: 'left', arity: 2 },
-  '<': { prec: 1, assoc: 'left', arity: 2 },
-  '>': { prec: 1, assoc: 'left', arity: 2 },
-  '<=': { prec: 1, assoc: 'left', arity: 2 },
-  '>=': { prec: 1, assoc: 'left', arity: 2 },
-  Y: { prec: 0, assoc: 'left', arity: 2 },
-  O: { prec: 0, assoc: 'left', arity: 2 },
-});
-
-function toRpn(tokens) {
-  const output = [];
-  const ops = [];
-
-  let prev = null;
-  for (const t of tokens) {
-    if (t.type === 'number' || t.type === 'string' || t.type === 'bool' || t.type === 'ident') {
-      output.push(t);
-      prev = t;
-      continue;
-    }
-
-    if (t.type === 'paren') {
-      if (t.value === '(') ops.push(t);
-      else {
-        while (ops.length && ops[ops.length - 1].type !== 'paren') output.push(ops.pop());
-        if (!ops.length) throw new Error('Paréntesis desbalanceados');
-        ops.pop(); // remove '('
-      }
-      prev = t;
-      continue;
-    }
-
-    if (t.type === 'op') {
-      let op = t.value;
-      // unary minus
-      if (op === '-' && (!prev || (prev.type === 'op') || (prev.type === 'paren' && prev.value === '('))) {
-        op = 'u-';
-      }
-      if (!OP_INFO[op]) throw new Error(`Operador no soportado: ${op}`);
-      const cur = { type: 'op', value: op };
-
-      while (ops.length) {
-        const top = ops[ops.length - 1];
-        if (top.type !== 'op') break;
-        const a = OP_INFO[cur.value];
-        const b = OP_INFO[top.value];
-        const shouldPop =
-          (a.assoc === 'left' && a.prec <= b.prec) ||
-          (a.assoc === 'right' && a.prec < b.prec);
-        if (!shouldPop) break;
-        output.push(ops.pop());
-      }
-      ops.push(cur);
-      prev = cur;
-      continue;
-    }
-
-    throw new Error(`Token inesperado: ${t.type}`);
+class ExprParser {
+  constructor(tokens, ctx) {
+    this.tokens = tokens;
+    this.ctx = ctx;
+    this.pos = 0;
   }
 
-  while (ops.length) {
-    const top = ops.pop();
-    if (top.type === 'paren') throw new Error('Paréntesis desbalanceados');
-    output.push(top);
+  peek() {
+    return this.tokens[this.pos] || null;
   }
-  return output;
+
+  next() {
+    return this.tokens[this.pos++] || null;
+  }
+
+  parse() {
+    if (!this.tokens.length) return null;
+    const result = this.parseOr();
+    if (this.pos < this.tokens.length) {
+      throw new Error(`Token inesperado al final de la expresión: ${this.peek().value}`);
+    }
+    return result;
+  }
+
+  parseOr() {
+    let left = this.parseAnd();
+    while (this.peek() && (this.peek().value === 'O' || this.peek().value === '||' || this.peek().value === '|')) {
+      this.next();
+      const right = this.parseAnd();
+      left = Boolean(left) || Boolean(right);
+    }
+    return left;
+  }
+
+  parseAnd() {
+    let left = this.parseEquality();
+    while (this.peek() && (this.peek().value === 'Y' || this.peek().value === '&&' || this.peek().value === '&')) {
+      this.next();
+      const right = this.parseEquality();
+      left = Boolean(left) && Boolean(right);
+    }
+    return left;
+  }
+
+  parseEquality() {
+    let left = this.parseRelational();
+    while (this.peek() && (this.peek().value === '=' || this.peek().value === '==' || this.peek().value === '<>' || this.peek().value === '!=')) {
+      const op = this.next().value;
+      const right = this.parseRelational();
+      if (op === '=' || op === '==') left = (left === right);
+      else left = (left !== right);
+    }
+    return left;
+  }
+
+  parseRelational() {
+    let left = this.parseAddSub();
+    while (this.peek() && (this.peek().value === '<' || this.peek().value === '<=' || this.peek().value === '>' || this.peek().value === '>=')) {
+      const op = this.next().value;
+      const right = this.parseAddSub();
+      const numA = asNumber(left);
+      const numB = asNumber(right);
+      if (op === '<') left = numA < numB;
+      else if (op === '<=') left = numA <= numB;
+      else if (op === '>') left = numA > numB;
+      else if (op === '>=') left = numA >= numB;
+    }
+    return left;
+  }
+
+  parseAddSub() {
+    let left = this.parseMulDiv();
+    while (this.peek() && (this.peek().value === '+' || this.peek().value === '-')) {
+      const op = this.next().value;
+      const right = this.parseMulDiv();
+      if (op === '+') {
+        if (typeof left === 'string' || typeof right === 'string') {
+          left = String(left) + String(right);
+        } else {
+          left = asNumber(left) + asNumber(right);
+        }
+      } else {
+        left = asNumber(left) - asNumber(right);
+      }
+    }
+    return left;
+  }
+
+  parseMulDiv() {
+    let left = this.parsePower();
+    while (this.peek() && (this.peek().value === '*' || this.peek().value === '/' || this.peek().value === '%' || this.peek().value === 'MOD')) {
+      const op = this.next().value;
+      const right = this.parsePower();
+      const numA = asNumber(left);
+      const numB = asNumber(right);
+      if (op === '*') left = numA * numB;
+      else if (op === '/') {
+        if (numB === 0) throw new Error('División por cero');
+        left = numA / numB;
+      } else {
+        if (numB === 0) throw new Error('Módulo por cero');
+        left = numA % numB;
+      }
+    }
+    return left;
+  }
+
+  parsePower() {
+    let left = this.parseUnary();
+    if (this.peek() && (this.peek().value === '^' || this.peek().value === '**')) {
+      this.next();
+      const right = this.parsePower(); // derecha asociativa
+      left = Math.pow(asNumber(left), asNumber(right));
+    }
+    return left;
+  }
+
+  parseUnary() {
+    const token = this.peek();
+    if (token && (token.value === '-' || token.value === '+')) {
+      this.next();
+      const val = this.parseUnary();
+      return token.value === '-' ? -asNumber(val) : asNumber(val);
+    }
+    if (token && (token.value === 'NO' || token.value === '!' || token.value === '~')) {
+      this.next();
+      const val = this.parseUnary();
+      return !Boolean(val);
+    }
+    return this.parsePrimary();
+  }
+
+  parsePrimary() {
+    const token = this.peek();
+    if (!token) throw new Error('Expresión incompleta');
+
+    if (token.type === 'number' || token.type === 'string' || token.type === 'bool') {
+      this.next();
+      return token.value;
+    }
+
+    if (token.type === 'paren' && token.value === '(') {
+      this.next();
+      const val = this.parseOr();
+      if (!this.peek() || this.peek().value !== ')') throw new Error("Falta ')'");
+      this.next();
+      return val;
+    }
+
+    if (token.type === 'ident') {
+      this.next();
+      const identName = token.value;
+      const normKey = token.norm;
+
+      // Llamada a Función matemática o nativa
+      if (this.peek() && this.peek().value === '(') {
+        this.next(); // consume '('
+        const args = [];
+        if (this.peek() && this.peek().value !== ')') {
+          args.push(this.parseOr());
+          while (this.peek() && this.peek().type === 'comma') {
+            this.next(); // consume ','
+            args.push(this.parseOr());
+          }
+        }
+        if (!this.peek() || this.peek().value !== ')') throw new Error("Falta ')' tras llamada a función");
+        this.next(); // consume ')'
+
+        return this.evalFunctionCall(identName, args);
+      }
+
+      // Acceso a Arreglo / Matriz: arreglo[i] o arreglo(i) o matriz[i, j]
+      if (this.peek() && (this.peek().value === '[' || this.peek().value === '(')) {
+        const closeParen = this.peek().value === '[' ? ']' : ')';
+        this.next();
+        const indices = [asNumber(this.parseOr())];
+        while (this.peek() && this.peek().type === 'comma') {
+          this.next();
+          indices.push(asNumber(this.parseOr()));
+        }
+        if (!this.peek() || this.peek().value !== closeParen) throw new Error(`Falta '${closeParen}'`);
+        this.next();
+
+        return this.ctx.getArrayElement(normKey, indices);
+      }
+
+      // Variable estándar
+      return this.ctx.getVar(normKey, identName);
+    }
+
+    throw new Error(`Token inesperado: ${token.value}`);
+  }
+
+  evalFunctionCall(fnName, args) {
+    const fn = normalizeKeyword(fnName);
+    switch (fn) {
+      case 'RC':
+      case 'RAIZ':
+        return Math.sqrt(asNumber(args[0]));
+      case 'ABS':
+        return Math.abs(asNumber(args[0]));
+      case 'TRUNC':
+        return Math.trunc(asNumber(args[0]));
+      case 'REDON':
+        return Math.round(asNumber(args[0]));
+      case 'AZAR': {
+        const limit = asNumber(args[0]);
+        return Math.floor(Math.random() * limit);
+      }
+      case 'ALEATORIO': {
+        const min = asNumber(args[0]);
+        const max = asNumber(args[1]);
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+      }
+      case 'SEN':
+        return Math.sin(asNumber(args[0]));
+      case 'COS':
+        return Math.cos(asNumber(args[0]));
+      case 'TAN':
+        return Math.tan(asNumber(args[0]));
+      case 'ASEN':
+        return Math.asin(asNumber(args[0]));
+      case 'ACOS':
+        return Math.acos(asNumber(args[0]));
+      case 'ATAN':
+        return Math.atan(asNumber(args[0]));
+      case 'LN':
+        return Math.log(asNumber(args[0]));
+      case 'EXP':
+        return Math.exp(asNumber(args[0]));
+      case 'LONGITUD':
+        return String(args[0] ?? '').length;
+      case 'MAYUSCULAS':
+        return String(args[0] ?? '').toUpperCase();
+      case 'MINUSCULAS':
+        return String(args[0] ?? '').toLowerCase();
+      case 'SUBCADENA': {
+        const str = String(args[0] ?? '');
+        const p1 = asNumber(args[1]);
+        const p2 = asNumber(args[2]);
+        // PSeInt usa índices base 1
+        const start = Math.max(0, p1 - 1);
+        const end = Math.min(str.length, p2);
+        return str.slice(start, end);
+      }
+      case 'CONCATENAR':
+        return args.map((a) => String(a ?? '')).join('');
+      case 'CONVERTIRANUMERO':
+        return Number(String(args[0]).replace(',', '.'));
+      case 'CONVERTIRATEXTO':
+        return String(args[0] ?? '');
+      default:
+        throw new Error(`Función no soportada: ${fnName}`);
+    }
+  }
 }
 
 function asNumber(v) {
-  const n = typeof v === 'number' ? v : Number(v);
+  const n = typeof v === 'number' ? v : Number(String(v ?? '').replace(',', '.'));
   if (Number.isNaN(n)) throw new Error(`No se puede convertir a número: ${JSON.stringify(v)}`);
   return n;
 }
 
-function evalRpn(rpn, ctx) {
-  const stack = [];
-  for (const t of rpn) {
-    if (t.type === 'number' || t.type === 'string' || t.type === 'bool') {
-      stack.push(t.value);
-      continue;
-    }
-    if (t.type === 'ident') {
-      const key = t.value;
-      if (!Object.prototype.hasOwnProperty.call(ctx.vars, key)) {
-        throw new Error(`Variable no definida: ${key}`);
-      }
-      stack.push(ctx.vars[key]);
-      continue;
-    }
-    if (t.type === 'op') {
-      const info = OP_INFO[t.value];
-      if (!info) throw new Error(`Operador no soportado: ${t.value}`);
-      if (stack.length < info.arity) throw new Error('Expresión inválida');
-
-      if (info.arity === 1) {
-        const a = stack.pop();
-        if (t.value === 'NO') stack.push(!Boolean(a));
-        else if (t.value === 'u-') stack.push(-asNumber(a));
-        else throw new Error(`Operador unario no soportado: ${t.value}`);
-        continue;
-      }
-
-      const b = stack.pop();
-      const a = stack.pop();
-
-      switch (t.value) {
-        case '+': {
-          if (typeof a === 'string' || typeof b === 'string') stack.push(String(a) + String(b));
-          else stack.push(asNumber(a) + asNumber(b));
-          break;
-        }
-        case '-':
-          stack.push(asNumber(a) - asNumber(b));
-          break;
-        case '*':
-          stack.push(asNumber(a) * asNumber(b));
-          break;
-        case '/':
-          stack.push(asNumber(a) / asNumber(b));
-          break;
-        case '^':
-          stack.push(Math.pow(asNumber(a), asNumber(b)));
-          break;
-        case '=':
-          stack.push(a === b);
-          break;
-        case '<>':
-          stack.push(a !== b);
-          break;
-        case '<':
-          stack.push(asNumber(a) < asNumber(b));
-          break;
-        case '>':
-          stack.push(asNumber(a) > asNumber(b));
-          break;
-        case '<=':
-          stack.push(asNumber(a) <= asNumber(b));
-          break;
-        case '>=':
-          stack.push(asNumber(a) >= asNumber(b));
-          break;
-        case 'Y':
-          stack.push(Boolean(a) && Boolean(b));
-          break;
-        case 'O':
-          stack.push(Boolean(a) || Boolean(b));
-          break;
-        default:
-          throw new Error(`Operador no soportado: ${t.value}`);
-      }
-      continue;
-    }
-    throw new Error(`Token inesperado: ${t.type}`);
-  }
-  if (stack.length !== 1) throw new Error('Expresión inválida');
-  return stack[0];
-}
+// ─────────────────────────────────────────────────────────────
+// PARSER DE SENTENCIAS Y BLOQUES
+// ─────────────────────────────────────────────────────────────
 
 function parseLineStatement(rawLine, lineNo) {
   const line = rawLine.trim();
   if (!line) return null;
 
-  const kw = normalizeKeyword(line.split(/\s+/)[0]);
+  const firstToken = line.split(/\s+/)[0];
+  const kw = normalizeKeyword(firstToken);
 
-  if (kw === 'ALGORITMO' || kw === 'FINALGORITMO') return { type: 'noop', lineNo };
+  if (kw === 'ALGORITMO' || kw === 'PROCESO' || kw === 'FINALGORITMO' || kw === 'FINPROCESO') {
+    return { type: 'noop', lineNo };
+  }
 
-  // Definir x Como Entero;
+  if (kw === 'BORRAR' || kw === 'LIMPIAR') {
+    const rest = normalizeKeyword(line);
+    if (rest.includes('PANTALLA')) {
+      return { type: 'clear', lineNo };
+    }
+  }
+
+  if (kw === 'ESPERAR') {
+    return { type: 'wait', lineNo };
+  }
+
+  // Dimension arreglo[tam] / Dimension matriz[f, c]
+  if (kw === 'DIMENSION' || kw === 'DIMENSIONAR') {
+    const rest = line.replace(/^(Dimension|Dimensionar)\s+/i, '').replace(/;?\s*$/, '');
+    const decls = splitTopLevelCommas(rest);
+    const arrays = decls.map((d) => {
+      const m = d.match(/^([A-Za-z_ÁÉÍÓÚÜÑáéíóúüñ][A-Za-z0-9_ÁÉÍÓÚÜÑáéíóúüñ]*)\s*\[(.+?)\]$/) ||
+                d.match(/^([A-Za-z_ÁÉÍÓÚÜÑáéíóúüñ][A-Za-z0-9_ÁÉÍÓÚÜÑáéíóúüñ]*)\s*\((.+?)\)$/);
+      if (!m) throw new Error(`Sintaxis inválida en Dimension: ${d} (línea ${lineNo})`);
+      const dims = splitTopLevelCommas(m[2]);
+      return { name: m[1], dims, norm: normalizeVarName(m[1]) };
+    });
+    return { type: 'dimension', arrays, lineNo };
+  }
+
+  // Definir var1, var2 Como Tipo;
   if (kw === 'DEFINIR') {
-    const m = line.match(/^Definir\s+([A-Za-z_ÁÉÍÓÚÜÑáéíóúüñ][A-Za-z0-9_ÁÉÍÓÚÜÑáéíóúüñ]*)\s+Como\s+([A-Za-z_ÁÉÍÓÚÜÑáéíóúüñ]+)\s*;?$/i);
+    const m = line.match(/^Definir\s+(.+?)\s+Como\s+([A-Za-z_ÁÉÍÓÚÜÑáéíóúüñ]+)\s*;?$/i);
     if (!m) throw new Error(`Sintaxis inválida de Definir (línea ${lineNo})`);
-    return { type: 'declare', name: m[1], varType: normalizeKeyword(m[2]), lineNo };
+    const varNames = splitTopLevelCommas(m[1]);
+    const varType = normalizeKeyword(m[2]);
+    return { type: 'declare', names: varNames, varType, lineNo };
   }
 
-  // Leer x;
+  // Leer var1, var2;
   if (kw === 'LEER') {
-    const m = line.match(/^Leer\s+([A-Za-z_ÁÉÍÓÚÜÑáéíóúüñ][A-Za-z0-9_ÁÉÍÓÚÜÑáéíóúüñ]*)\s*;?$/i);
-    if (!m) throw new Error(`Sintaxis inválida de Leer (línea ${lineNo})`);
-    return { type: 'read', name: m[1], lineNo };
+    const rest = line.replace(/^Leer\s+/i, '').replace(/;?\s*$/, '');
+    const names = splitTopLevelCommas(rest).filter(Boolean);
+    if (!names.length) throw new Error(`Leer sin variables (línea ${lineNo})`);
+    return { type: 'read', names, lineNo };
   }
 
-  // Escribir "Hola", x;
-  if (kw === 'ESCRIBIR') {
-    const rest = line.replace(/^Escribir\s+/i, '').replace(/;?\s*$/, '');
+  // Escribir [Sin Saltar] ... [Sin Saltar];
+  if (kw === 'ESCRIBIR' || kw === 'IMPRIMIR' || kw === 'MOSTRAR') {
+    let rest = line.replace(/^(Escribir|Imprimir|Mostrar)\s+/i, '').replace(/;?\s*$/, '').trim();
+    let sinSaltar = false;
+
+    if (/^Sin\s+Saltar\s+/i.test(rest) || /^Sin\s+Bajar\s+/i.test(rest)) {
+      sinSaltar = true;
+      rest = rest.replace(/^Sin\s+(Saltar|Bajar)\s+/i, '');
+    } else if (/\s+Sin\s+(Saltar|Bajar)$/i.test(rest)) {
+      sinSaltar = true;
+      rest = rest.replace(/\s+Sin\s+(Saltar|Bajar)$/i, '');
+    }
+
     const parts = splitTopLevelCommas(rest).filter(Boolean);
     if (!parts.length) throw new Error(`Escribir sin argumentos (línea ${lineNo})`);
-    return { type: 'write', parts, lineNo };
+    return { type: 'write', parts, sinSaltar, lineNo };
   }
 
-  // assignment: a <- expr;
-  // a <- expr;
-  let assign = line.match(/^([A-Za-z_ÁÉÍÓÚÜÑáéíóúüñ][A-Za-z0-9_ÁÉÍÓÚÜÑáéíóúüñ]*)\s*<-\s*(.+?)\s*;?$/);
-  if (assign) return { type: 'assign', name: assign[1], expr: assign[2], lineNo };
+  // Asignación a arreglo: vector[i] <- expr; o matriz[i, j] = expr;
+  let arrAssign = line.match(/^([A-Za-z_ÁÉÍÓÚÜÑáéíóúüñ][A-Za-z0-9_ÁÉÍÓÚÜÑáéíóúüñ]*)\s*\[(.+?)\]\s*(<-|=|:=)\s*(.+?)\s*;?$/) ||
+                  line.match(/^([A-Za-z_ÁÉÍÓÚÜÑáéíóúüñ][A-Za-z0-9_ÁÉÍÓÚÜÑáéíóúüñ]*)\s*\((.+?)\)\s*(<-|=|:=)\s*(.+?)\s*;?$/);
+  if (arrAssign) {
+    const dims = splitTopLevelCommas(arrAssign[2]);
+    return { type: 'assign_array', name: arrAssign[1], norm: normalizeVarName(arrAssign[1]), indices: dims, expr: arrAssign[4], lineNo };
+  }
 
-  // a = expr; (conveniencia para el simulador)
-  assign = line.match(/^([A-Za-z_ÁÉÍÓÚÜÑáéíóúüñ][A-Za-z0-9_ÁÉÍÓÚÜÑáéíóúüñ]*)\s*=\s*(.+?)\s*;?$/);
-  if (assign) return { type: 'assign', name: assign[1], expr: assign[2], lineNo };
+  // Asignación estándar: var <- expr; o var = expr; o var := expr;
+  let assign = line.match(/^([A-Za-z_ÁÉÍÓÚÜÑáéíóúüñ][A-Za-z0-9_ÁÉÍÓÚÜÑáéíóúüñ]*)\s*(<-|=|:=)\s*(.+?)\s*;?$/);
+  if (assign) {
+    return { type: 'assign', name: assign[1], norm: normalizeVarName(assign[1]), expr: assign[3], lineNo };
+  }
 
   throw new Error(`Instrucción no soportada (línea ${lineNo}): ${rawLine}`);
 }
@@ -330,53 +552,170 @@ function parseLineStatement(rawLine, lineNo) {
 function parseBlock(lines, startIdx, endKeywordSet) {
   const body = [];
   let i = startIdx;
+
   while (i < lines.length) {
     const { text, lineNo } = lines[i];
     const trimmed = text.trim();
-    const first = normalizeKeyword(trimmed.split(/\s+/)[0] ?? '');
-
-    if (endKeywordSet.has(first)) {
-      return { body, nextIdx: i, endKeyword: first };
-    }
-
     if (!trimmed) {
       i++;
       continue;
     }
 
-    const kw = first;
+    const firstToken = trimmed.split(/\s+/)[0];
+    const kw = normalizeKeyword(firstToken);
+
+    if (endKeywordSet.has(kw)) {
+      return { body, nextIdx: i, endKeyword: kw };
+    }
+
+    // 1. SI ... ENTONCES ... SINO ... FINSI
     if (kw === 'SI') {
       const m = trimmed.match(/^Si\s+(.+?)\s+Entonces\s*$/i);
       if (!m) throw new Error(`Sintaxis inválida de Si (línea ${lineNo})`);
       const thenPart = parseBlock(lines, i + 1, new Set(['SINO', 'FINSI']));
       let elseBody = [];
       let nextIdx = thenPart.nextIdx;
+
       if (thenPart.endKeyword === 'SINO') {
         const elsePart = parseBlock(lines, nextIdx + 1, new Set(['FINSI']));
         elseBody = elsePart.body;
         nextIdx = elsePart.nextIdx;
       }
-      // consume FINSI
-      if (normalizeKeyword(lines[nextIdx].text.trim().split(/\s+/)[0] ?? '') !== 'FINSI') {
-        throw new Error(`Falta FinSi (cerca de línea ${lineNo})`);
+
+      if (nextIdx >= lines.length || normalizeKeyword(lines[nextIdx].text.trim().split(/\s+/)[0] ?? '') !== 'FINSI') {
+        throw new Error(`Falta FinSi para el Si de la línea ${lineNo}`);
       }
+
       body.push({ type: 'if', cond: m[1], thenBody: thenPart.body, elseBody, lineNo });
       i = nextIdx + 1;
       continue;
     }
 
+    // 2. MIENTRAS ... HACER ... FINMIENTRAS
     if (kw === 'MIENTRAS') {
       const m = trimmed.match(/^Mientras\s+(.+?)\s+Hacer\s*$/i);
       if (!m) throw new Error(`Sintaxis inválida de Mientras (línea ${lineNo})`);
       const inner = parseBlock(lines, i + 1, new Set(['FINMIENTRAS']));
-      // consume FINMIENTRAS
+      if (inner.nextIdx >= lines.length || normalizeKeyword(lines[inner.nextIdx].text.trim().split(/\s+/)[0] ?? '') !== 'FINMIENTRAS') {
+        throw new Error(`Falta FinMientras para el Mientras de la línea ${lineNo}`);
+      }
       body.push({ type: 'while', cond: m[1], body: inner.body, lineNo });
       i = inner.nextIdx + 1;
       continue;
     }
 
-    if (kw === 'FINMIENTRAS' || kw === 'FINSI' || kw === 'SINO') {
-      return { body, nextIdx: i, endKeyword: kw };
+    // 3. REPETIR ... HASTA QUE <condicion>
+    if (kw === 'REPETIR') {
+      const inner = parseBlock(lines, i + 1, new Set(['HASTA']));
+      if (inner.nextIdx >= lines.length) {
+        throw new Error(`Falta 'Hasta Que' para el Repetir de la línea ${lineNo}`);
+      }
+      const untilLine = lines[inner.nextIdx].text.trim();
+      const m = untilLine.match(/^Hasta\s+Que\s+(.+?)\s*;?$/i);
+      if (!m) throw new Error(`Sintaxis inválida en Hasta Que (línea ${lines[inner.nextIdx].lineNo})`);
+      body.push({ type: 'repeat', cond: m[1], body: inner.body, lineNo });
+      i = inner.nextIdx + 1;
+      continue;
+    }
+
+    // 4. PARA <var> <- <ini> HASTA <fin> [CON PASO <paso>] HACER ... FINPARA
+    if (kw === 'PARA') {
+      const m = trimmed.match(/^Para\s+([A-Za-z_ÁÉÍÓÚÜÑáéíóúüñ][A-Za-z0-9_ÁÉÍÓÚÜÑáéíóúüñ]*)\s*(?:<-|=|:=)\s*(.+?)\s+Hasta\s+(.+?)(?:\s+Con\s+Paso\s+(.+?))?\s+Hacer\s*$/i);
+      if (!m) throw new Error(`Sintaxis inválida en Para (línea ${lineNo}). Formato: Para i <- 1 Hasta 10 [Con Paso 1] Hacer`);
+      const varName = m[1];
+      const startExpr = m[2];
+      const endExpr = m[3];
+      const stepExpr = m[4] || null;
+
+      const inner = parseBlock(lines, i + 1, new Set(['FINPARA']));
+      if (inner.nextIdx >= lines.length || normalizeKeyword(lines[inner.nextIdx].text.trim().split(/\s+/)[0] ?? '') !== 'FINPARA') {
+        throw new Error(`Falta FinPara para el Para de la línea ${lineNo}`);
+      }
+
+      body.push({
+        type: 'for',
+        varName,
+        norm: normalizeVarName(varName),
+        startExpr,
+        endExpr,
+        stepExpr,
+        body: inner.body,
+        lineNo,
+      });
+      i = inner.nextIdx + 1;
+      continue;
+    }
+
+    // 5. SEGUN <expr> HACER ... [CASO val: ...] [DE OTRO MODO: ...] FINSEGUN
+    if (kw === 'SEGUN') {
+      const m = trimmed.match(/^Segun\s+(.+?)\s+Hacer\s*$/i);
+      if (!m) throw new Error(`Sintaxis inválida en Segun (línea ${lineNo})`);
+      const targetExpr = m[1];
+
+      const cases = [];
+      let defaultBody = [];
+      let j = i + 1;
+      let currentCaseValues = null;
+      let currentCaseLines = [];
+
+      while (j < lines.length) {
+        const curText = lines[j].text.trim();
+        const curFirst = normalizeKeyword(curText.split(/\s+/)[0] ?? '');
+
+        if (curFirst === 'FINSEGUN') {
+          if (currentCaseValues !== null) {
+            const parsedCase = parseBlock(currentCaseLines, 0, new Set());
+            if (currentCaseValues === 'DEFAULT') defaultBody = parsedCase.body;
+            else cases.push({ values: currentCaseValues, body: parsedCase.body });
+          }
+          break;
+        }
+
+        // Caso "1:" o "1, 2:" o "De Otro Modo:"
+        const caseMatch = curText.match(/^(?:Caso\s+)?(.+?)\s*:\s*$/i);
+        const defaultMatch = curText.match(/^(?:De\s+Otro\s+Modo|Sino)\s*:\s*$/i);
+
+        if (defaultMatch) {
+          if (currentCaseValues !== null) {
+            const parsedCase = parseBlock(currentCaseLines, 0, new Set());
+            if (currentCaseValues === 'DEFAULT') defaultBody = parsedCase.body;
+            else cases.push({ values: currentCaseValues, body: parsedCase.body });
+          }
+          currentCaseValues = 'DEFAULT';
+          currentCaseLines = [];
+          j++;
+          continue;
+        }
+
+        if (caseMatch && !curText.includes('<-') && !curText.includes('=')) {
+          if (currentCaseValues !== null) {
+            const parsedCase = parseBlock(currentCaseLines, 0, new Set());
+            if (currentCaseValues === 'DEFAULT') defaultBody = parsedCase.body;
+            else cases.push({ values: currentCaseValues, body: parsedCase.body });
+          }
+          currentCaseValues = splitTopLevelCommas(caseMatch[1]);
+          currentCaseLines = [];
+          j++;
+          continue;
+        }
+
+        if (currentCaseValues !== null) {
+          currentCaseLines.push(lines[j]);
+        }
+        j++;
+      }
+
+      if (j >= lines.length) throw new Error(`Falta FinSegun para el Segun de la línea ${lineNo}`);
+
+      body.push({
+        type: 'switch',
+        expr: targetExpr,
+        cases,
+        defaultBody,
+        lineNo,
+      });
+      i = j + 1;
+      continue;
     }
 
     const stmt = parseLineStatement(trimmed, lineNo);
@@ -388,224 +727,158 @@ function parseBlock(lines, startIdx, endKeywordSet) {
 }
 
 function defaultValueForType(varType) {
-  switch (varType) {
+  const t = normalizeKeyword(varType);
+  switch (t) {
     case 'ENTERO':
-      return 0;
+    case 'ENTEROS':
+    case 'NUMERO':
+    case 'NUMEROS':
+    case 'NUMERICO':
     case 'REAL':
+    case 'REALES':
       return 0;
     case 'LOGICO':
+    case 'LOGICOS':
+    case 'BOOLEANO':
       return false;
     case 'CARACTER':
+    case 'CARACTERES':
+    case 'TEXTO':
+    case 'CADENA':
+    case 'STRING':
       return '';
     default:
-      return null;
+      return 0;
   }
 }
 
 function coerceInputToType(raw, varType) {
-  const s = String(raw ?? '');
-  switch (varType) {
-    case 'ENTERO': {
+  const s = String(raw ?? '').trim();
+  const t = normalizeKeyword(varType);
+
+  switch (t) {
+    case 'ENTERO':
+    case 'ENTEROS': {
       const n = parseInt(s, 10);
-      if (Number.isNaN(n)) throw new Error(`Entrada inválida para Entero: ${JSON.stringify(s)}`);
+      if (Number.isNaN(n)) return 0;
       return n;
     }
-    case 'REAL': {
+    case 'REAL':
+    case 'REALES':
+    case 'NUMERO':
+    case 'NUMEROS':
+    case 'NUMERICO': {
       const n = Number(s.replace(',', '.'));
-      if (Number.isNaN(n)) throw new Error(`Entrada inválida para Real: ${JSON.stringify(s)}`);
+      if (Number.isNaN(n)) return 0;
       return n;
     }
-    case 'LOGICO': {
-      const k = normalizeKeyword(s.trim());
-      if (k === 'VERDADERO') return true;
-      if (k === 'FALSO') return false;
-      throw new Error(`Entrada inválida para Logico (usa Verdadero/Falso): ${JSON.stringify(s)}`);
+    case 'LOGICO':
+    case 'LOGICOS':
+    case 'BOOLEANO': {
+      const k = normalizeKeyword(s);
+      if (k === 'VERDADERO' || k === 'V' || k === 'TRUE' || k === '1') return true;
+      return false;
     }
-    case 'CARACTER':
     default:
       return s;
   }
 }
 
-function makeEvalExpr(ctx) {
-  return (expr, lineNo) => {
-    try {
-      const tokens = tokenizeExpr(expr);
-      const rpn = toRpn(tokens);
-      return evalRpn(rpn, ctx);
-    } catch (e) {
-      const msg = e instanceof Error ? e.message : String(e);
-      throw new Error(`Error en expresión (línea ${lineNo}): ${msg}`);
-    }
+function createExecutionContext(onOutput, onClear, limits) {
+  const vars = Object.create(null);
+  const types = Object.create(null);
+  const arrays = Object.create(null);
+
+  const ctx = {
+    vars,
+    types,
+    arrays,
+    steps: 0,
+    limits,
+    onOutput,
+    onClear: typeof onClear === 'function' ? onClear : () => {},
+
+    getVar(normKey, rawName) {
+      if (Object.prototype.hasOwnProperty.call(vars, normKey)) {
+        return vars[normKey];
+      }
+      // Autodeclaración dinámica
+      vars[normKey] = 0;
+      return 0;
+    },
+
+    setVar(normKey, val) {
+      vars[normKey] = val;
+    },
+
+    initArray(normKey, dims) {
+      arrays[normKey] = { dims, data: new Map() };
+    },
+
+    getArrayElement(normKey, indices) {
+      const arr = arrays[normKey];
+      if (!arr) return 0;
+      const key = indices.join(',');
+      return arr.data.get(key) ?? 0;
+    },
+
+    setArrayElement(normKey, indices, val) {
+      if (!arrays[normKey]) {
+        arrays[normKey] = { dims: [10], data: new Map() };
+      }
+      const key = indices.join(',');
+      arrays[normKey].data.set(key, val);
+    },
+
+    evalExpr(exprStr, lineNo) {
+      try {
+        const tokens = tokenizeExpr(exprStr);
+        const parser = new ExprParser(tokens, ctx);
+        return parser.parse();
+      } catch (e) {
+        const msg = e instanceof Error ? e.message : String(e);
+        throw new Error(`Error en expresión (línea ${lineNo}): ${msg}`);
+      }
+    },
   };
-}
 
-async function execStatements(stmts, ctx) {
-  for (const st of stmts) {
-    ctx.steps++;
-    if (ctx.steps > ctx.limits.maxSteps) throw new Error(`Límite de pasos excedido (${ctx.limits.maxSteps}). ¿Bucle infinito?`);
-
-    switch (st.type) {
-      case 'declare': {
-        ctx.types[st.name] = st.varType;
-        if (!Object.prototype.hasOwnProperty.call(ctx.vars, st.name)) {
-          ctx.vars[st.name] = defaultValueForType(st.varType);
-        }
-        break;
-      }
-      case 'assign': {
-        if (!Object.prototype.hasOwnProperty.call(ctx.vars, st.name)) {
-          throw new Error(`Asignación a variable no definida: ${st.name} (línea ${st.lineNo})`);
-        }
-        const val = ctx.evalExpr(st.expr, st.lineNo);
-        ctx.vars[st.name] = val;
-        break;
-      }
-      case 'write': {
-        const out = st.parts
-          .map((p) => {
-            const pt = p.trim();
-            if (pt.startsWith('"') && pt.endsWith('"') && pt.length >= 2) return pt.slice(1, -1);
-            const v = ctx.evalExpr(pt, st.lineNo);
-            return typeof v === 'boolean' ? (v ? 'Verdadero' : 'Falso') : String(v);
-          })
-          .join('');
-        ctx.onOutput(out);
-        break;
-      }
-      case 'read': {
-        if (!Object.prototype.hasOwnProperty.call(ctx.vars, st.name)) {
-          throw new Error(`Leer a variable no definida: ${st.name} (línea ${st.lineNo})`);
-        }
-        const t = ctx.types[st.name] ?? 'CARACTER';
-        const raw = await ctx.onInput(`Ingrese ${st.name}:`);
-        ctx.vars[st.name] = coerceInputToType(raw, t);
-        break;
-      }
-      case 'if': {
-        const condVal = Boolean(ctx.evalExpr(st.cond, st.lineNo));
-        if (condVal) await execStatements(st.thenBody, ctx);
-        else await execStatements(st.elseBody, ctx);
-        break;
-      }
-      case 'while': {
-        while (Boolean(ctx.evalExpr(st.cond, st.lineNo))) {
-          ctx.steps++;
-          if (ctx.steps > ctx.limits.maxSteps) throw new Error(`Límite de pasos excedido (${ctx.limits.maxSteps}). ¿Bucle infinito?`);
-          await execStatements(st.body, ctx);
-        }
-        break;
-      }
-      default:
-        throw new Error(`Nodo no soportado: ${st.type}`);
-    }
-  }
+  return ctx;
 }
 
 function buildProgram(code) {
-  const rawLines = String(code ?? '').replace(/\r\n/g, '\n').split('\n');
-  const lines = rawLines.map((l, idx) => ({ text: stripInlineComment(l), lineNo: idx + 1 }));
+  const cleanCode = stripComments(code);
+  const rawLines = cleanCode.replace(/\r\n/g, '\n').split('\n');
+  const lines = rawLines.map((l, idx) => ({ text: l, lineNo: idx + 1 }));
   const parsed = parseBlock(lines, 0, new Set());
   return parsed.body;
 }
 
-/**
- * Ejecuta un subset de PSeInt en JS (modo simulador).
- *
- * Soporta:
- * - Comentarios con // (línea completa o al final de una instrucción)
- * - Definir x Como Entero/Real/Logico/Caracter;
- * - Asignación: x = expr;
- * - Leer x;
- * - Escribir ...;
- * - Si ... Entonces / Sino / FinSi
- * - Mientras ... Hacer / FinMientras
- *
- * @param {string} code
- * @param {{
- *  stdinLines?: string[],
- *  onOutput?: (line: string) => void,
- *  onInput?: (promptText: string) => Promise<string>,
- *  limits?: { maxSteps?: number }
- * }} [opts]
- */
-export async function runPSeInt(code, opts = {}) {
-  const program = buildProgram(code);
-  const stdin = Array.isArray(opts.stdinLines) ? [...opts.stdinLines] : [];
-  const onOutput = typeof opts.onOutput === 'function' ? opts.onOutput : () => {};
+// ─────────────────────────────────────────────────────────────
+// RUNNER INTERACTIVO Y PASO A PASO
+// ─────────────────────────────────────────────────────────────
 
-  const onInput =
-    typeof opts.onInput === 'function'
-      ? opts.onInput
-      : async (promptText) => {
-          const v = globalThis.prompt ? globalThis.prompt(promptText) : null;
-          return v ?? '';
-        };
-
-  const limits = { ...DEFAULT_LIMITS, ...(opts.limits ?? {}) };
-
-  const ctx = {
-    vars: Object.create(null),
-    types: Object.create(null),
-    steps: 0,
-    limits,
-    onOutput,
-    onInput: async (promptText) => {
-      if (stdin.length) return stdin.shift();
-      return onInput(promptText);
-    },
-  };
-  ctx.evalExpr = makeEvalExpr(ctx);
-
-  // pre-scan variables to allow "Definir" to initialize and assignments to validate
-  for (const st of program) {
-    if (st.type === 'declare') {
-      ctx.types[st.name] = st.varType;
-      ctx.vars[st.name] = defaultValueForType(st.varType);
-    }
-  }
-
-  await execStatements(program, ctx);
-
-  return { vars: { ...ctx.vars } };
-}
-
-/**
- * Crea un runner "pausable" para simular PSeInt:
- * - Se detiene en cada `Leer` esperando `provideInput(...)`
- * - Permite "Paso" (step) y "Continuar" (run hasta input o fin)
- *
- * @param {string} code
- * @param {{
- *  onOutput?: (line: string) => void,
- *  limits?: { maxSteps?: number }
- * }} [opts]
- */
 export function createPSeIntRunner(code, opts = {}) {
   const program = buildProgram(code);
   const onOutput = typeof opts.onOutput === 'function' ? opts.onOutput : () => {};
+  const onClear = typeof opts.onClear === 'function' ? opts.onClear : () => {};
   const limits = { ...DEFAULT_LIMITS, ...(opts.limits ?? {}) };
 
-  const ctx = {
-    vars: Object.create(null),
-    types: Object.create(null),
-    steps: 0,
-    limits,
-    onOutput,
-    evalExpr: null,
-  };
-  ctx.evalExpr = makeEvalExpr(ctx);
+  const ctx = createExecutionContext(onOutput, onClear, limits);
 
-  // Inicializa variables declaradas (igual que PSeInt: existen tras Definir)
+  // Inicialización de variables declaradas en Definir
   for (const st of program) {
     if (st.type === 'declare') {
-      ctx.types[st.name] = st.varType;
-      ctx.vars[st.name] = defaultValueForType(st.varType);
+      st.names.forEach((rawName) => {
+        const norm = normalizeVarName(rawName);
+        ctx.types[norm] = st.varType;
+        ctx.vars[norm] = defaultValueForType(st.varType);
+      });
     }
   }
 
   const stack = [{ kind: 'block', stmts: program, ip: 0 }];
-  let waiting = null; // { name, varType, lineNo }
+  let pendingInputs = []; // Cola de { name, lineNo, varType }
+  let currentWaiting = null;
 
   function bumpSteps() {
     ctx.steps++;
@@ -614,29 +887,22 @@ export function createPSeIntRunner(code, opts = {}) {
     }
   }
 
-  function currentLocation() {
-    if (waiting) return { lineNo: waiting.lineNo };
-    for (let i = stack.length - 1; i >= 0; i--) {
-      const f = stack[i];
-      if (f.kind === 'block') {
-        const st = f.stmts[Math.max(0, f.ip - 1)];
-        if (st?.lineNo) return { lineNo: st.lineNo };
-      } else if (f.kind === 'while') {
-        return { lineNo: f.node.lineNo };
-      }
-    }
-    return { lineNo: null };
-  }
-
   function stepInternal() {
-    if (waiting) {
-      return { status: 'need_input', ...waiting, prompt: `Ingrese ${waiting.name}:` };
+    if (pendingInputs.length > 0) {
+      currentWaiting = pendingInputs.shift();
+      return {
+        status: 'need_input',
+        name: currentWaiting.name,
+        lineNo: currentWaiting.lineNo,
+        prompt: `Ingrese ${currentWaiting.name}:`,
+      };
     }
+    currentWaiting = null;
 
     while (stack.length) {
       const top = stack[stack.length - 1];
 
-      // While controller frame
+      // 1. FRAME WHILE (Mientras)
       if (top.kind === 'while') {
         bumpSteps();
         const condVal = Boolean(ctx.evalExpr(top.node.cond, top.node.lineNo));
@@ -644,12 +910,57 @@ export function createPSeIntRunner(code, opts = {}) {
           stack.pop();
           return { status: 'stepped', kind: 'while_end', lineNo: top.node.lineNo };
         }
-        // ejecutar cuerpo: al terminar volveremos aquí para re-chequear
         stack.push({ kind: 'block', stmts: top.node.body, ip: 0 });
         return { status: 'stepped', kind: 'while_check', lineNo: top.node.lineNo };
       }
 
-      // Block frame
+      // 2. FRAME REPEAT (Repetir)
+      if (top.kind === 'repeat') {
+        bumpSteps();
+        if (top.firstPass) {
+          top.firstPass = false;
+          stack.push({ kind: 'block', stmts: top.node.body, ip: 0 });
+          return { status: 'stepped', kind: 'repeat_start', lineNo: top.node.lineNo };
+        }
+        // En PSeInt: 'Hasta Que condicion' repite MIENTRAS sea FALSA, termina cuando es VERDADERA
+        const condVal = Boolean(ctx.evalExpr(top.node.cond, top.node.lineNo));
+        if (condVal) {
+          stack.pop();
+          return { status: 'stepped', kind: 'repeat_end', lineNo: top.node.lineNo };
+        }
+        stack.push({ kind: 'block', stmts: top.node.body, ip: 0 });
+        return { status: 'stepped', kind: 'repeat_loop', lineNo: top.node.lineNo };
+      }
+
+      // 3. FRAME FOR (Para)
+      if (top.kind === 'for') {
+        bumpSteps();
+        if (top.firstPass) {
+          top.firstPass = false;
+          top.current = asNumber(ctx.evalExpr(top.node.startExpr, top.node.lineNo));
+          top.end = asNumber(ctx.evalExpr(top.node.endExpr, top.node.lineNo));
+          if (top.node.stepExpr) {
+            top.step = asNumber(ctx.evalExpr(top.node.stepExpr, top.node.lineNo));
+          } else {
+            top.step = top.current <= top.end ? 1 : -1;
+          }
+          ctx.setVar(top.node.norm, top.current);
+        } else {
+          top.current += top.step;
+          ctx.setVar(top.node.norm, top.current);
+        }
+
+        const shouldContinue = top.step > 0 ? top.current <= top.end : top.current >= top.end;
+        if (!shouldContinue) {
+          stack.pop();
+          return { status: 'stepped', kind: 'for_end', lineNo: top.node.lineNo };
+        }
+
+        stack.push({ kind: 'block', stmts: top.node.body, ip: 0 });
+        return { status: 'stepped', kind: 'for_loop', lineNo: top.node.lineNo };
+      }
+
+      // 4. FRAME BLOCK (Lista de sentencias)
       if (top.ip >= top.stmts.length) {
         stack.pop();
         continue;
@@ -657,43 +968,70 @@ export function createPSeIntRunner(code, opts = {}) {
 
       const st = top.stmts[top.ip];
       top.ip++;
-
       bumpSteps();
 
       switch (st.type) {
+        case 'clear': {
+          ctx.onClear();
+          return { status: 'stepped', kind: 'clear', lineNo: st.lineNo };
+        }
+        case 'wait': {
+          return { status: 'stepped', kind: 'wait', lineNo: st.lineNo };
+        }
         case 'declare': {
-          ctx.types[st.name] = st.varType;
-          if (!Object.prototype.hasOwnProperty.call(ctx.vars, st.name)) {
-            ctx.vars[st.name] = defaultValueForType(st.varType);
-          }
+          st.names.forEach((rawName) => {
+            const norm = normalizeVarName(rawName);
+            ctx.types[norm] = st.varType;
+            ctx.vars[norm] = defaultValueForType(st.varType);
+          });
           return { status: 'stepped', kind: 'declare', lineNo: st.lineNo };
         }
+        case 'dimension': {
+          st.arrays.forEach((arr) => {
+            const resolvedDims = arr.dims.map((d) => asNumber(ctx.evalExpr(d, st.lineNo)));
+            ctx.initArray(arr.norm, resolvedDims);
+          });
+          return { status: 'stepped', kind: 'dimension', lineNo: st.lineNo };
+        }
         case 'assign': {
-          if (!Object.prototype.hasOwnProperty.call(ctx.vars, st.name)) {
-            throw new Error(`Asignación a variable no definida: ${st.name} (línea ${st.lineNo})`);
-          }
-          ctx.vars[st.name] = ctx.evalExpr(st.expr, st.lineNo);
+          const val = ctx.evalExpr(st.expr, st.lineNo);
+          ctx.setVar(st.norm, val);
           return { status: 'stepped', kind: 'assign', lineNo: st.lineNo };
+        }
+        case 'assign_array': {
+          const val = ctx.evalExpr(st.expr, st.lineNo);
+          const resolvedIndices = st.indices.map((idxExpr) => asNumber(ctx.evalExpr(idxExpr, st.lineNo)));
+          ctx.setArrayElement(st.norm, resolvedIndices, val);
+          return { status: 'stepped', kind: 'assign_array', lineNo: st.lineNo };
         }
         case 'write': {
           const out = st.parts
             .map((p) => {
               const pt = p.trim();
-              if (pt.startsWith('"') && pt.endsWith('"') && pt.length >= 2) return pt.slice(1, -1);
+              if ((pt.startsWith('"') && pt.endsWith('"')) || (pt.startsWith("'") && pt.endsWith("'"))) {
+                return pt.slice(1, -1);
+              }
               const v = ctx.evalExpr(pt, st.lineNo);
-              return typeof v === 'boolean' ? (v ? 'Verdadero' : 'Falso') : String(v);
+              return typeof v === 'boolean' ? (v ? 'Verdadero' : 'Falso') : String(v ?? '');
             })
             .join('');
-          ctx.onOutput(out);
+          ctx.onOutput(out, !st.sinSaltar);
           return { status: 'stepped', kind: 'write', lineNo: st.lineNo };
         }
         case 'read': {
-          if (!Object.prototype.hasOwnProperty.call(ctx.vars, st.name)) {
-            throw new Error(`Leer a variable no definida: ${st.name} (línea ${st.lineNo})`);
-          }
-          const t = ctx.types[st.name] ?? 'CARACTER';
-          waiting = { name: st.name, varType: t, lineNo: st.lineNo };
-          return { status: 'need_input', ...waiting, prompt: `Ingrese ${st.name}:` };
+          pendingInputs = st.names.map((rawName) => ({
+            name: rawName,
+            norm: normalizeVarName(rawName),
+            varType: ctx.types[normalizeVarName(rawName)] || 'CARACTER',
+            lineNo: st.lineNo,
+          }));
+          currentWaiting = pendingInputs.shift();
+          return {
+            status: 'need_input',
+            name: currentWaiting.name,
+            lineNo: currentWaiting.lineNo,
+            prompt: `Ingrese ${currentWaiting.name}:`,
+          };
         }
         case 'if': {
           const condVal = Boolean(ctx.evalExpr(st.cond, st.lineNo));
@@ -701,31 +1039,57 @@ export function createPSeIntRunner(code, opts = {}) {
           return { status: 'stepped', kind: 'if', lineNo: st.lineNo };
         }
         case 'while': {
-          // control frame that re-checks each time
           stack.push({ kind: 'while', node: st });
           return { status: 'stepped', kind: 'while_start', lineNo: st.lineNo };
+        }
+        case 'repeat': {
+          stack.push({ kind: 'repeat', node: st, firstPass: true });
+          return { status: 'stepped', kind: 'repeat_start', lineNo: st.lineNo };
+        }
+        case 'for': {
+          stack.push({ kind: 'for', node: st, firstPass: true });
+          return { status: 'stepped', kind: 'for_start', lineNo: st.lineNo };
+        }
+        case 'switch': {
+          const targetVal = ctx.evalExpr(st.expr, st.lineNo);
+          let matched = false;
+          for (const c of st.cases) {
+            for (const vExpr of c.values) {
+              const vVal = ctx.evalExpr(vExpr, st.lineNo);
+              if (vVal === targetVal) {
+                stack.push({ kind: 'block', stmts: c.body, ip: 0 });
+                matched = true;
+                break;
+              }
+            }
+            if (matched) break;
+          }
+          if (!matched && st.defaultBody.length) {
+            stack.push({ kind: 'block', stmts: st.defaultBody, ip: 0 });
+          }
+          return { status: 'stepped', kind: 'switch', lineNo: st.lineNo };
         }
         default:
           throw new Error(`Nodo no soportado: ${st.type}`);
       }
     }
 
-    return { status: 'done', lineNo: currentLocation().lineNo };
+    return { status: 'done' };
   }
 
   function provideInput(raw) {
-    if (!waiting) throw new Error('No hay una lectura (Leer) esperando entrada.');
-    const { name, varType, lineNo } = waiting;
-    ctx.vars[name] = coerceInputToType(raw, varType);
-    waiting = null;
-    return { status: 'input_applied', name, lineNo };
+    if (!currentWaiting) throw new Error('No hay una lectura (Leer) esperando entrada.');
+    const { norm, varType, lineNo } = currentWaiting;
+    ctx.setVar(norm, coerceInputToType(raw, varType));
+    const processedName = currentWaiting.name;
+    currentWaiting = null;
+    return { status: 'input_applied', name: processedName, lineNo };
   }
 
   async function runUntilPause() {
     while (true) {
       const r = stepInternal();
       if (r.status === 'need_input' || r.status === 'done') return r;
-      // sigue
       await Promise.resolve();
     }
   }
@@ -735,7 +1099,23 @@ export function createPSeIntRunner(code, opts = {}) {
     run: () => runUntilPause(),
     provideInput,
     getVars: () => ({ ...ctx.vars }),
-    getLocation: () => currentLocation(),
   };
 }
 
+export async function runPSeInt(code, opts = {}) {
+  const onOutput = typeof opts.onOutput === 'function' ? opts.onOutput : () => {};
+  const onClear = typeof opts.onClear === 'function' ? opts.onClear : () => {};
+  const runner = createPSeIntRunner(code, { onOutput, onClear, limits: opts.limits });
+  const stdin = Array.isArray(opts.stdinLines) ? [...opts.stdinLines] : [];
+
+  while (true) {
+    const res = runner.step();
+    if (res.status === 'done') break;
+    if (res.status === 'need_input') {
+      const nextVal = stdin.length ? stdin.shift() : '';
+      runner.provideInput(nextVal);
+    }
+  }
+
+  return { vars: runner.getVars() };
+}

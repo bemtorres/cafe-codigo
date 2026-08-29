@@ -1,0 +1,324 @@
+---
+import "../styles/global.css";
+import "../styles/code-themes.css";
+import logoCafeycodigo from "../assets/images/cafeycodigo.png";
+import ogLogo from "../assets/images/logo-cafecodigo.png";
+import GameTimerWidget from "../components/GameTimerWidget";
+
+interface Props {
+  title: string;
+  description?: string;
+  activeModule?: string;
+}
+
+const {
+  title,
+  description = "Zona Gamer: Desafíos de programación 100% ambientados en videojuegos (RPGs, Combate, Inventarios y Mazmorras).",
+  activeModule,
+} = Astro.props;
+
+const currentPath = Astro.url.pathname;
+const normalizedPath = currentPath.replace(/\/$/, "");
+
+const navLinks = [
+  // { href: '/challenges-game/', label: 'Hub Principal', icon: '🏠', id: 'hub' },
+  // { href: '/challenges-game/functions/', label: '01. Funciones', icon: '⚡', id: 'functions', count: 50 },
+  // { href: '/challenges-game/conditionals-rpg/', label: '02. Combate RPG', icon: '⚔️', id: 'conditionals', count: 30 },
+  // { href: '/challenges-game/inventory-arrays/', label: '03. Inventarios', icon: '🎒', id: 'inventory', count: 25 },
+  // { href: '/challenges-game/dungeon-matrices/', label: '04. Mazmorras 2D', icon: '🗺️', id: 'dungeons', count: 20 },
+  // { href: '/challenges-game/hero-classes-poo/', label: '05. Héroes POO', icon: '🧙‍♂️', id: 'poo', count: 20 },
+];
+---
+
+<!doctype html>
+<html lang="es" class="dark scroll-smooth">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/png" href={logoCafeycodigo.src} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Orbitron:wght@600;800;900&family=JetBrains+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Open Graph & Social -->
+    <meta property="og:title" content={`${title} | Zona Gamer`} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content={ogLogo.src} />
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:title" content={`${title} | Zona Gamer`} />
+    <meta property="twitter:description" content={description} />
+
+    <title>{title} | Zona Gamer · Café y Código</title>
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-CSJTCX1FHC"
+    ></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+      gtag("config", "G-CSJTCX1FHC");
+    </script>
+  </head>
+
+  <body
+    class="game-layout-body min-h-screen bg-[#070B14] text-slate-100 font-nunito antialiased selection:bg-cyan-500 selection:text-black flex flex-col justify-between"
+    style="background-image: none !important; background-color: #070B14 !important;"
+  >
+    <!-- EFECTO MATRIX / GLOW DE FONDO -->
+    <div
+      class="fixed inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_-10%,rgba(6,182,212,0.18),rgba(0,0,0,0))] pointer-events-none z-0"
+    >
+    </div>
+    <div
+      class="fixed inset-0 bg-[linear-gradient(to_right,#0f172a15_1px,transparent_1px),linear-gradient(to_bottom,#0f172a15_1px,transparent_1px)] bg-[size:28px_28px] pointer-events-none z-0"
+    >
+    </div>
+
+    <!-- NAVBAR GAMER EXCLUSIVA -->
+    <header
+      class="sticky top-0 z-50 bg-[#070B14]/90 backdrop-blur-md border-b-2 border-cyan-500/30 shadow-[0_4px_30px_rgba(6,182,212,0.15)]"
+    >
+      <div class="max-w-7xl mx-auto px-4 sm:px-6">
+        <div class="flex items-center justify-between h-16">
+          <!-- LOGO GAMER ARCADE -->
+          <div class="flex items-center gap-3">
+            <a
+              href="/challenges-game/"
+              class="flex items-center gap-2.5 no-underline group"
+            >
+              <div
+                class="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-purple-600 p-0.5 shadow-[0_0_15px_rgba(6,182,212,0.4)] group-hover:scale-105 transition-transform"
+              >
+                <div
+                  class="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center text-lg"
+                >
+                  🎮
+                </div>
+              </div>
+              <div>
+                <div class="flex items-center gap-1.5">
+                  <span
+                    class="font-['Orbitron'] font-black text-base sm:text-lg text-white tracking-wider group-hover:text-cyan-300 transition-colors leading-none"
+                  >
+                    ZONA<span class="text-cyan-400">GAMER</span>
+                  </span>
+                  <span
+                    class="px-1.5 py-0.2 rounded bg-cyan-950 border border-cyan-400 text-[0.6rem] font-black text-cyan-300 uppercase tracking-widest leading-normal"
+                  >
+                    PRO
+                  </span>
+                </div>
+                <span
+                  class="text-[0.62rem] text-slate-400 font-extrabold uppercase tracking-widest block leading-tight"
+                >
+                  Café y Código RPG
+                </span>
+              </div>
+            </a>
+          </div>
+
+          <!-- NAVEGACIÓN PRINCIPAL GAMER -->
+          <nav class="hidden md:flex items-center gap-1.5 bg-slate-950/80 p-1 rounded-2xl border border-cyan-500/30">
+            <a
+              href="/challenges-game/"
+              class={`px-3.5 py-1.5 rounded-xl font-nunito font-extrabold text-xs no-underline transition-all flex items-center gap-1.5 ${
+                activeModule !== 'projects'
+                  ? 'bg-cyan-600 text-white font-black shadow-[0_0_12px_rgba(6,182,212,0.3)]'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-900'
+              }`}
+            >
+              <span>🎮</span> Misiones (145)
+            </a>
+            <a
+              href="/challenges-game/projects/"
+              class={`px-3.5 py-1.5 rounded-xl font-nunito font-extrabold text-xs no-underline transition-all flex items-center gap-1.5 ${
+                activeModule === 'projects'
+                  ? 'bg-amber-600 text-white font-black shadow-[0_0_12px_rgba(245,158,11,0.3)]'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-900'
+              }`}
+            >
+              <span>🚀</span> Proyectos CLI (6)
+            </a>
+          </nav>
+
+          <!-- PLAYER MINI HUD + SALIDA -->
+          <div class="flex items-center gap-3">
+            <!-- MINI HUD DEL JUGADOR -->
+            <a
+              href="/challenges-game/"
+              class="no-underline flex items-center gap-2 bg-slate-950 border border-cyan-500/40 hover:border-cyan-400 px-4 py-1 rounded-xl shadow-[0_0_15px_rgba(6,182,212,0.2)] transition-all"
+            >
+              <div
+                class="w-6 h-6 rounded-lg bg-cyan-600 flex items-center justify-center font-black text-xs text-white"
+                id="navLvlBox"
+              >
+                Lv.1
+              </div>
+              <div class="hidden sm:block text-left">
+                <!-- <span
+                  class="text-[0.65rem] text-slate-400 block font-bold leading-none"
+                  >XP TOTAL</span
+                > -->
+                <span
+                  class="text-xs font-black text-cyan-300 leading-tight"
+                  id="navXpText">0 XP</span
+                >
+              </div>
+            </a>
+
+            <!-- BOTÓN VOLVER A WEB PRINCIPAL -->
+            <a
+              href="/challenges/"
+              class="px-3.5 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 hover:text-white font-extrabold text-xs no-underline transition-all flex items-center gap-1.5 shadow-sm"
+              title="Volver al catálogo tradicional"
+            >
+              <span class="hidden md:inline">Desafíos Clásicos</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- CONTENIDO PRINCIPAL DE LA PÁGINA -->
+    <main class="relative z-10 flex-1">
+      <slot />
+    </main>
+
+    <!-- FOOTER GAMER EXCLUSIVO -->
+    <footer
+      class="relative z-10 bg-[#05080F] border-t-2 border-cyan-500/20 pt-10 pb-12 mt-12 text-slate-400 text-xs"
+    >
+      <div class="max-w-7xl mx-auto px-4 sm:px-6">
+        <div
+          class="flex flex-col md:flex-row items-center justify-between gap-6 pb-8 border-b border-slate-800/80"
+        >
+          <div class="flex items-center gap-3 text-center md:text-left">
+            <div
+              class="w-12 h-12 rounded-2xl bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center text-2xl shadow-[0_0_20px_rgba(6,182,212,0.3)]"
+            >
+              🎮
+            </div>
+            <div>
+              <h3
+                class="font-['Orbitron'] font-black text-white text-base m-0 tracking-wider"
+              >
+                ZONA GAMER · CAFÉ Y CÓDIGO
+              </h3>
+              <p class="text-xs text-slate-400 m-0 mt-0.5">
+                Plataforma interactiva de retos de lógica de programación
+                orientada a videojuegos.
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <div
+              class="flex items-center gap-2 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-full"
+            >
+              <span
+                class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"
+              ></span>
+              <span class="text-xs font-black text-slate-300"
+                >145 MISIONES ACTIVAS</span
+              >
+            </div>
+            <a
+              href="/cursos/"
+              class="px-4 py-1.5 rounded-full bg-cyan-950 border border-cyan-500/50 text-cyan-300 hover:bg-cyan-900 font-bold no-underline transition-colors"
+            >
+              Explorar Cursos →
+            </a>
+          </div>
+        </div>
+
+        <div
+          class="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-[0.75rem] text-slate-500 font-medium"
+        >
+          <p class="m-0 text-center sm:text-left">
+            © {new Date().getFullYear()} Café y Código. Diseñado para estudiantes,
+            programadores y desarrolladores de videojuegos.
+          </p>
+          <div class="flex items-center gap-4">
+            <a
+              href="/"
+              class="hover:text-cyan-400 no-underline text-inherit transition-colors"
+              >Inicio</a
+            >
+            <span>•</span>
+            <a
+              href="/challenges/"
+              class="hover:text-cyan-400 no-underline text-inherit transition-colors"
+              >Desafíos Clásicos</a
+            >
+            <span>•</span>
+            <a
+              href="/sitemap.xml"
+              class="hover:text-cyan-400 no-underline text-inherit transition-colors"
+              >Sitemap</a
+            >
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- SCRIPT GLOBAL DEL HUD GAMER PARA TODAS LAS PÁGINAS -->
+    <script is:inline>
+      (function () {
+        const updateNavbarHUD = () => {
+          const prefixes = [
+            "game_fn_",
+            "game_cnd_",
+            "game_inv_",
+            "game_dng_",
+            "game_poo_",
+          ];
+          let totalDone = 0;
+          prefixes.forEach((p) => {
+            for (let i = 1; i <= 50; i++) {
+              if (localStorage.getItem(`${p}${i}_done`) === "true") {
+                totalDone++;
+              }
+            }
+          });
+          const xp = totalDone * 100;
+          const lvl = Math.max(1, Math.floor(xp / 1000) + 1);
+
+          const navLvl = document.getElementById("navLvlBox");
+          const navXp = document.getElementById("navXpText");
+
+          if (navLvl) navLvl.textContent = `Lv.${lvl}`;
+          if (navXp) navXp.textContent = `${xp.toLocaleString("es-CL")} XP`;
+        };
+
+        updateNavbarHUD();
+        window.addEventListener("storage", updateNavbarHUD);
+      })();
+    </script>
+
+    <!-- WIDGET FLOTANTE DEL RELOJ GAMER (TEMPORIZADOR & SPEEDRUN CHRONO) -->
+    <div class="embed-hide pdf-hide">
+      <GameTimerWidget client:only="react" />
+    </div>
+
+    <style is:global>
+      body.game-layout-body {
+        background-image: none !important;
+        background-color: #070b14 !important;
+        color: #f1f5f9 !important;
+      }
+      .gamer-universe,
+      .game-module-wrapper {
+        background-color: #070b14 !important;
+        background-image: none !important;
+      }
+    </style>
+  </body>
+</html>

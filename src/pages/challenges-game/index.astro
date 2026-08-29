@@ -1,0 +1,500 @@
+---
+import GameLayout from '../../layouts/GameLayout.astro';
+import { gameProjectsData } from '../../data/gameProjectsData';
+
+const gameModules = [
+  {
+    id: 'functions',
+    number: '01',
+    title: 'Funciones & Métodos Gamer',
+    slug: 'functions',
+    href: '/challenges-game/functions/',
+    icon: '⚡',
+    themeColor: '#06b6d4', // Cyan
+    accentGlow: 'rgba(6, 182, 212, 0.4)',
+    bgCard: 'from-cyan-950/40 via-slate-900 to-slate-950',
+    borderCard: 'border-cyan-500/40 hover:border-cyan-400',
+    badgeText: 'text-cyan-300 bg-cyan-950/80 border-cyan-500/50',
+    totalQuests: 50,
+    xpReward: 5000,
+    difficulty: 'Nivel 1 · Fundamentos',
+    stars: '★☆☆☆☆',
+    tag: 'ESENCIAL',
+    description: 'Fórmulas de daño, cálculo de vida, consumo de maná, tiradas de dados D20 y pantallas de Game Over.',
+    topics: ['Fórmulas RPG', 'Dados D20', 'Maná & HP', 'HUD Gamer'],
+    storagePrefix: 'game_fn_',
+  },
+  {
+    id: 'conditionals-rpg',
+    number: '02',
+    title: 'Condicionales & Combate RPG',
+    slug: 'conditionals-rpg',
+    href: '/challenges-game/conditionals-rpg/',
+    icon: '⚔️',
+    themeColor: '#f59e0b', // Amber / Gold
+    accentGlow: 'rgba(245, 158, 11, 0.4)',
+    bgCard: 'from-amber-950/40 via-slate-900 to-slate-950',
+    borderCard: 'border-amber-500/40 hover:border-amber-400',
+    badgeText: 'text-amber-300 bg-amber-950/80 border-amber-500/50',
+    totalQuests: 30,
+    xpReward: 3000,
+    difficulty: 'Nivel 2 · Intermedio',
+    stars: '★★☆☆☆',
+    tag: 'COMBATE',
+    description: 'Combate por turnos, debilidades elementales (Fuego > Planta > Agua), esquivas, veneno y árboles de diálogo NPC.',
+    topics: ['Debilidades Elementales', 'Esquivas & Críticos', 'Estados Alterados', 'Decisiones NPC'],
+    storagePrefix: 'game_cnd_',
+  },
+  {
+    id: 'inventory-arrays',
+    number: '03',
+    title: 'Arreglos & Inventarios de Loot',
+    slug: 'inventory-arrays',
+    href: '/challenges-game/inventory-arrays/',
+    icon: '🎒',
+    themeColor: '#a855f7', // Purple
+    accentGlow: 'rgba(168, 85, 247, 0.4)',
+    bgCard: 'from-purple-950/40 via-slate-900 to-slate-950',
+    borderCard: 'border-purple-500/40 hover:border-purple-400',
+    badgeText: 'text-purple-300 bg-purple-950/80 border-purple-500/50',
+    totalQuests: 25,
+    xpReward: 2500,
+    difficulty: 'Nivel 3 · Avanzado',
+    stars: '★★★☆☆',
+    tag: 'INVENTARIO',
+    description: 'Gestión de mochilas, filtrado de ítems por rareza (Legendario/Épico), peso máximo y stacks de pociones.',
+    topics: ['Slots de Mochila', 'Loot Legendario', 'Peso Máximo', 'Stacks de Ítems'],
+    storagePrefix: 'game_inv_',
+  },
+  {
+    id: 'dungeon-matrices',
+    number: '04',
+    title: 'Matrices 2D & Mazmorras',
+    slug: 'dungeon-matrices',
+    href: '/challenges-game/dungeon-matrices/',
+    icon: '🗺️',
+    themeColor: '#10b981', // Emerald
+    accentGlow: 'rgba(16, 185, 129, 0.4)',
+    bgCard: 'from-emerald-950/40 via-slate-900 to-slate-950',
+    borderCard: 'border-emerald-500/40 hover:border-emerald-400',
+    badgeText: 'text-emerald-300 bg-emerald-950/80 border-emerald-500/50',
+    totalQuests: 20,
+    xpReward: 2000,
+    difficulty: 'Nivel 4 · Experto',
+    stars: '★★★★☆',
+    tag: 'DUNGEON CRAWLER',
+    description: 'Cuadrículas de mazmorras, detección de muros y colisiones, trampas ocultas, cofres y niebla de guerra.',
+    topics: ['Mapas 2D', 'Colisiones', 'Niebla de Guerra', 'Trampas & Cofres'],
+    storagePrefix: 'game_dng_',
+  },
+  {
+    id: 'hero-classes-poo',
+    number: '05',
+    title: 'POO: Clases de Héroes & Habilidades',
+    slug: 'hero-classes-poo',
+    href: '/challenges-game/hero-classes-poo/',
+    icon: '🧙‍♂️',
+    themeColor: '#f43f5e', // Rose
+    accentGlow: 'rgba(244, 63, 94, 0.4)',
+    bgCard: 'from-rose-950/40 via-slate-900 to-slate-950',
+    borderCard: 'border-rose-500/40 hover:border-rose-400',
+    badgeText: 'text-rose-300 bg-rose-950/80 border-rose-500/50',
+    totalQuests: 20,
+    xpReward: 2000,
+    difficulty: 'Nivel 5 · Maestro',
+    stars: '★★★★★',
+    tag: 'ARQUITECTURA RPG',
+    description: 'Clases Guerrero, Mago, Pícaro, habilidades definitivas, polimorfismo, interfaces y contratos de equipamiento.',
+    topics: ['Clases & Objetos', 'Herencia RPG', 'Polimorfismo', 'Sistemas de Armas'],
+    storagePrefix: 'game_poo_',
+  },
+];
+
+const totalMissions = gameModules.reduce((acc, m) => acc + m.totalQuests, 0);
+const maxPossibleXP = gameModules.reduce((acc, m) => acc + m.xpReward, 0);
+---
+
+<GameLayout
+  title="Zona Gamer — Desafíos de Programación de Videojuegos"
+  description="Plataforma interactiva de desafíos de código ambientados en videojuegos: fórmulas RPG, combate por turnos, inventarios, mazmorras 2D y clases de héroes."
+  activeModule="hub"
+>
+  <!-- CONTENEDOR PRINCIPAL ESTILO CYBERPUNK / GAMER PRO -->
+  <div class="gamer-universe min-h-screen bg-[#070B14] text-slate-100 relative overflow-hidden pb-16">
+    
+    <!-- EFECTO DE LUZ DE FONDO Y GRID -->
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(6,182,212,0.15),rgba(255,255,255,0))] pointer-events-none"></div>
+    <div class="absolute inset-0 bg-[linear-gradient(to_right,#1e293b08_1px,transparent_1px),linear-gradient(to_bottom,#1e293b08_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none opacity-40"></div>
+
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 relative z-10 pt-6">
+
+      <!-- NAVEGACIÓN SUPERIOR / BREADCRUMB GAMER -->
+      <div class="flex items-center justify-between mb-6 pb-3 border-b border-cyan-500/20">
+        <div class="flex items-center gap-2">
+          <a href="/challenges/" class="text-xs font-nunito font-extrabold text-cyan-400 no-underline hover:text-cyan-300 flex items-center gap-1 transition-colors">
+            Ir a Desafíos Clásicos
+          </a>
+          <span class="text-slate-600">/</span>
+          <span class="text-xs font-nunito font-black uppercase tracking-widest text-cyan-500 flex items-center gap-1.5">
+            <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            Servidor Online
+          </span>
+        </div>
+        <div class="hidden sm:flex items-center gap-2">
+          <span class="text-xs font-bold text-slate-400 bg-slate-800/80 border border-slate-700 px-3 py-1 rounded-full">
+            🎮 5 Módulos Activos · {totalMissions} Misiones
+          </span>
+        </div>
+      </div>
+
+      <!-- HERO GAMER BANNER -->
+      <header class="relative rounded-3xl bg-gradient-to-br from-slate-900/90 via-[#0C1222] to-slate-950 border-2 border-cyan-500/30 p-6 sm:p-8 mb-8 shadow-[0_0_40px_rgba(6,182,212,0.15)] overflow-hidden">
+        <div class="absolute -right-12 -top-12 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -left-12 -bottom-12 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 relative z-10">
+          <div class="max-w-2xl">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-xl bg-cyan-950/80 border border-cyan-500/40 text-cyan-300 text-xs font-black uppercase tracking-wider mb-3 shadow-[0_0_15px_rgba(6,182,212,0.3)]">
+              <span>🚀</span> Modo Campaña Gamer Activo
+            </div>
+            <h1 class="text-3xl sm:text-5xl font-black text-white tracking-tight m-0 font-nunito flex items-center gap-3">
+              <span>ZONA GAMER</span>
+              <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-sky-300 to-purple-400">PRO</span>
+            </h1>
+            <p class="mt-3 text-sm sm:text-base text-slate-300 font-medium leading-relaxed">
+              Conviértete en un desarrollador de videojuegos resolviendo <strong>{totalMissions} misiones de código</strong> en <strong>Python, Java, C#, C++, JavaScript, PHP o PSeInt</strong>. Diseña mecánicas de combate, inventarios, mazmorras 2D y arquitectura de héroes.
+            </p>
+          </div>
+
+          <!-- PLAYER HUD CARD (REACTIVO) -->
+          <div class="w-full lg:w-80 bg-slate-950/90 border-2 border-cyan-500/50 rounded-2xl p-4 shadow-[0_0_25px_rgba(6,182,212,0.25)] relative">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-[0.68rem] font-black uppercase tracking-widest text-cyan-400">🎮 Player HUD</span>
+              <span id="playerRankBadge" class="text-[0.7rem] font-extrabold bg-cyan-900/60 text-cyan-200 border border-cyan-400/40 px-2 py-0.5 rounded-md">Recluta de Mazmorras</span>
+            </div>
+
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center font-black text-xl text-white shadow-lg border border-white/20 shrink-0" id="hudLevelBox">
+                Lv.1
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex justify-between text-xs font-black mb-1">
+                  <span class="text-slate-300">XP Global</span>
+                  <span id="hudXpText" class="text-cyan-300">0 / {maxPossibleXP.toLocaleString('es-CL')} XP</span>
+                </div>
+                <div class="w-full h-3 bg-slate-800 rounded-full overflow-hidden border border-cyan-500/30 p-0.5">
+                  <div id="hudXpBar" class="h-full bg-gradient-to-r from-cyan-400 via-sky-400 to-emerald-400 rounded-full transition-all duration-700 shadow-[0_0_10px_#06b6d4]" style="width: 0%"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2 text-center text-xs pt-2 border-t border-slate-800">
+              <div class="bg-slate-900/80 p-1.5 rounded-lg border border-slate-800">
+                <span class="text-[0.65rem] text-slate-400 block font-bold">MISIONES COMPLETADAS</span>
+                <span id="hudCompletedCount" class="font-black text-emerald-400 text-sm">0 / {totalMissions}</span>
+              </div>
+              <div class="bg-slate-900/80 p-1.5 rounded-lg border border-slate-800">
+                <span class="text-[0.65rem] text-slate-400 block font-bold">RANGO GAMER</span>
+                <span id="hudNextRank" class="font-black text-amber-300 text-sm">Rango I</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- BARRA DE BÚSQUEDA Y FILTROS -->
+      <div class="mb-8 flex flex-col sm:flex-row items-center justify-between gap-4 bg-slate-900/70 border border-slate-800 p-4 rounded-2xl backdrop-blur-md">
+        <div class="w-full sm:w-96 relative">
+          <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm">🔍</span>
+          <input
+            type="text"
+            id="moduleSearch"
+            placeholder="Buscar por módulo, tema (loot, dados, combate, mazmorras...)"
+            class="w-full bg-slate-950 border border-slate-700 focus:border-cyan-400 rounded-xl pl-9 pr-4 py-2.5 text-xs font-nunito font-bold text-white placeholder:text-slate-500 outline-none transition-colors"
+          />
+        </div>
+
+        <div class="flex items-center gap-2 flex-wrap w-full sm:w-auto justify-start sm:justify-end" id="filterGroup">
+          <button type="button" class="filter-btn active px-3.5 py-1.5 rounded-xl border border-cyan-500/50 bg-cyan-950/80 text-cyan-300 text-xs font-black transition-all cursor-pointer" data-filter="all">Todos ({gameModules.length})</button>
+          <button type="button" class="filter-btn px-3.5 py-1.5 rounded-xl border border-slate-700 bg-slate-950 text-slate-400 hover:text-white text-xs font-black transition-all cursor-pointer" data-filter="fundamentos">Fundamentos</button>
+          <button type="button" class="filter-btn px-3.5 py-1.5 rounded-xl border border-slate-700 bg-slate-950 text-slate-400 hover:text-white text-xs font-black transition-all cursor-pointer" data-filter="combate">Combate</button>
+          <button type="button" class="filter-btn px-3.5 py-1.5 rounded-xl border border-slate-700 bg-slate-950 text-slate-400 hover:text-white text-xs font-black transition-all cursor-pointer" data-filter="avanzado">Avanzado</button>
+        </div>
+      </div>
+
+      <!-- CATÁLOGO DE LOS 5 MÓDULOS GAMER (100% OPERATIVOS) -->
+      <section class="mb-12">
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h2 class="text-xl sm:text-2xl font-black text-white m-0 font-nunito flex items-center gap-2.5">
+              <span>🎯</span> Módulos de Misiones Gamer
+            </h2>
+            <p class="text-xs sm:text-sm text-slate-400 mt-1 font-medium">Selecciona un módulo para iniciar tu entrenamiento interactivo de programación.</p>
+          </div>
+          <span class="hidden sm:inline-block px-3 py-1 rounded-full bg-emerald-950/80 border border-emerald-500/40 text-emerald-300 text-xs font-extrabold">
+            ✓ 100% Jugable
+          </span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="moduleGrid">
+          {gameModules.map((mod) => (
+            <div
+              class={`module-card group relative rounded-3xl bg-gradient-to-b ${mod.bgCard} border-2 ${mod.borderCard} p-6 flex flex-col justify-between shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1`}
+              data-keywords={`${mod.title} ${mod.description} ${mod.topics.join(' ')}`.toLowerCase()}
+              data-category={mod.id === 'functions' ? 'fundamentos' : mod.id === 'conditionals-rpg' ? 'combate' : 'avanzado'}
+              style={`--accent:${mod.themeColor};`}
+            >
+              <!-- CABECERA DE LA TARJETA -->
+              <div>
+                <div class="flex items-center justify-between mb-3">
+                  <span class={`text-[0.65rem] font-black uppercase tracking-wider px-2.5 py-1 rounded-lg border ${mod.badgeText}`}>
+                    Módulo {mod.number} · {mod.tag}
+                  </span>
+                  <span class="text-amber-400 text-xs font-bold tracking-widest">{mod.stars}</span>
+                </div>
+
+                <div class="flex items-start gap-3.5 mb-3">
+                  <div class="w-12 h-12 rounded-2xl bg-slate-950 border border-white/10 flex items-center justify-center text-2xl shrink-0 group-hover:scale-110 transition-transform shadow-inner">
+                    {mod.icon}
+                  </div>
+                  <div>
+                    <h3 class="m-0 font-black text-lg text-white group-hover:text-cyan-300 transition-colors font-nunito leading-tight">
+                      {mod.title}
+                    </h3>
+                    <span class="text-xs font-bold text-slate-400 mt-0.5 block">{mod.difficulty}</span>
+                  </div>
+                </div>
+
+                <p class="text-xs text-slate-300 leading-relaxed font-medium mb-4">
+                  {mod.description}
+                </p>
+
+                <!-- TOPICS / CHIPS -->
+                <div class="flex flex-wrap gap-1.5 mb-5">
+                  {mod.topics.map((t) => (
+                    <span class="text-[0.68rem] font-bold bg-slate-950/80 text-slate-400 px-2 py-0.5 rounded-md border border-slate-800">
+                      #{t}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <!-- PIE DE TARJETA CON PROGRESO Y BOTÓN -->
+              <div class="pt-4 border-t border-slate-800/80">
+                <div class="flex items-center justify-between text-xs font-bold mb-2">
+                  <span class="text-slate-400">Progreso de Misión:</span>
+                  <span class="text-emerald-400 font-extrabold module-progress-text" data-prefix={mod.storagePrefix} data-total={mod.totalQuests}>
+                    0 / {mod.totalQuests}
+                  </span>
+                </div>
+
+                <div class="w-full h-2 bg-slate-950 rounded-full overflow-hidden border border-slate-800 mb-4">
+                  <div class="module-progress-bar h-full rounded-full transition-all duration-500" data-prefix={mod.storagePrefix} data-total={mod.totalQuests} style={`background: ${mod.themeColor}; width: 0%;`}></div>
+                </div>
+
+                <a
+                  href={mod.href}
+                  class="w-full py-2.5 px-4 rounded-xl font-nunito font-black text-xs text-center flex items-center justify-center gap-2 no-underline text-white transition-all shadow-md group-hover:shadow-[0_0_20px_var(--accent)]"
+                  style={`background: ${mod.themeColor};`}
+                >
+                  <span>🎮</span>
+                  <span>JUGAR MISIÓN ({mod.totalQuests})</span>
+                  <span>→</span>
+                </a>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <!-- SECCIÓN DESTACADA: MÓDULOS DE PROYECTOS GAMER (PROYECTOS INTEGRADORES CLI) -->
+      <section class="mb-12 rounded-3xl bg-gradient-to-br from-amber-950/40 via-slate-900 to-slate-950 border-2 border-amber-500/40 p-6 sm:p-8 backdrop-blur-md shadow-[0_0_35px_rgba(245,158,11,0.15)] relative overflow-hidden">
+        <div class="absolute -right-16 -bottom-16 w-60 h-60 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6 relative z-10">
+          <div>
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-amber-950/80 border border-amber-500/50 text-amber-300 text-[0.7rem] font-black uppercase tracking-wider mb-2">
+              <span>🚀</span> Nuevo Módulo Integrador
+            </div>
+            <h2 class="text-2xl sm:text-3xl font-black text-white m-0 font-nunito flex items-center gap-2.5">
+              <span>🚀</span> Módulos de Proyectos Gamer (CLI)
+            </h2>
+            <p class="text-xs sm:text-sm text-slate-300 mt-1 max-w-2xl font-medium">
+              Aplica tus conocimientos creando <strong>6 videojuegos de consola completos</strong> con bucles <code class="text-amber-300 font-mono">while/for</code>, condicionales <code class="text-amber-300 font-mono">if</code>, tablas de variables y menús interactivos.
+            </p>
+          </div>
+
+          <a
+            href="/challenges-game/projects/"
+            class="px-5 py-3 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-slate-950 font-black text-xs no-underline shadow-[0_0_20px_rgba(245,158,11,0.4)] flex items-center gap-2 transition-all shrink-0 hover:scale-105"
+          >
+            <span>Ver los 6 Proyectos</span>
+            <span>→</span>
+          </a>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 relative z-10">
+          {gameProjectsData.map((proj) => (
+            <a
+              href={`/challenges-game/projects/`}
+              class="no-underline group bg-slate-950/90 border border-slate-800 hover:border-amber-400 p-4 rounded-2xl transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(245,158,11,0.2)] block"
+            >
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-2xl group-hover:scale-110 transition-transform">{proj.icon}</span>
+                <span class="text-[0.65rem] font-['Orbitron'] font-black bg-amber-950 text-amber-300 px-2 py-0.5 rounded border border-amber-500/40">
+                  {proj.badge}
+                </span>
+              </div>
+              <h3 class="text-sm font-black text-white group-hover:text-amber-300 transition-colors m-0 font-nunito">
+                {proj.title}
+              </h3>
+              <p class="text-[0.75rem] text-slate-400 mt-1 m-0 line-clamp-2">
+                {proj.subtitle}
+              </p>
+              <div class="mt-3 pt-2 border-t border-slate-800/80 flex items-center justify-between text-[0.68rem] text-slate-400 font-bold">
+                <span>{proj.variables.length} Variables</span>
+                <span class="text-emerald-400">7 Lenguajes (.cs)</span>
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      <!-- SECCIÓN DE LOGROS Y RANGOS GAMER -->
+      <section class="rounded-3xl bg-slate-900/60 border border-slate-800 p-6 sm:p-8 backdrop-blur-md">
+        <h3 class="text-lg font-black text-white font-nunito m-0 mb-2 flex items-center gap-2">
+          <span>🏆</span> Sistema de Rangos y Logros de Programador Gamer
+        </h3>
+        <p class="text-xs text-slate-400 m-0 mb-6">Completa misiones para subir de nivel y desbloquear títulos legendarios.</p>
+
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div class="bg-slate-950/80 border border-slate-800 p-3 rounded-2xl text-center">
+            <span class="text-2xl mb-1 block">⚔️</span>
+            <h4 class="font-black text-xs text-white m-0">Recluta</h4>
+            <span class="text-[0.65rem] text-slate-500 font-bold block mt-0.5">0 - 2,000 XP</span>
+          </div>
+          <div class="bg-slate-950/80 border border-slate-800 p-3 rounded-2xl text-center">
+            <span class="text-2xl mb-1 block">🛡️</span>
+            <h4 class="font-black text-xs text-cyan-400 m-0">Paladín Rúnico</h4>
+            <span class="text-[0.65rem] text-slate-500 font-bold block mt-0.5">2,001 - 6,000 XP</span>
+          </div>
+          <div class="bg-slate-950/80 border border-slate-800 p-3 rounded-2xl text-center">
+            <span class="text-2xl mb-1 block">👑</span>
+            <h4 class="font-black text-xs text-purple-400 m-0">Maestro de Raids</h4>
+            <span class="text-[0.65rem] text-slate-500 font-bold block mt-0.5">6,001 - 10,000 XP</span>
+          </div>
+          <div class="bg-slate-950/80 border border-slate-800 p-3 rounded-2xl text-center">
+            <span class="text-2xl mb-1 block">🌟</span>
+            <h4 class="font-black text-amber-400 m-0">Dios del Código</h4>
+            <span class="text-[0.65rem] text-slate-500 font-bold block mt-0.5">+10,001 XP</span>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- SCRIPT DE SINCRONIZACIÓN DINÁMICA DEL HUD GAMER -->
+  <script is:inline>
+    (function () {
+      const prefixes = [
+        { prefix: 'game_fn_', total: 50 },
+        { prefix: 'game_cnd_', total: 30 },
+        { prefix: 'game_inv_', total: 25 },
+        { prefix: 'game_dng_', total: 20 },
+        { prefix: 'game_poo_', total: 20 },
+      ];
+
+      let totalCompleted = 0;
+      const totalAll = 145;
+      const xpPerQuest = 100;
+
+      prefixes.forEach(({ prefix, total }) => {
+        let count = 0;
+        for (let i = 1; i <= total; i++) {
+          if (localStorage.getItem(`${prefix}${i}_done`) === 'true') {
+            count++;
+          }
+        }
+        totalCompleted += count;
+
+        // Actualizar barra de progreso de cada módulo
+        document.querySelectorAll(`.module-progress-text[data-prefix="${prefix}"]`).forEach((el) => {
+          el.textContent = `${count} / ${total}`;
+        });
+        document.querySelectorAll(`.module-progress-bar[data-prefix="${prefix}"]`).forEach((el) => {
+          const pct = Math.round((count / total) * 100);
+          el.style.width = `${pct}%`;
+        });
+      });
+
+      const totalXp = totalCompleted * xpPerQuest;
+      const maxXp = totalAll * xpPerQuest;
+      const progressPct = Math.round((totalXp / maxXp) * 100);
+
+      // Calcular Nivel y Rango
+      const level = Math.max(1, Math.floor(totalXp / 1000) + 1);
+      let rank = 'Recluta de Mazmorras';
+      let rankBadge = 'Rango I';
+
+      if (totalXp >= 10000) {
+        rank = '🌟 Dios del Código';
+        rankBadge = 'Rango IV (MAX)';
+      } else if (totalXp >= 6000) {
+        rank = '👑 Maestro de Raids';
+        rankBadge = 'Rango III';
+      } else if (totalXp >= 2000) {
+        rank = '🛡️ Paladín Rúnico';
+        rankBadge = 'Rango II';
+      }
+
+      // Actualizar HUD
+      const xpText = document.getElementById('hudXpText');
+      const xpBar = document.getElementById('hudXpBar');
+      const lvlBox = document.getElementById('hudLevelBox');
+      const rankEl = document.getElementById('playerRankBadge');
+      const completedCount = document.getElementById('hudCompletedCount');
+      const nextRank = document.getElementById('hudNextRank');
+
+      if (xpText) xpText.textContent = `${totalXp.toLocaleString('es-CL')} / ${maxXp.toLocaleString('es-CL')} XP`;
+      if (xpBar) xpBar.style.width = `${progressPct}%`;
+      if (lvlBox) lvlBox.textContent = `Lv.${level}`;
+      if (rankEl) rankEl.textContent = rank;
+      if (completedCount) completedCount.textContent = `${totalCompleted} / ${totalAll}`;
+      if (nextRank) nextRank.textContent = rankBadge;
+
+      // Buscador
+      const searchInput = document.getElementById('moduleSearch');
+      searchInput?.addEventListener('input', (e) => {
+        const val = (e.target.value || '').toLowerCase().trim();
+        document.querySelectorAll('.module-card').forEach((card) => {
+          const kw = card.getAttribute('data-keywords') || '';
+          card.style.display = !val || kw.includes(val) ? '' : 'none';
+        });
+      });
+
+      // Filtros
+      const filterBtns = document.querySelectorAll('#filterGroup .filter-btn');
+      filterBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          filterBtns.forEach((b) => {
+            b.classList.remove('active', 'border-cyan-500/50', 'bg-cyan-950/80', 'text-cyan-300');
+            b.classList.add('border-slate-700', 'bg-slate-950', 'text-slate-400');
+          });
+          btn.classList.add('active', 'border-cyan-500/50', 'bg-cyan-950/80', 'text-cyan-300');
+          btn.classList.remove('border-slate-700', 'bg-slate-950', 'text-slate-400');
+
+          const filter = btn.getAttribute('data-filter');
+          document.querySelectorAll('.module-card').forEach((card) => {
+            const cat = card.getAttribute('data-category');
+            if (filter === 'all' || cat === filter) {
+              card.style.display = '';
+            } else {
+              card.style.display = 'none';
+            }
+          });
+        });
+      });
+    })();
+  </script>
+</GameLayout>

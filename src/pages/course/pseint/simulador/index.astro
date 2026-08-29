@@ -152,8 +152,12 @@ FinAlgoritmo`;
     }
   });
 
-  function appendOut(line: string) {
-    $stdout.textContent += (line ?? '') + '\n';
+  function appendOut(text: string, isNewLine: boolean = true) {
+    if (isNewLine) {
+      $stdout.textContent += (text ?? '') + '\n';
+    } else {
+      $stdout.textContent += (text ?? '');
+    }
     $stdout.scrollTop = $stdout.scrollHeight;
   }
 
@@ -186,7 +190,10 @@ FinAlgoritmo`;
   function ensureRunner(resetOutput: boolean) {
     const code = editor ? editor.getValue() : localStorage.getItem('pseint.code') || '';
     if (resetOutput) clearOut();
-    runner = createPSeIntRunner(code, { onOutput: (line: string) => appendOut(line) });
+    runner = createPSeIntRunner(code, {
+      onOutput: (text: string, isNewLine: boolean = true) => appendOut(text, isNewLine),
+      onClear: () => clearOut(),
+    });
     setWaitingUI(null);
   }
 
@@ -253,13 +260,13 @@ FinAlgoritmo`;
   const SNIPS = {
     escribir: 'Escribir "Hola Mundo";',
     leer: 'Leer miVariable;',
-    asignar: 'miVariable = 10;',
+    asignar: 'miVariable <- 10;',
     si: 'Si condicion Entonces\n\t// escribir código aquí\nFinSi',
-    segun: '// Segun variable Hacer\n// \t1:\n// \t\tEscribir "Caso 1";\n// \tDe Otro Modo:\n// \t\tEscribir "Por defecto";\n// FinSegun\n',
+    segun: 'Segun variable Hacer\n\t1:\n\t\tEscribir "Caso 1";\n\t2:\n\t\tEscribir "Caso 2";\n\tDe Otro Modo:\n\t\tEscribir "Por defecto";\nFinSegun',
     mientras: 'Mientras condicion Hacer\n\t// escribir código aquí\nFinMientras',
-    repetir: '// Repetir\n// \t// escribir código aquí\n// Hasta Que condicion\n',
-    para: '// Para i = 1 Hasta 10 Hacer\n// \tEscribir i;\n// FinPara\n',
-    funcion: '// Funcion resultado = MiFuncion(parametro)\n// \tresultado = parametro * 2;\n// FinFuncion\n',
+    repetir: 'Repetir\n\t// escribir código aquí\nHasta Que condicion',
+    para: 'Para i <- 1 Hasta 10 Con Paso 1 Hacer\n\tEscribir i;\nFinPara',
+    funcion: 'Funcion resultado <- MiFuncion(parametro)\n\tresultado <- parametro * 2;\nFinFuncion',
   };
 
   document.querySelectorAll('[data-snippet]').forEach((btn) => {

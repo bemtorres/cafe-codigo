@@ -40,7 +40,7 @@ const menuLanguageCourses = [...courses.filter((c) => c.category === 'language')
 const pseintCourse = courses.find((c) => c.slug === 'pseint');
 const currentPath = Astro.url.pathname;
 const normalizedPath = currentPath.replace(/\/$/, '');
-const isChallengeView = normalizedPath.startsWith('/challenges');
+const isChallengeView = normalizedPath.startsWith('/challenges') || normalizedPath.startsWith('/challenges-game');
 /** Banner “café y programemos” solo en la portada */
 const showHomeCoffeeBanner = normalizedPath === '' || normalizedPath === '/';
 /** Selector de tema de código solo en páginas de cursos (/course/…), no en inicio ni resto del sitio */
@@ -242,6 +242,7 @@ const showLanguageCuriosity =
                 Explorar
               </button> */}
               <a href="/challenges/" class="bg-white/70 border border-black/10 rounded-full px-4 py-2 font-nunito font-extrabold text-textPrimary shadow-[0_14px_34px_rgba(30,18,16,0.08)] hover:-translate-y-0.5 hover:bg-white/95 transition-all no-underline">🔥 Desafíos</a>
+              <a href="/challenges-game/" class="bg-gradient-to-r from-cyan-500 to-sky-600 text-white border border-cyan-600 rounded-full px-4 py-2 font-nunito font-extrabold shadow-[0_14px_34px_rgba(6,182,212,0.25)] hover:-translate-y-0.5 hover:shadow-lg transition-all no-underline flex items-center gap-1.5"><span>🎮</span> Zona Gamer</a>
               <CafeDelDiaNavBtn client:only="react" />
               <button
                 type="button"

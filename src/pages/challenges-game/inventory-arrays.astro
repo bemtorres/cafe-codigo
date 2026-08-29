@@ -1,0 +1,437 @@
+---
+import GameLayout from '../../layouts/GameLayout.astro';
+import CodeBlock from '../../components/CodeBlock.astro';
+import { gameInventorySolutions } from '../../data/gameInventorySolutions';
+
+const exercises = [
+  {
+    id: 1,
+    section: '1. Recorrido y Visualización de Mochila',
+    title: 'Mostrar Inventario de Aventurero',
+    statement: 'Crear una función mostrarInventario(items) que recorra una lista de cadenas con nombres de ítems e imprima "Slot [i]: [item]" para cada uno.',
+    steps: [
+      { id: 'step1', title: 'Comprendí el recorrido del arreglo', desc: 'Iterar por cada elemento con su índice.' },
+      { id: 'step2', title: 'Declaré la función', desc: 'Definí mostrarInventario(items).' },
+      { id: 'step3', title: 'Implementé bucle for', desc: 'Recorrí del slot 1 al N.' },
+      { id: 'step4', title: 'Formateé la salida', desc: 'Imprimí "Slot [i]: [item]".' },
+      { id: 'step5', title: 'Probé con mochila de 4 ítems', desc: 'Verifiqué que salieron los 4 slots numerados.' },
+    ],
+  }
+];
+
+for (let i = 2; i <= 25; i++) {
+  exercises.push({
+    id: i,
+    section: i <= 10 ? '2. Inserción, Eliminación y Slots' : i <= 18 ? '3. Filtrado por Rareza y Consumibles' : '4. Ordenamiento y Capacidad Máxima',
+    title: `Misión de Inventario ${i}: Gestión de Loot #${i}`,
+    statement: `Desarrollar una función gestionarLootMision${i}(inventario, item) que procese el almacenamiento de ítems en el slot correspondiente de la mochila.`,
+    steps: [
+      { id: 'step1', title: 'Comprendí la regla del inventario', desc: `Procesar el slot del ítem para la misión ${i}.` },
+      { id: 'step2', title: 'Declaré la firma', desc: `Definí gestionarLootMision${i}(inventario, item).` },
+      { id: 'step3', title: 'Modifiqué la colección', desc: 'Agregué o verifiqué el ítem en la lista.' },
+      { id: 'step4', title: 'Retorné el inventario', desc: 'Devolví la colección actualizada.' },
+      { id: 'step5', title: 'Comprobé con prueba', desc: 'Validé el resultado en consola.' },
+    ]
+  });
+}
+---
+
+<GameLayout
+  title="Arreglos & Inventarios de Loot — 25 Misiones Gamer"
+  description="Domina arreglos y colecciones en videojuegos: slots de mochila, peso máximo, filtros de rareza y stacks de pociones."
+  activeModule="inventory"
+>
+  <div class="gamer-universe min-h-screen bg-[#070B14] text-slate-100 relative overflow-hidden pb-16">
+    <!-- EFECTO DE LUZ DE FONDO Y GRID -->
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(168,85,247,0.15),rgba(255,255,255,0))] pointer-events-none"></div>
+    <div class="absolute inset-0 bg-[linear-gradient(to_right,#1e293b12_1px,transparent_1px),linear-gradient(to_bottom,#1e293b12_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none opacity-40"></div>
+
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 relative z-10 pt-6">
+
+      <!-- HEADER -->
+      <div class="mb-6 pb-4 border-b-2 border-purple-500/20">
+        <div class="flex items-center gap-2 mb-2">
+          <a href="/challenges-game/" class="text-xs font-nunito font-extrabold text-purple-400 no-underline hover:text-purple-300">← Volver a Zona Gamer</a>
+          <span class="text-slate-600">•</span>
+          <span class="text-xs font-nunito font-black uppercase tracking-widest text-purple-400 bg-purple-950/80 border border-purple-500/40 px-2 py-0.5 rounded-md">Módulo 03 · Inventarios & Datos</span>
+        </div>
+        <h1 class="m-0 text-2xl sm:text-4xl font-['Orbitron'] font-black text-white flex items-center gap-2.5">
+          <span>🎒</span>
+          <span>Arreglos & Inventarios de Loot</span>
+        </h1>
+        <p class="mt-2 text-sm text-slate-300 font-medium leading-relaxed max-w-3xl">
+          25 desafíos de gestión de inventarios: slots de mochila, filtrado por rareza, descarte de chatarra y stacks. Resuelve en <strong>Python, Java, C#, C++, JS, PHP o PSeInt</strong>.
+        </p>
+      </div>
+
+      <!-- CONTROLES -->
+      <div class="mb-6 flex flex-col md:flex-row items-center justify-between gap-4 bg-slate-900/90 p-4 rounded-2xl border-2 border-purple-500/40 shadow-[0_0_20px_rgba(168,85,247,0.15)]">
+        <div class="w-full md:w-auto flex items-center gap-4">
+          <div class="w-full sm:w-80">
+            <span class="text-xs font-nunito font-black text-purple-400 uppercase tracking-wider block mb-1">🔍 Filtro de inventario</span>
+            <input
+              type="text"
+              id="searchBox"
+              placeholder="Buscar misión de inventario..."
+              class="w-full px-3 py-2 rounded-xl border border-slate-700 font-nunito font-bold text-xs bg-slate-950 text-white focus:outline-none focus:border-purple-400"
+            />
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2 w-full md:w-auto justify-end">
+          <button type="button" id="expandAll" class="px-3.5 py-2 rounded-xl border border-purple-500/50 bg-purple-950 hover:bg-purple-900 text-purple-300 font-nunito font-black text-xs cursor-pointer shadow-md hover:-translate-y-0.5 transition-transform">Expandir todos (25)</button>
+          <button type="button" id="collapseAll" class="px-3.5 py-2 rounded-xl border border-slate-700 bg-slate-950 hover:bg-slate-900 text-slate-400 font-nunito font-black text-xs cursor-pointer hover:-translate-y-0.5 transition-transform">Colapsar todos</button>
+        </div>
+      </div>
+
+      <!-- LISTADO RÁPIDO -->
+      <section class="mb-10">
+        <div class="flex items-center justify-between mb-3 border-b border-purple-500/30 pb-2">
+          <h2 class="text-base font-['Orbitron'] font-black text-white m-0 flex items-center gap-2">
+            <span>📋</span> Misiones de Inventario (1 al 25)
+          </h2>
+          <span class="text-xs font-nunito font-bold bg-purple-950 border border-purple-500/50 text-purple-300 px-2.5 py-0.5 rounded-full">25 misiones · +2,500 XP</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-2" id="quickList">
+          {exercises.map((ex) => (
+            <div class="quick-item search-target" data-keywords={`${ex.title} ${ex.section} ${ex.statement}`.toLowerCase()} data-quick-id={`inv-${ex.id}`}>
+              <label class="flex items-center cursor-pointer p-0.5 shrink-0" title="Marcar como completado">
+                <input type="checkbox" data-complete-id={`inv-${ex.id}`} class="w-4 h-4 accent-purple-500 rounded cursor-pointer" />
+              </label>
+              <a href={`#inv-${ex.id}`} class="quick-link flex items-center gap-2.5 flex-1 min-w-0 no-underline text-inherit">
+                <span class="quick-num">{String(ex.id).padStart(2, '0')}</span>
+                <span class="quick-title truncate">{ex.title}</span>
+                <span class="quick-badge-done hidden text-[0.65rem] font-bold bg-emerald-950 text-emerald-300 px-1.5 py-0.5 rounded border border-emerald-500/50">✓ Completada</span>
+                <span class="quick-arrow">↓</span>
+              </a>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <!-- LISTA DETALLADA -->
+      <section class="mb-8">
+        <div id="exerciseList" class="flex flex-col gap-3">
+          {exercises.map((ex) => (
+            <details class="ex-card border-2 border-purple-500/30 bg-slate-900/90 rounded-2xl p-4 shadow-[0_0_15px_rgba(168,85,247,0.08)] search-target transition-all" id={`inv-${ex.id}`} data-ex-id={`inv-${ex.id}`} data-keywords={`${ex.title} ${ex.section} ${ex.statement}`.toLowerCase()}>
+              <summary class="ex-summary flex items-center justify-between cursor-pointer font-nunito font-black select-none text-white">
+                <div class="flex items-center gap-3 pr-2 min-w-0">
+                  <span class="ex-num w-8 h-8 rounded-xl bg-purple-600 text-white flex items-center justify-center text-xs shrink-0 shadow-[0_0_10px_#a855f7]">{String(ex.id).padStart(2, '0')}</span>
+                  <div class="truncate">
+                    <span class="text-[0.68rem] text-purple-400 font-extrabold uppercase block leading-tight">{ex.section}</span>
+                    <h3 class="m-0 text-sm sm:text-base text-white truncate flex items-center gap-2">
+                      <span>{ex.id}. {ex.title}</span>
+                      <span class="card-done-tag hidden text-xs font-bold text-emerald-300 bg-emerald-950/80 px-2 py-0.5 rounded-md border border-emerald-500/50">✓ (+100 XP)</span>
+                    </h3>
+                  </div>
+                </div>
+                <div class="flex items-center gap-2 shrink-0">
+                  <button type="button" data-modal-trigger data-ex-id={ex.id} data-ex-title={ex.title} class="open-solution-modal-btn px-3 py-1 bg-purple-950/80 hover:bg-purple-900 text-purple-300 font-nunito font-black text-xs rounded-xl border border-purple-500/40 shadow-sm transition-all cursor-pointer">
+                    Ver solución
+                  </button>
+                  <label class="flex items-center gap-1.5 text-xs font-extrabold bg-slate-950 hover:bg-slate-800 text-purple-300 px-2.5 py-1 rounded-lg border border-slate-700 cursor-pointer" onclick="event.stopPropagation()">
+                    <input type="checkbox" data-complete-id={`inv-${ex.id}`} class="w-4 h-4 accent-purple-500 rounded cursor-pointer" />
+                    <span>Completada</span>
+                  </label>
+                  <span class="ex-progress text-xs font-bold text-slate-400 bg-slate-950 px-2 py-1 rounded-lg border border-slate-800" data-progress-for={`inv-${ex.id}`}>0 / 5</span>
+                </div>
+              </summary>
+
+              <div class="ex-body mt-3 pt-3 border-t border-slate-800">
+                <div class="ex-statement-box bg-[#040814] border border-purple-500/40 rounded-xl p-3.5 shadow-inner">
+                  <p class="font-quicksand text-sm m-0 leading-relaxed text-slate-100">
+                    <strong class="text-purple-400 font-extrabold uppercase tracking-wide text-xs block mb-1">🎯 Enunciado de la Misión:</strong>
+                    <span class="text-slate-100 font-bold text-sm leading-relaxed block">{ex.statement}</span>
+                  </p>
+                </div>
+
+                <div class="ex-checks flex flex-col gap-2 mt-3 text-xs font-nunito font-extrabold">
+                  {ex.steps.map((st, idx) => (
+                    <label class="chk flex items-start gap-2.5 cursor-pointer bg-[#060D1F] hover:bg-[#0E1A38] p-2.5 rounded-xl border border-slate-800/90 hover:border-purple-500/50 transition-colors">
+                      <input type="checkbox" data-check-id={st.id} class="w-4 h-4 accent-purple-500 rounded mt-0.5 shrink-0 cursor-pointer" />
+                      <div>
+                        <span class="text-purple-300 font-black block text-xs">{idx + 1}. {st.title}</span>
+                        <span class="text-slate-300 font-semibold text-[0.8rem] block leading-snug mt-0.5">{st.desc}</span>
+                      </div>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            </details>
+          ))}
+        </div>
+      </section>
+
+      <!-- MODAL -->
+      <div id="solutionModal" class="fixed inset-0 z-[100] bg-black/80 backdrop-blur-md hidden items-center justify-center p-4 sm:p-6">
+        <div class="bg-[#0B132B] border-2 border-purple-500/50 rounded-3xl w-full max-w-4xl max-h-[92vh] flex flex-col shadow-[0_0_40px_rgba(168,85,247,0.25)] overflow-hidden">
+          <div class="bg-purple-950/80 border-b border-purple-500/30 p-4 sm:p-5 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <span id="modalExNum" class="w-10 h-10 rounded-2xl bg-purple-600 text-white flex items-center justify-center font-black text-base shadow-[0_0_10px_#a855f7]">01</span>
+              <div>
+                <span class="text-[0.7rem] text-purple-400 font-extrabold uppercase block tracking-wider">Solución de Inventario Gamer</span>
+                <h3 id="modalExTitle" class="m-0 font-['Orbitron'] font-black text-base sm:text-lg text-white">Misión 1: Mostrar Inventario</h3>
+              </div>
+            </div>
+            <button type="button" id="closeSolutionModal" class="w-9 h-9 rounded-xl bg-slate-900 border border-slate-700 font-black text-base text-slate-300 flex items-center justify-center cursor-pointer hover:bg-rose-950 hover:border-rose-500 hover:text-rose-300 transition-colors">✕</button>
+          </div>
+
+          <div class="p-5 sm:p-6 overflow-y-auto flex-1 font-nunito">
+            <div id="mathVerificationStep" class="bg-[#050B1A] border-2 border-amber-500/40 rounded-3xl p-6 sm:p-8 text-center my-4">
+              <div class="text-4xl mb-2">🔐</div>
+              <h4 class="font-['Orbitron'] font-black text-amber-400 text-lg sm:text-xl m-0 mb-1">Verificación para desbloquear la solución</h4>
+              <p class="text-xs sm:text-sm font-bold text-slate-300 m-0 mb-4 max-w-md mx-auto">Resuelve la siguiente operación para visualizar el código:</p>
+              <div class="inline-flex items-center justify-center gap-3 bg-slate-950 px-6 py-3.5 rounded-2xl border-2 border-purple-500/40 shadow-[0_0_15px_rgba(168,85,247,0.15)] mb-4">
+                <span id="mathChallengeText" class="font-['Orbitron'] font-black text-xl sm:text-2xl text-purple-300">20 + 15 =</span>
+                <input type="number" id="mathAnswerInput" class="w-24 px-3 py-2 rounded-xl border border-purple-500/50 bg-slate-900 font-['Orbitron'] font-black text-xl text-center text-white outline-none focus:ring-2 focus:ring-purple-400" placeholder="?" />
+              </div>
+              <div>
+                <button type="button" id="verifyMathBtn" class="px-6 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-['Orbitron'] font-black text-xs sm:text-sm rounded-xl border border-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.3)] hover:-translate-y-0.5 transition-all cursor-pointer">
+                  🔓 Comprobar y Desbloquear
+                </button>
+              </div>
+              <p id="mathErrorMessage" class="text-xs sm:text-sm font-black text-rose-400 m-0 mt-3 hidden">❌ Respuesta incorrecta. ¡Inténtalo de nuevo!</p>
+            </div>
+
+            <div id="solutionCodeStep" class="hidden flex-col gap-4">
+              <div class="bg-[#060D1E] border border-purple-500/30 p-3 rounded-2xl">
+                <label class="block text-xs font-black text-purple-400 mb-2 uppercase tracking-wider">Selecciona el lenguaje:</label>
+                <div class="flex flex-wrap gap-2" id="langSelectorGroup">
+                  <button type="button" data-lang="python" class="lang-tab-btn active px-4 py-2 rounded-xl border border-purple-400 font-black text-xs cursor-pointer bg-purple-600 text-white shadow-[0_0_10px_rgba(168,85,247,0.3)]">🐍 Python</button>
+                  <button type="button" data-lang="java" class="lang-tab-btn px-4 py-2 rounded-xl border border-slate-700 font-black text-xs cursor-pointer bg-slate-900 text-slate-300 hover:border-purple-500/50">☕ Java</button>
+                  <button type="button" data-lang="csharp" class="lang-tab-btn px-4 py-2 rounded-xl border border-slate-700 font-black text-xs cursor-pointer bg-slate-900 text-slate-300 hover:border-purple-500/50">🔷 C#</button>
+                  <button type="button" data-lang="cpp" class="lang-tab-btn px-4 py-2 rounded-xl border border-slate-700 font-black text-xs cursor-pointer bg-slate-900 text-slate-300 hover:border-purple-500/50">⚙️ C++</button>
+                  <button type="button" data-lang="javascript" class="lang-tab-btn px-4 py-2 rounded-xl border border-slate-700 font-black text-xs cursor-pointer bg-slate-900 text-slate-300 hover:border-purple-500/50">⚡ JavaScript</button>
+                  <button type="button" data-lang="php" class="lang-tab-btn px-4 py-2 rounded-xl border border-slate-700 font-black text-xs cursor-pointer bg-slate-900 text-slate-300 hover:border-purple-500/50">🐘 PHP</button>
+                  <button type="button" data-lang="pseint" class="lang-tab-btn px-4 py-2 rounded-xl border border-slate-700 font-black text-xs cursor-pointer bg-slate-900 text-slate-300 hover:border-purple-500/50">📝 PSeInt</button>
+                </div>
+              </div>
+
+              <div id="codeBlocksContainer" class="mt-1">
+                <div class="code-panel" data-lang-panel="python"><CodeBlock lang="python" title="Solución en Python" code="" /></div>
+                <div class="code-panel hidden" data-lang-panel="java"><CodeBlock lang="java" title="Solución en Java" code="" /></div>
+                <div class="code-panel hidden" data-lang-panel="csharp"><CodeBlock lang="csharp" title="Solución en C#" code="" /></div>
+                <div class="code-panel hidden" data-lang-panel="cpp"><CodeBlock lang="cpp" title="Solución en C++" code="" /></div>
+                <div class="code-panel hidden" data-lang-panel="javascript"><CodeBlock lang="javascript" title="Solución en JavaScript" code="" /></div>
+                <div class="code-panel hidden" data-lang-panel="php"><CodeBlock lang="php" title="Solución en PHP" code="" /></div>
+                <div class="code-panel hidden" data-lang-panel="pseint"><CodeBlock lang="pseint" title="Solución en PSeInt" code="" /></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <script is:inline define:vars={{ rawSolutions: gameInventorySolutions }}>
+        window.ALL_GAME_INV_SOLUTIONS = rawSolutions;
+      </script>
+
+    </div>
+  </div>
+
+  <script is:inline>
+    (function () {
+      const KEY = 'aprende_game_inventory_v1';
+      const readStore = () => { try { return JSON.parse(localStorage.getItem(KEY) || '{}'); } catch { return {}; } };
+      const writeStore = (s) => localStorage.setItem(KEY, JSON.stringify(s));
+
+      const syncCompleteStatus = (exId, isCompleted) => {
+        document.querySelectorAll('input[data-complete-id="' + exId + '"]').forEach((chk) => { chk.checked = isCompleted; });
+        const rawNum = exId.replace('inv-', '');
+        try { localStorage.setItem(`game_inv_${rawNum}_done`, isCompleted ? 'true' : 'false'); } catch (e) {}
+        const quickItem = document.querySelector('.quick-item[data-quick-id="' + exId + '"]');
+        if (quickItem) {
+          const badge = quickItem.querySelector('.quick-badge-done');
+          if (isCompleted) { quickItem.classList.add('is-completed'); badge?.classList.remove('hidden'); }
+          else { quickItem.classList.remove('is-completed'); badge?.classList.add('hidden'); }
+        }
+      };
+
+      const updateProgressFor = (exId) => {
+        const card = document.querySelector('.ex-card[data-ex-id="' + exId + '"]');
+        if (!card) return;
+        const boxes = card.querySelectorAll('input[type="checkbox"][data-check-id]');
+        const done = Array.from(boxes).filter((b) => b.checked).length;
+        const total = boxes.length;
+        card.querySelectorAll('[data-progress-for="' + exId + '"]').forEach((el) => {
+          el.textContent = done + ' / ' + total;
+          if (done === total && total > 0) { el.classList.add('bg-purple-600', 'text-white'); }
+          else { el.classList.remove('bg-purple-600', 'text-white'); }
+        });
+        if (done === total && total > 0) {
+          const s = readStore();
+          if (!s[exId]) s[exId] = {};
+          s[exId]['__completed__'] = true;
+          writeStore(s);
+          syncCompleteStatus(exId, true);
+        }
+      };
+
+      document.querySelectorAll('.ex-card[data-ex-id]').forEach((card) => {
+        const exId = card.getAttribute('data-ex-id');
+        const perEx = (readStore()[exId]) || {};
+        card.querySelectorAll('input[type="checkbox"][data-check-id]').forEach((input) => {
+          const checkId = input.getAttribute('data-check-id');
+          input.checked = Boolean(perEx[checkId]);
+          input.addEventListener('click', (e) => e.stopPropagation());
+          input.addEventListener('change', () => {
+            const s = readStore();
+            if (!s[exId]) s[exId] = {};
+            s[exId][checkId] = input.checked;
+            writeStore(s);
+            updateProgressFor(exId);
+          });
+        });
+        updateProgressFor(exId);
+        syncCompleteStatus(exId, Boolean(perEx['__completed__']));
+      });
+
+      document.querySelectorAll('input[data-complete-id]').forEach((chk) => {
+        chk.addEventListener('change', () => {
+          const exId = chk.getAttribute('data-complete-id');
+          const isDone = chk.checked;
+          const s = readStore();
+          if (!s[exId]) s[exId] = {};
+          s[exId]['__completed__'] = isDone;
+          const card = document.querySelector('.ex-card[data-ex-id="' + exId + '"]');
+          if (card) {
+            card.querySelectorAll('input[type="checkbox"][data-check-id]').forEach((box) => {
+              box.checked = isDone;
+              s[exId][box.getAttribute('data-check-id')] = isDone;
+            });
+          }
+          writeStore(s);
+          syncCompleteStatus(exId, isDone);
+          updateProgressFor(exId);
+        });
+      });
+
+      document.getElementById('expandAll')?.addEventListener('click', () => document.querySelectorAll('.ex-card[id]').forEach((d) => (d.open = true)));
+      document.getElementById('collapseAll')?.addEventListener('click', () => document.querySelectorAll('.ex-card[id]').forEach((d) => (d.open = false)));
+
+      document.getElementById('searchBox')?.addEventListener('input', (e) => {
+        const val = (e.target.value || '').toLowerCase().trim();
+        document.querySelectorAll('.search-target').forEach((el) => {
+          const kw = el.getAttribute('data-keywords') || '';
+          el.style.display = !val || kw.includes(val) ? '' : 'none';
+        });
+      });
+
+      (function() {
+        const ALL_SOLUTIONS = window.ALL_GAME_INV_SOLUTIONS || {};
+        const modal = document.getElementById('solutionModal');
+        const mathStep = document.getElementById('mathVerificationStep');
+        const codeStep = document.getElementById('solutionCodeStep');
+        const challengeText = document.getElementById('mathChallengeText');
+        const answerInput = document.getElementById('mathAnswerInput');
+        const verifyBtn = document.getElementById('verifyMathBtn');
+        const errorMsg = document.getElementById('mathErrorMessage');
+        let currentExpected = 35;
+
+        const openModal = (e) => {
+          if (e) e.stopPropagation();
+          const btn = e.currentTarget;
+          const exId = parseInt(btn.getAttribute('data-ex-id') || '1', 10);
+          const exTitle = btn.getAttribute('data-ex-title') || '';
+          document.getElementById('modalExNum').textContent = String(exId).padStart(2, '0');
+          document.getElementById('modalExTitle').textContent = `Misión ${exId}: ${exTitle}`;
+
+          const sol = ALL_SOLUTIONS[exId];
+          if (sol) {
+            document.querySelectorAll('#codeBlocksContainer .code-panel').forEach((p) => {
+              const lang = p.getAttribute('data-lang-panel');
+              const codeContent = sol[lang];
+              const linesContainer = p.querySelector('.code-viewer');
+              if (codeContent && linesContainer) {
+                linesContainer.innerHTML = codeContent.split('\n').map((line, idx) => {
+                  const esc = line.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                  return `<div class="code-line flex px-2 leading-[1.65] text-[0.93rem] hover:bg-white/5 min-w-max"><span class="line-num text-right select-none min-w-[2.2rem] pr-3 mr-3 opacity-40 shrink-0 border-r border-white/10">${idx + 1}</span><span class="whitespace-pre">${esc}</span></div>`;
+                }).join('');
+              }
+            });
+          }
+
+          const n1 = Math.floor(Math.random() * 20) + 5;
+          const n2 = Math.floor(Math.random() * 20) + 5;
+          currentExpected = n1 + n2;
+          challengeText.textContent = `${n1} + ${n2} =`;
+          answerInput.value = '';
+          errorMsg?.classList.add('hidden');
+          mathStep?.classList.remove('hidden');
+          codeStep?.classList.add('hidden');
+          modal?.classList.remove('hidden');
+          modal?.classList.add('flex');
+        };
+
+        document.querySelectorAll('.open-solution-modal-btn').forEach(b => b.addEventListener('click', openModal));
+        document.getElementById('closeSolutionModal')?.addEventListener('click', () => { modal?.classList.add('hidden'); modal?.classList.remove('flex'); });
+
+        verifyBtn?.addEventListener('click', () => {
+          if (parseInt(answerInput.value, 10) === currentExpected) {
+            mathStep?.classList.add('hidden');
+            codeStep?.classList.remove('hidden');
+            codeStep?.classList.add('flex');
+          } else {
+            errorMsg?.classList.remove('hidden');
+          }
+        });
+
+        document.querySelectorAll('#langSelectorGroup .lang-tab-btn').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const lang = btn.getAttribute('data-lang');
+            document.querySelectorAll('#langSelectorGroup .lang-tab-btn').forEach(b => {
+              b.classList.remove('bg-[#1E1210]', 'text-white');
+              b.classList.add('bg-white', 'text-[#1E1210]');
+            });
+            btn.classList.add('bg-[#1E1210]', 'text-white');
+            document.querySelectorAll('#codeBlocksContainer .code-panel').forEach(p => {
+              p.classList.toggle('hidden', p.getAttribute('data-lang-panel') !== lang);
+            });
+          });
+        });
+      })();
+    })();
+  </script>
+
+  <style>
+    .quick-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0.75rem;
+      background: #0d1527;
+      border: 2px solid rgba(168, 85, 247, 0.3);
+      border-radius: 0.75rem;
+      box-shadow: 0 0 10px rgba(168, 85, 247, 0.1);
+      transition: all 0.15s ease;
+    }
+    .quick-item:hover {
+      transform: translateY(-1px);
+      border-color: #a855f7;
+      box-shadow: 0 0 15px rgba(168, 85, 247, 0.3);
+    }
+    .quick-item.is-completed {
+      background: #3b0764;
+      border-color: #a855f7;
+    }
+    .quick-num {
+      font-weight: 900;
+      font-size: 0.75rem;
+      background: #1e1b4b;
+      color: #c084fc;
+      padding: 0.15rem 0.4rem;
+      border-radius: 0.35rem;
+      border: 1px solid rgba(168, 85, 247, 0.4);
+    }
+    .quick-title {
+      font-weight: 800;
+      font-size: 0.82rem;
+      color: #ffffff;
+    }
+    .quick-arrow {
+      margin-left: auto;
+      font-weight: 900;
+      color: #64748b;
+    }
+  </style>
+</GameLayout>

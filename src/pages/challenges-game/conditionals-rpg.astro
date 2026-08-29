@@ -1,0 +1,494 @@
+---
+import GameLayout from '../../layouts/GameLayout.astro';
+import CodeBlock from '../../components/CodeBlock.astro';
+import { gameConditionalsSolutions } from '../../data/gameConditionalsSolutions';
+
+const exercises = [
+  {
+    id: 1,
+    section: '1. Estados Vitales y Derrota',
+    title: 'Evaluar Estado de Vida del Héroe',
+    statement: 'Crear una función evaluarEstadoVida(hp) que verifique si hp <= 0 para imprimir que el personaje ha caído en combate o, si no, imprimir que sigue con vida con su HP actual.',
+    steps: [
+      { id: 'step1', title: 'Comprendí la condición if/else', desc: 'Evaluar si la salud es menor o igual a cero.' },
+      { id: 'step2', title: 'Declaré la función', desc: 'Definí evaluarEstadoVida(hp).' },
+      { id: 'step3', title: 'Escribí la rama if (hp <= 0)', desc: 'Imprimí el mensaje de derrota.' },
+      { id: 'step4', title: 'Escribí la rama else', desc: 'Mostré la salud restante.' },
+      { id: 'step5', title: 'Probé con 45 y con 0', desc: 'Validé ambos casos de combate.' },
+    ],
+  },
+  {
+    id: 2,
+    section: '1. Estados Vitales y Derrota',
+    title: 'Verificar Consumo de Poción',
+    statement: 'Crear una función verificarUsoPocion(hpActual, hpMax) que evalúe si la vida actual es menor a la máxima para permitir consumir la poción; de lo contrario, avisar que la vida ya está al tope.',
+    steps: [
+      { id: 'step1', title: 'Comprendí el umbral de consumo', desc: 'Comparar hpActual < hpMax.' },
+      { id: 'step2', title: 'Declaré verificarUsoPocion(hpActual, hpMax)', desc: 'Definí 2 parámetros.' },
+      { id: 'step3', title: 'Rama de curación', desc: 'Notifiqué que la salud fue restaurada.' },
+      { id: 'step4', title: 'Rama de bloqueo', desc: 'Avisé que la salud ya está al 100%.' },
+      { id: 'step5', title: 'Probé con (80, 100) y (100, 100)', desc: 'Comprobé las dos ramas.' },
+    ],
+  },
+  {
+    id: 3,
+    section: '1. Estados Vitales y Derrota',
+    title: 'Evaluar Esquiva de Ataque (Hit vs Miss)',
+    statement: 'Crear una función evaluarEsquiva(probEsquiva, tirada) que retorne "MISS" si la tirada aleatoria es menor o igual a la probabilidad de esquiva o "HIT" en caso contrario.',
+    steps: [
+      { id: 'step1', title: 'Comprendí la tirada de agilidad', desc: 'tirada <= probEsquiva.' },
+      { id: 'step2', title: 'Declaré evaluarEsquiva(...)', desc: 'Firma con 2 parámetros y return de texto.' },
+      { id: 'step3', title: 'Condicional if/else', desc: 'Retorné esquiva o impacto directo.' },
+      { id: 'step4', title: 'Probé con tirada favorable', desc: 'Verifiqué el mensaje de esquiva.' },
+      { id: 'step5', title: 'Probé con tirada alta', desc: 'Verifiqué el mensaje de golpe recibido.' },
+    ],
+  },
+  {
+    id: 4,
+    section: '2. Debilidades Elementales RPG',
+    title: 'Calcular Daño Elemental (Fuego, Agua, Planta)',
+    statement: 'Crear una función calcularDanioElemental(elementoAtk, elementoDef, danioBase) que duplique el daño si hay ventaja elemental (Fuego > Planta > Agua > Fuego) o lo reduzca a la mitad si hay desventaja.',
+    steps: [
+      { id: 'step1', title: 'Comprendí el triángulo elemental', desc: 'Fuego vence a Planta, Planta a Agua, Agua a Fuego.' },
+      { id: 'step2', title: 'Declaré la función', desc: 'Recibí elemento atacante, defensor y daño base.' },
+      { id: 'step3', title: 'Evalué ventaja (x2.0)', desc: 'Retorné daño crítico elemental.' },
+      { id: 'step4', title: 'Evalué desventaja (x0.5)', desc: 'Retorné daño reducido.' },
+      { id: 'step5', title: 'Probé Fuego vs Planta', desc: 'Verifiqué que 100 de daño subió a 200.' },
+    ],
+  },
+  {
+    id: 5,
+    section: '2. Debilidades Elementales RPG',
+    title: 'Clasificar Rareza de Drop por Porcentaje',
+    statement: 'Crear una función clasificarRarezaLoot(dropRate) que según el porcentaje retorne Mítico (<=1%), Legendario (<=5%), Épico (<=20%), Raro (<=50%) o Común (>50%).',
+    steps: [
+      { id: 'step1', title: 'Comprendí la escala de drops', desc: 'if/elif encadenados según el porcentaje.' },
+      { id: 'step2', title: 'Declaré clasificarRarezaLoot(dropRate)', desc: 'Definí la firma.' },
+      { id: 'step3', title: 'Rangos de rareza', desc: 'Mítico, Legendario, Épico, Raro y Común.' },
+      { id: 'step4', title: 'Retorno de texto', desc: 'Aseguré retorno con badges de color/emoji.' },
+      { id: 'step5', title: 'Probé con 0.5%, 15% y 80%', desc: 'Validé los 3 resultados.' },
+    ],
+  }
+];
+
+// Generar misiones 6 a 30
+for (let i = 6; i <= 30; i++) {
+  exercises.push({
+    id: i,
+    section: i <= 15 ? '3. Estados Alterados y Turnos' : i <= 25 ? '4. Árboles de Diálogo y Decisiones NPC' : '5. Fases de Batalla contra Jefes',
+    title: `Misión de Combate ${i}: Lógica de Batalla RPG #${i}`,
+    statement: `Desarrollar un algoritmo condicional resolverMisionGamer${i}(param1, param2) que evalúe las reglas de combate de la fase ${i} y determine la victoria o defensa del héroe.`,
+    steps: [
+      { id: 'step1', title: 'Comprendí el objetivo táctico', desc: `Analizar las condiciones de combate para la misión ${i}.` },
+      { id: 'step2', title: 'Declaré la firma', desc: `Definí resolverMisionGamer${i}(param1, param2).` },
+      { id: 'step3', title: 'Implementé condicional if/else', desc: 'Evalué los umbrales de combate.' },
+      { id: 'step4', title: 'Retorné el estado', desc: 'Formateé el mensaje de victoria o repliegue.' },
+      { id: 'step5', title: 'Validé con casos de prueba', desc: 'Comprobé resultados en combate.' },
+    ]
+  });
+}
+---
+
+<GameLayout
+  title="Condicionales & Combate RPG — 30 Misiones Gamer"
+  description="Domina condicionales y toma de decisiones en videojuegos: combate por turnos, debilidades elementales, esquivas y loot."
+  activeModule="conditionals"
+>
+  <div class="gamer-universe min-h-screen bg-[#070B14] text-slate-100 relative overflow-hidden pb-16">
+    <!-- EFECTO DE LUZ DE FONDO Y GRID -->
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(245,158,11,0.15),rgba(255,255,255,0))] pointer-events-none"></div>
+    <div class="absolute inset-0 bg-[linear-gradient(to_right,#1e293b12_1px,transparent_1px),linear-gradient(to_bottom,#1e293b12_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none opacity-40"></div>
+
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 relative z-10 pt-6">
+
+      <!-- HEADER -->
+      <div class="mb-6 pb-4 border-b-2 border-amber-500/20">
+        <div class="flex items-center gap-2 mb-2">
+          <a href="/challenges-game/" class="text-xs font-nunito font-extrabold text-amber-400 no-underline hover:text-amber-300">← Volver a Zona Gamer</a>
+          <span class="text-slate-600">•</span>
+          <span class="text-xs font-nunito font-black uppercase tracking-widest text-amber-400 bg-amber-950/80 border border-amber-500/40 px-2 py-0.5 rounded-md">Módulo 02 · Combate & Decisiones</span>
+        </div>
+        <h1 class="m-0 text-2xl sm:text-4xl font-['Orbitron'] font-black text-white flex items-center gap-2.5">
+          <span>⚔️</span>
+          <span>Condicionales & Combate RPG</span>
+        </h1>
+        <p class="mt-2 text-sm text-slate-300 font-medium leading-relaxed max-w-3xl">
+          30 desafíos de combate RPG y toma de decisiones lógicas: debilidades elementales, estados alterados, esquivas y loot. Resuelve en <strong>Python, Java, C#, C++, JS, PHP o PSeInt</strong>.
+        </p>
+      </div>
+
+      <!-- CONTROLES -->
+      <div class="mb-6 flex flex-col md:flex-row items-center justify-between gap-4 bg-slate-900/90 p-4 rounded-2xl border-2 border-amber-500/40 shadow-[0_0_20px_rgba(245,158,11,0.15)]">
+        <div class="w-full md:w-auto flex items-center gap-4">
+          <div class="w-full sm:w-80">
+            <span class="text-xs font-nunito font-black text-amber-400 uppercase tracking-wider block mb-1">🔍 Filtro de combate</span>
+            <input
+              type="text"
+              id="searchBox"
+              placeholder="Buscar misión de combate..."
+              class="w-full px-3 py-2 rounded-xl border border-slate-700 font-nunito font-bold text-xs bg-slate-950 text-white focus:outline-none focus:border-amber-400"
+            />
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2 w-full md:w-auto justify-end">
+          <button type="button" id="expandAll" class="px-3.5 py-2 rounded-xl border border-amber-500/50 bg-amber-950 hover:bg-amber-900 text-amber-300 font-nunito font-black text-xs cursor-pointer shadow-md hover:-translate-y-0.5 transition-transform">Expandir todos (30)</button>
+          <button type="button" id="collapseAll" class="px-3.5 py-2 rounded-xl border border-slate-700 bg-slate-950 hover:bg-slate-900 text-slate-400 font-nunito font-black text-xs cursor-pointer hover:-translate-y-0.5 transition-transform">Colapsar todos</button>
+        </div>
+      </div>
+
+      <!-- LISTADO RÁPIDO -->
+      <section class="mb-10">
+        <div class="flex items-center justify-between mb-3 border-b border-amber-500/30 pb-2">
+          <h2 class="text-base font-['Orbitron'] font-black text-white m-0 flex items-center gap-2">
+            <span>📋</span> Misiones de Combate (1 al 30)
+          </h2>
+          <span class="text-xs font-nunito font-bold bg-amber-950 border border-amber-500/50 text-amber-300 px-2.5 py-0.5 rounded-full">30 misiones · +3,000 XP</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-2" id="quickList">
+          {exercises.map((ex) => (
+            <div class="quick-item search-target" data-keywords={`${ex.title} ${ex.section} ${ex.statement}`.toLowerCase()} data-quick-id={`cnd-${ex.id}`}>
+              <label class="flex items-center cursor-pointer p-0.5 shrink-0" title="Marcar como completado">
+                <input type="checkbox" data-complete-id={`cnd-${ex.id}`} class="w-4 h-4 accent-amber-500 rounded cursor-pointer" />
+              </label>
+              <a href={`#cnd-${ex.id}`} class="quick-link flex items-center gap-2.5 flex-1 min-w-0 no-underline text-inherit">
+                <span class="quick-num">{String(ex.id).padStart(2, '0')}</span>
+                <span class="quick-title truncate">{ex.title}</span>
+                <span class="quick-badge-done hidden text-[0.65rem] font-bold bg-emerald-950 text-emerald-300 px-1.5 py-0.5 rounded border border-emerald-500/50">✓ Victoria</span>
+                <span class="quick-arrow">↓</span>
+              </a>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <!-- LISTA DETALLADA -->
+      <section class="mb-8">
+        <div id="exerciseList" class="flex flex-col gap-3">
+          {exercises.map((ex) => (
+            <details class="ex-card border-2 border-amber-500/30 bg-slate-900/90 rounded-2xl p-4 shadow-[0_0_15px_rgba(245,158,11,0.08)] search-target transition-all" id={`cnd-${ex.id}`} data-ex-id={`cnd-${ex.id}`} data-keywords={`${ex.title} ${ex.section} ${ex.statement}`.toLowerCase()}>
+              <summary class="ex-summary flex items-center justify-between cursor-pointer font-nunito font-black select-none text-white">
+                <div class="flex items-center gap-3 pr-2 min-w-0">
+                  <span class="ex-num w-8 h-8 rounded-xl bg-amber-600 text-white flex items-center justify-center text-xs shrink-0 shadow-[0_0_10px_#f59e0b]">{String(ex.id).padStart(2, '0')}</span>
+                  <div class="truncate">
+                    <span class="text-[0.68rem] text-amber-400 font-extrabold uppercase block leading-tight">{ex.section}</span>
+                    <h3 class="m-0 text-sm sm:text-base text-white truncate flex items-center gap-2">
+                      <span>{ex.id}. {ex.title}</span>
+                      <span class="card-done-tag hidden text-xs font-bold text-emerald-300 bg-emerald-950/80 px-2 py-0.5 rounded-md border border-emerald-500/50">✓ Victoria (+100 XP)</span>
+                    </h3>
+                  </div>
+                </div>
+                <div class="flex items-center gap-2 shrink-0">
+                  <button type="button" data-modal-trigger data-ex-id={ex.id} data-ex-title={ex.title} class="open-solution-modal-btn px-3 py-1 bg-amber-950/80 hover:bg-amber-900 text-amber-300 font-nunito font-black text-xs rounded-xl border border-amber-500/40 shadow-sm transition-all cursor-pointer">
+                    Ver solución
+                  </button>
+                  <label class="flex items-center gap-1.5 text-xs font-extrabold bg-slate-950 hover:bg-slate-800 text-amber-300 px-2.5 py-1 rounded-lg border border-slate-700 cursor-pointer" onclick="event.stopPropagation()">
+                    <input type="checkbox" data-complete-id={`cnd-${ex.id}`} class="w-4 h-4 accent-amber-500 rounded cursor-pointer" />
+                    <span>Completada</span>
+                  </label>
+                  <span class="ex-progress text-xs font-bold text-slate-400 bg-slate-950 px-2 py-1 rounded-lg border border-slate-800" data-progress-for={`cnd-${ex.id}`}>0 / 5</span>
+                </div>
+              </summary>
+
+              <div class="ex-body mt-3 pt-3 border-t border-slate-800">
+                <div class="ex-statement-box bg-[#040814] border border-amber-500/40 rounded-xl p-3.5 shadow-inner">
+                  <p class="font-quicksand text-sm m-0 leading-relaxed text-slate-100">
+                    <strong class="text-amber-400 font-extrabold uppercase tracking-wide text-xs block mb-1">🎯 Enunciado de la Misión:</strong>
+                    <span class="text-slate-100 font-bold text-sm leading-relaxed block">{ex.statement}</span>
+                  </p>
+                </div>
+
+                <div class="ex-checks flex flex-col gap-2 mt-3 text-xs font-nunito font-extrabold">
+                  {ex.steps.map((st, idx) => (
+                    <label class="chk flex items-start gap-2.5 cursor-pointer bg-[#060D1F] hover:bg-[#0E1A38] p-2.5 rounded-xl border border-slate-800/90 hover:border-amber-500/50 transition-colors">
+                      <input type="checkbox" data-check-id={st.id} class="w-4 h-4 accent-amber-500 rounded mt-0.5 shrink-0 cursor-pointer" />
+                      <div>
+                        <span class="text-amber-300 font-black block text-xs">{idx + 1}. {st.title}</span>
+                        <span class="text-slate-300 font-semibold text-[0.8rem] block leading-snug mt-0.5">{st.desc}</span>
+                      </div>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            </details>
+          ))}
+        </div>
+      </section>
+
+      <!-- MODAL DE SOLUCIÓN -->
+      <div id="solutionModal" class="fixed inset-0 z-[100] bg-black/80 backdrop-blur-md hidden items-center justify-center p-4 sm:p-6">
+        <div class="bg-[#0B132B] border-2 border-amber-500/50 rounded-3xl w-full max-w-4xl max-h-[92vh] flex flex-col shadow-[0_0_40px_rgba(245,158,11,0.25)] overflow-hidden">
+          <div class="bg-amber-950/80 border-b border-amber-500/30 p-4 sm:p-5 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <span id="modalExNum" class="w-10 h-10 rounded-2xl bg-amber-600 text-white flex items-center justify-center font-black text-base shadow-[0_0_10px_#f59e0b]">01</span>
+              <div>
+                <span class="text-[0.7rem] text-amber-400 font-extrabold uppercase block tracking-wider">Solución de Combate RPG</span>
+                <h3 id="modalExTitle" class="m-0 font-['Orbitron'] font-black text-base sm:text-lg text-white">Misión 1: Evaluar Estado de Vida</h3>
+              </div>
+            </div>
+            <button type="button" id="closeSolutionModal" class="w-9 h-9 rounded-xl bg-slate-900 border border-slate-700 font-black text-base text-slate-300 flex items-center justify-center cursor-pointer hover:bg-rose-950 hover:border-rose-500 hover:text-rose-300 transition-colors">✕</button>
+          </div>
+
+          <div class="p-5 sm:p-6 overflow-y-auto flex-1 font-nunito">
+            <!-- PASO 1: RETO MATEMÁTICO -->
+            <div id="mathVerificationStep" class="bg-[#050B1A] border-2 border-amber-500/40 rounded-3xl p-6 sm:p-8 text-center my-4">
+              <div class="text-4xl mb-2">🔐</div>
+              <h4 class="font-['Orbitron'] font-black text-amber-400 text-lg sm:text-xl m-0 mb-1">Verificación para desbloquear la solución</h4>
+              <p class="text-xs sm:text-sm font-bold text-slate-300 m-0 mb-4 max-w-md mx-auto">Resuelve la siguiente operación para visualizar el código:</p>
+              <div class="inline-flex items-center justify-center gap-3 bg-slate-950 px-6 py-3.5 rounded-2xl border-2 border-amber-500/40 shadow-[0_0_15px_rgba(245,158,11,0.15)] mb-4">
+                <span id="mathChallengeText" class="font-['Orbitron'] font-black text-xl sm:text-2xl text-amber-300">15 + 10 =</span>
+                <input type="number" id="mathAnswerInput" class="w-24 px-3 py-2 rounded-xl border border-amber-500/50 bg-slate-900 font-['Orbitron'] font-black text-xl text-center text-white outline-none focus:ring-2 focus:ring-amber-400" placeholder="?" />
+              </div>
+              <div>
+                <button type="button" id="verifyMathBtn" class="px-6 py-3 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white font-['Orbitron'] font-black text-xs sm:text-sm rounded-xl border border-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.3)] hover:-translate-y-0.5 transition-all cursor-pointer">
+                  🔓 Comprobar y Desbloquear
+                </button>
+              </div>
+              <p id="mathErrorMessage" class="text-xs sm:text-sm font-black text-rose-400 m-0 mt-3 hidden">❌ Respuesta incorrecta. ¡Inténtalo de nuevo!</p>
+            </div>
+
+            <!-- PASO 2: CÓDIGO -->
+            <div id="solutionCodeStep" class="hidden flex-col gap-4">
+              <div class="bg-[#060D1E] border border-amber-500/30 p-3 rounded-2xl">
+                <label class="block text-xs font-black text-amber-400 mb-2 uppercase tracking-wider">Selecciona el lenguaje:</label>
+                <div class="flex flex-wrap gap-2" id="langSelectorGroup">
+                  <button type="button" data-lang="python" class="lang-tab-btn active px-4 py-2 rounded-xl border border-amber-400 font-black text-xs cursor-pointer bg-amber-600 text-white shadow-[0_0_10px_rgba(245,158,11,0.3)]">🐍 Python</button>
+                  <button type="button" data-lang="java" class="lang-tab-btn px-4 py-2 rounded-xl border border-slate-700 font-black text-xs cursor-pointer bg-slate-900 text-slate-300 hover:border-amber-500/50">☕ Java</button>
+                  <button type="button" data-lang="csharp" class="lang-tab-btn px-4 py-2 rounded-xl border border-slate-700 font-black text-xs cursor-pointer bg-slate-900 text-slate-300 hover:border-amber-500/50">🔷 C#</button>
+                  <button type="button" data-lang="cpp" class="lang-tab-btn px-4 py-2 rounded-xl border border-slate-700 font-black text-xs cursor-pointer bg-slate-900 text-slate-300 hover:border-amber-500/50">⚙️ C++</button>
+                  <button type="button" data-lang="javascript" class="lang-tab-btn px-4 py-2 rounded-xl border border-slate-700 font-black text-xs cursor-pointer bg-slate-900 text-slate-300 hover:border-amber-500/50">⚡ JavaScript</button>
+                  <button type="button" data-lang="php" class="lang-tab-btn px-4 py-2 rounded-xl border border-slate-700 font-black text-xs cursor-pointer bg-slate-900 text-slate-300 hover:border-amber-500/50">🐘 PHP</button>
+                  <button type="button" data-lang="pseint" class="lang-tab-btn px-4 py-2 rounded-xl border border-slate-700 font-black text-xs cursor-pointer bg-slate-900 text-slate-300 hover:border-amber-500/50">📝 PSeInt</button>
+                </div>
+              </div>
+
+              <div id="codeBlocksContainer" class="mt-1">
+                <div class="code-panel" data-lang-panel="python"><CodeBlock lang="python" title="Solución en Python" code="" /></div>
+                <div class="code-panel hidden" data-lang-panel="java"><CodeBlock lang="java" title="Solución en Java" code="" /></div>
+                <div class="code-panel hidden" data-lang-panel="csharp"><CodeBlock lang="csharp" title="Solución en C#" code="" /></div>
+                <div class="code-panel hidden" data-lang-panel="cpp"><CodeBlock lang="cpp" title="Solución en C++" code="" /></div>
+                <div class="code-panel hidden" data-lang-panel="javascript"><CodeBlock lang="javascript" title="Solución en JavaScript" code="" /></div>
+                <div class="code-panel hidden" data-lang-panel="php"><CodeBlock lang="php" title="Solución en PHP" code="" /></div>
+                <div class="code-panel hidden" data-lang-panel="pseint"><CodeBlock lang="pseint" title="Solución en PSeInt" code="" /></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <script is:inline define:vars={{ rawSolutions: gameConditionalsSolutions }}>
+        window.ALL_GAME_COND_SOLUTIONS = rawSolutions;
+      </script>
+
+    </div>
+  </div>
+
+  <script is:inline>
+    (function () {
+      const KEY = 'aprende_game_conditionals_v1';
+      const readStore = () => { try { return JSON.parse(localStorage.getItem(KEY) || '{}'); } catch { return {}; } };
+      const writeStore = (s) => localStorage.setItem(KEY, JSON.stringify(s));
+
+      const syncCompleteStatus = (exId, isCompleted) => {
+        document.querySelectorAll('input[data-complete-id="' + exId + '"]').forEach((chk) => { chk.checked = isCompleted; });
+        const rawNum = exId.replace('cnd-', '');
+        try { localStorage.setItem(`game_cnd_${rawNum}_done`, isCompleted ? 'true' : 'false'); } catch (e) {}
+        const quickItem = document.querySelector('.quick-item[data-quick-id="' + exId + '"]');
+        if (quickItem) {
+          const badge = quickItem.querySelector('.quick-badge-done');
+          if (isCompleted) { quickItem.classList.add('is-completed'); badge?.classList.remove('hidden'); }
+          else { quickItem.classList.remove('is-completed'); badge?.classList.add('hidden'); }
+        }
+      };
+
+      const updateProgressFor = (exId) => {
+        const card = document.querySelector('.ex-card[data-ex-id="' + exId + '"]');
+        if (!card) return;
+        const boxes = card.querySelectorAll('input[type="checkbox"][data-check-id]');
+        const done = Array.from(boxes).filter((b) => b.checked).length;
+        const total = boxes.length;
+        card.querySelectorAll('[data-progress-for="' + exId + '"]').forEach((el) => {
+          el.textContent = done + ' / ' + total;
+          if (done === total && total > 0) { el.classList.add('bg-amber-600', 'text-white'); }
+          else { el.classList.remove('bg-amber-600', 'text-white'); }
+        });
+        if (done === total && total > 0) {
+          const s = readStore();
+          if (!s[exId]) s[exId] = {};
+          s[exId]['__completed__'] = true;
+          writeStore(s);
+          syncCompleteStatus(exId, true);
+        }
+      };
+
+      document.querySelectorAll('.ex-card[data-ex-id]').forEach((card) => {
+        const exId = card.getAttribute('data-ex-id');
+        const perEx = (readStore()[exId]) || {};
+        card.querySelectorAll('input[type="checkbox"][data-check-id]').forEach((input) => {
+          const checkId = input.getAttribute('data-check-id');
+          input.checked = Boolean(perEx[checkId]);
+          input.addEventListener('click', (e) => e.stopPropagation());
+          input.addEventListener('change', () => {
+            const s = readStore();
+            if (!s[exId]) s[exId] = {};
+            s[exId][checkId] = input.checked;
+            writeStore(s);
+            updateProgressFor(exId);
+          });
+        });
+        updateProgressFor(exId);
+        syncCompleteStatus(exId, Boolean(perEx['__completed__']));
+      });
+
+      document.querySelectorAll('input[data-complete-id]').forEach((chk) => {
+        chk.addEventListener('change', () => {
+          const exId = chk.getAttribute('data-complete-id');
+          const isDone = chk.checked;
+          const s = readStore();
+          if (!s[exId]) s[exId] = {};
+          s[exId]['__completed__'] = isDone;
+          const card = document.querySelector('.ex-card[data-ex-id="' + exId + '"]');
+          if (card) {
+            card.querySelectorAll('input[type="checkbox"][data-check-id]').forEach((box) => {
+              box.checked = isDone;
+              s[exId][box.getAttribute('data-check-id')] = isDone;
+            });
+          }
+          writeStore(s);
+          syncCompleteStatus(exId, isDone);
+          updateProgressFor(exId);
+        });
+      });
+
+      document.getElementById('expandAll')?.addEventListener('click', () => document.querySelectorAll('.ex-card[id]').forEach((d) => (d.open = true)));
+      document.getElementById('collapseAll')?.addEventListener('click', () => document.querySelectorAll('.ex-card[id]').forEach((d) => (d.open = false)));
+
+      // Buscador
+      document.getElementById('searchBox')?.addEventListener('input', (e) => {
+        const val = (e.target.value || '').toLowerCase().trim();
+        document.querySelectorAll('.search-target').forEach((el) => {
+          const kw = el.getAttribute('data-keywords') || '';
+          el.style.display = !val || kw.includes(val) ? '' : 'none';
+        });
+      });
+
+      // Modal
+      (function() {
+        const ALL_SOLUTIONS = window.ALL_GAME_COND_SOLUTIONS || {};
+        const modal = document.getElementById('solutionModal');
+        const mathStep = document.getElementById('mathVerificationStep');
+        const codeStep = document.getElementById('solutionCodeStep');
+        const challengeText = document.getElementById('mathChallengeText');
+        const answerInput = document.getElementById('mathAnswerInput');
+        const verifyBtn = document.getElementById('verifyMathBtn');
+        const errorMsg = document.getElementById('mathErrorMessage');
+        let currentExpected = 25;
+
+        const openModal = (e) => {
+          if (e) e.stopPropagation();
+          const btn = e.currentTarget;
+          const exId = parseInt(btn.getAttribute('data-ex-id') || '1', 10);
+          const exTitle = btn.getAttribute('data-ex-title') || '';
+          document.getElementById('modalExNum').textContent = String(exId).padStart(2, '0');
+          document.getElementById('modalExTitle').textContent = `Misión ${exId}: ${exTitle}`;
+
+          const sol = ALL_SOLUTIONS[exId];
+          if (sol) {
+            document.querySelectorAll('#codeBlocksContainer .code-panel').forEach((p) => {
+              const lang = p.getAttribute('data-lang-panel');
+              const codeContent = sol[lang];
+              const linesContainer = p.querySelector('.code-viewer');
+              if (codeContent && linesContainer) {
+                linesContainer.innerHTML = codeContent.split('\n').map((line, idx) => {
+                  const esc = line.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                  return `<div class="code-line flex px-2 leading-[1.65] text-[0.93rem] hover:bg-white/5 min-w-max"><span class="line-num text-right select-none min-w-[2.2rem] pr-3 mr-3 opacity-40 shrink-0 border-r border-white/10">${idx + 1}</span><span class="whitespace-pre">${esc}</span></div>`;
+                }).join('');
+              }
+            });
+          }
+
+          const n1 = Math.floor(Math.random() * 20) + 5;
+          const n2 = Math.floor(Math.random() * 20) + 5;
+          currentExpected = n1 + n2;
+          challengeText.textContent = `${n1} + ${n2} =`;
+          answerInput.value = '';
+          errorMsg?.classList.add('hidden');
+          mathStep?.classList.remove('hidden');
+          codeStep?.classList.add('hidden');
+          modal?.classList.remove('hidden');
+          modal?.classList.add('flex');
+        };
+
+        document.querySelectorAll('.open-solution-modal-btn').forEach(b => b.addEventListener('click', openModal));
+        document.getElementById('closeSolutionModal')?.addEventListener('click', () => { modal?.classList.add('hidden'); modal?.classList.remove('flex'); });
+
+        verifyBtn?.addEventListener('click', () => {
+          if (parseInt(answerInput.value, 10) === currentExpected) {
+            mathStep?.classList.add('hidden');
+            codeStep?.classList.remove('hidden');
+            codeStep?.classList.add('flex');
+          } else {
+            errorMsg?.classList.remove('hidden');
+          }
+        });
+
+        document.querySelectorAll('#langSelectorGroup .lang-tab-btn').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const lang = btn.getAttribute('data-lang');
+            document.querySelectorAll('#langSelectorGroup .lang-tab-btn').forEach(b => {
+              b.classList.remove('bg-[#1E1210]', 'text-white');
+              b.classList.add('bg-white', 'text-[#1E1210]');
+            });
+            btn.classList.add('bg-[#1E1210]', 'text-white');
+            document.querySelectorAll('#codeBlocksContainer .code-panel').forEach(p => {
+              p.classList.toggle('hidden', p.getAttribute('data-lang-panel') !== lang);
+            });
+          });
+        });
+      })();
+    })();
+  </script>
+
+  <style>
+    .quick-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0.75rem;
+      background: #0d1527;
+      border: 2px solid rgba(245, 158, 11, 0.3);
+      border-radius: 0.75rem;
+      box-shadow: 0 0 10px rgba(245, 158, 11, 0.1);
+      transition: all 0.15s ease;
+    }
+    .quick-item:hover {
+      transform: translateY(-1px);
+      border-color: #f59e0b;
+      box-shadow: 0 0 15px rgba(245, 158, 11, 0.3);
+    }
+    .quick-item.is-completed {
+      background: #451a03;
+      border-color: #f59e0b;
+    }
+    .quick-num {
+      font-weight: 900;
+      font-size: 0.75rem;
+      background: #1e1b4b;
+      color: #fbbf24;
+      padding: 0.15rem 0.4rem;
+      border-radius: 0.35rem;
+      border: 1px solid rgba(245, 158, 11, 0.4);
+    }
+    .quick-title {
+      font-weight: 800;
+      font-size: 0.82rem;
+      color: #ffffff;
+    }
+    .quick-arrow {
+      margin-left: auto;
+      font-weight: 900;
+      color: #64748b;
+    }
+  </style>
+</GameLayout>

@@ -1,0 +1,472 @@
+---
+import GameLayout from '../../layouts/GameLayout.astro';
+import { gameProjectsData } from '../../data/gameProjectsData';
+
+const projects = gameProjectsData;
+---
+
+<GameLayout
+  title="Proyectos Gamer — Desafíos de Consola Integradores"
+  description="Desarrolla 6 videojuegos completos en consola utilizando variables, condicionales if, bucles while/for, menús interactivos y entrada por teclado."
+  activeModule="projects"
+>
+  <div class="gamer-universe min-h-screen bg-[#070B14] text-slate-100 relative overflow-hidden pb-20">
+    <!-- Grid y luces de fondo -->
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(6,182,212,0.18),rgba(255,255,255,0))] pointer-events-none"></div>
+    <div class="absolute inset-0 bg-[linear-gradient(to_right,#1e293b08_1px,transparent_1px),linear-gradient(to_bottom,#1e293b08_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none opacity-40"></div>
+
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 relative z-10 pt-6">
+
+      <!-- Breadcrumbs & Navegación -->
+      <div class="flex items-center justify-between mb-6 pb-3 border-b border-cyan-500/20">
+        <div class="flex items-center gap-2">
+          <a href="/challenges-game/" class="text-xs font-nunito font-extrabold text-cyan-400 no-underline hover:text-cyan-300 flex items-center gap-1 transition-colors">
+            ← Hub Zona Gamer
+          </a>
+          <span class="text-slate-600">/</span>
+          <span class="text-xs font-nunito font-black uppercase tracking-widest text-amber-400 flex items-center gap-1.5">
+            <span class="inline-block w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+            Módulo de Proyectos Integradores
+          </span>
+        </div>
+        <div class="hidden sm:flex items-center gap-2">
+          <span class="text-xs font-bold text-slate-300 bg-slate-900 border border-slate-700 px-3 py-1 rounded-full">
+            🚀 6 Proyectos de Consola · 7 Lenguajes
+          </span>
+        </div>
+      </div>
+
+      <!-- Hero Banner -->
+      <header class="relative rounded-3xl bg-gradient-to-br from-slate-900/90 via-[#0E1528] to-slate-950 border-2 border-amber-500/40 p-6 sm:p-8 mb-8 shadow-[0_0_40px_rgba(245,158,11,0.15)] overflow-hidden">
+        <div class="absolute -right-12 -top-12 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -left-12 -bottom-12 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 relative z-10">
+          <div class="max-w-2xl">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-xl bg-amber-950/80 border border-amber-500/40 text-amber-300 text-xs font-black uppercase tracking-wider mb-3 shadow-[0_0_15px_rgba(245,158,11,0.25)]">
+              <span>🏆</span> Proyectos de Programación Estructurada
+            </div>
+            <h1 class="text-3xl sm:text-5xl font-black text-white tracking-tight m-0 font-nunito flex items-center gap-3">
+              <span>PROYECTOS</span>
+              <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-orange-300 to-rose-400">GAMER CLI</span>
+            </h1>
+            <p class="mt-3 text-sm sm:text-base text-slate-300 font-medium leading-relaxed">
+              Aplica todo lo aprendido desarrollando <strong>videojuegos completos interactivos por consola</strong>. Utiliza <strong>variables, condicionales (if), bucles (while, for), menús interactivos y captura de datos</strong> por teclado.
+            </p>
+          </div>
+
+          <!-- Rúbrica / Info Box -->
+          <div class="w-full lg:w-80 bg-slate-950/90 border-2 border-amber-500/40 rounded-2xl p-4 shadow-[0_0_25px_rgba(245,158,11,0.2)]">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-[0.68rem] font-black uppercase tracking-widest text-amber-400">📋 Requisitos de Entrega</span>
+              <span class="text-[0.68rem] font-bold bg-amber-950 text-amber-300 px-2 py-0.5 rounded border border-amber-500/30">C# (.cs)</span>
+            </div>
+            <ul class="text-xs text-slate-300 space-y-1.5 list-none p-0 m-0 font-medium">
+              <li class="flex items-center gap-1.5"><span class="text-emerald-400">✓</span> Código fuente funcional (.cs)</li>
+              <li class="flex items-center gap-1.5"><span class="text-emerald-400">✓</span> Menú interactivo con salida</li>
+              <li class="flex items-center gap-1.5"><span class="text-emerald-400">✓</span> Comentarios explicativos</li>
+              <li class="flex items-center gap-1.5"><span class="text-amber-400">★</span> <strong>Plus:</strong> Sonidos, reglas extra e inglés</li>
+            </ul>
+          </div>
+        </div>
+      </header>
+
+      <!-- Selector de Proyectos (Tabs) -->
+      <section class="mb-10">
+        <h2 class="text-xs font-black uppercase tracking-widest text-slate-400 mb-4 flex items-center gap-2">
+          <span>🎮</span> Selecciona un Proyecto Gamer para Explorar:
+        </h2>
+        
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3" id="projectNavGrid">
+          {projects.map((proj, idx) => (
+            <button
+              type="button"
+              data-project-btn={proj.id}
+              class={`proj-tab-btn flex flex-col items-center text-center p-3 rounded-2xl border-2 transition-all cursor-pointer select-none relative group ${
+                idx === 0
+                  ? 'bg-amber-950/70 border-amber-400 shadow-[0_0_20px_rgba(245,158,11,0.3)]'
+                  : 'bg-slate-900/80 border-slate-800 hover:border-slate-600 hover:bg-slate-800/60'
+              }`}
+            >
+              <span class="text-2xl mb-1 group-hover:scale-110 transition-transform">{proj.icon}</span>
+              <span class="font-['Orbitron'] font-black text-xs text-white leading-tight">Proyecto {proj.number}</span>
+              <span class="text-[0.68rem] text-slate-400 font-bold mt-0.5 truncate w-full">{proj.title.split(':')[0]}</span>
+              <span class="text-[0.6rem] mt-1.5 px-2 py-0.5 rounded-full font-extrabold bg-slate-950 border border-slate-700 text-amber-300">
+                {proj.badge.split('·')[1]}
+              </span>
+            </button>
+          ))}
+        </div>
+      </section>
+
+      <!-- Contenedores de Detalle de Proyectos (1 al 6) -->
+      <div id="projectsDetailContainer">
+        {projects.map((proj, idx) => (
+          <article
+            id={`project-card-${proj.id}`}
+            class={`project-detail-card ${idx === 0 ? 'block' : 'hidden'} transition-all duration-300`}
+          >
+            <!-- Cabecera de Proyecto -->
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-5 rounded-2xl bg-gradient-to-r from-slate-900 via-[#0B132B] to-slate-900 border-2 border-cyan-500/40 mb-6 shadow-lg">
+              <div class="flex items-center gap-4">
+                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center text-3xl shadow-md shrink-0 border border-white/20">
+                  {proj.icon}
+                </div>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <span class="text-xs font-['Orbitron'] font-black text-amber-400 bg-amber-950 px-2 py-0.5 rounded border border-amber-500/40">
+                      {proj.badge}
+                    </span>
+                    <span class="text-xs font-bold text-slate-400 bg-slate-900 px-2 py-0.5 rounded border border-slate-700">
+                      Dificultad: {proj.difficulty}
+                    </span>
+                  </div>
+                  <h2 class="text-2xl sm:text-3xl font-black text-white mt-1 m-0 font-nunito">
+                    {proj.title}
+                  </h2>
+                  <p class="text-xs text-slate-300 mt-1 m-0 font-medium">{proj.subtitle}</p>
+                </div>
+              </div>
+
+              <!-- Botones de Acción Rápida -->
+              <div class="flex items-center gap-2 w-full md:w-auto">
+                <button
+                  type="button"
+                  data-download-cs={proj.id}
+                  class="flex-1 md:flex-none px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 border border-emerald-400 text-white font-black text-xs cursor-pointer shadow-[0_0_15px_rgba(16,185,129,0.3)] flex items-center justify-center gap-2 transition-all"
+                >
+                  <span>📥</span> Descargar .cs
+                </button>
+              </div>
+            </div>
+
+            <!-- Grid de Contenido: Ficha Técnica + Variables + Menú -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-8">
+              
+              <!-- Columna Izquierda: Historia, Objetivos y Variables (7 Cols) -->
+              <div class="lg:col-span-7 flex flex-col gap-6">
+                
+                <!-- Historia & Contexto -->
+                <div class="bg-[#0A1020] border-2 border-slate-800 rounded-2xl p-5">
+                  <h3 class="text-xs font-black uppercase tracking-widest text-amber-400 mb-2 flex items-center gap-1.5">
+                    <span>📜</span> Historia & Contexto Gamer
+                  </h3>
+                  <p class="text-sm text-slate-200 leading-relaxed m-0 font-medium">
+                    {proj.story}
+                  </p>
+
+                  <h3 class="text-xs font-black uppercase tracking-widest text-cyan-400 mt-4 mb-2 flex items-center gap-1.5">
+                    <span>🎯</span> Objetivo de Programación
+                  </h3>
+                  <p class="text-sm text-slate-300 leading-relaxed m-0">
+                    {proj.objective}
+                  </p>
+
+                  <div class="mt-4 pt-3 border-t border-slate-800">
+                    <span class="text-[0.7rem] font-bold text-slate-400 uppercase tracking-wider block mb-1.5">Entradas por Teclado Requeridas:</span>
+                    <div class="flex flex-wrap gap-2">
+                      {proj.initialInputs.map((inp) => (
+                        <span class="text-xs font-mono font-bold bg-slate-900 text-cyan-300 px-2.5 py-1 rounded-lg border border-cyan-500/30">
+                          ⌨️ {inp}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Tabla de Variables Iniciales -->
+                <div class="bg-[#0A1020] border-2 border-slate-800 rounded-2xl p-5">
+                  <h3 class="text-xs font-black uppercase tracking-widest text-cyan-400 mb-3 flex items-center gap-1.5">
+                    <span>📊</span> Tabla de Variables Iniciales
+                  </h3>
+                  <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs border-collapse font-nunito">
+                      <thead>
+                        <tr class="border-b border-slate-700 text-slate-400 font-black">
+                          <th class="py-2 px-2">Variable</th>
+                          <th class="py-2 px-2">Tipo</th>
+                          <th class="py-2 px-2">Valor Inicial</th>
+                          <th class="py-2 px-2">Descripción</th>
+                        </tr>
+                      </thead>
+                      <tbody class="divide-y divide-slate-800/80">
+                        {proj.variables.map((v) => (
+                          <tr class="hover:bg-slate-900/50 transition-colors">
+                            <td class="py-2 px-2 font-mono font-bold text-amber-300">{v.name}</td>
+                            <td class="py-2 px-2 font-mono text-cyan-400">{v.type}</td>
+                            <td class="py-2 px-2 font-mono font-black text-emerald-400">{v.initialValue}</td>
+                            <td class="py-2 px-2 text-slate-300">{v.description}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <!-- Reglas y Desafíos Extra -->
+                <div class="bg-[#0A1020] border-2 border-slate-800 rounded-2xl p-5">
+                  <h3 class="text-xs font-black uppercase tracking-widest text-rose-400 mb-2 flex items-center gap-1.5">
+                    <span>⚠️</span> Reglas y Condiciones de Juego
+                  </h3>
+                  <ul class="text-xs text-slate-300 space-y-2 list-none p-0 m-0 mb-4">
+                    {proj.rules.map((rule) => (
+                      <li class="flex items-start gap-2 bg-slate-900/60 p-2 rounded-lg border border-slate-800">
+                        <span class="text-rose-400 font-bold">●</span>
+                        <span>{rule}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <h3 class="text-xs font-black uppercase tracking-widest text-purple-400 mb-2 flex items-center gap-1.5">
+                    <span>🌟</span> Desafíos Extra / Plus
+                  </h3>
+                  <ul class="text-xs text-slate-300 space-y-2 list-none p-0 m-0">
+                    {proj.extraChallenges.map((extra) => (
+                      <li class="flex items-start gap-2 bg-purple-950/30 p-2 rounded-lg border border-purple-500/30">
+                        <span class="text-purple-400 font-bold">★</span>
+                        <span>{extra}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+
+              <!-- Columna Derecha: Opciones del Menú + Terminal Preview (5 Cols) -->
+              <div class="lg:col-span-5 flex flex-col gap-6">
+                
+                <!-- Opciones del Menú -->
+                <div class="bg-[#0A1020] border-2 border-slate-800 rounded-2xl p-5">
+                  <h3 class="text-xs font-black uppercase tracking-widest text-amber-400 mb-3 flex items-center gap-1.5">
+                    <span>🧭</span> Estructura del Menú Interactivo
+                  </h3>
+                  <div class="space-y-3">
+                    {proj.menuOptions.map((opt) => (
+                      <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 hover:border-cyan-500/40 transition-colors">
+                        <div class="flex items-center gap-2 mb-1">
+                          <span class="w-6 h-6 rounded-lg bg-amber-600 flex items-center justify-center font-black text-xs text-white font-['Orbitron']">
+                            {opt.option}
+                          </span>
+                          <h4 class="text-xs font-black text-white m-0">{opt.title}</h4>
+                        </div>
+                        <p class="text-[0.75rem] text-slate-300 m-0 mb-1.5">{opt.description}</p>
+                        <div class="text-[0.68rem] font-mono text-cyan-300 bg-slate-900/90 px-2 py-1 rounded border border-cyan-500/20">
+                          {opt.logic}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <!-- Vista Previa de la Terminal de Consola -->
+                <div class="bg-[#040711] border-2 border-cyan-500/40 rounded-2xl p-4 shadow-[0_0_20px_rgba(6,182,212,0.15)]">
+                  <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-800">
+                    <div class="flex items-center gap-1.5">
+                      <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+                      <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+                      <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                      <span class="text-[0.68rem] font-mono font-bold text-slate-400 ml-2">Terminal CLI Preview</span>
+                    </div>
+                    <span class="text-[0.65rem] font-['Orbitron'] font-bold text-cyan-400">OUTPUT</span>
+                  </div>
+                  <pre class="font-mono text-xs text-emerald-300 bg-black/60 p-3 rounded-xl overflow-x-auto leading-relaxed border border-slate-800 m-0 whitespace-pre-wrap">{proj.consolePreview}</pre>
+                </div>
+
+                <!-- Checklist Paso a Paso -->
+                <div class="bg-[#0A1020] border-2 border-slate-800 rounded-2xl p-5">
+                  <h3 class="text-xs font-black uppercase tracking-widest text-emerald-400 mb-3 flex items-center gap-1.5">
+                    <span>✅</span> Checklist Guiado de Construcción
+                  </h3>
+                  <div class="space-y-2">
+                    {proj.steps.map((st) => (
+                      <label class="flex items-start gap-2.5 p-2 rounded-xl bg-slate-900 border border-slate-800 hover:border-emerald-500/40 cursor-pointer transition-colors">
+                        <input
+                          type="checkbox"
+                          data-step-id={st.id}
+                          class="project-step-chk mt-0.5 w-4 h-4 rounded accent-emerald-500 cursor-pointer"
+                        />
+                        <div class="flex-1">
+                          <span class="text-xs font-bold text-white block">{st.title}</span>
+                          <span class="text-[0.7rem] text-slate-400 block mt-0.5">{st.desc}</span>
+                        </div>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- SECCIÓN DE CÓDIGO FUENTE (C# PRIORITARIO + 7 LENGUAJES) -->
+            <section class="bg-[#0A1020] border-2 border-cyan-500/40 rounded-3xl p-6 shadow-xl mb-12">
+              <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 mb-4 border-b border-cyan-500/20">
+                <div>
+                  <div class="flex items-center gap-2">
+                    <span class="text-base">💻</span>
+                    <h3 class="text-lg font-black text-white m-0 font-nunito">Código Fuente Completo y Funcional</h3>
+                  </div>
+                  <p class="text-xs text-slate-400 m-0 mt-0.5">Solución lista para ejecutar en consola, comentar y entregar.</p>
+                </div>
+
+                <!-- Pestañas de Lenguajes -->
+                <div class="flex flex-wrap gap-1 bg-slate-950 p-1 rounded-xl border border-slate-800 no-drag" data-lang-tabs-for={proj.id}>
+                  {['csharp', 'python', 'java', 'cpp', 'javascript', 'php', 'pseint'].map((l, lIdx) => (
+                    <button
+                      type="button"
+                      data-lang-btn={l}
+                      data-proj-id={proj.id}
+                      class={`px-2.5 py-1 rounded-lg text-xs font-mono font-bold transition-all cursor-pointer ${
+                        lIdx === 0
+                          ? 'bg-amber-600 text-white font-black shadow-sm'
+                          : 'text-slate-400 hover:text-white hover:bg-slate-900'
+                      }`}
+                    >
+                      {l === 'csharp' ? 'C# (.cs)' : l.toUpperCase()}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <!-- Bloques de Código de la Solución -->
+              {Object.entries(proj.solutions).map(([langKey, codeStr], cIdx) => (
+                <div
+                  id={`code-block-${proj.id}-${langKey}`}
+                  class={`code-solution-box relative ${cIdx === 0 ? 'block' : 'hidden'}`}
+                >
+                  <div class="flex items-center justify-between bg-slate-950 px-4 py-2 rounded-t-2xl border-t border-x border-slate-800 text-xs font-mono text-slate-400">
+                    <span class="font-bold text-amber-400">
+                      📄 {proj.slug}.{langKey === 'csharp' ? 'cs' : langKey === 'python' ? 'py' : langKey === 'java' ? 'java' : langKey === 'cpp' ? 'cpp' : langKey === 'javascript' ? 'js' : langKey === 'php' ? 'php' : 'psc'}
+                    </span>
+                    <button
+                      type="button"
+                      data-copy-code={`code-text-${proj.id}-${langKey}`}
+                      class="px-3 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 hover:text-white font-nunito font-bold text-xs cursor-pointer flex items-center gap-1.5 transition-colors"
+                    >
+                      <span>📋</span> Copiar Código
+                    </button>
+                  </div>
+                  <pre class="m-0 p-4 bg-[#050813] border border-slate-800 rounded-b-2xl overflow-x-auto text-xs font-mono text-slate-200 leading-relaxed"><code id={`code-text-${proj.id}-${langKey}`}>{codeStr}</code></pre>
+                </div>
+              ))}
+            </section>
+
+          </article>
+        ))}
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Script interactivo de la página de proyectos -->
+  <script is:inline>
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Selector de Proyecto Activo
+      const tabButtons = document.querySelectorAll('.proj-tab-btn');
+      const projectCards = document.querySelectorAll('.project-detail-card');
+
+      tabButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const projId = btn.getAttribute('data-project-btn');
+          
+          tabButtons.forEach(b => {
+            b.classList.remove('bg-amber-950/70', 'border-amber-400', 'shadow-[0_0_20px_rgba(245,158,11,0.3)]');
+            b.classList.add('bg-slate-900/80', 'border-slate-800');
+          });
+          btn.classList.remove('bg-slate-900/80', 'border-slate-800');
+          btn.classList.add('bg-amber-950/70', 'border-amber-400', 'shadow-[0_0_20px_rgba(245,158,11,0.3)]');
+
+          projectCards.forEach(card => {
+            if (card.id === `project-card-${projId}`) {
+              card.classList.remove('hidden');
+              card.classList.add('block');
+            } else {
+              card.classList.remove('block');
+              card.classList.add('hidden');
+            }
+          });
+        });
+      });
+
+      // 2. Selector de Lenguajes en Código
+      const langTabs = document.querySelectorAll('[data-lang-tabs-for]');
+      langTabs.forEach(container => {
+        const projId = container.getAttribute('data-lang-tabs-for');
+        const buttons = container.querySelectorAll('button[data-lang-btn]');
+
+        buttons.forEach(btn => {
+          btn.addEventListener('click', () => {
+            const lang = btn.getAttribute('data-lang-btn');
+
+            buttons.forEach(b => {
+              b.classList.remove('bg-amber-600', 'text-white', 'font-black', 'shadow-sm');
+              b.classList.add('text-slate-400');
+            });
+            btn.classList.remove('text-slate-400');
+            btn.classList.add('bg-amber-600', 'text-white', 'font-black', 'shadow-sm');
+
+            const allCodeBlocks = document.querySelectorAll(`[id^="code-block-${projId}-"]`);
+            allCodeBlocks.forEach(blk => {
+              if (blk.id === `code-block-${projId}-${lang}`) {
+                blk.classList.remove('hidden');
+                blk.classList.add('block');
+              } else {
+                blk.classList.remove('block');
+                blk.classList.add('hidden');
+              }
+            });
+          });
+        });
+      });
+
+      // 3. Copiar Código
+      document.querySelectorAll('[data-copy-code]').forEach(copyBtn => {
+        copyBtn.addEventListener('click', () => {
+          const targetId = copyBtn.getAttribute('data-copy-code');
+          const codeEl = document.getElementById(targetId);
+          if (codeEl) {
+            navigator.clipboard.writeText(codeEl.textContent || '').then(() => {
+              const originalHTML = copyBtn.innerHTML;
+              copyBtn.innerHTML = '<span>✅</span> ¡Copiado!';
+              copyBtn.classList.add('bg-emerald-800', 'text-emerald-200');
+              setTimeout(() => {
+                copyBtn.innerHTML = originalHTML;
+                copyBtn.classList.remove('bg-emerald-800', 'text-emerald-200');
+              }, 2000);
+            });
+          }
+        });
+      });
+
+      // 4. Descargar archivo .cs
+      document.querySelectorAll('[data-download-cs]').forEach(dlBtn => {
+        dlBtn.addEventListener('click', () => {
+          const projId = dlBtn.getAttribute('data-download-cs');
+          const codeEl = document.getElementById(`code-text-${projId}-csharp`);
+          if (codeEl) {
+            const blob = new Blob([codeEl.textContent || ''], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `ProyectoGamer_${projId}.cs`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+          }
+        });
+      });
+
+      // 5. Checklist persistente con localStorage
+      document.querySelectorAll('.project-step-chk').forEach(chk => {
+        const stepId = chk.getAttribute('data-step-id');
+        if (!stepId) return;
+
+        const isChecked = localStorage.getItem(`proj_chk_${stepId}`) === 'true';
+        chk.checked = isChecked;
+
+        chk.addEventListener('change', () => {
+          localStorage.setItem(`proj_chk_${stepId}`, chk.checked ? 'true' : 'false');
+        });
+      });
+    });
+  </script>
+</GameLayout>

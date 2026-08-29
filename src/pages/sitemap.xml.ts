@@ -37,6 +37,13 @@ const STATIC_PAGES: { path: string; priority: string; changefreq: string }[] = [
   { path: '/challenges/oop-list/',          priority: '0.8', changefreq: 'weekly'  },
   { path: '/challenges/oop-combined/',      priority: '0.8', changefreq: 'weekly'  },
   { path: '/challenges/integrating-challenges/', priority: '0.8', changefreq: 'weekly' },
+  { path: '/challenges-game/',              priority: '0.9', changefreq: 'daily'   },
+  { path: '/challenges-game/functions/',   priority: '0.8', changefreq: 'weekly'  },
+  { path: '/challenges-game/conditionals-rpg/', priority: '0.8', changefreq: 'weekly' },
+  { path: '/challenges-game/inventory-arrays/', priority: '0.8', changefreq: 'weekly' },
+  { path: '/challenges-game/dungeon-matrices/', priority: '0.8', changefreq: 'weekly' },
+  { path: '/challenges-game/hero-classes-poo/', priority: '0.8', changefreq: 'weekly' },
+  { path: '/challenges-game/projects/',     priority: '0.9', changefreq: 'weekly' },
 ];
 
 function urlEntry(path: string, priority: string, changefreq: string): string {
