@@ -1,5 +1,6 @@
 ---
 import GameLayout from '../../layouts/GameLayout.astro';
+import CodeBlock from '../../components/CodeBlock.astro';
 import { gameProjectsData } from '../../data/gameProjectsData';
 
 const projects = gameProjectsData;
@@ -37,7 +38,7 @@ const projects = gameProjectsData;
       </div>
 
       <!-- Hero Banner -->
-      <header class="relative rounded-3xl bg-gradient-to-br from-slate-900/90 via-[#0E1528] to-slate-950 border-2 border-amber-500/40 p-6 sm:p-8 mb-8 shadow-[0_0_40px_rgba(245,158,11,0.15)] overflow-hidden">
+      <header class="relative rounded-3xl bg-linear-to-br from-slate-900/90 via-[#0E1528] to-slate-950 border-2 border-amber-500/40 p-6 sm:p-8 mb-8 shadow-[0_0_40px_rgba(245,158,11,0.15)] overflow-hidden">
         <div class="absolute -right-12 -top-12 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
         <div class="absolute -left-12 -bottom-12 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
@@ -48,7 +49,7 @@ const projects = gameProjectsData;
             </div>
             <h1 class="text-3xl sm:text-5xl font-black text-white tracking-tight m-0 font-nunito flex items-center gap-3">
               <span>PROYECTOS</span>
-              <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-orange-300 to-rose-400">GAMER CLI</span>
+              <span class="text-transparent bg-clip-text bg-linear-to-r from-amber-400 via-orange-300 to-rose-400">GAMER CLI</span>
             </h1>
             <p class="mt-3 text-sm sm:text-base text-slate-300 font-medium leading-relaxed">
               Aplica todo lo aprendido desarrollando <strong>videojuegos completos interactivos por consola</strong>. Utiliza <strong>variables, condicionales (if), bucles (while, for), menús interactivos y captura de datos</strong> por teclado.
@@ -59,10 +60,9 @@ const projects = gameProjectsData;
           <div class="w-full lg:w-80 bg-slate-950/90 border-2 border-amber-500/40 rounded-2xl p-4 shadow-[0_0_25px_rgba(245,158,11,0.2)]">
             <div class="flex items-center justify-between mb-2">
               <span class="text-[0.68rem] font-black uppercase tracking-widest text-amber-400">📋 Requisitos de Entrega</span>
-              <span class="text-[0.68rem] font-bold bg-amber-950 text-amber-300 px-2 py-0.5 rounded border border-amber-500/30">C# (.cs)</span>
             </div>
             <ul class="text-xs text-slate-300 space-y-1.5 list-none p-0 m-0 font-medium">
-              <li class="flex items-center gap-1.5"><span class="text-emerald-400">✓</span> Código fuente funcional (.cs)</li>
+              <li class="flex items-center gap-1.5"><span class="text-emerald-400">✓</span> Código fuente funcional</li>
               <li class="flex items-center gap-1.5"><span class="text-emerald-400">✓</span> Menú interactivo con salida</li>
               <li class="flex items-center gap-1.5"><span class="text-emerald-400">✓</span> Comentarios explicativos</li>
               <li class="flex items-center gap-1.5"><span class="text-amber-400">★</span> <strong>Plus:</strong> Sonidos, reglas extra e inglés</li>
@@ -107,9 +107,9 @@ const projects = gameProjectsData;
             class={`project-detail-card ${idx === 0 ? 'block' : 'hidden'} transition-all duration-300`}
           >
             <!-- Cabecera de Proyecto -->
-            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-5 rounded-2xl bg-gradient-to-r from-slate-900 via-[#0B132B] to-slate-900 border-2 border-cyan-500/40 mb-6 shadow-lg">
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-5 rounded-2xl bg-linear-to-r from-slate-900 via-[#0B132B] to-slate-900 border-2 border-cyan-500/40 mb-6 shadow-lg">
               <div class="flex items-center gap-4">
-                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center text-3xl shadow-md shrink-0 border border-white/20">
+                <div class="w-14 h-14 rounded-2xl bg-linear-to-br from-amber-500 to-orange-600 flex items-center justify-center text-3xl shadow-md shrink-0 border border-white/20">
                   {proj.icon}
                 </div>
                 <div>
@@ -126,17 +126,6 @@ const projects = gameProjectsData;
                   </h2>
                   <p class="text-xs text-slate-300 mt-1 m-0 font-medium">{proj.subtitle}</p>
                 </div>
-              </div>
-
-              <!-- Botones de Acción Rápida -->
-              <div class="flex items-center gap-2 w-full md:w-auto">
-                <button
-                  type="button"
-                  data-download-cs={proj.id}
-                  class="flex-1 md:flex-none px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 border border-emerald-400 text-white font-black text-xs cursor-pointer shadow-[0_0_15px_rgba(16,185,129,0.3)] flex items-center justify-center gap-2 transition-all"
-                >
-                  <span>📥</span> Descargar .cs
-                </button>
               </div>
             </div>
 
@@ -326,25 +315,18 @@ const projects = gameProjectsData;
                 </div>
               </div>
 
-              <!-- Bloques de Código de la Solución -->
+              <!-- Bloques de Código de la Solución usando CodeBlock -->
               {Object.entries(proj.solutions).map(([langKey, codeStr], cIdx) => (
                 <div
                   id={`code-block-${proj.id}-${langKey}`}
                   class={`code-solution-box relative ${cIdx === 0 ? 'block' : 'hidden'}`}
                 >
-                  <div class="flex items-center justify-between bg-slate-950 px-4 py-2 rounded-t-2xl border-t border-x border-slate-800 text-xs font-mono text-slate-400">
-                    <span class="font-bold text-amber-400">
-                      📄 {proj.slug}.{langKey === 'csharp' ? 'cs' : langKey === 'python' ? 'py' : langKey === 'java' ? 'java' : langKey === 'cpp' ? 'cpp' : langKey === 'javascript' ? 'js' : langKey === 'php' ? 'php' : 'psc'}
-                    </span>
-                    <button
-                      type="button"
-                      data-copy-code={`code-text-${proj.id}-${langKey}`}
-                      class="px-3 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 hover:text-white font-nunito font-bold text-xs cursor-pointer flex items-center gap-1.5 transition-colors"
-                    >
-                      <span>📋</span> Copiar Código
-                    </button>
-                  </div>
-                  <pre class="m-0 p-4 bg-[#050813] border border-slate-800 rounded-b-2xl overflow-x-auto text-xs font-mono text-slate-200 leading-relaxed"><code id={`code-text-${proj.id}-${langKey}`}>{codeStr}</code></pre>
+                  <CodeBlock
+                    lang={langKey}
+                    title={`${proj.slug}.${langKey === 'csharp' ? 'cs' : langKey === 'python' ? 'py' : langKey === 'java' ? 'java' : langKey === 'cpp' ? 'cpp' : langKey === 'javascript' ? 'js' : langKey === 'php' ? 'php' : 'psc'}`}
+                    code={codeStr}
+                    isPSeIntCode={langKey === 'pseint'}
+                  />
                 </div>
               ))}
             </section>
@@ -417,32 +399,17 @@ const projects = gameProjectsData;
         });
       });
 
-      // 3. Copiar Código
-      document.querySelectorAll('[data-copy-code]').forEach(copyBtn => {
-        copyBtn.addEventListener('click', () => {
-          const targetId = copyBtn.getAttribute('data-copy-code');
-          const codeEl = document.getElementById(targetId);
-          if (codeEl) {
-            navigator.clipboard.writeText(codeEl.textContent || '').then(() => {
-              const originalHTML = copyBtn.innerHTML;
-              copyBtn.innerHTML = '<span>✅</span> ¡Copiado!';
-              copyBtn.classList.add('bg-emerald-800', 'text-emerald-200');
-              setTimeout(() => {
-                copyBtn.innerHTML = originalHTML;
-                copyBtn.classList.remove('bg-emerald-800', 'text-emerald-200');
-              }, 2000);
-            });
-          }
-        });
-      });
-
-      // 4. Descargar archivo .cs
+      // 3. Descargar archivo .cs
       document.querySelectorAll('[data-download-cs]').forEach(dlBtn => {
         dlBtn.addEventListener('click', () => {
           const projId = dlBtn.getAttribute('data-download-cs');
-          const codeEl = document.getElementById(`code-text-${projId}-csharp`);
-          if (codeEl) {
-            const blob = new Blob([codeEl.textContent || ''], { type: 'text/plain;charset=utf-8' });
+          const encoded = dlBtn.getAttribute('data-cs-code');
+          let code = '';
+          if (encoded) {
+            try { code = decodeURIComponent(encoded); } catch { code = encoded; }
+          }
+          if (code) {
+            const blob = new Blob([code], { type: 'text/plain;charset=utf-8' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
@@ -455,7 +422,7 @@ const projects = gameProjectsData;
         });
       });
 
-      // 5. Checklist persistente con localStorage
+      // 4. Checklist persistente con localStorage
       document.querySelectorAll('.project-step-chk').forEach(chk => {
         const stepId = chk.getAttribute('data-step-id');
         if (!stepId) return;
