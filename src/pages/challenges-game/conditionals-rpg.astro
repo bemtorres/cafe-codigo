@@ -4,27 +4,28 @@ import CodeBlock from '../../components/CodeBlock.astro';
 import { gameConditionalsSolutions } from '../../data/gameConditionalsSolutions';
 
 const exercises = [
+  // SECCIÓN 1: CONDICIONALES BÁSICOS Y ESTADOS VITALES (1 - 4)
   {
     id: 1,
-    section: '1. Estados Vitales y Derrota',
+    section: '1. Vida, Curación y Evasión',
     title: 'Evaluar Estado de Vida del Héroe',
     statement: 'Crear una función evaluarEstadoVida(hp) que verifique si hp <= 0 para imprimir que el personaje ha caído en combate o, si no, imprimir que sigue con vida con su HP actual.',
     steps: [
       { id: 'step1', title: 'Comprendí la condición if/else', desc: 'Evaluar si la salud es menor o igual a cero.' },
       { id: 'step2', title: 'Declaré la función', desc: 'Definí evaluarEstadoVida(hp).' },
-      { id: 'step3', title: 'Escribí la rama if (hp <= 0)', desc: 'Imprimí el mensaje de derrota.' },
-      { id: 'step4', title: 'Escribí la rama else', desc: 'Mostré la salud restante.' },
+      { id: 'step3', title: 'Rama if (hp <= 0)', desc: 'Imprimí el mensaje de derrota.' },
+      { id: 'step4', title: 'Rama else', desc: 'Mostré la salud restante.' },
       { id: 'step5', title: 'Probé con 45 y con 0', desc: 'Validé ambos casos de combate.' },
     ],
   },
   {
     id: 2,
-    section: '1. Estados Vitales y Derrota',
+    section: '1. Vida, Curación y Evasión',
     title: 'Verificar Consumo de Poción',
     statement: 'Crear una función verificarUsoPocion(hpActual, hpMax) que evalúe si la vida actual es menor a la máxima para permitir consumir la poción; de lo contrario, avisar que la vida ya está al tope.',
     steps: [
       { id: 'step1', title: 'Comprendí el umbral de consumo', desc: 'Comparar hpActual < hpMax.' },
-      { id: 'step2', title: 'Declaré verificarUsoPocion(hpActual, hpMax)', desc: 'Definí 2 parámetros.' },
+      { id: 'step2', title: 'Declaré la función', desc: 'Definí verificarUsoPocion(hpActual, hpMax).' },
       { id: 'step3', title: 'Rama de curación', desc: 'Notifiqué que la salud fue restaurada.' },
       { id: 'step4', title: 'Rama de bloqueo', desc: 'Avisé que la salud ya está al 100%.' },
       { id: 'step5', title: 'Probé con (80, 100) y (100, 100)', desc: 'Comprobé las dos ramas.' },
@@ -32,7 +33,7 @@ const exercises = [
   },
   {
     id: 3,
-    section: '1. Estados Vitales y Derrota',
+    section: '1. Vida, Curación y Evasión',
     title: 'Evaluar Esquiva de Ataque (Hit vs Miss)',
     statement: 'Crear una función evaluarEsquiva(probEsquiva, tirada) que retorne "MISS" si la tirada aleatoria es menor o igual a la probabilidad de esquiva o "HIT" en caso contrario.',
     steps: [
@@ -45,7 +46,22 @@ const exercises = [
   },
   {
     id: 4,
-    section: '2. Debilidades Elementales RPG',
+    section: '1. Vida, Curación y Evasión',
+    title: 'Verificar Coste de Maná para Hechizo',
+    statement: 'Crear una función verificarManaHechizo(manaActual, costeHechizo) que verifique si el jugador tiene suficiente maná para lanzar un conjuro, restando el coste si es posible o mostrando una advertencia.',
+    steps: [
+      { id: 'step1', title: 'Comprendí el balance de maná', desc: 'Comparar manaActual >= costeHechizo.' },
+      { id: 'step2', title: 'Declaré la función', desc: 'Definí verificarManaHechizo(manaActual, costeHechizo).' },
+      { id: 'step3', title: 'Calculé maná restante', desc: 'Resté costeHechizo si hay reservas.' },
+      { id: 'step4', title: 'Rama de maná insuficiente', desc: 'Mostré aviso con el maná faltante.' },
+      { id: 'step5', title: 'Probé con 80 vs 50 y 30 vs 50', desc: 'Validé el lanzamiento y el bloqueo.' },
+    ],
+  },
+
+  // SECCIÓN 2: DAÑO ELEMENTAL Y GOLPES CRÍTICOS (5 - 8)
+  {
+    id: 5,
+    section: '2. Debilidades Elementales y Críticos',
     title: 'Calcular Daño Elemental (Fuego, Agua, Planta)',
     statement: 'Crear una función calcularDanioElemental(elementoAtk, elementoDef, danioBase) que duplique el daño si hay ventaja elemental (Fuego > Planta > Agua > Fuego) o lo reduzca a la mitad si hay desventaja.',
     steps: [
@@ -57,41 +73,212 @@ const exercises = [
     ],
   },
   {
-    id: 5,
-    section: '2. Debilidades Elementales RPG',
+    id: 6,
+    section: '2. Debilidades Elementales y Críticos',
+    title: 'Detectar Golpe Crítico (Critical Strike)',
+    statement: 'Crear una función calcularDanioCritico(danioBase, probCritico, tiradaDado) que aplique un multiplicador de x2.5 al daño si la tirada del dado (1-100) es menor o igual a la probabilidad crítica.',
+    steps: [
+      { id: 'step1', title: 'Comprendí la tirada crítica', desc: 'Comparar tiradaDado <= probCritico.' },
+      { id: 'step2', title: 'Declaré la función', desc: 'Definí los 3 parámetros numéricos.' },
+      { id: 'step3', title: 'Rama de golpe crítico', desc: 'Calculé danioBase * 2.5 y mensaje especial.' },
+      { id: 'step4', title: 'Rama de golpe normal', desc: 'Mantuvé el daño base.' },
+      { id: 'step5', title: 'Probé tirada crítica y normal', desc: 'Validé con tiradas 15 y 50 para prob 20.' },
+    ],
+  },
+  {
+    id: 7,
+    section: '2. Debilidades Elementales y Críticos',
+    title: 'Escudo de Absorción y Mitigación',
+    statement: 'Crear una función mitigarDanioEscudo(danioRecibido, escudo) que absorba daño con los puntos del escudo; si el escudo resiste todo muestra los puntos restantes, si se rompe muestra el daño que pasa a la salud.',
+    steps: [
+      { id: 'step1', title: 'Comprendí la absorción de daño', desc: 'Comparar escudo >= danioRecibido.' },
+      { id: 'step2', title: 'Declaré la función', desc: 'Definí mitigarDanioEscudo(danioRecibido, escudo).' },
+      { id: 'step3', title: 'Caso escudo resistente', desc: 'Calculé escudo restante sin dañar al héroe.' },
+      { id: 'step4', title: 'Caso escudo roto', desc: 'Calculé el daño penetrante a la vida.' },
+      { id: 'step5', title: 'Probé con (40, 100) y (120, 50)', desc: 'Comprobé absorción total y daño residual.' },
+    ],
+  },
+  {
+    id: 8,
+    section: '2. Debilidades Elementales y Críticos',
     title: 'Clasificar Rareza de Drop por Porcentaje',
     statement: 'Crear una función clasificarRarezaLoot(dropRate) que según el porcentaje retorne Mítico (<=1%), Legendario (<=5%), Épico (<=20%), Raro (<=50%) o Común (>50%).',
     steps: [
       { id: 'step1', title: 'Comprendí la escala de drops', desc: 'if/elif encadenados según el porcentaje.' },
-      { id: 'step2', title: 'Declaré clasificarRarezaLoot(dropRate)', desc: 'Definí la firma.' },
+      { id: 'step2', title: 'Declaré la función', desc: 'Definí clasificarRarezaLoot(dropRate).' },
       { id: 'step3', title: 'Rangos de rareza', desc: 'Mítico, Legendario, Épico, Raro y Común.' },
-      { id: 'step4', title: 'Retorno de texto', desc: 'Aseguré retorno con badges de color/emoji.' },
+      { id: 'step4', title: 'Retorno de texto', desc: 'Aseguré retorno con badges temáticos.' },
       { id: 'step5', title: 'Probé con 0.5%, 15% y 80%', desc: 'Validé los 3 resultados.' },
     ],
-  }
-];
+  },
 
-// Generar misiones 6 a 30
-for (let i = 6; i <= 30; i++) {
-  exercises.push({
-    id: i,
-    section: i <= 15 ? '3. Estados Alterados y Turnos' : i <= 25 ? '4. Árboles de Diálogo y Decisiones NPC' : '5. Fases de Batalla contra Jefes',
-    title: `Misión de Combate ${i}: Lógica de Batalla RPG #${i}`,
-    statement: `Desarrollar un algoritmo condicional resolverMisionGamer${i}(param1, param2) que evalúe las reglas de combate de la fase ${i} y determine la victoria o defensa del héroe.`,
+  // SECCIÓN 3: ESTADOS ALTERADOS Y REACCIONES TÁCTICAS (9 - 12)
+  {
+    id: 9,
+    section: '3. Estados Alterados y Turnos',
+    title: 'Evaluar Estado Alterado al Inicio del Turno',
+    statement: 'Crear una función procesarEstadoAlterado(estado, hpActual) que aplique 15 de daño por "Veneno", 25 por "Quemadura", pérdida de turno por "Congelado" o acción normal si es "Normal".',
     steps: [
-      { id: 'step1', title: 'Comprendí el objetivo táctico', desc: `Analizar las condiciones de combate para la misión ${i}.` },
-      { id: 'step2', title: 'Declaré la firma', desc: `Definí resolverMisionGamer${i}(param1, param2).` },
-      { id: 'step3', title: 'Implementé condicional if/else', desc: 'Evalué los umbrales de combate.' },
-      { id: 'step4', title: 'Retorné el estado', desc: 'Formateé el mensaje de victoria o repliegue.' },
-      { id: 'step5', title: 'Validé con casos de prueba', desc: 'Comprobé resultados en combate.' },
-    ]
-  });
-}
+      { id: 'step1', title: 'Comprendí los estados RPG', desc: 'Mapear Veneno, Quemadura, Congelado y Normal.' },
+      { id: 'step2', title: 'Declaré la función', desc: 'Definí procesarEstadoAlterado(estado, hpActual).' },
+      { id: 'step3', title: 'Implementé switch o if/elif', desc: 'Apliqué las deducciones de salud.' },
+      { id: 'step4', title: 'Protegí HP no negativa', desc: 'Aseguré no bajar de 0 con max().' },
+      { id: 'step5', title: 'Probé los 4 estados', desc: 'Validé efectos de veneno y congelación.' },
+    ],
+  },
+  {
+    id: 10,
+    section: '3. Estados Alterados y Turnos',
+    title: 'Lógica de Bloqueo / Parry Perfecto',
+    statement: 'Crear una función evaluarParry(ventanaFrames, frameAccion) que evalúe si el jugador ejecutó la defensa en el frame 0 (Parry Perfecto), dentro de la ventana (Bloqueo Estándar) o a destiempo (Golpe Recibido).',
+    steps: [
+      { id: 'step1', title: 'Comprendí el timing de combate', desc: 'frame == 0 es parry, frame <= ventana es bloqueo.' },
+      { id: 'step2', title: 'Declaré la función', desc: 'Definí evaluarParry(ventanaFrames, frameAccion).' },
+      { id: 'step3', title: 'Rama de Parry Perfecto', desc: 'Retorné contraataque crítico.' },
+      { id: 'step4', title: 'Rama de Bloqueo / Fallo', desc: 'Retorné mitigación del 50% o impacto.' },
+      { id: 'step5', title: 'Probé con frame 0, 3 y 8', desc: 'Comprobé los 3 resultados de timing.' },
+    ],
+  },
+  {
+    id: 11,
+    section: '3. Estados Alterados y Turnos',
+    title: 'Mecánica de Robo de Vida (Lifesteal)',
+    statement: 'Crear una función aplicarRoboDeVida(danioInfligido, porcentajeRobo, hpActual, hpMax) que cure al héroe un porcentaje del daño causado, garantizando que la vida no sobrepase su hpMax.',
+    steps: [
+      { id: 'step1', title: 'Comprendí el cálculo de robo', desc: 'curacion = (danio * porcentaje) / 100.' },
+      { id: 'step2', title: 'Declaré la función', desc: 'Definí los 4 parámetros.' },
+      { id: 'step3', title: 'Apliqué límite con min()', desc: 'nuevaHp = min(hpActual + curacion, hpMax).' },
+      { id: 'step4', title: 'Calculé HP recuperada real', desc: 'Diferencia entre nuevaHp y hpActual.' },
+      { id: 'step5', title: 'Probé curación parcial y al tope', desc: 'Validé que no supere hpMax.' },
+    ],
+  },
+  {
+    id: 12,
+    section: '3. Estados Alterados y Turnos',
+    title: 'Verificar Acceso a Zona de Mazmorra',
+    statement: 'Crear una función verificarAccesoMazmorra(nivelHeroe, nivelRequerido, tieneLlave) que otorgue acceso si cumple nivel Y tiene llave, o indique específicamente qué requisito le falta.',
+    steps: [
+      { id: 'step1', title: 'Comprendí los operadores lógicos', desc: 'Evaluar nivel >= req Y tieneLlave.' },
+      { id: 'step2', title: 'Declaré la función', desc: 'Definí verificarAccesoMazmorra(nivel, req, llave).' },
+      { id: 'step3', title: 'Rama de acceso concedido', desc: 'Ambas condiciones verdaderas.' },
+      { id: 'step4', title: 'Ramas de error específico', desc: 'Diferencié falta de nivel vs falta de llave.' },
+      { id: 'step5', title: 'Probé los 3 escenarios', desc: 'Validé con éxito, sin nivel y sin llave.' },
+    ],
+  },
+
+  // SECCIÓN 4: PROGRESIÓN, TIENDA Y RANGOS (13 - 16)
+  {
+    id: 13,
+    section: '4. Tienda, Rangos y Equipamiento',
+    title: 'Descuento en Tienda de Armas según Rango',
+    statement: 'Crear una función calcularPrecioArma(precioBase, rangoGremio) que aplique 30% de descuento a rango "VIP", 15% a "Miembro" y 0% a "Novato".',
+    steps: [
+      { id: 'step1', title: 'Comprendí las tarifas de gremio', desc: 'VIP 0.70, Miembro 0.85, Novato 1.0.' },
+      { id: 'step2', title: 'Declaré la función', desc: 'Definí calcularPrecioArma(precioBase, rango).' },
+      { id: 'step3', title: 'Calculé descuentos', desc: 'Multipliqué según la categoría de cliente.' },
+      { id: 'step4', title: 'Retorné precio formateado', desc: 'Mostré el ahorro obtenido en monedas de oro.' },
+      { id: 'step5', title: 'Probé con un arma de 1000 oro', desc: 'Comprobé 700, 850 y 1000 oro.' },
+    ],
+  },
+  {
+    id: 14,
+    section: '4. Tienda, Rangos y Equipamiento',
+    title: 'Rango Competitivo PVP según ELO',
+    statement: 'Crear una función obtenerRangoPVP(elo) que devuelva "Maestro" (>=2400), "Diamante" (>=1800), "Oro" (>=1200), "Plata" (>=800) o "Bronce" (<800).',
+    steps: [
+      { id: 'step1', title: 'Comprendí la escala de ladder', desc: 'Condicionales encadenados de mayor a menor.' },
+      { id: 'step2', title: 'Declaré la función', desc: 'Definí obtenerRangoPVP(elo).' },
+      { id: 'step3', title: 'Estructuré umbrales', desc: '2400, 1800, 1200 y 800 puntos.' },
+      { id: 'step4', title: 'Retorné títulos e insignias', desc: 'Formateé el nombre de cada división.' },
+      { id: 'step5', title: 'Probé con 2550, 1450 y 600', desc: 'Validé Maestro, Oro y Bronce.' },
+    ],
+  },
+  {
+    id: 15,
+    section: '4. Tienda, Rangos y Equipamiento',
+    title: 'Daño por Caída en Plataformas',
+    statement: 'Crear una función calcularDanioCaida(alturaMetros, tieneBotasPluma) que cause 0 daño si tiene botas de pluma o cae desde <= 3m; si cae desde más alto sufra (altura - 3) * 10 de daño.',
+    steps: [
+      { id: 'step1', title: 'Comprendí la física del salto', desc: 'Botas o altura <= 3 anulan el daño.' },
+      { id: 'step2', title: 'Declaré la función', desc: 'Definí calcularDanioCaida(altura, botas).' },
+      { id: 'step3', title: 'Evalué protección', desc: 'Retorné 0 daño si está a salvo.' },
+      { id: 'step4', title: 'Calculé daño proporcional', desc: '(altura - 3) * 10 HP de penalización.' },
+      { id: 'step5', title: 'Probé caída con y sin botas', desc: 'Validé 10m con botas vs 8m sin botas.' },
+    ],
+  },
+  {
+    id: 16,
+    section: '4. Tienda, Rangos y Equipamiento',
+    title: 'Verificar Equipamiento de Arma por Clase',
+    statement: 'Crear una función puedeEquiparArma(claseHeroe, tipoArma) que valide si un Guerrero (Espada/Hacha), Mago (Báculo/Varita) o Arquero (Arco/Daga) puede equipar el arma seleccionada.',
+    steps: [
+      { id: 'step1', title: 'Comprendí la matriz de compatibilidad', desc: 'Cada clase tiene armas permitidas.' },
+      { id: 'step2', title: 'Declaré la función', desc: 'Definí puedeEquiparArma(clase, arma).' },
+      { id: 'step3', title: 'Verifiqué pertenencia', desc: 'Comprobé si el arma está en la lista de la clase.' },
+      { id: 'step4', title: 'Retorné estado de equipamiento', desc: 'Confirmé éxito o incompatibilidad.' },
+      { id: 'step5', title: 'Probé Guerrero con Espada y Mago con Mandoble', desc: 'Validé acierto y rechazo.' },
+    ],
+  },
+
+  // SECCIÓN 5: JEFES DE BATALLA Y RECOMPENSAS FINALES (17 - 20)
+  {
+    id: 17,
+    section: '5. Jefes de Batalla y Recompensas',
+    title: 'Fase de Combate del Jefe según HP Restante',
+    statement: 'Crear una función determinarFaseJefe(hpActual, hpMax) que según el porcentaje de vida active Fase 1 (>70%), Fase 2 (30%-70%) o Fase 3 / Modo Berserk (<=30%).',
+    steps: [
+      { id: 'step1', title: 'Comprendí las transiciones de fase', desc: 'Calcular porcentaje = (hpActual / hpMax) * 100.' },
+      { id: 'step2', title: 'Declaré la función', desc: 'Definí determinarFaseJefe(hpActual, hpMax).' },
+      { id: 'step3', title: 'Condicional de umbrales', desc: '>70% Fase 1, >30% Fase 2, resto Fase 3.' },
+      { id: 'step4', title: 'Mensajes temáticos de jefe', desc: 'Agregué alertas de habilidades en cada fase.' },
+      { id: 'step5', title: 'Probé con 850, 500 y 200 HP de 1000', desc: 'Comprobé las 3 fases.' },
+    ],
+  },
+  {
+    id: 18,
+    section: '5. Jefes de Batalla y Recompensas',
+    title: 'Detección de Sigilo frente al Enemigo',
+    statement: 'Crear una función evaluarDeteccionSigilo(distanciaMetros, agachado, nivelLuz) que evalúe si el héroe es detectado (distancia < 3m o luz > 60 sin agacharse) o permanece oculto.',
+    steps: [
+      { id: 'step1', title: 'Comprendí las variables de sigilo', desc: 'Distancia de proximidad, postura y luz.' },
+      { id: 'step2', title: 'Declaré la función', desc: 'Definí evaluarDeteccionSigilo(dist, agachado, luz).' },
+      { id: 'step3', title: 'Rama de detección inmediata', desc: 'distancia < 3 activa alerta roja.' },
+      { id: 'step4', title: 'Rama de sigilo en sombras', desc: 'luz baja y agachado garantiza sigilo.' },
+      { id: 'step5', title: 'Probé proximidad, luz alta y sigilo óptimo', desc: 'Validé los estados de detección.' },
+    ],
+  },
+  {
+    id: 19,
+    section: '5. Jefes de Batalla y Recompensas',
+    title: 'Resistencia e Inmunidad Elemental',
+    statement: 'Crear una función calcularEfectividadDefensa(tipoAtaque, elementoArmadura, danioBase) que anule el daño si son del mismo elemento (inmunidad), aplique x2.0 si la armadura es débil o x1.0 si es normal.',
+    steps: [
+      { id: 'step1', title: 'Comprendí las defensas elementales', desc: 'Mismo elemento = 0 daño, debilidad = x2.0 daño.' },
+      { id: 'step2', title: 'Declaré la función', desc: 'Definí los 3 parámetros de defensa.' },
+      { id: 'step3', title: 'Caso de inmunidad total', desc: 'tipoAtaque == elementoArmadura retorna 0.' },
+      { id: 'step4', title: 'Caso de debilidad elemental', desc: 'Fuego vs Hielo, Rayo vs Agua duplican daño.' },
+      { id: 'step5', title: 'Probé Fuego vs Fuego y Fuego vs Hielo', desc: 'Validé inmunidad y debilidad.' },
+    ],
+  },
+  {
+    id: 20,
+    section: '5. Jefes de Batalla y Recompensas',
+    title: 'Recompensa de Misión según Estrellas y Tiempo',
+    statement: 'Crear una función calcularRecompensaFinal(tiempoSegundos, objetivosCompletados) que otorgue 3 estrellas y 1000 oro si tiempo <= 60s con 3 objetivos, 2 estrellas y 600 oro si tiempo <= 120s con >= 2 objetivos, o 1 estrella y 300 oro.',
+    steps: [
+      { id: 'step1', title: 'Comprendí la calificación de misión', desc: 'Evaluar tiempo récord y objetivos secundarios.' },
+      { id: 'step2', title: 'Declaré la función', desc: 'Definí calcularRecompensaFinal(tiempo, objetivos).' },
+      { id: 'step3', title: 'Rama Rango S (3 Estrellas)', desc: '<= 60s y 3 objetivos -> 1000 oro + cofre.' },
+      { id: 'step4', title: 'Ramas Rango A y B', desc: '<= 120s y 2 objetivos -> 600 oro; 1 obj -> 300 oro.' },
+      { id: 'step5', title: 'Probé con (45, 3), (90, 2) y (180, 1)', desc: 'Comprobé las 3 recompensas.' },
+    ],
+  },
+];
 ---
 
 <GameLayout
-  title="Condicionales & Combate RPG — 30 Misiones Gamer"
-  description="Domina condicionales y toma de decisiones en videojuegos: combate por turnos, debilidades elementales, esquivas y loot."
+  title="Condicionales & Combate RPG — 20 Misiones Gamer"
+  description="Domina condicionales y toma de decisiones en videojuegos: combate por turnos, debilidades elementales, esquivas, parry y loot."
   activeModule="conditionals"
 >
   <div class="gamer-universe min-h-screen bg-[#070B14] text-slate-100 relative overflow-hidden pb-16">
@@ -113,7 +300,7 @@ for (let i = 6; i <= 30; i++) {
           <span>Condicionales & Combate RPG</span>
         </h1>
         <p class="mt-2 text-sm text-slate-300 font-medium leading-relaxed max-w-3xl">
-          30 desafíos de combate RPG y toma de decisiones lógicas: debilidades elementales, estados alterados, esquivas y loot. Resuelve en <strong>Python, Java, C#, C++, JS, PHP o PSeInt</strong>.
+          20 desafíos de combate RPG y toma de decisiones lógicas: debilidades elementales, estados alterados, esquivas, parry y loot. Resuelve en <strong>Python, Java, C#, C++, JS, PHP o PSeInt</strong>.
         </p>
       </div>
 
@@ -132,7 +319,7 @@ for (let i = 6; i <= 30; i++) {
         </div>
 
         <div class="flex items-center gap-2 w-full md:w-auto justify-end">
-          <button type="button" id="expandAll" class="px-3.5 py-2 rounded-xl border border-amber-500/50 bg-amber-950 hover:bg-amber-900 text-amber-300 font-nunito font-black text-xs cursor-pointer shadow-md hover:-translate-y-0.5 transition-transform">Expandir todos (30)</button>
+          <button type="button" id="expandAll" class="px-3.5 py-2 rounded-xl border border-amber-500/50 bg-amber-950 hover:bg-amber-900 text-amber-300 font-nunito font-black text-xs cursor-pointer shadow-md hover:-translate-y-0.5 transition-transform">Expandir todos (20)</button>
           <button type="button" id="collapseAll" class="px-3.5 py-2 rounded-xl border border-slate-700 bg-slate-950 hover:bg-slate-900 text-slate-400 font-nunito font-black text-xs cursor-pointer hover:-translate-y-0.5 transition-transform">Colapsar todos</button>
         </div>
       </div>
@@ -141,9 +328,9 @@ for (let i = 6; i <= 30; i++) {
       <section class="mb-10">
         <div class="flex items-center justify-between mb-3 border-b border-amber-500/30 pb-2">
           <h2 class="text-base font-['Orbitron'] font-black text-white m-0 flex items-center gap-2">
-            <span>📋</span> Misiones de Combate (1 al 30)
+            <span>📋</span> Misiones de Combate (1 al 20)
           </h2>
-          <span class="text-xs font-nunito font-bold bg-amber-950 border border-amber-500/50 text-amber-300 px-2.5 py-0.5 rounded-full">30 misiones · +3,000 XP</span>
+          <span class="text-xs font-nunito font-bold bg-amber-950 border border-amber-500/50 text-amber-300 px-2.5 py-0.5 rounded-full">20 misiones · +2,000 XP</span>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-2" id="quickList">
@@ -437,10 +624,11 @@ for (let i = 6; i <= 30; i++) {
           btn.addEventListener('click', () => {
             const lang = btn.getAttribute('data-lang');
             document.querySelectorAll('#langSelectorGroup .lang-tab-btn').forEach(b => {
-              b.classList.remove('bg-[#1E1210]', 'text-white');
-              b.classList.add('bg-white', 'text-[#1E1210]');
+              b.classList.remove('bg-amber-600', 'text-white');
+              b.classList.add('bg-slate-900', 'text-slate-300');
             });
-            btn.classList.add('bg-[#1E1210]', 'text-white');
+            btn.classList.remove('bg-slate-900', 'text-slate-300');
+            btn.classList.add('bg-amber-600', 'text-white');
             document.querySelectorAll('#codeBlocksContainer .code-panel').forEach(p => {
               p.classList.toggle('hidden', p.getAttribute('data-lang-panel') !== lang);
             });

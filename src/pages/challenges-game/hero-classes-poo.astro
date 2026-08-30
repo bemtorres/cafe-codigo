@@ -4,11 +4,12 @@ import CodeBlock from '../../components/CodeBlock.astro';
 import { gameHeroPooSolutions } from '../../data/gameHeroPooSolutions';
 
 const exercises = [
+  // SECCIÓN 1: MODELADO BÁSICO DE PERSONAJES Y MÉTODOS (1 - 5)
   {
     id: 1,
-    section: '1. Clases Base de Personajes y Atributos',
-    title: 'Crear Clase Personaje RPG',
-    statement: 'Crear una clase Personaje con atributos nombre, salud y nivel, y un método mostrarFicha() que imprima la información del héroe.',
+    section: '1. Clases Base y Atributos RPG',
+    title: 'Crear Clase Base Personaje',
+    statement: 'Crear una clase Personaje con atributos nombre, salud y nivel, y un método mostrarFicha() que imprima la información y tarjeta del héroe.',
     steps: [
       { id: 'step1', title: 'Comprendí el modelado orientado a objetos', desc: 'Definir propiedades de la clase Personaje.' },
       { id: 'step2', title: 'Creé el constructor', desc: 'Inicialicé nombre, salud y nivel.' },
@@ -16,29 +17,266 @@ const exercises = [
       { id: 'step4', title: 'Instancié un objeto', desc: 'Creé un héroe con ("Arthur", 1200, 15).' },
       { id: 'step5', title: 'Probé la invocación', desc: 'Llamé a heroe.mostrarFicha() y validé la salida.' },
     ],
-  }
-];
-
-for (let i = 2; i <= 20; i++) {
-  exercises.push({
-    id: i,
-    section: i <= 7 ? '2. Herencia de Héroes (Guerrero, Mago, Pícaro)' : i <= 14 ? '3. Habilidades Especiales y Polimorfismo' : '4. Interfaces y Sistema de Equipamiento',
-    title: `Misión POO ${i}: Arquitectura de Héroes #${i}`,
-    statement: `Modelar la clase y método ejecutarHabilidad() para la misión ${i} del sistema de combate por roles RPG.`,
+  },
+  {
+    id: 2,
+    section: '1. Clases Base y Atributos RPG',
+    title: 'Encapsulamiento y Daño Controlado',
+    statement: 'Crear una clase Heroe con atributo de salud protegido/privado, un método recibirDanio(cantidad) que evite que la vida baje de 0 y un método getter para consultar la vida.',
     steps: [
-      { id: 'step1', title: 'Comprendí la arquitectura POO', desc: `Diseñar la clase para la misión ${i}.` },
-      { id: 'step2', title: 'Definí atributos y constructor', desc: 'Inicialicé los estados del héroe.' },
-      { id: 'step3', title: 'Implementé métodos de combate', desc: 'Escribí la lógica de habilidades.' },
-      { id: 'step4', title: 'Instancié y ejecuté', desc: 'Creé el objeto de prueba.' },
-      { id: 'step5', title: 'Verifiqué la salida', desc: 'Comprobé en consola.' },
-    ]
-  });
-}
+      { id: 'step1', title: 'Comprendí el encapsulamiento', desc: 'Ocultar la salud directa para validar cambios.' },
+      { id: 'step2', title: 'Declaré la clase y constructor', desc: 'Definí atributos privados.' },
+      { id: 'step3', title: 'Implementé recibirDanio(cantidad)', desc: 'Resté salud asegurando mínimo 0.' },
+      { id: 'step4', title: 'Creé getter getSalud()', desc: 'Permití lectura segura de la vida.' },
+      { id: 'step5', title: 'Probé daño excesivo (80 daño con 40 HP)', desc: 'Verifiqué que la salud quedó en 0 y no negativa.' },
+    ],
+  },
+  {
+    id: 3,
+    section: '1. Clases Base y Atributos RPG',
+    title: 'Interacción entre Objetos (Combate)',
+    statement: 'Crear una clase Personaje con método atacar(objetivo) que reciba otra instancia de Personaje y reduzca los puntos de vida del enemigo según el poder de ataque del atacante.',
+    steps: [
+      { id: 'step1', title: 'Comprendí el paso de objetos como parámetros', desc: 'Recibir objetivo de tipo Personaje.' },
+      { id: 'step2', title: 'Declaré la clase y constructor', desc: 'Definí nombre, hp y ataque.' },
+      { id: 'step3', title: 'Implementé método atacar(objetivo)', desc: 'Resté ataque a objetivo.hp.' },
+      { id: 'step4', title: 'Instancié guerrero y monstruo', desc: 'Creé "Sir Gallant" y "Orco".' },
+      { id: 'step5', title: 'Probé el duelo', desc: 'Verifiqué el descuento de HP en la consola.' },
+    ],
+  },
+  {
+    id: 4,
+    section: '1. Clases Base y Atributos RPG',
+    title: 'Poción de Curación con Límite Máximo',
+    statement: 'Crear una clase Pocion con poderCurativo y método aplicar(heroe) que incremente los puntos de salud de una instancia Heroe sin sobrepasar nunca su saludMax.',
+    steps: [
+      { id: 'step1', title: 'Comprendí la asociación de clases', desc: 'Pocion modifica el estado de Heroe.' },
+      { id: 'step2', title: 'Declaré clase Pocion y Heroe', desc: 'Definí propiedades de ambas clases.' },
+      { id: 'step3', title: 'Calculé curación segura', desc: 'curacion = min(poder, saludMax - salud).' },
+      { id: 'step4', title: 'Actualicé vida del héroe', desc: 'Sumé la curación a la salud actual.' },
+      { id: 'step5', title: 'Probé curación con vida casi llena', desc: 'Verifiqué que no excedió saludMax.' },
+    ],
+  },
+  {
+    id: 5,
+    section: '1. Clases Base y Atributos RPG',
+    title: 'Sistema de Nivel y Experiencia',
+    statement: 'Crear una clase Aventurero con método ganarExp(puntos) que acumule experiencia, suba de nivel automáticamente cada 100 EXP e incremente el poder de ataque.',
+    steps: [
+      { id: 'step1', title: 'Comprendí la progresión de estados', desc: 'Subir nivel y reiniciar o restar EXP acumulada.' },
+      { id: 'step2', title: 'Declaré la clase y constructor', desc: 'Inicialicé nivel = 1, exp = 0, ataque = 15.' },
+      { id: 'step3', title: 'Implementé bucle de Level Up', desc: 'Mientras exp >= 100: nivel++, ataque += 5.' },
+      { id: 'step4', title: 'Emití avisos de subida de nivel', desc: 'Notifiqué el nuevo nivel y estadísticas.' },
+      { id: 'step5', title: 'Probé ganando 125 EXP de golpe', desc: 'Validé que subió a nivel 2 con 25 EXP restante.' },
+    ],
+  },
+
+  // SECCIÓN 2: HERENCIA Y ESPECIALIZACIÓN DE CLASES (6 - 10)
+  {
+    id: 6,
+    section: '2. Herencia y Especialización de Clases',
+    title: 'Herencia de Clases RPG (Mago y Arquero)',
+    statement: 'Crear una clase base Heroe y subclases Mago (con atributo mana y método lanzarHechizo()) y Arquero (con atributo flechas y método dispararFlecha()).',
+    steps: [
+      { id: 'step1', title: 'Comprendí la herencia de clases', desc: 'Subclases reutilizan nombre y salud de la clase base.' },
+      { id: 'step2', title: 'Creé clase padre Heroe', desc: 'Definí constructor base.' },
+      { id: 'step3', title: 'Creé subclase Mago con super()', desc: 'Agregué atributo mana y lanzarHechizo().' },
+      { id: 'step4', title: 'Creé subclase Arquero con super()', desc: 'Agregué atributo flechas y dispararFlecha().' },
+      { id: 'step5', title: 'Instancié y probé ambos roles', desc: 'Comprobé las habilidades específicas de cada rol.' },
+    ],
+  },
+  {
+    id: 7,
+    section: '2. Herencia y Especialización de Clases',
+    title: 'Polimorfismo: Habilidades Definitivas',
+    statement: 'Crear una clase abstracta o base Heroe y subclases Paladin y Picaro que sobrescriban el método ejecutarUlti() con efectos visuales y mecánicas únicas para cada clase.',
+    steps: [
+      { id: 'step1', title: 'Comprendí el polimorfismo', desc: 'Mismo nombre de método, distinta implementación.' },
+      { id: 'step2', title: 'Declaré clase base Heroe', desc: 'Definí método abstracto o base ejecutarUlti().' },
+      { id: 'step3', title: 'Sobrescribí en Paladín', desc: 'Implementé "Sentencia Sagrada".' },
+      { id: 'step4', title: 'Sobrescribí en Pícaro', desc: 'Implementé "Asesinato en las Sombras".' },
+      { id: 'step5', title: 'Iteré un arreglo polimórfico', desc: 'Llamé a ejecutarUlti() sobre una lista de héroes.' },
+    ],
+  },
+  {
+    id: 8,
+    section: '2. Herencia y Especialización de Clases',
+    title: 'Sistema de Armas y Equipamiento',
+    statement: 'Crear una clase Arma con atributos nombre y ataque, y una clase Heroe con método equiparArma(arma) que actualice su arma equipada y sume el daño al ataque total.',
+    steps: [
+      { id: 'step1', title: 'Comprendí la agregación de objetos', desc: 'Un héroe contiene una referencia a un Arma.' },
+      { id: 'step2', title: 'Declaré clase Arma', desc: 'Definí nombre y ataque.' },
+      { id: 'step3', title: 'Declaré clase Heroe', desc: 'Agregué campo armaEquipada.' },
+      { id: 'step4', title: 'Implementé equiparArma(arma)', desc: 'Calculé ataqueBase + arma.ataque.' },
+      { id: 'step5', title: 'Probé equipando "Filo del Viento"', desc: 'Verifiqué que el ataque subió de 20 a 75.' },
+    ],
+  },
+  {
+    id: 9,
+    section: '2. Herencia y Especialización de Clases',
+    title: 'Escudo y Mitigación de Daño',
+    statement: 'Crear una clase Escudo con defensa y método mitigarDanio(danioEntrante) que calcule y retorne el daño neto que pasará a la salud del personaje tras el bloqueo.',
+    steps: [
+      { id: 'step1', title: 'Comprendí la lógica defensiva', desc: 'danioNeto = max(0, danio - defensa).' },
+      { id: 'step2', title: 'Declaré la clase Escudo', desc: 'Inicialicé nombre y valor de defensa.' },
+      { id: 'step3', title: 'Implementé mitigarDanio(danio)', desc: 'Resté la armadura al impacto.' },
+      { id: 'step4', title: 'Retorné daño neto y mitigado', desc: 'Devolví los valores calculados.' },
+      { id: 'step5', title: 'Probé con 60 de daño y 25 de defensa', desc: 'Verifiqué daño neto de 35 HP.' },
+    ],
+  },
+  {
+    id: 10,
+    section: '2. Herencia y Especialización de Clases',
+    title: 'Compañero / Mascota de Batalla',
+    statement: 'Crear una clase Mascota con nombre y danioApoyo, y método asistirEnCombate(objetivo) que ejecute un ataque de soporte automático reduciendo la vida del enemigo.',
+    steps: [
+      { id: 'step1', title: 'Comprendí el modelado de acompañantes (Pet)', desc: 'Entidad que interactúa en combate.' },
+      { id: 'step2', title: 'Declaré clase Mascota', desc: 'Definí nombre y daño de apoyo.' },
+      { id: 'step3', title: 'Implementé asistirEnCombate(objetivo)', desc: 'Desconté vida al objetivo.' },
+      { id: 'step4', title: 'Instancié mascota "Fenrir"', desc: 'Asigné 20 de daño.' },
+      { id: 'step5', title: 'Probé asistencia sobre un Goblin', desc: 'Verifiqué que la salud del goblin bajó de 50 a 30.' },
+    ],
+  },
+
+  // SECCIÓN 3: COMPOSICIÓN, INVENTARIOS Y EFECTOS (11 - 15)
+  {
+    id: 11,
+    section: '3. Composición y Efectos de Estado',
+    title: 'Inventario como Objeto Compuesto',
+    statement: 'Crear una clase Inventario con capacidad máxima y métodos agregar(item) y listar(), e integrarla como un atributo de composición dentro de la clase Heroe.',
+    steps: [
+      { id: 'step1', title: 'Comprendí la composición ("Tiene un")', desc: 'El Héroe TIENE UN Inventario.' },
+      { id: 'step2', title: 'Declaré clase Inventario', desc: 'Definí lista interna y límite de slots.' },
+      { id: 'step3', title: 'Instancié inventario dentro de Heroe', desc: 'self.mochila = Inventario(capacidad).' },
+      { id: 'step4', title: 'Agregué ítems mediante el objeto interno', desc: 'Llamé a heroe.mochila.agregar(item).' },
+      { id: 'step5', title: 'Probé llenado de mochila', desc: 'Verifiqué que respetó la capacidad.' },
+    ],
+  },
+  {
+    id: 12,
+    section: '3. Composición y Efectos de Estado',
+    title: 'Sistema de Efectos de Estado (Buff/Debuff)',
+    statement: 'Crear una clase EfectoEstado con nombre, danioPorTurno y duracionTurnos, y un método aplicar(heroe) que descuente vida y reduzca la duración en cada turno activo.',
+    steps: [
+      { id: 'step1', title: 'Comprendí los efectos en el tiempo (DoT)', desc: 'Aplicar daño y restar turnos activos.' },
+      { id: 'step2', title: 'Declaré la clase EfectoEstado', desc: 'Definí nombre, daño y duración.' },
+      { id: 'step3', title: 'Implementé método aplicar(heroe)', desc: 'Resté daño y decrementé duracion.' },
+      { id: 'step4', title: 'Instancié "Veneno Letal"', desc: 'Asigné 15 de daño y 3 turnos.' },
+      { id: 'step5', title: 'Probé ejecución de turnos', desc: 'Comprobé la reducción de turnos y salud.' },
+    ],
+  },
+  {
+    id: 13,
+    section: '3. Composición y Efectos de Estado',
+    title: 'Jefe Final con Fases',
+    statement: 'Crear una clase JefeFinal que al recibir daño y descender al 50% o menos de su salud máxima, active automáticamente su "Modo Furia" duplicando su ataque.',
+    steps: [
+      { id: 'step1', title: 'Comprendí las máquinas de estado en POO', desc: 'Cambiar atributos según umbrales de vida.' },
+      { id: 'step2', title: 'Declaré clase JefeFinal', desc: 'Inicialicé hpMax, ataque y bandera enFuria.' },
+      { id: 'step3', title: 'Implementé recibirDanio(cantidad)', desc: 'Evalué condición hp <= hpMax * 0.5.' },
+      { id: 'step4', title: 'Activé Modo Furia', desc: 'Dupliqué ataque y emití alerta épica.' },
+      { id: 'step5', title: 'Probé bajar vida de 1000 a 400', desc: 'Verifiqué que el ataque subió de 40 a 80.' },
+    ],
+  },
+  {
+    id: 14,
+    section: '3. Composición y Efectos de Estado',
+    title: 'Durabilidad de Equipamiento',
+    statement: 'Crear una clase Armadura con defensa y durabilidad, y un método recibirImpacto() que reduzca 10 puntos de durabilidad por golpe y avise si la armadura se rompe.',
+    steps: [
+      { id: 'step1', title: 'Comprendí el desgaste de objetos', desc: 'Restar durabilidad hasta 0.' },
+      { id: 'step2', title: 'Declaré la clase Armadura', desc: 'Definí nombre, defensa y durabilidad.' },
+      { id: 'step3', title: 'Implementé recibirImpacto()', desc: 'Resté 10 de durabilidad.' },
+      { id: 'step4', title: 'Evalué rotura', desc: 'Notifiqué cuando la durabilidad llegó a 0.' },
+      { id: 'step5', title: 'Probé con armadura de 20 pts', desc: 'Verifiqué que al 2do golpe se rompió.' },
+    ],
+  },
+  {
+    id: 15,
+    section: '3. Composición y Efectos de Estado',
+    title: 'Sistema de Economía: Mercader NPC',
+    statement: 'Crear una clase Mercader con catálogo de ítems y precios, y un método vender(item, comprador) que descuente el oro del comprador y transfiera el objeto a su mochila.',
+    steps: [
+      { id: 'step1', title: 'Comprendí la transacción económica', desc: 'Validar fondos de oro y transferir ítem.' },
+      { id: 'step2', title: 'Declaré clase Mercader', desc: 'Definí catálogo con diccionario/mapa de precios.' },
+      { id: 'step3', title: 'Implementé vender(item, comprador)', desc: 'Verifiqué comprador.oro >= precio.' },
+      { id: 'step4', title: 'Realicé cobro y entrega', desc: 'Resté oro y agregué ítem a la mochila.' },
+      { id: 'step5', title: 'Probé compra exitosa y con oro insuficiente', desc: 'Validé ambos casos.' },
+    ],
+  },
+
+  // SECCIÓN 4: INTERFACES, CLANES Y FÁBRICAS (16 - 20)
+  {
+    id: 16,
+    section: '4. Interfaces, Grupos y Fábricas',
+    title: 'Interfaz o Contrato de Lanzador Mágico',
+    statement: 'Crear una interfaz o clase abstracta LanzadorMagico con el método canalizarHechizo(costeMana), e implementarla en la clase Brujo con control de reservas mágicas.',
+    steps: [
+      { id: 'step1', title: 'Comprendí los contratos e interfaces', desc: 'Obligar a implementar canalizarHechizo.' },
+      { id: 'step2', title: 'Declaré interfaz / clase abstracta', desc: 'Firma de método sin cuerpo.' },
+      { id: 'step3', title: 'Implementé en clase Brujo', desc: 'Validé si mana >= coste y resté el coste.' },
+      { id: 'step4', title: 'Instancié el brujo "Guldan"', desc: 'Inicialicé con 100 de maná.' },
+      { id: 'step5', title: 'Probé lanzar hechizo de 40 MP', desc: 'Verifiqué que restó a 60 MP.' },
+    ],
+  },
+  {
+    id: 17,
+    section: '4. Interfaces, Grupos y Fábricas',
+    title: 'Cofre del Tesoro con Cerradura',
+    statement: 'Crear una clase CofreTesoro con recompensa y requiereLlave, y un método abrir(tieneLlave) que entregue el botín si se posee la llave y evite ser reabierto.',
+    steps: [
+      { id: 'step1', title: 'Comprendí el control de apertura y saqueo', desc: 'Validar llave y bandera abierto.' },
+      { id: 'step2', title: 'Declaré clase CofreTesoro', desc: 'Definí recompensa, requiereLlave y abierto = false.' },
+      { id: 'step3', title: 'Implementé método abrir(tieneLlave)', desc: 'Verifiqué requisitos de cerradura.' },
+      { id: 'step4', title: 'Cambié estado a abierto', desc: 'Bloqueé futuros saqueos.' },
+      { id: 'step5', title: 'Probé abrir sin llave y con llave', desc: 'Comprobé bloqueo y entrega de botín.' },
+    ],
+  },
+  {
+    id: 18,
+    section: '4. Interfaces, Grupos y Fábricas',
+    title: 'Grupo de Aventureros (Party)',
+    statement: 'Crear una clase Party que administre una lista de héroes, con métodos para agregarHeroe(heroe) y curarGrupo(cantidadCuracion) que aplique salud a todos los miembros.',
+    steps: [
+      { id: 'step1', title: 'Comprendí la gestión de colecciones de objetos', desc: 'Manejar lista de instancias de personajes.' },
+      { id: 'step2', title: 'Declaré la clase Party', desc: 'Inicialicé arreglo miembros.' },
+      { id: 'step3', title: 'Implementé curarGrupo(cant)', desc: 'Iteré sobre cada héroe sumando salud.' },
+      { id: 'step4', title: 'Agregué varios miembros al equipo', desc: 'Registré a "Arthur" y "Gandalf".' },
+      { id: 'step5', title: 'Probé curación masiva de +30 HP', desc: 'Verifiqué la curación simultánea del equipo.' },
+    ],
+  },
+  {
+    id: 19,
+    section: '4. Interfaces, Grupos y Fábricas',
+    title: 'Árbol de Habilidades (SkillTree)',
+    statement: 'Crear una clase SkillTree con puntosTalento y método aprenderSkill(nombre, coste) que verifique si hay suficientes puntos, los deduzca y registre la habilidad.',
+    steps: [
+      { id: 'step1', title: 'Comprendí el árbol de talentos RPG', desc: 'Gestionar lista de habilidades y puntos disponibles.' },
+      { id: 'step2', title: 'Declaré clase SkillTree', desc: 'Definí puntosTalento y lista skills.' },
+      { id: 'step3', title: 'Implementé aprenderSkill(nombre, coste)', desc: 'Comprobé puntos >= coste.' },
+      { id: 'step4', title: 'Registré la nueva habilidad', desc: 'Desconté los puntos y guardé el talento.' },
+      { id: 'step5', title: 'Probé desbloquear habilidad con y sin puntos', desc: 'Validé el éxito y el rechazo.' },
+    ],
+  },
+  {
+    id: 20,
+    section: '4. Interfaces, Grupos y Fábricas',
+    title: 'Fábrica de Héroes (HeroFactory)',
+    statement: 'Crear una clase o método estático HeroeFactory.crearHeroe(arquetipo, nombre) que aplique el patrón Factory para instanciar automáticamente héroes según su rol (Guerrero, Mago, Pícaro).',
+    steps: [
+      { id: 'step1', title: 'Comprendí el patrón de diseño Factory', desc: 'Centralizar la creación de objetos según parámetro.' },
+      { id: 'step2', title: 'Declaré clase HeroeFactory', desc: 'Definí método estático crearHeroe.' },
+      { id: 'step3', title: 'Estructuré selección de arquetipos', desc: 'Switch o condicional para Guerrero, Mago o Pícaro.' },
+      { id: 'step4', title: 'Instancié con estadísticas predefinidas', desc: 'Asigné HP y ataque correspondientes a cada clase.' },
+      { id: 'step5', title: 'Probé instanciando un Guerrero y un Mago', desc: 'Verifiqué las fichas generadas.' },
+    ],
+  },
+];
 ---
 
 <GameLayout
   title="POO: Clases de Héroes & Habilidades — 20 Misiones Gamer"
-  description="Domina Programación Orientada a Objetos en videojuegos: clases de héroes, herencia RPG, polimorfismo de habilidades e inventarios."
+  description="Domina Programación Orientada a Objetos en videojuegos: clases de héroes, herencia RPG, polimorfismo, composición y fábricas."
   activeModule="poo"
 >
   <div class="gamer-universe min-h-screen bg-[#070B14] text-slate-100 relative overflow-hidden pb-16">
@@ -53,14 +291,14 @@ for (let i = 2; i <= 20; i++) {
         <div class="flex items-center gap-2 mb-2">
           <a href="/challenges-game/" class="text-xs font-nunito font-extrabold text-rose-400 no-underline hover:text-rose-300">← Volver a Zona Gamer</a>
           <span class="text-slate-600">•</span>
-          <span class="text-xs font-nunito font-black uppercase tracking-widest text-rose-400 bg-rose-950/80 border border-rose-500/40 px-2 py-0.5 rounded-md">Módulo 05 · POO & Héroes</span>
+          <span class="text-xs font-nunito font-black uppercase tracking-widest text-rose-400 bg-rose-950/80 border border-rose-500/40 px-2 py-0.5 rounded-md">Módulo 05 · Programación Orientada a Objetos</span>
         </div>
         <h1 class="m-0 text-2xl sm:text-4xl font-['Orbitron'] font-black text-white flex items-center gap-2.5">
           <span>🧙‍♂️</span>
           <span>POO: Clases de Héroes & Habilidades</span>
         </h1>
         <p class="mt-2 text-sm text-slate-300 font-medium leading-relaxed max-w-3xl">
-          20 desafíos de Programación Orientada a Objetos para videojuegos: clases Guerrero, Mago, Pícaro, herencia, polimorfismo e interfaces. Resuelve en <strong>Python, Java, C#, C++, JS, PHP o PSeInt</strong>.
+          20 desafíos de Programación Orientada a Objetos ambientados en RPGs: clases de personajes, herencia de roles, polimorfismo de ultis, composición de inventarios y patrones fábrica. Resuelve en <strong>Python, Java, C#, C++, JS, PHP o PSeInt</strong>.
         </p>
       </div>
 
@@ -72,7 +310,7 @@ for (let i = 2; i <= 20; i++) {
             <input
               type="text"
               id="searchBox"
-              placeholder="Buscar misión de héroe..."
+              placeholder="Buscar misión POO..."
               class="w-full px-3 py-2 rounded-xl border border-slate-700 font-nunito font-bold text-xs bg-slate-950 text-white focus:outline-none focus:border-rose-400"
             />
           </div>
@@ -88,7 +326,7 @@ for (let i = 2; i <= 20; i++) {
       <section class="mb-10">
         <div class="flex items-center justify-between mb-3 border-b border-rose-500/30 pb-2">
           <h2 class="text-base font-['Orbitron'] font-black text-white m-0 flex items-center gap-2">
-            <span>📋</span> Misiones de Héroes (1 al 20)
+            <span>📋</span> Misiones POO (1 al 20)
           </h2>
           <span class="text-xs font-nunito font-bold bg-rose-950 border border-rose-500/50 text-rose-300 px-2.5 py-0.5 rounded-full">20 misiones · +2,000 XP</span>
         </div>
@@ -102,7 +340,7 @@ for (let i = 2; i <= 20; i++) {
               <a href={`#poo-${ex.id}`} class="quick-link flex items-center gap-2.5 flex-1 min-w-0 no-underline text-inherit">
                 <span class="quick-num">{String(ex.id).padStart(2, '0')}</span>
                 <span class="quick-title truncate">{ex.title}</span>
-                <span class="quick-badge-done hidden text-[0.65rem] font-bold bg-emerald-950 text-emerald-300 px-1.5 py-0.5 rounded border border-emerald-500/50">✓ Completada</span>
+                <span class="quick-badge-done hidden text-[0.65rem] font-bold bg-emerald-950 text-emerald-300 px-1.5 py-0.5 rounded border border-emerald-500/50">✓ Victoria</span>
                 <span class="quick-arrow">↓</span>
               </a>
             </div>
@@ -122,7 +360,7 @@ for (let i = 2; i <= 20; i++) {
                     <span class="text-[0.68rem] text-rose-400 font-extrabold uppercase block leading-tight">{ex.section}</span>
                     <h3 class="m-0 text-sm sm:text-base text-white truncate flex items-center gap-2">
                       <span>{ex.id}. {ex.title}</span>
-                      <span class="card-done-tag hidden text-xs font-bold text-emerald-300 bg-emerald-950/80 px-2 py-0.5 rounded-md border border-emerald-500/50">✓ (+100 XP)</span>
+                      <span class="card-done-tag hidden text-xs font-bold text-emerald-300 bg-emerald-950/80 px-2 py-0.5 rounded-md border border-emerald-500/50">✓ Victoria (+100 XP)</span>
                     </h3>
                   </div>
                 </div>
@@ -163,27 +401,28 @@ for (let i = 2; i <= 20; i++) {
         </div>
       </section>
 
-      <!-- MODAL -->
+      <!-- MODAL DE SOLUCIÓN -->
       <div id="solutionModal" class="fixed inset-0 z-[100] bg-black/80 backdrop-blur-md hidden items-center justify-center p-4 sm:p-6">
         <div class="bg-[#0B132B] border-2 border-rose-500/50 rounded-3xl w-full max-w-4xl max-h-[92vh] flex flex-col shadow-[0_0_40px_rgba(244,63,94,0.25)] overflow-hidden">
           <div class="bg-rose-950/80 border-b border-rose-500/30 p-4 sm:p-5 flex items-center justify-between">
             <div class="flex items-center gap-3">
               <span id="modalExNum" class="w-10 h-10 rounded-2xl bg-rose-600 text-white flex items-center justify-center font-black text-base shadow-[0_0_10px_#f43f5e]">01</span>
               <div>
-                <span class="text-[0.7rem] text-rose-400 font-extrabold uppercase block tracking-wider">Solución de POO Gamer</span>
-                <h3 id="modalExTitle" class="m-0 font-['Orbitron'] font-black text-base sm:text-lg text-white">Misión 1: Clase Personaje RPG</h3>
+                <span class="text-[0.7rem] text-rose-400 font-extrabold uppercase block tracking-wider">Solución de POO & Héroes RPG</span>
+                <h3 id="modalExTitle" class="m-0 font-['Orbitron'] font-black text-base sm:text-lg text-white">Misión 1: Crear Clase Personaje RPG</h3>
               </div>
             </div>
             <button type="button" id="closeSolutionModal" class="w-9 h-9 rounded-xl bg-slate-900 border border-slate-700 font-black text-base text-slate-300 flex items-center justify-center cursor-pointer hover:bg-rose-950 hover:border-rose-500 hover:text-rose-300 transition-colors">✕</button>
           </div>
 
           <div class="p-5 sm:p-6 overflow-y-auto flex-1 font-nunito">
-            <div id="mathVerificationStep" class="bg-[#050B1A] border-2 border-amber-500/40 rounded-3xl p-6 sm:p-8 text-center my-4">
+            <!-- PASO 1: RETO MATEMÁTICO -->
+            <div id="mathVerificationStep" class="bg-[#050B1A] border-2 border-rose-500/40 rounded-3xl p-6 sm:p-8 text-center my-4">
               <div class="text-4xl mb-2">🔐</div>
-              <h4 class="font-['Orbitron'] font-black text-amber-400 text-lg sm:text-xl m-0 mb-1">Verificación para desbloquear la solución</h4>
+              <h4 class="font-['Orbitron'] font-black text-rose-400 text-lg sm:text-xl m-0 mb-1">Verificación para desbloquear la solución</h4>
               <p class="text-xs sm:text-sm font-bold text-slate-300 m-0 mb-4 max-w-md mx-auto">Resuelve la siguiente operación para visualizar el código:</p>
               <div class="inline-flex items-center justify-center gap-3 bg-slate-950 px-6 py-3.5 rounded-2xl border-2 border-rose-500/40 shadow-[0_0_15px_rgba(244,63,94,0.15)] mb-4">
-                <span id="mathChallengeText" class="font-['Orbitron'] font-black text-xl sm:text-2xl text-rose-300">25 + 15 =</span>
+                <span id="mathChallengeText" class="font-['Orbitron'] font-black text-xl sm:text-2xl text-rose-300">15 + 10 =</span>
                 <input type="number" id="mathAnswerInput" class="w-24 px-3 py-2 rounded-xl border border-rose-500/50 bg-slate-900 font-['Orbitron'] font-black text-xl text-center text-white outline-none focus:ring-2 focus:ring-rose-400" placeholder="?" />
               </div>
               <div>
@@ -194,6 +433,7 @@ for (let i = 2; i <= 20; i++) {
               <p id="mathErrorMessage" class="text-xs sm:text-sm font-black text-rose-400 m-0 mt-3 hidden">❌ Respuesta incorrecta. ¡Inténtalo de nuevo!</p>
             </div>
 
+            <!-- PASO 2: CÓDIGO -->
             <div id="solutionCodeStep" class="hidden flex-col gap-4">
               <div class="bg-[#060D1E] border border-rose-500/30 p-3 rounded-2xl">
                 <label class="block text-xs font-black text-rose-400 mb-2 uppercase tracking-wider">Selecciona el lenguaje:</label>
@@ -309,6 +549,7 @@ for (let i = 2; i <= 20; i++) {
       document.getElementById('expandAll')?.addEventListener('click', () => document.querySelectorAll('.ex-card[id]').forEach((d) => (d.open = true)));
       document.getElementById('collapseAll')?.addEventListener('click', () => document.querySelectorAll('.ex-card[id]').forEach((d) => (d.open = false)));
 
+      // Buscador
       document.getElementById('searchBox')?.addEventListener('input', (e) => {
         const val = (e.target.value || '').toLowerCase().trim();
         document.querySelectorAll('.search-target').forEach((el) => {
@@ -317,6 +558,7 @@ for (let i = 2; i <= 20; i++) {
         });
       });
 
+      // Modal
       (function() {
         const ALL_SOLUTIONS = window.ALL_GAME_POO_SOLUTIONS || {};
         const modal = document.getElementById('solutionModal');
@@ -326,7 +568,7 @@ for (let i = 2; i <= 20; i++) {
         const answerInput = document.getElementById('mathAnswerInput');
         const verifyBtn = document.getElementById('verifyMathBtn');
         const errorMsg = document.getElementById('mathErrorMessage');
-        let currentExpected = 40;
+        let currentExpected = 25;
 
         const openModal = (e) => {
           if (e) e.stopPropagation();
@@ -380,10 +622,11 @@ for (let i = 2; i <= 20; i++) {
           btn.addEventListener('click', () => {
             const lang = btn.getAttribute('data-lang');
             document.querySelectorAll('#langSelectorGroup .lang-tab-btn').forEach(b => {
-              b.classList.remove('bg-[#1E1210]', 'text-white');
-              b.classList.add('bg-white', 'text-[#1E1210]');
+              b.classList.remove('bg-rose-600', 'text-white');
+              b.classList.add('bg-slate-900', 'text-slate-300');
             });
-            btn.classList.add('bg-[#1E1210]', 'text-white');
+            btn.classList.remove('bg-slate-900', 'text-slate-300');
+            btn.classList.add('bg-rose-600', 'text-white');
             document.querySelectorAll('#codeBlocksContainer .code-panel').forEach(p => {
               p.classList.toggle('hidden', p.getAttribute('data-lang-panel') !== lang);
             });
@@ -418,7 +661,7 @@ for (let i = 2; i <= 20; i++) {
       font-weight: 900;
       font-size: 0.75rem;
       background: #1e1b4b;
-      color: #fb7185;
+      color: #fda4af;
       padding: 0.15rem 0.4rem;
       border-radius: 0.35rem;
       border: 1px solid rgba(244, 63, 94, 0.4);

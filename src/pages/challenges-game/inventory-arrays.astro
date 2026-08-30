@@ -4,9 +4,10 @@ import CodeBlock from '../../components/CodeBlock.astro';
 import { gameInventorySolutions } from '../../data/gameInventorySolutions';
 
 const exercises = [
+  // SECCIÓN 1: VISUALIZACIÓN, RECORRIDO Y BÚSQUEDA BÁSICA (1 - 5)
   {
     id: 1,
-    section: '1. Recorrido y Visualización de Mochila',
+    section: '1. Recorrido y Búsqueda Básica',
     title: 'Mostrar Inventario de Aventurero',
     statement: 'Crear una función mostrarInventario(items) que recorra una lista de cadenas con nombres de ítems e imprima "Slot [i]: [item]" para cada uno.',
     steps: [
@@ -16,29 +17,266 @@ const exercises = [
       { id: 'step4', title: 'Formateé la salida', desc: 'Imprimí "Slot [i]: [item]".' },
       { id: 'step5', title: 'Probé con mochila de 4 ítems', desc: 'Verifiqué que salieron los 4 slots numerados.' },
     ],
-  }
-];
-
-for (let i = 2; i <= 25; i++) {
-  exercises.push({
-    id: i,
-    section: i <= 10 ? '2. Inserción, Eliminación y Slots' : i <= 18 ? '3. Filtrado por Rareza y Consumibles' : '4. Ordenamiento y Capacidad Máxima',
-    title: `Misión de Inventario ${i}: Gestión de Loot #${i}`,
-    statement: `Desarrollar una función gestionarLootMision${i}(inventario, item) que procese el almacenamiento de ítems en el slot correspondiente de la mochila.`,
+  },
+  {
+    id: 2,
+    section: '1. Recorrido y Búsqueda Básica',
+    title: 'Buscar Posición de Ítem Clave',
+    statement: 'Crear una función buscarItemEnInventario(inventario, itemBuscado) que busque secuencialmente un objeto y retorne el número de slot donde se encuentra o un mensaje de error si no existe.',
     steps: [
-      { id: 'step1', title: 'Comprendí la regla del inventario', desc: `Procesar el slot del ítem para la misión ${i}.` },
-      { id: 'step2', title: 'Declaré la firma', desc: `Definí gestionarLootMision${i}(inventario, item).` },
-      { id: 'step3', title: 'Modifiqué la colección', desc: 'Agregué o verifiqué el ítem en la lista.' },
-      { id: 'step4', title: 'Retorné el inventario', desc: 'Devolví la colección actualizada.' },
-      { id: 'step5', title: 'Comprobé con prueba', desc: 'Validé el resultado en consola.' },
-    ]
-  });
-}
+      { id: 'step1', title: 'Comprendí la búsqueda lineal', desc: 'Recorrer el arreglo comparando cada cadena.' },
+      { id: 'step2', title: 'Declaré la función', desc: 'Definí buscarItemEnInventario(inventario, itemBuscado).' },
+      { id: 'step3', title: 'Retorno temprano al encontrar', desc: 'Devolví el índice + 1 al coincidir.' },
+      { id: 'step4', title: 'Manejo de ítem ausente', desc: 'Retorné mensaje de aviso tras el ciclo.' },
+      { id: 'step5', title: 'Probé con ítem existente y ausente', desc: 'Validé ambos retornos.' },
+    ],
+  },
+  {
+    id: 3,
+    section: '1. Recorrido y Búsqueda Básica',
+    title: 'Contar Existencias de un Consumible',
+    statement: 'Crear una función contarConsumibles(inventario, consumible) que cuente y retorne cuántas unidades de un consumible específico (ej. "Poción de Salud") posee el héroe en su mochila.',
+    steps: [
+      { id: 'step1', title: 'Comprendí el contador', desc: 'Inicializar variable contador en 0.' },
+      { id: 'step2', title: 'Declaré la función', desc: 'Definí contarConsumibles(inventario, consumible).' },
+      { id: 'step3', title: 'Incremento condicional', desc: 'Sumar 1 cada vez que coincida el ítem.' },
+      { id: 'step4', title: 'Retorno del total', desc: 'Devolver la cantidad acumulada.' },
+      { id: 'step5', title: 'Probé con lista con 3 pociones', desc: 'Verifiqué que el contador arrojó 3.' },
+    ],
+  },
+  {
+    id: 4,
+    section: '1. Recorrido y Búsqueda Básica',
+    title: 'Verificar si la Mochila está Llena',
+    statement: 'Crear una función inventarioLleno(inventario, capacidadMaxima) que determine si la cantidad actual de ítems alcanzó el límite máximo de almacenamiento o cuántos espacios libres restan.',
+    steps: [
+      { id: 'step1', title: 'Comprendí la validación de capacidad', desc: 'Comparar len(inventario) >= capacidadMaxima.' },
+      { id: 'step2', title: 'Declaré la función', desc: 'Definí inventarioLleno(inventario, capacidadMaxima).' },
+      { id: 'step3', title: 'Rama de inventario lleno', desc: 'Notifiqué que la mochila está a tope.' },
+      { id: 'step4', title: 'Rama de espacios disponibles', desc: 'Calculé los slots libres restantes.' },
+      { id: 'step5', title: 'Probé con 4/4 y con 2/5 slots', desc: 'Comprobé ambos estados.' },
+    ],
+  },
+  {
+    id: 5,
+    section: '1. Recorrido y Búsqueda Básica',
+    title: 'Calcular Peso Total de la Mochila',
+    statement: 'Crear una función calcularPesoTotal(pesos, pesoMaximo) que sume los pesos de todos los ítems de la mochila y advierta si el héroe sufre sobrepeso (penalización de velocidad).',
+    steps: [
+      { id: 'step1', title: 'Comprendí la suma de acumulador', desc: 'Sumar todos los números flotantes de pesos.' },
+      { id: 'step2', title: 'Declaré la función', desc: 'Definí calcularPesoTotal(pesos, pesoMaximo).' },
+      { id: 'step3', title: 'Calculé el total acumulado', desc: 'Obtuve el peso neto transportado.' },
+      { id: 'step4', title: 'Evalué sobrepeso', desc: 'Comparé contra el pesoMaximo permitido.' },
+      { id: 'step5', title: 'Probé con carga ligera y pesada', desc: 'Validé los mensajes de estado.' },
+    ],
+  },
+
+  // SECCIÓN 2: INSERCIÓN, ELIMINACIÓN Y MANIPULACIÓN (6 - 10)
+  {
+    id: 6,
+    section: '2. Inserción y Manipulación de Slots',
+    title: 'Agregar Ítem en Primer Slot Disponible',
+    statement: 'Crear una función agregarItem(inventario, nuevoItem, capacidad) que agregue un objeto al inventario si no ha alcanzado la capacidad máxima, o rechace la acción si no hay espacio.',
+    steps: [
+      { id: 'step1', title: 'Comprendí la inserción controlada', desc: 'Verificar longitud previa antes de agregar.' },
+      { id: 'step2', title: 'Declaré la función', desc: 'Definí agregarItem(inventario, nuevoItem, capacidad).' },
+      { id: 'step3', title: 'Agregué al arreglo', desc: 'Usé append/push si hay espacio libre.' },
+      { id: 'step4', title: 'Manejo de rechazo', desc: 'Mostré alerta de mochila llena.' },
+      { id: 'step5', title: 'Probé inserción exitosa y fallida', desc: 'Validé con mochila con y sin slots.' },
+    ],
+  },
+  {
+    id: 7,
+    section: '2. Inserción y Manipulación de Slots',
+    title: 'Descartar Ítem por Nombre',
+    statement: 'Crear una función descartarItem(inventario, itemDescartar) que busque y remueva la primera aparición del objeto indicado, devolviendo la lista actualizada.',
+    steps: [
+      { id: 'step1', title: 'Comprendí la remoción de elementos', desc: 'Localizar y eliminar del arreglo.' },
+      { id: 'step2', title: 'Declaré la función', desc: 'Definí descartarItem(inventario, itemDescartar).' },
+      { id: 'step3', title: 'Eliminé el elemento', desc: 'Apliqué remove/splice sobre la colección.' },
+      { id: 'step4', title: 'Manejo de ítem inexistente', desc: 'Evité errores si el ítem no estaba.' },
+      { id: 'step5', title: 'Probé descartar "Bota Vieja"', desc: 'Verifiqué la mochila actualizada.' },
+    ],
+  },
+  {
+    id: 8,
+    section: '2. Inserción y Manipulación de Slots',
+    title: 'Intercambiar Ítems entre Dos Slots',
+    statement: 'Crear una función intercambiarSlots(inventario, slotA, slotB) que intercambie las posiciones de dos objetos en la mochila usando una variable auxiliar o desestructuración.',
+    steps: [
+      { id: 'step1', title: 'Comprendí el algoritmo de intercambio (Swap)', desc: 'temp = arr[a]; arr[a] = arr[b]; arr[b] = temp.' },
+      { id: 'step2', title: 'Declaré la función', desc: 'Definí intercambiarSlots(inventario, slotA, slotB).' },
+      { id: 'step3', title: 'Validé índices dentro de rango', desc: 'Comprobé que ambos slots existen.' },
+      { id: 'step4', title: 'Realicé el intercambio', desc: 'Cambié las posiciones en el arreglo.' },
+      { id: 'step5', title: 'Probé cambiando Slot 1 con Slot 3', desc: 'Verifiqué las nuevas posiciones.' },
+    ],
+  },
+  {
+    id: 9,
+    section: '2. Inserción y Manipulación de Slots',
+    title: 'Invertir Cinturón de Acceso Rápido (Hotbar)',
+    statement: 'Crear una función invertirHotbar(items) que invierta el orden de los accesos directos de la barra rápida para cambiar de táctica de combate.',
+    steps: [
+      { id: 'step1', title: 'Comprendí la inversión de arreglos', desc: 'Invertir el orden de primero a último.' },
+      { id: 'step2', title: 'Declaré la función', desc: 'Definí invertirHotbar(items).' },
+      { id: 'step3', title: 'Invertí la secuencia', desc: 'Usé reverse() o bucle descendente.' },
+      { id: 'step4', title: 'Retorné la colección invertida', desc: 'Devolví el nuevo arreglo ordenado.' },
+      { id: 'step5', title: 'Probé con 4 consumibles', desc: 'Comprobé que el primero pasó al final.' },
+    ],
+  },
+  {
+    id: 10,
+    section: '2. Inserción y Manipulación de Slots',
+    title: 'Duplicar Recursos con Bendición',
+    statement: 'Crear una función duplicarRecursos(cantidades) que tome una lista con las cantidades de materiales recolectados y devuelva un nuevo arreglo con el doble de cada recurso.',
+    steps: [
+      { id: 'step1', title: 'Comprendí el mapeo/transformación', desc: 'Multiplicar cada valor x2.' },
+      { id: 'step2', title: 'Declaré la función', desc: 'Definí duplicarRecursos(cantidades).' },
+      { id: 'step3', title: 'Iteré multiplicando', desc: 'Apliqué map o bucle for.' },
+      { id: 'step4', title: 'Construí nuevo arreglo', desc: 'Guardé los resultados duplicados.' },
+      { id: 'step5', title: 'Probé con [15, 8, 40, 3]', desc: 'Verifiqué resultado [30, 16, 80, 6].' },
+    ],
+  },
+
+  // SECCIÓN 3: BÚSQUEDA DE MÁXIMOS, MÍNIMOS Y FILTROS (11 - 15)
+  {
+    id: 11,
+    section: '3. Filtros, Máximos y Estadísticas',
+    title: 'Encontrar el Arma con Mayor Daño',
+    statement: 'Crear una función obtenerArmaMasPoderosa(nombres, danios) que compare los valores de ataque del arsenal y devuelva el nombre y daño del arma más letal.',
+    steps: [
+      { id: 'step1', title: 'Comprendí la búsqueda del valor máximo', desc: 'Inicializar max en -1 y comparar.' },
+      { id: 'step2', title: 'Declaré la función', desc: 'Definí obtenerArmaMasPoderosa(nombres, danios).' },
+      { id: 'step3', title: 'Iteré comparando daños', desc: 'Guardé el nombre y el valor récord.' },
+      { id: 'step4', title: 'Retorné la mejor arma', desc: 'Devolví nombre y poder de ataque.' },
+      { id: 'step5', title: 'Probé con 4 armas distintas', desc: 'Verifiqué que eligió el Mandoble con 140 de daño.' },
+    ],
+  },
+  {
+    id: 12,
+    section: '3. Filtros, Máximos y Estadísticas',
+    title: 'Encontrar el Ítem de Menor Valor de Venta',
+    statement: 'Crear una función obtenerItemMenosValioso(nombres, precios) que identifique el objeto de menor precio de venta para venderlo o descartarlo primero.',
+    steps: [
+      { id: 'step1', title: 'Comprendí la búsqueda del mínimo', desc: 'Inicializar min con un valor muy alto.' },
+      { id: 'step2', title: 'Declaré la función', desc: 'Definí obtenerItemMenosValioso(nombres, precios).' },
+      { id: 'step3', title: 'Actualicé el mínimo', desc: 'Comparé cada precio con el registro menor.' },
+      { id: 'step4', title: 'Identifiqué el ítem', desc: 'Guardé el nombre correspondiente.' },
+      { id: 'step5', title: 'Probé con lista variada', desc: 'Verifiqué que detectó el Hueso por 5 monedas.' },
+    ],
+  },
+  {
+    id: 13,
+    section: '3. Filtros, Máximos y Estadísticas',
+    title: 'Filtrar Ítems por Calidad "Legendario"',
+    statement: 'Crear una función filtrarItemsLegendarios(items, calidades) que filtre y devuelva únicamente aquellos ítems cuya calidad correspondiente sea "Legendario".',
+    steps: [
+      { id: 'step1', title: 'Comprendí el filtrado condicional', desc: 'Extraer elementos que cumplan una condición.' },
+      { id: 'step2', title: 'Declaré la función', desc: 'Definí filtrarItemsLegendarios(items, calidades).' },
+      { id: 'step3', title: 'Revisé cada posición', desc: 'Comprobé si calidades[i] == "Legendario".' },
+      { id: 'step4', title: 'Construí lista filtrada', desc: 'Agregué los nombres coincidentes.' },
+      { id: 'step5', title: 'Probé con 4 ítems variados', desc: 'Verifiqué que devolvió solo los 2 legendarios.' },
+    ],
+  },
+  {
+    id: 14,
+    section: '3. Filtros, Máximos y Estadísticas',
+    title: 'Limpiar Ítems de Chatarra / Basura',
+    statement: 'Crear una función limpiarChatarra(inventario) que filtre y elimine todos los ítems inservibles como "Chatarra", "Piedra Rota" o "Bota Vieja" para liberar espacio.',
+    steps: [
+      { id: 'step1', title: 'Comprendí la exclusión de elementos', desc: 'Filtrar elementos no deseados de la lista.' },
+      { id: 'step2', title: 'Declaré la función', desc: 'Definí limpiarChatarra(inventario).' },
+      { id: 'step3', title: 'Definí lista de basura', desc: 'Agrupé los nombres de chatarra.' },
+      { id: 'step4', title: 'Generé inventario limpio', desc: 'Mantuve solo los ítems útiles.' },
+      { id: 'step5', title: 'Probé con mochila con 2 basuras', desc: 'Verifiqué que fueron removidas.' },
+    ],
+  },
+  {
+    id: 15,
+    section: '3. Filtros, Máximos y Estadísticas',
+    title: 'Calcular Promedio de Nivel de Equipamiento (Item Level)',
+    statement: 'Crear una función calcularItemLevelPromedio(nivelesEquip) que calcule el promedio aritmético de los niveles de armadura equipados por el personaje.',
+    steps: [
+      { id: 'step1', title: 'Comprendí el cálculo de promedio', desc: 'Sumar elementos y dividir entre la longitud.' },
+      { id: 'step2', title: 'Declaré la función', desc: 'Definí calcularItemLevelPromedio(nivelesEquip).' },
+      { id: 'step3', title: 'Sumé todos los niveles', desc: 'Recorrí el arreglo con acumulador.' },
+      { id: 'step4', title: 'Dividí entre la cantidad', desc: 'Calculé suma / longitud.' },
+      { id: 'step5', title: 'Probé con set de 5 piezas [85, 90, 80, 95, 75]', desc: 'Comprobé resultado 84.0 iLvl.' },
+    ],
+  },
+
+  // SECCIÓN 4: TRANSFORMACIONES, STACKS Y OPERACIONES AVANZADAS (16 - 20)
+  {
+    id: 16,
+    section: '4. Fusión, Stacks y Rotaciones',
+    title: 'Consolidar Dos Mochilas de Expedición',
+    statement: 'Crear una función fusionarInventarios(mochila1, mochila2) que combine todos los elementos de dos mochilas en un solo inventario consolidado.',
+    steps: [
+      { id: 'step1', title: 'Comprendí la concatenación', desc: 'Unir dos arreglos en uno solo.' },
+      { id: 'step2', title: 'Declaré la función', desc: 'Definí fusionarInventarios(m1, m2).' },
+      { id: 'step3', title: 'Concatené las listas', desc: 'Usé operador spread, concat o extend.' },
+      { id: 'step4', title: 'Retorné inventario conjunto', desc: 'Devolví la nueva lista consolidada.' },
+      { id: 'step5', title: 'Probé con mochilas de 3 y 2 ítems', desc: 'Verifiqué que la resultante tiene 5 ítems.' },
+    ],
+  },
+  {
+    id: 17,
+    section: '4. Fusión, Stacks y Rotaciones',
+    title: 'Apilar / Stackear Consumibles',
+    statement: 'Crear una función apilarItems(stackActual, cantidadNueva, maxStack) que acumule unidades en un slot hasta su límite máximo (ej. 64) y retorne las unidades sobrantes para otro slot.',
+    steps: [
+      { id: 'step1', title: 'Comprendí el apilamiento con límite', desc: 'total = actual + nueva; sobrante = total - max.' },
+      { id: 'step2', title: 'Declaré la función', desc: 'Definí apilarItems(actual, nueva, maxStack).' },
+      { id: 'step3', title: 'Caso sin desborde', desc: 'Si total <= maxStack, sobrante es 0.' },
+      { id: 'step4', title: 'Caso con desborde', desc: 'Calculé el remanente para un nuevo slot.' },
+      { id: 'step5', title: 'Probé con (45, 15) y (50, 30) de 64', desc: 'Comprobé 0 sobrante vs 16 sobrante.' },
+    ],
+  },
+  {
+    id: 18,
+    section: '4. Fusión, Stacks y Rotaciones',
+    title: 'Ordenar Arsenal de Armas de Mayor a Menor',
+    statement: 'Crear una función ordenarArsenalPorDanio(danios) que ordene los valores de daño de las armas en orden descendente (de mayor a menor poder).',
+    steps: [
+      { id: 'step1', title: 'Comprendí el ordenamiento descendente', desc: 'Ordenar de mayor a menor.' },
+      { id: 'step2', title: 'Declaré la función', desc: 'Definí ordenarArsenalPorDanio(danios).' },
+      { id: 'step3', title: 'Apliqué algoritmo de ordenamiento', desc: 'Usé sort() con comparador o algoritmo de burbuja.' },
+      { id: 'step4', title: 'Retorné lista ordenada', desc: 'Devolví el arreglo con los mayores al inicio.' },
+      { id: 'step5', title: 'Probé con [45, 120, 15, 80, 210, 65]', desc: 'Verifiqué que el 210 quedó primero y 15 al final.' },
+    ],
+  },
+  {
+    id: 19,
+    section: '4. Fusión, Stacks y Rotaciones',
+    title: 'Extraer Sub-Inventario de Combate Rápido',
+    statement: 'Crear una función obtenerItemsRapidos(inventario, cantidad) que extraiga un sub-arreglo con los primeros N elementos para equiparlos en la barra de combate.',
+    steps: [
+      { id: 'step1', title: 'Comprendí el rebanado (Slice)', desc: 'Extraer los primeros N elementos de un arreglo.' },
+      { id: 'step2', title: 'Declaré la función', desc: 'Definí obtenerItemsRapidos(inventario, cantidad).' },
+      { id: 'step3', title: 'Corté el sub-arreglo', desc: 'Usé slice(0, cant) o take(cant).' },
+      { id: 'step4', title: 'Retorné la barra rápida', desc: 'Devolví los ítems seleccionados.' },
+      { id: 'step5', title: 'Probé extrayendo 3 de 6 ítems', desc: 'Verifiqué que retornó los 3 primeros.' },
+    ],
+  },
+  {
+    id: 20,
+    section: '4. Fusión, Stacks y Rotaciones',
+    title: 'Rotar Carrusel de Consumibles',
+    statement: 'Crear una función rotarConsumibles(inventario) que mueva el último objeto del inventario al primer lugar (rotación circular a la derecha).',
+    steps: [
+      { id: 'step1', title: 'Comprendí la rotación circular', desc: 'El último elemento pasa a la posición 0.' },
+      { id: 'step2', title: 'Declaré la función', desc: 'Definí rotarConsumibles(inventario).' },
+      { id: 'step3', title: 'Extraje el último elemento', desc: 'Tomé arr[len - 1].' },
+      { id: 'step4', title: 'Reensamblé la lista', desc: 'Coloqué el último al inicio seguido del resto.' },
+      { id: 'step5', title: 'Probé con 4 consumibles', desc: 'Verifiqué que la "Antorcha" final pasó al inicio.' },
+    ],
+  },
+];
 ---
 
 <GameLayout
-  title="Arreglos & Inventarios de Loot — 25 Misiones Gamer"
-  description="Domina arreglos y colecciones en videojuegos: slots de mochila, peso máximo, filtros de rareza y stacks de pociones."
+  title="Arreglos & Inventarios de Loot — 20 Misiones Gamer"
+  description="Domina arreglos y colecciones en videojuegos: slots de mochila, peso máximo, filtros de rareza, stacks y ordenamientos."
   activeModule="inventory"
 >
   <div class="gamer-universe min-h-screen bg-[#070B14] text-slate-100 relative overflow-hidden pb-16">
@@ -60,7 +298,7 @@ for (let i = 2; i <= 25; i++) {
           <span>Arreglos & Inventarios de Loot</span>
         </h1>
         <p class="mt-2 text-sm text-slate-300 font-medium leading-relaxed max-w-3xl">
-          25 desafíos de gestión de inventarios: slots de mochila, filtrado por rareza, descarte de chatarra y stacks. Resuelve en <strong>Python, Java, C#, C++, JS, PHP o PSeInt</strong>.
+          20 desafíos de gestión de inventarios: slots de mochila, filtrado por rareza, descarte de chatarra, stacks y rotaciones. Resuelve en <strong>Python, Java, C#, C++, JS, PHP o PSeInt</strong>.
         </p>
       </div>
 
@@ -79,7 +317,7 @@ for (let i = 2; i <= 25; i++) {
         </div>
 
         <div class="flex items-center gap-2 w-full md:w-auto justify-end">
-          <button type="button" id="expandAll" class="px-3.5 py-2 rounded-xl border border-purple-500/50 bg-purple-950 hover:bg-purple-900 text-purple-300 font-nunito font-black text-xs cursor-pointer shadow-md hover:-translate-y-0.5 transition-transform">Expandir todos (25)</button>
+          <button type="button" id="expandAll" class="px-3.5 py-2 rounded-xl border border-purple-500/50 bg-purple-950 hover:bg-purple-900 text-purple-300 font-nunito font-black text-xs cursor-pointer shadow-md hover:-translate-y-0.5 transition-transform">Expandir todos (20)</button>
           <button type="button" id="collapseAll" class="px-3.5 py-2 rounded-xl border border-slate-700 bg-slate-950 hover:bg-slate-900 text-slate-400 font-nunito font-black text-xs cursor-pointer hover:-translate-y-0.5 transition-transform">Colapsar todos</button>
         </div>
       </div>
@@ -88,9 +326,9 @@ for (let i = 2; i <= 25; i++) {
       <section class="mb-10">
         <div class="flex items-center justify-between mb-3 border-b border-purple-500/30 pb-2">
           <h2 class="text-base font-['Orbitron'] font-black text-white m-0 flex items-center gap-2">
-            <span>📋</span> Misiones de Inventario (1 al 25)
+            <span>📋</span> Misiones de Inventario (1 al 20)
           </h2>
-          <span class="text-xs font-nunito font-bold bg-purple-950 border border-purple-500/50 text-purple-300 px-2.5 py-0.5 rounded-full">25 misiones · +2,500 XP</span>
+          <span class="text-xs font-nunito font-bold bg-purple-950 border border-purple-500/50 text-purple-300 px-2.5 py-0.5 rounded-full">20 misiones · +2,000 XP</span>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-2" id="quickList">
@@ -102,7 +340,7 @@ for (let i = 2; i <= 25; i++) {
               <a href={`#inv-${ex.id}`} class="quick-link flex items-center gap-2.5 flex-1 min-w-0 no-underline text-inherit">
                 <span class="quick-num">{String(ex.id).padStart(2, '0')}</span>
                 <span class="quick-title truncate">{ex.title}</span>
-                <span class="quick-badge-done hidden text-[0.65rem] font-bold bg-emerald-950 text-emerald-300 px-1.5 py-0.5 rounded border border-emerald-500/50">✓ Completada</span>
+                <span class="quick-badge-done hidden text-[0.65rem] font-bold bg-emerald-950 text-emerald-300 px-1.5 py-0.5 rounded border border-emerald-500/50">✓ Victoria</span>
                 <span class="quick-arrow">↓</span>
               </a>
             </div>
@@ -122,7 +360,7 @@ for (let i = 2; i <= 25; i++) {
                     <span class="text-[0.68rem] text-purple-400 font-extrabold uppercase block leading-tight">{ex.section}</span>
                     <h3 class="m-0 text-sm sm:text-base text-white truncate flex items-center gap-2">
                       <span>{ex.id}. {ex.title}</span>
-                      <span class="card-done-tag hidden text-xs font-bold text-emerald-300 bg-emerald-950/80 px-2 py-0.5 rounded-md border border-emerald-500/50">✓ (+100 XP)</span>
+                      <span class="card-done-tag hidden text-xs font-bold text-emerald-300 bg-emerald-950/80 px-2 py-0.5 rounded-md border border-emerald-500/50">✓ Victoria (+100 XP)</span>
                     </h3>
                   </div>
                 </div>
@@ -163,14 +401,14 @@ for (let i = 2; i <= 25; i++) {
         </div>
       </section>
 
-      <!-- MODAL -->
+      <!-- MODAL DE SOLUCIÓN -->
       <div id="solutionModal" class="fixed inset-0 z-[100] bg-black/80 backdrop-blur-md hidden items-center justify-center p-4 sm:p-6">
         <div class="bg-[#0B132B] border-2 border-purple-500/50 rounded-3xl w-full max-w-4xl max-h-[92vh] flex flex-col shadow-[0_0_40px_rgba(168,85,247,0.25)] overflow-hidden">
           <div class="bg-purple-950/80 border-b border-purple-500/30 p-4 sm:p-5 flex items-center justify-between">
             <div class="flex items-center gap-3">
               <span id="modalExNum" class="w-10 h-10 rounded-2xl bg-purple-600 text-white flex items-center justify-center font-black text-base shadow-[0_0_10px_#a855f7]">01</span>
               <div>
-                <span class="text-[0.7rem] text-purple-400 font-extrabold uppercase block tracking-wider">Solución de Inventario Gamer</span>
+                <span class="text-[0.7rem] text-purple-400 font-extrabold uppercase block tracking-wider">Solución de Inventario & Loot</span>
                 <h3 id="modalExTitle" class="m-0 font-['Orbitron'] font-black text-base sm:text-lg text-white">Misión 1: Mostrar Inventario</h3>
               </div>
             </div>
@@ -178,12 +416,13 @@ for (let i = 2; i <= 25; i++) {
           </div>
 
           <div class="p-5 sm:p-6 overflow-y-auto flex-1 font-nunito">
-            <div id="mathVerificationStep" class="bg-[#050B1A] border-2 border-amber-500/40 rounded-3xl p-6 sm:p-8 text-center my-4">
+            <!-- PASO 1: RETO MATEMÁTICO -->
+            <div id="mathVerificationStep" class="bg-[#050B1A] border-2 border-purple-500/40 rounded-3xl p-6 sm:p-8 text-center my-4">
               <div class="text-4xl mb-2">🔐</div>
-              <h4 class="font-['Orbitron'] font-black text-amber-400 text-lg sm:text-xl m-0 mb-1">Verificación para desbloquear la solución</h4>
+              <h4 class="font-['Orbitron'] font-black text-purple-400 text-lg sm:text-xl m-0 mb-1">Verificación para desbloquear la solución</h4>
               <p class="text-xs sm:text-sm font-bold text-slate-300 m-0 mb-4 max-w-md mx-auto">Resuelve la siguiente operación para visualizar el código:</p>
               <div class="inline-flex items-center justify-center gap-3 bg-slate-950 px-6 py-3.5 rounded-2xl border-2 border-purple-500/40 shadow-[0_0_15px_rgba(168,85,247,0.15)] mb-4">
-                <span id="mathChallengeText" class="font-['Orbitron'] font-black text-xl sm:text-2xl text-purple-300">20 + 15 =</span>
+                <span id="mathChallengeText" class="font-['Orbitron'] font-black text-xl sm:text-2xl text-purple-300">15 + 10 =</span>
                 <input type="number" id="mathAnswerInput" class="w-24 px-3 py-2 rounded-xl border border-purple-500/50 bg-slate-900 font-['Orbitron'] font-black text-xl text-center text-white outline-none focus:ring-2 focus:ring-purple-400" placeholder="?" />
               </div>
               <div>
@@ -194,6 +433,7 @@ for (let i = 2; i <= 25; i++) {
               <p id="mathErrorMessage" class="text-xs sm:text-sm font-black text-rose-400 m-0 mt-3 hidden">❌ Respuesta incorrecta. ¡Inténtalo de nuevo!</p>
             </div>
 
+            <!-- PASO 2: CÓDIGO -->
             <div id="solutionCodeStep" class="hidden flex-col gap-4">
               <div class="bg-[#060D1E] border border-purple-500/30 p-3 rounded-2xl">
                 <label class="block text-xs font-black text-purple-400 mb-2 uppercase tracking-wider">Selecciona el lenguaje:</label>
@@ -309,6 +549,7 @@ for (let i = 2; i <= 25; i++) {
       document.getElementById('expandAll')?.addEventListener('click', () => document.querySelectorAll('.ex-card[id]').forEach((d) => (d.open = true)));
       document.getElementById('collapseAll')?.addEventListener('click', () => document.querySelectorAll('.ex-card[id]').forEach((d) => (d.open = false)));
 
+      // Buscador
       document.getElementById('searchBox')?.addEventListener('input', (e) => {
         const val = (e.target.value || '').toLowerCase().trim();
         document.querySelectorAll('.search-target').forEach((el) => {
@@ -317,6 +558,7 @@ for (let i = 2; i <= 25; i++) {
         });
       });
 
+      // Modal
       (function() {
         const ALL_SOLUTIONS = window.ALL_GAME_INV_SOLUTIONS || {};
         const modal = document.getElementById('solutionModal');
@@ -326,7 +568,7 @@ for (let i = 2; i <= 25; i++) {
         const answerInput = document.getElementById('mathAnswerInput');
         const verifyBtn = document.getElementById('verifyMathBtn');
         const errorMsg = document.getElementById('mathErrorMessage');
-        let currentExpected = 35;
+        let currentExpected = 25;
 
         const openModal = (e) => {
           if (e) e.stopPropagation();
@@ -380,10 +622,11 @@ for (let i = 2; i <= 25; i++) {
           btn.addEventListener('click', () => {
             const lang = btn.getAttribute('data-lang');
             document.querySelectorAll('#langSelectorGroup .lang-tab-btn').forEach(b => {
-              b.classList.remove('bg-[#1E1210]', 'text-white');
-              b.classList.add('bg-white', 'text-[#1E1210]');
+              b.classList.remove('bg-purple-600', 'text-white');
+              b.classList.add('bg-slate-900', 'text-slate-300');
             });
-            btn.classList.add('bg-[#1E1210]', 'text-white');
+            btn.classList.remove('bg-slate-900', 'text-slate-300');
+            btn.classList.add('bg-purple-600', 'text-white');
             document.querySelectorAll('#codeBlocksContainer .code-panel').forEach(p => {
               p.classList.toggle('hidden', p.getAttribute('data-lang-panel') !== lang);
             });
@@ -418,7 +661,7 @@ for (let i = 2; i <= 25; i++) {
       font-weight: 900;
       font-size: 0.75rem;
       background: #1e1b4b;
-      color: #c084fc;
+      color: #d8b4fe;
       padding: 0.15rem 0.4rem;
       border-radius: 0.35rem;
       border: 1px solid rgba(168, 85, 247, 0.4);

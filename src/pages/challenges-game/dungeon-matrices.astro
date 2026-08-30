@@ -4,6 +4,7 @@ import CodeBlock from '../../components/CodeBlock.astro';
 import { gameDungeonSolutions } from '../../data/gameDungeonSolutions';
 
 const exercises = [
+  // SECCIÓN 1: VISUALIZACIÓN, RECORRIDO Y LECTURA DE CUADRÍCULAS (1 - 5)
   {
     id: 1,
     section: '1. Representación de Cuadrículas 2D',
@@ -16,29 +17,266 @@ const exercises = [
       { id: 'step4', title: 'Formato visual', desc: 'Separé las celdas con espacios.' },
       { id: 'step5', title: 'Probé con mapa 5x5', desc: 'Verifiqué la renderización de la mazmorra.' },
     ],
-  }
-];
-
-for (let i = 2; i <= 20; i++) {
-  exercises.push({
-    id: i,
-    section: i <= 8 ? '2. Movimiento X/Y y Colisiones' : i <= 14 ? '3. Trampas Ocultas y Niebla de Guerra' : '4. Spawners de Jefes y Salida',
-    title: `Misión de Mazmorra ${i}: Algoritmo de Exploración #${i}`,
-    statement: `Desarrollar una función explorarCeldaMazmorra${i}(mapa, x, y) que verifique las coordenadas cartesianas dentro de la cuadrícula de la mazmorra.`,
+  },
+  {
+    id: 2,
+    section: '1. Representación de Cuadrículas 2D',
+    title: 'Localizar Coordenadas del Jugador (\'P\')',
+    statement: 'Crear una función localizarJugador(mapa) que recorra la matriz de la mazmorra y devuelva las coordenadas exactas [fila, columna] donde se encuentra el héroe (\'P\').',
     steps: [
-      { id: 'step1', title: 'Comprendí las coordenadas (X, Y)', desc: `Evaluar fila y columna para la misión ${i}.` },
-      { id: 'step2', title: 'Declaré la firma', desc: `Definí explorarCeldaMazmorra${i}(mapa, x, y).` },
-      { id: 'step3', title: 'Accedí a la celda', desc: 'Comprobé el contenido mapa[y][x].' },
-      { id: 'step4', title: 'Retorné el estado', desc: 'Devolví si la celda es transitable o bloqueada.' },
-      { id: 'step5', title: 'Validé con prueba', desc: 'Comprobé el resultado.' },
-    ]
-  });
-}
+      { id: 'step1', title: 'Comprendí el rastreo en matriz', desc: 'Buscar el valor \'P\' en la cuadrícula.' },
+      { id: 'step2', title: 'Declaré la función', desc: 'Definí localizarJugador(mapa).' },
+      { id: 'step3', title: 'Recorrí filas y columnas', desc: 'Usé bucles anidados con índices (r, c).' },
+      { id: 'step4', title: 'Retorné coordenadas', desc: 'Devolví [fila, columna] al encontrar \'P\'.' },
+      { id: 'step5', title: 'Probé con mapa de prueba', desc: 'Validé que ubicó al jugador en [1, 2].' },
+    ],
+  },
+  {
+    id: 3,
+    section: '1. Representación de Cuadrículas 2D',
+    title: 'Contar Cofres del Tesoro (\'C\')',
+    statement: 'Crear una función contarCofres(mapa) que examine todas las celdas de la mazmorra y devuelva el total acumulado de cofres del tesoro (\'C\') existentes.',
+    steps: [
+      { id: 'step1', title: 'Comprendí el conteo en 2D', desc: 'Acumular coincidencias del carácter \'C\'.' },
+      { id: 'step2', title: 'Declaré la función', desc: 'Definí contarCofres(mapa).' },
+      { id: 'step3', title: 'Inicialicé contador en 0', desc: 'Sumé 1 por cada celda con \'C\'.' },
+      { id: 'step4', title: 'Retorné total de cofres', desc: 'Formateé el mensaje de tesoros.' },
+      { id: 'step5', title: 'Probé con mapa de 3 cofres', desc: 'Verifiqué el resultado de 3 unidades.' },
+    ],
+  },
+  {
+    id: 4,
+    section: '1. Representación de Cuadrículas 2D',
+    title: 'Sumar Oro Recolectable en Mazmorra',
+    statement: 'Crear una función sumarOroTotal(matrizOro) que sume todos los valores numéricos de una matriz entera para calcular la cantidad de oro recolectable en la sala.',
+    steps: [
+      { id: 'step1', title: 'Comprendí la suma de matriz numérica', desc: 'Acumular todos los valores enteros.' },
+      { id: 'step2', title: 'Declaré la función', desc: 'Definí sumarOroTotal(matrizOro).' },
+      { id: 'step3', title: 'Doble iteración', desc: 'Sumé cada elemento mat[r][c].' },
+      { id: 'step4', title: 'Retorné total en monedas', desc: 'Devolví el total en oro.' },
+      { id: 'step5', title: 'Probé con sala 3x3 de oro', desc: 'Verifiqué la suma total acumulada.' },
+    ],
+  },
+  {
+    id: 5,
+    section: '1. Representación de Cuadrículas 2D',
+    title: 'Verificar Límites y Muro en Coordenada',
+    statement: 'Crear una función esCeldaTransitable(mapa, f, c) que valide si una coordenada está dentro de las dimensiones de la matriz y si no colisiona con un muro (#).',
+    steps: [
+      { id: 'step1', title: 'Comprendí los límites cartesianos', desc: '0 <= f < filas y 0 <= c < cols.' },
+      { id: 'step2', title: 'Declaré la función', desc: 'Definí esCeldaTransitable(mapa, f, c).' },
+      { id: 'step3', title: 'Evalué muro vs suelo', desc: 'Comprobé si mapa[f][c] != \'#\'.' },
+      { id: 'step4', title: 'Manejo de fuera de mapa', desc: 'Rechacé coordenadas inexistentes.' },
+      { id: 'step5', title: 'Probé celda libre, muro y fuera de rango', desc: 'Comprobé los 3 resultados.' },
+    ],
+  },
+
+  // SECCIÓN 2: MOVIMIENTO, COLISIONES Y ACTUALIZACIÓN (6 - 10)
+  {
+    id: 6,
+    section: '2. Movimiento X/Y y Colisiones',
+    title: 'Mover al Jugador a una Nueva Celda',
+    statement: 'Crear una función moverJugador(mapa, fAct, cAct, fNueva, cNueva) que, si la nueva celda no es un muro, reemplace la posición previa por suelo (.) y coloque a \'P\' en el nuevo destino.',
+    steps: [
+      { id: 'step1', title: 'Comprendí el desplazamiento en matriz', desc: 'Limpiar celda anterior y marcar nueva.' },
+      { id: 'step2', title: 'Declaré la función', desc: 'Definí moverJugador(mapa, fAct, cAct, fN, cN).' },
+      { id: 'step3', title: 'Validé colisión previa', desc: 'Comprobé que el destino no sea muro.' },
+      { id: 'step4', title: 'Actualicé caracteres', desc: 'mapa[fAct][cAct] = \'.\' y mapa[fN][cN] = \'P\'.' },
+      { id: 'step5', title: 'Probé movimiento exitoso y contra muro', desc: 'Validé la nueva matriz.' },
+    ],
+  },
+  {
+    id: 7,
+    section: '2. Movimiento X/Y y Colisiones',
+    title: 'Contar Enemigos en un Pasillo',
+    statement: 'Crear una función contarEnemigosEnFila(mapa, numFila) que cuente cuántos enemigos (\'E\') se encuentran patrullando en una fila específica de la mazmorra.',
+    steps: [
+      { id: 'step1', title: 'Comprendí la inspección por fila', desc: 'Recorrer solo mapa[numFila].' },
+      { id: 'step2', title: 'Declaré la función', desc: 'Definí contarEnemigosEnFila(mapa, numFila).' },
+      { id: 'step3', title: 'Validé índice de fila', desc: 'Comprobé que la fila exista.' },
+      { id: 'step4', title: 'Conté coincidencias de \'E\'', desc: 'Sumé los enemigos en ese pasillo.' },
+      { id: 'step5', title: 'Probé con fila llena y fila vacía', desc: 'Validé los totales.' },
+    ],
+  },
+  {
+    id: 8,
+    section: '2. Movimiento X/Y y Colisiones',
+    title: 'Detectar Peligro en Celdas Adyacentes',
+    statement: 'Crear una función detectarEnemigoCercano(mapa, f, c) que revise las 4 celdas vecinas (arriba, abajo, izquierda, derecha) para alertar si un enemigo (\'E\') está adyacente al jugador.',
+    steps: [
+      { id: 'step1', title: 'Comprendí el vecindario de von Neumann (4 direcciones)', desc: 'Desplazamientos (-1,0), (1,0), (0,-1), (0,1).' },
+      { id: 'step2', title: 'Declaré la función', desc: 'Definí detectarEnemigoCercano(mapa, f, c).' },
+      { id: 'step3', title: 'Validé límites en cada vecino', desc: 'Evité desbordamiento de matriz.' },
+      { id: 'step4', title: 'Comprobé presencia de \'E\'', desc: 'Retorné alerta de combate inminente.' },
+      { id: 'step5', title: 'Probé con enemigo al lado y zona despejada', desc: 'Validé ambos estados.' },
+    ],
+  },
+  {
+    id: 9,
+    section: '2. Movimiento X/Y y Colisiones',
+    title: 'Desactivar Todas las Trampas (\'T\')',
+    statement: 'Crear una función desactivarTrampas(mapa) que busque todas las celdas con trampa (\'T\') y las reemplace por suelo seguro (.), retornando cuántas trampas fueron neutralizadas.',
+    steps: [
+      { id: 'step1', title: 'Comprendí la mutación de celdas', desc: 'Recorrer y sustituir \'T\' por \'.\'.' },
+      { id: 'step2', title: 'Declaré la función', desc: 'Definí desactivarTrampas(mapa).' },
+      { id: 'step3', title: 'Conté y reemplacé', desc: 'mapa[r][c] = \'.\' y sumé al contador.' },
+      { id: 'step4', title: 'Retorné reporte de desactivación', desc: 'Devolví total de trampas removidas.' },
+      { id: 'step5', title: 'Probé con sala con 3 trampas', desc: 'Comprobé que el mapa quedó libre de peligro.' },
+    ],
+  },
+  {
+    id: 10,
+    section: '2. Movimiento X/Y y Colisiones',
+    title: 'Contar Muros Alrededor de una Celda',
+    statement: 'Crear una función contarMurosAlrededor(mapa, f, c) que cuente cuántos muros (#) rodean a una casilla para detectar si el jugador está atrapado en un callejón sin salida (3 muros).',
+    steps: [
+      { id: 'step1', title: 'Comprendí la detección de callejón', desc: 'Sumar muros adyacentes (0 a 4).' },
+      { id: 'step2', title: 'Declaré la función', desc: 'Definí contarMurosAlrededor(mapa, f, c).' },
+      { id: 'step3', title: 'Revisé los 4 accesos', desc: 'Sumé 1 por cada vecino con \'#\'.' },
+      { id: 'step4', title: 'Clasifiqué callejón sin salida', desc: 'Emití alerta especial si muros == 3.' },
+      { id: 'step5', title: 'Probé en un pasillo cerrado', desc: 'Validé que detectó el callejón.' },
+    ],
+  },
+
+  // SECCIÓN 3: TRANSFORMACIONES DE MAPAS Y SALAS (11 - 15)
+  {
+    id: 11,
+    section: '3. Arquitectura y Transformación de Salas',
+    title: 'Generar Sala Perimetral con Muros',
+    statement: 'Crear una función crearSalaVacia(filas, columnas) que construya dinámicamente una matriz con muros (#) en los 4 bordes perimetrales y suelo (.) en el área interior.',
+    steps: [
+      { id: 'step1', title: 'Comprendí la generación procedural básica', desc: 'Bordes: r==0, r==F-1, c==0, c==C-1.' },
+      { id: 'step2', title: 'Declaré la función', desc: 'Definí crearSalaVacia(filas, columnas).' },
+      { id: 'step3', title: 'Construí filas y columnas', desc: 'Asigné \'#\' o \'.\' según la posición.' },
+      { id: 'step4', title: 'Retorné la matriz 2D', desc: 'Devolví la cuadrícula ensamblada.' },
+      { id: 'step5', title: 'Probé con tamaño 4x5', desc: 'Verifiqué que el interior fue 2x3 de suelo.' },
+    ],
+  },
+  {
+    id: 12,
+    section: '3. Arquitectura y Transformación de Salas',
+    title: 'Lanzar Ataque en Cruz (Área de Efecto)',
+    statement: 'Crear una función lanzarAtaqueEnCruz(mapa, f, c) que marque con un asterisco (*) la celda central del objetivo y sus 4 adyacentes para simular un hechizo explosivo.',
+    steps: [
+      { id: 'step1', title: 'Comprendí el área de impacto (AoE)', desc: 'Modificar centro y 4 vecinos.' },
+      { id: 'step2', title: 'Declaré la función', desc: 'Definí lanzarAtaqueEnCruz(mapa, f, c).' },
+      { id: 'step3', title: 'Validé no sobrescribir muros', desc: 'Solo afecté celdas transitables.' },
+      { id: 'step4', title: 'Marqué con \'*\'', desc: 'Pinté las 5 celdas alcanzadas.' },
+      { id: 'step5', title: 'Probé en el centro de sala 3x3', desc: 'Verifiqué el patrón en cruz.' },
+    ],
+  },
+  {
+    id: 13,
+    section: '3. Arquitectura y Transformación de Salas',
+    title: 'Comprobar si una Sala es Simétrica',
+    statement: 'Crear una función esSalaSimetrica(mapa) que compruebe si cada fila de la mazmorra es igual de izquierda a derecha (sala espejo con diseño simétrico).',
+    steps: [
+      { id: 'step1', title: 'Comprendí la simetría horizontal', desc: 'Comparar fila[c] con fila[cols - 1 - c].' },
+      { id: 'step2', title: 'Declaré la función', desc: 'Definí esSalaSimetrica(mapa).' },
+      { id: 'step3', title: 'Iteré por cada fila', desc: 'Verifiqué palíndromo en cada arreglo.' },
+      { id: 'step4', title: 'Retorné resultado booleano', desc: 'Confirmé si es sala espejo.' },
+      { id: 'step5', title: 'Probé con sala simétrica y asimétrica', desc: 'Validé ambos casos.' },
+    ],
+  },
+  {
+    id: 14,
+    section: '3. Arquitectura y Transformación de Salas',
+    title: 'Rotar Mapa de la Mazmorra 90 Grados',
+    statement: 'Crear una función rotarMapa90Grados(mapa) que gire la cuadrícula de la mazmorra 90 grados en el sentido de las agujas del reloj para simular un cambio de orientación.',
+    steps: [
+      { id: 'step1', title: 'Comprendí la rotación de matrices', desc: 'Transponer matriz e invertir filas.' },
+      { id: 'step2', title: 'Declaré la función', desc: 'Definí rotarMapa90Grados(mapa).' },
+      { id: 'step3', title: 'Reubicación de celdas', desc: 'nueva[c][N - 1 - r] = original[r][c].' },
+      { id: 'step4', title: 'Construí matriz rotada', desc: 'Ensamblé la nueva orientación.' },
+      { id: 'step5', title: 'Probé con mapa 2x2', desc: 'Verifiqué el giro de 90°.' },
+    ],
+  },
+  {
+    id: 15,
+    section: '3. Arquitectura y Transformación de Salas',
+    title: 'Intercambiar Dos Pasillos/Filas del Mapa',
+    statement: 'Crear una función intercambiarFilas(mapa, f1, f2) que intercambie de posición dos pasillos completos de la mazmorra para activar un mecanismo de trampa giratoria.',
+    steps: [
+      { id: 'step1', title: 'Comprendí el swap de filas', desc: 'Intercambiar referencias o arreglos completos.' },
+      { id: 'step2', title: 'Declaré la función', desc: 'Definí intercambiarFilas(mapa, f1, f2).' },
+      { id: 'step3', title: 'Validé índices f1 y f2', desc: 'Comprobé que estén dentro de rango.' },
+      { id: 'step4', title: 'Realicé el intercambio', desc: 'mapa[f1], mapa[f2] = mapa[f2], mapa[f1].' },
+      { id: 'step5', title: 'Probé cambiando fila 0 con fila 2', desc: 'Verifiqué el orden nuevo de pasillos.' },
+    ],
+  },
+
+  // SECCIÓN 4: EXPLORACIÓN AVANZADA, NIEBLA Y OBJETIVOS (16 - 20)
+  {
+    id: 16,
+    section: '4. Niebla de Guerra, Rutas y Salida',
+    title: 'Revelar Niebla de Guerra en Radio 3x3',
+    statement: 'Crear una función revelarNiebla(mapaVisible, mapaReal, f, c) que copie las celdas del mapa real al mapa visible en un radio 3x3 alrededor del héroe.',
+    steps: [
+      { id: 'step1', title: 'Comprendí la mecánica de niebla (Fog of War)', desc: 'Despejar las celdas ocultas con \'?\'.' },
+      { id: 'step2', title: 'Declaré la función', desc: 'Definí revelarNiebla(vis, real, f, c).' },
+      { id: 'step3', title: 'Iteré en rango [-1..+1]', desc: 'Recorrí el área 3x3 alrededor de (f, c).' },
+      { id: 'step4', title: 'Copie celdas reales', desc: 'vis[nf][nc] = real[nf][nc].' },
+      { id: 'step5', title: 'Probé revelando cofre oculto', desc: 'Verifiqué que el cofre apareció en el mapa visible.' },
+    ],
+  },
+  {
+    id: 17,
+    section: '4. Niebla de Guerra, Rutas y Salida',
+    title: 'Calcular Distancia Manhattan hasta la Salida',
+    statement: 'Crear una función calcularDistanciaSalida(fJ, cJ, fS, cS) que determine cuántos pasos mínimos en línea recta separan al jugador de la puerta de escape \'X\'.',
+    steps: [
+      { id: 'step1', title: 'Comprendí la fórmula Manhattan', desc: 'dist = |fJ - fS| + |cJ - cS|.' },
+      { id: 'step2', title: 'Declaré la función', desc: 'Definí calcularDistanciaSalida(fj, cj, fs, cs).' },
+      { id: 'step3', title: 'Calculé valores absolutos', desc: 'Sumé diferencias verticales y horizontales.' },
+      { id: 'step4', title: 'Retorné total de pasos', desc: 'Devolví la distancia calculada.' },
+      { id: 'step5', title: 'Probé de (1,1) a (4,4)', desc: 'Verifiqué que arrojó 6 pasos de distancia.' },
+    ],
+  },
+  {
+    id: 18,
+    section: '4. Niebla de Guerra, Rutas y Salida',
+    title: 'Encontrar el Cofre de Mayor Valor',
+    statement: 'Crear una función encontrarCofreMasValioso(matrizTesoros) que localice la coordenada [fila, col] que contiene la mayor cantidad de oro acumulada.',
+    steps: [
+      { id: 'step1', title: 'Comprendí la búsqueda de máximo con coordenadas', desc: 'Guardar maxOro, mejorFila y mejorCol.' },
+      { id: 'step2', title: 'Declaré la función', desc: 'Definí encontrarCofreMasValioso(mat).' },
+      { id: 'step3', title: 'Iteré por toda la cuadrícula', desc: 'Actualicé el récord al encontrar mayor botín.' },
+      { id: 'step4', title: 'Retorné posición y monto', desc: 'Formateé el mensaje con coords y oro.' },
+      { id: 'step5', title: 'Probé con cofre de 800 oro', desc: 'Comprobé que ubicó la coordenada correcta.' },
+    ],
+  },
+  {
+    id: 19,
+    section: '4. Niebla de Guerra, Rutas y Salida',
+    title: 'Dibujar Camino Marcado en la Mazmorra',
+    statement: 'Crear una función dibujarCamino(mapa, startF, startC, pasos) que trace con el signo \'+\' una secuencia de pasos cardinales (\'U\', \'D\', \'L\', \'R\') sobre el mapa.',
+    steps: [
+      { id: 'step1', title: 'Comprendí el trazado de rutas', desc: 'Mapear U (arriba), D (abajo), L (izq), R (der).' },
+      { id: 'step2', title: 'Declaré la función', desc: 'Definí dibujarCamino(mapa, f, c, pasos).' },
+      { id: 'step3', title: 'Iteré sobre el string de pasos', desc: 'Actualicé coordenadas y pinté \'+\'.' },
+      { id: 'step4', title: 'Validé límites en cada paso', desc: 'Evité salir de la matriz.' },
+      { id: 'step5', title: 'Probé con ruta "DDRR"', desc: 'Verifiqué la senda marcada en la matriz.' },
+    ],
+  },
+  {
+    id: 20,
+    section: '4. Niebla de Guerra, Rutas y Salida',
+    title: 'Verificar Victoria al Alcanzar la Salida (\'X\')',
+    statement: 'Crear una función verificarVictoria(mapa, fJugador, cJugador) que compruebe si la casilla donde está parado el jugador corresponde a la puerta de escape (\'X\') para completar el nivel.',
+    steps: [
+      { id: 'step1', title: 'Comprendí la condición de victoria', desc: 'mapa[f][c] == \'X\'.' },
+      { id: 'step2', title: 'Declaré la función', desc: 'Definí verificarVictoria(mapa, f, c).' },
+      { id: 'step3', title: 'Rama de victoria', desc: 'Emití mensaje de mazmorra superada.' },
+      { id: 'step4', title: 'Rama de exploración en curso', desc: 'Indiqué que la aventura continúa.' },
+      { id: 'step5', title: 'Probé con posición en \'X\' y en \'.\'', desc: 'Validé la pantalla de victoria.' },
+    ],
+  },
+];
 ---
 
 <GameLayout
-  title="Matrices 2D & Mapas de Mazmorras — 20 Misiones Gamer"
-  description="Domina matrices bidimensionales y cuadrículas de mapas en videojuegos: colisiones con muros, niebla de guerra, trampas y cofres."
+  title="Matrices 2D & Mazmorras — 20 Misiones Gamer"
+  description="Domina matrices bidimensionales y mapas de mazmorras: cuadrículas 2D, colisiones, niebla de guerra, trampas y cofres."
   activeModule="dungeons"
 >
   <div class="gamer-universe min-h-screen bg-[#070B14] text-slate-100 relative overflow-hidden pb-16">
@@ -53,14 +291,14 @@ for (let i = 2; i <= 20; i++) {
         <div class="flex items-center gap-2 mb-2">
           <a href="/challenges-game/" class="text-xs font-nunito font-extrabold text-emerald-400 no-underline hover:text-emerald-300">← Volver a Zona Gamer</a>
           <span class="text-slate-600">•</span>
-          <span class="text-xs font-nunito font-black uppercase tracking-widest text-emerald-400 bg-emerald-950/80 border border-emerald-500/40 px-2 py-0.5 rounded-md">Módulo 04 · Mazmorras 2D</span>
+          <span class="text-xs font-nunito font-black uppercase tracking-widest text-emerald-400 bg-emerald-950/80 border border-emerald-500/40 px-2 py-0.5 rounded-md">Módulo 04 · Mazmorras & Matrices 2D</span>
         </div>
         <h1 class="m-0 text-2xl sm:text-4xl font-['Orbitron'] font-black text-white flex items-center gap-2.5">
           <span>🗺️</span>
-          <span>Matrices 2D & Mapas de Mazmorras</span>
+          <span>Matrices 2D & Mazmorras</span>
         </h1>
         <p class="mt-2 text-sm text-slate-300 font-medium leading-relaxed max-w-3xl">
-          20 desafíos de lógica espacial y matrices 2D: coordenadas cartesianas, detección de obstáculos, trampas y niebla de guerra. Resuelve en <strong>Python, Java, C#, C++, JS, PHP o PSeInt</strong>.
+          20 desafíos de exploración en cuadrículas 2D: detección de colisiones, niebla de guerra, desactivación de trampas y cálculo de rutas. Resuelve en <strong>Python, Java, C#, C++, JS, PHP o PSeInt</strong>.
         </p>
       </div>
 
@@ -102,7 +340,7 @@ for (let i = 2; i <= 20; i++) {
               <a href={`#dng-${ex.id}`} class="quick-link flex items-center gap-2.5 flex-1 min-w-0 no-underline text-inherit">
                 <span class="quick-num">{String(ex.id).padStart(2, '0')}</span>
                 <span class="quick-title truncate">{ex.title}</span>
-                <span class="quick-badge-done hidden text-[0.65rem] font-bold bg-emerald-950 text-emerald-300 px-1.5 py-0.5 rounded border border-emerald-500/50">✓ Completada</span>
+                <span class="quick-badge-done hidden text-[0.65rem] font-bold bg-emerald-950 text-emerald-300 px-1.5 py-0.5 rounded border border-emerald-500/50">✓ Victoria</span>
                 <span class="quick-arrow">↓</span>
               </a>
             </div>
@@ -122,7 +360,7 @@ for (let i = 2; i <= 20; i++) {
                     <span class="text-[0.68rem] text-emerald-400 font-extrabold uppercase block leading-tight">{ex.section}</span>
                     <h3 class="m-0 text-sm sm:text-base text-white truncate flex items-center gap-2">
                       <span>{ex.id}. {ex.title}</span>
-                      <span class="card-done-tag hidden text-xs font-bold text-emerald-300 bg-emerald-950/80 px-2 py-0.5 rounded-md border border-emerald-500/50">✓ (+100 XP)</span>
+                      <span class="card-done-tag hidden text-xs font-bold text-emerald-300 bg-emerald-950/80 px-2 py-0.5 rounded-md border border-emerald-500/50">✓ Victoria (+100 XP)</span>
                     </h3>
                   </div>
                 </div>
@@ -163,14 +401,14 @@ for (let i = 2; i <= 20; i++) {
         </div>
       </section>
 
-      <!-- MODAL -->
+      <!-- MODAL DE SOLUCIÓN -->
       <div id="solutionModal" class="fixed inset-0 z-[100] bg-black/80 backdrop-blur-md hidden items-center justify-center p-4 sm:p-6">
         <div class="bg-[#0B132B] border-2 border-emerald-500/50 rounded-3xl w-full max-w-4xl max-h-[92vh] flex flex-col shadow-[0_0_40px_rgba(16,185,129,0.25)] overflow-hidden">
           <div class="bg-emerald-950/80 border-b border-emerald-500/30 p-4 sm:p-5 flex items-center justify-between">
             <div class="flex items-center gap-3">
               <span id="modalExNum" class="w-10 h-10 rounded-2xl bg-emerald-600 text-white flex items-center justify-center font-black text-base shadow-[0_0_10px_#10b981]">01</span>
               <div>
-                <span class="text-[0.7rem] text-emerald-400 font-extrabold uppercase block tracking-wider">Solución de Mazmorras 2D</span>
+                <span class="text-[0.7rem] text-emerald-400 font-extrabold uppercase block tracking-wider">Solución de Mazmorras & Matrices 2D</span>
                 <h3 id="modalExTitle" class="m-0 font-['Orbitron'] font-black text-base sm:text-lg text-white">Misión 1: Mostrar Mapa de la Mazmorra</h3>
               </div>
             </div>
@@ -178,12 +416,13 @@ for (let i = 2; i <= 20; i++) {
           </div>
 
           <div class="p-5 sm:p-6 overflow-y-auto flex-1 font-nunito">
-            <div id="mathVerificationStep" class="bg-[#050B1A] border-2 border-amber-500/40 rounded-3xl p-6 sm:p-8 text-center my-4">
+            <!-- PASO 1: RETO MATEMÁTICO -->
+            <div id="mathVerificationStep" class="bg-[#050B1A] border-2 border-emerald-500/40 rounded-3xl p-6 sm:p-8 text-center my-4">
               <div class="text-4xl mb-2">🔐</div>
-              <h4 class="font-['Orbitron'] font-black text-amber-400 text-lg sm:text-xl m-0 mb-1">Verificación para desbloquear la solución</h4>
+              <h4 class="font-['Orbitron'] font-black text-emerald-400 text-lg sm:text-xl m-0 mb-1">Verificación para desbloquear la solución</h4>
               <p class="text-xs sm:text-sm font-bold text-slate-300 m-0 mb-4 max-w-md mx-auto">Resuelve la siguiente operación para visualizar el código:</p>
               <div class="inline-flex items-center justify-center gap-3 bg-slate-950 px-6 py-3.5 rounded-2xl border-2 border-emerald-500/40 shadow-[0_0_15px_rgba(16,185,129,0.15)] mb-4">
-                <span id="mathChallengeText" class="font-['Orbitron'] font-black text-xl sm:text-2xl text-emerald-300">18 + 12 =</span>
+                <span id="mathChallengeText" class="font-['Orbitron'] font-black text-xl sm:text-2xl text-emerald-300">15 + 10 =</span>
                 <input type="number" id="mathAnswerInput" class="w-24 px-3 py-2 rounded-xl border border-emerald-500/50 bg-slate-900 font-['Orbitron'] font-black text-xl text-center text-white outline-none focus:ring-2 focus:ring-emerald-400" placeholder="?" />
               </div>
               <div>
@@ -194,6 +433,7 @@ for (let i = 2; i <= 20; i++) {
               <p id="mathErrorMessage" class="text-xs sm:text-sm font-black text-rose-400 m-0 mt-3 hidden">❌ Respuesta incorrecta. ¡Inténtalo de nuevo!</p>
             </div>
 
+            <!-- PASO 2: CÓDIGO -->
             <div id="solutionCodeStep" class="hidden flex-col gap-4">
               <div class="bg-[#060D1E] border border-emerald-500/30 p-3 rounded-2xl">
                 <label class="block text-xs font-black text-emerald-400 mb-2 uppercase tracking-wider">Selecciona el lenguaje:</label>
@@ -309,6 +549,7 @@ for (let i = 2; i <= 20; i++) {
       document.getElementById('expandAll')?.addEventListener('click', () => document.querySelectorAll('.ex-card[id]').forEach((d) => (d.open = true)));
       document.getElementById('collapseAll')?.addEventListener('click', () => document.querySelectorAll('.ex-card[id]').forEach((d) => (d.open = false)));
 
+      // Buscador
       document.getElementById('searchBox')?.addEventListener('input', (e) => {
         const val = (e.target.value || '').toLowerCase().trim();
         document.querySelectorAll('.search-target').forEach((el) => {
@@ -317,6 +558,7 @@ for (let i = 2; i <= 20; i++) {
         });
       });
 
+      // Modal
       (function() {
         const ALL_SOLUTIONS = window.ALL_GAME_DNG_SOLUTIONS || {};
         const modal = document.getElementById('solutionModal');
@@ -326,7 +568,7 @@ for (let i = 2; i <= 20; i++) {
         const answerInput = document.getElementById('mathAnswerInput');
         const verifyBtn = document.getElementById('verifyMathBtn');
         const errorMsg = document.getElementById('mathErrorMessage');
-        let currentExpected = 30;
+        let currentExpected = 25;
 
         const openModal = (e) => {
           if (e) e.stopPropagation();
@@ -380,10 +622,11 @@ for (let i = 2; i <= 20; i++) {
           btn.addEventListener('click', () => {
             const lang = btn.getAttribute('data-lang');
             document.querySelectorAll('#langSelectorGroup .lang-tab-btn').forEach(b => {
-              b.classList.remove('bg-[#1E1210]', 'text-white');
-              b.classList.add('bg-white', 'text-[#1E1210]');
+              b.classList.remove('bg-emerald-600', 'text-white');
+              b.classList.add('bg-slate-900', 'text-slate-300');
             });
-            btn.classList.add('bg-[#1E1210]', 'text-white');
+            btn.classList.remove('bg-slate-900', 'text-slate-300');
+            btn.classList.add('bg-emerald-600', 'text-white');
             document.querySelectorAll('#codeBlocksContainer .code-panel').forEach(p => {
               p.classList.toggle('hidden', p.getAttribute('data-lang-panel') !== lang);
             });
@@ -417,8 +660,8 @@ for (let i = 2; i <= 20; i++) {
     .quick-num {
       font-weight: 900;
       font-size: 0.75rem;
-      background: #022c22;
-      color: #34d399;
+      background: #1e1b4b;
+      color: #6ee7b7;
       padding: 0.15rem 0.4rem;
       border-radius: 0.35rem;
       border: 1px solid rgba(16, 185, 129, 0.4);
