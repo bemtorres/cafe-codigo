@@ -6,6 +6,8 @@ export interface ExpressChallengeExercise {
   difficulty: 'facil' | 'medio' | 'avanzado' | 'fácil' | 'intermedio';
   hint: string;
   explanation: string;
+  categoryType?: 'cmd' | 'python' | 'html' | 'code';
+  fileName?: string;
   languages: {
     [key: string]: {
       starterCode: string; // Código con blancos '___' o con el bug
@@ -15,3 +17,4 @@ export interface ExpressChallengeExercise {
     };
   };
 }
+

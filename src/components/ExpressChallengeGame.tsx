@@ -5,7 +5,7 @@ import { python } from '@codemirror/lang-python';
 import { javascript } from '@codemirror/lang-javascript';
 import { java } from '@codemirror/lang-java';
 import { EditorView } from '@codemirror/view';
-import type { ExpressChallengeExercise } from '../data/challengesExpressFunctions';
+import type { ExpressChallengeExercise } from '../data/challengesExpressTypes';
 
 interface ExpressChallengeGameProps {
   allExercises: ExpressChallengeExercise[];
@@ -117,18 +117,70 @@ export const ExpressChallengeGame: React.FC<ExpressChallengeGameProps> = ({
       .trim();
   };
 
-  const getFileExtension = (lang: string) => {
-    switch (lang.toLowerCase()) {
+  // Obtener datos del ejercicio según lenguaje y tipo nativo
+  const getExerciseLangData = useCallback((ex?: ExpressChallengeExercise, lang?: string) => {
+    if (!ex || !ex.languages) return null;
+    const l = (lang || currentLanguage || initialLang || '').toLowerCase();
+    return (
+      ex.languages[l] ||
+      ex.languages['django'] ||
+      ex.languages['python'] ||
+      ex.languages['unix'] ||
+      ex.languages['bash'] ||
+      ex.languages['cmd'] ||
+      ex.languages['html'] ||
+      ex.languages['cpp'] ||
+      ex.languages['javascript'] ||
+      ex.languages['java'] ||
+      Object.values(ex.languages)[0] ||
+      null
+    );
+  }, [currentLanguage, initialLang]);
+
+  // Obtener información del archivo y pestaña del editor
+  const getEditorTabInfo = useCallback((ex?: ExpressChallengeExercise, lang?: string) => {
+    if (ex?.fileName) {
+      if (ex.fileName === 'terminal' || ex.fileName === 'cmd' || ex.fileName === 'bash') {
+        return { name: 'terminal (cmd / bash)', icon: '💻' };
+      }
+      const icon = ex.fileName.endsWith('.py') ? '🐍' : ex.fileName.endsWith('.html') ? '🌐' : '📝';
+      return { name: ex.fileName, icon };
+    }
+    if (ex?.categoryType === 'cmd') {
+      return { name: 'terminal (cmd / bash)', icon: '💻' };
+    }
+    if (ex?.categoryType === 'html') {
+      return { name: 'template.html', icon: '🌐' };
+    }
+    if (ex?.categoryType === 'python') {
+      return { name: 'solution.py', icon: '🐍' };
+    }
+    const currentLang = (lang || currentLanguage || initialLang || '').toLowerCase();
+    switch (currentLang) {
       case 'unix':
       case 'bash':
       case 'terminal':
-      case 'sh': return 'terminal.sh';
-      case 'cpp': return 'solution.cpp';
-      case 'python': return 'solution.py';
-      case 'javascript': return 'solution.js';
-      case 'java': return 'Main.java';
-      default: return 'terminal.sh';
+      case 'sh':
+      case 'cmd':
+        return { name: 'terminal.sh', icon: '💻' };
+      case 'django':
+      case 'python':
+        return { name: 'solution.py', icon: '🐍' };
+      case 'html':
+        return { name: 'template.html', icon: '🌐' };
+      case 'cpp':
+        return { name: 'solution.cpp', icon: '⚙️' };
+      case 'javascript':
+        return { name: 'solution.js', icon: '🟨' };
+      case 'java':
+        return { name: 'Main.java', icon: '☕' };
+      default:
+        return { name: 'solution.py', icon: '📝' };
     }
+  }, [currentLanguage, initialLang]);
+
+  const getFileExtension = (lang: string) => {
+    return getEditorTabInfo(currentEx, lang).name;
   };
 
   // Formatear segundos a mm:ss
@@ -258,7 +310,7 @@ export const ExpressChallengeGame: React.FC<ExpressChallengeGameProps> = ({
     // Cargar primer ejercicio
     const firstEx = selected[0];
     if (firstEx) {
-      const langData = firstEx.languages[lang] || firstEx.languages['unix'] || firstEx.languages['bash'] || firstEx.languages['python'] || firstEx.languages['cpp'];
+      const langData = getExerciseLangData(firstEx, lang);
       if (langData) {
         setUserCode(langData.starterCode);
       }
@@ -275,7 +327,7 @@ export const ExpressChallengeGame: React.FC<ExpressChallengeGameProps> = ({
 
     setIsEditorDisabled(false);
     setFeedback({ show: false, isSuccess: false, title: '', message: '', solutionCode: null });
-  }, [allExercises, currentLanguage, initialLang, countSetting, difficultySetting, timeSetting, maxAttemptsSetting, selectBalancedExercises]);
+  }, [allExercises, currentLanguage, initialLang, countSetting, difficultySetting, timeSetting, maxAttemptsSetting, selectBalancedExercises, getExerciseLangData]);
 
   // Cargar ejercicio actual
   const loadExerciseByIndex = useCallback((idx: number, lang: string, round: ExpressChallengeExercise[]) => {
@@ -290,7 +342,7 @@ export const ExpressChallengeGame: React.FC<ExpressChallengeGameProps> = ({
       setAttemptsLeft(maxAttemptsSetting);
     }
 
-    const langData = ex.languages[lang] || ex.languages['unix'] || ex.languages['bash'] || ex.languages['python'] || ex.languages['cpp'];
+    const langData = getExerciseLangData(ex, lang);
     if (langData) {
       setUserCode(langData.starterCode);
     }
@@ -300,7 +352,7 @@ export const ExpressChallengeGame: React.FC<ExpressChallengeGameProps> = ({
     setSuccessModalData({ show: false, title: '', points: 100, streak: 1, explanation: '' });
     setErrorModalData({ show: false, title: '', message: '', attemptsRemaining: null, isFinalFail: false, solutionCode: null });
     setFeedback({ show: false, isSuccess: false, title: '', message: '', solutionCode: null });
-  }, [maxAttemptsSetting]);
+  }, [maxAttemptsSetting, getExerciseLangData]);
 
   // Inicializar con Query Params
   useEffect(() => {
@@ -372,9 +424,7 @@ export const ExpressChallengeGame: React.FC<ExpressChallengeGameProps> = ({
       const isFixedLanguageModule = Boolean(
         fixedLanguage ||
         hideLanguageSelector ||
-        initialLang === 'unix' ||
-        initialLang === 'bash' ||
-        initialLang === 'terminal'
+        ['django', 'unix', 'bash', 'terminal', 'cmd'].includes((initialLang || '').toLowerCase())
       );
 
       if (isFixedLanguageModule) {
@@ -385,7 +435,7 @@ export const ExpressChallengeGame: React.FC<ExpressChallengeGameProps> = ({
           setShowTimeIntroModal(true);
         }
         startNewRound(lang, parsedCount, parsedDiff, parsedTime);
-      } else if (codeParam && ['cpp', 'python', 'javascript', 'java', 'unix', 'bash', 'terminal'].includes(codeParam.toLowerCase())) {
+      } else if (codeParam && ['cpp', 'python', 'javascript', 'java', 'unix', 'bash', 'terminal', 'django'].includes(codeParam.toLowerCase())) {
         const lang = codeParam.toLowerCase();
         setCurrentLanguage(lang);
         setShowLangModal(false);
@@ -399,7 +449,7 @@ export const ExpressChallengeGame: React.FC<ExpressChallengeGameProps> = ({
         startNewRound(initialLang, parsedCount, parsedDiff, parsedTime);
       }
     }
-  }, [allExercises, fixedLanguage, hideLanguageSelector, initialLang, defaultLanguage]);
+  }, [allExercises, fixedLanguage, hideLanguageSelector, initialLang, defaultLanguage, startNewRound]);
 
   // Cambiar lenguaje
   const handleLanguageChange = (newLang: string) => {
@@ -419,16 +469,19 @@ export const ExpressChallengeGame: React.FC<ExpressChallengeGameProps> = ({
   // Extensiones de CodeMirror (Tema Claro)
   const extensions = useMemo(() => {
     const langExt = (() => {
-      switch (currentLanguage.toLowerCase()) {
+      const l = (currentLanguage || initialLang || '').toLowerCase();
+      switch (l) {
         case 'unix':
         case 'bash':
         case 'terminal':
         case 'sh':
+        case 'cmd':
+        case 'django':
+        case 'python':
+        case 'html':
           return python();
         case 'cpp':
           return cpp();
-        case 'python':
-          return python();
         case 'javascript':
           return javascript();
         case 'java':
@@ -470,11 +523,12 @@ export const ExpressChallengeGame: React.FC<ExpressChallengeGameProps> = ({
         },
       }),
     ];
-  }, [currentLanguage]);
+  }, [currentLanguage, initialLang]);
 
   const totalRoundCount = currentRound.length || countSetting;
   const currentEx = currentRound[currentIndex];
-  const currentLangData = currentEx ? (currentEx.languages[currentLanguage] || currentEx.languages['cpp']) : null;
+  const currentLangData = getExerciseLangData(currentEx, currentLanguage);
+  const tabInfo = getEditorTabInfo(currentEx, currentLanguage);
 
   // Comprobar solución
   const handleSubmit = () => {
@@ -687,10 +741,10 @@ export const ExpressChallengeGame: React.FC<ExpressChallengeGameProps> = ({
             </div>
 
             <div className="flex items-center gap-3">
-              {hideLanguageSelector || fixedLanguage || initialLang === 'unix' ? (
+              {hideLanguageSelector || fixedLanguage || ['django', 'unix', 'bash', 'terminal', 'cmd'].includes((initialLang || '').toLowerCase()) ? (
                 <div className="flex items-center gap-1.5 bg-slate-900 text-amber-300 border border-slate-700 rounded-xl px-3 py-1.5 text-xs font-mono font-bold shadow-xs">
-                  <span>💻</span>
-                  <span>{fixedLanguageTitle || 'Unix / Linux'}</span>
+                  <span>{(initialLang || '').toLowerCase() === 'django' ? '🐍' : '💻'}</span>
+                  <span>{fixedLanguageTitle || categoryTitle || ((initialLang || '').toLowerCase() === 'django' ? 'Django Framework' : 'Unix / Linux')}</span>
                 </div>
               ) : (
                 <div className="flex items-center gap-2 bg-slate-100 border border-slate-300 rounded-xl px-2.5 py-1 text-xs">
@@ -809,6 +863,21 @@ export const ExpressChallengeGame: React.FC<ExpressChallengeGameProps> = ({
                   <span className="text-[11px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-sky-50 text-sky-700 border border-sky-200">
                     {currentEx.type === 'complete' ? '✍️ Rellenar Código' : '🐛 Corregir Bug'}
                   </span>
+                  {currentEx.categoryType === 'cmd' && (
+                    <span className="text-[11px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-900 border border-amber-300 flex items-center gap-1">
+                      <span>💻</span> <span>Comando CMD / Terminal</span>
+                    </span>
+                  )}
+                  {currentEx.categoryType === 'html' && (
+                    <span className="text-[11px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-orange-50 text-orange-900 border border-orange-300 flex items-center gap-1">
+                      <span>🌐</span> <span>Plantilla HTML (Django)</span>
+                    </span>
+                  )}
+                  {currentEx.categoryType === 'python' && (
+                    <span className="text-[11px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-900 border border-emerald-300 flex items-center gap-1">
+                      <span>🐍</span> <span>Código Python</span>
+                    </span>
+                  )}
                   <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">
                     Nivel {currentEx.difficulty.toUpperCase()}
                   </span>
@@ -862,8 +931,16 @@ export const ExpressChallengeGame: React.FC<ExpressChallengeGameProps> = ({
                   <span className="w-3 h-3 rounded-full bg-rose-400 inline-block"></span>
                   <span className="w-3 h-3 rounded-full bg-amber-400 inline-block"></span>
                   <span className="w-3 h-3 rounded-full bg-emerald-400 inline-block"></span>
-                  <span className="ml-2 text-slate-800 font-bold">{getFileExtension(currentLanguage)}</span>
+                  <span className="ml-2 text-slate-800 font-bold flex items-center gap-1.5">
+                    <span>{tabInfo.icon}</span>
+                    <span>{tabInfo.name}</span>
+                  </span>
                 </div>
+                {currentEx.categoryType && (
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                    {currentEx.categoryType === 'cmd' ? 'Consola / Terminal' : currentEx.categoryType === 'html' ? 'Plantilla Django' : 'Script Python'}
+                  </span>
+                )}
               </div>
 
               <div className="w-full text-left rounded-b-2xl overflow-hidden shadow-xs">
@@ -1153,7 +1230,7 @@ export const ExpressChallengeGame: React.FC<ExpressChallengeGameProps> = ({
             </div>
             <h3 className="text-2xl font-black text-slate-900">Elige tu Lenguaje</h3>
             <p className="text-slate-600 text-xs sm:text-sm mt-2 leading-relaxed">
-              Selecciona el lenguaje en el que deseas resolver la ronda de {totalRoundCount} desafíos interactivos de funciones:
+              Selecciona el lenguaje en el que deseas resolver la ronda de {totalRoundCount} desafíos interactivos de {categoryTitle || 'código'}:
             </p>
 
             <div className="grid grid-cols-2 gap-3 mt-6">
@@ -1166,7 +1243,7 @@ export const ExpressChallengeGame: React.FC<ExpressChallengeGameProps> = ({
               >
                 <span className="text-2xl group-hover:scale-110 transition-transform">⚙️</span>
                 <span className="font-extrabold text-sm text-slate-800 group-hover:text-sky-700">C++</span>
-                <span className="text-[10px] text-slate-500">Funciones & std::</span>
+                <span className="text-[10px] text-slate-500">Sintaxis estándar</span>
               </button>
 
               <button
@@ -1232,7 +1309,7 @@ export const ExpressChallengeGame: React.FC<ExpressChallengeGameProps> = ({
             </h3>
 
             <p className="text-slate-600 text-xs sm:text-sm mt-2 leading-relaxed font-medium">
-              Tienes <strong className="text-amber-700 font-black">{formatTimeText(timeSetting)}</strong> para completar la ronda de <strong className="text-slate-900 font-black">{totalRoundCount}</strong> desafíos de funciones.
+              Tienes <strong className="text-amber-700 font-black">{formatTimeText(timeSetting)}</strong> para completar la ronda de <strong className="text-slate-900 font-black">{totalRoundCount}</strong> desafíos de {categoryTitle || 'programación'}.
             </p>
 
             <div className="my-4 p-4 rounded-2xl bg-amber-50/80 border border-amber-200/80 text-left space-y-2 text-xs text-slate-700 font-medium">
@@ -1323,7 +1400,7 @@ export const ExpressChallengeGame: React.FC<ExpressChallengeGameProps> = ({
               <p className="text-slate-600 text-xs sm:text-sm mt-2 leading-relaxed font-medium">
                 {isPassed
                   ? (userName
-                      ? `${userName}, has superado exitosamente la ronda con ${correctCount} de ${totalRoundCount} aciertos (${accuracyPercent}%). ¡Gran dominio de funciones!`
+                      ? `${userName}, has superado exitosamente la ronda con ${correctCount} de ${totalRoundCount} aciertos (${accuracyPercent}%). ¡Gran dominio de ${categoryTitle || 'este módulo'}!`
                       : `Has superado exitosamente la ronda de ${totalRoundCount} Desafíos Express con un ${accuracyPercent}% de aciertos.`)
                   : (userName
                       ? `${userName}, obtuviste ${correctCount} de ${totalRoundCount} aciertos (${accuracyPercent}%). Para aprobar se requiere un 70%. ¡Vuelve a intentarlo para dominar este módulo!`
@@ -1367,10 +1444,10 @@ export const ExpressChallengeGame: React.FC<ExpressChallengeGameProps> = ({
                 </button>
                 {!isEmbed && (
                   <a
-                    href="/course/cpp/funciones/"
+                    href={backUrl || "/challenges-express/"}
                     className="w-full sm:w-auto px-6 py-3 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs sm:text-sm transition-all text-center no-underline"
                   >
-                    Volver al Curso C++ 📘
+                    {backUrl ? 'Volver al Curso 📘' : 'Volver a Módulos 📘'}
                   </a>
                 )}
               </div>

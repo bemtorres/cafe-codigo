@@ -12,7 +12,9 @@ import { ExpressChallengeGame } from "../../../components/ExpressChallengeGame";
     <ExpressChallengeGame
       client:load
       allExercises={expressDjangoExercises}
-      defaultLanguage="python"
+      fixedLanguage="django"
+      fixedLanguageTitle="Django (Python · HTML · CMD)"
+      hideLanguageSelector={true}
       categoryTitle="Django Framework"
       backUrl="/challenges-express/"
     />

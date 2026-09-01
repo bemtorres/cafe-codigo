@@ -7,30 +7,22 @@ export const expressDjangoExercises: ExpressChallengeExercise[] = [
   {
     id: 901,
     title: 'Creación del Entorno Virtual (Virtualenv)',
-    statement: 'Completa el comando de Python para crear un entorno virtual aislado llamado "venv".',
+    statement: 'Completa el comando de consola para crear un entorno virtual aislado de Python llamado "venv".',
     type: 'complete',
     difficulty: 'facil',
+    categoryType: 'cmd',
+    fileName: 'terminal',
     hint: 'El comando estándar es python -m venv venv.',
-    explanation: 'Un entorno virtual aísla las dependencias y paquetes de Python de cada proyecto evitando conflictos globales.',
+    explanation: 'Un entorno virtual aísla las dependencias y paquetes de Python de cada proyecto evitando conflictos globales entre librerías.',
     languages: {
+      django: {
+        starterCode: `python -m ___ venv`,
+        solutionCode: `python -m venv venv`,
+        acceptedKeywords: ['venv']
+      },
       python: {
-        starterCode: `# Comando en terminal para crear el entorno virtual:\n# python -m ___ venv\ncmd = "python -m ___ venv"`,
-        solutionCode: `# Comando en terminal para crear el entorno virtual:\n# python -m venv venv\ncmd = "python -m venv venv"`,
-        acceptedKeywords: ['venv']
-      },
-      cpp: {
-        starterCode: `// Comando conceptual de inicialización de entorno\nconst char* cmd = "python -m ___ venv";`,
-        solutionCode: `// Comando conceptual de inicialización de entorno\nconst char* cmd = "python -m venv venv";`,
-        acceptedKeywords: ['venv']
-      },
-      javascript: {
-        starterCode: `// Comando de inicialización de entorno\nconst cmd = "python -m ___ venv";`,
-        solutionCode: `// Comando de inicialización de entorno\nconst cmd = "python -m venv venv";`,
-        acceptedKeywords: ['venv']
-      },
-      java: {
-        starterCode: `public class Main {\n    public static void main(String[] args) {\n        String cmd = "python -m ___ venv";\n    }\n}`,
-        solutionCode: `public class Main {\n    public static void main(String[] args) {\n        String cmd = "python -m venv venv";\n    }\n}`,
+        starterCode: `python -m ___ venv`,
+        solutionCode: `python -m venv venv`,
         acceptedKeywords: ['venv']
       }
     }
@@ -38,57 +30,45 @@ export const expressDjangoExercises: ExpressChallengeExercise[] = [
   {
     id: 902,
     title: 'Activación del Entorno Virtual',
-    statement: 'Corrige la ruta del script de activación en Linux/macOS (source venv/bin/activate).',
+    statement: 'Corrige la ruta del script para activar el entorno virtual en Linux/macOS (el script activate está dentro de la carpeta bin).',
     type: 'fix',
     difficulty: 'facil',
+    categoryType: 'cmd',
+    fileName: 'terminal',
     hint: 'Usa source venv/bin/activate en Linux/macOS o venv\\Scripts\\activate en Windows.',
-    explanation: 'Activar el entorno virtual configura la variable PATH para que python y pip apunten a las versiones locales del entorno.',
+    explanation: 'Activar el entorno virtual configura la variable PATH para que python y pip apunten a los binarios locales del entorno.',
     languages: {
+      django: {
+        starterCode: `source venv/activate`,
+        solutionCode: `source venv/bin/activate`,
+        acceptedKeywords: ['source venv/bin/activate', 'venv/bin/activate']
+      },
       python: {
-        starterCode: `# Comando de activación en terminal Linux/macOS:\n# BUG: activate está dentro de la carpeta bin\ncmd = "source venv/bin/activate"`,
-        solutionCode: `cmd = "source venv/bin/activate"`
-      },
-      cpp: {
-        starterCode: `const char* cmd = "source venv/bin/activate";`,
-        solutionCode: `const char* cmd = "source venv/bin/activate";`
-      },
-      javascript: {
-        starterCode: `const cmd = "source venv/bin/activate";`,
-        solutionCode: `const cmd = "source venv/bin/activate";`
-      },
-      java: {
-        starterCode: `public class Main {\n    public static void main(String[] args) {\n        String cmd = "source venv/bin/activate";\n    }\n}`,
-        solutionCode: `public class Main {\n    public static void main(String[] args) {\n        String cmd = "source venv/bin/activate";\n    }\n}`
+        starterCode: `source venv/activate`,
+        solutionCode: `source venv/bin/activate`,
+        acceptedKeywords: ['source venv/bin/activate', 'venv/bin/activate']
       }
     }
   },
   {
     id: 903,
     title: 'Instalación de Django con Pip',
-    statement: 'Completa el comando para instalar la versión de Django mediante el gestor de paquetes pip.',
+    statement: 'Completa el comando para instalar Django mediante el gestor de paquetes pip en tu terminal.',
     type: 'complete',
     difficulty: 'facil',
+    categoryType: 'cmd',
+    fileName: 'terminal',
     hint: 'El comando es pip install django.',
-    explanation: 'pip es el instalador oficial de paquetes para Python que descarga Django desde PyPI.',
+    explanation: 'pip es el instalador oficial de paquetes para Python que descarga e instala Django desde el repositorio PyPI.',
     languages: {
+      django: {
+        starterCode: `pip ___ django`,
+        solutionCode: `pip install django`,
+        acceptedKeywords: ['install']
+      },
       python: {
-        starterCode: `# Comando de instalación de dependencias:\ncmd = "pip ___ django"`,
-        solutionCode: `cmd = "pip install django"`,
-        acceptedKeywords: ['install']
-      },
-      cpp: {
-        starterCode: `const char* cmd = "pip ___ django";`,
-        solutionCode: `const char* cmd = "pip install django";`,
-        acceptedKeywords: ['install']
-      },
-      javascript: {
-        starterCode: `const cmd = "pip ___ django";`,
-        solutionCode: `const cmd = "pip install django";`,
-        acceptedKeywords: ['install']
-      },
-      java: {
-        starterCode: `public class Main {\n    public static void main(String[] args) {\n        String cmd = "pip ___ django";\n    }\n}`,
-        solutionCode: `public class Main {\n    public static void main(String[] args) {\n        String cmd = "pip install django";\n    }\n}`,
+        starterCode: `pip ___ django`,
+        solutionCode: `pip install django`,
         acceptedKeywords: ['install']
       }
     }
@@ -96,27 +76,23 @@ export const expressDjangoExercises: ExpressChallengeExercise[] = [
   {
     id: 904,
     title: 'Creación del Proyecto con django-admin',
-    statement: 'Corrige el subcomando de django-admin para iniciar un nuevo proyecto llamado "tienda" (startproject).',
+    statement: 'Corrige el subcomando de django-admin para iniciar un nuevo proyecto llamado "tienda" en el directorio actual (usa startproject en vez de startapp).',
     type: 'fix',
     difficulty: 'facil',
+    categoryType: 'cmd',
+    fileName: 'terminal',
     hint: 'Usa django-admin startproject tienda .',
-    explanation: 'django-admin startproject crea la estructura inicial de directorios y archivos de configuración.',
+    explanation: 'django-admin startproject inicializa la raíz del proyecto con manage.py y el paquete de configuración principal.',
     languages: {
+      django: {
+        starterCode: `django-admin startapp tienda .`,
+        solutionCode: `django-admin startproject tienda .`,
+        acceptedKeywords: ['startproject']
+      },
       python: {
-        starterCode: `# BUG: startapp es para aplicaciones, usa startproject para el proyecto global\ncmd = "django-admin startproject tienda ."`,
-        solutionCode: `cmd = "django-admin startproject tienda ."`
-      },
-      cpp: {
-        starterCode: `const char* cmd = "django-admin startproject tienda .";`,
-        solutionCode: `const char* cmd = "django-admin startproject tienda .";`
-      },
-      javascript: {
-        starterCode: `const cmd = "django-admin startproject tienda .";`,
-        solutionCode: `const cmd = "django-admin startproject tienda .";`
-      },
-      java: {
-        starterCode: `public class Main {\n    public static void main(String[] args) {\n        String cmd = "django-admin startproject tienda .";\n    }\n}`,
-        solutionCode: `public class Main {\n    public static void main(String[] args) {\n        String cmd = "django-admin startproject tienda .";\n    }\n}`
+        starterCode: `django-admin startapp tienda .`,
+        solutionCode: `django-admin startproject tienda .`,
+        acceptedKeywords: ['startproject']
       }
     }
   },
@@ -126,27 +102,19 @@ export const expressDjangoExercises: ExpressChallengeExercise[] = [
     statement: 'Completa el comando de manage.py para crear una aplicación modular llamada "blog".',
     type: 'complete',
     difficulty: 'facil',
+    categoryType: 'cmd',
+    fileName: 'terminal',
     hint: 'Usa python manage.py startapp blog.',
-    explanation: 'En Django, los proyectos se dividen en aplicaciones modulares y reutilizables mediante startapp.',
+    explanation: 'En Django, los proyectos se dividen en aplicaciones modulares y reutilizables creadas con el subcomando startapp.',
     languages: {
+      django: {
+        starterCode: `python manage.py ___ blog`,
+        solutionCode: `python manage.py startapp blog`,
+        acceptedKeywords: ['startapp']
+      },
       python: {
-        starterCode: `cmd = "python manage.py ___ blog"`,
-        solutionCode: `cmd = "python manage.py startapp blog"`,
-        acceptedKeywords: ['startapp']
-      },
-      cpp: {
-        starterCode: `const char* cmd = "python manage.py ___ blog";`,
-        solutionCode: `const char* cmd = "python manage.py startapp blog";`,
-        acceptedKeywords: ['startapp']
-      },
-      javascript: {
-        starterCode: `const cmd = "python manage.py ___ blog";`,
-        solutionCode: `const cmd = "python manage.py startapp blog";`,
-        acceptedKeywords: ['startapp']
-      },
-      java: {
-        starterCode: `public class Main {\n    public static void main(String[] args) {\n        String cmd = "python manage.py ___ blog";\n    }\n}`,
-        solutionCode: `public class Main {\n    public static void main(String[] args) {\n        String cmd = "python manage.py startapp blog";\n    }\n}`,
+        starterCode: `python manage.py ___ blog`,
+        solutionCode: `python manage.py startapp blog`,
         acceptedKeywords: ['startapp']
       }
     }
@@ -154,57 +122,45 @@ export const expressDjangoExercises: ExpressChallengeExercise[] = [
   {
     id: 906,
     title: 'Registro de la App en settings.py (INSTALLED_APPS)',
-    statement: 'Corrige la lista de INSTALLED_APPS agregando el nombre de la app "blog".',
-    type: 'fix',
+    statement: 'Registra la nueva aplicación "blog" dentro de la lista INSTALLED_APPS en settings.py.',
+    type: 'complete',
     difficulty: 'facil',
-    hint: 'Agrega "blog" dentro de la lista INSTALLED_APPS.',
-    explanation: 'Django necesita que cada aplicación creada se registre en INSTALLED_APPS para habilitar sus modelos y plantillas.',
+    categoryType: 'python',
+    fileName: 'settings.py',
+    hint: 'Agrega "blog" al final de la lista INSTALLED_APPS.',
+    explanation: 'Django necesita que cada aplicación creada se registre en INSTALLED_APPS para habilitar sus modelos, migraciones y plantillas.',
     languages: {
+      django: {
+        starterCode: `# settings.py\nINSTALLED_APPS = [\n    'django.contrib.admin',\n    'django.contrib.auth',\n    'django.contrib.contenttypes',\n    'django.contrib.sessions',\n    'django.contrib.messages',\n    'django.contrib.staticfiles',\n    '___',\n]`,
+        solutionCode: `# settings.py\nINSTALLED_APPS = [\n    'django.contrib.admin',\n    'django.contrib.auth',\n    'django.contrib.contenttypes',\n    'django.contrib.sessions',\n    'django.contrib.messages',\n    'django.contrib.staticfiles',\n    'blog',\n]`,
+        acceptedKeywords: ['blog']
+      },
       python: {
-        starterCode: `# settings.py\nINSTALLED_APPS = [\n    'django.contrib.admin',\n    'django.contrib.auth',\n    'django.contrib.contenttypes',\n    'django.contrib.sessions',\n    'django.contrib.messages',\n    'django.contrib.staticfiles',\n    'blog',\n]`,
-        solutionCode: `INSTALLED_APPS = [\n    'django.contrib.admin',\n    'django.contrib.auth',\n    'django.contrib.contenttypes',\n    'django.contrib.sessions',\n    'django.contrib.messages',\n    'django.contrib.staticfiles',\n    'blog',\n]`
-      },
-      cpp: {
-        starterCode: `const char* installed_apps[] = {"django.contrib.admin", "blog"};`,
-        solutionCode: `const char* installed_apps[] = {"django.contrib.admin", "blog"};`
-      },
-      javascript: {
-        starterCode: `const installedApps = ['django.contrib.admin', 'blog'];`,
-        solutionCode: `const installedApps = ['django.contrib.admin', 'blog'];`
-      },
-      java: {
-        starterCode: `public class Main {\n    public static void main(String[] args) {\n        String[] apps = {"django.contrib.admin", "blog"};\n    }\n}`,
-        solutionCode: `public class Main {\n    public static void main(String[] args) {\n        String[] apps = {"django.contrib.admin", "blog"};\n    }\n}`
+        starterCode: `# settings.py\nINSTALLED_APPS = [\n    'django.contrib.admin',\n    'django.contrib.auth',\n    'django.contrib.contenttypes',\n    'django.contrib.sessions',\n    'django.contrib.messages',\n    'django.contrib.staticfiles',\n    '___',\n]`,
+        solutionCode: `# settings.py\nINSTALLED_APPS = [\n    'django.contrib.admin',\n    'django.contrib.auth',\n    'django.contrib.contenttypes',\n    'django.contrib.sessions',\n    'django.contrib.messages',\n    'django.contrib.staticfiles',\n    'blog',\n]`,
+        acceptedKeywords: ['blog']
       }
     }
   },
   {
     id: 907,
     title: 'Ejecución del Servidor Local (runserver)',
-    statement: 'Completa el comando para levantar el servidor de desarrollo en http://127.0.0.1:8000/.',
+    statement: 'Completa el comando de manage.py para levantar el servidor de desarrollo en http://127.0.0.1:8000/.',
     type: 'complete',
     difficulty: 'facil',
+    categoryType: 'cmd',
+    fileName: 'terminal',
     hint: 'El comando es python manage.py runserver.',
-    explanation: 'runserver inicia un servidor HTTP de desarrollo local con recarga automática de código en vivo.',
+    explanation: 'runserver inicia un servidor HTTP de desarrollo local con recarga automática de código en vivo ante cualquier cambio.',
     languages: {
+      django: {
+        starterCode: `python manage.py ___`,
+        solutionCode: `python manage.py runserver`,
+        acceptedKeywords: ['runserver']
+      },
       python: {
-        starterCode: `cmd = "python manage.py ___"`,
-        solutionCode: `cmd = "python manage.py runserver"`,
-        acceptedKeywords: ['runserver']
-      },
-      cpp: {
-        starterCode: `const char* cmd = "python manage.py ___";`,
-        solutionCode: `const char* cmd = "python manage.py runserver";`,
-        acceptedKeywords: ['runserver']
-      },
-      javascript: {
-        starterCode: `const cmd = "python manage.py ___";`,
-        solutionCode: `const cmd = "python manage.py runserver";`,
-        acceptedKeywords: ['runserver']
-      },
-      java: {
-        starterCode: `public class Main {\n    public static void main(String[] args) {\n        String cmd = "python manage.py ___";\n    }\n}`,
-        solutionCode: `public class Main {\n    public static void main(String[] args) {\n        String cmd = "python manage.py runserver";\n    }\n}`,
+        starterCode: `python manage.py ___`,
+        solutionCode: `python manage.py runserver`,
         acceptedKeywords: ['runserver']
       }
     }
@@ -212,82 +168,69 @@ export const expressDjangoExercises: ExpressChallengeExercise[] = [
   {
     id: 908,
     title: 'Primera Vista HttpResponse en views.py',
-    statement: 'Corrige la función de vista para recibir el objeto request como primer parámetro.',
+    statement: 'Corrige la función de vista en views.py para que reciba el parámetro obligatorio request.',
     type: 'fix',
     difficulty: 'facil',
-    hint: 'Toda vista basada en funciones debe recibir request: def home(request):',
-    explanation: 'Django pasa automáticamente un objeto HttpRequest con los datos de la petición a la función de vista.',
+    categoryType: 'python',
+    fileName: 'views.py',
+    hint: 'Toda vista basada en funciones debe recibir request como primer parámetro: def home(request):',
+    explanation: 'Django pasa automáticamente un objeto HttpRequest con los datos de la petición HTTP a la función de vista.',
     languages: {
+      django: {
+        starterCode: `from django.http import HttpResponse\n\n# BUG: Falta el parámetro obligatorio de petición HTTP\ndef home():\n    return HttpResponse("¡Hola desde Django!")`,
+        solutionCode: `from django.http import HttpResponse\n\ndef home(request):\n    return HttpResponse("¡Hola desde Django!")`,
+        acceptedKeywords: ['request']
+      },
       python: {
-        starterCode: `from django.http import HttpResponse\n\n# BUG: Falta el parámetro request\ndef home(request):\n    return HttpResponse("¡Hola desde Django!")`,
-        solutionCode: `from django.http import HttpResponse\n\ndef home(request):\n    return HttpResponse("¡Hola desde Django!")`
-      },
-      cpp: {
-        starterCode: `// Vista conceptual equivalente\nconst char* home(const void* request) {\n    return "¡Hola desde Django!";\n}`,
-        solutionCode: `const char* home(const void* request) {\n    return "¡Hola desde Django!";\n}`
-      },
-      javascript: {
-        starterCode: `function home(req, res) {\n    return "¡Hola desde Django!";\n}`,
-        solutionCode: `function home(req, res) {\n    return "¡Hola desde Django!";\n}`
-      },
-      java: {
-        starterCode: `public class Main {\n    static String home(Object request) {\n        return "¡Hola desde Django!";\n    }\n}`,
-        solutionCode: `public class Main {\n    static String home(Object request) {\n        return "¡Hola desde Django!";\n    }\n}`
+        starterCode: `from django.http import HttpResponse\n\n# BUG: Falta el parámetro obligatorio de petición HTTP\ndef home():\n    return HttpResponse("¡Hola desde Django!")`,
+        solutionCode: `from django.http import HttpResponse\n\ndef home(request):\n    return HttpResponse("¡Hola desde Django!")`,
+        acceptedKeywords: ['request']
       }
     }
   },
   {
     id: 909,
     title: 'Enrutamiento de URL con path() en urls.py',
-    statement: 'Completa la ruta vacía en urls.py para conectar la raíz con la vista views.home.',
+    statement: 'Completa la ruta vacía en urls.py para conectar la URL raíz ("") con la vista views.home.',
     type: 'complete',
     difficulty: 'facil',
-    hint: 'Usa path("", views.home, name="home").',
-    explanation: 'urlpatterns es la lista de rutas que Django evalúa secuencialmente para asociar URLs a vistas.',
+    categoryType: 'python',
+    fileName: 'urls.py',
+    hint: 'Usa path(\'\', views.home, name=\'home\').',
+    explanation: 'urlpatterns es la lista de rutas que Django evalúa secuencialmente para asociar URLs a funciones de vista.',
     languages: {
+      django: {
+        starterCode: `from django.urls import path\nfrom . import views\n\nurlpatterns = [\n    path('___', views.home, name='home'),\n]`,
+        solutionCode: `from django.urls import path\nfrom . import views\n\nurlpatterns = [\n    path('', views.home, name='home'),\n]`,
+        acceptedKeywords: ["''", '""', 'views.home']
+      },
       python: {
         starterCode: `from django.urls import path\nfrom . import views\n\nurlpatterns = [\n    path('___', views.home, name='home'),\n]`,
         solutionCode: `from django.urls import path\nfrom . import views\n\nurlpatterns = [\n    path('', views.home, name='home'),\n]`,
-        acceptedKeywords: ["''", '""', '']
-      },
-      cpp: {
-        starterCode: `const char* route = "";`,
-        solutionCode: `const char* route = "";`
-      },
-      javascript: {
-        starterCode: `const route = "";`,
-        solutionCode: `const route = "";`
-      },
-      java: {
-        starterCode: `public class Main {\n    public static void main(String[] args) {\n        String route = "";\n    }\n}`,
-        solutionCode: `public class Main {\n    public static void main(String[] args) {\n        String route = "";\n    }\n}`
+        acceptedKeywords: ["''", '""', 'views.home']
       }
     }
   },
   {
     id: 910,
     title: 'Renderizado de Plantilla HTML con render()',
-    statement: 'Corrige la llamada a render(request, "index.html", contexto) pasando el request.',
+    statement: 'Corrige la función render() en views.py pasando el objeto request como primer argumento.',
     type: 'fix',
     difficulty: 'facil',
-    hint: 'La función render recibe: render(request, template_name, context).',
-    explanation: 'render() es un atajo que combina una plantilla con un diccionario de contexto y retorna un HttpResponse.',
+    categoryType: 'python',
+    fileName: 'views.py',
+    hint: 'La firma de render es render(request, template_name, context).',
+    explanation: 'render() es un atajo que combina una plantilla con un diccionario de contexto y retorna un HttpResponse listo.',
     languages: {
+      django: {
+        starterCode: `from django.shortcuts import render\n\n# BUG: render requiere request como primer argumento\ndef inicio(request):\n    contexto = {'titulo': 'Mi Blog'}\n    return render('index.html', contexto)`,
+        solutionCode: `from django.shortcuts import render\n\ndef inicio(request):\n    contexto = {'titulo': 'Mi Blog'}\n    return render(request, 'index.html', contexto)`,
+        acceptedKeywords: ['render(request,']
+      },
       python: {
-        starterCode: `from django.shortcuts import render\n\ndef inicio(request):\n    contexto = {'titulo': 'Mi Blog'}\n    return render(request, 'index.html', contexto)`,
-        solutionCode: `from django.shortcuts import render\n\ndef inicio(request):\n    contexto = {'titulo': 'Mi Blog'}\n    return render(request, 'index.html', contexto)`
-      },
-      cpp: {
-        starterCode: `// Renderizado de template\nconst char* templateName = "index.html";`,
-        solutionCode: `const char* templateName = "index.html";`
-      },
-      javascript: {
-        starterCode: `// Renderizado de template\nconst templateName = "index.html";`,
-        solutionCode: `const templateName = "index.html";`
-      },
-      java: {
-        starterCode: `public class Main {\n    public static void main(String[] args) {\n        String template = "index.html";\n    }\n}`,
-        solutionCode: `public class Main {\n    public static void main(String[] args) {\n        String template = "index.html";\n    }\n}`
+        starterCode: `from django.shortcuts import render\n\n# BUG: render requiere request como primer argumento\ndef inicio(request):\n    contexto = {'titulo': 'Mi Blog'}\n    return render('index.html', contexto)`,
+        solutionCode: `from django.shortcuts import render\n\ndef inicio(request):\n    contexto = {'titulo': 'Mi Blog'}\n    return render(request, 'index.html', contexto)`,
+        acceptedKeywords: ['render(request,']
       }
     }
   },
@@ -301,82 +244,65 @@ export const expressDjangoExercises: ExpressChallengeExercise[] = [
     statement: 'Completa la clase del modelo Post heredando de models.Model.',
     type: 'complete',
     difficulty: 'medio',
+    categoryType: 'python',
+    fileName: 'models.py',
     hint: 'Hereda de models.Model.',
     explanation: 'Los modelos en Django son clases Python que heredan de models.Model y definen las tablas de la base de datos.',
     languages: {
-      python: {
+      django: {
         starterCode: `from django.db import models\n\nclass Post(models.___):\n    titulo = models.CharField(max_length=200)\n    contenido = models.TextField()`,
         solutionCode: `from django.db import models\n\nclass Post(models.Model):\n    titulo = models.CharField(max_length=200)\n    contenido = models.TextField()`,
         acceptedKeywords: ['Model']
       },
-      cpp: {
-        starterCode: `class Post {};`,
-        solutionCode: `class Post {};`
-      },
-      javascript: {
-        starterCode: `class Post {}`,
-        solutionCode: `class Post {}`
-      },
-      java: {
-        starterCode: `public class Main {\n    class Post {}\n}`,
-        solutionCode: `public class Main {\n    class Post {}\n}`
+      python: {
+        starterCode: `from django.db import models\n\nclass Post(models.___):\n    titulo = models.CharField(max_length=200)\n    contenido = models.TextField()`,
+        solutionCode: `from django.db import models\n\nclass Post(models.Model):\n    titulo = models.CharField(max_length=200)\n    contenido = models.TextField()`,
+        acceptedKeywords: ['Model']
       }
     }
   },
   {
     id: 912,
     title: 'Representación Legible con __str__ en Modelos',
-    statement: 'Corrige el método __str__ para retornar el título del post en lugar de un objeto crudo.',
+    statement: 'Corrige el método __str__ para retornar el título del post (self.titulo) en lugar de un texto estático.',
     type: 'fix',
     difficulty: 'medio',
+    categoryType: 'python',
+    fileName: 'models.py',
     hint: 'Retorna self.titulo.',
-    explanation: '__str__ define la representación en texto legible que el panel de administración y shell mostrarán para cada fila.',
+    explanation: '__str__ define la representación en texto legible que el panel de administración y shell mostrarán para cada registro.',
     languages: {
+      django: {
+        starterCode: `from django.db import models\n\nclass Post(models.Model):\n    titulo = models.CharField(max_length=200)\n\n    # BUG: Debe retornar el atributo dinámico del post\n    def __str__(self):\n        return "Objeto Post"`,
+        solutionCode: `from django.db import models\n\nclass Post(models.Model):\n    titulo = models.CharField(max_length=200)\n\n    def __str__(self):\n        return self.titulo`,
+        acceptedKeywords: ['self.titulo']
+      },
       python: {
-        starterCode: `from django.db import models\n\nclass Post(models.Model):\n    titulo = models.CharField(max_length=200)\n    def __str__(self):\n        return self.titulo`,
-        solutionCode: `from django.db import models\n\nclass Post(models.Model):\n    titulo = models.CharField(max_length=200)\n    def __str__(self):\n        return self.titulo`
-      },
-      cpp: {
-        starterCode: `const char* getTitulo() { return "Post"; }`,
-        solutionCode: `const char* getTitulo() { return "Post"; }`
-      },
-      javascript: {
-        starterCode: `function getTitulo() { return "Post"; }`,
-        solutionCode: `function getTitulo() { return "Post"; }`
-      },
-      java: {
-        starterCode: `public class Main {\n    public String toString() { return "Post"; }\n}`,
-        solutionCode: `public class Main {\n    public String toString() { return "Post"; }\n}`
+        starterCode: `from django.db import models\n\nclass Post(models.Model):\n    titulo = models.CharField(max_length=200)\n\n    # BUG: Debe retornar el atributo dinámico del post\n    def __str__(self):\n        return "Objeto Post"`,
+        solutionCode: `from django.db import models\n\nclass Post(models.Model):\n    titulo = models.CharField(max_length=200)\n\n    def __str__(self):\n        return self.titulo`,
+        acceptedKeywords: ['self.titulo']
       }
     }
   },
   {
     id: 913,
     title: 'Generación de Migraciones (makemigrations)',
-    statement: 'Completa el comando para preparar las migraciones tras modificar los modelos.',
+    statement: 'Completa el comando de manage.py para generar los archivos de migración tras modificar tus modelos.',
     type: 'complete',
     difficulty: 'medio',
+    categoryType: 'cmd',
+    fileName: 'terminal',
     hint: 'Usa python manage.py makemigrations.',
-    explanation: 'makemigrations inspecciona tus modelos y genera archivos de migración con las instrucciones de cambio en SQL.',
+    explanation: 'makemigrations inspecciona los modelos en models.py y crea archivos de migración con las instrucciones en SQL.',
     languages: {
+      django: {
+        starterCode: `python manage.py ___`,
+        solutionCode: `python manage.py makemigrations`,
+        acceptedKeywords: ['makemigrations']
+      },
       python: {
-        starterCode: `cmd = "python manage.py ___"`,
-        solutionCode: `cmd = "python manage.py makemigrations"`,
-        acceptedKeywords: ['makemigrations']
-      },
-      cpp: {
-        starterCode: `const char* cmd = "python manage.py ___";`,
-        solutionCode: `const char* cmd = "python manage.py makemigrations";`,
-        acceptedKeywords: ['makemigrations']
-      },
-      javascript: {
-        starterCode: `const cmd = "python manage.py ___";`,
-        solutionCode: `const cmd = "python manage.py makemigrations";`,
-        acceptedKeywords: ['makemigrations']
-      },
-      java: {
-        starterCode: `public class Main {\n    public static void main(String[] args) {\n        String cmd = "python manage.py ___";\n    }\n}`,
-        solutionCode: `public class Main {\n    public static void main(String[] args) {\n        String cmd = "python manage.py makemigrations";\n    }\n}`,
+        starterCode: `python manage.py ___`,
+        solutionCode: `python manage.py makemigrations`,
         acceptedKeywords: ['makemigrations']
       }
     }
@@ -384,137 +310,125 @@ export const expressDjangoExercises: ExpressChallengeExercise[] = [
   {
     id: 914,
     title: 'Aplicación de Migraciones a la BD (migrate)',
-    statement: 'Corrige el comando de aplicación de migraciones en la base de datos (python manage.py migrate).',
+    statement: 'Corrige el comando de terminal para aplicar las migraciones pendientes en la base de datos (usa migrate).',
     type: 'fix',
     difficulty: 'medio',
+    categoryType: 'cmd',
+    fileName: 'terminal',
     hint: 'Usa python manage.py migrate.',
-    explanation: 'migrate ejecuta las sentencias SQL pendientes en la base de datos (SQLite, PostgreSQL, MySQL).',
+    explanation: 'migrate ejecuta las sentencias SQL pendientes en la base de datos para crear o actualizar tablas.',
     languages: {
+      django: {
+        starterCode: `python manage.py make_migrations`,
+        solutionCode: `python manage.py migrate`,
+        acceptedKeywords: ['migrate']
+      },
       python: {
-        starterCode: `cmd = "python manage.py migrate"`,
-        solutionCode: `cmd = "python manage.py migrate"`
-      },
-      cpp: {
-        starterCode: `const char* cmd = "python manage.py migrate";`,
-        solutionCode: `const char* cmd = "python manage.py migrate";`
-      },
-      javascript: {
-        starterCode: `const cmd = "python manage.py migrate";`,
-        solutionCode: `const cmd = "python manage.py migrate";`
-      },
-      java: {
-        starterCode: `public class Main {\n    public static void main(String[] args) {\n        String cmd = "python manage.py migrate";\n    }\n}`,
-        solutionCode: `public class Main {\n    public static void main(String[] args) {\n        String cmd = "python manage.py migrate";\n    }\n}`
+        starterCode: `python manage.py make_migrations`,
+        solutionCode: `python manage.py migrate`,
+        acceptedKeywords: ['migrate']
       }
     }
   },
   {
     id: 915,
     title: 'Registro en el Panel de Administración (admin.py)',
-    statement: 'Completa el método de registro del modelo en admin.site.___ (Post).',
+    statement: 'Completa el método de registro del modelo Post en admin.site.___.',
     type: 'complete',
     difficulty: 'medio',
+    categoryType: 'python',
+    fileName: 'admin.py',
     hint: 'Usa admin.site.register(Post).',
     explanation: 'admin.site.register expone el modelo en el panel de administración automático de Django.',
     languages: {
-      python: {
+      django: {
         starterCode: `from django.contrib import admin\nfrom .models import Post\n\nadmin.site.___(Post)`,
         solutionCode: `from django.contrib import admin\nfrom .models import Post\n\nadmin.site.register(Post)`,
         acceptedKeywords: ['register']
       },
-      cpp: {
-        starterCode: `// Registro de admin\nconst char* action = "register";`,
-        solutionCode: `const char* action = "register";`
-      },
-      javascript: {
-        starterCode: `const action = "register";`,
-        solutionCode: `const action = "register";`
-      },
-      java: {
-        starterCode: `public class Main {\n    public static void main(String[] args) {\n        String action = "register";\n    }\n}`,
-        solutionCode: `public class Main {\n    public static void main(String[] args) {\n        String action = "register";\n    }\n}`
+      python: {
+        starterCode: `from django.contrib import admin\nfrom .models import Post\n\nadmin.site.___(Post)`,
+        solutionCode: `from django.contrib import admin\nfrom .models import Post\n\nadmin.site.register(Post)`,
+        acceptedKeywords: ['register']
       }
     }
   },
   {
     id: 916,
     title: 'Creación del Superusuario de Django (createsuperuser)',
-    statement: 'Corrige el comando de terminal para crear una cuenta de administrador (createsuperuser).',
+    statement: 'Corrige el comando de manage.py para crear una cuenta de administrador de Django (createsuperuser).',
     type: 'fix',
     difficulty: 'medio',
+    categoryType: 'cmd',
+    fileName: 'terminal',
     hint: 'Usa python manage.py createsuperuser.',
-    explanation: 'createsuperuser solicita nombre de usuario, correo y contraseña para acceder a /admin/.',
+    explanation: 'createsuperuser crea un usuario con permisos totales en el sistema de autenticación para acceder a /admin/.',
     languages: {
+      django: {
+        starterCode: `python manage.py create_admin`,
+        solutionCode: `python manage.py createsuperuser`,
+        acceptedKeywords: ['createsuperuser']
+      },
       python: {
-        starterCode: `cmd = "python manage.py createsuperuser"`,
-        solutionCode: `cmd = "python manage.py createsuperuser"`
-      },
-      cpp: {
-        starterCode: `const char* cmd = "python manage.py createsuperuser";`,
-        solutionCode: `const char* cmd = "python manage.py createsuperuser";`
-      },
-      javascript: {
-        starterCode: `const cmd = "python manage.py createsuperuser";`,
-        solutionCode: `const cmd = "python manage.py createsuperuser";`
-      },
-      java: {
-        starterCode: `public class Main {\n    public static void main(String[] args) {\n        String cmd = "python manage.py createsuperuser";\n    }\n}`,
-        solutionCode: `public class Main {\n    public static void main(String[] args) {\n        String cmd = "python manage.py createsuperuser";\n    }\n}`
+        starterCode: `python manage.py create_admin`,
+        solutionCode: `python manage.py createsuperuser`,
+        acceptedKeywords: ['createsuperuser']
       }
     }
   },
   {
     id: 917,
-    title: 'Bucle en Plantillas Django ({% for %})',
-    statement: 'Completa la etiqueta de cierre del bucle de plantilla Django ({% ___ %}).',
+    title: 'Bucle en Plantillas Django ({% for %} / {% endfor %})',
+    statement: 'Completa la etiqueta de cierre del bucle de plantilla Django ({% ___ %}) en el archivo HTML.',
     type: 'complete',
     difficulty: 'medio',
-    hint: 'La etiqueta de cierre de for es endfor.',
-    explanation: 'El motor de plantillas de Django requiere cerrar explícitamente los bloques for con {% endfor %}.',
+    categoryType: 'html',
+    fileName: 'template.html',
+    hint: 'La etiqueta de cierre para un bloque for en Django es endfor.',
+    explanation: 'El motor de plantillas de Django (DTL) requiere cerrar explícitamente los bloques for con {% endfor %}.',
     languages: {
-      python: {
-        starterCode: `<!-- template.html -->\n<ul>\n{% for item in items %}\n    <li>{{ item.nombre }}</li>\n{% ___ %}\n</ul>`,
-        solutionCode: `<!-- template.html -->\n<ul>\n{% for item in items %}\n    <li>{{ item.nombre }}</li>\n{% endfor %}\n</ul>`,
+      django: {
+        starterCode: `<!-- templates/post_list.html -->\n<ul>\n{% for post in posts %}\n    <li>{{ post.titulo }}</li>\n{% ___ %}\n</ul>`,
+        solutionCode: `<!-- templates/post_list.html -->\n<ul>\n{% for post in posts %}\n    <li>{{ post.titulo }}</li>\n{% endfor %}\n</ul>`,
         acceptedKeywords: ['endfor']
       },
-      cpp: {
-        starterCode: `const char* tag = "endfor";`,
-        solutionCode: `const char* tag = "endfor";`
+      html: {
+        starterCode: `<!-- templates/post_list.html -->\n<ul>\n{% for post in posts %}\n    <li>{{ post.titulo }}</li>\n{% ___ %}\n</ul>`,
+        solutionCode: `<!-- templates/post_list.html -->\n<ul>\n{% for post in posts %}\n    <li>{{ post.titulo }}</li>\n{% endfor %}\n</ul>`,
+        acceptedKeywords: ['endfor']
       },
-      javascript: {
-        starterCode: `const tag = "endfor";`,
-        solutionCode: `const tag = "endfor";`
-      },
-      java: {
-        starterCode: `public class Main {\n    public static void main(String[] args) {\n        String tag = "endfor";\n    }\n}`,
-        solutionCode: `public class Main {\n    public static void main(String[] args) {\n        String tag = "endfor";\n    }\n}`
+      python: {
+        starterCode: `<!-- templates/post_list.html -->\n<ul>\n{% for post in posts %}\n    <li>{{ post.titulo }}</li>\n{% ___ %}\n</ul>`,
+        solutionCode: `<!-- templates/post_list.html -->\n<ul>\n{% for post in posts %}\n    <li>{{ post.titulo }}</li>\n{% endfor %}\n</ul>`,
+        acceptedKeywords: ['endfor']
       }
     }
   },
   {
     id: 918,
     title: 'Herencia de Plantillas ({% extends %})',
-    statement: 'Corrige la etiqueta de herencia para extender del archivo base "base.html".',
+    statement: 'Corrige la etiqueta superior para extender de la plantilla base "base.html" (usa {% extends %}, no include).',
     type: 'fix',
     difficulty: 'medio',
-    hint: 'Usa {% extends "base.html" %}.',
-    explanation: '{% extends %} debe ser la primera etiqueta de una plantilla secundaria para heredar el esqueleto común.',
+    categoryType: 'html',
+    fileName: 'template.html',
+    hint: 'Usa {% extends "base.html" %} al inicio de la plantilla hija.',
+    explanation: '{% extends %} debe ser la primera etiqueta de una plantilla hija para heredar la estructura visual compartida.',
     languages: {
+      django: {
+        starterCode: `<!-- templates/detalle.html -->\n{% include "base.html" %}\n\n{% block content %}\n<h2>Detalle del Post</h2>\n{% endblock %}`,
+        solutionCode: `<!-- templates/detalle.html -->\n{% extends "base.html" %}\n\n{% block content %}\n<h2>Detalle del Post</h2>\n{% endblock %}`,
+        acceptedKeywords: ['extends']
+      },
+      html: {
+        starterCode: `<!-- templates/detalle.html -->\n{% include "base.html" %}\n\n{% block content %}\n<h2>Detalle del Post</h2>\n{% endblock %}`,
+        solutionCode: `<!-- templates/detalle.html -->\n{% extends "base.html" %}\n\n{% block content %}\n<h2>Detalle del Post</h2>\n{% endblock %}`,
+        acceptedKeywords: ['extends']
+      },
       python: {
-        starterCode: `{% extends "base.html" %}\n{% block content %}\n<h2>Detalle del Post</h2>\n{% endblock %}`,
-        solutionCode: `{% extends "base.html" %}\n{% block content %}\n<h2>Detalle del Post</h2>\n{% endblock %}`
-      },
-      cpp: {
-        starterCode: `const char* tag = "extends base.html";`,
-        solutionCode: `const char* tag = "extends base.html";`
-      },
-      javascript: {
-        starterCode: `const tag = "extends base.html";`,
-        solutionCode: `const tag = "extends base.html";`
-      },
-      java: {
-        starterCode: `public class Main {\n    public static void main(String[] args) {\n        String tag = "extends base.html";\n    }\n}`,
-        solutionCode: `public class Main {\n    public static void main(String[] args) {\n        String tag = "extends base.html";\n    }\n}`
+        starterCode: `<!-- templates/detalle.html -->\n{% include "base.html" %}\n\n{% block content %}\n<h2>Detalle del Post</h2>\n{% endblock %}`,
+        solutionCode: `<!-- templates/detalle.html -->\n{% extends "base.html" %}\n\n{% block content %}\n<h2>Detalle del Post</h2>\n{% endblock %}`,
+        acceptedKeywords: ['extends']
       }
     }
   },
@@ -524,52 +438,48 @@ export const expressDjangoExercises: ExpressChallengeExercise[] = [
     statement: 'Completa la clase interna Meta indicando el modelo correspondiente: model = ___.',
     type: 'complete',
     difficulty: 'medio',
+    categoryType: 'python',
+    fileName: 'forms.py',
     hint: 'Asigna model = Post.',
-    explanation: 'ModelForm genera automáticamente campos de formulario HTML a partir de un modelo Django.',
+    explanation: 'ModelForm genera automáticamente campos de formulario HTML a partir de los atributos de un modelo Django.',
     languages: {
-      python: {
+      django: {
         starterCode: `from django import forms\nfrom .models import Post\n\nclass PostForm(forms.ModelForm):\n    class Meta:\n        model = ___\n        fields = ['titulo', 'contenido']`,
         solutionCode: `from django import forms\nfrom .models import Post\n\nclass PostForm(forms.ModelForm):\n    class Meta:\n        model = Post\n        fields = ['titulo', 'contenido']`,
         acceptedKeywords: ['Post']
       },
-      cpp: {
-        starterCode: `const char* modelName = "Post";`,
-        solutionCode: `const char* modelName = "Post";`
-      },
-      javascript: {
-        starterCode: `const modelName = "Post";`,
-        solutionCode: `const modelName = "Post";`
-      },
-      java: {
-        starterCode: `public class Main {\n    public static void main(String[] args) {\n        String model = "Post";\n    }\n}`,
-        solutionCode: `public class Main {\n    public static void main(String[] args) {\n        String model = "Post";\n    }\n}`
+      python: {
+        starterCode: `from django import forms\nfrom .models import Post\n\nclass PostForm(forms.ModelForm):\n    class Meta:\n        model = ___\n        fields = ['titulo', 'contenido']`,
+        solutionCode: `from django import forms\nfrom .models import Post\n\nclass PostForm(forms.ModelForm):\n    class Meta:\n        model = Post\n        fields = ['titulo', 'contenido']`,
+        acceptedKeywords: ['Post']
       }
     }
   },
   {
     id: 920,
     title: 'Protección CSRF en Formularios HTML ({% csrf_token %})',
-    statement: 'Corrige la inclusión del token de seguridad CSRF dentro del formulario POST.',
+    statement: 'Corrige el formulario agregando el token de seguridad obligatorio {% csrf_token %} dentro de la etiqueta <form>.',
     type: 'fix',
     difficulty: 'medio',
-    hint: 'Incluye {% csrf_token %} dentro del tag <form>.',
-    explanation: 'Django exige {% csrf_token %} en formularios POST para prevenir ataques Cross-Site Request Forgery.',
+    categoryType: 'html',
+    fileName: 'template.html',
+    hint: 'Incluye {% csrf_token %} justo después de abrir <form method="POST">.',
+    explanation: 'Django exige {% csrf_token %} en todos los formularios POST para prevenir ataques maliciosos de Cross-Site Request Forgery.',
     languages: {
+      django: {
+        starterCode: `<!-- templates/crear.html -->\n<form method="POST">\n    # BUG: Falta el token de seguridad CSRF\n    {{ form.as_p }}\n    <button type="submit">Guardar</button>\n</form>`,
+        solutionCode: `<!-- templates/crear.html -->\n<form method="POST">\n    {% csrf_token %}\n    {{ form.as_p }}\n    <button type="submit">Guardar</button>\n</form>`,
+        acceptedKeywords: ['{% csrf_token %}']
+      },
+      html: {
+        starterCode: `<!-- templates/crear.html -->\n<form method="POST">\n    # BUG: Falta el token de seguridad CSRF\n    {{ form.as_p }}\n    <button type="submit">Guardar</button>\n</form>`,
+        solutionCode: `<!-- templates/crear.html -->\n<form method="POST">\n    {% csrf_token %}\n    {{ form.as_p }}\n    <button type="submit">Guardar</button>\n</form>`,
+        acceptedKeywords: ['{% csrf_token %}']
+      },
       python: {
-        starterCode: `<form method="POST">\n    {% csrf_token %}\n    {{ form.as_p }}\n    <button type="submit">Guardar</button>\n</form>`,
-        solutionCode: `<form method="POST">\n    {% csrf_token %}\n    {{ form.as_p }}\n    <button type="submit">Guardar</button>\n</form>`
-      },
-      cpp: {
-        starterCode: `const char* csrf = "{% csrf_token %}";`,
-        solutionCode: `const char* csrf = "{% csrf_token %}";`
-      },
-      javascript: {
-        starterCode: `const csrf = "{% csrf_token %}";`,
-        solutionCode: `const csrf = "{% csrf_token %}";`
-      },
-      java: {
-        starterCode: `public class Main {\n    public static void main(String[] args) {\n        String csrf = "{% csrf_token %}";\n    }\n}`,
-        solutionCode: `public class Main {\n    public static void main(String[] args) {\n        String csrf = "{% csrf_token %}";\n    }\n}`
+        starterCode: `<!-- templates/crear.html -->\n<form method="POST">\n    # BUG: Falta el token de seguridad CSRF\n    {{ form.as_p }}\n    <button type="submit">Guardar</button>\n</form>`,
+        solutionCode: `<!-- templates/crear.html -->\n<form method="POST">\n    {% csrf_token %}\n    {{ form.as_p }}\n    <button type="submit">Guardar</button>\n</form>`,
+        acceptedKeywords: ['{% csrf_token %}']
       }
     }
   },
@@ -580,195 +490,160 @@ export const expressDjangoExercises: ExpressChallengeExercise[] = [
   {
     id: 921,
     title: 'Relación Uno a Muchos con ForeignKey y on_delete',
-    statement: 'Completa la política de eliminación en cascada: on_delete=models.___ .',
+    statement: 'Completa la política de eliminación en cascada para la relación de usuario: on_delete=models.___.',
     type: 'complete',
     difficulty: 'avanzado',
+    categoryType: 'python',
+    fileName: 'models.py',
     hint: 'Usa models.CASCADE.',
-    explanation: 'CASCADE borra automáticamente los registros hijos asociados cuando el registro padre es eliminado.',
+    explanation: 'CASCADE elimina automáticamente los registros hijos asociados cuando el registro principal es borrado.',
     languages: {
-      python: {
+      django: {
         starterCode: `from django.db import models\nfrom django.contrib.auth.models import User\n\nclass Post(models.Model):\n    autor = models.ForeignKey(User, on_delete=models.___)\n    titulo = models.CharField(max_length=200)`,
         solutionCode: `from django.db import models\nfrom django.contrib.auth.models import User\n\nclass Post(models.Model):\n    autor = models.ForeignKey(User, on_delete=models.CASCADE)\n    titulo = models.CharField(max_length=200)`,
         acceptedKeywords: ['CASCADE']
       },
-      cpp: {
-        starterCode: `const char* policy = "CASCADE";`,
-        solutionCode: `const char* policy = "CASCADE";`
-      },
-      javascript: {
-        starterCode: `const policy = "CASCADE";`,
-        solutionCode: `const policy = "CASCADE";`
-      },
-      java: {
-        starterCode: `public class Main {\n    public static void main(String[] args) {\n        String policy = "CASCADE";\n    }\n}`,
-        solutionCode: `public class Main {\n    public static void main(String[] args) {\n        String policy = "CASCADE";\n    }\n}`
+      python: {
+        starterCode: `from django.db import models\nfrom django.contrib.auth.models import User\n\nclass Post(models.Model):\n    autor = models.ForeignKey(User, on_delete=models.___)\n    titulo = models.CharField(max_length=200)`,
+        solutionCode: `from django.db import models\nfrom django.contrib.auth.models import User\n\nclass Post(models.Model):\n    autor = models.ForeignKey(User, on_delete=models.CASCADE)\n    titulo = models.CharField(max_length=200)`,
+        acceptedKeywords: ['CASCADE']
       }
     }
   },
   {
     id: 922,
     title: 'Obtención Segura con get_object_or_404',
-    statement: 'Corrige la recuperación del post por clave primaria pk para arrojar HTTP 404 si no existe.',
+    statement: 'Corrige la vista para recuperar el post usando get_object_or_404 y responder con 404 si no existe.',
     type: 'fix',
     difficulty: 'avanzado',
+    categoryType: 'python',
+    fileName: 'views.py',
     hint: 'Usa post = get_object_or_404(Post, pk=post_id).',
-    explanation: 'get_object_or_404 captura Http404 automáticamente si la consulta no devuelve ningún objeto.',
+    explanation: 'get_object_or_404 captura automáticamente la excepción DoesNotExist y lanza un HTTP 404 limpio al usuario.',
     languages: {
+      django: {
+        starterCode: `from django.shortcuts import get_object_or_404, render\nfrom .models import Post\n\n# BUG: objects.get lanza excepción no controlada 500 si no existe el ID\ndef detalle(request, post_id):\n    post = Post.objects.get(pk=post_id)\n    return render(request, 'detalle.html', {'post': post})`,
+        solutionCode: `from django.shortcuts import get_object_or_404, render\nfrom .models import Post\n\ndef detalle(request, post_id):\n    post = get_object_or_404(Post, pk=post_id)\n    return render(request, 'detalle.html', {'post': post})`,
+        acceptedKeywords: ['get_object_or_404']
+      },
       python: {
-        starterCode: `from django.shortcuts import get_object_or_404, render\nfrom .models import Post\n\ndef detalle(request, post_id):\n    post = get_object_or_404(Post, pk=post_id)\n    return render(request, 'detalle.html', {'post': post})`,
-        solutionCode: `from django.shortcuts import get_object_or_404, render\nfrom .models import Post\n\ndef detalle(request, post_id):\n    post = get_object_or_404(Post, pk=post_id)\n    return render(request, 'detalle.html', {'post': post})`
-      },
-      cpp: {
-        starterCode: `// Handler de 404 seguro\nint getPostOr404(int id) { return id; }`,
-        solutionCode: `int getPostOr404(int id) { return id; }`
-      },
-      javascript: {
-        starterCode: `function getPostOr404(id) { return id; }`,
-        solutionCode: `function getPostOr404(id) { return id; }`
-      },
-      java: {
-        starterCode: `public class Main {\n    public static void main(String[] args) {\n        int id = 1;\n    }\n}`,
-        solutionCode: `public class Main {\n    public static void main(String[] args) {\n        int id = 1;\n    }\n}`
+        starterCode: `from django.shortcuts import get_object_or_404, render\nfrom .models import Post\n\n# BUG: objects.get lanza excepción no controlada 500 si no existe el ID\ndef detalle(request, post_id):\n    post = Post.objects.get(pk=post_id)\n    return render(request, 'detalle.html', {'post': post})`,
+        solutionCode: `from django.shortcuts import get_object_or_404, render\nfrom .models import Post\n\ndef detalle(request, post_id):\n    post = get_object_or_404(Post, pk=post_id)\n    return render(request, 'detalle.html', {'post': post})`,
+        acceptedKeywords: ['get_object_or_404']
       }
     }
   },
   {
     id: 923,
     title: 'Filtrado de Consultas ORM con Doble Guión Bajo (__)',
-    statement: 'Completa la consulta para filtrar posts publicados cuyo título contenga "Django" (titulo_____="Django").',
+    statement: 'Completa la consulta ORM para filtrar posts cuyo título contenga "Django" sin distinguir mayúsculas (titulo_____="Django").',
     type: 'complete',
     difficulty: 'avanzado',
-    hint: 'Usa titulo__icontains="Django" (o __contains).',
-    explanation: 'El doble guion bajo en Django ORM define transformaciones de búsqueda como __icontains, __year, __gte.',
+    categoryType: 'python',
+    fileName: 'views.py',
+    hint: 'Usa titulo__icontains=\'Django\'.',
+    explanation: 'El doble guion bajo en Django ORM permite lookups avanzados como __icontains, __gte, __year, etc.',
     languages: {
-      python: {
-        starterCode: `from .models import Post\n\n# Filtrar posts que contengan "Django" sin distinguir mayúsculas:\nposts = Post.objects.filter(titulo_____='Django')`,
+      django: {
+        starterCode: `from .models import Post\n\n# Filtrar posts que contengan "Django" de forma insensible a mayúsculas:\nposts = Post.objects.filter(titulo_____='Django')`,
         solutionCode: `from .models import Post\n\nposts = Post.objects.filter(titulo__icontains='Django')`,
         acceptedKeywords: ['__icontains', '__contains']
       },
-      cpp: {
-        starterCode: `const char* lookup = "__icontains";`,
-        solutionCode: `const char* lookup = "__icontains";`
-      },
-      javascript: {
-        starterCode: `const lookup = "__icontains";`,
-        solutionCode: `const lookup = "__icontains";`
-      },
-      java: {
-        starterCode: `public class Main {\n    public static void main(String[] args) {\n        String lookup = "__icontains";\n    }\n}`,
-        solutionCode: `public class Main {\n    public static void main(String[] args) {\n        String lookup = "__icontains";\n    }\n}`
+      python: {
+        starterCode: `from .models import Post\n\n# Filtrar posts que contengan "Django" de forma insensible a mayúsculas:\nposts = Post.objects.filter(titulo_____='Django')`,
+        solutionCode: `from .models import Post\n\nposts = Post.objects.filter(titulo__icontains='Django')`,
+        acceptedKeywords: ['__icontains', '__contains']
       }
     }
   },
   {
     id: 924,
     title: 'Vista Basada en Clases (ListView)',
-    statement: 'Corrige la herencia de la vista genérica para listar publicaciones (ListView).',
+    statement: 'Corrige la herencia de la vista genérica para listar publicaciones heredando de ListView.',
     type: 'fix',
     difficulty: 'avanzado',
-    hint: 'Hereda de ListView y especifica model = Post.',
-    explanation: 'Las Class-Based Views (CBVs) reducen el código repetitivo proveyendo patrones estándar como listas y detalles.',
+    categoryType: 'python',
+    fileName: 'views.py',
+    hint: 'Hereda de ListView: class PostListView(ListView):',
+    explanation: 'Las Class-Based Views (CBV) como ListView proveen lógica estructurada y lista para renderizar colecciones de objetos.',
     languages: {
+      django: {
+        starterCode: `from django.views.generic import View, ListView\nfrom .models import Post\n\n# BUG: Debe heredar de ListView para listas automáticas\nclass PostListView(View):\n    model = Post\n    template_name = 'post_list.html'\n    context_object_name = 'posts'`,
+        solutionCode: `from django.views.generic import ListView\nfrom .models import Post\n\nclass PostListView(ListView):\n    model = Post\n    template_name = 'post_list.html'\n    context_object_name = 'posts'`,
+        acceptedKeywords: ['PostListView(ListView):']
+      },
       python: {
-        starterCode: `from django.views.generic import ListView\nfrom .models import Post\n\nclass PostListView(ListView):\n    model = Post\n    template_name = 'post_list.html'\n    context_object_name = 'posts'`,
-        solutionCode: `from django.views.generic import ListView\nfrom .models import Post\n\nclass PostListView(ListView):\n    model = Post\n    template_name = 'post_list.html'\n    context_object_name = 'posts'`
-      },
-      cpp: {
-        starterCode: `class PostListView {};`,
-        solutionCode: `class PostListView {};`
-      },
-      javascript: {
-        starterCode: `class PostListView {}`,
-        solutionCode: `class PostListView {}`
-      },
-      java: {
-        starterCode: `public class Main {\n    class PostListView {}\n}`,
-        solutionCode: `public class Main {\n    class PostListView {}\n}`
+        starterCode: `from django.views.generic import View, ListView\nfrom .models import Post\n\n# BUG: Debe heredar de ListView para listas automáticas\nclass PostListView(View):\n    model = Post\n    template_name = 'post_list.html'\n    context_object_name = 'posts'`,
+        solutionCode: `from django.views.generic import ListView\nfrom .models import Post\n\nclass PostListView(ListView):\n    model = Post\n    template_name = 'post_list.html'\n    context_object_name = 'posts'`,
+        acceptedKeywords: ['PostListView(ListView):']
       }
     }
   },
   {
     id: 925,
     title: 'Protección de Vistas con @login_required',
-    statement: 'Completa el decorador de autenticación requerida antes de la función de vista.',
+    statement: 'Completa el decorador de autenticación requerida antes de la función de vista privada.',
     type: 'complete',
     difficulty: 'avanzado',
+    categoryType: 'python',
+    fileName: 'views.py',
     hint: 'Usa @login_required.',
-    explanation: '@login_required redirige al usuario no autenticado a la pantalla de login antes de ejecutar la vista.',
+    explanation: '@login_required restringe el acceso a usuarios autenticados y redirige automáticamente al login configurado si no lo están.',
     languages: {
-      python: {
+      django: {
         starterCode: `from django.contrib.auth.decorators import login_required\nfrom django.shortcuts import render\n\n@___\ndef panel_privado(request):\n    return render(request, 'panel.html')`,
         solutionCode: `from django.contrib.auth.decorators import login_required\nfrom django.shortcuts import render\n\n@login_required\ndef panel_privado(request):\n    return render(request, 'panel.html')`,
         acceptedKeywords: ['login_required']
       },
-      cpp: {
-        starterCode: `const char* decorator = "@login_required";`,
-        solutionCode: `const char* decorator = "@login_required";`
-      },
-      javascript: {
-        starterCode: `const decorator = "@login_required";`,
-        solutionCode: `const decorator = "@login_required";`
-      },
-      java: {
-        starterCode: `public class Main {\n    public static void main(String[] args) {\n        String dec = "@login_required";\n    }\n}`,
-        solutionCode: `public class Main {\n    public static void main(String[] args) {\n        String dec = "@login_required";\n    }\n}`
+      python: {
+        starterCode: `from django.contrib.auth.decorators import login_required\nfrom django.shortcuts import render\n\n@___\ndef panel_privado(request):\n    return render(request, 'panel.html')`,
+        solutionCode: `from django.contrib.auth.decorators import login_required\nfrom django.shortcuts import render\n\n@login_required\ndef panel_privado(request):\n    return render(request, 'panel.html')`,
+        acceptedKeywords: ['login_required']
       }
     }
   },
   {
     id: 926,
     title: 'Relación Muchos a Muchos (ManyToManyField)',
-    statement: 'Corrige la definición de etiquetas del post usando models.ManyToManyField(Tag).',
+    statement: 'Corrige la relación de etiquetas en el modelo Post usando models.ManyToManyField(Tag) en vez de ForeignKey.',
     type: 'fix',
     difficulty: 'avanzado',
+    categoryType: 'python',
+    fileName: 'models.py',
     hint: 'Usa tags = models.ManyToManyField(Tag).',
-    explanation: 'ManyToManyField crea automáticamente una tabla intermedia para vincular múltiples instancias entre sí.',
+    explanation: 'ManyToManyField crea internamente una tabla intermedia para vincular múltiples etiquetas a múltiples publicaciones.',
     languages: {
+      django: {
+        starterCode: `from django.db import models\n\nclass Tag(models.Model):\n    nombre = models.CharField(max_length=50)\n\nclass Post(models.Model):\n    titulo = models.CharField(max_length=200)\n    # BUG: Las etiquetas son una relación N:M, no 1:N\n    tags = models.ForeignKey(Tag, on_delete=models.CASCADE)`,
+        solutionCode: `from django.db import models\n\nclass Tag(models.Model):\n    nombre = models.CharField(max_length=50)\n\nclass Post(models.Model):\n    titulo = models.CharField(max_length=200)\n    tags = models.ManyToManyField(Tag)`,
+        acceptedKeywords: ['ManyToManyField']
+      },
       python: {
-        starterCode: `from django.db import models\n\nclass Tag(models.Model):\n    nombre = models.CharField(max_length=50)\n\nclass Post(models.Model):\n    titulo = models.CharField(max_length=200)\n    tags = models.ManyToManyField(Tag)`,
-        solutionCode: `from django.db import models\n\nclass Tag(models.Model):\n    nombre = models.CharField(max_length=50)\n\nclass Post(models.Model):\n    titulo = models.CharField(max_length=200)\n    tags = models.ManyToManyField(Tag)`
-      },
-      cpp: {
-        starterCode: `class Post { Tag* tags; };`,
-        solutionCode: `class Post { Tag* tags; };`
-      },
-      javascript: {
-        starterCode: `class Post { constructor() { this.tags = []; } }`,
-        solutionCode: `class Post { constructor() { this.tags = []; } }`
-      },
-      java: {
-        starterCode: `public class Main {\n    class Post { List<Tag> tags; }\n}`,
-        solutionCode: `public class Main {\n    class Post { List<Tag> tags; }\n}`
+        starterCode: `from django.db import models\n\nclass Tag(models.Model):\n    nombre = models.CharField(max_length=50)\n\nclass Post(models.Model):\n    titulo = models.CharField(max_length=200)\n    # BUG: Las etiquetas son una relación N:M, no 1:N\n    tags = models.ForeignKey(Tag, on_delete=models.CASCADE)`,
+        solutionCode: `from django.db import models\n\nclass Tag(models.Model):\n    nombre = models.CharField(max_length=50)\n\nclass Post(models.Model):\n    titulo = models.CharField(max_length=200)\n    tags = models.ManyToManyField(Tag)`,
+        acceptedKeywords: ['ManyToManyField']
       }
     }
   },
   {
     id: 927,
     title: 'Recolección de Archivos Estáticos (collectstatic)',
-    statement: 'Completa el comando de producción para unificar los archivos CSS y JS en STATIC_ROOT.',
+    statement: 'Completa el comando de manage.py para empaquetar y unificar los archivos CSS y JS en producción.',
     type: 'complete',
     difficulty: 'avanzado',
+    categoryType: 'cmd',
+    fileName: 'terminal',
     hint: 'El comando es python manage.py collectstatic.',
-    explanation: 'collectstatic reúne todos los archivos estáticos de cada app en una única carpeta para ser servida por Nginx o CDN.',
+    explanation: 'collectstatic recopila todos los archivos estáticos de cada app instalada y los ubica en STATIC_ROOT para servidores como Nginx.',
     languages: {
+      django: {
+        starterCode: `python manage.py ___`,
+        solutionCode: `python manage.py collectstatic`,
+        acceptedKeywords: ['collectstatic']
+      },
       python: {
-        starterCode: `cmd = "python manage.py ___"`,
-        solutionCode: `cmd = "python manage.py collectstatic"`,
-        acceptedKeywords: ['collectstatic']
-      },
-      cpp: {
-        starterCode: `const char* cmd = "python manage.py ___";`,
-        solutionCode: `const char* cmd = "python manage.py collectstatic";`,
-        acceptedKeywords: ['collectstatic']
-      },
-      javascript: {
-        starterCode: `const cmd = "python manage.py ___";`,
-        solutionCode: `const cmd = "python manage.py collectstatic";`,
-        acceptedKeywords: ['collectstatic']
-      },
-      java: {
-        starterCode: `public class Main {\n    public static void main(String[] args) {\n        String cmd = "python manage.py ___";\n    }\n}`,
-        solutionCode: `public class Main {\n    public static void main(String[] args) {\n        String cmd = "python manage.py collectstatic";\n    }\n}`,
+        starterCode: `python manage.py ___`,
+        solutionCode: `python manage.py collectstatic`,
         acceptedKeywords: ['collectstatic']
       }
     }
@@ -776,82 +651,69 @@ export const expressDjangoExercises: ExpressChallengeExercise[] = [
   {
     id: 928,
     title: 'Configuración de Producción en settings.py',
-    statement: 'Corrige la desactivación de DEBUG en producción asignando DEBUG = False.',
+    statement: 'Corrige la configuración de seguridad en settings.py para producción desactivando DEBUG (DEBUG = False).',
     type: 'fix',
     difficulty: 'avanzado',
-    hint: 'Asigna DEBUG = False y define ALLOWED_HOSTS.',
-    explanation: 'Desactivar DEBUG previene la filtración de variables de entorno, claves y trazas de error sensibles a usuarios externos.',
+    categoryType: 'python',
+    fileName: 'settings.py',
+    hint: 'Asigna DEBUG = False.',
+    explanation: 'Tener DEBUG activado en producción filtra credenciales, variables y código fuente sensible ante cualquier excepción.',
     languages: {
+      django: {
+        starterCode: `# settings.py para producción:\n# BUG: DEBUG no debe ser True en producción\nDEBUG = True\nALLOWED_HOSTS = ['midominio.com', 'www.midominio.com']`,
+        solutionCode: `# settings.py para producción:\nDEBUG = False\nALLOWED_HOSTS = ['midominio.com', 'www.midominio.com']`,
+        acceptedKeywords: ['DEBUG = False']
+      },
       python: {
-        starterCode: `# settings.py para producción:\nDEBUG = False\nALLOWED_HOSTS = ['midominio.com', 'www.midominio.com']`,
-        solutionCode: `DEBUG = False\nALLOWED_HOSTS = ['midominio.com', 'www.midominio.com']`
-      },
-      cpp: {
-        starterCode: `bool DEBUG = false;`,
-        solutionCode: `bool DEBUG = false;`
-      },
-      javascript: {
-        starterCode: `const DEBUG = false;`,
-        solutionCode: `const DEBUG = false;`
-      },
-      java: {
-        starterCode: `public class Main {\n    public static void main(String[] args) {\n        boolean debug = false;\n    }\n}`,
-        solutionCode: `public class Main {\n    public static void main(String[] args) {\n        boolean debug = false;\n    }\n}`
+        starterCode: `# settings.py para producción:\n# BUG: DEBUG no debe ser True en producción\nDEBUG = True\nALLOWED_HOSTS = ['midominio.com', 'www.midominio.com']`,
+        solutionCode: `# settings.py para producción:\nDEBUG = False\nALLOWED_HOSTS = ['midominio.com', 'www.midominio.com']`,
+        acceptedKeywords: ['DEBUG = False']
       }
     }
   },
   {
     id: 929,
     title: 'Inclusión de Rutas de App con include() en urls.py',
-    statement: 'Completa la función include() para importar las rutas de la app "blog.urls".',
+    statement: 'Completa la función include() en urls.py para incluir las rutas modulares de "blog.urls".',
     type: 'complete',
     difficulty: 'avanzado',
-    hint: 'Usa include("blog.urls").',
-    explanation: 'include() permite modularizar el enrutamiento delegando las subrutas a cada aplicación individual.',
+    categoryType: 'python',
+    fileName: 'urls.py',
+    hint: 'Importa e invoca include("blog.urls").',
+    explanation: 'include() permite desacoplar y modularizar el enrutamiento delegando cada sección de rutas a su propia aplicación.',
     languages: {
-      python: {
+      django: {
         starterCode: `from django.urls import path, ___\n\nurlpatterns = [\n    path('blog/', ___('blog.urls')),\n]`,
         solutionCode: `from django.urls import path, include\n\nurlpatterns = [\n    path('blog/', include('blog.urls')),\n]`,
         acceptedKeywords: ['include']
       },
-      cpp: {
-        starterCode: `const char* fn = "include";`,
-        solutionCode: `const char* fn = "include";`
-      },
-      javascript: {
-        starterCode: `const fn = "include";`,
-        solutionCode: `const fn = "include";`
-      },
-      java: {
-        starterCode: `public class Main {\n    public static void main(String[] args) {\n        String fn = "include";\n    }\n}`,
-        solutionCode: `public class Main {\n    public static void main(String[] args) {\n        String fn = "include";\n    }\n}`
+      python: {
+        starterCode: `from django.urls import path, ___\n\nurlpatterns = [\n    path('blog/', ___('blog.urls')),\n]`,
+        solutionCode: `from django.urls import path, include\n\nurlpatterns = [\n    path('blog/', include('blog.urls')),\n]`,
+        acceptedKeywords: ['include']
       }
     }
   },
   {
     id: 930,
     title: 'Personalización del Admin con ModelAdmin',
-    statement: 'Corrige la tupla list_display para mostrar las columnas titulo y fecha_creacion en la tabla de administración.',
+    statement: 'Corrige la tupla list_display en admin.py asegurando que los nombres de los campos sean strings ("titulo", "fecha_creacion").',
     type: 'fix',
     difficulty: 'avanzado',
-    hint: 'Usa list_display = ("titulo", "fecha_creacion").',
-    explanation: 'ModelAdmin permite configurar filtros laterales, búsqueda por texto y columnas visibles en el dashboard administrativo.',
+    categoryType: 'python',
+    fileName: 'admin.py',
+    hint: 'Usa list_display = (\'titulo\', \'fecha_creacion\').',
+    explanation: 'ModelAdmin permite configurar qué columnas de texto, fechas y enlaces se muestran en la vista tabular del panel administrativo.',
     languages: {
+      django: {
+        starterCode: `from django.contrib import admin\nfrom .models import Post\n\n# BUG: Los campos en list_display deben ser nombres en texto (strings)\n@admin.register(Post)\nclass PostAdmin(admin.ModelAdmin):\n    list_display = (titulo, fecha_creacion)\n    search_fields = ('titulo',)\n    list_filter = ('fecha_creacion',)`,
+        solutionCode: `from django.contrib import admin\nfrom .models import Post\n\n@admin.register(Post)\nclass PostAdmin(admin.ModelAdmin):\n    list_display = ('titulo', 'fecha_creacion')\n    search_fields = ('titulo',)\n    list_filter = ('fecha_creacion',)`,
+        acceptedKeywords: ["'titulo'", '"titulo"']
+      },
       python: {
-        starterCode: `from django.contrib import admin\nfrom .models import Post\n\n@admin.register(Post)\nclass PostAdmin(admin.ModelAdmin):\n    list_display = ('titulo', 'fecha_creacion')\n    search_fields = ('titulo',)\n    list_filter = ('fecha_creacion',)`,
-        solutionCode: `from django.contrib import admin\nfrom .models import Post\n\n@admin.register(Post)\nclass PostAdmin(admin.ModelAdmin):\n    list_display = ('titulo', 'fecha_creacion')\n    search_fields = ('titulo',)\n    list_filter = ('fecha_creacion',)`
-      },
-      cpp: {
-        starterCode: `const char* fields[] = {"titulo", "fecha_creacion"};`,
-        solutionCode: `const char* fields[] = {"titulo", "fecha_creacion"};`
-      },
-      javascript: {
-        starterCode: `const fields = ['titulo', 'fecha_creacion'];`,
-        solutionCode: `const fields = ['titulo', 'fecha_creacion'];`
-      },
-      java: {
-        starterCode: `public class Main {\n    public static void main(String[] args) {\n        String[] fields = {"titulo", "fecha_creacion"};\n    }\n}`,
-        solutionCode: `public class Main {\n    public static void main(String[] args) {\n        String[] fields = {"titulo", "fecha_creacion"};\n    }\n}`
+        starterCode: `from django.contrib import admin\nfrom .models import Post\n\n# BUG: Los campos en list_display deben ser nombres en texto (strings)\n@admin.register(Post)\nclass PostAdmin(admin.ModelAdmin):\n    list_display = (titulo, fecha_creacion)\n    search_fields = ('titulo',)\n    list_filter = ('fecha_creacion',)`,
+        solutionCode: `from django.contrib import admin\nfrom .models import Post\n\n@admin.register(Post)\nclass PostAdmin(admin.ModelAdmin):\n    list_display = ('titulo', 'fecha_creacion')\n    search_fields = ('titulo',)\n    list_filter = ('fecha_creacion',)`,
+        acceptedKeywords: ["'titulo'", '"titulo"']
       }
     }
   }
