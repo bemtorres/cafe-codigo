@@ -7,6 +7,7 @@ export type CourseCategory =
   | 'language'
   | 'advanced'
   | 'testing'
+  | 'frameworks'
   | 'engineering'
   | 'tools'
   | 'foundations'
@@ -223,6 +224,7 @@ export const courses: Course[] = [
     category: 'advanced',
     status: 'available',
     color: '#1e293b',
+    image: '/images/server.jpg',
     lessons: [
       { slug: 'arquitectura-cliente-servidor', title: '1. Arquitectura Cliente-Servidor', href: '/course/tecnologias-servidor/arquitectura-cliente-servidor/' },
       { slug: 'protocolo-http-metodos', title: '2. Protocolo HTTP y Métodos', href: '/course/tecnologias-servidor/protocolo-http-metodos/' },
@@ -270,6 +272,7 @@ export const courses: Course[] = [
     category: 'advanced',
     status: 'available',
     color: '#0d9488',
+    image: '/images/code2.png',
     lessons: [
       { slug: 'salto-ingeniero', title: '1. De programador a ingeniero', href: '/course/estructuras-datos/salto-ingeniero/' },
       { slug: 'lineales-nodos', title: '2. Lineales y nodos', href: '/course/estructuras-datos/lineales-nodos/' },
@@ -286,6 +289,7 @@ export const courses: Course[] = [
     category: 'testing',
     status: 'available',
     color: '#0891b2',
+    image: '/images/junit.jpg',
     lessons: [
       { slug: 'intro-junit', title: '1. JUnit 5', href: '/course/javaunit/intro-junit/' },
       { slug: 'patron-aaa', title: '2. Patrón AAA', href: '/course/javaunit/patron-aaa/' },
@@ -308,6 +312,7 @@ export const courses: Course[] = [
     category: 'testing',
     status: 'available',
     color: '#306998',
+    image: '/images/testpy.jpg',
     lessons: [
       { slug: 'intro-pytest', title: '1. Introducción y pytest', href: '/course/python-testing/intro-pytest/' },
       { slug: 'patron-aaa-python', title: '2. Patrón AAA', href: '/course/python-testing/patron-aaa-python/' },
@@ -326,9 +331,10 @@ export const courses: Course[] = [
     name: 'Patrones de diseño',
     description:
       'Soluciones habituales a problemas recurrentes: patrones creacionales, estructurales y de comportamiento, con ejemplos en varios lenguajes y enlaces al catálogo de Refactoring.Guru.',
-    category: 'advanced',
+    category: 'frameworks',
     status: 'available',
     color: '#7c3aed',
+    image: '/images/code3.png',
     lessons: [
       { slug: 'introduccion', title: '1. ¿Qué son los patrones?', href: '/course/patrones-diseno/introduccion/' },
       { slug: 'creacionales', title: '2. Patrones creacionales', href: '/course/patrones-diseno/creacionales/' },
@@ -364,6 +370,7 @@ export const courses: Course[] = [
     /** Si añadís otro curso con candado, actualizá también `PASSWORD_PROTECTED_SLUGS` en `src/lib/courseUnlock.ts`. */
     // requiresPassword: true,
     color: '#1a5ebd',
+    image: '/images/c4.jpg',
     lessons: [
       { slug: 'introduccion', title: '1. ¿Qué es C4?', href: '/course/c4/introduccion/' },
       { slug: 'contexto', title: '2. Nivel 1: Contexto', href: '/course/c4/contexto/' },
@@ -379,6 +386,7 @@ export const courses: Course[] = [
     category: 'engineering',
     status: 'available',
     color: '#8b5cf6',
+    image: '/images/pitch.png',
     lessons: [
       { slug: 'ciclos-de-vida', title: '1. Ciclos de Vida', href: '/course/vision-producto/ciclos-de-vida/' },
       { slug: 'inicio-y-usuario', title: '2. Inicio y Usuario', href: '/course/vision-producto/inicio-y-usuario/' },
@@ -392,6 +400,7 @@ export const courses: Course[] = [
     category: 'engineering',
     status: 'available',
     color: '#3b82f6',
+    image: '/images/backlog.jpg',
     lessons: [
       { slug: 'elicitacion', title: '1. Técnicas de Elicitación', href: '/course/analisis-backlog/elicitacion/' },
       { slug: 'user-stories', title: '2. Agilidad en Papel', href: '/course/analisis-backlog/user-stories/' },
@@ -418,6 +427,7 @@ export const courses: Course[] = [
     category: 'tools',
     status: 'available',
     color: '#1a1a1b',
+    image: '/images/terminal.png',
     lessons: [
       { slug: 'intro-terminal', title: '1. La Terminal', href: '/course/terminal/intro-terminal/' },
       { slug: 'navegacion', title: '2. Navegación', href: '/course/terminal/navegacion/' },
@@ -435,6 +445,7 @@ export const courses: Course[] = [
     category: 'tools',
     status: 'available',
     color: '#f59e0b',
+    image: '/images/linux.png',
     lessons: [
       { slug: 'que-es-linux', title: '1. El Núcleo Linux', href: '/course/linux-distros/que-es-linux/' },
       { slug: 'debian-ubuntu', title: '2. Debian y Ubuntu', href: '/course/linux-distros/debian-ubuntu/' },
@@ -469,6 +480,7 @@ export const courses: Course[] = [
     category: 'gamedev',
     status: 'available',
     color: '#000000',
+    image: '/images/game.jpg',
     lessons: [
       { slug: 'interfaz', title: '1. Interfaz y Escenario 3D', href: '/course/unity-prototipado/interfaz/' },
       { slug: 'movimiento', title: '2. Física y Movimiento del Jugador', href: '/course/unity-prototipado/movimiento/' },
@@ -484,6 +496,7 @@ export const courses: Course[] = [
     category: 'frontend',
     status: 'available',
     color: '#ff4d00',
+    image: '/images/html.jpg',
     lessons: [
       { slug: 'intro-html', title: '1. Estructura Básica', href: '/course/html/intro-html/' },
       { slug: 'etiquetas-basicas', title: '2. Texto y Enlaces', href: '/course/html/etiquetas-basicas/' },
@@ -500,6 +513,7 @@ export const courses: Course[] = [
     category: 'frontend',
     status: 'available',
     color: '#264de4',
+    image: '/images/css.jpg',
     lessons: [
       { slug: 'intro-css', title: '1. Selectores y Box Model', href: '/course/css/intro-css/' },
       { slug: 'flexbox-grid', title: '2. Flexbox y Grid', href: '/course/css/flexbox-grid/' },
@@ -559,6 +573,7 @@ export const courses: Course[] = [
     status: 'available',
     color: '#A97BFF',
     communityReleaseYear: 2011,
+    image: '/images/kotlin.png',
     lessons: [
       { slug: 'introduccion', title: '1. El comienzo', href: '/course/kotlin/introduccion/' },
       { slug: 'variables-y-tipos', title: '2. Variables y tipos', href: '/course/kotlin/variables-y-tipos/' },
@@ -575,7 +590,6 @@ export const courses: Course[] = [
       { slug: 'proyecto-agenda', title: '13. Proyecto - Agenda de Contactos 📱', href: '/course/kotlin/proyecto-agenda/' },
       { slug: 'coroutines-intro', title: '14. Introducción a Coroutines ⚡', href: '/course/kotlin/coroutines-intro/' },
     ],
-    image: '/images/kotlin.jpg',
   },
   {
     slug: 'modelamiento-db',
@@ -584,6 +598,7 @@ export const courses: Course[] = [
     category: 'database',
     status: 'available',
     color: '#16a085',
+    image: '/images/db.jpg',
     lessons: [
       { slug: 'conceptos-basicos', title: '1. Qué es el Modelamiento', href: '/course/modelamiento-db/conceptos-basicos/' },
       { slug: 'entidad-relacion', title: '2. Diagrama Entidad-Relación', href: '/course/modelamiento-db/entidad-relacion/' },
@@ -598,6 +613,7 @@ export const courses: Course[] = [
     category: 'database',
     status: 'available',
     color: '#2980b9',
+    image: '/images/db2.jpg',
     lessons: [
       { slug: 'intro-sql', title: '1. El Mundo de las Tablas', href: '/course/consultas-sql/intro-sql/' },
       { slug: 'select-basico', title: '2. Sentencia SELECT', href: '/course/consultas-sql/select-basico/' },
@@ -611,8 +627,9 @@ export const courses: Course[] = [
     description: 'Aprende a programar dentro de la base de datos: Procedures, Triggers y Funciones.',
     category: 'database',
     status: 'available',
-    requiresPassword: true,
+    // requiresPassword: true,
     color: '#e67e22',
+    image: '/images/db4.jpg',
     lessons: [
       { slug: 'intro-plsql', title: '1. Bloques Anónimos', href: '/course/programacion-db/intro-plsql/' },
       { slug: 'procedimientos', title: '2. Store Procedures', href: '/course/programacion-db/procedimientos/' },
@@ -704,6 +721,7 @@ export const courses: Course[] = [
     category: 'advanced',
     status: 'available',
     color: '#0ea5e9',
+    image: '/images/cripto.jpg',
     lessons: [
       { slug: 'introduccion', title: '1. Conceptos Básicos', href: '/course/criptografia/introduccion/' },
       { slug: 'cifrado-simetrico', title: '2. Cifrado Simétrico', href: '/course/criptografia/cifrado-simetrico/' },

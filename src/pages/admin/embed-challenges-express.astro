@@ -1,0 +1,492 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import { expressVariablesExercises } from '../../data/challengesExpressVariables';
+import { expressConditionalsExercises } from '../../data/challengesExpressConditionals';
+import { expressLoopsExercises } from '../../data/challengesExpressLoops';
+import { expressArraysExercises } from '../../data/challengesExpressArrays';
+import { expressFunctionExercises } from '../../data/challengesExpressFunctions';
+import { expressPooExercises } from '../../data/challengesExpressPoo';
+import { expressMatricesExercises } from '../../data/challengesExpressMatrices';
+import { expressExceptionsExercises } from '../../data/challengesExpressExceptions';
+import { expressAlgorithmsExercises } from '../../data/challengesExpressAlgorithms';
+import { expressDjangoExercises } from '../../data/challengesExpressDjango';
+import { expressTerminalExercises } from '../../data/challengesExpressTerminal';
+
+const expressModules = [
+  {
+    slug: 'variables',
+    name: 'Tipos de Variables & Datos',
+    icon: '📦',
+    exercisesCount: expressVariablesExercises.length,
+    description: 'Enteros, decimales, cadenas, booleanos, casteo de tipos y constantes.',
+  },
+  {
+    slug: 'condicionales',
+    name: 'Estructuras Condicionales',
+    icon: '🔀',
+    exercisesCount: expressConditionalsExercises.length,
+    description: 'Sentencias if, else if, else, operadores lógicos &&/|| y ternarios.',
+  },
+  {
+    slug: 'bucles',
+    name: 'Bucles & Iteraciones',
+    icon: '🔁',
+    exercisesCount: expressLoopsExercises.length,
+    description: 'Bucles for, while, do-while, acumuladores, contadores, break y continue.',
+  },
+  {
+    slug: 'arreglos',
+    name: 'Arreglos & Listas (1D)',
+    icon: '📊',
+    exercisesCount: expressArraysExercises.length,
+    description: 'Declaración, índices, recorridos, búsqueda de máximos/mínimos y filtros.',
+  },
+  {
+    slug: 'funciones',
+    name: 'Funciones & Métodos',
+    icon: '⚡',
+    exercisesCount: expressFunctionExercises.length,
+    description: 'Paso de parámetros, retorno, referencias, sobrecarga y recursión.',
+  },
+  {
+    slug: 'poo',
+    name: 'Programación Orientada a Objetos',
+    icon: '🏛️',
+    exercisesCount: expressPooExercises.length,
+    description: 'Clases, objetos, constructores, encapsulamiento, herencia y polimorfismo.',
+  },
+  {
+    slug: 'matrices',
+    name: 'Matrices & Arreglos 2D',
+    icon: '🔲',
+    exercisesCount: expressMatricesExercises.length,
+    description: 'Cuadrículas [fila][columna], diagonales, matrices identidad y transposiciones.',
+  },
+  {
+    slug: 'excepciones',
+    name: 'Manejo de Excepciones & Errores',
+    icon: '🛡️',
+    exercisesCount: expressExceptionsExercises.length,
+    description: 'Bloques try, catch, finally, throw y programación defensiva.',
+  },
+  {
+    slug: 'algoritmos',
+    name: 'Búsqueda & Algoritmos de Ordenación',
+    icon: '🔍',
+    exercisesCount: expressAlgorithmsExercises.length,
+    description: 'Búsqueda Lineal, Búsqueda Binaria, Bubble Sort, Selection Sort e Insertion Sort.',
+  },
+  {
+    slug: 'django',
+    name: 'Django Framework Paso a Paso',
+    icon: '🐍',
+    exercisesCount: expressDjangoExercises.length,
+    description: 'Entorno virtual venv, startproject, startapp, modelos ORM, migraciones, vistas y URLs.',
+  },
+  {
+    slug: 'terminal',
+    name: 'Terminal Unix, Linux & Comandos',
+    icon: '💻',
+    exercisesCount: expressTerminalExercises.length,
+    description: 'Navegación pwd/cd/ls, creación mkdir/touch, permisos chmod/chown, pipes |, grep y procesos.',
+  },
+];
+---
+
+<AdminLayout
+  title="Admin · Generador Embed Desafíos Express"
+  description="Generador de URLs e iframes para incrustar Desafíos Express con parámetros personalizados."
+  activeSection="express"
+>
+  <article class="content-section admin-embed w-full max-w-full min-w-0">
+    <header class="admin-embed-head mb-4">
+      <div class="flex items-center gap-2 mb-1">
+        <a href="/admin/embed/" class="text-xs font-bold text-sky-700 hover:text-sky-800">← Embed Cursos</a>
+        <span class="text-slate-300">•</span>
+        <span class="text-xs font-black uppercase text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-md">
+          ⚡ Desafíos Express
+        </span>
+      </div>
+      <h1 class="!mb-0 !text-xl sm:!text-2xl font-black text-slate-900">/admin/embed-challenges-express</h1>
+      <p class="!mb-0 !mt-1 !text-xs sm:!text-sm !leading-snug text-slate-600 font-medium">
+        Generador interactivo de URLs y etiquetas <code>&lt;iframe&gt;</code> para integrar los <strong>Desafíos Express</strong> con personalización por parámetros GET (lenguaje, vidas/intentos, alumno, cantidad y modo embed).
+      </p>
+    </header>
+
+    <!-- FORMULARIO DE GENERACIÓN -->
+    <div class="admin-embed-form rounded-2xl border-2 border-slate-200 bg-white p-4 sm:p-5 shadow-xs space-y-4">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+        <!-- MODULO -->
+        <label class="ae-field">
+          <span class="ae-lbl">Módulo Express</span>
+          <select id="expModule" class="ae-input">
+            {expressModules.map((m) => (
+              <option value={m.slug}>{m.name} ({m.exercisesCount} ej)</option>
+            ))}
+          </select>
+        </label>
+
+        <!-- LENGUAJE (code) -->
+        <label class="ae-field">
+          <span class="ae-lbl">Lenguaje (code=)</span>
+          <select id="expLang" class="ae-input">
+            <option value="cpp">C++ (cpp)</option>
+            <option value="python">Python (python)</option>
+            <option value="javascript">JavaScript (javascript)</option>
+            <option value="java">Java (java)</option>
+            <option value="">(Preguntar con Modal)</option>
+          </select>
+        </label>
+
+        <!-- CANTIDAD DE EJERCICIOS (count) -->
+        <label class="ae-field">
+          <span class="ae-lbl">Cantidad Ejercicios (count=)</span>
+          <select id="expCount" class="ae-input">
+            <option value="10">10 ejercicios (por defecto)</option>
+            <option value="5">5 ejercicios (rápido)</option>
+            <option value="15">15 ejercicios</option>
+            <option value="20">20 ejercicios</option>
+            <option value="30">30 ejercicios</option>
+            <option value="60">60 ejercicios</option>
+            <option value="90">90 ejercicios (todo el banco)</option>
+          </select>
+        </label>
+
+        <!-- DIFICULTAD (difficulty) -->
+        <label class="ae-field">
+          <span class="ae-lbl">Dificultad (difficulty=)</span>
+          <select id="expDifficulty" class="ae-input">
+            <option value="EMA">EMA · Equilibrado (Fácil + Medio + Avanzado)</option>
+            <option value="E">E · Solo Fácil (30 ejercicios)</option>
+            <option value="M">M · Solo Medio (30 ejercicios)</option>
+            <option value="A">A · Solo Avanzado (30 ejercicios)</option>
+            <option value="EM">EM · Fácil y Medio (50/50)</option>
+            <option value="MA">MA · Medio y Avanzado (50/50)</option>
+            <option value="EA">EA · Fácil y Avanzado (50/50)</option>
+          </select>
+        </label>
+
+        <!-- INTENTOS / VIDAS (attempts) -->
+        <label class="ae-field">
+          <span class="ae-lbl">Intentos / Vidas (attempts=)</span>
+          <select id="expAttempts" class="ae-input">
+            <option value="3">3 vidas (por defecto)</option>
+            <option value="1">1 vida (máxima dificultad)</option>
+            <option value="5">5 vidas</option>
+            <option value="0">0 (feedback inmediato)</option>
+            <option value="-1">-1 (intentos infinitos)</option>
+          </select>
+        </label>
+
+        <!-- TIEMPO LÍMITE (time) -->
+        <label class="ae-field">
+          <span class="ae-lbl">Tiempo Límite (time=)</span>
+          <select id="expTime" class="ae-input">
+            <option value="0">Sin límite de tiempo (por defecto)</option>
+            <option value="60">60 segundos (1 minuto express)</option>
+            <option value="120">120 segundos (2 minutos)</option>
+            <option value="180">180 segundos (3 minutos)</option>
+            <option value="300">300 segundos (5 minutos)</option>
+            <option value="600">600 segundos (10 minutos)</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2 border-t border-slate-100">
+        <!-- NOMBRE DEL ALUMNO (name) -->
+        <label class="ae-field">
+          <span class="ae-lbl">Nombre del Alumno (name=)</span>
+          <input id="expName" class="ae-input" placeholder="Ej: Tomas, Maria..." />
+        </label>
+
+        <!-- FLAGS (embed, skip) -->
+        <div class="ae-field md:col-span-2">
+          <span class="ae-lbl">Opciones y Visibilidad</span>
+          <div class="flex flex-wrap items-center gap-4 mt-2">
+            <label class="ae-inline flex items-center gap-1.5 text-xs font-bold text-slate-700 cursor-pointer">
+              <input id="expEmbed" type="checkbox" class="ae-cb" checked />
+              <span>embed=true (ocultar barra superior)</span>
+            </label>
+            <label class="ae-inline flex items-center gap-1.5 text-xs font-bold text-slate-700 cursor-pointer">
+              <input id="expSkip" type="checkbox" class="ae-cb" checked />
+              <span>Permitir saltar desafíos (desmarcar = skip=false)</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- PRESETS RÁPIDOS -->
+      <div class="flex flex-wrap items-center justify-between gap-2 pt-3 border-t border-slate-100">
+        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Presets:</span>
+        <div class="flex flex-wrap gap-1.5">
+          <button type="button" class="ae-chip" data-preset="standard">Estándar (C++ 10)</button>
+          <button type="button" class="ae-chip" data-preset="flash60">Flash Cronometrado (60s)</button>
+          <button type="button" class="ae-chip" data-preset="exam">Evaluación Estricta (1 vida, 120s)</button>
+          <button type="button" class="ae-chip" data-preset="practice">Modo Práctica (Infinito)</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESULTADO GENERADO: URL E IFRAME -->
+    <section class="mt-6 space-y-4">
+      <div class="bg-white border-2 border-slate-200 rounded-2xl p-4 sm:p-5 shadow-xs">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs font-black uppercase text-slate-500 tracking-wider">URL Generada</span>
+          <button id="btnCopyUrl" class="px-3 py-1 bg-sky-50 hover:bg-sky-100 border border-sky-200 text-sky-700 text-xs font-bold rounded-lg transition-all cursor-pointer">
+            📋 Copiar URL
+          </button>
+        </div>
+        <div class="flex items-center gap-2">
+          <input
+            id="resultUrl"
+            readonly
+            class="w-full font-mono text-xs p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 select-all"
+          />
+          <a
+            id="btnTestUrl"
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl shadow-xs shrink-0 flex items-center gap-1"
+          >
+            <span>Abrir</span> <span>↗</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="bg-white border-2 border-slate-200 rounded-2xl p-4 sm:p-5 shadow-xs">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs font-black uppercase text-slate-500 tracking-wider">Código Iframe para Incrustar</span>
+          <button id="btnCopyIframe" class="px-3 py-1 bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-800 text-xs font-bold rounded-lg transition-all cursor-pointer">
+            📋 Copiar Iframe
+          </button>
+        </div>
+        <textarea
+          id="resultIframe"
+          readonly
+          rows="3"
+          class="w-full font-mono text-xs p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 select-all"
+        ></textarea>
+      </div>
+
+      <!-- VISTA PREVIA EN VIVO -->
+      <div class="bg-white border-2 border-slate-200 rounded-2xl p-4 sm:p-5 shadow-xs">
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-xs font-black uppercase text-slate-500 tracking-wider">Vista Previa Iframe en Vivo</span>
+          <button id="btnReloadPreview" class="text-xs font-bold text-slate-500 hover:text-slate-800 bg-slate-100 px-2.5 py-1 rounded-lg">
+            🔄 Recargar Vista Previa
+          </button>
+        </div>
+        <div class="w-full rounded-2xl overflow-hidden border border-slate-200 bg-slate-50 shadow-inner">
+          <iframe
+            id="previewIframe"
+            src="/challenges-express/funciones/?code=cpp&embed=true"
+            class="w-full h-[640px] border-0"
+            title="Vista previa Desafíos Express"
+          ></iframe>
+        </div>
+      </div>
+    </section>
+  </article>
+
+  <script>
+    // @ts-nocheck
+    function initEmbedBuilder() {
+      const $module = document.getElementById('expModule');
+      const $lang = document.getElementById('expLang');
+      const $count = document.getElementById('expCount');
+      const $difficulty = document.getElementById('expDifficulty');
+      const $attempts = document.getElementById('expAttempts');
+      const $time = document.getElementById('expTime');
+      const $name = document.getElementById('expName');
+      const $embed = document.getElementById('expEmbed');
+      const $skip = document.getElementById('expSkip');
+
+      const $resultUrl = document.getElementById('resultUrl');
+      const $resultIframe = document.getElementById('resultIframe');
+      const $btnTestUrl = document.getElementById('btnTestUrl');
+      const $previewIframe = document.getElementById('previewIframe');
+      const $btnReload = document.getElementById('btnReloadPreview');
+
+      const $btnCopyUrl = document.getElementById('btnCopyUrl');
+      const $btnCopyIframe = document.getElementById('btnCopyIframe');
+
+      function updateOutputs() {
+        const origin = window.location.origin;
+        const mod = $module.value || 'funciones';
+        const url = new URL(`/challenges-express/${mod}/`, origin);
+
+        // Lang
+        if ($lang.value) {
+          url.searchParams.set('code', $lang.value);
+        }
+
+        // Count (solo si difiere de 10)
+        if ($count.value && $count.value !== '10') {
+          url.searchParams.set('count', $count.value);
+        }
+
+        // Difficulty (solo si difiere de EMA)
+        if ($difficulty?.value && $difficulty.value !== 'EMA') {
+          url.searchParams.set('difficulty', $difficulty.value);
+        }
+
+        // Attempts (solo si difiere de 3)
+        if ($attempts.value && $attempts.value !== '3') {
+          url.searchParams.set('attempts', $attempts.value);
+        }
+
+        // Time (solo si es > 0)
+        if ($time?.value && $time.value !== '0') {
+          url.searchParams.set('time', $time.value);
+        }
+
+        // Name
+        const nameVal = $name.value.trim();
+        if (nameVal) {
+          url.searchParams.set('name', nameVal);
+        }
+
+        // Embed
+        if ($embed.checked) {
+          url.searchParams.set('embed', 'true');
+        }
+
+        // Skip
+        if (!$skip.checked) {
+          url.searchParams.set('skip', 'false');
+        }
+
+        const fullUrl = url.toString();
+        $resultUrl.value = fullUrl;
+        $btnTestUrl.href = fullUrl;
+
+        const iframeCode = `<iframe\n  src="${fullUrl}"\n  width="100%"\n  height="700"\n  frameborder="0"\n  allow="clipboard-write"\n  style="border-radius: 16px; border: 1px solid #e2e8f0; width: 100%; min-height: 650px;"\n></iframe>`;
+        $resultIframe.value = iframeCode;
+
+        // Actualizar preview iframe
+        if ($previewIframe.src !== fullUrl) {
+          $previewIframe.src = fullUrl;
+        }
+      }
+
+      // Listeners
+      [$module, $lang, $count, $difficulty, $attempts, $time, $embed, $skip].forEach(el => {
+        el?.addEventListener('change', updateOutputs);
+      });
+      $name?.addEventListener('input', updateOutputs);
+
+      $btnReload?.addEventListener('click', () => {
+        $previewIframe.src = $resultUrl.value;
+      });
+
+      // Presets
+      document.querySelectorAll('[data-preset]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const preset = btn.getAttribute('data-preset');
+          if (preset === 'standard') {
+            $lang.value = 'cpp';
+            $count.value = '10';
+            $difficulty.value = 'EMA';
+            $attempts.value = '3';
+            if ($time) $time.value = '0';
+            $embed.checked = true;
+            $skip.checked = true;
+            $name.value = '';
+          } else if (preset === 'flash60') {
+            $lang.value = 'cpp';
+            $count.value = '5';
+            $difficulty.value = 'E';
+            $attempts.value = '3';
+            if ($time) $time.value = '60';
+            $embed.checked = true;
+            $skip.checked = true;
+          } else if (preset === 'exam') {
+            $lang.value = 'cpp';
+            $count.value = '10';
+            $difficulty.value = 'EMA';
+            $attempts.value = '1';
+            if ($time) $time.value = '120';
+            $embed.checked = true;
+            $skip.checked = false;
+          } else if (preset === 'practice') {
+            $lang.value = 'cpp';
+            $count.value = '10';
+            $difficulty.value = 'EMA';
+            $attempts.value = '-1';
+            if ($time) $time.value = '0';
+            $embed.checked = true;
+            $skip.checked = true;
+          }
+          updateOutputs();
+        });
+      });
+
+      // Copiar botones
+      $btnCopyUrl?.addEventListener('click', () => {
+        navigator.clipboard.writeText($resultUrl.value);
+        $btnCopyUrl.textContent = '✅ Copiado';
+        setTimeout(() => ($btnCopyUrl.textContent = '📋 Copiar URL'), 2000);
+      });
+
+      $btnCopyIframe?.addEventListener('click', () => {
+        navigator.clipboard.writeText($resultIframe.value);
+        $btnCopyIframe.textContent = '✅ Copiado';
+        setTimeout(() => ($btnCopyIframe.textContent = '📋 Copiar Iframe'), 2000);
+      });
+
+      // Primer render
+      updateOutputs();
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initEmbedBuilder);
+    } else {
+      initEmbedBuilder();
+    }
+  </script>
+
+  <style is:inline>
+    .admin-embed .ae-lbl {
+      display: block;
+      font-size: 0.65rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #64748b;
+      margin-bottom: 0.25rem;
+    }
+    .admin-embed .ae-input,
+    .admin-embed select.ae-input {
+      width: 100%;
+      border-radius: 0.6rem;
+      border: 2px solid #e2e8f0;
+      background: #fff;
+      padding: 0.4rem 0.6rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      font-family: inherit;
+      color: #0f172a;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .admin-embed .ae-input:focus {
+      border-color: #0284c7;
+    }
+    .admin-embed .ae-chip {
+      font-size: 0.65rem;
+      font-weight: 800;
+      padding: 0.2rem 0.5rem;
+      border-radius: 0.5rem;
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      color: #334155;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .admin-embed .ae-chip:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+  </style>
+</AdminLayout>

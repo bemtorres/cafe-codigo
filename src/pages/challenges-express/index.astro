@@ -1,0 +1,455 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { expressFunctionExercises } from "../../data/challengesExpressFunctions";
+import { expressVariablesExercises } from "../../data/challengesExpressVariables";
+import { expressConditionalsExercises } from "../../data/challengesExpressConditionals";
+import { expressLoopsExercises } from "../../data/challengesExpressLoops";
+import { expressArraysExercises } from "../../data/challengesExpressArrays";
+import { expressPooExercises } from "../../data/challengesExpressPoo";
+import { expressMatricesExercises } from "../../data/challengesExpressMatrices";
+import { expressExceptionsExercises } from "../../data/challengesExpressExceptions";
+import { expressAlgorithmsExercises } from "../../data/challengesExpressAlgorithms";
+import { expressDjangoExercises } from "../../data/challengesExpressDjango";
+import { expressTerminalExercises } from "../../data/challengesExpressTerminal";
+
+const allExpress = [
+  ...expressVariablesExercises,
+  ...expressConditionalsExercises,
+  ...expressLoopsExercises,
+  ...expressArraysExercises,
+  ...expressFunctionExercises,
+  ...expressPooExercises,
+  ...expressMatricesExercises,
+  ...expressExceptionsExercises,
+  ...expressAlgorithmsExercises,
+  ...expressDjangoExercises,
+  ...expressTerminalExercises,
+];
+
+const totalExercises = allExpress.length;
+const varsCount = expressVariablesExercises.length;
+const condsCount = expressConditionalsExercises.length;
+const loopsCount = expressLoopsExercises.length;
+const arraysCount = expressArraysExercises.length;
+const funcsCount = expressFunctionExercises.length;
+const pooCount = expressPooExercises.length;
+const matCount = expressMatricesExercises.length;
+const excCount = expressExceptionsExercises.length;
+const algoCount = expressAlgorithmsExercises.length;
+const djangoCount = expressDjangoExercises.length;
+const termCount = expressTerminalExercises.length;
+
+const easyCount = allExpress.filter(e => e.difficulty === 'facil' || e.difficulty === 'fácil').length;
+const mediumCount = allExpress.filter(e => e.difficulty === 'medio' || e.difficulty === 'intermedio').length;
+const advancedCount = allExpress.filter(e => e.difficulty === 'avanzado').length;
+
+const modules = [
+  {
+    title: "Variables & Tipos de Datos",
+    slug: "variables",
+    icon: "📦",
+    count: varsCount,
+    desc: "Enteros, flotantes, cadenas, booleanos, constantes, casteo de tipos y operaciones en memoria.",
+    bg: "from-sky-50 to-blue-50 hover:from-sky-100 hover:to-blue-100",
+    badge: "bg-sky-200 text-sky-950",
+    iconBg: "bg-sky-100",
+    borderHover: "hover:shadow-[7px_7px_0px_#0284C7]",
+    textColor: "group-hover:text-sky-800",
+    accentColor: "text-sky-800"
+  },
+  {
+    title: "Estructuras Condicionales",
+    slug: "condicionales",
+    icon: "🔀",
+    count: condsCount,
+    desc: "Sentencias if, else if, else, operadores lógicos && / ||, ternarios y cortocircuito.",
+    bg: "from-purple-50 to-indigo-50 hover:from-purple-100 hover:to-indigo-100",
+    badge: "bg-purple-200 text-purple-950",
+    iconBg: "bg-purple-100",
+    borderHover: "hover:shadow-[7px_7px_0px_#7C3AED]",
+    textColor: "group-hover:text-purple-800",
+    accentColor: "text-purple-800"
+  },
+  {
+    title: "Bucles & Iteraciones",
+    slug: "bucles",
+    icon: "🔁",
+    count: loopsCount,
+    desc: "Bucles for, while, do-while, acumuladores, contadores, break, continue y bucles anidados.",
+    bg: "from-emerald-50 to-teal-50 hover:from-emerald-100 hover:to-teal-100",
+    badge: "bg-emerald-200 text-emerald-950",
+    iconBg: "bg-emerald-100",
+    borderHover: "hover:shadow-[7px_7px_0px_#059669]",
+    textColor: "group-hover:text-emerald-800",
+    accentColor: "text-emerald-800"
+  },
+  {
+    title: "Arreglos & Listas (1D)",
+    slug: "arreglos",
+    icon: "📊",
+    count: arraysCount,
+    desc: "Declaración, índices, recorridos, búsqueda de máximos/mínimos, filtros y dos punteros.",
+    bg: "from-cyan-50 to-blue-50 hover:from-cyan-100 hover:to-blue-100",
+    badge: "bg-cyan-200 text-cyan-950",
+    iconBg: "bg-cyan-100",
+    borderHover: "hover:shadow-[7px_7px_0px_#0891B2]",
+    textColor: "group-hover:text-cyan-800",
+    accentColor: "text-cyan-800"
+  },
+  {
+    title: "Funciones & Métodos",
+    slug: "funciones",
+    icon: "⚡",
+    count: funcsCount,
+    desc: "Paso de parámetros, valores de retorno, referencias, sobrecarga, recursión y matrices.",
+    bg: "from-amber-50 to-orange-50 hover:from-amber-100 hover:to-orange-100",
+    badge: "bg-amber-200 text-amber-950",
+    iconBg: "bg-amber-100",
+    borderHover: "hover:shadow-[7px_7px_0px_#D97706]",
+    textColor: "group-hover:text-amber-800",
+    accentColor: "text-amber-800"
+  },
+  {
+    title: "Programación Orientada a Objetos",
+    slug: "poo",
+    icon: "🏛️",
+    count: pooCount,
+    desc: "Clases, objetos, constructores, encapsulamiento, getters/setters, herencia y polimorfismo.",
+    bg: "from-rose-50 to-pink-50 hover:from-rose-100 hover:to-pink-100",
+    badge: "bg-rose-200 text-rose-950",
+    iconBg: "bg-rose-100",
+    borderHover: "hover:shadow-[7px_7px_0px_#E11D48]",
+    textColor: "group-hover:text-rose-800",
+    accentColor: "text-rose-800"
+  },
+  {
+    title: "Matrices & Arreglos 2D",
+    slug: "matrices",
+    icon: "🔲",
+    count: matCount,
+    desc: "Cuadrículas [fila][columna], diagonales, matrices identidad, transposiciones y recorridos.",
+    bg: "from-violet-50 to-fuchsia-50 hover:from-violet-100 hover:to-fuchsia-100",
+    badge: "bg-violet-200 text-violet-950",
+    iconBg: "bg-violet-100",
+    borderHover: "hover:shadow-[7px_7px_0px_#8B5CF6]",
+    textColor: "group-hover:text-violet-800",
+    accentColor: "text-violet-800"
+  },
+  {
+    title: "Manejo de Excepciones & Errores",
+    slug: "excepciones",
+    icon: "🛡️",
+    count: excCount,
+    desc: "Bloques try, catch, finally, throw, excepciones personalizadas y programación defensiva.",
+    bg: "from-orange-50 to-amber-50 hover:from-orange-100 hover:to-amber-100",
+    badge: "bg-orange-200 text-orange-950",
+    iconBg: "bg-orange-100",
+    borderHover: "hover:shadow-[7px_7px_0px_#EA580C]",
+    textColor: "group-hover:text-orange-800",
+    accentColor: "text-orange-800"
+  },
+  {
+    title: "Algoritmos de Búsqueda & Ordenación",
+    slug: "algoritmos",
+    icon: "🔍",
+    count: algoCount,
+    desc: "Búsqueda Lineal, Búsqueda Binaria O(log n), Bubble Sort, Selection Sort e Insertion Sort.",
+    bg: "from-lime-50 to-green-50 hover:from-lime-100 hover:to-green-100",
+    badge: "bg-lime-200 text-lime-950",
+    iconBg: "bg-lime-100",
+    borderHover: "hover:shadow-[7px_7px_0px_#65A30D]",
+    textColor: "group-hover:text-lime-800",
+    accentColor: "text-lime-800"
+  },
+  {
+    title: "Django Framework Paso a Paso",
+    slug: "django",
+    icon: "🐍",
+    count: djangoCount,
+    desc: "Entorno virtual venv, startproject, startapp, modelos ORM, migraciones, vistas, URLs y forms.",
+    bg: "from-emerald-50 to-teal-50 hover:from-emerald-100 hover:to-teal-100",
+    badge: "bg-emerald-200 text-emerald-950",
+    iconBg: "bg-emerald-100",
+    borderHover: "hover:shadow-[7px_7px_0px_#047857]",
+    textColor: "group-hover:text-emerald-800",
+    accentColor: "text-emerald-800"
+  },
+  {
+    title: "Terminal Unix, Linux & Comandos",
+    slug: "terminal",
+    icon: "💻",
+    count: termCount,
+    desc: "Navegación pwd/cd/ls, creación mkdir/touch, permisos chmod/chown, pipes |, grep y procesos.",
+    bg: "from-slate-100 to-zinc-100 hover:from-slate-200 hover:to-zinc-200",
+    badge: "bg-slate-300 text-slate-900",
+    iconBg: "bg-slate-200",
+    borderHover: "hover:shadow-[7px_7px_0px_#334155]",
+    textColor: "group-hover:text-slate-900",
+    accentColor: "text-slate-900"
+  }
+];
+---
+
+<Layout
+  title="Desafíos Express — Café y Código"
+  description="Entrena tus habilidades completando código y corrigiendo bugs en 11 módulos temáticos con C++, Python, JavaScript y Java."
+>
+  <div class="max-w-6xl mx-auto px-4 py-6 sm:py-10">
+    <!-- ═══════════════════════════════════════════════
+         1. HERO BANNER PRINCIPAL (PREMIUM & IMPACTANTE)
+         ═══════════════════════════════════════════════ -->
+    <div class="relative overflow-hidden rounded-3xl border-3 border-[#1E1210] bg-gradient-to-br from-[#FFFDF5] via-[#FEF3C7] to-[#FDE68A] p-6 sm:p-10 shadow-[6px_6px_0px_#1E1210] mb-10">
+      <!-- Glow decorativo de fondo -->
+      <div class="absolute -top-24 -right-24 w-80 h-80 rounded-full bg-amber-400/20 blur-3xl pointer-events-none"></div>
+      <div class="absolute -bottom-24 -left-24 w-80 h-80 rounded-full bg-orange-400/20 blur-3xl pointer-events-none"></div>
+
+      <div class="relative z-10">
+        <!-- Top Badges -->
+        <div class="flex flex-wrap items-center gap-2 mb-4">
+          <a
+            href="/challenges/"
+            class="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white/90 border-2 border-[#1E1210] text-[#78350F] font-nunito font-extrabold text-xs shadow-[2px_2px_0px_#1E1210] hover:-translate-y-0.5 transition-transform no-underline"
+          >
+            <span>←</span> <span>Volver a Desafíos</span>
+          </a>
+          <span class="inline-flex items-center gap-1 px-3 py-1 rounded-xl bg-amber-900 text-amber-100 font-nunito font-black text-xs uppercase tracking-wider shadow-[2px_2px_0px_#1E1210]">
+            <span>⚡</span> <span>Modo Express · 11 Módulos</span>
+          </span>
+          <span class="inline-flex items-center gap-1 px-3 py-1 rounded-xl bg-emerald-600 text-white font-nunito font-extrabold text-xs shadow-[2px_2px_0px_#1E1210]">
+            <span>✨</span> <span>{totalExercises} Retos en Total</span>
+          </span>
+        </div>
+
+        <!-- Título Principal -->
+        <h1 class="m-0 text-3xl sm:text-5xl font-nunito font-black text-[#1E1210] tracking-tight leading-tight">
+          Desafíos Express: <span class="bg-gradient-to-r from-amber-700 via-orange-600 to-amber-600 bg-clip-text text-transparent">Entrenamiento Interactivo</span>
+        </h1>
+
+        <!-- Descripción -->
+        <p class="mt-3 text-sm sm:text-base text-[#451A03] font-quicksand font-bold max-w-3xl leading-relaxed">
+          Pon a prueba tu agilidad mental completando código faltante (<code class="bg-white/80 border border-amber-900/20 px-1.5 py-0.5 rounded-md font-mono text-amber-950 font-black">___</code>) o corrigiendo errores de ejecución en <strong>C++, Python, JavaScript y Java</strong> con editor CodeMirror interactivo en vivo.
+        </p>
+
+        <!-- Stats Rápidas -->
+        <div class="mt-6 flex flex-wrap items-center gap-4 sm:gap-6 pt-4 border-t-2 border-amber-900/20">
+          <div class="flex items-baseline gap-2">
+            <span class="font-nunito font-black text-2xl sm:text-3xl text-[#1E1210]">{totalExercises}</span>
+            <span class="font-quicksand font-extrabold text-xs uppercase tracking-wider text-[#78350F]">Total Desafíos</span>
+          </div>
+          <div class="hidden sm:block w-px h-8 bg-amber-900/20"></div>
+          <div class="flex items-baseline gap-2">
+            <span class="font-nunito font-black text-xl sm:text-2xl text-emerald-800">{easyCount}</span>
+            <span class="font-quicksand font-extrabold text-xs uppercase tracking-wider text-emerald-900">Fáciles</span>
+          </div>
+          <div class="hidden sm:block w-px h-8 bg-amber-900/20"></div>
+          <div class="flex items-baseline gap-2">
+            <span class="font-nunito font-black text-xl sm:text-2xl text-amber-800">{mediumCount}</span>
+            <span class="font-quicksand font-extrabold text-xs uppercase tracking-wider text-amber-900">Medios</span>
+          </div>
+          <div class="hidden sm:block w-px h-8 bg-amber-900/20"></div>
+          <div class="flex items-baseline gap-2">
+            <span class="font-nunito font-black text-xl sm:text-2xl text-rose-800">{advancedCount}</span>
+            <span class="font-quicksand font-extrabold text-xs uppercase tracking-wider text-rose-900">Avanzados</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════
+         2. MÓDULOS TEMÁTICOS DISPONIBLES (11 TEMAS)
+         ═══════════════════════════════════════════════ -->
+    <div class="mb-12">
+      <div class="flex items-center justify-between gap-2 mb-6">
+        <div>
+          <h2 class="m-0 font-nunito font-black text-2xl sm:text-3xl text-[#1E1210] flex items-center gap-2">
+            <span>📚</span> <span>Selecciona un Módulo Temático</span>
+          </h2>
+          <p class="m-0 text-xs sm:text-sm text-slate-600 font-quicksand font-bold">
+            Elige el tema en el que deseas entrenar o evaluar tus habilidades de código:
+          </p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {modules.map((mod) => (
+          <a
+            href={`/challenges-express/${mod.slug}/`}
+            class={`p-6 rounded-3xl border-3 border-[#1E1210] bg-gradient-to-br ${mod.bg} shadow-[5px_5px_0px_#1E1210] hover:-translate-y-1 ${mod.borderHover} transition-all no-underline flex flex-col justify-between group`}
+          >
+            <div>
+              <div class="flex items-center justify-between mb-4">
+                <span class={`w-14 h-14 rounded-2xl ${mod.iconBg} border-2 border-[#1E1210] text-2xl flex items-center justify-center shadow-[2px_2px_0px_#1E1210] group-hover:scale-105 transition-transform`}>
+                  {mod.icon}
+                </span>
+                <span class={`px-3 py-1 rounded-full ${mod.badge} font-nunito font-black text-xs uppercase tracking-wider`}>
+                  {mod.count} Retos
+                </span>
+              </div>
+              <h3 class={`m-0 font-nunito font-black text-xl text-[#1E1210] ${mod.textColor} transition-colors`}>
+                {mod.title}
+              </h3>
+              <p class="mt-2 text-xs sm:text-sm text-slate-600 font-quicksand font-bold leading-relaxed">
+                {mod.desc}
+              </p>
+            </div>
+            <div class={`mt-6 pt-4 border-t border-slate-300/80 flex items-center justify-between font-nunito font-black text-xs ${mod.accentColor}`}>
+              <span>Comenzar Módulo</span>
+              <span class="group-hover:translate-x-1.5 transition-transform text-base">→</span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════
+         3. MODALIDADES DE DIFICULTAD
+         ═══════════════════════════════════════════════ -->
+    <div class="mb-10">
+      <div class="flex items-center justify-between gap-2 mb-4">
+        <div>
+          <h2 class="m-0 font-nunito font-black text-xl sm:text-2xl text-[#1E1210] flex items-center gap-2">
+            <span>🎯</span> <span>Niveles de Dificultad Personalizados</span>
+          </h2>
+          <p class="m-0 text-xs sm:text-sm text-slate-600 font-quicksand font-bold">
+            Configura el parámetro URL <code>?difficulty=</code> para rondas específicas o combinadas:
+          </p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- FÁCIL (E) -->
+        <a
+          href="/challenges-express/django/?difficulty=E"
+          class="p-5 rounded-2xl border-3 border-[#1E1210] bg-emerald-50/70 hover:bg-emerald-50 shadow-[4px_4px_0px_#1E1210] hover:-translate-y-1 hover:shadow-[6px_6px_0px_#059669] transition-all no-underline flex flex-col justify-between group"
+        >
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="w-11 h-11 rounded-xl bg-emerald-100 border-2 border-[#1E1210] text-xl flex items-center justify-center shadow-[2px_2px_0px_#1E1210]">
+                🌱
+              </span>
+              <span class="px-2.5 py-0.5 rounded-full bg-emerald-200 text-emerald-950 font-nunito font-black text-[10px] uppercase">
+                {easyCount} Retos
+              </span>
+            </div>
+            <h3 class="m-0 font-nunito font-black text-base text-[#1E1210] group-hover:text-emerald-800 transition-colors">
+              Fácil · (E)
+            </h3>
+            <p class="mt-1 text-xs text-slate-600 font-quicksand font-bold leading-relaxed">
+              Sintaxis básica, llamadas directas, parámetros simples y comandos fundamentales.
+            </p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-emerald-200/60 flex items-center justify-between font-nunito font-black text-xs text-emerald-800">
+            <span>Solo Fáciles</span>
+            <span>→</span>
+          </div>
+        </a>
+
+        <!-- MEDIO (M) -->
+        <a
+          href="/challenges-express/terminal/?difficulty=M"
+          class="p-5 rounded-2xl border-3 border-[#1E1210] bg-amber-50/70 hover:bg-amber-50 shadow-[4px_4px_0px_#1E1210] hover:-translate-y-1 hover:shadow-[6px_6px_0px_#D97706] transition-all no-underline flex flex-col justify-between group"
+        >
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="w-11 h-11 rounded-xl bg-amber-100 border-2 border-[#1E1210] text-xl flex items-center justify-center shadow-[2px_2px_0px_#1E1210]">
+                ⚡
+              </span>
+              <span class="px-2.5 py-0.5 rounded-full bg-amber-200 text-amber-950 font-nunito font-black text-[10px] uppercase">
+                {mediumCount} Retos
+              </span>
+            </div>
+            <h3 class="m-0 font-nunito font-black text-base text-[#1E1210] group-hover:text-amber-800 transition-colors">
+              Medio · (M)
+            </h3>
+            <p class="mt-1 text-xs text-slate-600 font-quicksand font-bold leading-relaxed">
+              Permisos chmod, migraciones, modelos, templates, acumuladores y filtros.
+            </p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-amber-200/60 flex items-center justify-between font-nunito font-black text-xs text-amber-800">
+            <span>Solo Medios</span>
+            <span>→</span>
+          </div>
+        </a>
+
+        <!-- AVANZADO (A) -->
+        <a
+          href="/challenges-express/django/?difficulty=A"
+          class="p-5 rounded-2xl border-3 border-[#1E1210] bg-rose-50/70 hover:bg-rose-50 shadow-[4px_4px_0px_#1E1210] hover:-translate-y-1 hover:shadow-[6px_6px_0px_#E11D48] transition-all no-underline flex flex-col justify-between group"
+        >
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="w-11 h-11 rounded-xl bg-rose-100 border-2 border-[#1E1210] text-xl flex items-center justify-center shadow-[2px_2px_0px_#1E1210]">
+                🔥
+              </span>
+              <span class="px-2.5 py-0.5 rounded-full bg-rose-200 text-rose-950 font-nunito font-black text-[10px] uppercase">
+                {advancedCount} Retos
+              </span>
+            </div>
+            <h3 class="m-0 font-nunito font-black text-base text-[#1E1210] group-hover:text-rose-800 transition-colors">
+              Avanzado · (A)
+            </h3>
+            <p class="mt-1 text-xs text-slate-600 font-quicksand font-bold leading-relaxed">
+              Relaciones ORM, CBVs, pipes Unix, procesos, empaquetado y seguridad en producción.
+            </p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-rose-200/60 flex items-center justify-between font-nunito font-black text-xs text-rose-800">
+            <span>Solo Avanzados</span>
+            <span>→</span>
+          </div>
+        </a>
+
+        <!-- COMBINADO BALANCEADO (EMA) -->
+        <a
+          href="/challenges-express/django/?difficulty=EMA&count=9"
+          class="p-5 rounded-2xl border-3 border-[#1E1210] bg-gradient-to-br from-amber-100 via-orange-100 to-yellow-100 shadow-[4px_4px_0px_#1E1210] hover:-translate-y-1 hover:shadow-[6px_6px_0px_#B45309] transition-all no-underline flex flex-col justify-between group"
+        >
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="w-11 h-11 rounded-xl bg-amber-200 border-2 border-[#1E1210] text-xl flex items-center justify-center shadow-[2px_2px_0px_#1E1210]">
+                👑
+              </span>
+              <span class="px-2.5 py-0.5 rounded-full bg-[#1E1210] text-amber-300 font-nunito font-black text-[10px] uppercase">
+                Balanceado
+              </span>
+            </div>
+            <h3 class="m-0 font-nunito font-black text-base text-[#1E1210] group-hover:text-amber-900 transition-colors">
+              Combinado · (EMA)
+            </h3>
+            <p class="mt-1 text-xs text-slate-600 font-quicksand font-bold leading-relaxed">
+              Partes iguales de Fácil, Medio y Avanzado en una sola evaluación completa.
+            </p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-amber-300/60 flex items-center justify-between font-nunito font-black text-xs text-amber-950">
+            <span>Jugar Ronda EMA</span>
+            <span>→</span>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════
+         4. HERRAMIENTA DOCENTE & GENERADOR EMBED
+         ═══════════════════════════════════════════════ -->
+    <div class="rounded-3xl border-3 border-[#1E1210] bg-white p-6 sm:p-8 shadow-[5px_5px_0px_#1E1210]">
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-100 text-blue-900 font-nunito font-black text-xs uppercase mb-2">
+            <span>🛠️</span> <span>Herramienta Docente</span>
+          </span>
+          <h2 class="m-0 font-nunito font-black text-xl sm:text-2xl text-[#1E1210]">
+            Generador de Embeds & Evaluaciones para Clases
+          </h2>
+          <p class="mt-1 text-xs sm:text-sm text-slate-600 font-quicksand font-bold max-w-2xl">
+            Crea enlaces personalizados e incrusta los 11 módulos de Desafíos Express en tu LMS, Notion, Canvas o Moodle configurando tiempo límite, vidas y dificultad.
+          </p>
+        </div>
+        <a
+          href="/admin/embed-challenges-express/"
+          class="inline-flex items-center gap-2 px-5 py-3 rounded-2xl border-3 border-[#1E1210] bg-[#FEF3C7] hover:bg-[#FDE68A] text-[#1E1210] font-nunito font-black text-sm shadow-[4px_4px_0px_#1E1210] hover:-translate-y-0.5 active:translate-y-0 active:shadow-[1px_1px_0px_#1E1210] transition-all no-underline shrink-0"
+        >
+          <span>🚀</span> <span>Abrir Generador Embed</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</Layout>

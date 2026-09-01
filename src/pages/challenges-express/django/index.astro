@@ -1,0 +1,20 @@
+---
+import ExpressChallengeLayout from "../../../layouts/ExpressChallengeLayout.astro";
+import { expressDjangoExercises } from "../../../data/challengesExpressDjango";
+import { ExpressChallengeGame } from "../../../components/ExpressChallengeGame";
+---
+
+<ExpressChallengeLayout
+  title="Desafíos Express — Django Framework Paso a Paso"
+  description="Domina el flujo de desarrollo en Django: entornos virtuales, startproject, startapp, modelos ORM, migraciones, vistas, URLs, templates, forms y despliegue."
+>
+  <main class="min-h-screen bg-slate-50 text-slate-800 font-sans pb-16">
+    <ExpressChallengeGame
+      client:load
+      allExercises={expressDjangoExercises}
+      defaultLanguage="python"
+      categoryTitle="Django Framework"
+      backUrl="/challenges-express/"
+    />
+  </main>
+</ExpressChallengeLayout>

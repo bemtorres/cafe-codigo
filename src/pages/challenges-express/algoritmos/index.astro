@@ -1,0 +1,19 @@
+---
+import ExpressChallengeLayout from "../../../layouts/ExpressChallengeLayout.astro";
+import { expressAlgorithmsExercises } from "../../../data/challengesExpressAlgorithms";
+import { ExpressChallengeGame } from "../../../components/ExpressChallengeGame";
+---
+
+<ExpressChallengeLayout
+  title="Desafíos Express — Búsqueda & Algoritmos de Ordenamiento"
+  description="Domina Búsqueda Lineal, Búsqueda Binaria, Bubble Sort, Selection Sort, Insertion Sort y Quickselect con retos prácticos en C++, Python, JavaScript y Java."
+>
+  <main class="min-h-screen bg-slate-50 text-slate-800 font-sans pb-16">
+    <ExpressChallengeGame
+      client:load
+      allExercises={expressAlgorithmsExercises}
+      categoryTitle="Algoritmos de Búsqueda & Ordenación"
+      backUrl="/challenges-express/"
+    />
+  </main>
+</ExpressChallengeLayout>

@@ -1,0 +1,19 @@
+---
+import ExpressChallengeLayout from "../../../layouts/ExpressChallengeLayout.astro";
+import { expressFunctionExercises } from "../../../data/challengesExpressFunctions";
+import { ExpressChallengeGame } from "../../../components/ExpressChallengeGame";
+---
+
+<ExpressChallengeLayout
+  title="Desafíos Express — Funciones & Métodos"
+  description="Entrena tus habilidades completando código y corrigiendo bugs en funciones con C++, Python, JavaScript y Java."
+>
+  <main class="min-h-screen bg-slate-50 text-slate-800 font-sans pb-16">
+    <ExpressChallengeGame
+      client:load
+      allExercises={expressFunctionExercises}
+      categoryTitle="Funciones & Métodos"
+      backUrl="/challenges-express/"
+    />
+  </main>
+</ExpressChallengeLayout>

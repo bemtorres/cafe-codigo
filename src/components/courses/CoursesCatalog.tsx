@@ -1,9 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { courses, type Course, type CourseCategory } from '../../data/courses';
 import { courseHomePath } from '../../lib/coursePaths';
-import { getSupabaseBrowser } from '../../lib/supabase/client';
-
-const VIEW_STORAGE_KEY = 'aprende_courses_catalog_view';
 
 const categoryOrder: CourseCategory[] = [
   'foundations',
@@ -29,72 +26,6 @@ const categoryLabel: Record<CourseCategory, string> = {
   gamedev: 'Videojuegos',
 };
 
-type ViewMode = 'grid' | 'list';
-
-interface CoffeeRoute {
-  id: string;
-  name: string;
-  subtitle: string;
-  emoji: string;
-  description: string;
-  color: string;
-  accent: string;
-  courseSlugs: string[];
-}
-
-const COFFEE_ROUTES: CoffeeRoute[] = [
-  {
-    id: 'expreso',
-    name: 'Ruta del Expreso',
-    subtitle: 'Lógica y Fundamentos',
-    emoji: '☕',
-    description: 'Tu dosis esencial de lógica de programación, control de versiones y entendimiento de ecosistemas tecnológicos. Ideal para arrancar de absoluto cero.',
-    color: '#B06D63',
-    accent: '#B06D63',
-    courseSlugs: ['ecosistemas', 'pseint', 'python', 'terminal', 'git'],
-  },
-  {
-    id: 'capuchino',
-    name: 'Ruta del Capuchino',
-    subtitle: 'Desarrollo Frontend',
-    emoji: '🎨',
-    description: 'Suave, visual e interactivo. Domina el arte de estructurar, diseñar y dar vida a tus aplicaciones web interactuando con el navegador.',
-    color: '#f1c40f',
-    accent: '#c8a000',
-    courseSlugs: ['html', 'css', 'javascript', 'git'],
-  },
-  {
-    id: 'prensa',
-    name: 'Ruta de la Prensa Francesa',
-    subtitle: 'Backend y Datos con Python',
-    emoji: '🐍',
-    description: 'Filtrado paciente y profundo. Aprende lógica de servidor con Python, pruebas automatizadas y modelado/consultas de bases de datos relacionales y NoSQL.',
-    color: '#06D6A0',
-    accent: '#0d9488',
-    courseSlugs: ['python', 'django', 'modelamiento-db', 'consultas-sql', 'python-testing', 'nosql'],
-  },
-  {
-    id: 'macchiato',
-    name: 'Ruta del Macchiato',
-    subtitle: 'Ingeniería y Arquitectura',
-    emoji: '🏗️',
-    description: 'Estructura modular en capas. Domina la gestión ágil, análisis del backlog, patrones avanzados, estructuras de datos y modelado de arquitecturas de software.',
-    color: '#118AB2',
-    accent: '#118AB2',
-    courseSlugs: ['vision-producto', 'analisis-backlog', 'scrum-prototipado', 'estructuras-datos', 'patrones-diseno', 'c4'],
-  },
-  {
-    id: 'americano',
-    name: 'Ruta del Americano',
-    subtitle: 'Mobile y Android',
-    emoji: '📱',
-    description: 'Fuerte y directo. Domina Kotlin como base para apps Android y backend moderno con null safety, concurrencia y sintaxis elegante.',
-    color: '#A97BFF',
-    accent: '#7C3AED',
-    courseSlugs: ['kotlin'],
-  },
-];
-
 /** Normaliza para búsqueda insensible a mayúsculas y acentos. */
 function normalizeSearch(s: string): string {
   return s
@@ -116,16 +47,6 @@ function courseMatchesQuery(course: Course, q: string): boolean {
   );
 }
 
-function readView(): ViewMode {
-  if (typeof window === 'undefined') return 'grid';
-  try {
-    const v = localStorage.getItem(VIEW_STORAGE_KEY);
-    return v === 'list' ? 'list' : 'grid';
-  } catch {
-    return 'grid';
-  }
-}
-
 function CourseBadges({ course }: { course: Course }) {
   return (
     <span className="flex flex-wrap gap-1.5">
@@ -144,57 +65,14 @@ function CourseBadges({ course }: { course: Course }) {
 }
 
 export default function CoursesCatalog() {
-  const [view, setView] = useState<ViewMode>('grid');
   const [searchQuery, setSearchQuery] = useState('');
   const [mounted, setMounted] = useState(false);
   const [comingOpen, setComingOpen] = useState(false);
   const [comingName, setComingName] = useState('');
-  const [activeTab, setActiveTab] = useState<'routes' | 'all'>('routes');
-  const [selectedRouteId, setSelectedRouteId] = useState<string>('expreso');
   const [selectedCategory, setSelectedCategory] = useState<CourseCategory | 'all'>('all');
-
-  const [completedCourses, setCompletedCourses] = useState<Set<string>>(new Set());
-  const [inProgressCourses, setInProgressCourses] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     setMounted(true);
-    setView(readView());
-
-    async function fetchProgress() {
-      const supabase = getSupabaseBrowser();
-      if (!supabase) return;
-      
-      const { data: authData } = await supabase.auth.getUser();
-      const user = authData?.user;
-      if (!user) return;
-
-      const { data, error } = await supabase
-        .from('quiz_progress')
-        .select('course_slug, lesson_slug, correct_best, question_count, attempts')
-        .eq('user_id', user.id);
-
-      if (error || !data) return;
-
-      const completed = new Set<string>();
-      const inProgress = new Set<string>();
-
-      for (const row of data) {
-        const pct = row.question_count > 0 ? (row.correct_best * 100) / row.question_count : 0;
-        if (pct >= 60) {
-          completed.add(row.course_slug);
-        } else if (row.attempts > 0 || row.correct_best > 0) {
-          inProgress.add(row.course_slug);
-        }
-      }
-
-      for (const slug of completed) {
-        inProgress.delete(slug);
-      }
-
-      setCompletedCourses(completed);
-      setInProgressCourses(inProgress);
-    }
-    fetchProgress();
   }, []);
 
   const categoryCounts = useMemo(() => {
@@ -203,15 +81,6 @@ export default function CoursesCatalog() {
       counts[c.category] = (counts[c.category] || 0) + 1;
     }
     return counts;
-  }, []);
-
-  const persistView = useCallback((v: ViewMode) => {
-    setView(v);
-    try {
-      localStorage.setItem(VIEW_STORAGE_KEY, v);
-    } catch {
-      /* */
-    }
   }, []);
 
   const grouped = useMemo(() => {
@@ -343,407 +212,133 @@ export default function CoursesCatalog() {
     );
   };
 
-  const renderRow = (course: Course) => {
-    const href = course.status === 'coming' ? '#' : courseHomePath(course.slug);
-    return (
-      <a
-        key={course.slug}
-        href={href}
-        className="group flex items-stretch gap-3 rounded-2xl border-[3px] border-border bg-white p-3 shadow-neo transition-transform hover:-translate-y-0.5 sm:gap-4 sm:p-4"
-        onClick={(e) => {
-          if (course.status === 'coming') {
-            e.preventDefault();
-            openComing(course.name);
-          }
-        }}
-      >
-        <div
-          className="w-1.5 shrink-0 self-stretch rounded-full"
-          style={{ backgroundColor: course.color }}
-          aria-hidden
-        />
-        <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-center gap-2">
-            <h3 className="m-0 font-nunito text-base font-black text-textPrimary sm:text-lg">{course.name}</h3>
-            <CourseBadges course={course} />
-          </div>
-          {course.communityReleaseYear != null && (
-            <p className="m-0 mt-0.5 font-nunito text-xs font-extrabold text-textMuted">Comunidad · {course.communityReleaseYear}</p>
-          )}
-          <p className="mt-1 line-clamp-2 font-nunito text-sm font-[650] text-textSecondary">{course.description}</p>
-        </div>
-        <span className="hidden shrink-0 self-center text-xl text-textMuted sm:inline" aria-hidden>
-          →
-        </span>
-      </a>
-    );
-  };
-
   if (!mounted) {
     return (
       <div className="space-y-4" aria-hidden>
         <div className="h-12 animate-pulse rounded-2xl bg-black/5" />
         <div className="h-12 animate-pulse rounded-2xl bg-black/5" />
-        <div className="grid gap-4 sm:grid-cols-2">
-          {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="h-24 animate-pulse rounded-2xl bg-black/5" />
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+            <div key={i} className="h-48 animate-pulse rounded-2xl bg-black/5" />
           ))}
         </div>
       </div>
     );
   }
 
-  const selectedRoute = COFFEE_ROUTES.find((r) => r.id === selectedRouteId) || COFFEE_ROUTES[0];
-  const selectedRouteCourses = selectedRoute.courseSlugs
-    .map((slug) => courses.find((c) => c.slug === slug))
-    .filter((c): c is Course => !!c);
-
-  const completedRouteCoursesCount = selectedRouteCourses.filter((c) => completedCourses.has(c.slug)).length;
-  const routePercent = selectedRouteCourses.length > 0
-    ? Math.round((completedRouteCoursesCount * 100) / selectedRouteCourses.length)
-    : 0;
-
   return (
     <div>
-      {/* Barra de pestañas */}
-      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="inline-flex rounded-2xl border-2 border-border bg-white p-1 shadow-neo">
+      {/* Buscador + Filtros por Categoría en una sola fila responsiva */}
+      <div className="mb-6 flex flex-col md:flex-row gap-3 items-stretch md:items-center">
+        {/* Buscador compacto */}
+        <div className="relative w-full md:w-80 shrink-0">
+          <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm opacity-60" aria-hidden>
+            🔍
+          </span>
+          <input
+            id="courses-search"
+            type="search"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Buscar curso o tecnología…"
+            autoComplete="off"
+            className="w-full rounded-xl border-2 border-border bg-white py-2 pl-9 pr-8 font-nunito text-xs sm:text-sm font-bold text-textPrimary shadow-neo placeholder:text-textMuted focus:border-info focus:outline-none"
+          />
+          {searchQuery.trim() !== '' && (
+            <button
+              type="button"
+              onClick={() => setSearchQuery('')}
+              className="absolute right-2 top-1/2 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-lg border border-border bg-white text-xs font-black text-textSecondary hover:bg-tertiary/40 cursor-pointer"
+              aria-label="Limpiar búsqueda"
+            >
+              ✕
+            </button>
+          )}
+        </div>
+
+        {/* Pills de categorías (Scroll Horizontal) */}
+        <div className="flex-1 flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0 scrollbar-none">
           <button
             type="button"
-            onClick={() => setActiveTab('routes')}
-            className={`flex items-center gap-1.5 rounded-xl px-4 py-2 font-nunito text-xs sm:text-sm font-black transition-all ${
-              activeTab === 'routes'
-                ? 'bg-[#B06D63] text-white shadow-[2px_2px_0px_#1E1210]'
-                : 'text-textSecondary hover:bg-tertiary/40'
+            onClick={() => setSelectedCategory('all')}
+            className={`rounded-xl border-2 px-3 py-1.5 font-nunito text-xs font-extrabold transition-all shrink-0 cursor-pointer ${
+              selectedCategory === 'all'
+                ? 'border-border bg-[#118AB2] text-white shadow-[2px_2px_0px_#1E1210]'
+                : 'border-border/40 bg-white text-textSecondary hover:border-border hover:bg-tertiary/40'
             }`}
           >
-            <span>🧭</span>
-            Rutas de Aprendizaje
+            Todos ({categoryCounts.all})
           </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab('all')}
-            className={`flex items-center gap-1.5 rounded-xl px-4 py-2 font-nunito text-xs sm:text-sm font-black transition-all ${
-              activeTab === 'all'
-                ? 'bg-[#118AB2] text-white shadow-[2px_2px_0px_#1E1210]'
-                : 'text-textSecondary hover:bg-tertiary/40'
-            }`}
-          >
-            <span>📚</span>
-            Todos los Cursos ({courses.length})
-          </button>
-        </div>
-      </div>
-
-      {activeTab === 'routes' && (
-        <div className="space-y-10 animate-[fadeIn_0.3s_ease-out]">
-          {/* Carta de Cafés / Selector de Rutas */}
-          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            {COFFEE_ROUTES.map((route) => {
-              const isSelected = selectedRouteId === route.id;
-              return (
-                <button
-                  key={route.id}
-                  onClick={() => setSelectedRouteId(route.id)}
-                  className={`group relative text-left rounded-3xl border-[3px] p-5 shadow-neo transition-all outline-none ${
-                    isSelected
-                      ? 'border-border scale-[1.01] shadow-[6px_6px_0px_#1E1210]'
-                      : 'border-border/30 bg-white hover:border-border/60 hover:-translate-y-0.5'
-                  }`}
-                  style={{
-                    backgroundColor: isSelected ? `${route.color}15` : '#ffffff',
-                  }}
-                >
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="text-3xl transition-transform group-hover:scale-110" aria-hidden>
-                      {route.emoji}
-                    </span>
-                    <span
-                      className="rounded-xl border-2 border-border/80 px-2 py-0.5 font-nunito text-[0.65rem] font-black"
-                      style={{
-                        backgroundColor: `${route.color}25`,
-                        color: route.accent,
-                      }}
-                    >
-                      {route.courseSlugs.length} cursos
-                    </span>
-                  </div>
-                  <h3 className="mt-3 font-nunito text-base font-black text-textPrimary leading-tight">
-                    {route.name}
-                  </h3>
-                  <p className="mt-0.5 font-nunito text-xs font-black text-textMuted uppercase tracking-wider">
-                    {route.subtitle}
-                  </p>
-                  <p className="mt-2 font-nunito text-xs font-[650] leading-relaxed text-textSecondary line-clamp-3">
-                    {route.description}
-                  </p>
-
-                  {isSelected && (
-                    <div
-                      className="absolute -top-1.5 -right-1.5 flex h-6 w-6 items-center justify-center rounded-full border-2 border-border bg-[#06D6A0] text-xs font-black shadow-[1px_1px_0px_#1E1210]"
-                      aria-hidden
-                    >
-                      ✓
-                    </div>
-                  )}
-                </button>
-              );
-            })}
-          </div>
-
-          {/* El Camino de tu Café / Visualizer */}
-          <div className="rounded-3xl border-[3px] border-border bg-gradient-to-br from-[#fdfbf7] via-white to-[#faf7f2] p-6 shadow-[5px_5px_0px_#1E1210] md:p-8">
-            <header className="mb-8 border-b-2 border-dashed border-border/20 pb-4 flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
-              <div>
-                <p className="m-0 font-nunito text-[0.65rem] font-extrabold uppercase tracking-[0.2em]" style={{ color: selectedRoute.accent }}>
-                  Ruta seleccionada
-                </p>
-                <h3 className="m-0 mt-1 font-nunito text-xl font-black text-textPrimary sm:text-2xl flex items-center gap-2">
-                  <span>{selectedRoute.emoji}</span>
-                  <span>{selectedRoute.name}</span>
-                </h3>
-              </div>
-              <div className="flex items-center gap-4 bg-white/80 border-2 border-border/40 rounded-2xl p-3 shadow-neo">
-                <div className="relative w-12 h-12 flex items-center justify-center">
-                  <svg width="42" height="42" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="overflow-visible">
-                    <path d="M68 35C78 35 84 41 84 50C84 59 78 65 68 65" stroke="#1E1210" strokeWidth="6" strokeLinecap="round" />
-                    <path d="M16 28H72V52C72 67 60 79 44 79C28 79 16 67 16 52V28Z" fill="#F0ECE4" stroke="#1E1210" strokeWidth="6" strokeLinejoin="round" />
-                    <clipPath id="coffeeClip">
-                      <path d="M19 31H69V52C69 65.5 58 76 44 76C30 76 19 65.5 19 52V31Z" />
-                    </clipPath>
-                    <g clipPath="url(#coffeeClip)">
-                      <rect x="0" y={76 - (routePercent * 0.45)} width="100" height="80" fill="#6F4E37" className="transition-all duration-700 ease-out" />
-                    </g>
-                    <ellipse cx="44" cy="28" rx="28" ry="6" fill="#FFFFFF" stroke="#1E1210" strokeWidth="5" />
-                    {routePercent > 0 && (
-                      <path d="M34 16Q37 10 34 4M44 18Q47 8 44 2M54 16Q57 10 54 4" stroke="#B06D63" strokeWidth="3" strokeLinecap="round" className="animate-pulse" />
-                    )}
-                  </svg>
-                </div>
-                <div className="font-nunito">
-                  <p className="m-0 text-[0.6rem] font-black uppercase text-textMuted tracking-wider">Tu taza de aprendizaje</p>
-                  <p className="m-0 text-sm font-black text-textPrimary">{routePercent}% Servido ({completedRouteCoursesCount}/{selectedRouteCourses.length} Cursos)</p>
-                </div>
-              </div>
-            </header>
-
-            {/* Pipeline vertical responsivo y elegante */}
-            <div className="relative pl-2 sm:pl-6 space-y-6">
-              <div
-                className="absolute left-8 sm:left-12 top-4 bottom-4 w-[4px] border-l-4 border-dashed"
-                style={{
-                  borderColor: `${selectedRoute.color}45`,
-                }}
-                aria-hidden
-              />
-
-              {selectedRouteCourses.map((course, idx) => {
-                const isEven = idx % 2 === 0;
-                const cardBg = isEven ? 'bg-tertiary' : 'bg-secondary';
-                const isCompleted = completedCourses.has(course.slug);
-                const isInProgress = inProgressCourses.has(course.slug);
-
-                let indicatorBg = 'bg-white';
-                let indicatorTextColor = selectedRoute.accent;
-                let indicatorBorderColor = selectedRoute.accent;
-
-                if (isCompleted) {
-                  indicatorBg = 'bg-[#06D6A0]';
-                  indicatorTextColor = '#FFFFFF';
-                  indicatorBorderColor = '#1E1210';
-                } else if (isInProgress) {
-                  indicatorBg = 'bg-amber-50/90';
-                  indicatorTextColor = '#B06D63';
-                  indicatorBorderColor = '#B06D63';
-                }
-
-                return (
-                  <div
-                    key={course.slug}
-                    className="relative flex items-start gap-4 sm:gap-6 group"
-                  >
-                    <div
-                      className={`relative z-10 flex h-12 w-12 sm:h-16 sm:w-16 shrink-0 items-center justify-center rounded-2xl border-[3px] font-nunito font-black text-base sm:text-xl shadow-neo transition-transform group-hover:scale-105 ${indicatorBg}`}
-                      style={{
-                        color: indicatorTextColor,
-                        borderColor: indicatorBorderColor,
-                      }}
-                    >
-                      {isCompleted ? '✓' : idx + 1}
-                      {isInProgress && (
-                        <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5">
-                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                          <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-red-500"></span>
-                        </span>
-                      )}
-                    </div>
- 
-                    <a
-                      href={course.status === 'coming' ? '#' : courseHomePath(course.slug)}
-                      onClick={(e) => {
-                        if (course.status === 'coming') {
-                          e.preventDefault();
-                          openComing(course.name);
-                        }
-                      }}
-                      className="flex-1 block text-left outline-none group/card animate-[fadeInUp_0.4s_ease-out]"
-                      style={{ animationDelay: `${idx * 0.08}s` }}
-                    >
-                      <div className={`relative rounded-3xl border-[3px] border-border p-4 sm:p-5 shadow-neo transition-transform group-hover/card:-translate-y-0.5 ${cardBg}`}>
-                        <div className="flex flex-wrap items-start justify-between gap-2">
-                          <div>
-                            <h4 className="m-0 font-nunito text-base sm:text-lg font-black text-textPrimary leading-tight group-hover/card:text-info group-hover/card:underline flex flex-wrap items-center gap-2">
-                              <span>{course.name}</span>
-                              {isCompleted && (
-                                <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2.5 py-0.5 font-nunito text-[0.65rem] font-extrabold text-emerald-600 border border-emerald-500/20">
-                                  ✓ Completado
-                                </span>
-                              )}
-                              {isInProgress && (
-                                <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 px-2.5 py-0.5 font-nunito text-[0.65rem] font-extrabold text-amber-600 border border-amber-500/20">
-                                  ● En curso
-                                </span>
-                              )}
-                            </h4>
-                            <p className="m-0 mt-0.5 font-nunito text-[0.7rem] font-bold uppercase tracking-wider text-textMuted">
-                              {categoryLabel[course.category]}
-                            </p>
-                          </div>
-                          <CourseBadges course={course} />
-                        </div>
-                        <p className="mt-2 m-0 font-nunito text-xs sm:text-sm font-[650] leading-relaxed text-textSecondary line-clamp-2">
-                          {course.description}
-                        </p>
-                        <div className="mt-3 flex items-center justify-between text-xs font-black text-textMuted group-hover/card:text-info">
-                          <span>
-                            {course.lessons?.length ? `${course.lessons.length} lecciones` : 'Próximamente'}
-                          </span>
-                          {course.status !== 'coming' && (
-                            <span className="flex items-center gap-1">
-                              {isCompleted ? 'Repasar curso ➔' : isInProgress ? 'Continuar camino ➔' : 'Comenzar camino ➔'}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    </a>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {activeTab === 'all' && (
-        <div className="animate-[fadeIn_0.3s_ease-out]">
-          {/* Buscador + Filtros por Categoría en una sola fila responsiva compacta */}
-          <div className="mb-4 flex flex-col md:flex-row gap-2.5 items-stretch md:items-center">
-            {/* Buscador compacto */}
-            <div className="relative w-full md:w-72 shrink-0">
-              <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm opacity-60" aria-hidden>
-                🔍
-              </span>
-              <input
-                id="courses-search"
-                type="search"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Buscar curso o tecnología…"
-                autoComplete="off"
-                className="w-full rounded-xl border-2 border-border bg-white py-2 pl-9 pr-8 font-nunito text-xs sm:text-sm font-bold text-textPrimary shadow-neo placeholder:text-textMuted focus:border-info focus:outline-none"
-              />
-              {searchQuery.trim() !== '' && (
-                <button
-                  type="button"
-                  onClick={() => setSearchQuery('')}
-                  className="absolute right-2 top-1/2 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-lg border border-border bg-white text-xs font-black text-textSecondary hover:bg-tertiary/40"
-                  aria-label="Limpiar búsqueda"
-                >
-                  ✕
-                </button>
-              )}
-            </div>
-
-            {/* Pills de categorías (Scroll Horizontal en 1 sola línea) */}
-            <div className="flex-1 flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0 scrollbar-none">
+          {categoryOrder.map((cat) => {
+            const count = categoryCounts[cat] || 0;
+            if (!count) return null;
+            const isSelected = selectedCategory === cat;
+            return (
               <button
+                key={cat}
                 type="button"
-                onClick={() => setSelectedCategory('all')}
-                className={`rounded-xl border-2 px-3 py-1 font-nunito text-xs font-extrabold transition-all shrink-0 ${
-                  selectedCategory === 'all'
+                onClick={() => setSelectedCategory(cat)}
+                className={`rounded-xl border-2 px-3 py-1.5 font-nunito text-xs font-extrabold transition-all shrink-0 cursor-pointer ${
+                  isSelected
                     ? 'border-border bg-[#118AB2] text-white shadow-[2px_2px_0px_#1E1210]'
                     : 'border-border/40 bg-white text-textSecondary hover:border-border hover:bg-tertiary/40'
                 }`}
               >
-                Todos ({categoryCounts.all})
+                {categoryLabel[cat]} ({count})
               </button>
-              {categoryOrder.map((cat) => {
-                const count = categoryCounts[cat] || 0;
-                if (!count) return null;
-                const isSelected = selectedCategory === cat;
-                return (
-                  <button
-                    key={cat}
-                    type="button"
-                    onClick={() => setSelectedCategory(cat)}
-                    className={`rounded-xl border-2 px-3 py-1 font-nunito text-xs font-extrabold transition-all shrink-0 ${
-                      isSelected
-                        ? 'border-border bg-[#118AB2] text-white shadow-[2px_2px_0px_#1E1210]'
-                        : 'border-border/40 bg-white text-textSecondary hover:border-border hover:bg-tertiary/40'
-                    }`}
-                  >
-                    {categoryLabel[cat]} ({count})
-                  </button>
-                );
-              })}
-            </div>
-          </div>
+            );
+          })}
+        </div>
+      </div>
 
-          {(searchQuery.trim() !== '' || selectedCategory !== 'all') && (
-            <div className="mb-4 flex items-center justify-between text-xs font-bold text-textMuted">
-              <span>
-                Mostrando {filteredCount} de {courses.length} cursos
-                {selectedCategory !== 'all' ? ` en ${categoryLabel[selectedCategory]}` : ''}
-              </span>
-              <button
-                type="button"
-                onClick={() => {
-                  setSearchQuery('');
-                  setSelectedCategory('all');
-                }}
-                className="text-[#118AB2] hover:underline font-black"
-              >
-                Limpiar filtros ✕
-              </button>
-            </div>
-          )}
-
-          {filteredGrouped.length === 0 && (searchQuery.trim() !== '' || selectedCategory !== 'all') && (
-            <div className="mb-10 rounded-2xl border-[3px] border-dashed border-border bg-tertiary/20 px-6 py-10 text-center">
-              <p className="m-0 font-nunito text-lg font-black text-textPrimary">No encontramos cursos</p>
-              <p className="mt-2 m-0 font-nunito text-sm font-[650] text-textSecondary">
-                Probá otras palabras o limpiá la búsqueda. Buscamos en nombre, descripción, categoría y ruta del curso.
-              </p>
-              <button
-                type="button"
-                onClick={() => setSearchQuery('')}
-                className="mt-4 rounded-xl border-[3px] border-border bg-info px-5 py-2 font-nunito text-sm font-black text-white shadow-neo hover:-translate-y-0.5"
-              >
-                Limpiar búsqueda
-              </button>
-            </div>
-          )}
-
-          {filteredGrouped.map(({ cat, label, items }) => (
-            <section key={cat} className="mb-12 last:mb-0">
-              <h2 className="mb-4 font-nunito text-2xl font-extrabold text-textPrimary">{label}</h2>
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-                {items.map((course, i) => renderCard(course, i))}
-              </div>
-            </section>
-          ))}
+      {(searchQuery.trim() !== '' || selectedCategory !== 'all') && (
+        <div className="mb-4 flex items-center justify-between text-xs font-bold text-textMuted">
+          <span>
+            Mostrando {filteredCount} de {courses.length} cursos
+            {selectedCategory !== 'all' ? ` en ${categoryLabel[selectedCategory]}` : ''}
+          </span>
+          <button
+            type="button"
+            onClick={() => {
+              setSearchQuery('');
+              setSelectedCategory('all');
+            }}
+            className="text-[#118AB2] hover:underline font-black cursor-pointer"
+          >
+            Limpiar filtros ✕
+          </button>
         </div>
       )}
+
+      {filteredGrouped.length === 0 && (searchQuery.trim() !== '' || selectedCategory !== 'all') && (
+        <div className="mb-10 rounded-2xl border-[3px] border-dashed border-border bg-tertiary/20 px-6 py-10 text-center">
+          <p className="m-0 font-nunito text-lg font-black text-textPrimary">No encontramos cursos</p>
+          <p className="mt-2 m-0 font-nunito text-sm font-[650] text-textSecondary">
+            Probá otras palabras o limpiá la búsqueda. Buscamos en nombre, descripción y categoría del curso.
+          </p>
+          <button
+            type="button"
+            onClick={() => setSearchQuery('')}
+            className="mt-4 rounded-xl border-[3px] border-border bg-info px-5 py-2 font-nunito text-sm font-black text-white shadow-neo hover:-translate-y-0.5 cursor-pointer"
+          >
+            Limpiar búsqueda
+          </button>
+        </div>
+      )}
+
+      {filteredGrouped.map(({ cat, label, items }) => (
+        <section key={cat} className="mb-10 last:mb-0">
+          <h2 className="mb-4 font-nunito text-xl sm:text-2xl font-extrabold text-textPrimary flex items-center gap-2">
+            <span>{label}</span>
+            <span className="text-xs font-black text-textMuted bg-tertiary/60 border border-border/20 px-2 py-0.5 rounded-lg">
+              {items.length}
+            </span>
+          </h2>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+            {items.map((course, i) => renderCard(course, i))}
+          </div>
+        </section>
+      ))}
 
       {comingOpen && (
         <div
@@ -764,7 +359,7 @@ export default function CoursesCatalog() {
               <button
                 type="button"
                 onClick={closeComing}
-                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-border bg-white text-lg font-black hover:bg-gray-100"
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-border bg-white text-lg font-black hover:bg-gray-100 cursor-pointer"
                 aria-label="Cerrar"
               >
                 ✕

@@ -1,0 +1,19 @@
+---
+import ExpressChallengeLayout from "../../../layouts/ExpressChallengeLayout.astro";
+import { expressExceptionsExercises } from "../../../data/challengesExpressExceptions";
+import { ExpressChallengeGame } from "../../../components/ExpressChallengeGame";
+---
+
+<ExpressChallengeLayout
+  title="Desafíos Express — Manejo de Excepciones & Errores"
+  description="Domina try, catch, finally, throw, excepciones personalizadas y programación defensiva en C++, Python, JavaScript y Java."
+>
+  <main class="min-h-screen bg-slate-50 text-slate-800 font-sans pb-16">
+    <ExpressChallengeGame
+      client:load
+      allExercises={expressExceptionsExercises}
+      categoryTitle="Manejo de Excepciones"
+      backUrl="/challenges-express/"
+    />
+  </main>
+</ExpressChallengeLayout>

@@ -1,0 +1,22 @@
+---
+import ExpressChallengeLayout from "../../../layouts/ExpressChallengeLayout.astro";
+import { expressTerminalExercises } from "../../../data/challengesExpressTerminal";
+import { ExpressChallengeGame } from "../../../components/ExpressChallengeGame";
+---
+
+<ExpressChallengeLayout
+  title="Desafíos Express — Terminal Unix, Linux & Comandos"
+  description="Aprende y domina la consola interactiva: navegación de directorios, permisos chmod/chown, manipulación de ficheros, pipes, grep, procesos y bash scripting."
+>
+  <main class="min-h-screen bg-slate-50 text-slate-800 font-sans pb-16">
+    <ExpressChallengeGame
+      client:load
+      allExercises={expressTerminalExercises}
+      fixedLanguage="unix"
+      fixedLanguageTitle="Unix / Linux"
+      hideLanguageSelector={true}
+      categoryTitle="Terminal Unix & Linux"
+      backUrl="/challenges-express/"
+    />
+  </main>
+</ExpressChallengeLayout>

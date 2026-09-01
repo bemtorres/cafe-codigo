@@ -1,13 +1,18 @@
 ---
-import Layout from '../../layouts/Layout.astro';
+import AdminLayout from '../../layouts/AdminLayout.astro';
 import { COURSES_CANONICAL_FILE, getCoursesForEmbed } from '../../lib/courseRegistry';
 
 const embedCoursesData = getCoursesForEmbed();
 ---
 
-<Layout title="Admin · Embed builder" description="Generador interno de URLs de embed (GET params).">
+<AdminLayout title="Admin · Embed Cursos & Quizzes" description="Generador interno de URLs de embed para cursos." activeSection="courses">
   <article class="content-section admin-embed w-full max-w-full min-w-0">
     <header class="admin-embed-head mb-3">
+      <div class="flex items-center gap-2 mb-1">
+        <a href="/admin/embed-challenges-express/" class="text-xs font-black text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-md hover:bg-amber-100 transition-all">
+          ⚡ Ir a Embed Desafíos Express →
+        </a>
+      </div>
       <h1 class="!mb-0 !text-xl sm:!text-2xl">/admin/embed</h1>
       <p class="!mb-0 !mt-1 !text-xs sm:!text-sm !leading-snug text-textSecondary font-[650]">
         Parámetros GET + tabla de URLs por lección (ancho completo abajo). Cursos y lecciones:{' '}
@@ -301,4 +306,4 @@ const embedCoursesData = getCoursesForEmbed();
     }
   </style>
 
-</Layout>
+</AdminLayout>

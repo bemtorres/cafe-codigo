@@ -1,0 +1,89 @@
+---
+import "../styles/global.css";
+import "../styles/code-themes.css";
+import logoCafeycodigo from "../assets/images/cafeycodigo.png";
+import ogLogo from "../assets/images/logo-cafecodigo.png";
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const {
+  title,
+  description = "Desafíos Express: Entrena tu lógica resolviendo y corrigiendo código en retos rápidos e interactivos.",
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="es" class="scroll-smooth h-full bg-slate-50 text-slate-900">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/png" href={logoCafeycodigo.src} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content={`${title} | Desafíos Express`} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content={ogLogo.src} />
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:title" content={`${title} | Desafíos Express`} />
+    <meta property="twitter:description" content={description} />
+
+    <title>{title} | Desafíos Express · Café y Código</title>
+
+    <style is:global>
+      body {
+        font-family: "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        background-color: #f8fafc;
+        color: #0f172a;
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+      code, pre, textarea.font-mono {
+        font-family: "JetBrains Mono", monospace;
+      }
+      /* Scrollbar personalizada tema claro */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #f1f5f9;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 4px;
+      }
+      /* Animaciones de modales */
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      @keyframes scaleUp {
+        from { opacity: 0; transform: scale(0.92) translateY(10px); }
+        to { opacity: 1; transform: scale(1) translateY(0); }
+      }
+      .animate-fadeIn {
+        animation: fadeIn 0.2s ease-out forwards;
+      }
+      .animate-scaleUp {
+        animation: scaleUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      }
+    </style>
+  </head>
+  <body class="h-full bg-slate-50 text-slate-900 flex flex-col selection:bg-sky-200 selection:text-sky-950">
+    <slot />
+  </body>
+</html>

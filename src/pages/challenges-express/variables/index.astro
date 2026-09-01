@@ -1,0 +1,19 @@
+---
+import ExpressChallengeLayout from "../../../layouts/ExpressChallengeLayout.astro";
+import { expressVariablesExercises } from "../../../data/challengesExpressVariables";
+import { ExpressChallengeGame } from "../../../components/ExpressChallengeGame";
+---
+
+<ExpressChallengeLayout
+  title="Desafíos Express — Tipos de Variables y Datos"
+  description="Entrena tus habilidades completando y corrigiendo tipos de datos, variables, casteo y operaciones en memoria en C++, Python, JavaScript y Java."
+>
+  <main class="min-h-screen bg-slate-50 text-slate-800 font-sans pb-16">
+    <ExpressChallengeGame
+      client:load
+      allExercises={expressVariablesExercises}
+      categoryTitle="Variables & Tipos de Datos"
+      backUrl="/challenges-express/"
+    />
+  </main>
+</ExpressChallengeLayout>

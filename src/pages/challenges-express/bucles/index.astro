@@ -1,0 +1,19 @@
+---
+import ExpressChallengeLayout from "../../../layouts/ExpressChallengeLayout.astro";
+import { expressLoopsExercises } from "../../../data/challengesExpressLoops";
+import { ExpressChallengeGame } from "../../../components/ExpressChallengeGame";
+---
+
+<ExpressChallengeLayout
+  title="Desafíos Express — Bucles & Iteraciones"
+  description="Entrena tus habilidades de programación completando y corrigiendo bucles for, while, acumuladores y algoritmos iterativos con editor CodeMirror interactivo."
+>
+  <main class="min-h-screen bg-slate-50 text-slate-800 font-sans pb-16">
+    <ExpressChallengeGame
+      client:load
+      allExercises={expressLoopsExercises}
+      categoryTitle="Bucles & Iteraciones"
+      backUrl="/challenges-express/"
+    />
+  </main>
+</ExpressChallengeLayout>

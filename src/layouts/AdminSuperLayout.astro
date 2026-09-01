@@ -1,7 +1,7 @@
 ---
 import Layout from './Layout.astro';
 
-type NavKey = 'dashboard' | 'users' | 'badges';
+type NavKey = 'dashboard' | 'users' | 'badges' | 'embed_courses' | 'embed_express';
 
 type Props = {
   title: string;
@@ -15,6 +15,8 @@ const items: { href: string; key: NavKey; label: string }[] = [
   { href: '/admin/dashboard', key: 'dashboard', label: 'Panel' },
   { href: '/admin/users', key: 'users', label: 'Usuarios' },
   { href: '/admin/badges', key: 'badges', label: 'Insignias' },
+  { href: '/admin/embed', key: 'embed_courses', label: 'Embed Cursos' },
+  { href: '/admin/embed-challenges-express', key: 'embed_express', label: 'Embed Express ⚡' },
 ];
 ---
 

@@ -1,0 +1,19 @@
+---
+import ExpressChallengeLayout from "../../../layouts/ExpressChallengeLayout.astro";
+import { expressPooExercises } from "../../../data/challengesExpressPoo";
+import { ExpressChallengeGame } from "../../../components/ExpressChallengeGame";
+---
+
+<ExpressChallengeLayout
+  title="Desafíos Express — Programación Orientada a Objetos (POO)"
+  description="Domina Clases, Instanciación, Encapsulamiento, Herencia, Polimorfismo y Patrones de Diseño con retos de código en C++, Python, JavaScript y Java."
+>
+  <main class="min-h-screen bg-slate-50 text-slate-800 font-sans pb-16">
+    <ExpressChallengeGame
+      client:load
+      allExercises={expressPooExercises}
+      categoryTitle="Programación Orientada a Objetos"
+      backUrl="/challenges-express/"
+    />
+  </main>
+</ExpressChallengeLayout>
