@@ -1,0 +1,627 @@
+---
+import Layout from "../../../../layouts/Layout.astro";
+import CodeBlock from "../../../../components/CodeBlock.astro";
+---
+
+<Layout
+  title="Arreglos en C++ — El Inventario de Minecraft y Control de Capacidad"
+  description="Domina los arreglos fijos en C++ con la analogía del inventario de 9 casillas de Minecraft: capacidad fija vs cantidad actual, paso por referencia con &, validaciones y CRUD manual."
+  courseSlug="cpp"
+>
+  <article class="content-section">
+    <!-- Breadcrumb de Navegación -->
+    <nav class="flex items-center gap-2 text-xs font-bold text-slate-500 mb-6 font-mono">
+      <a href="/course/cpp/" class="hover:text-sky-700 transition-colors">Curso C++</a>
+      <span>/</span>
+      <a href="/course/cpp/colecciones/" class="hover:text-sky-700 transition-colors">Colecciones</a>
+      <span>/</span>
+      <span class="text-sky-700">7.1 Arreglos Fijos (Array)</span>
+    </nav>
+
+    <!-- Header Principal -->
+    <div class="mb-8 border-b border-slate-200 pb-6">
+      <div class="flex flex-wrap items-center gap-2 mb-3">
+        <span class="px-3 py-1 rounded-xl bg-amber-100 text-amber-900 border border-amber-300 text-xs font-black uppercase tracking-wider font-mono">
+          ⛏️ Analogía Minecraft
+        </span>
+        <span class="px-3 py-1 rounded-xl bg-sky-100 text-sky-900 border border-sky-300 text-xs font-black uppercase tracking-wider font-mono">
+          Estructura de Datos Fija
+        </span>
+      </div>
+      <h1 class="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight m-0">
+        Arreglos Fijos en C++: El Inventario de 9 Espacios
+      </h1>
+      <p class="intro-text mt-3 text-slate-700 font-medium text-base sm:text-lg leading-relaxed">
+        Aprende cómo funcionan los arreglos estáticos tradicionales en C++ construyendo el sistema de gestión de la barra de acceso rápido (Hotbar) de Minecraft. Comprenderás la diferencia crucial entre <strong>capacidad máxima</strong> y <strong>cantidad ocupada</strong>, el paso de parámetros por <strong>referencia con <code>&</code></strong>, y cómo implementar operaciones de agregar, mostrar, modificar y eliminar elementos desplazando memoria manualmente.
+      </p>
+    </div>
+
+    <!-- SECCIÓN 1: PRIMERA VERSIÓN -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-black text-slate-900 flex items-center gap-2">
+        <span>1.</span> Primera Versión: El Inventario de 9 Casillas
+      </h2>
+      <p class="text-slate-700 leading-relaxed font-medium">
+        En Minecraft, la barra de acceso rápido del jugador tiene <strong>exactamente 9 casillas fijas</strong> numeradas internamente desde la posición <code>0</code> hasta la posición <code>8</code>. Cada casilla almacena el nombre de un objeto en forma de texto (<code>string</code>).
+      </p>
+
+      <!-- Representación Visual del Inventario -->
+      <div class="my-6 p-5 rounded-2xl bg-gradient-to-br from-amber-50/90 via-slate-50 to-orange-50/80 text-slate-800 shadow-xs border-2 border-amber-300">
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-xs uppercase tracking-widest font-mono text-amber-900 font-black">
+            🎮 Barra Rápida (Hotbar) de Minecraft
+          </span>
+          <span class="text-xs text-slate-500 font-mono font-bold">string inventario[9]</span>
+        </div>
+
+        <div class="grid grid-cols-3 sm:grid-cols-9 gap-2 text-center font-mono">
+          <div class="bg-white border-2 border-amber-400 rounded-xl p-2.5 shadow-xs">
+            <span class="text-lg block">🗡️</span>
+            <span class="text-xs font-bold text-slate-900 block truncate">Espada</span>
+            <span class="text-[10px] text-amber-700 font-bold block mt-1">idx: 0</span>
+          </div>
+          <div class="bg-white border-2 border-amber-400 rounded-xl p-2.5 shadow-xs">
+            <span class="text-lg block">⛏️</span>
+            <span class="text-xs font-bold text-slate-900 block truncate">Pico</span>
+            <span class="text-[10px] text-amber-700 font-bold block mt-1">idx: 1</span>
+          </div>
+          <div class="bg-white border-2 border-amber-400 rounded-xl p-2.5 shadow-xs">
+            <span class="text-lg block">🪓</span>
+            <span class="text-xs font-bold text-slate-900 block truncate">Hacha</span>
+            <span class="text-[10px] text-amber-700 font-bold block mt-1">idx: 2</span>
+          </div>
+          <div class="bg-white border-2 border-amber-400 rounded-xl p-2.5 shadow-xs">
+            <span class="text-lg block">🍞</span>
+            <span class="text-xs font-bold text-slate-900 block truncate">Pan</span>
+            <span class="text-[10px] text-amber-700 font-bold block mt-1">idx: 3</span>
+          </div>
+          <div class="bg-white border-2 border-amber-400 rounded-xl p-2.5 shadow-xs">
+            <span class="text-lg block">🪵</span>
+            <span class="text-xs font-bold text-slate-900 block truncate">Madera</span>
+            <span class="text-[10px] text-amber-700 font-bold block mt-1">idx: 4</span>
+          </div>
+          <div class="bg-white border-2 border-amber-400 rounded-xl p-2.5 shadow-xs">
+            <span class="text-lg block">🪨</span>
+            <span class="text-xs font-bold text-slate-900 block truncate">Piedra</span>
+            <span class="text-[10px] text-amber-700 font-bold block mt-1">idx: 5</span>
+          </div>
+          <div class="bg-white border-2 border-amber-400 rounded-xl p-2.5 shadow-xs">
+            <span class="text-lg block">💎</span>
+            <span class="text-xs font-bold text-slate-900 block truncate">Diamante</span>
+            <span class="text-[10px] text-amber-700 font-bold block mt-1">idx: 6</span>
+          </div>
+          <div class="bg-white border-2 border-amber-400 rounded-xl p-2.5 shadow-xs">
+            <span class="text-lg block">🕯️</span>
+            <span class="text-xs font-bold text-slate-900 block truncate">Antorcha</span>
+            <span class="text-[10px] text-amber-700 font-bold block mt-1">idx: 7</span>
+          </div>
+          <div class="bg-white border-2 border-amber-400 rounded-xl p-2.5 shadow-xs">
+            <span class="text-lg block">🏹</span>
+            <span class="text-xs font-bold text-slate-900 block truncate">Arco</span>
+            <span class="text-[10px] text-amber-700 font-bold block mt-1">idx: 8</span>
+          </div>
+        </div>
+
+        <div class="mt-4 p-3 rounded-xl bg-white border border-amber-200 font-mono text-xs text-amber-900 font-bold">
+          <code>string inventario[9] = &#123; "Espada", "Pico", "Hacha", "Pan", "Madera", "Piedra", "Diamante", "Antorcha", "Arco" &#125;;</code>
+        </div>
+      </div>
+
+      <p class="text-slate-700 leading-relaxed font-medium">
+        Para recorrer y mostrar todos los elementos en consola utilizamos un bucle <code>for</code> que comienza en el índice <code>0</code> y avanza hasta <code>8</code> (es decir, mientras <code>i &lt; 9</code>):
+      </p>
+
+      <CodeBlock
+        lang="cpp"
+        code={`#include <iostream>
+#include <string>
+
+using namespace std;
+
+int main() {
+    // Declaración e inicialización del arreglo fijo de 9 elementos
+    string inventario[9] = {
+        "Espada",
+        "Pico",
+        "Hacha",
+        "Pan",
+        "Madera",
+        "Piedra",
+        "Diamante",
+        "Antorcha",
+        "Arco"
+    };
+
+    // Recorrer las 9 posiciones del inventario
+    for (int i = 0; i < 9; i++) {
+        cout << "Posicion " << i << ": " << inventario[i] << endl;
+    }
+
+    return 0;
+}`}
+        title="Inventario de 9 elementos en C++"
+      />
+    </section>
+
+    <!-- SECCIÓN 2: MODIFICAR ELEMENTOS -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-black text-slate-900 flex items-center gap-2">
+        <span>2.</span> Modificar un Elemento por Posición
+      </h2>
+      <p class="text-slate-700 leading-relaxed font-medium">
+        Para cambiar un objeto de la casilla usamos el operador de acceso por corchetes <code>inventario[posicion]</code>. Al conocer el índice exacto, C++ accede y modifica la memoria en tiempo constante <strong>$O(1)$</strong>:
+      </p>
+
+      <CodeBlock
+        lang="cpp"
+        code={`int posicion;
+cout << "Que posicion desea modificar (0-8): ";
+cin >> posicion;
+
+cout << "Nuevo objeto: ";
+cin >> inventario[posicion]; // Asignamos el nuevo valor en esa casilla`}
+        title="Modificar casilla del inventario"
+      />
+
+      <div class="my-4 p-4 rounded-2xl bg-sky-50 border border-sky-200 text-sm text-sky-950">
+        <p class="font-bold text-sky-900 m-0">Ejemplo de ejecución en consola:</p>
+        <pre class="mt-2 p-3 bg-white rounded-xl border border-sky-200 font-mono text-xs text-sky-900">Que posicion desea modificar (0-8): 3
+Nuevo objeto: Manzana</pre>
+        <p class="mt-2 text-xs text-sky-800">
+          El inventario ahora queda: <code>Espada | Pico | Hacha | <strong>Manzana</strong> | Madera | Piedra | Diamante | Antorcha | Arco</code>.
+        </p>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 3: CAPACIDAD VS CANTIDAD -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-black text-slate-900 flex items-center gap-2">
+        <span>3.</span> El Concepto Central: Capacidad vs. Cantidad Actual
+      </h2>
+      <p class="text-slate-700 leading-relaxed font-medium">
+        En un videojuego real, el jugador rara vez comienza con el inventario lleno. Supongamos que al iniciar la partida solo tiene <strong>6 objetos</strong>.
+      </p>
+
+      <div class="my-6 p-5 rounded-2xl bg-amber-50/80 border-2 border-amber-300">
+        <h3 class="text-lg font-black text-amber-950 m-0 flex items-center gap-2">
+          <span>⚠️</span> Las Dos Variables Tienen Responsabilidades Distintas
+        </h3>
+        <p class="text-slate-700 text-sm mt-2 leading-relaxed font-medium">
+          El arreglo por sí mismo <strong>no sabe cuántos elementos estamos usando conceptualmente</strong>. Por eso, siempre que trabajamos con arreglos fijos necesitamos dos datos complementarios:
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+          <div class="bg-white p-4 rounded-xl border border-amber-200 shadow-xs">
+            <span class="text-xs uppercase font-bold text-amber-800 font-mono block">Variable 1: El Arreglo</span>
+            <code class="text-sm font-bold text-slate-900 block my-1">string inventario[9];</code>
+            <p class="text-xs text-slate-600 m-0">
+              Representa la <strong>CAPACIDAD MÁXIMA</strong> disponible (9 casillas físicas en memoria).
+            </p>
+          </div>
+
+          <div class="bg-white p-4 rounded-xl border border-amber-200 shadow-xs">
+            <span class="text-xs uppercase font-bold text-emerald-800 font-mono block">Variable 2: El Contador</span>
+            <code class="text-sm font-bold text-slate-900 block my-1">int cantidadInventario = 6;</code>
+            <p class="text-xs text-slate-600 m-0">
+              Representa la <strong>CANTIDAD ACTUAL</strong> de objetos almacenados (slots ocupados).
+            </p>
+          </div>
+        </div>
+
+        <div class="mt-4 p-3 bg-white rounded-xl border border-amber-200 font-mono text-xs text-slate-800">
+          <p class="m-0 font-bold text-amber-900">Estado del Inventario:</p>
+          <p class="m-0 mt-1">Capacidad máxima: 9 casillas</p>
+          <p class="m-0">Cantidad ocupada:  6 objetos (índices 0 al 5)</p>
+          <p class="m-0">Espacios libres:   3 casillas disponibles (índices 6, 7 y 8)</p>
+        </div>
+      </div>
+
+      <p class="text-slate-700 leading-relaxed font-medium">
+        Gracias a <code>cantidadInventario = 6</code>, cuando queramos mostrar el inventario en pantalla, el bucle solo debe iterar hasta <code>cantidadInventario</code>:
+      </p>
+
+      <CodeBlock
+        lang="cpp"
+        code={`// Correcto: iteramos solo sobre los objetos que realmente existen
+for (int i = 0; i < cantidadInventario; i++) {
+    cout << i << " - " << inventario[i] << endl;
+}`}
+        title="Iterar según la cantidad ocupada"
+      />
+    </section>
+
+    <!-- SECCIÓN 4: MODULARIZACIÓN CON FUNCIONES Y REFERENCIAS -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-black text-slate-900 flex items-center gap-2">
+        <span>4.</span> Funciones y Paso por Referencia con <code>&</code>
+      </h2>
+      <p class="text-slate-700 leading-relaxed font-medium">
+        Para que nuestro código sea limpio y reutilizable, trasladamos la lógica a funciones independientes.
+      </p>
+
+      <h3 class="text-xl font-bold text-slate-900 mt-6 mb-2">A. Función para Mostrar el Inventario</h3>
+      <p class="text-slate-700 leading-relaxed font-medium">
+        Esta función solo lee los datos sin modificar el contador de cantidad:
+      </p>
+
+      <CodeBlock
+        lang="cpp"
+        code={`void mostrarInventario(string inventario[], int cantidadInventario) {
+    if (cantidadInventario == 0) {
+        cout << "El inventario esta vacio." << endl;
+        return;
+    }
+
+    for (int i = 0; i < cantidadInventario; i++) {
+        cout << i << " - " << inventario[i] << endl;
+    }
+}`}
+        title="Función mostrarInventario"
+      />
+
+      <h3 class="text-xl font-bold text-slate-900 mt-8 mb-2">B. Función para Agregar: ¿Por qué <code>int& cantidadInventario</code> lleva <code>&</code>?</h3>
+      <p class="text-slate-700 leading-relaxed font-medium">
+        Cuando el jugador recoge un nuevo objeto (ej. "Diamante"), la siguiente casilla libre está en el índice <code>cantidadInventario</code>. Al guardarlo, debemos incrementar <code>cantidadInventario++</code> para que el programa recuerde que ahora tiene 7 objetos.
+      </p>
+
+      <div class="my-6 p-5 rounded-2xl bg-rose-50/80 border-2 border-rose-300">
+        <h4 class="text-base font-black text-rose-950 m-0 flex items-center gap-2">
+          <span>🚨</span> Explicación de Memoria: ¿Qué pasa con y sin <code>&</code>?
+        </h4>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 font-mono text-xs">
+          <div class="p-4 rounded-xl bg-white border border-rose-200">
+            <span class="text-rose-700 font-bold block mb-2">❌ SIN '&' (Paso por Copia):</span>
+            <p class="text-slate-700 font-sans leading-relaxed m-0">
+              La función recibe una <strong>copia aislada</strong> de <code>cantidadInventario</code>. Dentro de la función la copia aumenta a <code>7</code>, pero al salir de la función esa copia se destruye. En el <code>main</code> el valor sigue siendo <code>6</code>. ¡El nuevo objeto se perderá en la siguiente inserción!
+            </p>
+          </div>
+
+          <div class="p-4 rounded-xl bg-white border border-emerald-300">
+            <span class="text-emerald-700 font-bold block mb-2">✅ CON '&' (Paso por Referencia):</span>
+            <p class="text-slate-700 font-sans leading-relaxed m-0">
+              El símbolo <code>&</code> le indica a C++ que trabaje directamente sobre la <strong>variable original del <code>main</code></strong>. Cuando la función hace <code>cantidadInventario++</code>, modifica la memoria real de <code>main</code>, pasando de <code>6</code> a <code>7</code> permanentemente.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <CodeBlock
+        lang="cpp"
+        code={`void agregarObjeto(string inventario[], int& cantidadInventario) {
+    // 1. Validar si alcanzamos la capacidad máxima
+    if (cantidadInventario >= 9) {
+        cout << "El inventario esta lleno (Capacidad maxima: 9)." << endl;
+        return;
+    }
+
+    string objeto;
+    cout << "Ingrese el nombre del objeto: ";
+    cin >> objeto;
+
+    // 2. Guardar en la primera posicion libre (indice = cantidadInventario)
+    inventario[cantidadInventario] = objeto;
+
+    // 3. Aumentar el contador real en main
+    cantidadInventario++;
+
+    cout << "¡" << objeto << " guardado en la casilla " << cantidadInventario - 1 << "!" << endl;
+}`}
+        title="Función agregarObjeto con paso por referencia"
+      />
+    </section>
+
+    <!-- SECCIÓN 5: CRUD COMPLETO CON ARREGLOS -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-black text-slate-900 flex items-center gap-2">
+        <span>5.</span> Operaciones CRUD con Arreglos Fijos
+      </h2>
+      <p class="text-slate-700 leading-relaxed font-medium">
+        Un sistema <strong>CRUD</strong> cubre las 4 operaciones esenciales: <strong>C</strong>reate (Crear/Agregar), <strong>R</strong>ead (Leer/Mostrar), <strong>U</strong>pdate (Actualizar/Modificar) y <strong>D</strong>elete (Eliminar).
+      </p>
+
+      <div class="space-y-6 mt-6">
+        <!-- Update -->
+        <div class="p-5 rounded-2xl bg-white border border-slate-200 shadow-xs">
+          <h3 class="text-lg font-bold text-slate-900 m-0">Update: Modificar Objeto</h3>
+          <p class="text-xs text-slate-600 mt-1 font-medium">
+            Verificamos que la posición ingresada sea válida (entre <code>0</code> y <code>cantidadInventario - 1</code>) y sobrescribimos el valor.
+          </p>
+          <CodeBlock
+            lang="cpp"
+            code={`void modificarObjeto(string inventario[], int cantidadInventario) {
+    if (cantidadInventario == 0) {
+        cout << "No hay objetos para modificar." << endl;
+        return;
+    }
+
+    int posicion;
+    cout << "Posicion a modificar (0 a " << cantidadInventario - 1 << "): ";
+    cin >> posicion;
+
+    if (posicion < 0 || posicion >= cantidadInventario) {
+        cout << "Posicion invalida." << endl;
+        return;
+    }
+
+    cout << "Objeto actual: " << inventario[posicion] << endl;
+    cout << "Nuevo nombre: ";
+    cin >> inventario[posicion];
+
+    cout << "Posicion " << posicion << " actualizada correctamente." << endl;
+}`}
+            title="Función modificarObjeto"
+          />
+        </div>
+
+        <!-- Delete con Desplazamiento -->
+        <div class="p-5 rounded-2xl bg-white border border-slate-200 shadow-xs">
+          <h3 class="text-lg font-bold text-slate-900 m-0">Delete: Eliminar con Desplazamiento Manual (Shift Left)</h3>
+          <p class="text-xs text-slate-600 mt-1 font-medium leading-relaxed">
+            Si eliminamos el elemento en la posición <code>1</code> ("Pico"), no podemos dejar un hueco vacío en el medio. Debemos <strong>mover todos los elementos de la derecha una posición hacia la izquierda</strong> y luego decrementar <code>cantidadInventario--</code>:
+          </p>
+
+          <div class="my-4 p-4 rounded-xl bg-amber-50/90 border border-amber-300 text-slate-800 font-mono text-xs">
+            <span class="text-amber-800 font-bold block mb-1">// Ejemplo de desplazamiento al borrar el índice 1:</span>
+            <span>Antes:  [Espada(0)] [Pico(1)] [Madera(2)] [Pan(3)]  (cantidad = 4)</span>
+            <br />
+            <span>Mover:  inventario[1] = inventario[2]  // Madera pasa a la pos 1</span>
+            <br />
+            <span>        inventario[2] = inventario[3]  // Pan pasa a la pos 2</span>
+            <br />
+            <span>Despues:[Espada(0)] [Madera(1)] [Pan(2)]             (cantidad = 3)</span>
+          </div>
+
+          <CodeBlock
+            lang="cpp"
+            code={`void eliminarObjeto(string inventario[], int& cantidadInventario) {
+    if (cantidadInventario == 0) {
+        cout << "El inventario ya esta vacio." << endl;
+        return;
+    }
+
+    int posicion;
+    cout << "Posicion a eliminar (0 a " << cantidadInventario - 1 << "): ";
+    cin >> posicion;
+
+    if (posicion < 0 || posicion >= cantidadInventario) {
+        cout << "Posicion fuera de rango." << endl;
+        return;
+    }
+
+    cout << "Eliminando " << inventario[posicion] << "..." << endl;
+
+    // Desplazar los elementos siguientes una posicion a la izquierda
+    for (int i = posicion; i < cantidadInventario - 1; i++) {
+        inventario[i] = inventario[i + 1];
+    }
+
+    // Reducir la cantidad ocupada en main
+    cantidadInventario--;
+
+    cout << "Objeto eliminado con exito." << endl;
+}`}
+            title="Función eliminarObjeto con desplazamiento"
+          />
+        </div>
+
+        <!-- Search -->
+        <div class="p-5 rounded-2xl bg-white border border-slate-200 shadow-xs">
+          <h3 class="text-lg font-bold text-slate-900 m-0">Search: Buscar Objeto (Retorno <code>int</code>)</h3>
+          <p class="text-xs text-slate-600 mt-1 font-medium">
+            Distinción pedagógica clave: las funciones <code>void</code> <em>ejecutan una acción</em>, mientras que una función de tipo <code>int</code> <em>calcula y retorna un resultado</em> (el índice encontrado o <code>-1</code> si no existe).
+          </p>
+
+          <CodeBlock
+            lang="cpp"
+            code={`int buscarObjeto(string inventario[], int cantidadInventario, string itemBuscado) {
+    for (int i = 0; i < cantidadInventario; i++) {
+        if (inventario[i] == itemBuscado) {
+            return i; // Retorna la posicion donde fue encontrado
+        }
+    }
+    return -1; // -1 indica que el objeto no esta en el inventario
+}`}
+            title="Función buscarObjeto"
+          />
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 6: CÓDIGO COMPLETO LISTO PARA COMPILAR -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-black text-slate-900 flex items-center gap-2">
+        <span>6.</span> Programa Completo: Menú Interactivo del Inventario
+      </h2>
+      <p class="text-slate-700 leading-relaxed font-medium">
+        A continuación tienes el programa completo listo para copiar, compilar y ejecutar en tu entorno (Visual Studio, Code::Blocks, CLion o terminal con <code>g++</code>):
+      </p>
+
+      <CodeBlock
+        lang="cpp"
+        code={`#include <iostream>
+#include <string>
+
+using namespace std;
+
+const int CAPACIDAD = 9;
+
+// Declaración de funciones modulares
+void mostrarInventario(string inventario[], int cantidadInventario) {
+    if (cantidadInventario == 0) {
+        cout << "\\n[!] El inventario esta vacio.\\n";
+        return;
+    }
+    cout << "\\n=== INVENTARIO DEL JUGADOR (" << cantidadInventario << "/" << CAPACIDAD << ") ===\\n";
+    for (int i = 0; i < cantidadInventario; i++) {
+        cout << "[" << i << "] " << inventario[i] << "\\n";
+    }
+    cout << "=======================================\\n";
+}
+
+void agregarObjeto(string inventario[], int& cantidadInventario) {
+    if (cantidadInventario >= CAPACIDAD) {
+        cout << "\\n[X] Error: El inventario esta lleno (Maximo 9 casillas).\\n";
+        return;
+    }
+    string nuevo;
+    cout << "Nombre del nuevo objeto: ";
+    cin >> nuevo;
+
+    inventario[cantidadInventario] = nuevo;
+    cantidadInventario++;
+    cout << "[OK] " << nuevo << " agregado en la posicion " << cantidadInventario - 1 << ".\\n";
+}
+
+void modificarObjeto(string inventario[], int cantidadInventario) {
+    if (cantidadInventario == 0) {
+        cout << "\\n[!] No hay objetos para modificar.\\n";
+        return;
+    }
+    int pos;
+    cout << "Indice a modificar (0 a " << cantidadInventario - 1 << "): ";
+    cin >> pos;
+
+    if (pos < 0 || pos >= cantidadInventario) {
+        cout << "[X] Indice invalido.\\n";
+        return;
+    }
+    cout << "Reemplazando [" << inventario[pos] << "]. Ingrese nuevo nombre: ";
+    cin >> inventario[pos];
+    cout << "[OK] Posicion " << pos << " actualizada.\\n";
+}
+
+void eliminarObjeto(string inventario[], int& cantidadInventario) {
+    if (cantidadInventario == 0) {
+        cout << "\\n[!] El inventario esta vacio.\\n";
+        return;
+    }
+    int pos;
+    cout << "Indice a eliminar (0 a " << cantidadInventario - 1 << "): ";
+    cin >> pos;
+
+    if (pos < 0 || pos >= cantidadInventario) {
+        cout << "[X] Posicion invalida.\\n";
+        return;
+    }
+    cout << "[OK] " << inventario[pos] << " eliminado.\\n";
+
+    // Desplazamiento manual hacia la izquierda
+    for (int i = pos; i < cantidadInventario - 1; i++) {
+        inventario[i] = inventario[i + 1];
+    }
+    cantidadInventario--;
+}
+
+int buscarObjeto(string inventario[], int cantidadInventario, string item) {
+    for (int i = 0; i < cantidadInventario; i++) {
+        if (inventario[i] == item) return i;
+    }
+    return -1;
+}
+
+int main() {
+    string inventario[CAPACIDAD] = { "Espada", "Pico", "Madera", "Pan", "Piedra", "Arco" };
+    int cantidadInventario = 6;
+    int opcion = 0;
+
+    do {
+        cout << "\\n--- GESTOR DE INVENTARIO MINECRAFT ---\\n";
+        cout << "1. Mostrar inventario\\n";
+        cout << "2. Agregar objeto\\n";
+        cout << "3. Modificar objeto\\n";
+        cout << "4. Eliminar objeto\\n";
+        cout << "5. Buscar objeto\\n";
+        cout << "6. Salir\\n";
+        cout << "Seleccione una opcion (1-6): ";
+        cin >> opcion;
+
+        switch (opcion) {
+            case 1:
+                mostrarInventario(inventario, cantidadInventario);
+                break;
+            case 2:
+                agregarObjeto(inventario, cantidadInventario);
+                break;
+            case 3:
+                modificarObjeto(inventario, cantidadInventario);
+                break;
+            case 4:
+                eliminarObjeto(inventario, cantidadInventario);
+                break;
+            case 5: {
+                string item;
+                cout << "Nombre del objeto a buscar: ";
+                cin >> item;
+                int pos = buscarObjeto(inventario, cantidadInventario, item);
+                if (pos != -1) {
+                    cout << "[!] Encontrado en la posicion: " << pos << "\\n";
+                } else {
+                    cout << "[X] El objeto no esta en el inventario.\\n";
+                }
+                break;
+            }
+            case 6:
+                cout << "Saliendo del juego... ¡Hasta la proxima aventura!\\n";
+                break;
+            default:
+                cout << "[X] Opcion no valida, intente nuevamente.\\n";
+        }
+    } while (opcion != 6);
+
+    return 0;
+}`}
+        title="Gestor Completo de Inventario con Arreglos en C++"
+      />
+    </section>
+
+    <!-- SECCIÓN 7: LIMITACIONES Y PUENTE A VECTOR (DISEÑO CLARO) -->
+    <section class="mb-12 p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-sky-50 via-indigo-50/50 to-white text-slate-900 border-2 border-sky-300 shadow-md relative overflow-hidden">
+      <div class="relative z-10">
+        <span class="px-3 py-1 rounded-full bg-sky-100 text-sky-800 border border-sky-300 text-xs font-black uppercase tracking-wider font-mono">
+          🚀 Siguiente Nivel Pedagógico
+        </span>
+        <h2 class="text-2xl sm:text-3xl font-black text-slate-900 mt-3 mb-3 tracking-tight">
+          El Gran Dilema: ¿Por qué los Arreglos Fijos se Quedan Cortos?
+        </h2>
+        <p class="text-slate-700 leading-relaxed font-medium text-sm sm:text-base">
+          Como acabas de ver, trabajar con arreglos tradicionales nos obligó a:
+        </p>
+        <ul class="my-4 space-y-2 text-xs sm:text-sm text-slate-700 font-medium">
+          <li class="flex items-start gap-2">
+            <span class="text-rose-600 font-bold">1.</span>
+            <span>Tener un límite estricto de 9 posiciones. Si el jugador encuentra un cofre o mochila, <strong>el arreglo no puede crecer</strong>.</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-rose-600 font-bold">2.</span>
+            <span>Administrar manualmente dos variables por separado (<code>inventario[9]</code> y <code>cantidadInventario</code>).</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-rose-600 font-bold">3.</span>
+            <span>Escribir bucles complejos para desplazar elementos uno a uno cada vez que borramos un ítem.</span>
+          </li>
+        </ul>
+
+        <p class="text-amber-800 font-black text-sm sm:text-base">
+          ¿No sería genial si C++ pudiera encargarse automáticamente del tamaño, inserción y borrado de elementos sin límites fijos?
+        </p>
+
+        <div class="mt-6 flex flex-wrap items-center gap-4">
+          <a
+            href="/course/cpp/vector/"
+            class="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-sky-600 to-blue-700 hover:from-sky-500 hover:to-blue-600 text-white font-black text-sm shadow-md shadow-sky-600/20 active:scale-95 transition-all flex items-center gap-2 no-underline"
+          >
+            <span>Aprender std::vector en C++</span>
+            <span>➡️</span>
+          </a>
+          <a
+            href="/course/cpp/colecciones/"
+            class="px-5 py-3 rounded-2xl bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 font-bold text-xs transition-all no-underline shadow-xs"
+          >
+            Ver Comparativa General
+          </a>
+        </div>
+      </div>
+    </section>
+  </article>
+</Layout>

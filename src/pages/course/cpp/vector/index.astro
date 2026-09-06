@@ -1,0 +1,791 @@
+---
+import Layout from "../../../../layouts/Layout.astro";
+import CodeBlock from "../../../../components/CodeBlock.astro";
+---
+
+<Layout
+  title="std::vector en C++ — Inventario Dinámico e Infinito de Minecraft"
+  description="Aprende std::vector en C++: reemplaza la gestión manual de capacidad con push_back, erase, size, paso por referencia y un CRUD modular completo."
+  courseSlug="cpp"
+>
+  <article class="content-section">
+    <!-- Breadcrumb de Navegación -->
+    <nav
+      class="flex items-center gap-2 text-xs font-bold text-slate-500 mb-6 font-mono"
+    >
+      <a href="/course/cpp/" class="hover:text-sky-700 transition-colors"
+        >Curso C++</a
+      >
+      <span>/</span>
+      <a
+        href="/course/cpp/colecciones/"
+        class="hover:text-sky-700 transition-colors">Colecciones</a
+      >
+      <span>/</span>
+      <span class="text-sky-700">7.2 std::vector Dinámico</span>
+    </nav>
+
+    <!-- Header Principal -->
+    <div class="mb-8 border-b border-slate-200 pb-6">
+      <div class="flex flex-wrap items-center gap-2 mb-3">
+        <span
+          class="px-3 py-1 rounded-xl bg-emerald-100 text-emerald-900 border border-emerald-300 text-xs font-black uppercase tracking-wider font-mono"
+        >
+          📦 STL Dinámica
+        </span>
+        <span
+          class="px-3 py-1 rounded-xl bg-purple-100 text-purple-900 border border-purple-300 text-xs font-black uppercase tracking-wider font-mono"
+        >
+          Evolución del Inventario
+        </span>
+      </div>
+      <h1
+        class="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight m-0"
+      >
+        <code>std::vector</code> en C++: La Colección Dinámica Moderna
+      </h1>
+      <p
+        class="intro-text mt-3 text-slate-700 font-medium text-base sm:text-lg leading-relaxed"
+      >
+        En la lección anterior descubrimos que los arreglos fijos requieren
+        controlar manualmente la capacidad (<code>inventario[9]</code>), contar
+        los elementos ocupados (<code>cantidadInventario</code>) y desplazar la
+        memoria a mano al borrar. Con <strong><code>std::vector</code></strong> todo
+        eso queda resuelto de forma automática, segura y con memoria dinámica.
+      </p>
+    </div>
+    <!-- SECCIÓN 1: DE ARREGLOS A VECTORES -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-black text-slate-900 flex items-center gap-2">
+        <span>1.</span> La Gran Evolución: De Arreglo Fijo a <code
+          >std::vector</code
+        >
+      </h2>
+      <p class="text-slate-700 leading-relaxed font-medium">
+        Para usar vectores en C++ debemos incluir la cabecera estándar <code
+          >#include &lt;vector&gt;</code
+        >. Observa la dramática simplificación:
+      </p>
+
+      <!-- Cuadro Comparativo Visual -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-6">
+        <div class="p-5 rounded-2xl bg-rose-50/70 border-2 border-rose-300">
+          <span
+            class="text-xs font-black uppercase tracking-wider text-rose-800 font-mono block mb-1"
+          >
+            Antes: Arreglo Estático
+          </span>
+          <code class="text-sm font-bold text-slate-900 block my-2">
+            string inventario[9];<br />
+            int cantidadInventario = 6;
+          </code>
+          <ul
+            class="text-xs text-slate-700 space-y-1.5 font-medium m-0 pl-4 list-disc"
+          >
+            <li>Capacidad fija en tiempo de compilación.</li>
+            <li>No puede crecer más allá de 9 casillas.</li>
+            <li>El programador debe gestionar el contador de ocupación.</li>
+          </ul>
+        </div>
+
+        <div
+          class="p-5 rounded-2xl bg-emerald-50/70 border-2 border-emerald-400"
+        >
+          <span
+            class="text-xs font-black uppercase tracking-wider text-emerald-800 font-mono block mb-1"
+          >
+            Ahora: std::vector Dinámico
+          </span>
+          <code class="text-sm font-bold text-slate-900 block my-2">
+            vector&lt;string&gt; inventario;
+          </code>
+          <ul
+            class="text-xs text-slate-700 space-y-1.5 font-medium m-0 pl-4 list-disc"
+          >
+            <li>Crece y decrece automáticamente en tiempo de ejecución.</li>
+            <li>
+              <strong>Desaparece</strong>
+              <code>cantidadInventario</code>: se consulta con <code
+                >inventario.size()</code
+              >.
+            </li>
+            <li>Reorganiza y administra la memoria interna por ti.</li>
+          </ul>
+        </div>
+      </div>
+
+      <p class="text-slate-700 leading-relaxed font-medium">
+        Podemos inicializar el vector con los 9 objetos iniciales o dejarlo
+        vacío:
+      </p>
+
+      <CodeBlock
+        lang="cpp"
+        code={`#include <iostream>
+#include <string>
+#include <vector>
+
+using namespace std;
+
+int main() {
+    // Inicialización de un vector con 9 elementos
+    vector<string> inventario = {
+        "Espada", "Pico", "Hacha", "Pan", "Madera",
+        "Piedra", "Diamante", "Antorcha", "Arco"
+    };
+
+    cout << "Cantidad de objetos en el inventario: " << inventario.size() << endl; // 9
+
+    return 0;
+}`}
+        title="Declaración e inicialización de un vector"
+      />
+    </section>
+
+    <!-- SECCIÓN 2: OPERACIONES DINÁMICAS -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-black text-slate-900 flex items-center gap-2">
+        <span>2.</span> Inserción Dinámica con <code>push_back()</code>:
+        Superando el Límite de 9
+      </h2>
+      <p class="text-slate-700 leading-relaxed font-medium">
+        ¿Qué ocurre si el jugador recoge un décimo objeto (ej. "Manzana")? En el
+        arreglo fijo recibíamos un error de desbordamiento. Con <code
+          >vector</code
+        >, simplemente llamamos al método <strong
+          ><code>push_back()</code></strong
+        >:
+      </p>
+
+      <div
+        class="my-6 p-5 rounded-2xl bg-gradient-to-br from-emerald-50/90 via-slate-50 to-sky-50/80 text-slate-800 border-2 border-emerald-300 shadow-xs"
+      >
+        <div class="flex items-center justify-between mb-3 font-mono text-xs">
+          <span class="text-emerald-900 font-black"
+            >🎮 Inventario Expandido (10 casillas)</span
+          >
+          <span class="text-slate-500 font-bold"
+            >inventario.push_back("Manzana");</span
+          >
+        </div>
+        <div
+          class="grid grid-cols-2 sm:grid-cols-5 md:grid-cols-10 gap-1.5 text-center font-mono text-xs"
+        >
+          <div
+            class="bg-white p-2 rounded-lg border border-slate-300 font-bold text-slate-800 shadow-2xs"
+          >
+            Espada<span class="text-[10px] text-slate-400 block">[0]</span>
+          </div>
+          <div
+            class="bg-white p-2 rounded-lg border border-slate-300 font-bold text-slate-800 shadow-2xs"
+          >
+            Pico<span class="text-[10px] text-slate-400 block">[1]</span>
+          </div>
+          <div
+            class="bg-white p-2 rounded-lg border border-slate-300 font-bold text-slate-800 shadow-2xs"
+          >
+            Hacha<span class="text-[10px] text-slate-400 block">[2]</span>
+          </div>
+          <div
+            class="bg-white p-2 rounded-lg border border-slate-300 font-bold text-slate-800 shadow-2xs"
+          >
+            Pan<span class="text-[10px] text-slate-400 block">[3]</span>
+          </div>
+          <div
+            class="bg-white p-2 rounded-lg border border-slate-300 font-bold text-slate-800 shadow-2xs"
+          >
+            Madera<span class="text-[10px] text-slate-400 block">[4]</span>
+          </div>
+          <div
+            class="bg-white p-2 rounded-lg border border-slate-300 font-bold text-slate-800 shadow-2xs"
+          >
+            Piedra<span class="text-[10px] text-slate-400 block">[5]</span>
+          </div>
+          <div
+            class="bg-white p-2 rounded-lg border border-slate-300 font-bold text-slate-800 shadow-2xs"
+          >
+            Diamante<span class="text-[10px] text-slate-400 block">[6]</span>
+          </div>
+          <div
+            class="bg-white p-2 rounded-lg border border-slate-300 font-bold text-slate-800 shadow-2xs"
+          >
+            Antorcha<span class="text-[10px] text-slate-400 block">[7]</span>
+          </div>
+          <div
+            class="bg-white p-2 rounded-lg border border-slate-300 font-bold text-slate-800 shadow-2xs"
+          >
+            Arco<span class="text-[10px] text-slate-400 block">[8]</span>
+          </div>
+          <div
+            class="bg-emerald-100 p-2 rounded-lg border-2 border-emerald-500 text-emerald-950 font-black shadow-xs animate-pulse"
+          >
+            🍎 Manzana<span class="text-[10px] text-emerald-700 font-bold block"
+              >[9]</span
+            >
+          </div>
+        </div>
+      </div>
+
+      <CodeBlock
+        lang="cpp"
+        code={`// Agregar un elemento al final del vector
+inventario.push_back("Manzana");
+
+cout << "Nuevo tamaño: " << inventario.size() << endl; // 10
+cout << "Ultimo objeto: " << inventario.back() << endl; // Manzana`}
+        title="Uso de push_back()"
+      />
+    </section>
+
+    <!-- SECCIÓN 3: ELIMINACIÓN CON ERASE -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-black text-slate-900 flex items-center gap-2">
+        <span>3.</span> Eliminación Automática con <code>erase()</code>
+      </h2>
+      <p class="text-slate-700 leading-relaxed font-medium">
+        En arreglos tradicionales teníamos que programar un bucle manual para
+        mover todos los elementos de la derecha una posición hacia la izquierda.
+        Con <code>std::vector</code>, el método <strong
+          ><code>.erase()</code></strong
+        > se encarga de todo el desplazamiento en una sola línea:
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-6">
+        <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs">
+          <span class="font-bold text-rose-700 block mb-1"
+            >❌ Antes (Arreglo con bucle for):</span
+          >
+          <pre
+            class="bg-white p-3 rounded-lg border font-mono text-slate-800">for (int i = pos; i &lt; n - 1; i++) &#123;
+    inventario[i] = inventario[i + 1];
+&#125;
+n--;</pre>
+        </div>
+
+        <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs">
+          <span class="font-bold text-emerald-700 block mb-1"
+            >✅ Ahora (std::vector):</span
+          >
+          <pre
+            class="bg-white p-3 rounded-lg border font-mono text-slate-800">// Borra el elemento en la posición y reorganiza todo
+inventario.erase(inventario.begin() + posicion);</pre>
+        </div>
+      </div>
+
+      <div
+        class="my-4 p-4 rounded-2xl bg-amber-50 border border-amber-200 text-xs text-amber-950 font-medium"
+      >
+        <strong>💡 ¿Qué significa <code>inventario.begin()</code>?</strong><br
+        />
+        Es un <em>iterador</em> que apunta al inicio del vector (índice 0). Al sumarle
+        <code>+ 2</code>, apunta exactamente al tercer elemento (índice 2) para
+        que <code>erase</code> lo elimine.
+      </div>
+    </section>
+
+    <!-- SECCIÓN 4: MÉTODOS ESENCIALES -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-black text-slate-900 flex items-center gap-2">
+        <span>4.</span> Tabla de Métodos Esenciales de <code>std::vector</code>
+      </h2>
+      <p class="text-slate-700 leading-relaxed font-medium">
+        Estas son las operaciones que utilizarás en el 99% de tus programas en
+        C++:
+      </p>
+
+      <div class="overflow-x-auto my-6">
+        <table
+          class="w-full border-collapse border border-slate-200 text-left text-xs sm:text-sm"
+        >
+          <thead>
+            <tr class="bg-slate-100 text-slate-900">
+              <th class="border border-slate-200 p-3 font-black">Método</th>
+              <th class="border border-slate-200 p-3 font-black">Descripción</th
+              >
+              <th class="border border-slate-200 p-3 font-black">Ejemplo</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-200 text-slate-700 font-medium">
+            <tr>
+              <td
+                class="border border-slate-200 p-3 font-mono font-bold text-sky-700"
+                >.size()</td
+              >
+              <td class="border border-slate-200 p-3"
+                >Retorna la cantidad actual de elementos en el vector.</td
+              >
+              <td class="border border-slate-200 p-3 font-mono"
+                >int total = inventario.size();</td
+              >
+            </tr>
+            <tr>
+              <td
+                class="border border-slate-200 p-3 font-mono font-bold text-sky-700"
+                >.empty()</td
+              >
+              <td class="border border-slate-200 p-3"
+                >Retorna <code>true</code> si el vector no tiene elementos (tamaño
+                0).</td
+              >
+              <td class="border border-slate-200 p-3 font-mono"
+                >if (inventario.empty()) cout &lt;&lt; "Vacio";</td
+              >
+            </tr>
+            <tr>
+              <td
+                class="border border-slate-200 p-3 font-mono font-bold text-sky-700"
+                >.push_back(val)</td
+              >
+              <td class="border border-slate-200 p-3"
+                >Inserta un elemento al final de la colección.</td
+              >
+              <td class="border border-slate-200 p-3 font-mono"
+                >inventario.push_back("Diamante");</td
+              >
+            </tr>
+            <tr>
+              <td
+                class="border border-slate-200 p-3 font-mono font-bold text-sky-700"
+                >.pop_back()</td
+              >
+              <td class="border border-slate-200 p-3"
+                >Elimina el último elemento del vector.</td
+              >
+              <td class="border border-slate-200 p-3 font-mono"
+                >inventario.pop_back();</td
+              >
+            </tr>
+            <tr>
+              <td
+                class="border border-slate-200 p-3 font-mono font-bold text-sky-700"
+                >.erase(pos)</td
+              >
+              <td class="border border-slate-200 p-3"
+                >Elimina el elemento en la posición dada y ajusta los índices.</td
+              >
+              <td class="border border-slate-200 p-3 font-mono"
+                >inventario.erase(inventario.begin() + 1);</td
+              >
+            </tr>
+            <tr>
+              <td
+                class="border border-slate-200 p-3 font-mono font-bold text-sky-700"
+                >.clear()</td
+              >
+              <td class="border border-slate-200 p-3"
+                >Elimina todos los elementos, dejando el vector con tamaño 0.</td
+              >
+              <td class="border border-slate-200 p-3 font-mono"
+                >inventario.clear();</td
+              >
+            </tr>
+            <tr>
+              <td
+                class="border border-slate-200 p-3 font-mono font-bold text-sky-700"
+                >.front() / .back()</td
+              >
+              <td class="border border-slate-200 p-3"
+                >Devuelve el primer o el último elemento respectivamente.</td
+              >
+              <td class="border border-slate-200 p-3 font-mono"
+                >cout &lt;&lt; inventario.front();</td
+              >
+            </tr>
+            <tr>
+              <td
+                class="border border-slate-200 p-3 font-mono font-bold text-sky-700"
+                >.at(pos)</td
+              >
+              <td class="border border-slate-200 p-3"
+                >Acceso con validación de límites (lanza excepción si está fuera
+                de rango).</td
+              >
+              <td class="border border-slate-200 p-3 font-mono"
+                >string item = inventario.at(2);</td
+              >
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 5: FUNCIONES MODULARES -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-black text-slate-900 flex items-center gap-2">
+        <span>5.</span> Modularización: Funciones con <code
+          >vector&lt;string&gt;&amp;</code
+        >
+      </h2>
+      <p class="text-slate-700 leading-relaxed font-medium">
+        Al pasar vectores a funciones en C++, existen dos reglas de oro para
+        maximizar el rendimiento y evitar copias costosas:
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-6">
+        <div class="p-4 rounded-xl bg-sky-50 border border-sky-200 text-xs">
+          <span class="font-bold text-sky-900 block mb-1"
+            >1. Solo Lectura: <code>const vector&lt;string&gt;&amp;</code></span
+          >
+          <p class="text-slate-700 m-0 leading-relaxed">
+            Se pasa por <strong>referencia constante</strong>. Evita duplicar el
+            vector en memoria y garantiza que la función no modifique los datos
+            por error (ideal para <code>mostrarInventario</code> y <code
+              >buscarObjeto</code
+            >).
+          </p>
+        </div>
+
+        <div class="p-4 rounded-xl bg-amber-50 border border-amber-200 text-xs">
+          <span class="font-bold text-amber-900 block mb-1"
+            >2. Modificación: <code>vector&lt;string&gt;&amp;</code></span
+          >
+          <p class="text-slate-700 m-0 leading-relaxed">
+            Se pasa por <strong>referencia mutable</strong>. Permite que
+            funciones como <code>agregarObjeto</code>, <code
+              >eliminarObjeto</code
+            > o <code>modificarObjeto</code> alteren directamente el vector del <code
+              >main</code
+            >.
+          </p>
+        </div>
+      </div>
+
+      <CodeBlock
+        lang="cpp"
+        code={`// Función de solo lectura (const &): no copia el vector y no lo modifica
+void mostrarInventario(const vector<string>& inventario) {
+    if (inventario.empty()) {
+        cout << "\\n[!] El inventario esta vacio.\\n";
+        return;
+    }
+
+    cout << "\\n=== INVENTARIO MINECRAFT (" << inventario.size() << " objetos) ===\\n";
+    for (size_t i = 0; i < inventario.size(); i++) {
+        cout << "[" << i << "] " << inventario[i] << "\\n";
+    }
+    cout << "=======================================\\n";
+}
+
+// Función que modifica el vector (& mutable)
+void agregarObjeto(vector<string>& inventario) {
+    string nuevo;
+    cout << "Nombre del nuevo objeto a recolectar: ";
+    cin >> nuevo;
+
+    inventario.push_back(nuevo);
+    cout << "[OK] ¡" << nuevo << " agregado al final del inventario!\\n";
+}
+
+void eliminarObjeto(vector<string>& inventario) {
+    if (inventario.empty()) {
+        cout << "\\n[!] No hay objetos para eliminar.\\n";
+        return;
+    }
+
+    int pos;
+    cout << "Indice a eliminar (0 a " << inventario.size() - 1 << "): ";
+    cin >> pos;
+
+    if (pos < 0 || pos >= static_cast<int>(inventario.size())) {
+        cout << "[X] Indice fuera de rango.\\n";
+        return;
+    }
+
+    cout << "[OK] " << inventario[pos] << " eliminado con exito.\\n";
+    inventario.erase(inventario.begin() + pos);
+}
+
+// Función que busca y devuelve el índice (int) o -1 si no existe
+int buscarObjeto(const vector<string>& inventario, const string& itemBuscado) {
+    for (size_t i = 0; i < inventario.size(); i++) {
+        if (inventario[i] == itemBuscado) {
+            return static_cast<int>(i);
+        }
+    }
+    return -1;
+}`}
+        title="Funciones modulares con std::vector"
+      />
+    </section>
+
+    <!-- SECCIÓN 6: CÓDIGO COMPLETO LISTO PARA COMPILAR -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-black text-slate-900 flex items-center gap-2">
+        <span>6.</span> Programa Completo: CRUD de Inventario Dinámico en C++
+      </h2>
+      <p class="text-slate-700 leading-relaxed font-medium">
+        Este es el código completo con menú interactivo utilizando <code
+          >std::vector</code
+        >. Cópialo y pruébalo en tu compilador:
+      </p>
+
+      <CodeBlock
+        lang="cpp"
+        code={`#include <iostream>
+#include <string>
+#include <vector>
+
+using namespace std;
+
+// Prototipos de funciones
+void mostrarInventario(const vector<string>& inventario);
+void agregarObjeto(vector<string>& inventario);
+void modificarObjeto(vector<string>& inventario);
+void eliminarObjeto(vector<string>& inventario);
+int buscarObjeto(const vector<string>& inventario, const string& item);
+
+int main() {
+    // Vector con 6 objetos iniciales
+    vector<string> inventario = {
+        "Espada", "Pico", "Madera", "Pan", "Piedra", "Arco"
+    };
+
+    int opcion = 0;
+
+    do {
+        cout << "\\n========================================\\n";
+        cout << "   SISTEMA DE INVENTARIO DINAMICO (STL) \\n";
+        cout << "========================================\\n";
+        cout << "1. Mostrar inventario\\n";
+        cout << "2. Agregar objeto (push_back)\\n";
+        cout << "3. Modificar objeto\\n";
+        cout << "4. Eliminar objeto (erase)\\n";
+        cout << "5. Buscar objeto\\n";
+        cout << "6. Vaciar inventario completo (clear)\\n";
+        cout << "7. Salir\\n";
+        cout << "Seleccione una opcion (1-7): ";
+        cin >> opcion;
+
+        switch (opcion) {
+            case 1:
+                mostrarInventario(inventario);
+                break;
+            case 2:
+                agregarObjeto(inventario);
+                break;
+            case 3:
+                modificarObjeto(inventario);
+                break;
+            case 4:
+                eliminarObjeto(inventario);
+                break;
+            case 5: {
+                string item;
+                cout << "Nombre del objeto a buscar: ";
+                cin >> item;
+                int pos = buscarObjeto(inventario, item);
+                if (pos != -1) {
+                    cout << "[!] Encontrado en la posicion [" << pos << "].\\n";
+                } else {
+                    cout << "[X] El objeto no esta en el inventario.\\n";
+                }
+                break;
+            }
+            case 6: {
+                char confirmar;
+                cout << "¿Seguro que desea vaciar todo el inventario? (s/n): ";
+                cin >> confirmar;
+                if (confirmar == 's' || confirmar == 'S') {
+                    inventario.clear();
+                    cout << "[OK] Inventario vaciado por completo.\\n";
+                }
+                break;
+            }
+            case 7:
+                cout << "Cerrando inventario... ¡Buen viaje aventurero!\\n";
+                break;
+            default:
+                cout << "[X] Opcion invalida. Intente de nuevo.\\n";
+        }
+    } while (opcion != 7);
+
+    return 0;
+}
+
+void mostrarInventario(const vector<string>& inventario) {
+    if (inventario.empty()) {
+        cout << "\\n[!] El inventario esta vacio.\\n";
+        return;
+    }
+    cout << "\\n=== INVENTARIO ACTUAL (" << inventario.size() << " elementos) ===\\n";
+    for (size_t i = 0; i < inventario.size(); i++) {
+        cout << " [" << i << "] " << inventario[i] << "\\n";
+    }
+    cout << "========================================\\n";
+}
+
+void agregarObjeto(vector<string>& inventario) {
+    string nuevo;
+    cout << "Nombre del objeto a agregar: ";
+    cin >> nuevo;
+
+    inventario.push_back(nuevo);
+    cout << "[OK] " << nuevo << " guardado en la posicion [" << inventario.size() - 1 << "].\\n";
+}
+
+void modificarObjeto(vector<string>& inventario) {
+    if (inventario.empty()) {
+        cout << "\\n[!] El inventario esta vacio.\\n";
+        return;
+    }
+    int pos;
+    cout << "Indice a modificar (0 a " << inventario.size() - 1 << "): ";
+    cin >> pos;
+
+    if (pos < 0 || pos >= static_cast<int>(inventario.size())) {
+        cout << "[X] Indice fuera de rango.\\n";
+        return;
+    }
+    cout << "Reemplazando [" << inventario[pos] << "]. Nuevo nombre: ";
+    cin >> inventario[pos];
+    cout << "[OK] Posicion [" << pos << "] actualizada.\\n";
+}
+
+void eliminarObjeto(vector<string>& inventario) {
+    if (inventario.empty()) {
+        cout << "\\n[!] El inventario esta vacio.\\n";
+        return;
+    }
+    int pos;
+    cout << "Indice a eliminar (0 a " << inventario.size() - 1 << "): ";
+    cin >> pos;
+
+    if (pos < 0 || pos >= static_cast<int>(inventario.size())) {
+        cout << "[X] Indice invalido.\\n";
+        return;
+    }
+    cout << "[OK] " << inventario[pos] << " eliminado.\\n";
+    inventario.erase(inventario.begin() + pos);
+}
+
+int buscarObjeto(const vector<string>& inventario, const string& item) {
+    for (size_t i = 0; i < inventario.size(); i++) {
+        if (inventario[i] == item) return static_cast<int>(i);
+    }
+    return -1;
+}`}
+        title="CRUD Completo de Inventario con std::vector en C++"
+      />
+    </section>
+
+    <!-- SECCIÓN 7: COMPARATIVA MAESTRA -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-black text-slate-900 flex items-center gap-2">
+        <span>7.</span> Cuadro Comparativo Definitivo: Arreglo vs. <code
+          >std::vector</code
+        >
+      </h2>
+      <p class="text-slate-700 leading-relaxed font-medium">
+        Usa esta guía rápida para decidir cuándo conviene usar un arreglo
+        tradicional o un <code>std::vector</code>:
+      </p>
+
+      <div class="overflow-x-auto my-6">
+        <table
+          class="w-full border-collapse border border-slate-200 text-left text-xs sm:text-sm"
+        >
+          <thead>
+            <tr class="bg-slate-100 text-slate-900">
+              <th class="border border-slate-200 p-3 font-black">Aspecto</th>
+              <th class="border border-slate-200 p-3 font-black"
+                >Arreglo Estático (<code>T[]</code>)</th
+              >
+              <th class="border border-slate-200 p-3 font-black"
+                ><code>std::vector&lt;T&gt;</code></th
+              >
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-200 text-slate-700 font-medium">
+            <tr>
+              <td class="border border-slate-200 p-3 font-bold text-slate-900"
+                >Tamaño</td
+              >
+              <td class="border border-slate-200 p-3"
+                >Fijo en compilación (ej. <code>string inv[9]</code>).</td
+              >
+              <td class="border border-slate-200 p-3 text-emerald-700 font-bold"
+                >Dinámico: crece y se achica según la necesidad.</td
+              >
+            </tr>
+            <tr>
+              <td class="border border-slate-200 p-3 font-bold text-slate-900"
+                >Ubicación de Memoria</td
+              >
+              <td class="border border-slate-200 p-3"
+                >Stack (rápido, pero limitado en tamaño).</td
+              >
+              <td class="border border-slate-200 p-3"
+                >Heap (memoria dinámica administrada automáticamente).</td
+              >
+            </tr>
+            <tr>
+              <td class="border border-slate-200 p-3 font-bold text-slate-900"
+                >Inserción al final</td
+              >
+              <td class="border border-slate-200 p-3"
+                >Manual: <code>inv[cnt++] = x;</code> (con riesgo de overflow).</td
+              >
+              <td class="border border-slate-200 p-3 text-emerald-700 font-bold"
+                >Automática: <code>inv.push_back(x);</code></td
+              >
+            </tr>
+            <tr>
+              <td class="border border-slate-200 p-3 font-bold text-slate-900"
+                >Eliminación en medio</td
+              >
+              <td class="border border-slate-200 p-3"
+                >Requiere bucle manual de desplazamiento.</td
+              >
+              <td class="border border-slate-200 p-3 text-emerald-700 font-bold"
+                >Directa: <code>inv.erase(inv.begin() + i);</code></td
+              >
+            </tr>
+            <tr>
+              <td class="border border-slate-200 p-3 font-bold text-slate-900"
+                >Saber cuántos hay</td
+              >
+              <td class="border border-slate-200 p-3"
+                >Requiere variable adicional (<code>cantidadInventario</code
+                >).</td
+              >
+              <td class="border border-slate-200 p-3 text-emerald-700 font-bold"
+                >Directo con <code>inv.size()</code>.</td
+              >
+            </tr>
+            <tr>
+              <td class="border border-slate-200 p-3 font-bold text-slate-900"
+                >Recomendación</td
+              >
+              <td class="border border-slate-200 p-3"
+                >Para tamaños pequeños y estrictamente constantes conocidos de
+                antemano.</td
+              >
+              <td class="border border-slate-200 p-3 text-sky-700 font-bold"
+                >La opción estándar por defecto en C++ moderno.</td
+              >
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Botones de Navegación Final -->
+    <div
+      class="mt-12 pt-6 border-t border-slate-200 flex flex-wrap items-center justify-between gap-4"
+    >
+      <a
+        href="/course/cpp/array/"
+        class="px-5 py-2.5 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs sm:text-sm transition-all no-underline"
+      >
+        ← Volver a 7.1 Arreglos Fijos
+      </a>
+      <a
+        href="/course/cpp/funciones/"
+        class="px-6 py-3 rounded-xl bg-gradient-to-r from-sky-600 to-blue-700 hover:from-sky-500 hover:to-blue-600 text-white font-black text-xs sm:text-sm shadow-md shadow-sky-600/20 active:scale-95 transition-all no-underline flex items-center gap-2"
+      >
+        <span>Siguiente Lección: 8. Funciones en C++</span>
+        <span>➡️</span>
+      </a>
+    </div>
+  </article>
+</Layout>

@@ -1,0 +1,1960 @@
+---
+import Layout from "../../../../layouts/Layout.astro";
+import CodeBlock from "../../../../components/CodeBlock.astro";
+import { gameVectorsCrudSolutions } from "../../../../data/gameVectorsCrudSolutions";
+
+const fullCppCode = `#include <iostream>
+#include <vector>
+#include <string>
+
+using namespace std;
+
+// 1. CREATE
+void crear(vector<string>& nombres, vector<float>& notas) {
+    string nombre;
+    float nota;
+    cout << "Ingrese nombre: ";
+    cin >> nombre;
+    cout << "Ingrese nota: ";
+    cin >> nota;
+    
+    nombres.push_back(nombre); 
+    notas.push_back(nota);
+    cout << "-> Guardado con exito.\\n";
+}
+
+// 2. READ
+void leer(vector<string>& nombres, vector<float>& notas) {
+    cout << "\\n--- LISTA DE PERSONAS ---\\n";
+    for (int i = 0; i < nombres.size(); i++) {
+        cout << "[" << i << "] " << nombres[i] << " | Nota: " << notas[i] << "\\n";
+    }
+}
+
+// 3. UPDATE
+void actualizar(vector<float>& notas) {
+    int indice;
+    cout << "Ingrese el numero (indice) para modificar la nota: ";
+    cin >> indice;
+    if (indice >= 0 && indice < notas.size()) {
+        cout << "Ingrese nueva nota: ";
+        cin >> notas[indice];
+        cout << "-> Nota actualizada.\\n";
+    } else {
+        cout << "-> Indice incorrecto.\\n";
+    }
+}
+
+// 4. DELETE
+void eliminar(vector<string>& nombres, vector<float>& notas) {
+    int indice;
+    cout << "Ingrese el numero (indice) a eliminar: ";
+    cin >> indice;
+    if (indice >= 0 && indice < nombres.size()) {
+        nombres.erase(nombres.begin() + indice);
+        notas.erase(notas.begin() + indice);
+        cout << "-> Eliminado con exito.\\n";
+    } else {
+        cout << "-> Indice incorrecto.\\n";
+    }
+}
+
+// 5. REPORTES
+void reportes(vector<string>& nombres, vector<float>& notas) {
+    if (nombres.empty()) {
+        cout << "-> No hay registros para generar reportes.\\n";
+        return; 
+    }
+
+    cout << "\\n--- REPORTES ---\\n";
+    cout << "- Total registrados: " << nombres.size() << "\\n";
+    cout << "- Primer registro: " << nombres.front() << " (Nota: " << notas.front() << ")\\n";
+    cout << "- Ultimo registro: " << nombres.back() << " (Nota: " << notas.back() << ")\\n";
+    
+    // Promedio usando un ciclo for
+    float suma = 0;
+    for (int i = 0; i < notas.size(); i++) {
+        suma += notas[i];
+    }
+    
+    float promedio = suma / notas.size();
+    cout << "- Promedio del curso: " << promedio << "\\n";
+}
+
+// ==========================================
+// MENÚ PRINCIPAL
+// ==========================================
+int main() {
+    vector<string> nombres;
+    vector<float> notas;
+    int opcion;
+
+    do {
+        cout << "\\n--- MENU CRUD ---\\n";
+        cout << "1. Agregar persona\\n";
+        cout << "2. Ver lista\\n";
+        cout << "3. Modificar nota\\n";
+        cout << "4. Eliminar persona\\n";
+        cout << "5. Ver reportes\\n";
+        cout << "6. Salir\\n";
+        cout << "Opcion: ";
+        cin >> opcion;
+
+        if (opcion == 1) {
+            crear(nombres, notas);
+        } else if (opcion == 2) {
+            leer(nombres, notas);
+        } else if (opcion == 3) {
+            actualizar(notas);
+        } else if (opcion == 4) {
+            eliminar(nombres, notas);
+        } else if (opcion == 5) {
+            reportes(nombres, notas);
+        } else if (opcion != 6) {
+            cout << "-> Opcion no valida.\\n";
+        }
+
+    } while (opcion != 6);
+
+    return 0;
+}`;
+
+const caseSolutions = [
+  { title: "caso1_herreria_rpg.cpp", code: gameVectorsCrudSolutions[1].cpp },
+  { title: "caso2_salud_squad.cpp", code: gameVectorsCrudSolutions[2].cpp },
+  { title: "caso3_dps_clan.cpp", code: gameVectorsCrudSolutions[3].cpp },
+  { title: "caso4_hangar_scifi.cpp", code: gameVectorsCrudSolutions[4].cpp },
+  { title: "caso5_crafteo_alquimia.cpp", code: gameVectorsCrudSolutions[5].cpp },
+  { title: "caso6_ranking_arcade.cpp", code: gameVectorsCrudSolutions[6].cpp },
+  { title: "caso7_dungeons_mmorpg.cpp", code: gameVectorsCrudSolutions[7].cpp },
+  { title: "caso8_supervivencia_hud.cpp", code: gameVectorsCrudSolutions[8].cpp },
+  { title: "caso9_bestiario_rpg.cpp", code: gameVectorsCrudSolutions[9].cpp },
+  { title: "caso10_gacha_skins.cpp", code: gameVectorsCrudSolutions[10].cpp },
+];
+---
+
+<Layout
+  title="7.4 Examen Práctico: Sistema CRUD de Estudiantes y Notas en C++"
+  description="Aprende paso a paso cómo funciona un sistema CRUD completo en C++ integrando vectores dinámicos paralelos, paso por referencia y funciones modulares con simulador en vivo."
+  courseSlug="cpp"
+>
+  <article class="content-section">
+    <!-- Breadcrumb -->
+    <nav
+      class="flex items-center gap-2 text-xs font-bold text-slate-500 mb-6 font-mono"
+    >
+      <a href="/course/cpp/" class="hover:text-blue-600 transition-colors"
+        >Curso C++</a
+      >
+      <span>/</span>
+      <a
+        href="/course/cpp/colecciones/"
+        class="hover:text-blue-600 transition-colors">Colecciones</a
+      >
+      <span>/</span>
+      <span class="text-blue-700 font-bold">7.4 Examen CRUD: Estudiantes</span>
+    </nav>
+
+    <!-- Header Principal -->
+    <div class="mb-10 border-b border-slate-200 pb-6">
+      <div class="flex flex-wrap items-center gap-2 mb-3">
+        <span
+          class="px-3 py-1 rounded-xl bg-blue-100 text-blue-900 border border-blue-300 text-xs font-black uppercase tracking-wider font-mono"
+        >
+          🎓 Módulo Práctico de Integración
+        </span>
+        <span
+          class="px-3 py-1 rounded-xl bg-emerald-100 text-emerald-900 border border-emerald-300 text-xs font-black uppercase tracking-wider font-mono"
+        >
+          Vectores + Funciones por Referencia
+        </span>
+      </div>
+      <h1
+        class="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight m-0"
+      >
+        Examen Práctico: Sistema CRUD de Estudiantes y Notas
+      </h1>
+      <p
+        class="intro-text mt-4 text-slate-700 font-medium text-base sm:text-lg leading-relaxed"
+      >
+        En este módulo aprenderás a integrar dos de los pilares más importantes
+        de la programación en C++:
+        <strong>Vectores Dinámicos Paralelos (<code>std::vector</code>)</strong> y
+        <strong
+          >Funciones Modulares con Paso por Referencia (<code>&</code>)</strong
+        >. Analizaremos línea por línea un sistema real de gestión de
+        estudiantes con notas (<strong
+          >Create, Read, Update, Delete y Reportes Estadísticos</strong
+        >), interactuaremos con un <strong
+          >simulador visual de memoria RAM y terminal</strong
+        >, y pondremos a prueba tus conocimientos con un cuestionario práctico
+        interactivo.
+      </p>
+    </div>
+
+    <!-- Navegación de la Serie -->
+    <div
+      class="p-4 rounded-2xl bg-slate-50 border border-slate-200 mb-10 flex flex-wrap items-center justify-between gap-3"
+    >
+      <span class="text-xs font-bold text-slate-600 font-mono">
+        Ruta de Aprendizaje:
+      </span>
+      <div class="flex flex-wrap items-center gap-2">
+        <a
+          href="/course/cpp/array/"
+          class="px-3 py-1 rounded-lg bg-white hover:bg-slate-100 border border-slate-300 text-slate-700 text-xs font-bold transition-all no-underline"
+        >
+          7.1 Arreglos Fijos (1D)
+        </a>
+        <a
+          href="/course/cpp/vector/"
+          class="px-3 py-1 rounded-lg bg-white hover:bg-slate-100 border border-slate-300 text-slate-700 text-xs font-bold transition-all no-underline"
+        >
+          7.2 std::vector Dinámico
+        </a>
+        <a
+          href="/course/cpp/array-game/"
+          class="px-3 py-1 rounded-lg bg-white hover:bg-slate-100 border border-slate-300 text-slate-700 text-xs font-bold transition-all no-underline"
+        >
+          7.3 Arreglos 2D (Pac-Man)
+        </a>
+        <span
+          class="px-3 py-1 rounded-lg bg-blue-600 text-white text-xs font-black shadow-xs"
+        >
+          7.4 Examen CRUD: Estudiantes
+        </span>
+      </div>
+    </div>
+
+    <!-- 🧠 PARTE 1: FUNDAMENTOS TEÓRICOS ANTES DE PROGRAMAR -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <span
+          class="w-9 h-9 rounded-xl bg-blue-600 text-white font-black flex items-center justify-center text-sm shadow-md"
+        >
+          1
+        </span>
+        <h2 class="text-2xl font-black text-slate-900 m-0">
+          Fundamentos: ¿Qué conceptos se aplican en este código?
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Tarjeta 1: Arreglos / Vectores Paralelos -->
+        <div
+          class="p-6 rounded-2xl bg-white border-2 border-slate-200 shadow-sm flex flex-col justify-between"
+        >
+          <div>
+            <div class="flex items-center gap-2 mb-3">
+              <span class="text-2xl">📦</span>
+              <h3 class="text-lg font-black text-slate-900 m-0">
+                1. Vectores Paralelos
+              </h3>
+            </div>
+            <p class="text-sm text-slate-600 leading-relaxed">
+              En lugar de usar estructuras complejas, modelamos la información
+              de cada alumno usando <strong
+                >dos vectores sincronizados por el mismo índice <code>i</code
+                ></strong
+              >:
+            </p>
+            <div
+              class="my-4 overflow-x-auto rounded-xl border border-slate-700 bg-slate-900 p-3 shadow-inner"
+            >
+              <div class="text-blue-400 font-mono text-xs font-bold mb-2 flex items-center gap-1.5">
+                <span>// Sincronización por posición:</span>
+                <span class="text-[11px] text-slate-400 font-normal">(mismo índice = mismo estudiante)</span>
+              </div>
+              <table class="w-full text-left font-mono text-xs border-collapse">
+                <thead>
+                  <tr class="border-b border-slate-700 text-slate-300">
+                    <th class="py-2 px-2.5 font-bold text-slate-400 bg-slate-950/40 rounded-tl-lg">Vector \ Columna</th>
+                    <th class="py-2 px-2.5 text-center bg-blue-950/50 text-blue-400 font-bold border-l border-slate-800">
+                      Índice [ 0 ]
+                    </th>
+                    <th class="py-2 px-2.5 text-center bg-purple-950/50 text-purple-400 font-bold border-l border-slate-800">
+                      Índice [ 1 ]
+                    </th>
+                    <th class="py-2 px-2.5 text-center bg-emerald-950/50 text-emerald-400 font-bold border-l border-slate-800 rounded-tr-lg">
+                      Índice [ 2 ]
+                    </th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-800 text-slate-200">
+                  <tr class="hover:bg-slate-800/40 transition-colors">
+                    <td class="py-2 px-2.5 font-semibold text-slate-300 bg-slate-950/20">
+                      <span class="text-[11px] text-blue-400 font-mono">vector&lt;string&gt;</span> <span class="text-white font-bold">nombres</span>
+                    </td>
+                    <td class="py-2 px-2.5 text-center font-bold text-blue-200 border-l border-slate-800 bg-blue-950/20">
+                      "Ana"
+                    </td>
+                    <td class="py-2 px-2.5 text-center font-bold text-purple-200 border-l border-slate-800 bg-purple-950/20">
+                      "Carlos"
+                    </td>
+                    <td class="py-2 px-2.5 text-center font-bold text-emerald-200 border-l border-slate-800 bg-emerald-950/20">
+                      "Beatriz"
+                    </td>
+                  </tr>
+                  <tr class="hover:bg-slate-800/40 transition-colors">
+                    <td class="py-2 px-2.5 font-semibold text-slate-300 bg-slate-950/20">
+                      <span class="text-[11px] text-yellow-400 font-mono">vector&lt;float&gt;</span> <span class="text-white font-bold">notas</span>
+                    </td>
+                    <td class="py-2 px-2.5 text-center font-bold text-blue-300 border-l border-slate-800 bg-blue-950/20">
+                      6.5
+                    </td>
+                    <td class="py-2 px-2.5 text-center font-bold text-purple-300 border-l border-slate-800 bg-purple-950/20">
+                      4.2
+                    </td>
+                    <td class="py-2 px-2.5 text-center font-bold text-emerald-300 border-l border-slate-800 bg-emerald-950/20">
+                      5.8
+                    </td>
+                  </tr>
+                  <tr class="bg-slate-950/60 text-[11px] text-slate-400 font-sans border-t border-slate-700">
+                    <td class="py-1.5 px-2.5 italic">Estudiante</td>
+                    <td class="py-1.5 px-2.5 text-center text-blue-300 font-bold border-l border-slate-800">
+                      Estudiante 1
+                    </td>
+                    <td class="py-1.5 px-2.5 text-center text-purple-300 font-bold border-l border-slate-800">
+                      Estudiante 2
+                    </td>
+                    <td class="py-1.5 px-2.5 text-center text-emerald-300 font-bold border-l border-slate-800">
+                      Estudiante 3
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <ul
+              class="text-xs text-slate-700 space-y-1.5 list-disc pl-4 font-medium"
+            >
+              <li>
+                <code>nombres[i]</code> guarda el texto con el nombre del alumno.
+              </li>
+              <li>
+                <code>notas[i]</code> guarda el número decimal (<code
+                  >float</code
+                >) con la calificación.
+              </li>
+              <li>
+                <strong>Regla de Oro:</strong> Toda inserción o eliminación debe aplicarse
+                en <em>ambos</em> vectores en la misma posición para no desfasar los
+                datos.
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Tarjeta 2: Paso por Referencia (&) -->
+        <div
+          class="p-6 rounded-2xl bg-white border-2 border-slate-200 shadow-sm flex flex-col justify-between"
+        >
+          <div>
+            <div class="flex items-center gap-2 mb-3">
+              <span class="text-2xl">⚡</span>
+              <h3 class="text-lg font-black text-slate-900 m-0">
+                2. Paso por Referencia (<code>&</code>)
+              </h3>
+            </div>
+            <p class="text-sm text-slate-600 leading-relaxed">
+              Por defecto, C++ pasa variables por <strong>valor</strong> (haciendo
+              una copia completa que se destruye al terminar la función). Al añadir
+              el símbolo <code>&</code>:
+            </p>
+            <div
+              class="my-4 p-3 bg-blue-50 border border-blue-200 text-blue-950 rounded-xl font-mono text-xs"
+            >
+              <div class="font-bold text-blue-700">
+                void crear(vector&lt;string&gt;& nombres, vector&lt;float&gt;&
+                notas)
+              </div>
+              <div class="text-[11px] text-slate-600 mt-1">
+                ↑ El símbolo & conecta la función con los vectores originales
+                del main().
+              </div>
+            </div>
+            <ul
+              class="text-xs text-slate-700 space-y-1.5 list-disc pl-4 font-medium"
+            >
+              <li>
+                <strong>Modificación Real:</strong> Los <code>.push_back()</code
+                > y <code>.erase()</code> alteran directamente la memoria del <code
+                  >main()</code
+                >.
+              </li>
+              <li>
+                <strong>Alto Rendimiento:</strong> No se duplican miles de registros
+                en RAM al invocar las funciones.
+              </li>
+              <li>
+                <strong>Principio de Mínimo Privilegio:</strong>
+                <code>actualizar()</code> solo recibe <code
+                  >vector&lt;float&gt;& notas</code
+                > porque no necesita tocar los nombres.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 💻 PARTE 2: CÓDIGO COMPLETO C++ -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <span
+          class="w-9 h-9 rounded-xl bg-blue-600 text-white font-black flex items-center justify-center text-sm shadow-md"
+        >
+          2
+        </span>
+        <h2 class="text-2xl font-black text-slate-900 m-0">
+          Código Fuente Completo del Ejercicio
+        </h2>
+      </div>
+
+      <CodeBlock
+        lang="cpp"
+        code={fullCppCode}
+        title="sistema_estudiantes_crud.cpp"
+      />
+    </section>
+
+    <!-- 🔍 PARTE 3: EXPLICACIÓN PASO A PASO DE CADA FUNCIÓN -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <span
+          class="w-9 h-9 rounded-xl bg-blue-600 text-white font-black flex items-center justify-center text-sm shadow-md"
+        >
+          3
+        </span>
+        <h2 class="text-2xl font-black text-slate-900 m-0">
+          Explicación Paso a Paso: Anatomía de cada Función
+        </h2>
+      </div>
+
+      <div class="space-y-6">
+        <!-- 1. CREATE -->
+        <div
+          class="p-6 rounded-2xl bg-white border-2 border-slate-200 shadow-sm"
+        >
+          <div class="flex items-center justify-between flex-wrap gap-2 mb-3">
+            <span
+              class="px-2.5 py-1 rounded-lg bg-emerald-100 text-emerald-800 font-mono text-xs font-black"
+            >
+              Paso 1 · Operación CREATE (Crear)
+            </span>
+            <code
+              class="text-xs font-mono bg-slate-100 px-2 py-1 rounded text-slate-700"
+              >void crear(vector&lt;string&gt;& nombres, vector&lt;float&gt;&
+              notas)</code
+            >
+          </div>
+          <p class="text-sm text-slate-700 leading-relaxed mb-3">
+            Esta función solicita al usuario el nombre del alumno y su
+            calificación por consola con <code>cin</code>, y los añade al final
+            de sus respectivos vectores mediante <code>.push_back()</code>.
+          </p>
+          <div
+            class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs font-mono bg-slate-50 p-3 rounded-xl border border-slate-200"
+          >
+            <div>
+              <strong class="text-emerald-700 block mb-1"
+                >Entrada por Consola:</strong
+              >
+              <code>cin >> nombre; cin >> nota;</code>
+            </div>
+            <div>
+              <strong class="text-blue-700 block mb-1"
+                >Inserción al final:</strong
+              >
+              <code>nombres.push_back(nombre); notas.push_back(nota);</code>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. READ -->
+        <div
+          class="p-6 rounded-2xl bg-white border-2 border-slate-200 shadow-sm"
+        >
+          <div class="flex items-center justify-between flex-wrap gap-2 mb-3">
+            <span
+              class="px-2.5 py-1 rounded-lg bg-sky-100 text-sky-800 font-mono text-xs font-black"
+            >
+              Paso 2 · Operación READ (Leer / Listar)
+            </span>
+            <code
+              class="text-xs font-mono bg-slate-100 px-2 py-1 rounded text-slate-700"
+              >void leer(vector&lt;string&gt;& nombres, vector&lt;float&gt;&
+              notas)</code
+            >
+          </div>
+          <p class="text-sm text-slate-700 leading-relaxed mb-3">
+            Recorre los vectores mediante un ciclo <code>for</code> desde <code
+              >i = 0</code
+            > hasta <code>nombres.size() - 1</code>, imprimiendo en pantalla el
+            número de índice <code>[i]</code>, el nombre y la nota asociada.
+          </p>
+          <div
+            class="p-3 bg-slate-50 rounded-xl border border-slate-200 font-mono text-xs text-slate-700"
+          >
+            <code
+              >for (int i = 0; i &lt; nombres.size(); i++) &#123; cout &lt;&lt;
+              "[" &lt;&lt; i &lt;&lt; "] " &lt;&lt; nombres[i] &lt;&lt; " |
+              Nota: " &lt;&lt; notas[i]; &#125;</code
+            >
+          </div>
+        </div>
+
+        <!-- 3. UPDATE -->
+        <div
+          class="p-6 rounded-2xl bg-white border-2 border-slate-200 shadow-sm"
+        >
+          <div class="flex items-center justify-between flex-wrap gap-2 mb-3">
+            <span
+              class="px-2.5 py-1 rounded-lg bg-amber-100 text-amber-900 font-mono text-xs font-black"
+            >
+              Paso 3 · Operación UPDATE (Actualizar)
+            </span>
+            <code
+              class="text-xs font-mono bg-slate-100 px-2 py-1 rounded text-slate-700"
+              >void actualizar(vector&lt;float&gt;& notas)</code
+            >
+          </div>
+          <p class="text-sm text-slate-700 leading-relaxed mb-3">
+            Permite modificar la calificación de un estudiante existente
+            indicando su posición numérica. Incorpora una <strong
+              >validación de rango defensiva</strong
+            > (<code>indice &gt;= 0 && indice &lt; notas.size()</code>) para
+            evitar accesos a posiciones de memoria inválidas que harían caer el
+            programa (<em>segmentation fault</em>).
+          </p>
+          <div
+            class="p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs font-mono text-amber-950"
+          >
+            <strong>Reasignación directa:</strong>
+            <code>cin &gt;&gt; notas[indice];</code>
+          </div>
+        </div>
+
+        <!-- 4. DELETE -->
+        <div
+          class="p-6 rounded-2xl bg-white border-2 border-slate-200 shadow-sm"
+        >
+          <div class="flex items-center justify-between flex-wrap gap-2 mb-3">
+            <span
+              class="px-2.5 py-1 rounded-lg bg-red-100 text-red-900 font-mono text-xs font-black"
+            >
+              Paso 4 · Operación DELETE (Eliminar)
+            </span>
+            <code
+              class="text-xs font-mono bg-slate-100 px-2 py-1 rounded text-slate-700"
+              >void eliminar(vector&lt;string&gt;& nombres, vector&lt;float&gt;&
+              notas)</code
+            >
+          </div>
+          <p class="text-sm text-slate-700 leading-relaxed mb-3">
+            Elimina al estudiante y su calificación usando iteradores con el
+            método <code>.erase()</code>. Como los arreglos son paralelos, se
+            ejecuta:
+          </p>
+          <div
+            class="p-3 bg-red-50 border border-red-200 rounded-xl text-xs font-mono text-red-950"
+          >
+            <code>nombres.erase(nombres.begin() + indice);</code><br />
+            <code>notas.erase(notas.begin() + indice);</code>
+          </div>
+        </div>
+
+        <!-- 5. REPORTES -->
+        <div
+          class="p-6 rounded-2xl bg-white border-2 border-slate-200 shadow-sm"
+        >
+          <div class="flex items-center justify-between flex-wrap gap-2 mb-3">
+            <span
+              class="px-2.5 py-1 rounded-lg bg-indigo-100 text-indigo-900 font-mono text-xs font-black"
+            >
+              Paso 5 · REPORTES Y ESTADÍSTICAS
+            </span>
+            <code
+              class="text-xs font-mono bg-slate-100 px-2 py-1 rounded text-slate-700"
+              >void reportes(vector&lt;string&gt;& nombres, vector&lt;float&gt;&
+              notas)</code
+            >
+          </div>
+          <p class="text-sm text-slate-700 leading-relaxed mb-3">
+            Calcula estadísticas útiles del curso aplicando métodos nativos de <code
+              >std::vector</code
+            > y un acumulador:
+          </p>
+          <ul
+            class="text-xs text-slate-700 space-y-1.5 list-disc pl-4 font-medium"
+          >
+            <li>
+              <code>nombres.empty()</code>: Evita divisiones por cero
+              comprobando si hay registros.
+            </li>
+            <li>
+              <code>nombres.size()</code>: Retorna la cantidad total de alumnos
+              matriculados.
+            </li>
+            <li>
+              <code>nombres.front()</code> y <code>notas.front()</code>: Obtiene
+              el primer registro ingresado.
+            </li>
+            <li>
+              <code>nombres.back()</code> y <code>notas.back()</code>: Obtiene
+              el último registro ingresado.
+            </li>
+            <li>
+              <strong>Cálculo del promedio:</strong> Acumula las notas en una variable
+              <code>suma</code> dentro de un ciclo <code>for</code> y divide por <code
+                >notas.size()</code
+              >.
+            </li>
+          </ul>
+        </div>
+
+        <!-- 6. MENÚ PRINCIPAL (MAIN) -->
+        <div
+          class="p-6 rounded-2xl bg-white border-2 border-slate-200 shadow-sm"
+        >
+          <div class="flex items-center justify-between flex-wrap gap-2 mb-3">
+            <span
+              class="px-2.5 py-1 rounded-lg bg-purple-100 text-purple-900 font-mono text-xs font-black"
+            >
+              Paso 6 · MENÚ PRINCIPAL Y BUCLE DE CONTROL
+            </span>
+            <code
+              class="text-xs font-mono bg-slate-100 px-2 py-1 rounded text-slate-700"
+              >int main()</code
+            >
+          </div>
+          <p class="text-sm text-slate-700 leading-relaxed mb-3">
+            La función <code>main()</code> es el punto de entrada que orquesta todo
+            el sistema:
+          </p>
+          <ul
+            class="text-xs text-slate-700 space-y-2 list-disc pl-4 font-medium mb-3"
+          >
+            <li>
+              <strong>Vectores Maestros:</strong> Declara <code
+                >vector&lt;string&gt; nombres;</code
+              > y <code>vector&lt;float&gt; notas;</code> en su memoria local.
+            </li>
+            <li>
+              <strong>Bucle <code>do-while</code>:</strong> Garantiza que el menú
+              se dibuje en pantalla al menos una vez y siga corriendo en ciclo continuo
+              hasta que el usuario elija <code>opcion == 6</code> (Salir).
+            </li>
+            <li>
+              <strong>Despacho de Funciones:</strong> Mediante <code
+                >if-else if</code
+              >, llama a la función correspondiente pasando los vectores por
+              referencia (<code>crear(nombres, notas)</code>, etc.).
+            </li>
+            <li>
+              <strong>Control de Errores:</strong> Si el usuario ingresa un número
+              fuera de rango (ej. 9 o -1), ejecuta <code
+                >else if (opcion != 6) &#123; cout &lt;&lt; "-&gt; Opcion no
+                valida.\n"; &#125;</code
+              >.
+            </li>
+          </ul>
+          <div
+            class="p-3 bg-purple-50 border border-purple-200 rounded-xl text-xs font-mono text-purple-950"
+          >
+            <code
+              >do &#123; ... cin &gt;&gt; opcion; if (opcion == 1) &#123;
+              crear(nombres, notas); &#125; ... &#125; while (opcion != 6);</code
+            >
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 🎮 PARTE 4: SIMULADOR INTERACTIVO EN TIEMPO REAL -->
+    <section
+      class="mb-12 p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-950 text-white border-4 border-slate-700 shadow-2xl"
+    >
+      <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
+        <div>
+          <span
+            class="text-xs uppercase font-mono tracking-widest text-blue-400 font-bold block"
+          >
+            🧪 Laboratorio Interactivo
+          </span>
+          <h2 class="text-xl sm:text-2xl font-black text-white m-0">
+            Simulador de Consola y Memoria en Vivo
+          </h2>
+        </div>
+        <button
+          id="btnResetSim"
+          class="px-4 py-2 rounded-xl bg-slate-700 hover:bg-slate-600 text-slate-200 font-bold text-xs font-mono transition-all cursor-pointer"
+        >
+          🔄 Reiniciar Estado
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Panel de Control y Terminal (Izquierda) -->
+        <div class="lg:col-span-6 flex flex-col gap-4">
+          <!-- Botones de Acción CRUD -->
+          <div class="p-4 rounded-2xl bg-slate-800/90 border border-slate-700">
+            <h4
+              class="text-xs font-mono uppercase text-slate-400 mb-3 font-bold"
+            >
+              🕹️ Elige una acción del Menú (main):
+            </h4>
+            <div
+              class="grid grid-cols-2 sm:grid-cols-3 gap-2 font-mono text-xs"
+            >
+              <button
+                id="btnMenuCreate"
+                class="p-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 font-bold text-white transition-all text-left flex items-center gap-1.5 cursor-pointer"
+              >
+                <span>➕</span> 1. Crear
+              </button>
+              <button
+                id="btnMenuRead"
+                class="p-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 font-bold text-white transition-all text-left flex items-center gap-1.5 cursor-pointer"
+              >
+                <span>📋</span> 2. Listar
+              </button>
+              <button
+                id="btnMenuUpdate"
+                class="p-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 font-bold text-white transition-all text-left flex items-center gap-1.5 cursor-pointer"
+              >
+                <span>✏️</span> 3. Modificar
+              </button>
+              <button
+                id="btnMenuDelete"
+                class="p-2.5 rounded-xl bg-red-600 hover:bg-red-500 font-bold text-white transition-all text-left flex items-center gap-1.5 cursor-pointer"
+              >
+                <span>🗑️</span> 4. Eliminar
+              </button>
+              <button
+                id="btnMenuReport"
+                class="p-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 font-bold text-white transition-all text-left flex items-center gap-1.5 cursor-pointer"
+              >
+                <span>📊</span> 5. Reportes
+              </button>
+              <button
+                id="btnMenuSample"
+                class="p-2.5 rounded-xl bg-slate-600 hover:bg-slate-500 font-bold text-white transition-all text-left flex items-center gap-1.5 cursor-pointer"
+              >
+                <span>⚡</span> Cargar Demo
+              </button>
+            </div>
+          </div>
+
+          <!-- Formulario Dinámico de Input -->
+          <div
+            id="simInputForm"
+            class="p-4 rounded-2xl bg-slate-800/90 border border-slate-700 hidden"
+          >
+            <h4
+              id="simInputTitle"
+              class="text-xs font-mono text-blue-300 font-bold mb-2"
+            >
+              Ingresar datos:
+            </h4>
+            <div id="simInputFields" class="flex flex-wrap gap-2"></div>
+          </div>
+
+          <!-- Salida de Consola (Terminal) -->
+          <div
+            class="rounded-2xl bg-black/80 border border-slate-700 p-4 font-mono text-xs flex-1 min-h-[180px] max-h-[260px] overflow-y-auto"
+          >
+            <div class="text-slate-500 text-[11px] mb-2">
+              // Salida de Terminal (cout):
+            </div>
+            <div id="terminalOutput" class="text-emerald-400 space-y-1">
+              <div>
+                Bienvenido al Simulador del Sistema CRUD de Estudiantes en C++.
+              </div>
+              <div>
+                Selecciona una opción arriba para ejecutar las funciones.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Visualizador de Memoria RAM (Derecha) -->
+        <div class="lg:col-span-6 flex flex-col gap-4">
+          <div
+            class="p-4 rounded-2xl bg-slate-800/90 border border-slate-700 flex-1 flex flex-col"
+          >
+            <div class="flex items-center justify-between mb-3">
+              <h4
+                class="text-xs font-mono uppercase text-slate-300 font-bold flex items-center gap-1.5"
+              >
+                <span>🧠</span> Estado en Memoria RAM (std::vector)
+              </h4>
+              <span
+                id="memCountBadge"
+                class="px-2 py-0.5 rounded-md bg-blue-500/20 border border-blue-400 text-blue-300 font-mono text-[11px] font-bold"
+              >
+                Total: 0 elementos
+              </span>
+            </div>
+
+            <!-- Tabla de Vectores Paralelos -->
+            <div class="overflow-x-auto flex-1">
+              <table class="w-full text-left font-mono text-xs border-collapse">
+                <thead>
+                  <tr
+                    class="border-b border-slate-700 text-slate-400 text-[11px]"
+                  >
+                    <th class="py-2 px-3">Índice [i]</th>
+                    <th class="py-2 px-3">vector&lt;string&gt; nombres</th>
+                    <th class="py-2 px-3">vector&lt;float&gt; notas</th>
+                    <th class="py-2 px-3 text-right">Dirección Relativa</th>
+                  </tr>
+                </thead>
+                <tbody
+                  id="memoryTableBody"
+                  class="divide-y divide-slate-700/50"
+                >
+                  <tr class="text-slate-500 italic">
+                    <td colspan="4" class="py-6 text-center">
+                      (Vectores vacíos. Utiliza "1. Crear" o "Cargar Demo" para
+                      añadir registros).
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Panel de Estadísticas en Vivo -->
+            <div
+              class="mt-4 pt-3 border-t border-slate-700/80 grid grid-cols-3 gap-2.5 text-center font-mono"
+            >
+              <div
+                class="p-2.5 rounded-xl bg-slate-900/90 border border-slate-600/80 shadow-xs"
+              >
+                <span class="text-[11px] text-slate-300 block uppercase font-bold tracking-wider"
+                  >Primer Alumno</span
+                >
+                <strong id="statFirst" class="text-xs sm:text-sm text-blue-300 font-black block mt-0.5"
+                  >--</strong
+                >
+              </div>
+              <div
+                class="p-2.5 rounded-xl bg-slate-900/90 border border-slate-600/80 shadow-xs"
+              >
+                <span class="text-[11px] text-slate-300 block uppercase font-bold tracking-wider"
+                  >Último Alumno</span
+                >
+                <strong id="statLast" class="text-xs sm:text-sm text-sky-300 font-black block mt-0.5"
+                  >--</strong
+                >
+              </div>
+              <div
+                class="p-2.5 rounded-xl bg-slate-900/90 border border-slate-600/80 shadow-xs"
+              >
+                <span class="text-[11px] text-slate-300 block uppercase font-bold tracking-wider"
+                  >Promedio Curso</span
+                >
+                <strong id="statAvg" class="text-xs sm:text-sm text-emerald-300 font-black block mt-0.5"
+                  >--</strong
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 📝 PARTE 5: CUESTIONARIO Y EVALUACIÓN (MODAL) -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <span
+          class="w-9 h-9 rounded-xl bg-blue-600 text-white font-black flex items-center justify-center text-sm shadow-md"
+        >
+          5
+        </span>
+        <h2 class="text-2xl font-black text-slate-900 m-0">
+          Cuestionario de Evaluación: Pon a prueba lo aprendido
+        </h2>
+      </div>
+
+      <!-- Tarjeta disparadora del Modal con Alto Contraste -->
+      <div class="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-blue-50 via-indigo-50/70 to-white text-slate-900 border-2 border-blue-200 shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100 border border-blue-300 text-blue-800 text-xs font-black uppercase tracking-wider mb-3">
+            <span>🧠 TEST DE AUTOEVALUACIÓN</span>
+          </div>
+          <h3 class="text-xl sm:text-2xl font-black text-slate-900 m-0">¿Listo para validar tu comprensión técnica?</h3>
+          <p class="text-sm sm:text-base text-slate-700 mt-2 max-w-xl leading-relaxed">
+            Responde 5 preguntas clave sobre <strong class="text-blue-900 font-bold">paso por referencia (<code class="px-1.5 py-0.5 rounded bg-blue-100 border border-blue-300 text-blue-900 font-mono font-bold text-xs">&</code>)</strong>, <strong class="text-indigo-900 font-bold">sincronización de índices paralelos</strong> y métodos esenciales de <code class="px-1.5 py-0.5 rounded bg-slate-100 border border-slate-300 text-slate-800 font-mono font-bold text-xs">std::vector</code> en una interfaz interactiva tipo examen.
+          </p>
+        </div>
+        <div class="shrink-0 w-full md:w-auto text-center">
+          <button
+            type="button"
+            id="btnOpenQuizModal"
+            class="w-full md:w-auto px-6 py-3.5 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white font-black text-sm transition-all shadow-lg shadow-blue-600/30 active:scale-95 cursor-pointer flex items-center justify-center gap-2"
+          >
+            <span>📝 Abrir Cuestionario de Evaluación</span>
+            <span>↗</span>
+          </button>
+          <div id="quizScoreBadge" class="text-xs text-blue-800 font-bold mt-2 hidden">
+            <!-- Puntuación actual -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 📚 PARTE 6: 10 CASOS PRÁCTICOS TIPO PRUEBA -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-4">
+        <span
+          class="w-9 h-9 rounded-xl bg-indigo-600 text-white font-black flex items-center justify-center text-sm shadow-md"
+        >
+          6
+        </span>
+        <div>
+          <h2 class="text-2xl font-black text-slate-900 m-0">
+            10 Casos Prácticos Tipo Prueba: Vectores Paralelos & CRUD
+          </h2>
+          <p class="text-xs sm:text-sm text-slate-600 m-0 mt-0.5 font-medium">
+            Escenarios reales de examen universitario y técnico para ejercitar el modelado en memoria con funciones independientes.
+          </p>
+        </div>
+      </div>
+
+      <!-- BANNER A ZONA GAMER TIPO PRUEBA (Alto Contraste) -->
+      <div class="mb-8 p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-indigo-50 via-blue-50 to-sky-50 border-2 border-indigo-200/90 text-slate-900 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-md">
+        <div class="flex items-center gap-3.5">
+          <span class="text-3xl sm:text-4xl p-2.5 rounded-2xl bg-indigo-100 border border-indigo-200 shadow-sm">🎮</span>
+          <div>
+            <h4 class="text-sm sm:text-base font-black text-indigo-950 m-0">¿Quieres resolver estos 10 casos en C++, Python, Java, C#, JS, PHP y PSeInt?</h4>
+            <p class="text-xs sm:text-sm text-slate-700 m-0 mt-1 leading-relaxed">
+              Disponible en la <strong class="text-indigo-900 font-bold">Zona Gamer</strong> con clave de revisión docente: <code class="px-2 py-0.5 bg-amber-100 border border-amber-300 rounded-md text-amber-950 font-mono font-black text-xs shadow-xs">05092026</code> <span class="text-slate-500 font-medium">(o fecha actual DDMMAAAA)</span>
+            </p>
+          </div>
+        </div>
+        <a
+          href="/challenges-game/vectors-crud-exam/"
+          class="shrink-0 w-full sm:w-auto px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-black transition-all no-underline shadow-md shadow-indigo-600/25 active:scale-95 flex items-center justify-center gap-1.5"
+        >
+          <span>Ir al Módulo Gamer</span>
+          <span>→</span>
+        </a>
+      </div>
+
+      <div class="space-y-6">
+        <!-- Caso 1 -->
+        <div class="p-6 rounded-2xl bg-white border-2 border-slate-200 shadow-sm">
+          <div class="flex items-center justify-between gap-3 mb-3 pb-2 border-b border-slate-100">
+            <h3 class="text-base font-black text-slate-900 m-0 flex items-center gap-2">
+              <span class="w-6 h-6 rounded-lg bg-blue-100 text-blue-700 text-xs font-black flex items-center justify-center">1</span>
+              Herrería & Tienda RPG: Sistema CRUD y Catálogo de Armas
+            </h3>
+            <span class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">Arsenal RPG</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-600 leading-relaxed mb-3">
+            <strong>Enunciado:</strong> Crear un sistema de consola con <strong>Menú interactivo (1-7)</strong> que gestione armas legendarias y sus valores en monedas de oro en vectores paralelos. Debe permitir: 1) Guardar arma nueva, 2) Listar catálogo completo con índices, 3) Buscar arma por nombre, 4) Actualizar precio en oro por índice con validación de límites, 5) Eliminar arma de ambos vectores a la vez, 6) Reporte estadístico (arma más costosa y promedio de oro), y 7) Salir.
+          </p>
+          <div class="bg-slate-50 p-3 rounded-xl font-mono text-xs text-slate-800 space-y-1 mb-3 border border-slate-200">
+            <div><strong class="text-blue-600">Vectores:</strong> <code>vector&lt;string&gt; armas</code> | <code>vector&lt;float&gt; precios</code></div>
+            <div><strong class="text-indigo-600">Operaciones:</strong> <code>menu()</code>, <code>guardarArma()</code>, <code>listarArmas()</code>, <code>buscarArma()</code>, <code>actualizarPrecio()</code>, <code>eliminarArma()</code>, <code>reportes()</code></div>
+          </div>
+          <details class="group mt-2">
+            <summary class="cursor-pointer text-xs font-bold text-blue-600 hover:text-blue-700 flex items-center gap-1 select-none">
+              <span>▶ Ver Solución C++ sugerida</span>
+            </summary>
+            <div class="mt-2">
+              <CodeBlock
+                lang="cpp"
+                code={caseSolutions[0].code}
+                title={caseSolutions[0].title}
+              />
+            </div>
+          </details>
+        </div>
+
+        <!-- Caso 2 -->
+        <div class="p-6 rounded-2xl bg-white border-2 border-slate-200 shadow-sm">
+          <div class="flex items-center justify-between gap-3 mb-3 pb-2 border-b border-slate-100">
+            <h3 class="text-base font-black text-slate-900 m-0 flex items-center gap-2">
+              <span class="w-6 h-6 rounded-lg bg-blue-100 text-blue-700 text-xs font-black flex items-center justify-center">2</span>
+              Raid Boss & Squad: Gestión de Escuadrón, Salud y Triaje Crítico
+            </h3>
+            <span class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200">Salud Squad</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-600 leading-relaxed mb-3">
+            <strong>Enunciado:</strong> Administrar en la consola del Healer los nombres de héroes y salud HP (%) en vectores paralelos mediante un <strong>Menú interactivo</strong>. Debe permitir: 1) Guardar/Reclutar héroe con su HP inicial, 2) Listar escuadrón completo, 3) Buscar héroe por nombre, 4) Actualizar HP tras daño o curación, 5) Eliminar combatiente caído, 6) Reporte de Triaje Crítico (filtro de héroes con HP &lt; 30.0% y héroe con mayor vida), y 7) Salir.
+          </p>
+          <div class="bg-slate-50 p-3 rounded-xl font-mono text-xs text-slate-800 space-y-1 mb-3 border border-slate-200">
+            <div><strong class="text-blue-600">Vectores:</strong> <code>vector&lt;string&gt; heroes</code> | <code>vector&lt;float&gt; hpActual</code></div>
+            <div><strong class="text-indigo-600">Operaciones:</strong> <code>menu()</code>, <code>guardarHeroe()</code>, <code>listarSquad()</code>, <code>buscarHeroe()</code>, <code>actualizarHP()</code>, <code>eliminarHeroe()</code>, <code>reporteTriaje()</code></div>
+          </div>
+          <details class="group mt-2">
+            <summary class="cursor-pointer text-xs font-bold text-blue-600 hover:text-blue-700 flex items-center gap-1 select-none">
+              <span>▶ Ver Solución C++ sugerida</span>
+            </summary>
+            <div class="mt-2">
+              <CodeBlock
+                lang="cpp"
+                code={caseSolutions[1].code}
+                title={caseSolutions[1].title}
+              />
+            </div>
+          </details>
+        </div>
+
+        <!-- Caso 3 -->
+        <div class="p-6 rounded-2xl bg-white border-2 border-slate-200 shadow-sm">
+          <div class="flex items-center justify-between gap-3 mb-3 pb-2 border-b border-slate-100">
+            <h3 class="text-base font-black text-slate-900 m-0 flex items-center gap-2">
+              <span class="w-6 h-6 rounded-lg bg-blue-100 text-blue-700 text-xs font-black flex items-center justify-center">3</span>
+              Gremio / Clan MMORPG: Registro de Miembros, DPS y Auditoría MVP
+            </h3>
+            <span class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">Métricas Raid</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-600 leading-relaxed mb-3">
+            <strong>Enunciado:</strong> Diseñar el software administrativo de un Clan MMORPG en consola con <strong>Menú principal</strong> y vectores de Gamertags y puntos de daño DPS. Debe permitir: 1) Guardar nuevo jugador con su DPS, 2) Listar clan completo, 3) Buscar miembro por Gamertag, 4) Actualizar DPS tras equipar ítems, 5) Eliminar miembro expulsado, 6) Reportes Estadísticos (DPS total acumulado, promedio del clan y Jugador MVP con mayor daño), y 7) Salir.
+          </p>
+          <div class="bg-slate-50 p-3 rounded-xl font-mono text-xs text-slate-800 space-y-1 mb-3 border border-slate-200">
+            <div><strong class="text-blue-600">Vectores:</strong> <code>vector&lt;string&gt; miembros</code> | <code>vector&lt;float&gt; dpsPuntos</code></div>
+            <div><strong class="text-indigo-600">Operaciones:</strong> <code>menu()</code>, <code>guardarMiembro()</code>, <code>listarClan()</code>, <code>buscarMiembro()</code>, <code>actualizarDPS()</code>, <code>eliminarMiembro()</code>, <code>reportesMVP()</code></div>
+          </div>
+          <details class="group mt-2">
+            <summary class="cursor-pointer text-xs font-bold text-blue-600 hover:text-blue-700 flex items-center gap-1 select-none">
+              <span>▶ Ver Solución C++ sugerida</span>
+            </summary>
+            <div class="mt-2">
+              <CodeBlock
+                lang="cpp"
+                code={caseSolutions[2].code}
+                title={caseSolutions[2].title}
+              />
+            </div>
+          </details>
+        </div>
+
+        <!-- Caso 4 -->
+        <div class="p-6 rounded-2xl bg-white border-2 border-slate-200 shadow-sm">
+          <div class="flex items-center justify-between gap-3 mb-3 pb-2 border-b border-slate-100">
+            <h3 class="text-base font-black text-slate-900 m-0 flex items-center gap-2">
+              <span class="w-6 h-6 rounded-lg bg-blue-100 text-blue-700 text-xs font-black flex items-center justify-center">4</span>
+              Hangar Sci-Fi: Control de Bahías, Naves y Asignación de Pilotos
+            </h3>
+            <span class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200">Búsqueda Hangar</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-600 leading-relaxed mb-3">
+            <strong>Enunciado:</strong> Crear el sistema del Hangar espacial con <strong>Menú interactivo</strong> y dos vectores paralelos: matrículas/IDs de naves y pilotos asignados. Debe permitir: 1) Guardar nave y piloto en una nueva bahía, 2) Listar estado general de todas las bahías, 3) Buscar nave por matrícula retornando la bahía y comandante, 4) Actualizar/Reasignar piloto, 5) Eliminar nave despegada, 6) Reportes de ocupación (total bahías activas), y 7) Salir.
+          </p>
+          <div class="bg-slate-50 p-3 rounded-xl font-mono text-xs text-slate-800 space-y-1 mb-3 border border-slate-200">
+            <div><strong class="text-blue-600">Vectores:</strong> <code>vector&lt;string&gt; matriculas</code> | <code>vector&lt;string&gt; pilotos</code></div>
+            <div><strong class="text-indigo-600">Operaciones:</strong> <code>menu()</code>, <code>guardarNave()</code>, <code>listarHangar()</code>, <code>buscarNave()</code>, <code>actualizarPiloto()</code>, <code>eliminarNave()</code>, <code>reportes()</code></div>
+          </div>
+          <details class="group mt-2">
+            <summary class="cursor-pointer text-xs font-bold text-blue-600 hover:text-blue-700 flex items-center gap-1 select-none">
+              <span>▶ Ver Solución C++ sugerida</span>
+            </summary>
+            <div class="mt-2">
+              <CodeBlock
+                lang="cpp"
+                code={caseSolutions[3].code}
+                title={caseSolutions[3].title}
+              />
+            </div>
+          </details>
+        </div>
+
+        <!-- Caso 5 -->
+        <div class="p-6 rounded-2xl bg-white border-2 border-slate-200 shadow-sm">
+          <div class="flex items-center justify-between gap-3 mb-3 pb-2 border-b border-slate-100">
+            <h3 class="text-base font-black text-slate-900 m-0 flex items-center gap-2">
+              <span class="w-6 h-6 rounded-lg bg-blue-100 text-blue-700 text-xs font-black flex items-center justify-center">5</span>
+              Alquimia & Forja Rúnica: Almacén de Ingredientes, Crafteo y Stock
+            </h3>
+            <span class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-purple-50 text-purple-700 border border-purple-200">Crafteo</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-600 leading-relaxed mb-3">
+            <strong>Enunciado:</strong> Administrar el laboratorio alquímico con <strong>Menú de consola</strong> y dos vectores: materiales mágicos y stock disponible. Debe permitir: 1) Guardar nuevo ingrediente descubierto, 2) Listar todos los reactivos y unidades, 3) Buscar material por nombre, 4) Actualizar/Consumir stock por crafteo (descuenta 1 unidad si stock &gt; 0), 5) Eliminar material de la bolsa, 6) Reportes de recursos agotados (stock == 0) y total de materiales, y 7) Salir.
+          </p>
+          <div class="bg-slate-50 p-3 rounded-xl font-mono text-xs text-slate-800 space-y-1 mb-3 border border-slate-200">
+            <div><strong class="text-blue-600">Vectores:</strong> <code>vector&lt;string&gt; materiales</code> | <code>vector&lt;int&gt; stock</code></div>
+            <div><strong class="text-indigo-600">Operaciones:</strong> <code>menu()</code>, <code>guardarMaterial()</code>, <code>listarAlquimia()</code>, <code>buscarMaterial()</code>, <code>actualizarStock()</code>, <code>eliminarMaterial()</code>, <code>reporteAgotados()</code></div>
+          </div>
+          <details class="group mt-2">
+            <summary class="cursor-pointer text-xs font-bold text-blue-600 hover:text-blue-700 flex items-center gap-1 select-none">
+              <span>▶ Ver Solución C++ sugerida</span>
+            </summary>
+            <div class="mt-2">
+              <CodeBlock
+                lang="cpp"
+                code={caseSolutions[4].code}
+                title={caseSolutions[4].title}
+              />
+            </div>
+          </details>
+        </div>
+
+        <!-- Caso 6 -->
+        <div class="p-6 rounded-2xl bg-white border-2 border-slate-200 shadow-sm">
+          <div class="flex items-center justify-between gap-3 mb-3 pb-2 border-b border-slate-100">
+            <h3 class="text-base font-black text-slate-900 m-0 flex items-center gap-2">
+              <span class="w-6 h-6 rounded-lg bg-blue-100 text-blue-700 text-xs font-black flex items-center justify-center">6</span>
+              Torneo Arcade Global: Leaderboard, Clasificación y Tabla de Récords
+            </h3>
+            <span class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-cyan-50 text-cyan-700 border border-cyan-200">Leaderboard</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-600 leading-relaxed mb-3">
+            <strong>Enunciado:</strong> Desarrollar el leaderboard arcade en consola con <strong>Menú de opciones</strong> y vectores de Gamertags y puntajes. Debe permitir: 1) Guardar nuevo récord de jugador, 2) Listar la tabla de competidores, 3) Buscar jugador por Gamertag, 4) Actualizar score si supera su marca personal, 5) Eliminar jugador descalificado, 6) Reportes de Clasificación (algoritmo de ordenamiento burbuja descendente sincronizado y puntaje máximo del torneo), y 7) Salir.
+          </p>
+          <div class="bg-slate-50 p-3 rounded-xl font-mono text-xs text-slate-800 space-y-1 mb-3 border border-slate-200">
+            <div><strong class="text-blue-600">Vectores:</strong> <code>vector&lt;string&gt; gamertags</code> | <code>vector&lt;int&gt; puntajes</code></div>
+            <div><strong class="text-indigo-600">Operaciones:</strong> <code>menu()</code>, <code>guardarPartida()</code>, <code>listarRanking()</code>, <code>buscarJugador()</code>, <code>actualizarScore()</code>, <code>eliminarJugador()</code>, <code>ordenarTopScores()</code></div>
+          </div>
+          <details class="group mt-2">
+            <summary class="cursor-pointer text-xs font-bold text-blue-600 hover:text-blue-700 flex items-center gap-1 select-none">
+              <span>▶ Ver Solución C++ sugerida</span>
+            </summary>
+            <div class="mt-2">
+              <CodeBlock
+                lang="cpp"
+                code={caseSolutions[5].code}
+                title={caseSolutions[5].title}
+              />
+            </div>
+          </details>
+        </div>
+
+        <!-- Caso 7 -->
+        <div class="p-6 rounded-2xl bg-white border-2 border-slate-200 shadow-sm">
+          <div class="flex items-center justify-between gap-3 mb-3 pb-2 border-b border-slate-100">
+            <h3 class="text-base font-black text-slate-900 m-0 flex items-center gap-2">
+              <span class="w-6 h-6 rounded-lg bg-blue-100 text-blue-700 text-xs font-black flex items-center justify-center">7</span>
+              Dungeon Crawler MMORPG: Servidor de Mazmorras, Salas y Partidas
+            </h3>
+            <span class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-teal-50 text-teal-700 border border-teal-200">Dungeons 3V</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-600 leading-relaxed mb-3">
+            <strong>Enunciado:</strong> Modelar un servidor de dungeons multijugador con <strong>Menú interactivo</strong> y tres vectores: número de sala, estado ("LIBRE" / "EN_COMBATE") y líder de party. Debe permitir: 1) Guardar nueva mazmorra habilitada, 2) Listar estado en tiempo real de todas las salas, 3) Buscar sala por número, 4) Actualizar estado y asignar party (Entrada a Mazmorra), 5) Eliminar sala dada de baja, 6) Reportes de servidor (% ocupación y parties activas), y 7) Salir.
+          </p>
+          <div class="bg-slate-50 p-3 rounded-xl font-mono text-xs text-slate-800 space-y-1 mb-3 border border-slate-200">
+            <div><strong class="text-blue-600">Vectores:</strong> <code>vector&lt;int&gt; salas</code> | <code>vector&lt;string&gt; estados</code> | <code>vector&lt;string&gt; lideresParty</code></div>
+            <div><strong class="text-indigo-600">Operaciones:</strong> <code>menu()</code>, <code>guardarSala()</code>, <code>listarSalas()</code>, <code>buscarSala()</code>, <code>actualizarEstado()</code>, <code>eliminarSala()</code>, <code>reportes()</code></div>
+          </div>
+          <details class="group mt-2">
+            <summary class="cursor-pointer text-xs font-bold text-blue-600 hover:text-blue-700 flex items-center gap-1 select-none">
+              <span>▶ Ver Solución C++ sugerida</span>
+            </summary>
+            <div class="mt-2">
+              <CodeBlock
+                lang="cpp"
+                code={caseSolutions[6].code}
+                title={caseSolutions[6].title}
+              />
+            </div>
+          </details>
+        </div>
+
+        <!-- Caso 8 -->
+        <div class="p-6 rounded-2xl bg-white border-2 border-slate-200 shadow-sm">
+          <div class="flex items-center justify-between gap-3 mb-3 pb-2 border-b border-slate-100">
+            <h3 class="text-base font-black text-slate-900 m-0 flex items-center gap-2">
+              <span class="w-6 h-6 rounded-lg bg-blue-100 text-blue-700 text-xs font-black flex items-center justify-center">8</span>
+              Supervivencia Post-Apocalíptica: Mochila Táctica, Municiones y Alertas HUD
+            </h3>
+            <span class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-violet-50 text-violet-700 border border-violet-200">Alerta HUD</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-600 leading-relaxed mb-3">
+            <strong>Enunciado:</strong> Diseñar la computadora de supervivencia táctica con <strong>Menú de opciones</strong> y dos vectores: suministros y unidades en inventario. Debe permitir: 1) Guardar nuevo recurso recolectado, 2) Listar inventario táctico completo, 3) Buscar suministro por nombre, 4) Actualizar unidades tras disparar o consumir raciones, 5) Eliminar ítem descartado, 6) Reportes de Alerta HUD (filtrar recursos con unidades &lt; 5 y total de provisiones), y 7) Salir.
+          </p>
+          <div class="bg-slate-50 p-3 rounded-xl font-mono text-xs text-slate-800 space-y-1 mb-3 border border-slate-200">
+            <div><strong class="text-blue-600">Vectores:</strong> <code>vector&lt;string&gt; suministros</code> | <code>vector&lt;int&gt; cantidades</code></div>
+            <div><strong class="text-indigo-600">Operaciones:</strong> <code>menu()</code>, <code>guardarRecurso()</code>, <code>listarMochila()</code>, <code>buscarRecurso()</code>, <code>actualizarUnidades()</code>, <code>eliminarRecurso()</code>, <code>reporteAlertasHUD()</code></div>
+          </div>
+          <details class="group mt-2">
+            <summary class="cursor-pointer text-xs font-bold text-blue-600 hover:text-blue-700 flex items-center gap-1 select-none">
+              <span>▶ Ver Solución C++ sugerida</span>
+            </summary>
+            <div class="mt-2">
+              <CodeBlock
+                lang="cpp"
+                code={caseSolutions[7].code}
+                title={caseSolutions[7].title}
+              />
+            </div>
+          </details>
+        </div>
+
+        <!-- Caso 9 -->
+        <div class="p-6 rounded-2xl bg-white border-2 border-slate-200 shadow-sm">
+          <div class="flex items-center justify-between gap-3 mb-3 pb-2 border-b border-slate-100">
+            <h3 class="text-base font-black text-slate-900 m-0 flex items-center gap-2">
+              <span class="w-6 h-6 rounded-lg bg-blue-100 text-blue-700 text-xs font-black flex items-center justify-center">9</span>
+              Domador de Criaturas RPG: Bestiario, Afinidades Elementales y Capturas
+            </h3>
+            <span class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-lime-50 text-lime-800 border border-lime-200">Bestiario 3V</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-600 leading-relaxed mb-3">
+            <strong>Enunciado:</strong> Construir el bestiario de un domador con <strong>Menú interactivo</strong> y tres vectores: nombres de criaturas, elemento afin y poder de combate CP. Debe permitir: 1) Guardar/Capturar nueva criatura, 2) Listar bestiario completo con estadísticas, 3) Buscar criatura por nombre, 4) Actualizar poder CP tras batalla, 5) Eliminar/Liberar criatura a su hábitat salvaje en los 3 vectores a la vez, 6) Reportes elementales (criatura con mayor CP y conteo por elemento), y 7) Salir.
+          </p>
+          <div class="bg-slate-50 p-3 rounded-xl font-mono text-xs text-slate-800 space-y-1 mb-3 border border-slate-200">
+            <div><strong class="text-blue-600">Vectores:</strong> <code>vector&lt;string&gt; nombres</code> | <code>vector&lt;string&gt; elementos</code> | <code>vector&lt;float&gt; poderCP</code></div>
+            <div><strong class="text-indigo-600">Operaciones:</strong> <code>menu()</code>, <code>guardarCriatura()</code>, <code>listarBestiario()</code>, <code>buscarCriatura()</code>, <code>actualizarPoderCP()</code>, <code>eliminarCriatura()</code>, <code>reporteMaxCP()</code></div>
+          </div>
+          <details class="group mt-2">
+            <summary class="cursor-pointer text-xs font-bold text-blue-600 hover:text-blue-700 flex items-center gap-1 select-none">
+              <span>▶ Ver Solución C++ sugerida</span>
+            </summary>
+            <div class="mt-2">
+              <CodeBlock
+                lang="cpp"
+                code={caseSolutions[8].code}
+                title={caseSolutions[8].title}
+              />
+            </div>
+          </details>
+        </div>
+
+        <!-- Caso 10 -->
+        <div class="p-6 rounded-2xl bg-white border-2 border-slate-200 shadow-sm">
+          <div class="flex items-center justify-between gap-3 mb-3 pb-2 border-b border-slate-100">
+            <h3 class="text-base font-black text-slate-900 m-0 flex items-center gap-2">
+              <span class="w-6 h-6 rounded-lg bg-blue-100 text-blue-700 text-xs font-black flex items-center justify-center">10</span>
+              Tienda Gacha & Pase de Batalla: Catálogo de Skins, Canjes y Auditoría
+            </h3>
+            <span class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-pink-50 text-pink-700 border border-pink-200">Economía Gacha</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-600 leading-relaxed mb-3">
+            <strong>Enunciado:</strong> Diseñar el backend de la tienda de skins y pases con <strong>Menú interactivo</strong> y tres vectores: nombres de skins, stock disponible y costo en gemas. Debe permitir: 1) Guardar nueva skin de temporada, 2) Listar catálogo completo, 3) Buscar skin por nombre, 4) Actualizar precio o stock tras compra, 5) Eliminar skin retirada de la tienda, 6) Reportes económicos (recaudación potencial en gemas, skins agotadas y skin legendaria más cara), y 7) Salir.
+          </p>
+          <div class="bg-slate-50 p-3 rounded-xl font-mono text-xs text-slate-800 space-y-1 mb-3 border border-slate-200">
+            <div><strong class="text-blue-600">Vectores:</strong> <code>vector&lt;string&gt; skins</code> | <code>vector&lt;int&gt; stockSkins</code> | <code>vector&lt;float&gt; costosGemas</code></div>
+            <div><strong class="text-indigo-600">Operaciones:</strong> <code>menu()</code>, <code>guardarSkin()</code>, <code>listarTienda()</code>, <code>buscarSkin()</code>, <code>actualizarSkin()</code>, <code>eliminarSkin()</code>, <code>reporteRecaudacion()</code></div>
+          </div>
+          <details class="group mt-2">
+            <summary class="cursor-pointer text-xs font-bold text-blue-600 hover:text-blue-700 flex items-center gap-1 select-none">
+              <span>▶ Ver Solución C++ sugerida</span>
+            </summary>
+            <div class="mt-2">
+              <CodeBlock
+                lang="cpp"
+                code={caseSolutions[9].code}
+                title={caseSolutions[9].title}
+              />
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- Navegación Inferior -->
+    <div
+      class="mt-12 pt-6 border-t border-slate-200 flex flex-wrap items-center justify-between gap-4"
+    >
+      <a
+        href="/course/cpp/array-game/"
+        class="px-5 py-2.5 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs sm:text-sm transition-all no-underline flex items-center gap-2"
+      >
+        <span>← 7.3 Arreglos 2D (Pac-Man)</span>
+      </a>
+      <a
+        href="/course/cpp/funciones/"
+        class="px-6 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-black text-xs sm:text-sm shadow-md shadow-blue-600/20 active:scale-95 transition-all no-underline flex items-center gap-2"
+      >
+        <span>Módulo 8: Funciones en C++</span>
+        <span>➡️</span>
+      </a>
+    </div>
+  </article>
+
+  <!-- MODAL DE CUESTIONARIO DE EVALUACIÓN -->
+  <div
+    id="quizModal"
+    class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md"
+  >
+    <div
+      class="bg-white border-2 border-slate-300 w-full max-w-3xl max-h-[90vh] rounded-3xl shadow-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200"
+    >
+      <!-- Cabecera Modal -->
+      <div
+        class="px-6 py-4 border-b border-slate-200 bg-slate-50 flex items-center justify-between"
+      >
+        <div class="flex items-center gap-3">
+          <span class="w-8 h-8 rounded-xl bg-blue-600 text-white font-black flex items-center justify-center text-sm shadow-sm">
+            📝
+          </span>
+          <div>
+            <h3 class="text-base sm:text-lg font-black text-slate-900 m-0">
+              Cuestionario de Evaluación: Pon a prueba lo aprendido
+            </h3>
+            <p class="text-xs text-slate-500 m-0">
+              5 preguntas clave sobre paso por referencia y vectores en C++
+            </p>
+          </div>
+        </div>
+        <button
+          id="btnCloseQuizModal"
+          class="text-slate-400 hover:text-slate-700 p-2 rounded-xl hover:bg-slate-200 transition-colors text-lg cursor-pointer"
+        >
+          ✕
+        </button>
+      </div>
+
+      <!-- Cuerpo con las 5 preguntas -->
+      <div class="p-6 overflow-y-auto space-y-6 flex-1 bg-slate-50/50" id="quizContainer">
+        <!-- Pregunta 1 -->
+        <div
+          class="quiz-item p-5 rounded-2xl bg-white border-2 border-slate-200 shadow-sm"
+          data-q="1"
+        >
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <span class="text-[11px] font-bold text-blue-600 uppercase tracking-wider bg-blue-50 px-2 py-0.5 rounded-md border border-blue-100">
+              Pregunta 1 de 5
+            </span>
+          </div>
+          <p class="font-bold text-slate-900 text-sm mb-3">
+            1. ¿Qué ocurriría en el programa si declaramos <code
+              >void crear(vector&lt;string&gt; nombres, vector&lt;float&gt;
+              notas)</code
+            > sin el símbolo <code>&</code>?
+          </p>
+          <div class="space-y-2">
+            <button
+              type="button"
+              class="quiz-opt w-full text-left p-3 rounded-xl border border-slate-200 hover:bg-slate-50 text-xs font-medium transition-all cursor-pointer"
+              data-correct="false"
+            >
+              A) El compilador arrojará un error de sintaxis y no compilará.
+            </button>
+            <button
+              type="button"
+              class="quiz-opt w-full text-left p-3 rounded-xl border border-slate-200 hover:bg-slate-50 text-xs font-medium transition-all cursor-pointer"
+              data-correct="true"
+            >
+              B) Los datos se guardarán en una copia local temporal y al volver
+              al <code>main()</code> los vectores seguirán vacíos.
+            </button>
+            <button
+              type="button"
+              class="quiz-opt w-full text-left p-3 rounded-xl border border-slate-200 hover:bg-slate-50 text-xs font-medium transition-all cursor-pointer"
+              data-correct="false"
+            >
+              C) Los datos se guardarán correctamente pero el programa consumirá
+              el doble de memoria RAM permanentemente.
+            </button>
+          </div>
+          <div class="quiz-feedback mt-3 p-3 rounded-xl text-xs hidden"></div>
+        </div>
+
+        <!-- Pregunta 2 -->
+        <div
+          class="quiz-item p-5 rounded-2xl bg-white border-2 border-slate-200 shadow-sm"
+          data-q="2"
+        >
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <span class="text-[11px] font-bold text-blue-600 uppercase tracking-wider bg-blue-50 px-2 py-0.5 rounded-md border border-blue-100">
+              Pregunta 2 de 5
+            </span>
+          </div>
+          <p class="font-bold text-slate-900 text-sm mb-3">
+            2. En la función <code>eliminar()</code>, ¿por qué es obligatorio
+            ejecutar <code>nombres.erase(...)</code> y <code
+              >notas.erase(...)</code
+            > al mismo tiempo?
+          </p>
+          <div class="space-y-2">
+            <button
+              type="button"
+              class="quiz-opt w-full text-left p-3 rounded-xl border border-slate-200 hover:bg-slate-50 text-xs font-medium transition-all cursor-pointer"
+              data-correct="true"
+            >
+              A) Para mantener la sincronización de índices paralelos; si solo
+              borramos en uno, las notas quedarán asignadas a personas
+              equivocadas.
+            </button>
+            <button
+              type="button"
+              class="quiz-opt w-full text-left p-3 rounded-xl border border-slate-200 hover:bg-slate-50 text-xs font-medium transition-all cursor-pointer"
+              data-correct="false"
+            >
+              B) Porque C++ no permite tener vectores con diferentes cantidades
+              de elementos en el mismo archivo.
+            </button>
+            <button
+              type="button"
+              class="quiz-opt w-full text-left p-3 rounded-xl border border-slate-200 hover:bg-slate-50 text-xs font-medium transition-all cursor-pointer"
+              data-correct="false"
+            >
+              C) Porque la función <code>.erase()</code> bloquea la memoria si no
+              se llama dos veces seguidas.
+            </button>
+          </div>
+          <div class="quiz-feedback mt-3 p-3 rounded-xl text-xs hidden"></div>
+        </div>
+
+        <!-- Pregunta 3 -->
+        <div
+          class="quiz-item p-5 rounded-2xl bg-white border-2 border-slate-200 shadow-sm"
+          data-q="3"
+        >
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <span class="text-[11px] font-bold text-blue-600 uppercase tracking-wider bg-blue-50 px-2 py-0.5 rounded-md border border-blue-100">
+              Pregunta 3 de 5
+            </span>
+          </div>
+          <p class="font-bold text-slate-900 text-sm mb-3">
+            3. ¿Qué método de <code>std::vector</code> devuelve una referencia al
+            último elemento almacenado?
+          </p>
+          <div class="space-y-2">
+            <button
+              type="button"
+              class="quiz-opt w-full text-left p-3 rounded-xl border border-slate-200 hover:bg-slate-50 text-xs font-medium transition-all cursor-pointer"
+              data-correct="false"
+            >
+              A) <code>vector.last()</code>
+            </button>
+            <button
+              type="button"
+              class="quiz-opt w-full text-left p-3 rounded-xl border border-slate-200 hover:bg-slate-50 text-xs font-medium transition-all cursor-pointer"
+              data-correct="true"
+            >
+              B) <code>vector.back()</code>
+            </button>
+            <button
+              type="button"
+              class="quiz-opt w-full text-left p-3 rounded-xl border border-slate-200 hover:bg-slate-50 text-xs font-medium transition-all cursor-pointer"
+              data-correct="false"
+            >
+              C) <code>vector.tail()</code>
+            </button>
+          </div>
+          <div class="quiz-feedback mt-3 p-3 rounded-xl text-xs hidden"></div>
+        </div>
+
+        <!-- Pregunta 4 -->
+        <div
+          class="quiz-item p-5 rounded-2xl bg-white border-2 border-slate-200 shadow-sm"
+          data-q="4"
+        >
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <span class="text-[11px] font-bold text-blue-600 uppercase tracking-wider bg-blue-50 px-2 py-0.5 rounded-md border border-blue-100">
+              Pregunta 4 de 5
+            </span>
+          </div>
+          <p class="font-bold text-slate-900 text-sm mb-3">
+            4. ¿Por qué la función <code
+              >actualizar(vector&lt;float&gt;& notas)</code
+            > solo recibe el vector de notas y no el de nombres?
+          </p>
+          <div class="space-y-2">
+            <button
+              type="button"
+              class="quiz-opt w-full text-left p-3 rounded-xl border border-slate-200 hover:bg-slate-50 text-xs font-medium transition-all cursor-pointer"
+              data-correct="true"
+            >
+              A) Por principio de menor privilegio y modularidad: la función
+              solo necesita editar la nota, por lo que no debe tener acceso
+              innecesario a los nombres.
+            </button>
+            <button
+              type="button"
+              class="quiz-opt w-full text-left p-3 rounded-xl border border-slate-200 hover:bg-slate-50 text-xs font-medium transition-all cursor-pointer"
+              data-correct="false"
+            >
+              B) Porque en C++ las funciones solo pueden recibir un único vector
+              como parámetro.
+            </button>
+            <button
+              type="button"
+              class="quiz-opt w-full text-left p-3 rounded-xl border border-slate-200 hover:bg-slate-50 text-xs font-medium transition-all cursor-pointer"
+              data-correct="false"
+            >
+              C) Porque modificar strings en funciones por referencia está
+              prohibido.
+            </button>
+          </div>
+          <div class="quiz-feedback mt-3 p-3 rounded-xl text-xs hidden"></div>
+        </div>
+
+        <!-- Pregunta 5 -->
+        <div
+          class="quiz-item p-5 rounded-2xl bg-white border-2 border-slate-200 shadow-sm"
+          data-q="5"
+        >
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <span class="text-[11px] font-bold text-blue-600 uppercase tracking-wider bg-blue-50 px-2 py-0.5 rounded-md border border-blue-100">
+              Pregunta 5 de 5
+            </span>
+          </div>
+          <p class="font-bold text-slate-900 text-sm mb-3">
+            5. En la condición <code
+              >if (indice &gt;= 0 && indice &lt; notas.size())</code
+            >, ¿por qué usamos <code>&lt;</code> en vez de <code>&lt;=</code>?
+          </p>
+          <div class="space-y-2">
+            <button
+              type="button"
+              class="quiz-opt w-full text-left p-3 rounded-xl border border-slate-200 hover:bg-slate-50 text-xs font-medium transition-all cursor-pointer"
+              data-correct="false"
+            >
+              A) Porque el tamaño del vector siempre disminuye en 1
+              automáticamente en tiempo de ejecución.
+            </button>
+            <button
+              type="button"
+              class="quiz-opt w-full text-left p-3 rounded-xl border border-slate-200 hover:bg-slate-50 text-xs font-medium transition-all cursor-pointer"
+              data-correct="true"
+            >
+              B) Porque los arreglos en C++ son 0-indexados; el último índice
+              válido de un vector de N elementos es <code>N - 1</code>.
+            </button>
+            <button
+              type="button"
+              class="quiz-opt w-full text-left p-3 rounded-xl border border-slate-200 hover:bg-slate-50 text-xs font-medium transition-all cursor-pointer"
+              data-correct="false"
+            >
+              C) Para reservar la última posición para el carácter nulo <code
+                >'\\0'</code
+              >.
+            </button>
+          </div>
+          <div class="quiz-feedback mt-3 p-3 rounded-xl text-xs hidden"></div>
+        </div>
+      </div>
+
+      <!-- Pie Modal -->
+      <div
+        class="px-6 py-4 border-t border-slate-200 bg-slate-50 flex items-center justify-between"
+      >
+        <span id="modalLiveScore" class="text-xs font-bold text-slate-600">
+          Progreso: 0 de 5 respondidas
+        </span>
+        <button
+          type="button"
+          id="btnDoneQuizModal"
+          class="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-black text-xs transition-all shadow cursor-pointer"
+        >
+          Listo / Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT DEL SIMULADOR Y CUESTIONARIO -->
+  <script is:inline>
+    (function () {
+      // Estado de memoria del simulador
+      let simNombres = [];
+      let simNotas = [];
+
+      const terminalEl = document.getElementById("terminalOutput");
+      const memTableBody = document.getElementById("memoryTableBody");
+      const memCountBadge = document.getElementById("memCountBadge");
+      const statFirst = document.getElementById("statFirst");
+      const statLast = document.getElementById("statLast");
+      const statAvg = document.getElementById("statAvg");
+      const inputForm = document.getElementById("simInputForm");
+      const inputTitle = document.getElementById("simInputTitle");
+      const inputFields = document.getElementById("simInputFields");
+
+      function printTerminal(msg, colorClass = "text-emerald-400") {
+        if (!terminalEl) {
+          return;
+        }
+        const line = document.createElement("div");
+        line.className = colorClass;
+        line.textContent = msg;
+        terminalEl.appendChild(line);
+        terminalEl.scrollTop = terminalEl.scrollHeight;
+      }
+
+      function updateMemoryView() {
+        if (!memTableBody) {
+          return;
+        }
+        memTableBody.innerHTML = "";
+
+        if (simNombres.length === 0) {
+          memTableBody.innerHTML = `
+            <tr class="text-slate-500 italic">
+              <td colspan="4" class="py-6 text-center">
+                (Vectores vacíos. Utiliza "1. Crear" o "Cargar Demo" para añadir registros).
+              </td>
+            </tr>
+          `;
+          if (memCountBadge) {
+            memCountBadge.textContent = "Total: 0 elementos";
+          }
+          if (statFirst) {
+            statFirst.textContent = "--";
+          }
+          if (statLast) {
+            statLast.textContent = "--";
+          }
+          if (statAvg) {
+            statAvg.textContent = "--";
+          }
+          return;
+        }
+
+        if (memCountBadge) {
+          memCountBadge.textContent = `Total: ${simNombres.length} elemento(s)`;
+        }
+
+        simNombres.forEach((nom, i) => {
+          const nota = simNotas[i];
+          const tr = document.createElement("tr");
+          tr.className = "hover:bg-slate-700/50 transition-colors";
+          tr.innerHTML = `
+            <td class="py-2.5 px-3 font-bold text-amber-400">[ ${i} ]</td>
+            <td class="py-2.5 px-3 text-white font-medium">"${nom}"</td>
+            <td class="py-2.5 px-3 ${nota >= 4.0 ? "text-emerald-400 font-bold" : "text-red-400 font-bold"}">${nota.toFixed(1)}</td>
+            <td class="py-2.5 px-3 text-right text-slate-500 text-[10px]">0x7FFE_${(1000 + i * 16).toString(16).toUpperCase()}</td>
+          `;
+          memTableBody.appendChild(tr);
+        });
+
+        // Actualizar estadísticas
+        if (statFirst) {
+          statFirst.textContent = `${simNombres[0]} (${simNotas[0].toFixed(1)})`;
+        }
+        if (statLast) {
+          statLast.textContent = `${simNombres[simNombres.length - 1]} (${simNotas[simNotas.length - 1].toFixed(1)})`;
+        }
+
+        const sum = simNotas.reduce((acc, curr) => acc + curr, 0);
+        const avg = sum / simNotas.length;
+        if (statAvg) {
+          statAvg.textContent = `${avg.toFixed(2)}`;
+        }
+      }
+
+      function hideForm() {
+        if (inputForm) {
+          inputForm.classList.add("hidden");
+        }
+        if (inputFields) {
+          inputFields.innerHTML = "";
+        }
+      }
+
+      // 1. CREATE
+      document
+        .getElementById("btnMenuCreate")
+        ?.addEventListener("click", () => {
+          if (!inputForm || !inputFields) return;
+          inputForm.classList.remove("hidden");
+          inputTitle.textContent =
+            "1. CREATE: Ingrese Nombre y Nota del Estudiante";
+          inputFields.innerHTML = `
+          <input type="text" id="inNombre" placeholder="Nombre (ej. Lucas)" class="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-600 text-white text-xs font-mono focus:border-blue-400 outline-none" required />
+          <input type="number" id="inNota" step="0.1" min="1.0" max="7.0" placeholder="Nota (ej. 6.2)" class="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-600 text-white text-xs font-mono focus:border-blue-400 outline-none w-28" required />
+          <button type="button" id="btnSubmitCreate" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs font-mono cursor-pointer">Guardar</button>
+          <button type="button" id="btnCancelForm" class="px-3 py-1.5 rounded-lg bg-slate-700 hover:bg-slate-600 text-slate-300 font-bold text-xs font-mono cursor-pointer">Cancelar</button>
+        `;
+
+          document
+            .getElementById("btnSubmitCreate")
+            ?.addEventListener("click", () => {
+              const nom = document.getElementById("inNombre")?.value.trim();
+              const notaVal = parseFloat(
+                document.getElementById("inNota")?.value,
+              );
+              if (!nom || isNaN(notaVal)) {
+                printTerminal("-> Error: Datos incompletos.", "text-red-400");
+                return;
+              }
+              simNombres.push(nom);
+              simNotas.push(notaVal);
+              printTerminal(
+                `-> Guardado con exito: "${nom}" con nota ${notaVal.toFixed(1)}`,
+              );
+              hideForm();
+              updateMemoryView();
+            });
+
+          document
+            .getElementById("btnCancelForm")
+            ?.addEventListener("click", hideForm);
+        });
+
+      // 2. READ
+      document.getElementById("btnMenuRead")?.addEventListener("click", () => {
+        hideForm();
+        printTerminal("\n--- LISTA DE PERSONAS ---", "text-sky-400");
+        if (simNombres.length === 0) {
+          printTerminal("(No hay personas registradas en la lista)");
+          return;
+        }
+        for (let i = 0; i < simNombres.length; i++) {
+          printTerminal(
+            `[${i}] ${simNombres[i]} | Nota: ${simNotas[i].toFixed(1)}`,
+          );
+        }
+      });
+
+      // 3. UPDATE
+      document
+        .getElementById("btnMenuUpdate")
+        ?.addEventListener("click", () => {
+          if (simNotas.length === 0) {
+            printTerminal("-> No hay notas para actualizar.", "text-amber-400");
+            return;
+          }
+          if (!inputForm || !inputFields) return;
+          inputForm.classList.remove("hidden");
+          inputTitle.textContent =
+            "3. UPDATE: Modificar Calificación por Índice";
+          inputFields.innerHTML = `
+          <input type="number" id="inIdxUpdate" min="0" max="${simNotas.length - 1}" placeholder="Índice (0 a ${simNotas.length - 1})" class="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-600 text-white text-xs font-mono focus:border-amber-400 outline-none w-32" required />
+          <input type="number" id="inNewNota" step="0.1" min="1.0" max="7.0" placeholder="Nueva Nota" class="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-600 text-white text-xs font-mono focus:border-amber-400 outline-none w-28" required />
+          <button type="button" id="btnSubmitUpdate" class="px-3 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs font-mono cursor-pointer">Actualizar</button>
+          <button type="button" id="btnCancelUpdate" class="px-3 py-1.5 rounded-lg bg-slate-700 hover:bg-slate-600 text-slate-300 font-bold text-xs font-mono cursor-pointer">Cancelar</button>
+        `;
+
+          document
+            .getElementById("btnSubmitUpdate")
+            ?.addEventListener("click", () => {
+              const idx = parseInt(
+                document.getElementById("inIdxUpdate")?.value,
+                10,
+              );
+              const newNota = parseFloat(
+                document.getElementById("inNewNota")?.value,
+              );
+              if (idx >= 0 && idx < simNotas.length && !isNaN(newNota)) {
+                simNotas[idx] = newNota;
+                printTerminal(
+                  `-> Nota actualizada: ${simNombres[idx]} ahora tiene ${newNota.toFixed(1)}`,
+                );
+                hideForm();
+                updateMemoryView();
+              } else {
+                printTerminal("-> Indice incorrecto.", "text-red-400");
+              }
+            });
+
+          document
+            .getElementById("btnCancelUpdate")
+            ?.addEventListener("click", hideForm);
+        });
+
+      // 4. DELETE
+      document
+        .getElementById("btnMenuDelete")
+        ?.addEventListener("click", () => {
+          if (simNombres.length === 0) {
+            printTerminal("-> No hay personas para eliminar.", "text-red-400");
+            return;
+          }
+          if (!inputForm || !inputFields) return;
+          inputForm.classList.remove("hidden");
+          inputTitle.textContent = "4. DELETE: Eliminar Estudiante por Índice";
+          inputFields.innerHTML = `
+          <input type="number" id="inIdxDel" min="0" max="${simNombres.length - 1}" placeholder="Índice (0 a ${simNombres.length - 1})" class="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-600 text-white text-xs font-mono focus:border-red-400 outline-none w-32" required />
+          <button type="button" id="btnSubmitDel" class="px-3 py-1.5 rounded-lg bg-red-600 hover:bg-red-500 text-white font-bold text-xs font-mono cursor-pointer">Eliminar</button>
+          <button type="button" id="btnCancelDel" class="px-3 py-1.5 rounded-lg bg-slate-700 hover:bg-slate-600 text-slate-300 font-bold text-xs font-mono cursor-pointer">Cancelar</button>
+        `;
+
+          document
+            .getElementById("btnSubmitDel")
+            ?.addEventListener("click", () => {
+              const idx = parseInt(
+                document.getElementById("inIdxDel")?.value,
+                10,
+              );
+              if (idx >= 0 && idx < simNombres.length) {
+                const borrado = simNombres[idx];
+                simNombres.splice(idx, 1);
+                simNotas.splice(idx, 1);
+                printTerminal(`-> Eliminado con exito: "${borrado}"`);
+                hideForm();
+                updateMemoryView();
+              } else {
+                printTerminal("-> Indice incorrecto.", "text-red-400");
+              }
+            });
+
+          document
+            .getElementById("btnCancelDel")
+            ?.addEventListener("click", hideForm);
+        });
+
+      // 5. REPORTES
+      document
+        .getElementById("btnMenuReport")
+        ?.addEventListener("click", () => {
+          hideForm();
+          if (simNombres.length === 0) {
+            printTerminal(
+              "-> No hay registros para generar reportes.",
+              "text-amber-400",
+            );
+            return;
+          }
+          printTerminal("\n--- REPORTES ---", "text-indigo-400");
+          printTerminal(`- Total registrados: ${simNombres.length}`);
+          printTerminal(
+            `- Primer registro: ${simNombres[0]} (Nota: ${simNotas[0].toFixed(1)})`,
+          );
+          printTerminal(
+            `- Ultimo registro: ${simNombres[simNombres.length - 1]} (Nota: ${simNotas[simNotas.length - 1].toFixed(1)})`,
+          );
+
+          let suma = 0;
+          for (let i = 0; i < simNotas.length; i++) {
+            suma += simNotas[i];
+          }
+          const promedio = suma / simNotas.length;
+          printTerminal(
+            `- Promedio del curso: ${promedio.toFixed(2)}`,
+            "text-emerald-400 font-bold",
+          );
+        });
+
+      // CARGAR DEMO
+      document
+        .getElementById("btnMenuSample")
+        ?.addEventListener("click", () => {
+          hideForm();
+          simNombres = ["Valentina", "Mateo", "Sofia", "Joaquin"];
+          simNotas = [6.8, 4.5, 5.9, 6.2];
+          printTerminal(
+            "\n-> [Demo cargada] Se agregaron 4 alumnos a la memoria.",
+            "text-blue-300",
+          );
+          updateMemoryView();
+        });
+
+      // REINICIAR
+      document.getElementById("btnResetSim")?.addEventListener("click", () => {
+        hideForm();
+        simNombres = [];
+        simNotas = [];
+        if (terminalEl)
+          terminalEl.innerHTML =
+            '<div class="text-slate-400">// Memoria reiniciada.</div>';
+        updateMemoryView();
+      });
+
+      // MODAL CUESTIONARIO
+      const quizModal = document.getElementById("quizModal");
+      const btnOpenQuiz = document.getElementById("btnOpenQuizModal");
+      const btnCloseQuiz = document.getElementById("btnCloseQuizModal");
+      const btnDoneQuiz = document.getElementById("btnDoneQuizModal");
+      const quizScoreBadge = document.getElementById("quizScoreBadge");
+      const modalLiveScore = document.getElementById("modalLiveScore");
+
+      let correctCount = 0;
+      let answeredCount = 0;
+
+      function updateQuizSummary() {
+        if (modalLiveScore) {
+          modalLiveScore.textContent = `Progreso: ${answeredCount} de 5 respondidas · Aciertos: ${correctCount}/5`;
+        }
+        if (quizScoreBadge) {
+          quizScoreBadge.classList.remove("hidden");
+          quizScoreBadge.textContent = `Puntaje obtenido: ${correctCount} / 5 aciertos (${Math.round((correctCount / 5) * 100)}%)`;
+        }
+      }
+
+      btnOpenQuiz?.addEventListener("click", () => {
+        quizModal?.classList.remove("hidden");
+        quizModal?.classList.add("flex");
+      });
+
+      function closeQuiz() {
+        quizModal?.classList.add("hidden");
+        quizModal?.classList.remove("flex");
+      }
+
+      btnCloseQuiz?.addEventListener("click", closeQuiz);
+      btnDoneQuiz?.addEventListener("click", closeQuiz);
+      quizModal?.addEventListener("click", (e) => {
+        if (e.target === quizModal) {
+          closeQuiz();
+        }
+      });
+
+      // EVALUACIÓN / QUIZ INTERACTIVO
+      document.querySelectorAll(".quiz-opt").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const parentItem = btn.closest(".quiz-item");
+          if (!parentItem) {
+            return;
+          }
+          const feedback = parentItem.querySelector(".quiz-feedback");
+          const isCorrect = btn.getAttribute("data-correct") === "true";
+
+          answeredCount++;
+          if (isCorrect) {
+            correctCount++;
+          }
+
+          // Reset styles
+          parentItem.querySelectorAll(".quiz-opt").forEach((b) => {
+            b.classList.remove(
+              "bg-emerald-100",
+              "border-emerald-500",
+              "text-emerald-950",
+              "bg-red-100",
+              "border-red-500",
+              "text-red-950",
+            );
+            b.disabled = true;
+          });
+
+          if (isCorrect) {
+            btn.classList.add(
+              "bg-emerald-100",
+              "border-emerald-500",
+              "text-emerald-950",
+            );
+            if (feedback) {
+              feedback.classList.remove(
+                "hidden",
+                "bg-red-50",
+                "text-red-900",
+                "border-red-200",
+              );
+              feedback.classList.add(
+                "bg-emerald-50",
+                "text-emerald-900",
+                "border",
+                "border-emerald-200",
+              );
+              feedback.innerHTML =
+                "✅ <strong>¡Correcto!</strong> Has comprendido perfectamente la lógica técnica de C++.";
+            }
+          } else {
+            btn.classList.add("bg-red-100", "border-red-500", "text-red-950");
+            const correctBtn = parentItem.querySelector(
+              '[data-correct="true"]',
+            );
+            if (correctBtn) {
+              correctBtn.classList.add("bg-emerald-50", "border-emerald-400");
+            }
+            if (feedback) {
+              feedback.classList.remove(
+                "hidden",
+                "bg-emerald-50",
+                "text-emerald-900",
+                "border-emerald-200",
+              );
+              feedback.classList.add(
+                "bg-red-50",
+                "text-red-900",
+                "border",
+                "border-red-200",
+              );
+              feedback.innerHTML =
+                "❌ <strong>Incorrecto.</strong> Revisa la explicación del paso correspondiente en la sección superior.";
+            }
+          }
+
+          updateQuizSummary();
+        });
+      });
+
+      updateMemoryView();
+    })();
+  </script>
+</Layout>

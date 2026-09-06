@@ -108,6 +108,27 @@ const gameModules = [
     topics: ['Clases & Objetos', 'Herencia RPG', 'Polimorfismo', 'Sistemas de Armas'],
     storagePrefix: 'game_poo_',
   },
+  {
+    id: 'vectors-crud-exam',
+    number: '06',
+    title: 'Tipo Prueba: Vectores & Funciones CRUD',
+    slug: 'vectors-crud-exam',
+    href: '/challenges-game/vectors-crud-exam/',
+    icon: '📊',
+    themeColor: '#3b82f6', // Blue
+    accentGlow: 'rgba(59, 130, 246, 0.4)',
+    bgCard: 'from-blue-950/40 via-slate-900 to-slate-950',
+    borderCard: 'border-blue-500/40 hover:border-blue-400',
+    badgeText: 'text-blue-300 bg-blue-950/80 border-blue-500/50',
+    totalQuests: 10,
+    xpReward: 2000,
+    difficulty: 'Nivel Examen · CRUD & Memoria',
+    stars: '★★★★★',
+    tag: 'TIPO PRUEBA CRUD',
+    description: '10 casos prácticos completos de gestión con vectores paralelos y funciones CRUD en 7 lenguajes con clave de revisión.',
+    topics: ['Vectores Paralelos', 'CRUD Completo', 'Paso por Referencia', 'Búsqueda & Reportes'],
+    storagePrefix: 'game_crud_',
+  },
 ];
 
 const totalMissions = gameModules.reduce((acc, m) => acc + m.totalQuests, 0);
@@ -116,7 +137,7 @@ const maxPossibleXP = gameModules.reduce((acc, m) => acc + m.xpReward, 0);
 
 <GameLayout
   title="Zona Gamer — Desafíos de Programación de Videojuegos"
-  description="Plataforma interactiva de desafíos de código ambientados en videojuegos: fórmulas RPG, combate por turnos, inventarios, mazmorras 2D y clases de héroes."
+  description="Plataforma interactiva de desafíos de código ambientados en videojuegos: fórmulas RPG, combate por turnos, inventarios, mazmorras 2D, clases de héroes y examen CRUD."
   activeModule="hub"
 >
   <!-- CONTENEDOR PRINCIPAL ESTILO CYBERPUNK / GAMER PRO -->
@@ -142,7 +163,7 @@ const maxPossibleXP = gameModules.reduce((acc, m) => acc + m.xpReward, 0);
         </div>
         <div class="hidden sm:flex items-center gap-2">
           <span class="text-xs font-bold text-slate-400 bg-slate-800/80 border border-slate-700 px-3 py-1 rounded-full">
-            🎮 5 Módulos Activos · {totalMissions} Misiones
+            🎮 {gameModules.length} Módulos Activos · {totalMissions} Misiones
           </span>
         </div>
       </div>

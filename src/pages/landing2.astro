@@ -1,59 +1,61 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import imagen1 from '../assets/images/imagen1.png';
-import CoursesCatalog from '../components/courses/CoursesCatalog';
+import Layout from "../layouts/Layout.astro";
+import imagen1 from "../assets/images/imagen1.png";
+import CoursesCatalog from "../components/courses/CoursesCatalog";
 
 const benefits = [
   {
-    icon: '🗺️',
-    title: 'Rutas claras',
-    text: 'Un camino ordenado para saber qué estudiar hoy y qué viene después. Sin laberintos.',
+    icon: "🗺️",
+    title: "Rutas claras",
+    text: "Un camino ordenado para saber qué estudiar hoy y qué viene después. Sin laberintos.",
   },
   {
-    icon: '✍️',
-    title: 'Práctica integrada',
-    text: 'Ejercicios y ejemplos al lado de cada explicación. Aprendes haciendo, no solo leyendo.',
+    icon: "✍️",
+    title: "Práctica integrada",
+    text: "Ejercicios y ejemplos al lado de cada explicación. Aprendes haciendo, no solo leyendo.",
   },
   {
-    icon: '🍵',
-    title: 'Ritmo propio',
-    text: 'Sin fechas rígidas ni presión. Estudias cuando quieres, hasta donde llegues hoy.',
+    icon: "🍵",
+    title: "Ritmo propio",
+    text: "Sin fechas rígidas ni presión. Estudias cuando quieres, hasta donde llegues hoy.",
   },
   {
-    icon: '📱',
-    title: 'Desde cualquier lugar',
-    text: 'Computadora, tablet o celular. Tu progreso te acompaña a donde vayas.',
+    icon: "📱",
+    title: "Desde cualquier lugar",
+    text: "Computadora, tablet o celular. Tu progreso te acompaña a donde vayas.",
   },
 ];
 
 const testimonials = [
   {
-    quote: 'Dejé de sentirme perdido. Por fin supe qué estudiar primero y qué venía después.',
-    name: 'María L.',
-    role: 'Estudiante de sistemas',
+    quote:
+      "Dejé de sentirme perdido. Por fin supe qué estudiar primero y qué venía después.",
+    name: "María L.",
+    role: "Estudiante de sistemas",
   },
   {
-    quote: 'Los ejemplos son cortos y claros. Se entiende sin tener que ver cinco videos más.',
-    name: 'Lucas G.',
-    role: 'Desarrollador junior',
+    quote:
+      "Los ejemplos son cortos y claros. Se entiende sin tener que ver cinco videos más.",
+    name: "Lucas G.",
+    role: "Desarrollador junior",
   },
   {
-    quote: 'Volví a estudiar después de años. El tono amable me sacó el miedo a no llegar.',
-    name: 'Diego F.',
-    role: 'Cambio de carrera',
+    quote:
+      "Volví a estudiar después de años. El tono amable me sacó el miedo a no llegar.",
+    name: "Diego F.",
+    role: "Cambio de carrera",
   },
 ];
 ---
 
 <Layout
-  title="Aprende programación sin perderte"
-  description="Café y Código: una guía en español, clara y paso a paso para aprender a programar desde cero, a tu ritmo."
+  title="La IA puede escribir código. Tú debes saber qué construir | Café y Código"
+  description="Aprende lógica y programación para dirigir la IA, entender sus decisiones, detectar sus errores y convertir código generado en productos realmente bien construidos."
 >
   <script
     async
     src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7023695536010862"
-    crossorigin="anonymous"
-  ></script>
+    crossorigin="anonymous"></script>
   <div class="l2">
     <!-- Hero -->
     <section class="l2-hero">
@@ -61,45 +63,62 @@ const testimonials = [
         <div class="l2-hero-text">
           <span class="l2-badge">
             <span class="l2-badge-dot"></span>
-            En español · paso a paso
+            Lógica · Criterio · Inteligencia Artificial
           </span>
           <h1 class="l2-h1">
-            Aprende programación
-            <em>sin perderte</em>
-            entre tutoriales.
+            La IA puede escribir código.
+            <em>Tú debes saber qué construir.</em>
           </h1>
-          <p class="l2-sub">
-            Una guía clara y tranquila para avanzar desde cero, a tu ritmo,
-            sin saltar entre mil pestañas buscando qué estudiar.
+          <div class="l2-hero-actions">
+            <a href="/cursos/" class="l2-cta">
+              Empieza ahora gratis
+              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                <path
+                  d="M5 12h14M13 5l7 7-7 7"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"></path>
+              </svg>
+            </a>
+          </div>
+          <p class="l2-micro">
+            Aprende con rutas claras · Ejercicios prácticos · 100% gratis
           </p>
-          <a href="/cursos/" class="l2-cta">
-            Empieza ahora
-            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
-              <path d="M5 12h14M13 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </a>
-          <p class="l2-micro">Gratis · sin tarjeta · en español</p>
         </div>
 
         <div class="l2-hero-visual">
           <div class="l2-card-float l2-card-float-1">
             <span class="l2-float-dot" style="background:#06d6a0"></span>
-            <span>Lección 3 · Variables</span>
+            <span>Lógica & Arquitectura</span>
             <span class="l2-float-check">✓</span>
           </div>
           <div class="l2-card-float l2-card-float-2">
-            <span class="l2-float-dot" style="background:#45b3e0"></span>
-            <span>Siguiente: Condicionales</span>
+            <span class="l2-float-dot" style="background:#f59e0b"></span>
+            <span>🤖 Prompt → Código validado</span>
           </div>
-          <div class="l2-hero-image">
-            <img
-              src={imagen1.src}
-              alt="Aprende a programar con calma"
-              width={imagen1.width}
-              height={imagen1.height}
-              loading="eager"
-              decoding="async"
-            />
+
+          <div class="l2-hero-image-card">
+            <!-- Frase explicativa encima de la imagen -->
+            <div class="l2-hero-quote-top">
+              <span class="l2-quote-icon">💡</span>
+              <p>
+                Aprende <strong>lógica y programación</strong> para dirigir la IA, entender sus decisiones, detectar sus errores y convertir código generado en <strong>productos realmente bien construidos</strong>.
+              </p>
+            </div>
+
+            <!-- Imagen principal agrandada -->
+            <div class="l2-hero-image">
+              <img
+                src={imagen1.src}
+                alt="Aprende lógica y programación para dirigir la IA"
+                width={imagen1.width}
+                height={imagen1.height}
+                loading="eager"
+                decoding="async"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -109,22 +128,31 @@ const testimonials = [
     <section class="l2-problem">
       <div class="l2-container">
         <p class="l2-eyebrow">El problema</p>
-        <h2 class="l2-h2">
-          Aprender por tu cuenta no debería sentirse así.
-        </h2>
+        <h2 class="l2-h2">Aprender por tu cuenta no debería sentirse así.</h2>
 
         <div class="l2-pain-grid">
           <div class="l2-pain">
             <span class="l2-pain-icon">😵‍💫</span>
-            <p>Diez pestañas abiertas y ninguna te dice <strong>qué estudiar primero</strong>.</p>
+            <p>
+              Diez pestañas abiertas y ninguna te dice <strong
+                >qué estudiar primero</strong
+              >.
+            </p>
           </div>
           <div class="l2-pain">
             <span class="l2-pain-icon">🔀</span>
-            <p>Saltas de un tutorial a otro y cada uno <strong>arranca desde cero</strong> de nuevo.</p>
+            <p>
+              Saltas de un tutorial a otro y cada uno <strong
+                >arranca desde cero</strong
+              > de nuevo.
+            </p>
           </div>
           <div class="l2-pain">
             <span class="l2-pain-icon">🫠</span>
-            <p>Avanzas un rato, te frustras y <strong>abandonas</strong> sin saber por qué.</p>
+            <p>
+              Avanzas un rato, te frustras y <strong>abandonas</strong> sin saber
+              por qué.
+            </p>
           </div>
         </div>
 
@@ -143,9 +171,10 @@ const testimonials = [
             Un solo lugar, un solo camino, a tu ritmo.
           </h2>
           <p class="l2-solution-text">
-            Café y Código ordena lo que necesitas aprender en rutas claras, con explicaciones
-            cortas, ejemplos al lado y ejercicios para practicar. Así pasas de no saber por dónde
-            empezar a avanzar con confianza, una lección a la vez.
+            Café y Código ordena lo que necesitas aprender en rutas claras, con
+            explicaciones cortas, ejemplos al lado y ejercicios para practicar.
+            Así pasas de no saber por dónde empezar a avanzar con confianza, una
+            lección a la vez.
           </p>
 
           <ol class="l2-steps">
@@ -182,7 +211,8 @@ const testimonials = [
           <p class="l2-eyebrow">Catálogo en vivo</p>
           <h2 class="l2-h2">Explora los +28 Cursos y Rutas de Aprendizaje</h2>
           <p class="l2-solution-text text-textSecondary text-base sm:text-lg">
-            Elige una ruta de aprendizaje orientada o usa los filtros por categoría y el buscador para acceder al instante a cualquier curso.
+            Elige una ruta de aprendizaje orientada o usa los filtros por
+            categoría y el buscador para acceder al instante a cualquier curso.
           </p>
         </div>
         <CoursesCatalog client:load />
@@ -196,13 +226,15 @@ const testimonials = [
         <h2 class="l2-h2">Todo pensado para que no te pierdas.</h2>
 
         <ul class="l2-benefits-grid">
-          {benefits.map((b) => (
-            <li class="l2-benefit">
-              <span class="l2-benefit-icon">{b.icon}</span>
-              <h3>{b.title}</h3>
-              <p>{b.text}</p>
-            </li>
-          ))}
+          {
+            benefits.map((b) => (
+              <li class="l2-benefit">
+                <span class="l2-benefit-icon">{b.icon}</span>
+                <h3>{b.title}</h3>
+                <p>{b.text}</p>
+              </li>
+            ))
+          }
         </ul>
       </div>
     </section>
@@ -214,18 +246,22 @@ const testimonials = [
         <h2 class="l2-h2">Personas reales, caminos más claros.</h2>
 
         <div class="l2-testimonials-grid">
-          {testimonials.map((t) => (
-            <figure class="l2-testimonial">
-              <div class="l2-quote-mark" aria-hidden="true">"</div>
-              <blockquote>
-                <p>{t.quote}</p>
-              </blockquote>
-              <figcaption>
-                <strong>{t.name}</strong>
-                <span>{t.role}</span>
-              </figcaption>
-            </figure>
-          ))}
+          {
+            testimonials.map((t) => (
+              <figure class="l2-testimonial">
+                <div class="l2-quote-mark" aria-hidden="true">
+                  "
+                </div>
+                <blockquote>
+                  <p>{t.quote}</p>
+                </blockquote>
+                <figcaption>
+                  <strong>{t.name}</strong>
+                  <span>{t.role}</span>
+                </figcaption>
+              </figure>
+            ))
+          }
         </div>
       </div>
     </section>
@@ -240,13 +276,19 @@ const testimonials = [
             <em>Empezá a programar con calma.</em>
           </h2>
           <p>
-            Abrí tu primera ruta hoy y descubrí lo cómodo que es aprender cuando el camino
-            está ordenado para ti.
+            Abrí tu primera ruta hoy y descubrí lo cómodo que es aprender cuando
+            el camino está ordenado para ti.
           </p>
           <a href="/cursos/" class="l2-cta l2-cta-lg">
             Empieza ahora
             <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
-              <path d="M5 12h14M13 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path
+                d="M5 12h14M13 5l7 7-7 7"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"></path>
             </svg>
           </a>
           <p class="l2-micro l2-micro-dark">
@@ -264,20 +306,20 @@ const testimonials = [
      Paleta cálida, estética editorial y tranquila
      ────────────────────────────────────────────────────────────── */
   .l2 {
-    --cream: #FBF6EE;
-    --cream-2: #F3EADB;
-    --coffee: #2B1D1B;
-    --coffee-2: #4A3A37;
-    --muted: #7A6B66;
-    --accent: #B06D63;
-    --accent-soft: #E8C8A9;
-    --mint: #4CAE95;
-    --mint-soft: #D6EDE4;
-    --sky: #6CA7C4;
-    --sky-soft: #DCEBF2;
+    --cream: #fbf6ee;
+    --cream-2: #f3eadb;
+    --coffee: #2b1d1b;
+    --coffee-2: #4a3a37;
+    --muted: #7a6b66;
+    --accent: #b06d63;
+    --accent-soft: #e8c8a9;
+    --mint: #4cae95;
+    --mint-soft: #d6ede4;
+    --sky: #6ca7c4;
+    --sky-soft: #dcebf2;
     --line: rgba(43, 29, 27, 0.12);
 
-    font-family: 'Nunito', 'Quicksand', system-ui, sans-serif;
+    font-family: "Nunito", "Quicksand", system-ui, sans-serif;
     color: var(--coffee);
     background: var(--cream);
   }
@@ -302,21 +344,22 @@ const testimonials = [
   }
 
   .l2-h1 {
-    font-size: clamp(2.1rem, 5vw, 3.4rem);
+    font-size: clamp(2.4rem, 5.8vw, 4.2rem);
     font-weight: 900;
-    line-height: 1.05;
-    letter-spacing: -0.02em;
-    margin: 0 0 1.25rem;
+    line-height: 1.08;
+    letter-spacing: -0.025em;
+    margin: 0 0 1.5rem;
     color: var(--coffee);
   }
   .l2-h1 em {
     font-style: normal;
     color: var(--accent);
-    display: inline;
+    display: block;
     position: relative;
+    margin-top: 0.15em;
   }
   .l2-h1 em::after {
-    content: '';
+    content: "";
     position: absolute;
     left: 0;
     right: 0;
@@ -336,14 +379,16 @@ const testimonials = [
     margin: 0 0 1.5rem;
     max-width: 36ch;
   }
-  .l2-h2-light { color: #FBF6EE; }
+  .l2-h2-light {
+    color: #fbf6ee;
+  }
 
   .l2-sub {
-    font-size: clamp(1rem, 1.4vw, 1.15rem);
-    line-height: 1.65;
+    font-size: clamp(1.15rem, 1.8vw, 1.45rem);
+    line-height: 1.6;
     color: var(--coffee-2);
-    max-width: 52ch;
-    margin: 0 0 1.75rem;
+    max-width: 58ch;
+    margin: 0 0 2rem;
     font-weight: 500;
   }
 
@@ -352,17 +397,27 @@ const testimonials = [
     position: relative;
     padding: 3.5rem 1.5rem 4rem;
     background:
-      radial-gradient(900px 380px at 85% -10%, rgba(176, 109, 99, 0.12), transparent 60%),
-      radial-gradient(700px 300px at -5% 90%, rgba(76, 174, 149, 0.10), transparent 60%),
+      radial-gradient(
+        900px 380px at 85% -10%,
+        rgba(176, 109, 99, 0.12),
+        transparent 60%
+      ),
+      radial-gradient(
+        700px 300px at -5% 90%,
+        rgba(76, 174, 149, 0.1),
+        transparent 60%
+      ),
       var(--cream);
     overflow: hidden;
   }
   .l2-hero::before {
-    content: '';
+    content: "";
     position: absolute;
     inset: 0;
-    background-image:
-      radial-gradient(rgba(43, 29, 27, 0.055) 1px, transparent 1px);
+    background-image: radial-gradient(
+      rgba(43, 29, 27, 0.055) 1px,
+      transparent 1px
+    );
     background-size: 22px 22px;
     mask-image: linear-gradient(to bottom, black 0%, transparent 85%);
     -webkit-mask-image: linear-gradient(to bottom, black 0%, transparent 85%);
@@ -371,16 +426,21 @@ const testimonials = [
 
   .l2-hero-grid {
     position: relative;
-    max-width: 1100px;
+    max-width: 1200px;
     margin: 0 auto;
     display: grid;
     grid-template-columns: 1fr;
-    gap: 2.5rem;
+    gap: 3rem;
     align-items: center;
   }
-  @media (min-width: 900px) {
-    .l2-hero-grid { grid-template-columns: 1.15fr 1fr; gap: 3.5rem; }
-    .l2-hero { padding: 5rem 2rem 5.5rem; }
+  @media (min-width: 960px) {
+    .l2-hero-grid {
+      grid-template-columns: 1fr 1.15fr;
+      gap: 3.5rem;
+    }
+    .l2-hero {
+      padding: 4.5rem 2rem 5rem;
+    }
   }
 
   .l2-badge {
@@ -407,6 +467,10 @@ const testimonials = [
     box-shadow: 0 0 0 3px rgba(76, 174, 149, 0.2);
   }
 
+  .l2-hero-actions {
+    margin: 1.75rem 0 0.75rem;
+  }
+
   .l2-cta {
     display: inline-flex;
     align-items: center;
@@ -414,21 +478,28 @@ const testimonials = [
     background: var(--coffee);
     color: var(--cream);
     font-weight: 800;
-    font-size: 1rem;
-    padding: 0.95rem 1.5rem;
+    font-size: 1.05rem;
+    padding: 1rem 1.75rem;
     border-radius: 999px;
     text-decoration: none;
     border: none;
     box-shadow: 0 10px 24px -8px rgba(43, 29, 27, 0.35);
-    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease,
+      background 0.2s ease;
   }
   .l2-cta:hover {
     transform: translateY(-2px);
     box-shadow: 0 16px 30px -10px rgba(43, 29, 27, 0.45);
     background: #1e1210;
   }
-  .l2-cta svg { transition: transform 0.2s ease; }
-  .l2-cta:hover svg { transform: translateX(3px); }
+  .l2-cta svg {
+    transition: transform 0.2s ease;
+  }
+  .l2-cta:hover svg {
+    transform: translateX(3px);
+  }
 
   .l2-cta-lg {
     font-size: 1.1rem;
@@ -436,15 +507,19 @@ const testimonials = [
     background: var(--cream);
     color: var(--coffee);
   }
-  .l2-cta-lg:hover { background: white; }
+  .l2-cta-lg:hover {
+    background: white;
+  }
 
   .l2-micro {
     margin-top: 0.9rem;
-    font-size: 0.82rem;
+    font-size: 0.85rem;
     color: var(--muted);
     font-weight: 600;
   }
-  .l2-micro-dark { color: rgba(251, 246, 238, 0.65); }
+  .l2-micro-dark {
+    color: rgba(251, 246, 238, 0.65);
+  }
 
   /* Visual hero */
   .l2-hero-visual {
@@ -452,24 +527,70 @@ const testimonials = [
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 320px;
+    width: 100%;
   }
+
+  .l2-hero-image-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 1.15rem;
+    width: 100%;
+    max-width: 580px;
+  }
+
+  .l2-hero-quote-top {
+    position: relative;
+    background: #ffffff;
+    border: 1.5px solid var(--accent-soft);
+    padding: 1.15rem 1.4rem;
+    border-radius: 20px;
+    box-shadow: 0 16px 36px -12px rgba(43, 29, 27, 0.16);
+    display: flex;
+    align-items: flex-start;
+    gap: 0.85rem;
+    z-index: 3;
+    animation: l2-float-subtle 8s ease-in-out infinite;
+  }
+  .l2-quote-icon {
+    font-size: 1.35rem;
+    line-height: 1;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+  }
+  .l2-hero-quote-top p {
+    margin: 0;
+    font-size: clamp(0.98rem, 1.35vw, 1.12rem);
+    line-height: 1.55;
+    color: var(--coffee-2);
+    font-weight: 550;
+  }
+  .l2-hero-quote-top p strong {
+    color: var(--coffee);
+    font-weight: 800;
+  }
+
   .l2-hero-image {
     position: relative;
-    max-width: 420px;
+    max-width: 580px;
     width: 100%;
     border-radius: 28px;
     overflow: hidden;
     background: white;
     box-shadow:
-      0 30px 60px -20px rgba(43, 29, 27, 0.25),
+      0 32px 64px -18px rgba(43, 29, 27, 0.28),
       0 0 0 1px var(--line);
-    transform: rotate(-1.2deg);
+    transform: rotate(-1deg);
+    transition: transform 0.3s ease;
+  }
+  .l2-hero-image:hover {
+    transform: rotate(0deg) scale(1.015);
   }
   .l2-hero-image img {
     display: block;
     width: 100%;
     height: auto;
+    object-fit: cover;
   }
 
   .l2-card-float {
@@ -485,22 +606,30 @@ const testimonials = [
     font-weight: 700;
     color: var(--coffee);
     box-shadow: 0 14px 30px -12px rgba(43, 29, 27, 0.25);
-    z-index: 2;
+    z-index: 4;
     white-space: nowrap;
   }
   .l2-card-float-1 {
-    top: 12%;
-    left: -2%;
+    top: -16px;
+    right: 24px;
+    left: auto;
     animation: l2-float 6s ease-in-out infinite;
   }
   .l2-card-float-2 {
-    bottom: 10%;
-    right: -2%;
+    bottom: -16px;
+    right: 24px;
+    left: auto;
     animation: l2-float 7s ease-in-out infinite reverse;
   }
   @media (max-width: 520px) {
-    .l2-card-float-1 { left: 2%; }
-    .l2-card-float-2 { right: 2%; }
+    .l2-card-float-1 {
+      right: 12px;
+      top: -12px;
+    }
+    .l2-card-float-2 {
+      right: 12px;
+      bottom: -12px;
+    }
   }
   .l2-float-dot {
     width: 9px;
@@ -512,8 +641,22 @@ const testimonials = [
     font-weight: 900;
   }
   @keyframes l2-float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-8px); }
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-8px);
+    }
+  }
+  @keyframes l2-float-subtle {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-5px);
+    }
   }
 
   /* ───────── PROBLEMA ───────── */
@@ -530,7 +673,10 @@ const testimonials = [
     margin: 2rem 0 2rem;
   }
   @media (min-width: 720px) {
-    .l2-pain-grid { grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+    .l2-pain-grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem;
+    }
   }
   .l2-pain {
     display: flex;
@@ -551,7 +697,9 @@ const testimonials = [
     line-height: 1.55;
     color: var(--coffee-2);
   }
-  .l2-pain strong { color: var(--coffee); }
+  .l2-pain strong {
+    color: var(--coffee);
+  }
 
   .l2-pain-outro {
     font-size: 1.1rem;
@@ -570,15 +718,25 @@ const testimonials = [
     overflow: hidden;
   }
   .l2-solution::before {
-    content: '';
+    content: "";
     position: absolute;
     inset: 0;
     background:
-      radial-gradient(600px 300px at 85% 10%, rgba(176, 109, 99, 0.18), transparent 60%),
-      radial-gradient(500px 250px at -5% 85%, rgba(76, 174, 149, 0.12), transparent 60%);
+      radial-gradient(
+        600px 300px at 85% 10%,
+        rgba(176, 109, 99, 0.18),
+        transparent 60%
+      ),
+      radial-gradient(
+        500px 250px at -5% 85%,
+        rgba(76, 174, 149, 0.12),
+        transparent 60%
+      );
     pointer-events: none;
   }
-  .l2-solution-inner { position: relative; }
+  .l2-solution-inner {
+    position: relative;
+  }
 
   .l2-solution-text {
     color: rgba(251, 246, 238, 0.8);
@@ -598,7 +756,10 @@ const testimonials = [
     max-width: 640px;
   }
   @media (min-width: 720px) {
-    .l2-steps { grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+    .l2-steps {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem;
+    }
   }
   .l2-steps li {
     display: flex;
@@ -649,10 +810,15 @@ const testimonials = [
     gap: 1rem;
   }
   @media (min-width: 560px) {
-    .l2-benefits-grid { grid-template-columns: repeat(2, 1fr); gap: 1.25rem; }
+    .l2-benefits-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.25rem;
+    }
   }
   @media (min-width: 900px) {
-    .l2-benefits-grid { grid-template-columns: repeat(4, 1fr); }
+    .l2-benefits-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
   }
 
   .l2-benefit {
@@ -660,7 +826,10 @@ const testimonials = [
     border: 1px solid var(--line);
     padding: 1.5rem;
     border-radius: 18px;
-    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    transition:
+      transform 0.25s ease,
+      box-shadow 0.25s ease,
+      border-color 0.25s ease;
   }
   .l2-benefit:hover {
     transform: translateY(-4px);
@@ -705,7 +874,9 @@ const testimonials = [
     margin-top: 2rem;
   }
   @media (min-width: 800px) {
-    .l2-testimonials-grid { grid-template-columns: repeat(3, 1fr); }
+    .l2-testimonials-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
   }
 
   .l2-testimonial {
@@ -778,11 +949,14 @@ const testimonials = [
     overflow: hidden;
   }
   .l2-cta-box::before {
-    content: '';
+    content: "";
     position: absolute;
     inset: 0;
-    background:
-      radial-gradient(400px 200px at 50% -10%, rgba(232, 200, 169, 0.2), transparent 60%);
+    background: radial-gradient(
+      400px 200px at 50% -10%,
+      rgba(232, 200, 169, 0.2),
+      transparent 60%
+    );
     pointer-events: none;
   }
   .l2-cta-ornament {
@@ -823,8 +997,12 @@ const testimonials = [
   /* Accesibilidad: reducir animaciones si el usuario lo prefiere */
   @media (prefers-reduced-motion: reduce) {
     .l2-card-float-1,
-    .l2-card-float-2 { animation: none; }
+    .l2-card-float-2 {
+      animation: none;
+    }
     .l2-cta,
-    .l2-benefit { transition: none; }
+    .l2-benefit {
+      transition: none;
+    }
   }
 </style>

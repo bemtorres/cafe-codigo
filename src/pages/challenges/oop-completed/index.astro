@@ -9,14 +9,14 @@ const totalChallenges = pooCompletedChallenges.length;
 ---
 
 <Layout
-  title="Taller Práctico de POO Completa — 20 Desafíos Avanzados"
-  description="20 ejercicios de Programación Orientada a Objetos en Java con la estructura estricta: 1 Padre + 3 Hijas + 1 Interfaz + 1 Clase Externa + 1 Propia."
+  title="Taller Práctico de POO Completa — 25 Desafíos Avanzados"
+  description="25 ejercicios de Programación Orientada a Objetos en Java con la estructura estricta: 1 Padre + 3 Hijas + 1 Interfaz + 1 Clase Externa + 1 Propia."
 >
   <article class="content-section">
     <p class="kicker">POO Completa y Arquitectura</p>
     <h1>Desafíos de POO Completa</h1>
     <p>
-      20 sistemas reales diseñados con la <strong>estructura técnica estricta</strong>: 
+      25 sistemas reales diseñados con la <strong>estructura técnica estricta</strong>: 
       <strong>1 Clase Padre + 3 Clases Hijas + 1 Interfaz + 1 Clase Externa (Composición) + 1 Clase con comportamiento propio</strong>. 
       Cada desafío incluye su <strong>Diagrama UML interactivo</strong> y su <strong>solución completa en Java protegida por clave</strong>.
     </p>
@@ -31,18 +31,21 @@ const totalChallenges = pooCompletedChallenges.length;
         <h3>🏛️ Reglas Arquitectónicas de cada Desafío</h3>
       </div>
       <ul class="rules-grid">
-        <li><strong>1. Clase Padre:</strong> 1 Clase base o abstracta con atributos encauzados y métodos polimórficos.</li>
-        <li><strong>2. Herencia:</strong> Exactamente 3 Clases Hijas que extienden de la clase padre.</li>
-        <li><strong>3. Contratos:</strong> Al menos 1 de las Clases Hijas implementa una Interfaz con su contrato explícito.</li>
-        <li><strong>4. Composición:</strong> 1 de las Clases Hijas contiene un objeto de una Clase Externa independiente.</li>
-        <li><strong>5. Especialización:</strong> 1 de las Clases Hijas define atributos o comportamientos propios únicos.</li>
-        <li><strong>6. Main Completo:</strong> Ejecución polimórfica demostrando la instanciación y llamadas a métodos.</li>
+        <li><strong>1. Clase Padre Abstracta:</strong> Modela la abstracción raíz con estado común y métodos polimórficos. <em>(La clase padre NO implementa la interfaz)</em>.</li>
+        <li><strong>2. Herencia Desacoplada:</strong> 3 Clases Hijas que extienden del padre. Cada hija atiende un caso de uso específico.</li>
+        <li><strong>3. Interfaz Específica (Hija 3):</strong> Únicamente la 3ra clase hija implementa la Interfaz de contrato. Las demás hijas y el padre quedan libres de esa carga.</li>
+        <li><strong>4. Composición (Hija 2):</strong> La 2da clase hija contiene por composición una instancia de la Clase Externa independiente.</li>
+        <li><strong>5. Especialización Propia (Hija 1):</strong> La 1ra clase hija define atributos y métodos de negocio propios exclusivos.</li>
+        <li><strong>6. Main y Polimorfismo:</strong> Prueba polimórfica en colección de tipo Padre y ejecución del contrato de interfaz.</li>
       </ul>
+      <div class="arch-warning-note">
+        💡 <strong>Principio de Segregación de Interfaces (ISP):</strong> La Interfaz nunca se asocia a la Clase Padre para no obligar a todas las clases hijas a implementar métodos innecesarios. Se asocia exclusivamente a la clase hija que requiere dicho contrato.
+      </div>
     </div>
 
     <!-- Barra de Herramientas -->
     <div class="exercise-toolbar">
-      <p class="exercise-toolbar-hint">20 desafíos con arquitectura completa · clic para expandir diagrama y checklist</p>
+      <p class="exercise-toolbar-hint">25 desafíos con arquitectura completa · clic para expandir diagrama y checklist</p>
       <div class="exercise-toolbar-actions">
         <button type="button" id="expandAll" class="toolbar-btn">Expandir todo</button>
         <button type="button" id="collapseAll" class="toolbar-btn toolbar-btn--ghost">Colapsar todo</button>
@@ -53,12 +56,16 @@ const totalChallenges = pooCompletedChallenges.length;
     <div id="exerciseList" class="exercise-list">
       {pooCompletedChallenges.map((ch) => {
         const metaText = `${ch.parent.name} → [${ch.ownClassSpec.name}, ${ch.children[1].name} (*-- ${ch.externalClass.name}), ${ch.children[2].name} (<|.. ${ch.interfaceSpec.name})]`;
+        const isEval = ch.id >= 21 && ch.id <= 25;
         return (
-          <details class="ex-card ex-card--completed" id={ch.slug} data-ex-id={`poo-comp-${ch.id}`}>
+          <details class={`ex-card ex-card--completed ${isEval ? 'ex-card--evaluation' : ''}`} id={ch.slug} data-ex-id={`poo-comp-${ch.id}`}>
             <summary class="ex-summary">
               <span class="ex-num" aria-hidden="true">{String(ch.id).padStart(2, '0')}</span>
               <div class="ex-summary-main">
-                <h3>{ch.title}</h3>
+                <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                  <h3>{ch.title}</h3>
+                  {isEval && <span class="eval-badge">💎 Evaluación Especial</span>}
+                </div>
                 <span class="ex-summary-meta">{metaText}</span>
               </div>
               <span class="ex-progress" data-progress-for={`poo-comp-${ch.id}`}>0 / 5</span>
@@ -76,11 +83,28 @@ const totalChallenges = pooCompletedChallenges.length;
                 <h4>📐 Componentes del Sistema:</h4>
                 <ul>
                   <li><strong>Padre Abstracto:</strong> <code>{ch.parent.name}</code></li>
-                  <li><strong>Interfaz Contrato:</strong> <code>{ch.interfaceSpec.name}</code></li>
-                  <li><strong>Clase Externa:</strong> <code>{ch.externalClass.name}</code></li>
+                  <li><strong>Interfaz Contrato (Solo Hija 3):</strong> <code>{ch.interfaceSpec.name}</code></li>
+                  <li><strong>Clase Externa (Composición Hija 2):</strong> <code>{ch.externalClass.name}</code></li>
                   <li><strong>Hija con Propio:</strong> <code>{ch.ownClassSpec.name}</code></li>
                 </ul>
               </div>
+
+              {ch.methodGuide && ch.methodGuide.length > 0 && (
+                <div class="method-guide-box">
+                  <h4>⚙️ Especificación y Lógica de cada Método:</h4>
+                  <div class="method-guide-grid">
+                    {ch.methodGuide.map((mg) => (
+                      <div class="method-guide-item">
+                        <div class="method-guide-head">
+                          <span class="method-tag">{mg.className}</span>
+                          <code class="method-sig">{mg.name}</code>
+                        </div>
+                        <p class="method-desc">{mg.description}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               <!-- Diagrama UML -->
               <MermaidDiagram title={`Diagrama UML — ${ch.title}`} code={toMermaidCompleted(ch)} />
@@ -96,7 +120,13 @@ const totalChallenges = pooCompletedChallenges.length;
 
               <!-- Solución protegida por contraseña inline abajo del ejercicio -->
               <div class="solution-trigger-wrap" style="margin-top: 1rem;">
-                <button type="button" class="solution-btn open-solution-btn" data-target-solution={`pooc-sol-${ch.id}`}>
+                <button
+                  type="button"
+                  class="solution-btn open-solution-btn"
+                  data-target-solution={`pooc-sol-${ch.id}`}
+                  data-ch-id={ch.id}
+                  data-ch-title={ch.title}
+                >
                   🔒 Ingresa la clave para ver los resultados
                 </button>
               </div>
@@ -140,15 +170,16 @@ const totalChallenges = pooCompletedChallenges.length;
       <div class="poo-modal-backdrop" id="closePassModalBackdrop"></div>
       <div class="poo-modal-panel" role="dialog" aria-modal="true">
         <div class="modal-lock-icon">🔐</div>
-        <h3>Acceso Privado a Resultados</h3>
-        <p class="modal-subtext">Ingresa la clave para ver los resultados</p>
+        <h3 id="modalChallengeTitle">Acceso Privado a Resultados</h3>
+        <p class="modal-subtext" id="modalSubtext">Ingresa la clave para ver los resultados</p>
 
         <form id="passForm" class="modal-form">
           <input
             type="password"
             id="passInput"
-            placeholder="Clave (ej: 27082026)"
+            placeholder="Clave de acceso..."
             required
+            autocomplete="off"
           />
           <p id="passErrorMsg" class="modal-error">
             ⚠️ Clave incorrecta. Inténtalo de nuevo.
@@ -226,6 +257,7 @@ const totalChallenges = pooCompletedChallenges.length;
 
   // Lógica de contraseña para ver solución inline
   let targetSolId = null;
+  let targetChId = null;
   const passModal = document.getElementById('passwordModal');
   const passForm = document.getElementById('passForm');
   const passInput = document.getElementById('passInput');
@@ -233,18 +265,34 @@ const totalChallenges = pooCompletedChallenges.length;
   const backdrop = document.getElementById('closePassModalBackdrop');
   const btnCancelPass = document.getElementById('btnCancelPass');
 
-  function getExpectedKey() {
+  function getExpectedKey(chId) {
+    if (chId >= 21 && chId <= 25) {
+      return 'revisionevaluacion';
+    }
     const now = new Date();
     const dd = String(now.getDate()).padStart(2, '0');
     const mm = String(now.getMonth() + 1).padStart(2, '0');
     const yyyy = now.getFullYear();
-    return dd + mm + yyyy; // Ej: 27082026
+    return dd + mm + yyyy; // Ej: 05092026
   }
 
-  function openPassModal(solId) {
+  function openPassModal(solId, chId, chTitle) {
     targetSolId = solId;
+    targetChId = Number(chId);
     if (passInput) passInput.value = '';
     if (passErrorMsg) passErrorMsg.style.display = 'none';
+    const titleEl = document.getElementById('modalChallengeTitle');
+    const subtextEl = document.getElementById('modalSubtext');
+    if (titleEl && chTitle) {
+      titleEl.textContent = chTitle;
+    }
+    if (subtextEl) {
+      if (targetChId >= 21 && targetChId <= 25) {
+        subtextEl.innerHTML = 'Módulo de Evaluación (21-25): Ingresa la clave especial de revisión';
+      } else {
+        subtextEl.textContent = 'Ingresa la clave para ver los resultados';
+      }
+    }
     if (passModal) {
       passModal.classList.add('is-open');
       passModal.setAttribute('aria-hidden', 'false');
@@ -258,19 +306,22 @@ const totalChallenges = pooCompletedChallenges.length;
       passModal.setAttribute('aria-hidden', 'true');
     }
     targetSolId = null;
+    targetChId = null;
   }
 
   document.querySelectorAll('.open-solution-btn').forEach((btn) => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
       const solId = btn.getAttribute('data-target-solution');
+      const chId = btn.getAttribute('data-ch-id');
+      const chTitle = btn.getAttribute('data-ch-title');
       const targetDiv = document.getElementById(solId);
       if (targetDiv && targetDiv.style.display !== 'none') {
         targetDiv.style.display = 'none';
         btn.textContent = '🔒 Ingresa la clave para ver los resultados';
         return;
       }
-      openPassModal(solId);
+      openPassModal(solId, chId, chTitle);
     });
   });
 
@@ -280,8 +331,8 @@ const totalChallenges = pooCompletedChallenges.length;
   if (passForm) {
     passForm.addEventListener('submit', (e) => {
       e.preventDefault();
-      const enteredKey = passInput.value.trim();
-      const expectedKey = getExpectedKey();
+      const enteredKey = passInput.value.trim().toLowerCase();
+      const expectedKey = getExpectedKey(targetChId).toLowerCase();
 
       if (enteredKey === expectedKey) {
         if (targetSolId) {
@@ -349,6 +400,23 @@ const totalChallenges = pooCompletedChallenges.length;
 <style>
   .kicker { margin: 0; font-size: 0.7rem; font-weight: 900; letter-spacing: 0.16em; text-transform: uppercase; color: #e65100; }
   .muted { color: var(--text-muted); font-weight: 650; line-height: 1.6; }
+  
+  .arch-warning-note {
+    margin-top: 1rem;
+    padding: 0.75rem 1rem;
+    background: #fff8e1;
+    border: 2px solid #ffa000;
+    border-radius: 12px;
+    font-size: 0.88rem;
+    color: #5d4037;
+    font-weight: 700;
+    line-height: 1.5;
+  }
+  :global(.dark) .arch-warning-note {
+    background: #261f18;
+    border-color: #f59e0b;
+    color: #fed7aa;
+  }
   
   .rules-card {
     background: linear-gradient(135deg, rgba(255, 243, 224, 0.9) 0%, rgba(255, 255, 255, 0.95) 100%);
@@ -464,14 +532,47 @@ const totalChallenges = pooCompletedChallenges.length;
     scroll-margin-top: 1.25rem;
     overflow: hidden;
   }
-  :global(.dark) .ex-card {
-    background: var(--bg-primary);
+  .ex-card--evaluation {
+    border: 3.5px solid #00d2ff !important;
+    box-shadow: 0 0 16px rgba(0, 210, 255, 0.35), 0 16px 34px rgba(0, 119, 182, 0.12) !important;
+    background: linear-gradient(180deg, rgba(240, 249, 255, 0.95) 0%, rgba(255, 255, 255, 0.98) 100%) !important;
   }
-  .ex-card[open] {
-    background: #fff;
+  :global(.dark) .ex-card--evaluation {
+    border: 3.5px solid #00e5ff !important;
+    box-shadow: 0 0 20px rgba(0, 229, 255, 0.3), 0 16px 34px rgba(0, 0, 0, 0.4) !important;
+    background: linear-gradient(180deg, rgba(12, 28, 48, 0.95) 0%, rgba(15, 23, 42, 0.98) 100%) !important;
   }
-  :global(.dark) .ex-card[open] {
-    background: var(--bg-primary);
+  .ex-card--evaluation .ex-num {
+    background: #0284c7;
+    border-color: #00b4d8;
+    color: #ffffff;
+  }
+  .ex-card--evaluation[open] .ex-num {
+    background: #00b4d8;
+    border-color: #0077b6;
+  }
+  .ex-card--evaluation .ex-summary-main h3 {
+    color: #0284c7;
+  }
+  :global(.dark) .ex-card--evaluation .ex-summary-main h3 {
+    color: #38bdf8;
+  }
+  .eval-badge {
+    background: #00b4d8;
+    color: #ffffff;
+    font-size: 0.65rem;
+    font-weight: 900;
+    padding: 0.15rem 0.55rem;
+    border-radius: 999px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    border: 1.5px solid #0077b6;
+    box-shadow: 1px 1px 0 rgba(0,0,0,0.1);
+  }
+  :global(.dark) .eval-badge {
+    background: #0284c7;
+    border-color: #38bdf8;
+    color: #f0f9ff;
   }
   .ex-summary {
     display: flex;
@@ -620,6 +721,81 @@ const totalChallenges = pooCompletedChallenges.length;
     border-radius: 6px;
     font-weight: 700;
     font-size: 0.85em;
+  }
+
+  .method-guide-box {
+    background: linear-gradient(135deg, rgba(255, 248, 240, 0.95) 0%, rgba(255, 255, 255, 0.98) 100%);
+    border: 2.5px solid #1e1210;
+    border-radius: 14px;
+    padding: 1rem 1.15rem;
+    margin: 0.85rem 0 1rem;
+    box-shadow: 3px 3px 0 rgba(30, 18, 16, 0.1);
+  }
+  :global(.dark) .method-guide-box {
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.98) 100%);
+    border-color: #f97316;
+  }
+  .method-guide-box h4 {
+    margin: 0 0 0.75rem;
+    color: #e65100;
+    font-size: 0.98rem;
+    font-weight: 900;
+  }
+  :global(.dark) .method-guide-box h4 {
+    color: #f97316;
+  }
+  .method-guide-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 0.65rem;
+  }
+  .method-guide-item {
+    background: #ffffff;
+    border: 2px solid #1e1210;
+    border-radius: 10px;
+    padding: 0.7rem 0.85rem;
+    box-shadow: 2px 2px 0 rgba(30, 18, 16, 0.08);
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+  :global(.dark) .method-guide-item {
+    background: #0f172a;
+    border-color: #475569;
+  }
+  .method-guide-head {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    flex-wrap: wrap;
+  }
+  .method-tag {
+    background: #e65100;
+    color: #ffffff;
+    font-size: 0.68rem;
+    font-weight: 900;
+    padding: 0.12rem 0.45rem;
+    border-radius: 6px;
+    letter-spacing: 0.02em;
+  }
+  :global(.dark) .method-tag {
+    background: #ea580c;
+  }
+  .method-sig {
+    background: #1e1210;
+    color: #38edf6;
+    padding: 0.15rem 0.45rem;
+    border-radius: 6px;
+    font-weight: 800;
+    font-size: 0.78rem;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .method-desc {
+    margin: 0;
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    line-height: 1.45;
+    font-weight: 600;
   }
 
   .ex-checks {

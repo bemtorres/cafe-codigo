@@ -1,0 +1,694 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import CodeBlock from '../../components/CodeBlock.astro';
+---
+
+<Layout
+  title="Arreglos de 2 Dimensiones (Matrices) con Pac-Man — Café y Código"
+  description="Aprende matrices y arreglos bidimensionales en C++ y programación paso a paso con el laberinto interactivo de Pac-Man: filas, columnas, colisiones, bucles anidados y simulador en vivo."
+>
+  <article class="max-w-5xl mx-auto px-4 py-8 text-slate-800">
+    <!-- Breadcrumb -->
+    <nav class="flex items-center gap-2 text-xs font-bold text-slate-500 mb-6 font-mono">
+      <a href="/" class="hover:text-amber-600 transition-colors">Inicio</a>
+      <span>/</span>
+      <a href="/challenges-game/" class="hover:text-amber-600 transition-colors">Challenges Game</a>
+      <span>/</span>
+      <span class="text-amber-700">Arreglos 2D: Pac-Man</span>
+    </nav>
+
+    <!-- Header Principal -->
+    <div class="mb-10 border-b border-slate-200 pb-6">
+      <div class="flex flex-wrap items-center gap-2 mb-3">
+        <span class="px-3 py-1 rounded-xl bg-amber-100 text-amber-900 border border-amber-300 text-xs font-black uppercase tracking-wider font-mono">
+          🟡 Mini-Game Engine
+        </span>
+        <span class="px-3 py-1 rounded-xl bg-sky-100 text-sky-900 border border-sky-300 text-xs font-black uppercase tracking-wider font-mono">
+          Matrices 2D en Acción
+        </span>
+      </div>
+      <h1 class="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight m-0">
+        Arreglos de Dos Dimensiones: El Laberinto de Pac-Man
+      </h1>
+      <p class="mt-4 text-slate-700 font-medium text-base sm:text-lg leading-relaxed">
+        ¿Alguna vez te has preguntado cómo los videojuegos clásicos representan mapas, laberintos y mundos cuadriculados? En esta lección aprenderás <strong>arreglos de dos dimensiones (matrices 2D)</strong> construyendo la lógica del mítico <strong>Pac-Man</strong>. Descubrirás cómo funcionan las <strong>filas y columnas</strong>, la detección de colisiones contra muros, el recorrido con <strong>bucles anidados</strong> y podrás jugar con un <strong>simulador interactivo en tiempo real</strong> que muestra la memoria de la matriz mientras te mueves.
+      </p>
+    </div>
+
+    <!-- 🎮 SIMULADOR INTERACTIVO JUGABLE EN TIEMPO REAL -->
+    <section class="my-10 p-5 sm:p-7 rounded-3xl bg-gradient-to-br from-amber-50/80 via-white to-sky-50/80 border-2 border-amber-300 shadow-xl">
+      <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+        <div>
+          <span class="text-xs uppercase font-mono tracking-widest text-amber-800 font-bold block">
+            🕹️ Laboratorio Práctico
+          </span>
+          <h2 class="text-xl sm:text-2xl font-black text-slate-900 m-0">
+            Simulador de Pac-Man: Matriz 2D en Vivo
+          </h2>
+        </div>
+        <div class="flex items-center gap-2">
+          <button
+            id="btnResetGame"
+            class="px-3.5 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs shadow-xs active:scale-95 transition-all cursor-pointer"
+          >
+            🔄 Reiniciar Laberinto
+          </button>
+        </div>
+      </div>
+
+      <!-- HUD del Juego -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5 font-mono text-center">
+        <div class="p-3 rounded-2xl bg-white border border-amber-200 shadow-xs">
+          <span class="text-[10px] text-slate-500 font-bold uppercase block">Puntos (Score)</span>
+          <strong id="hudScore" class="text-xl font-black text-amber-600">0</strong>
+        </div>
+        <div class="p-3 rounded-2xl bg-white border border-amber-200 shadow-xs">
+          <span class="text-[10px] text-slate-500 font-bold uppercase block">Puntos Restantes</span>
+          <strong id="hudDotsLeft" class="text-xl font-black text-sky-600">--</strong>
+        </div>
+        <div class="p-3 rounded-2xl bg-white border border-amber-200 shadow-xs">
+          <span class="text-[10px] text-slate-500 font-bold uppercase block">Posición Pac-Man</span>
+          <strong id="hudCoords" class="text-base font-black text-indigo-600">[f: 7, c: 9]</strong>
+        </div>
+        <div class="p-3 rounded-2xl bg-white border border-amber-200 shadow-xs">
+          <span class="text-[10px] text-slate-500 font-bold uppercase block">Estado</span>
+          <strong id="hudStatus" class="text-base font-black text-emerald-600">🟡 Jugando</strong>
+        </div>
+      </div>
+
+      <!-- Tablero Gráfico + Visor de Memoria 2D -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <!-- Columna 1: Vista Gráfica del Laberinto -->
+        <div class="lg:col-span-7 bg-white p-4 rounded-2xl border-2 border-slate-200 shadow-inner flex flex-col items-center">
+          <div class="flex items-center justify-between w-full mb-2 text-xs font-bold text-slate-500 font-mono">
+            <span>🎮 Vista Gráfica del Juego</span>
+            <span>Usa ⬅️ ⬆️ ⬇️ ➡️ o WASD</span>
+          </div>
+
+          <!-- Canvas / Grid de Pac-Man -->
+          <div
+            id="pacmanGrid"
+            class="grid bg-slate-900 p-2.5 rounded-xl border-4 border-blue-600 shadow-2xl select-none"
+            style="grid-template-columns: repeat(15, minmax(0, 1fr)); gap: 2px;"
+          >
+            <!-- Celdas renderizadas dinámicamente por JS -->
+          </div>
+
+          <!-- D-Pad Virtual para Móviles / Touch -->
+          <div class="mt-4 flex flex-col items-center gap-1.5 sm:hidden">
+            <button class="dpad-btn w-12 h-10 rounded-xl bg-slate-200 active:bg-amber-400 font-black text-lg" data-dir="up">⬆️</button>
+            <div class="flex items-center gap-2">
+              <button class="dpad-btn w-12 h-10 rounded-xl bg-slate-200 active:bg-amber-400 font-black text-lg" data-dir="left">⬅️</button>
+              <button class="dpad-btn w-12 h-10 rounded-xl bg-slate-200 active:bg-amber-400 font-black text-lg" data-dir="down">⬇️</button>
+              <button class="dpad-btn w-12 h-10 rounded-xl bg-slate-200 active:bg-amber-400 font-black text-lg" data-dir="right">➡️</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Columna 2: Visor de la Matriz 2D en Memoria -->
+        <div class="lg:col-span-5 bg-white p-4 rounded-2xl border-2 border-slate-200 shadow-inner">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-black font-mono text-slate-800">
+              💾 Matriz 2D en Memoria: <code>char mapa[11][15]</code>
+            </span>
+          </div>
+          <p class="text-[11px] text-slate-500 font-medium mb-2">
+            Observa cómo la posición <code class="text-indigo-600 font-bold">[fila][columna]</code> cambia en tiempo real en la estructura bidimensional:
+          </p>
+          <div
+            id="matrixMemoryView"
+            class="bg-slate-950 p-3 rounded-xl font-mono text-[11px] leading-tight text-slate-300 overflow-x-auto select-none border border-slate-800"
+          >
+            <!-- Renderizado de la matriz de caracteres en vivo -->
+          </div>
+
+          <!-- Leyenda de Caracteres -->
+          <div class="mt-3 p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-[11px] font-mono grid grid-cols-2 gap-1.5 text-slate-700">
+            <div><span class="font-bold text-blue-600">#</span> : Muro (Impenetrable)</div>
+            <div><span class="font-bold text-amber-500">.</span> : Punto (+10 pts)</div>
+            <div><span class="font-bold text-yellow-500">P</span> : Pac-Man (Jugador)</div>
+            <div><span class="font-bold text-rose-500">G</span> : Fantasma (Blinky)</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- EXPLICACIÓN PASO A PASO -->
+    <div class="space-y-12 my-12">
+      <!-- PASO 1 -->
+      <section class="border-t border-slate-200 pt-8">
+        <div class="flex items-center gap-3 mb-3">
+          <span class="w-8 h-8 rounded-xl bg-amber-500 text-white font-black text-sm flex items-center justify-center font-mono shadow-xs">
+            1
+          </span>
+          <h2 class="text-2xl font-black text-slate-900 m-0">
+            ¿Qué es un Arreglo de Dos Dimensiones (Matriz 2D)?
+          </h2>
+        </div>
+        <p class="text-slate-700 leading-relaxed font-medium">
+          Un arreglo unidimensional (1D) representa una <strong>línea de casillas</strong> (como el inventario de Minecraft). Una matriz o arreglo bidimensional (2D) es una <strong>cuadrícula con filas y columnas</strong>, ideal para representar mapas, tableros de ajedrez, hojas de cálculo de Excel o el laberinto de Pac-Man.
+        </p>
+
+        <div class="my-6 p-5 rounded-2xl bg-amber-50/90 border-2 border-amber-300">
+          <h3 class="text-base font-black text-amber-950 m-0 flex items-center gap-2">
+            <span>📐</span> Regla de Oro: Primero la Fila, Luego la Columna
+          </h3>
+          <p class="text-xs sm:text-sm text-slate-700 mt-2 leading-relaxed font-medium">
+            Para acceder a cualquier celda en C++, usamos dos corchetes consecutivos:
+          </p>
+          <div class="mt-3 p-3 rounded-xl bg-white border border-amber-300 font-mono text-xs text-slate-900 text-center">
+            <span class="text-amber-800 font-bold">matriz</span>[<span class="text-indigo-600 font-bold">fila</span>][<span class="text-sky-600 font-bold">columna</span>]
+            <span class="block text-[11px] text-slate-500 mt-1 font-sans">
+              La <strong>fila</strong> indica qué tan arriba o abajo estamos (eje Y). La <strong>columna</strong> indica qué tan a la izquierda o derecha estamos (eje X).
+            </span>
+          </div>
+        </div>
+
+        <p class="text-slate-700 leading-relaxed font-medium">
+          En C++, declaramos el laberinto de Pac-Man como una matriz de caracteres (<code>char</code>) de 11 filas por 15 columnas:
+        </p>
+
+        <CodeBlock
+          lang="cpp"
+          code={`const int FILAS = 11;
+const int COLS = 15;
+
+// Declaración e inicialización del laberinto de Pac-Man
+char mapa[FILAS][COLS] = {
+    {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'},
+    {'#','.','.','.','.','.','#','.','.','.','.','.','.','.','#'},
+    {'#','.','#','#','.','#','#','#','.','#','#','.','#','.','#'},
+    {'#','.','#','#','.','.','.','.','.','.','#','.','#','.','#'},
+    {'#','.','.','.','.','#','#','#','.','.','.','.','.','.','#'},
+    {'#','#','#','.','#','#',' ','#','#','.','#','#','#','#','#'},
+    {'#','.','.','.','.','#','G','#','.','.','.','.','.','.','#'},
+    {'#','.','#','#','.','.','.','P','.','.','#','#','.','.','#'},
+    {'#','.','#','#','.','#','#','#','.','#','#','.','#','.','#'},
+    {'#','.','.','.','.','.','.','.','.','.','.','.','.','.','#'},
+    {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'}
+};`}
+          title="Declaración de la Matriz 2D de Pac-Man"
+        />
+      </section>
+
+      <!-- PASO 2 -->
+      <section class="border-t border-slate-200 pt-8">
+        <div class="flex items-center gap-3 mb-3">
+          <span class="w-8 h-8 rounded-xl bg-amber-500 text-white font-black text-sm flex items-center justify-center font-mono shadow-xs">
+            2
+          </span>
+          <h2 class="text-2xl font-black text-slate-900 m-0">
+            Bucles Anidados: Cómo Recorrer y Dibujar la Cuadrícula
+          </h2>
+        </div>
+        <p class="text-slate-700 leading-relaxed font-medium">
+          Para imprimir o procesar una matriz 2D necesitamos <strong>dos bucles <code>for</code> anidados</strong>:
+        </p>
+        <ul class="my-3 space-y-1.5 text-xs sm:text-sm text-slate-700 font-medium pl-5 list-disc">
+          <li><strong>Bucle exterior (<code>f</code>):</strong> se mueve fila por fila desde <code>0</code> hasta <code>FILAS - 1</code>.</li>
+          <li><strong>Bucle interior (<code>c</code>):</strong> recorre cada columna de esa fila desde <code>0</code> hasta <code>COLS - 1</code>.</li>
+          <li>Al terminar de imprimir una fila completa, hacemos <code>cout &lt;&lt; endl;</code> para saltar a la siguiente línea en consola.</li>
+        </ul>
+
+        <CodeBlock
+          lang="cpp"
+          code={`void dibujarMapa(char mapa[FILAS][COLS]) {
+    // Bucle exterior: itera sobre cada FILA
+    for (int f = 0; f < FILAS; f++) {
+        // Bucle interior: itera sobre cada COLUMNA de la fila actual
+        for (int c = 0; c < COLS; c++) {
+            cout << mapa[f][c] << " ";
+        }
+        cout << "\\n"; // Salto de línea al terminar la fila
+    }
+}`}
+          title="Función para dibujar la matriz en consola"
+        />
+      </section>
+
+      <!-- PASO 3 -->
+      <section class="border-t border-slate-200 pt-8">
+        <div class="flex items-center gap-3 mb-3">
+          <span class="w-8 h-8 rounded-xl bg-amber-500 text-white font-black text-sm flex items-center justify-center font-mono shadow-xs">
+            3
+          </span>
+          <h2 class="text-2xl font-black text-slate-900 m-0">
+            Posición del Jugador en Coordenadas 2D
+          </h2>
+        </div>
+        <p class="text-slate-700 leading-relaxed font-medium">
+          En lugar de buscar a Pac-Man en toda la matriz en cada frame, guardamos sus coordenadas exactas en dos variables simples:
+        </p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 my-4">
+          <div class="p-4 rounded-xl bg-white border border-slate-200 shadow-xs">
+            <span class="text-xs font-bold text-indigo-700 font-mono block">Fila Actual (Eje Y):</span>
+            <code class="text-sm font-black text-slate-900 block my-1">int pacmanFila = 7;</code>
+            <p class="text-xs text-slate-600 m-0">Moverse arriba resta 1, moverse abajo suma 1.</p>
+          </div>
+          <div class="p-4 rounded-xl bg-white border border-slate-200 shadow-xs">
+            <span class="text-xs font-bold text-sky-700 font-mono block">Columna Actual (Eje X):</span>
+            <code class="text-sm font-black text-slate-900 block my-1">int pacmanCol = 7;</code>
+            <p class="text-xs text-slate-600 m-0">Moverse a la izquierda resta 1, a la derecha suma 1.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- PASO 4 -->
+      <section class="border-t border-slate-200 pt-8">
+        <div class="flex items-center gap-3 mb-3">
+          <span class="w-8 h-8 rounded-xl bg-amber-500 text-white font-black text-sm flex items-center justify-center font-mono shadow-xs">
+            4
+          </span>
+          <h2 class="text-2xl font-black text-slate-900 m-0">
+            Detección de Colisiones y Validación de Muros (<code>'#'</code>)
+          </h2>
+        </div>
+        <p class="text-slate-700 leading-relaxed font-medium">
+          Antes de modificar la posición de Pac-Man, calculamos la celda destino a la que desea avanzar. <strong>Si la celda contiene un muro <code>'#'</code>, el movimiento se rechaza</strong>:
+        </p>
+
+        <CodeBlock
+          lang="cpp"
+          code={`void moverPacman(char mapa[FILAS][COLS], int& pacmanFila, int& pacmanCol, char direccion, int& puntos) {
+    int nuevaFila = pacmanFila;
+    int nuevaCol = pacmanCol;
+
+    // 1. Calcular nueva coordenada tentativa según la dirección
+    if (direccion == 'w' || direccion == 'W') nuevaFila--; // Arriba
+    else if (direccion == 's' || direccion == 'S') nuevaFila++; // Abajo
+    else if (direccion == 'a' || direccion == 'A') nuevaCol--;  // Izquierda
+    else if (direccion == 'd' || direccion == 'D') nuevaCol++;  // Derecha
+
+    // 2. Validar que no se salga de la matriz
+    if (nuevaFila < 0 || nuevaFila >= FILAS || nuevaCol < 0 || nuevaCol >= COLS) {
+        return; // Movimiento fuera de límites
+    }
+
+    // 3. Validar colisión contra muros
+    if (mapa[nuevaFila][nuevaCol] == '#') {
+        cout << "¡Pared! No puedes atravesar muros.\\n";
+        return;
+    }
+
+    // 4. Si hay un punto, sumamos score
+    if (mapa[nuevaFila][nuevaCol] == '.') {
+        puntos += 10;
+    }
+
+    // 5. Actualizar la matriz: vaciar la celda anterior y colocar a Pac-Man en la nueva
+    mapa[pacmanFila][pacmanCol] = ' ';
+    pacmanFila = nuevaFila;
+    pacmanCol = nuevaCol;
+    mapa[pacmanFila][pacmanCol] = 'P';
+}`}
+          title="Lógica de movimiento y colisiones en 2D"
+        />
+      </section>
+
+      <!-- PASO 5 -->
+      <section class="border-t border-slate-200 pt-8">
+        <div class="flex items-center gap-3 mb-3">
+          <span class="w-8 h-8 rounded-xl bg-amber-500 text-white font-black text-sm flex items-center justify-center font-mono shadow-xs">
+            5
+          </span>
+          <h2 class="text-2xl font-black text-slate-900 m-0">
+            Inteligencia Artificial del Fantasma: Vecindario de 4 Direcciones
+          </h2>
+        </div>
+        <p class="text-slate-700 leading-relaxed font-medium">
+          El fantasma (<code>'G'</code>) evalúa las 4 celdas adyacentes: arriba <code>(f-1, c)</code>, abajo <code>(f+1, c)</code>, izquierda <code>(f, c-1)</code> y derecha <code>(f, c+1)</code>. Escoge una celda libre de muros y se desplaza hacia ella. Si coincide exactamente con la celda de Pac-Man, ¡el juego termina!
+        </p>
+
+        <CodeBlock
+          lang="cpp"
+          code={`bool moverFantasma(char mapa[FILAS][COLS], int& ghostFila, int& ghostCol, int pacmanFila, int pacmanCol) {
+    // Si el fantasma toca a Pac-Man, Game Over
+    if (ghostFila == pacmanFila && ghostCol == pacmanCol) {
+        return true; // Colisión letal
+    }
+
+    // Movimiento básico hacia Pac-Man en la matriz
+    int dFila = (pacmanFila > ghostFila) ? 1 : (pacmanFila < ghostFila ? -1 : 0);
+    int dCol = (pacmanCol > ghostCol) ? 1 : (pacmanCol < ghostCol ? -1 : 0);
+
+    int nFila = ghostFila + dFila;
+    int nCol = ghostCol + dCol;
+
+    if (mapa[nFila][nCol] != '#') {
+        ghostFila = nFila;
+        ghostCol = nCol;
+    }
+
+    return (ghostFila == pacmanFila && ghostCol == pacmanCol);
+}`}
+          title="IA de Fantasma en Matriz 2D"
+        />
+      </section>
+
+      <!-- CÓDIGO COMPLETO C++ -->
+      <section class="border-t border-slate-200 pt-8">
+        <h2 class="text-2xl font-black text-slate-900 mb-3">
+          Código Fuente Completo en C++ (Consola)
+        </h2>
+        <p class="text-slate-700 leading-relaxed font-medium mb-4">
+          Puedes compilar y ejecutar este programa directamente en tu terminal de C++ con <code>g++ pacman.cpp -o pacman</code>:
+        </p>
+
+        <CodeBlock
+          lang="cpp"
+          code={`#include <iostream>
+#include <vector>
+
+using namespace std;
+
+const int FILAS = 9;
+const int COLS = 13;
+
+char mapa[FILAS][COLS] = {
+    {'#','#','#','#','#','#','#','#','#','#','#','#','#'},
+    {'#','.','.','.','#','.','.','.','#','.','.','.','#'},
+    {'#','.','#','.','#','.','#','.','#','.','#','.','#'},
+    {'#','.','.','.','.','.','.','.','.','.','.','.','#'},
+    {'#','#','#','.','#','#',' ','#','#','.','#','#','#'},
+    {'#','.','.','.','.','.','.','.','.','.','.','.','#'},
+    {'#','.','#','.','#','.','#','.','#','.','#','.','#'},
+    {'#','.','.','.','#','.','P','.','#','.','.','.','#'},
+    {'#','#','#','#','#','#','#','#','#','#','#','#','#'}
+};
+
+int main() {
+    int pFila = 7, pCol = 7;
+    int puntos = 0;
+    char tecla;
+
+    cout << "=== MINI PAC-MAN 2D EN C++ ===\\n";
+    cout << "Controles: W (Arriba), S (Abajo), A (Izq), D (Der), Q (Salir)\\n\\n";
+
+    while (true) {
+        // 1. Dibujar matriz
+        for (int f = 0; f < FILAS; f++) {
+            for (int c = 0; c < COLS; c++) {
+                cout << mapa[f][c] << " ";
+            }
+            cout << "\\n";
+        }
+        cout << "Puntaje: " << puntos << " | Posicion: [" << pFila << "][" << pCol << "]\\n";
+        cout << "Ingresa direccion (W/A/S/D): ";
+        cin >> tecla;
+
+        if (tecla == 'q' || tecla == 'Q') break;
+
+        int nFila = pFila;
+        int nCol = pCol;
+
+        if (tecla == 'w' || tecla == 'W') nFila--;
+        else if (tecla == 's' || tecla == 'S') nFila++;
+        else if (tecla == 'a' || tecla == 'A') nCol--;
+        else if (tecla == 'd' || tecla == 'D') nCol++;
+
+        // Validar muro
+        if (nFila >= 0 && nFila < FILAS && nCol >= 0 && nCol < COLS && mapa[nFila][nCol] != '#') {
+            if (mapa[nFila][nCol] == '.') puntos += 10;
+            mapa[pFila][pCol] = ' ';
+            pFila = nFila;
+            pCol = nCol;
+            mapa[pFila][pCol] = 'P';
+        }
+        cout << "\\n----------------------------------\\n";
+    }
+
+    cout << "¡Juego terminado! Puntos finales: " << puntos << "\\n";
+    return 0;
+}`}
+          title="Juego Pac-Man 2D completo en C++"
+        />
+      </section>
+    </div>
+
+    <!-- Navegación Inferior -->
+    <div class="mt-12 pt-6 border-t border-slate-200 flex flex-wrap items-center justify-between gap-4">
+      <a
+        href="/course/cpp/array/"
+        class="px-5 py-2.5 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs sm:text-sm transition-all no-underline"
+      >
+        ← 7.1 Arreglos Fijos (1D)
+      </a>
+      <a
+        href="/course/cpp/vector/"
+        class="px-6 py-3 rounded-xl bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white font-black text-xs sm:text-sm shadow-md shadow-amber-600/20 active:scale-95 transition-all no-underline flex items-center gap-2"
+      >
+        <span>7.2 std::vector Dinámico</span>
+        <span>➡️</span>
+      </a>
+    </div>
+  </article>
+
+  <!-- SCRIPT DEL SIMULADOR PAC-MAN 2D INTERACTIVO -->
+  <script is:inline>
+    (function () {
+      const ROWS = 11;
+      const COLS = 15;
+
+      const INITIAL_MAZE = [
+        ['#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'],
+        ['#','.','.','.','.','.','#','.','.','.','.','.','.','.','#'],
+        ['#','.','#','#','.','#','#','#','.','#','#','.','#','.','#'],
+        ['#','.','#','#','.','.','.','.','.','.','#','.','#','.','#'],
+        ['#','.','.','.','.','#','#','#','.','.','.','.','.','.','#'],
+        ['#','#','#','.','#','#',' ','#','#','.','#','#','#','#','#'],
+        ['#','.','.','.','.','#','G','#','.','.','.','.','.','.','#'],
+        ['#','.','#','#','.','.','.','P','.','.','#','#','.','.','#'],
+        ['#','.','#','#','.','#','#','#','.','#','#','.','#','.','#'],
+        ['#','.','.','.','.','.','.','.','.','.','.','.','.','.','#'],
+        ['#','#','#','#','#','#','#','#','#','#','#','#','#','#','#']
+      ];
+
+      let maze = [];
+      let pacman = { r: 7, c: 7 };
+      let ghost = { r: 6, c: 6, alive: true };
+      let score = 0;
+      let isGameOver = false;
+      let isWin = false;
+
+      function initGame() {
+        maze = INITIAL_MAZE.map(row => [...row]);
+        pacman = { r: 7, c: 7 };
+        ghost = { r: 6, c: 6, alive: true };
+        score = 0;
+        isGameOver = false;
+        isWin = false;
+        renderAll();
+      }
+
+      function countDots() {
+        let count = 0;
+        for (let r = 0; r < ROWS; r++) {
+          for (let c = 0; c < COLS; c++) {
+            if (maze[r][c] === '.') count++;
+          }
+        }
+        return count;
+      }
+
+      function renderGrid() {
+        const gridEl = document.getElementById('pacmanGrid');
+        if (!gridEl) return;
+        gridEl.innerHTML = '';
+
+        for (let r = 0; r < ROWS; r++) {
+          for (let c = 0; c < COLS; c++) {
+            const cell = document.createElement('div');
+            cell.className = 'w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center rounded-xs text-xs sm:text-base font-black transition-all';
+
+            const val = maze[r][c];
+
+            if (r === pacman.r && c === pacman.c) {
+              cell.className += ' bg-amber-400 text-slate-950 scale-110 shadow-md shadow-amber-500/50 animate-pulse';
+              cell.innerHTML = '🟡';
+            } else if (r === ghost.r && c === ghost.c) {
+              cell.className += ' bg-rose-600 text-white animate-bounce';
+              cell.innerHTML = '👻';
+            } else if (val === '#') {
+              cell.className += ' bg-blue-900/90 border border-blue-500/50 text-blue-300';
+              cell.innerHTML = '';
+            } else if (val === '.') {
+              cell.className += ' bg-slate-900 text-amber-300';
+              cell.innerHTML = '•';
+            } else {
+              cell.className += ' bg-slate-900 text-transparent';
+              cell.innerHTML = '';
+            }
+
+            gridEl.appendChild(cell);
+          }
+        }
+      }
+
+      function renderMemoryView() {
+        const memEl = document.getElementById('matrixMemoryView');
+        if (!memEl) return;
+
+        let output = '';
+        for (let r = 0; r < ROWS; r++) {
+          output += `<span class="text-slate-600">${r.toString().padStart(2, '0')} | </span>`;
+          for (let c = 0; c < COLS; c++) {
+            let ch = maze[r][c];
+            if (r === pacman.r && c === pacman.c) {
+              output += `<span class="bg-amber-400 text-slate-950 font-bold px-0.5 rounded-xs">P</span> `;
+            } else if (r === ghost.r && c === ghost.c) {
+              output += `<span class="bg-rose-500 text-white font-bold px-0.5 rounded-xs">G</span> `;
+            } else if (ch === '#') {
+              output += `<span class="text-blue-400">#</span> `;
+            } else if (ch === '.') {
+              output += `<span class="text-amber-300 font-bold">.</span> `;
+            } else {
+              output += `<span class="text-slate-700">·</span> `;
+            }
+          }
+          output += '\n';
+        }
+        memEl.innerHTML = output;
+      }
+
+      function updateHUD() {
+        const scoreEl = document.getElementById('hudScore');
+        const dotsEl = document.getElementById('hudDotsLeft');
+        const coordsEl = document.getElementById('hudCoords');
+        const statusEl = document.getElementById('hudStatus');
+
+        const remaining = countDots();
+
+        if (scoreEl) scoreEl.textContent = score;
+        if (dotsEl) dotsEl.textContent = remaining;
+        if (coordsEl) coordsEl.textContent = `[f: ${pacman.r}, c: ${pacman.c}]`;
+
+        if (statusEl) {
+          if (isGameOver) {
+            statusEl.textContent = '💀 ¡Game Over!';
+            statusEl.className = 'text-base font-black text-rose-600';
+          } else if (remaining === 0) {
+            isWin = true;
+            statusEl.textContent = '🏆 ¡Victoria!';
+            statusEl.className = 'text-base font-black text-emerald-600';
+          } else {
+            statusEl.textContent = '🟡 Jugando';
+            statusEl.className = 'text-base font-black text-emerald-600';
+          }
+        }
+      }
+
+      function moveGhost() {
+        if (isGameOver || isWin) return;
+
+        const dirs = [
+          { r: -1, c: 0 },
+          { r: 1, c: 0 },
+          { r: 0, c: -1 },
+          { r: 0, c: 1 }
+        ];
+
+        // Escoger dirección válida al azar o acercándose a Pac-Man
+        const validDirs = dirs.filter(d => {
+          const nr = ghost.r + d.r;
+          const nc = ghost.c + d.c;
+          return nr >= 0 && nr < ROWS && nc >= 0 && nc < COLS && maze[nr][nc] !== '#';
+        });
+
+        if (validDirs.length > 0) {
+          // IA: 50% probabilidad de perseguir, 50% aleatorio
+          let chosen = validDirs[Math.floor(Math.random() * validDirs.length)];
+          if (Math.random() < 0.6) {
+            validDirs.sort((a, b) => {
+              const distA = Math.abs(ghost.r + a.r - pacman.r) + Math.abs(ghost.c + a.c - pacman.c);
+              const distB = Math.abs(ghost.r + b.r - pacman.r) + Math.abs(ghost.c + b.c - pacman.c);
+              return distA - distB;
+            });
+            chosen = validDirs[0];
+          }
+
+          ghost.r += chosen.r;
+          ghost.c += chosen.c;
+
+          if (ghost.r === pacman.r && ghost.c === pacman.c) {
+            isGameOver = true;
+          }
+        }
+      }
+
+      function movePacman(dr, dc) {
+        if (isGameOver || isWin) return;
+
+        const nr = pacman.r + dr;
+        const nc = pacman.c + dc;
+
+        if (nr >= 0 && nr < ROWS && nc >= 0 && nc < COLS && maze[nr][nc] !== '#') {
+          pacman.r = nr;
+          pacman.c = nc;
+
+          if (maze[nr][nc] === '.') {
+            score += 10;
+            maze[nr][nc] = ' ';
+          }
+
+          if (pacman.r === ghost.r && pacman.c === ghost.c) {
+            isGameOver = true;
+          } else {
+            moveGhost();
+          }
+
+          renderAll();
+        }
+      }
+
+      function renderAll() {
+        renderGrid();
+        renderMemoryView();
+        updateHUD();
+      }
+
+      // Controles de teclado
+      window.addEventListener('keydown', (e) => {
+        if (['ArrowUp', 'KeyW'].includes(e.code)) {
+          e.preventDefault();
+          movePacman(-1, 0);
+        } else if (['ArrowDown', 'KeyS'].includes(e.code)) {
+          e.preventDefault();
+          movePacman(1, 0);
+        } else if (['ArrowLeft', 'KeyA'].includes(e.code)) {
+          e.preventDefault();
+          movePacman(0, -1);
+        } else if (['ArrowRight', 'KeyD'].includes(e.code)) {
+          e.preventDefault();
+          movePacman(0, 1);
+        }
+      });
+
+      // Botón reiniciar
+      document.addEventListener('DOMContentLoaded', () => {
+        const btnReset = document.getElementById('btnResetGame');
+        if (btnReset) btnReset.addEventListener('click', initGame);
+
+        // D-pad táctil
+        document.querySelectorAll('.dpad-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const dir = e.currentTarget.getAttribute('data-dir');
+            if (dir === 'up') movePacman(-1, 0);
+            if (dir === 'down') movePacman(1, 0);
+            if (dir === 'left') movePacman(0, -1);
+            if (dir === 'right') movePacman(0, 1);
+          });
+        });
+
+        initGame();
+      });
+
+      // Inicialización inmediata por si DOMContentLoaded ya ocurrió
+      if (document.readyState === 'complete' || document.readyState === 'interactive') {
+        const btnReset = document.getElementById('btnResetGame');
+        if (btnReset) btnReset.addEventListener('click', initGame);
+        initGame();
+      }
+    })();
+  </script>
+</Layout>

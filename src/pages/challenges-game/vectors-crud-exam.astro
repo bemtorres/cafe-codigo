@@ -1,0 +1,736 @@
+---
+import GameLayout from '../../layouts/GameLayout.astro';
+import CodeBlock from '../../components/CodeBlock.astro';
+import { gameVectorsCrudSolutions } from '../../data/gameVectorsCrudSolutions';
+
+// Módulo 06: Tipo Prueba CRUD Gamer - Sistemas Completos con Menú Interactivo
+const exercises = [
+  {
+    id: 1,
+    section: '1. Arsenal & Recursos Gamer',
+    title: '1. Herrería & Tienda RPG: Sistema CRUD y Catálogo de Armas',
+    statement: 'Desarrollar una aplicación de consola para la forja del reino basada en un Menú Principal interactivo (do-while/while). El sistema administra dos vectores paralelos: nombres de armas legendarias (string) y precios en monedas de oro (float). Debe integrar obligatoriamente las 6 operaciones fundamentales: 1) Guardar nueva arma forjada, 2) Listar catálogo completo con índices y precios, 3) Buscar arma por nombre retornando su posición y valor, 4) Actualizar precio en oro por índice validando límites de rango, 5) Eliminar arma de ambos vectores simultáneamente, 6) Reporte estadístico (arma más costosa y precio promedio del arsenal), y 7) Salir.',
+    vectors: 'vector<string> armas | vector<float> preciosOro',
+    functions: [
+      'void menu() -> Bucle do-while interactivo con opciones 1 a 7',
+      'void guardarArma(vector<string>& armas, vector<float>& precios) -> push_back() sincronizado',
+      'void listarArmas(const vector<string>& armas, const vector<float>& precios) -> Recorrido formateado [i]',
+      'int buscarArma(const vector<string>& armas, const string& buscada) -> Búsqueda lineal (retorna índice o -1)',
+      'void actualizarPrecio(vector<float>& precios) -> Validación 0 <= idx < size() y asignación',
+      'void eliminarArma(vector<string>& armas, vector<float>& precios) -> erase() atómico en ambos vectores',
+      'void reporteEstadisticas(const vector<string>& armas, const vector<float>& precios) -> Máximo y promedio'
+    ],
+    steps: [
+      { id: 'step1', title: 'Menú Interactivo (do-while)', desc: 'Despliega opciones 1 a 7 y repite hasta seleccionar Salir.' },
+      { id: 'step2', title: '1. Guardar (Create)', desc: 'Añade nombre y precio en ambos vectores con push_back() en la misma posición.' },
+      { id: 'step3', title: '2. Listar (Read)', desc: 'Imprime la lista completa numerada mostrando [i] Arma - $Oro.' },
+      { id: 'step4', title: '3. Buscar (Search)', desc: 'Compara nombres en bucle for y retorna el índice de la forja.' },
+      { id: 'step5', title: '4. Actualizar (Update)', desc: 'Verifica que el índice exista y sobrescribe el valor en oro.' },
+      { id: 'step6', title: '5. Eliminar (Delete)', desc: 'Ejecuta erase() en la misma posición i en ambos vectores.' },
+      { id: 'step7', title: '6. Reportes (Statistics)', desc: 'Calcula el promedio de oro y destaca el arma legendaria MVP.' },
+    ],
+  },
+  {
+    id: 2,
+    section: '1. Arsenal & Recursos Gamer',
+    title: '2. Raid Boss & Squad: Gestión de Escuadrón, Salud y Triaje Crítico',
+    statement: 'Construir el sistema de comando del Healer durante la batalla de Raid Boss. Gestiona dos vectores paralelos: nombres de héroes del escuadrón (string) y salud/HP actual (float). Mediante un Menú interactivo continuo, debe permitir: 1) Guardar/Reclutar héroe con su HP inicial, 2) Listar escuadrón completo con barra de vida formateada, 3) Buscar héroe por nombre para diagnosticar su salud, 4) Actualizar HP tras recibir daño de boss o curación, 5) Eliminar héroe caído en combate (0% HP), 6) Reporte de Triaje Crítico (filtra héroes con HP < 30% y localiza al héroe con mayor vida), y 7) Salir.',
+    vectors: 'vector<string> heroes | vector<float> hpActual',
+    functions: [
+      'void menu() -> Menú con ciclo do-while para el Healer',
+      'void guardarHeroe(vector<string>& h, vector<float>& hp) -> Registro de nuevo integrante',
+      'void listarSquad(const vector<string>& h, const vector<float>& hp) -> Vista general del escuadrón',
+      'int buscarHeroe(const vector<string>& h, const string& target) -> Ubicación por nombre',
+      'void actualizarHP(vector<float>& hp) -> Modificación de salud con validación',
+      'void eliminarHeroe(vector<string>& h, vector<float>& hp) -> Borrado sincronizado de héroe caído',
+      'void reporteTriajeCritico(const vector<string>& h, const vector<float>& hp) -> Filtro condicional HP < 30%'
+    ],
+    steps: [
+      { id: 'step1', title: 'Menú del HUD de Batalla', desc: 'Control de flujo con selector de opciones 1 a 7.' },
+      { id: 'step2', title: '1. Guardar Héroe', desc: 'Inserta nombre y HP (%) en vectores sincronizados.' },
+      { id: 'step3', title: '2. Listar Escuadrón', desc: 'Muestra [i] Héroe: HP% en pantalla.' },
+      { id: 'step4', title: '3. Buscar Héroe', desc: 'Retorna el índice del héroe para verificar su estado.' },
+      { id: 'step5', title: '4. Actualizar Salud', desc: 'Modifica el % de HP tras recibir daño o curación.' },
+      { id: 'step6', title: '5. Eliminar Registro', desc: 'Borra al combatiente retirado de ambos vectores.' },
+      { id: 'step7', title: '6. Triaje Crítico', desc: 'Alerta visual de héroes con HP menor a 30.0%.' },
+    ],
+  },
+  {
+    id: 3,
+    section: '1. Arsenal & Recursos Gamer',
+    title: '3. Gremio / Clan MMORPG: Registro de Miembros, DPS y Auditoría MVP',
+    statement: 'Diseñar el software administrativo de un Clan MMORPG con dos vectores paralelos: Gamertags de miembros (string) y puntos de daño por segundo DPS (float). A través de un Menú Principal interactivo, debe permitir: 1) Guardar nuevo jugador con su DPS de raid, 2) Listar miembros del clan con sus marcas de combate, 3) Buscar miembro por Gamertag mostrando su récord de daño, 4) Actualizar DPS tras equipar artefactos legendarios, 5) Eliminar miembro expulsado sincronizando ambos vectores, 6) Reportes Estadísticos (DPS total acumulado, promedio de la hermandad y Jugador MVP con mayor DPS), y 7) Salir.',
+    vectors: 'vector<string> miembros | vector<float> dpsPuntos',
+    functions: [
+      'void menu() -> Menú de administración de clan',
+      'void guardarMiembro(vector<string>& clan, vector<float>& dps) -> Alta de nuevo guerrero',
+      'void listarClan(const vector<string>& clan, const vector<float>& dps) -> Catálogo de combatientes',
+      'int buscarMiembro(const vector<string>& clan, const string& tag) -> Búsqueda por Gamertag',
+      'void actualizarDPS(vector<float>& dps) -> Recálculo de daño en memoria',
+      'void eliminarMiembro(vector<string>& clan, vector<float>& dps) -> Baja en ambos vectores',
+      'void reportesDPS_MVP(const vector<string>& clan, const vector<float>& dps) -> Suma total, promedio y MVP'
+    ],
+    steps: [
+      { id: 'step1', title: 'Menú del Gremio', desc: 'Navegación interactiva en bucle de consola.' },
+      { id: 'step2', title: '1. Guardar Miembro', desc: 'Registra Gamertag y DPS en la misma posición i.' },
+      { id: 'step3', title: '2. Listar Hermandad', desc: 'Imprime lista formateada con índice de cada jugador.' },
+      { id: 'step4', title: '3. Buscar Jugador', desc: 'Localiza la posición del miembro por su Gamertag.' },
+      { id: 'step5', title: '4. Actualizar DPS', desc: 'Permite ingresar nueva cifra de daño tras la raid.' },
+      { id: 'step6', title: '5. Eliminar Miembro', desc: 'Expulsión limpia de ambos vectores paralelos.' },
+      { id: 'step7', title: '6. Reportes & MVP', desc: 'Calcula total, promedio y determina al jugador MVP.' },
+    ],
+  },
+  {
+    id: 4,
+    section: '2. Búsqueda, Forja y Clasificación',
+    title: '4. Hangar Sci-Fi: Control de Bahías, Naves y Asignación de Pilotos',
+    statement: 'Implementar el sistema de control de tráfico aéreo de una estación espacial con dos vectores paralelos: matrículas/IDs de naves (string) y pilotos asignados (string). El sistema debe operar con un Menú repetitivo que permita: 1) Guardar nave y tripulante en una nueva bahía, 2) Listar estado general de todas las bahías del hangar, 3) Buscar nave por matrícula indicando su bahía exacta y piloto, 4) Actualizar/Reasignar piloto de una nave existente, 5) Eliminar nave despegada o destruida, 6) Reportes de ocupación (total de bahías activas y resumen alfanumérico de naves), y 7) Salir.',
+    vectors: 'vector<string> matriculas | vector<string> pilotos',
+    functions: [
+      'void menu() -> Menú de control del hangar espacial',
+      'void guardarNave(vector<string>& mat, vector<string>& pil) -> Acoplamiento de nave',
+      'void listarHangar(const vector<string>& mat, const vector<string>& pil) -> Despliegue de bahías',
+      'int buscarNave(const vector<string>& mat, const string& buscada) -> Búsqueda de matrícula (retorna bahía)',
+      'void actualizarPiloto(vector<string>& pil) -> Reasignación de comandante',
+      'void eliminarNave(vector<string>& mat, vector<string>& pil) -> Despegue/Liberación de bahía',
+      'void reporteOcupacion(const vector<string>& mat, const vector<string>& pil) -> Métricas de tráfico'
+    ],
+    steps: [
+      { id: 'step1', title: 'Menú de la Torre de Control', desc: 'Ciclo interactivo de comandos espaciales.' },
+      { id: 'step2', title: '1. Guardar Nave', desc: 'Añade matrícula y piloto en la siguiente bahía disponible.' },
+      { id: 'step3', title: '2. Listar Hangar', desc: 'Muestra [Bahía i] Matrícula - Piloto.' },
+      { id: 'step4', title: '3. Buscar Nave', desc: 'Retorna el índice de la bahía para despliegue rápido.' },
+      { id: 'step5', title: '4. Actualizar Piloto', desc: 'Sobrescribe el nombre del comandante de vuelo.' },
+      { id: 'step6', title: '5. Eliminar Nave', desc: 'Libera la bahía borrando de ambos vectores.' },
+      { id: 'step7', title: '6. Reportes de Ocupación', desc: 'Informa total de bahías operativas en la estación.' },
+    ],
+  },
+  {
+    id: 5,
+    section: '2. Búsqueda, Forja y Clasificación',
+    title: '5. Alquimia & Forja Rúnica: Almacén de Ingredientes, Crafteo y Stock',
+    statement: 'Crear el sistema de inventario del taller de alquimia con dos vectores paralelos: materiales mágicos (string) y unidades disponibles en stock (int). Con un Menú de consola interactivo, debe permitir: 1) Guardar nuevo ingrediente descubierto en la bolsa, 2) Listar todos los materiales y sus existencias actuales, 3) Buscar material por nombre para chequear disponibilidad, 4) Actualizar/Consumir stock (crafteo: descuenta unidades si stock > 0), 5) Eliminar material obsoleto o agotado de la bolsa, 6) Reportes de recursos agotados (stock == 0) y total de ítems almacenados, y 7) Salir.',
+    vectors: 'vector<string> materiales | vector<int> stock',
+    functions: [
+      'void menu() -> Menú del laboratorio alquímico',
+      'void guardarMaterial(vector<string>& mats, vector<int>& stock) -> Alta de ingrediente rúnico',
+      'void listarAlquimia(const vector<string>& mats, const vector<int>& stock) -> Visualización de bolsa',
+      'int buscarMaterial(const vector<string>& mats, const string& buscado) -> Búsqueda por nombre',
+      'void actualizarStock(vector<int>& stock) -> Modificación o consumo por crafteo',
+      'void eliminarMaterial(vector<string>& mats, vector<int>& stock) -> Borrado sincronizado',
+      'void reporteStockAgotado(const vector<string>& mats, const vector<int>& stock) -> Filtro de ítems en cero'
+    ],
+    steps: [
+      { id: 'step1', title: 'Menú del Alquimista', desc: 'Opciones de consola para gestión de reactivos.' },
+      { id: 'step2', title: '1. Guardar Ingrediente', desc: 'Inserta nombre y stock inicial en vectores paralelos.' },
+      { id: 'step3', title: '2. Listar Bolsa', desc: 'Muestra [i] Material: X unidades.' },
+      { id: 'step4', title: '3. Buscar Ingrediente', desc: 'Comprueba si el material existe en el almacén.' },
+      { id: 'step5', title: '4. Actualizar / Craftear', desc: 'Descuenta stock si hay unidades disponibles.' },
+      { id: 'step6', title: '5. Eliminar Material', desc: 'Quita el material de la memoria sin dejar huecos.' },
+      { id: 'step7', title: '6. Reportes de Stock', desc: 'Emite alerta de insumos completamente agotados.' },
+    ],
+  },
+  {
+    id: 6,
+    section: '2. Búsqueda, Forja y Clasificación',
+    title: '6. Torneo Arcade Global: Leaderboard, Clasificación y Tabla de Récords',
+    statement: 'Desarrollar la máquina de records de un torneo arcade con dos vectores paralelos: Gamertags (string) y puntajes Highscore (int). Mediante un Menú interactivo, debe permitir: 1) Guardar nueva partida y récord de jugador, 2) Listar la tabla de puntajes en el orden actual, 3) Buscar competidor por Gamertag para ver su puntuación, 4) Actualizar score si el jugador bate su marca personal, 5) Eliminar jugador descalificado del torneo, 6) Reportes de Clasificación (algoritmo de ordenamiento burbuja descendente sincronizado del Top Scores y puntuación máxima), y 7) Salir.',
+    vectors: 'vector<string> gamertags | vector<int> puntajes',
+    functions: [
+      'void menu() -> Menú arcade de salón de juegos',
+      'void guardarPartida(vector<string>& tags, vector<int>& scores) -> Registro de récord',
+      'void listarRanking(const vector<string>& tags, const vector<int>& scores) -> Tabla de competidores',
+      'int buscarJugador(const vector<string>& tags, const string& target) -> Búsqueda de gamertag',
+      'void actualizarScore(vector<int>& scores) -> Actualización de highscore',
+      'void eliminarJugador(vector<string>& tags, vector<int>& scores) -> Retiro de competidor',
+      'void reporteTopScores(vector<string>& tags, vector<int>& scores) -> Ordenamiento burbuja descendente'
+    ],
+    steps: [
+      { id: 'step1', title: 'Menú del Arcade Cabinet', desc: 'Interfaz de consola para administración del torneo.' },
+      { id: 'step2', title: '1. Guardar Jugador', desc: 'Almacena Gamertag y puntaje en la misma posición.' },
+      { id: 'step3', title: '2. Listar Récords', desc: 'Muestra lista completa de participantes.' },
+      { id: 'step4', title: '3. Buscar Gamertag', desc: 'Localiza la posición del jugador en la tabla.' },
+      { id: 'step5', title: '4. Actualizar Highscore', desc: 'Sobrescribe la marca si supera el puntaje previo.' },
+      { id: 'step6', title: '5. Eliminar Registro', desc: 'Elimina al jugador descalificado en ambos vectores.' },
+      { id: 'step7', title: '6. Ordenar Top Scores', desc: 'Aplica swap() simultáneo en scores y gamertags.' },
+    ],
+  },
+  {
+    id: 7,
+    section: '3. Sistemas Multivector & Economía Gamer',
+    title: '7. Dungeon Crawler MMORPG: Servidor de Mazmorras, Salas y Partidas',
+    statement: 'Modelar un servidor de dungeons multijugador con tres vectores paralelos: número de sala (int), estado ("LIBRE" / "EN_COMBATE", string) y Gamertag del líder de party (string). Con un Menú interactivo, debe permitir: 1) Guardar nueva mazmorra habilitada en el servidor, 2) Listar estado en tiempo real de todas las salas, 3) Buscar sala por número verificando disponibilidad, 4) Actualizar estado y asignar party (Entrada a Mazmorra), 5) Eliminar sala dada de baja o en mantenimiento, 6) Reportes de servidor (porcentaje de ocupación de salas y lista de parties activas), y 7) Salir.',
+    vectors: 'vector<int> salas | vector<string> estados | vector<string> lideresParty',
+    functions: [
+      'void menu() -> Menú de control del servidor de dungeons',
+      'void guardarSala(vector<int>& s, vector<string>& est, vector<string>& lid) -> Registro de mazmorra',
+      'void listarSalas(const vector<int>& s, const vector<string>& est, const vector<string>& lid) -> Estado de salas',
+      'int buscarSala(const vector<int>& s, int salaBuscada) -> Búsqueda de sala por ID',
+      'void actualizarEstadoSala(vector<string>& est, vector<string>& lid) -> Entrada o liberación de party',
+      'void eliminarSala(vector<int>& s, vector<string>& est, vector<string>& lid) -> Borrado triple sincronizado',
+      'void reporteSalasActivas(const vector<int>& s, const vector<string>& est, const vector<string>& lid) -> Métricas de raid'
+    ],
+    steps: [
+      { id: 'step1', title: 'Menú de Servidor de Mazmorras', desc: 'Ciclo de opciones para master de dungeons.' },
+      { id: 'step2', title: '1. Guardar Mazmorra', desc: 'Registra número de sala, estado inicial "LIBRE" y líder "-".' },
+      { id: 'step3', title: '2. Listar Servidor', desc: 'Muestra [Sala X] Estado - Líder de Party.' },
+      { id: 'step4', title: '3. Buscar Mazmorra', desc: 'Comprueba si la sala solicitada existe en el servidor.' },
+      { id: 'step5', title: '4. Entrada / Liberación', desc: 'Actualiza estado a "EN_COMBATE" o "LIBRE".' },
+      { id: 'step6', title: '5. Eliminar Sala', desc: 'Borrado atómico en los tres vectores a la vez.' },
+      { id: 'step7', title: '6. Reportes de Mazmorras', desc: 'Calcula porcentaje de ocupación y combate en vivo.' },
+    ],
+  },
+  {
+    id: 8,
+    section: '3. Sistemas Multivector & Economía Gamer',
+    title: '8. Supervivencia Post-Apocalíptica: Mochila Táctica, Municiones y Alertas HUD',
+    statement: 'Diseñar la computadora de supervivencia táctica con dos vectores paralelos: suministros/municiones (string) y unidades en inventario (int). Mediante un Menú interactivo continuo, debe permitir: 1) Guardar nuevo recurso recolectado en la zona segura, 2) Listar inventario táctico completo, 3) Buscar suministro por nombre para consultar existencias, 4) Actualizar unidades tras disparar o consumir raciones, 5) Eliminar ítem descartado o consumido totalmente, 6) Reportes de Alerta HUD (filtrar recursos por debajo del umbral de emergencia < 5 unidades y total de provisiones), y 7) Salir.',
+    vectors: 'vector<string> suministros | vector<int> cantidades',
+    functions: [
+      'void menu() -> Menú de supervivencia táctica',
+      'void guardarRecurso(vector<string>& sum, vector<int>& cant) -> Registro de munición/botiquín',
+      'void listarMochila(const vector<string>& sum, const vector<int>& cant) -> Vista de inventario táctico',
+      'int buscarRecurso(const vector<string>& sum, const string& target) -> Búsqueda por nombre',
+      'void actualizarUnidades(vector<int>& cant) -> Modificación de cantidad en mochila',
+      'void eliminarRecurso(vector<string>& sum, vector<int>& cant) -> Descarte de ítem en ambos vectores',
+      'void reporteAlertasHUD(const vector<string>& sum, const vector<int>& cant, int minVal) -> Alerta de peligro < 5u'
+    ],
+    steps: [
+      { id: 'step1', title: 'Menú del Dispositivo de Supervivencia', desc: 'Bucle interactivo de control de recursos.' },
+      { id: 'step2', title: '1. Guardar Suministro', desc: 'Inserta nombre del ítem y unidades en la mochila.' },
+      { id: 'step3', title: '2. Listar Inventario', desc: 'Muestra [i] Suministro: X unidades restantes.' },
+      { id: 'step4', title: '3. Buscar Ítem', desc: 'Verifica la posición del recurso en la mochila.' },
+      { id: 'step5', title: '4. Actualizar Balas/Pociones', desc: 'Descuenta o suma unidades en tiempo real.' },
+      { id: 'step6', title: '5. Eliminar Recurso', desc: 'Borra el registro sincronizado de ambos vectores.' },
+      { id: 'step7', title: '6. Alerta Crítica HUD', desc: 'Filtra y emite advertencia de insumos bajo el umbral.' },
+    ],
+  },
+  {
+    id: 9,
+    section: '3. Sistemas Multivector & Economía Gamer',
+    title: '9. Domador de Criaturas RPG: Bestiario, Afinidades Elementales y Capturas',
+    statement: 'Construir el bestiario de un domador con tres vectores paralelos: nombres de criaturas (string), elemento afin (string) y poder de combate CP (float). Con un Menú de opciones interactivo, debe permitir: 1) Guardar/Capturar criatura registrando sus 3 atributos, 2) Listar bestiario completo con índices y estadísticas, 3) Buscar criatura por nombre para ver su elemento y poder CP, 4) Actualizar poder CP tras entrenamiento, 5) Eliminar/Liberar criatura a su hábitat salvaje en los 3 vectores a la vez, 6) Reportes elementales (criatura con mayor CP y cantidad de criaturas por elemento), y 7) Salir.',
+    vectors: 'vector<string> nombres | vector<string> elementos | vector<float> poderCP',
+    functions: [
+      'void menu() -> Menú del domador de monstruos',
+      'void guardarCriatura(vector<string>& nom, vector<string>& ele, vector<float>& cp) -> Captura y registro',
+      'void listarBestiario(const vector<string>& nom, const vector<string>& ele, const vector<float>& cp) -> Despliegue de criaturas',
+      'int buscarCriatura(const vector<string>& nom, const string& target) -> Búsqueda por especie/nombre',
+      'void actualizarPoderCP(vector<float>& cp) -> Subida de poder de combate tras batalla',
+      'void eliminarCriatura(vector<string>& nom, vector<string>& ele, vector<float>& cp) -> Liberación atómica triple',
+      'void reporteCriaturaMaxCP(const vector<string>& nom, const vector<string>& ele, const vector<float>& cp) -> Criatura legendaria MVP'
+    ],
+    steps: [
+      { id: 'step1', title: 'Menú del Domador', desc: 'Gestor interactivo del bestiario mágico.' },
+      { id: 'step2', title: '1. Guardar Criatura', desc: 'Registra especie, afinidad elemental y poder CP.' },
+      { id: 'step3', title: '2. Listar Bestiario', desc: 'Muestra [i] Criatura [Elemento] - CP.' },
+      { id: 'step4', title: '3. Buscar Criatura', desc: 'Ubica al monstruo por nombre en el registro.' },
+      { id: 'step5', title: '4. Actualizar Poder CP', desc: 'Ajusta la fuerza de combate del espécimen.' },
+      { id: 'step6', title: '5. Liberar Criatura', desc: 'Elimina simultáneamente de los tres vectores.' },
+      { id: 'step7', title: '6. Reporte de Poder Máximo', desc: 'Identifica al espécimen más poderoso del bestiario.' },
+    ],
+  },
+  {
+    id: 10,
+    section: '3. Sistemas Multivector & Economía Gamer',
+    title: '10. Tienda Gacha & Pase de Batalla: Catálogo de Skins, Canjes y Auditoría',
+    statement: 'Diseñar el backend de la tienda de skins y pases de batalla con tres vectores paralelos: nombres de skins cosméticas (string), unidades en stock (int) y costo en gemas virtuales (float). A través de un Menú interactivo, debe permitir: 1) Guardar nueva skin de temporada, 2) Listar catálogo de cosméticos con stock y precios, 3) Buscar skin por nombre para consultar detalles de canje, 4) Actualizar precio o stock tras reabastecimiento o compra, 5) Eliminar skin retirada de la tienda, 6) Reportes económicos (recaudación potencial en gemas, skins agotadas y skin legendaria más costosa), y 7) Salir.',
+    vectors: 'vector<string> skins | vector<int> stockSkins | vector<float> costosGemas',
+    functions: [
+      'void menu() -> Menú de la tienda de skins y pases',
+      'void guardarSkin(vector<string>& s, vector<int>& stock, vector<float>& cost) -> Alta de nuevo cosmético',
+      'void listarTienda(const vector<string>& s, const vector<int>& stock, const vector<float>& cost) -> Catálogo de temporada',
+      'int buscarSkin(const vector<string>& s, const string& target) -> Búsqueda por nombre de skin',
+      'void actualizarSkin(vector<int>& stock, vector<float>& cost) -> Ajuste de precio o stock',
+      'void eliminarSkin(vector<string>& s, vector<int>& stock, vector<float>& cost) -> Retiro de catálogo triple',
+      'void reporteRecaudacionGemas(const vector<string>& s, const vector<int>& stock, const vector<float>& cost) -> Auditoría de gemas'
+    ],
+    steps: [
+      { id: 'step1', title: 'Menú del Bazar Gamer', desc: 'Navegación interactiva de la tienda de temporada.' },
+      { id: 'step2', title: '1. Guardar Skin', desc: 'Registra cosmético, unidades disponibles y tarifa en gemas.' },
+      { id: 'step3', title: '2. Listar Catálogo', desc: 'Muestra [i] Skin - Stock disp. - $Gemas.' },
+      { id: 'step4', title: '3. Buscar Cosmético', desc: 'Comprueba existencia de la skin para canje.' },
+      { id: 'step5', title: '4. Actualizar / Canjear', desc: 'Descuenta stock y calcula débito en gemas.' },
+      { id: 'step6', title: '5. Eliminar Skin', desc: 'Baja del catálogo en los 3 vectores a la vez.' },
+      { id: 'step7', title: '6. Reportes de Auditoría', desc: 'Calcula recaudación potencial y skin más valiosa.' },
+    ],
+  },
+];
+
+const totalQuests = exercises.length;
+const totalXP = totalQuests * 200;
+---
+
+<GameLayout
+  title="Tipo Prueba: Vectores & Funciones CRUD — Desafíos Gamer"
+  description="10 casos prácticos tipo prueba de vectores paralelos y funciones CRUD en C++, Python, Java, C#, JS, PHP y PSeInt con clave de revisión."
+  activeModule="vectors-crud-exam"
+>
+  <div class="gamer-universe min-h-screen bg-[#070B14] text-slate-100 relative overflow-hidden pb-16">
+    <!-- EFECTO LUZ -->
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(59,130,246,0.18),rgba(255,255,255,0))] pointer-events-none"></div>
+
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 relative z-10 pt-6">
+      
+      <!-- BREADCRUMB -->
+      <div class="flex items-center justify-between mb-6 pb-3 border-b border-blue-500/20">
+        <div class="flex items-center gap-2">
+          <a href="/challenges-game/" class="text-xs font-nunito font-extrabold text-blue-400 no-underline hover:text-blue-300 flex items-center gap-1 transition-colors">
+            ← Volver a Zona Gamer
+          </a>
+          <span class="text-slate-600">/</span>
+          <a href="/course/cpp/array-examen/" class="text-xs font-nunito font-bold text-slate-400 no-underline hover:text-white transition-colors">
+            Examen C++ CRUD
+          </a>
+          <span class="text-slate-600">/</span>
+          <span class="text-xs font-nunito font-black uppercase tracking-wider text-blue-400">
+            Módulo 06: Tipo Prueba CRUD
+          </span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-bold text-blue-300 bg-blue-950/80 border border-blue-500/40 px-3 py-1 rounded-full">
+            ⭐ 10 Misiones Tipo Prueba · {totalXP} XP
+          </span>
+        </div>
+      </div>
+
+      <!-- HERO BANNER -->
+      <div class="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-blue-950/70 via-slate-900/90 to-slate-950 border-2 border-blue-500/40 shadow-2xl relative overflow-hidden mb-6">
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative z-10">
+          <div>
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 border border-blue-400/40 text-blue-300 text-xs font-black uppercase tracking-widest mb-3">
+              <span>🎯 PREPARACIÓN DE EVALUACIÓN PRÁCTICA</span>
+            </div>
+            <h1 class="text-2xl sm:text-4xl font-black text-white m-0 font-nunito tracking-tight flex items-center gap-3">
+              <span>📊 Tipo Prueba: Vectores & Funciones CRUD</span>
+            </h1>
+            <p class="text-slate-300 text-sm sm:text-base mt-2 max-w-3xl leading-relaxed">
+              10 casos prácticos tipo prueba universitaria y técnica. Cada ejercicio modela un <strong>sistema de consola completo con Menú interactivo</strong> y las 6 operaciones fundamentales de arreglos/vectores paralelos en memoria RAM.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ARQUITECTURA DE UN SISTEMA CRUD TIPO EXAMEN -->
+      <div class="p-6 rounded-3xl bg-slate-900/90 border-2 border-slate-800 shadow-xl mb-8">
+        <div class="flex items-center gap-3 mb-4 pb-3 border-b border-slate-800">
+          <span class="w-9 h-9 rounded-xl bg-blue-600/30 border border-blue-500/40 text-blue-300 font-black flex items-center justify-center text-base">
+            📐
+          </span>
+          <div>
+            <h2 class="text-base sm:text-lg font-black text-white m-0">
+              Estructura Obligatoria de Cada Sistema en Consola
+            </h2>
+            <p class="text-xs text-slate-400 m-0">
+              Todo ejercicio de evaluación debe incluir el Menú y las 6 funciones modulares correspondientes:
+            </p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          <!-- Pilar 0: Menú -->
+          <div class="p-3.5 rounded-2xl bg-slate-950/70 border border-purple-500/30 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center gap-2 mb-1.5">
+                <span class="text-base">📋</span>
+                <span class="text-xs font-black text-purple-300 uppercase tracking-wide">Menú Interactivo</span>
+              </div>
+              <p class="text-[11px] text-slate-300 leading-relaxed m-0">
+                Bucle continuo (<code>do-while</code> / <code>while</code>) con opciones <code>1. Guardar</code>, <code>2. Listar</code>, <code>3. Buscar</code>, <code>4. Actualizar</code>, <code>5. Eliminar</code>, <code>6. Reportes</code> y <code>7. Salir</code>.
+              </p>
+            </div>
+            <code class="mt-2 text-[10px] text-purple-400 font-mono block">do &#123; ... &#125; while (opcion != 7);</code>
+          </div>
+
+          <!-- Pilar 1: Guardar -->
+          <div class="p-3.5 rounded-2xl bg-slate-950/70 border border-emerald-500/30 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center gap-2 mb-1.5">
+                <span class="text-base">➕</span>
+                <span class="text-xs font-black text-emerald-300 uppercase tracking-wide">1. Guardar / Crear</span>
+              </div>
+              <p class="text-[11px] text-slate-300 leading-relaxed m-0">
+                Solicita los datos por consola y los añade con <code>push_back()</code> / <code>append()</code> en <strong>ambos vectores en la misma posición</strong>.
+              </p>
+            </div>
+            <code class="mt-2 text-[10px] text-emerald-400 font-mono block">nombres.push_back(n); notas.push_back(v);</code>
+          </div>
+
+          <!-- Pilar 2: Listar -->
+          <div class="p-3.5 rounded-2xl bg-slate-950/70 border border-blue-500/30 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center gap-2 mb-1.5">
+                <span class="text-base">📜</span>
+                <span class="text-xs font-black text-blue-300 uppercase tracking-wide">2. Listar / Mostrar</span>
+              </div>
+              <p class="text-[11px] text-slate-300 leading-relaxed m-0">
+                Recorre la lista con un ciclo <code>for</code> imprimiendo cada elemento con su índice <code>[i]</code> para que el usuario conozca las posiciones válidas.
+              </p>
+            </div>
+            <code class="mt-2 text-[10px] text-blue-400 font-mono block">cout &lt;&lt; "[" &lt;&lt; i &lt;&lt; "] " &lt;&lt; nombres[i];</code>
+          </div>
+
+          <!-- Pilar 3: Buscar -->
+          <div class="p-3.5 rounded-2xl bg-slate-950/70 border border-amber-500/30 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center gap-2 mb-1.5">
+                <span class="text-base">🔍</span>
+                <span class="text-xs font-black text-amber-300 uppercase tracking-wide">3. Buscar (Search)</span>
+              </div>
+              <p class="text-[11px] text-slate-300 leading-relaxed m-0">
+                Búsqueda lineal comparando cada elemento con el valor buscado. Retorna el <strong>índice <code>i</code></strong> si lo encuentra o <code>-1</code> si no existe.
+              </p>
+            </div>
+            <code class="mt-2 text-[10px] text-amber-400 font-mono block">if (v[i] == buscado) return i; return -1;</code>
+          </div>
+
+          <!-- Pilar 4: Actualizar -->
+          <div class="p-3.5 rounded-2xl bg-slate-950/70 border border-cyan-500/30 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center gap-2 mb-1.5">
+                <span class="text-base">✏️</span>
+                <span class="text-xs font-black text-cyan-300 uppercase tracking-wide">4. Actualizar (Update)</span>
+              </div>
+              <p class="text-[11px] text-slate-300 leading-relaxed m-0">
+                Valida estrictamente los límites de memoria <code>0 &lt;= idx &lt; size()</code> antes de sobrescribir los nuevos valores pasados por referencia.
+              </p>
+            </div>
+            <code class="mt-2 text-[10px] text-cyan-400 font-mono block">if (idx &gt;= 0 &amp;&amp; idx &lt; size) vec[idx] = val;</code>
+          </div>
+
+          <!-- Pilar 5: Eliminar -->
+          <div class="p-3.5 rounded-2xl bg-slate-950/70 border border-rose-500/30 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center gap-2 mb-1.5">
+                <span class="text-base">🗑️</span>
+                <span class="text-xs font-black text-rose-300 uppercase tracking-wide">5. Eliminar (Delete)</span>
+              </div>
+              <p class="text-[11px] text-slate-300 leading-relaxed m-0">
+                Borrado sincronizado. Aplica <code>erase()</code> o eliminación atómica en <strong>todos los vectores paralelos al mismo tiempo</strong> para evitar desfasar datos.
+              </p>
+            </div>
+            <code class="mt-2 text-[10px] text-rose-400 font-mono block">a.erase(a.begin()+i); b.erase(b.begin()+i);</code>
+          </div>
+
+          <!-- Pilar 6: Reportes -->
+          <div class="p-3.5 rounded-2xl bg-slate-950/70 border border-indigo-500/30 flex flex-col justify-between sm:col-span-2 lg:col-span-3">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div>
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="text-base">📊</span>
+                  <span class="text-xs font-black text-indigo-300 uppercase tracking-wide">6. Obtener Reportes y Estadísticas</span>
+                </div>
+                <p class="text-[11px] text-slate-300 leading-relaxed m-0">
+                  Cálculo de métricas globales: sumas de recursos/DPS/oro, promedios, detección de elemento máximo (MVP/Récord), alertas de umbral crítico (HP &lt; 30%, stock &lt; 5) o clasificaciones ordenadas.
+                </p>
+              </div>
+              <code class="text-[10px] text-indigo-400 font-mono block shrink-0 bg-slate-900/80 px-2.5 py-1.5 rounded-lg border border-indigo-500/20">
+                promedio = total / size; | if (val[i] &gt; max) maxIdx = i;
+              </code>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LISTA DE EJERCICIOS TIPO PRUEBA -->
+      <div class="space-y-6">
+        {exercises.map((ex) => (
+          <div class="p-6 rounded-2xl bg-[#0b1222] border-2 border-slate-800 hover:border-blue-500/40 transition-all shadow-lg" id={`mission-${ex.id}`}>
+            <div class="flex flex-wrap items-center justify-between gap-3 mb-4 pb-3 border-b border-slate-800">
+              <div class="flex items-center gap-3">
+                <span class="w-8 h-8 rounded-xl bg-blue-600 text-white font-black flex items-center justify-center text-sm shadow-md">
+                  {ex.id}
+                </span>
+                <div>
+                  <span class="text-[10px] text-blue-400 uppercase font-black tracking-wider block">{ex.section}</span>
+                  <h2 class="text-base sm:text-lg font-black text-white m-0">{ex.title}</h2>
+                </div>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-mono font-bold text-slate-400 bg-slate-900 border border-slate-700 px-2.5 py-1 rounded-lg">
+                  +200 XP
+                </span>
+              </div>
+            </div>
+
+            <!-- ENUNCIADO -->
+            <p class="text-sm text-slate-300 leading-relaxed mb-4">
+              {ex.statement}
+            </p>
+
+            <!-- ESPECIFICACIÓN TÉCNICA -->
+            <div class="grid grid-cols-1 md:grid-cols-1 gap-3 my-4">
+              <div class="p-3 rounded-xl bg-slate-950/60 border border-slate-800">
+                <div class="text-[10px] text-blue-400 font-bold uppercase tracking-wider mb-1">📦 Vectores en Memoria:</div>
+                <code class="text-xs text-slate-200 font-mono block">{ex.vectors}</code>
+              </div>
+              <div class="p-3 rounded-xl bg-slate-950/60 border border-slate-800">
+                <div class="text-[10px] text-indigo-400 font-bold uppercase tracking-wider mb-1">⚙️ Funciones Clave:</div>
+                <div class="space-y-1">
+                  {ex.functions.map(fn => (
+                    <code class="text-[11px] text-emerald-300 font-mono block truncate">{fn}</code>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <!-- CHECKLIST DE PASOS -->
+            <div class="my-4 p-4 rounded-xl bg-slate-900/40 border border-slate-800/80">
+              <div class="text-xs font-bold text-slate-300 mb-2">📋 Pasos de Implementación / Criterios de Evaluación:</div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {ex.steps.map((st) => (
+                  <label class="flex items-start gap-2 text-xs text-slate-400 hover:text-slate-200 cursor-pointer select-none">
+                    <input type="checkbox" class="mt-0.5 rounded border-slate-700 text-blue-600 focus:ring-0" />
+                    <span><strong>{st.title}:</strong> {st.desc}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            <!-- BOTÓN DE DESBLOQUEO DE SOLUCIÓN -->
+            <div class="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between flex-wrap gap-3">
+              <span class="text-xs text-slate-400">
+                Disponible en: <strong>C++, Python, Java, C#, JS, PHP, PSeInt</strong>
+              </span>
+              <button
+                type="button"
+                class="open-solution-modal-btn px-4 py-2 rounded-xl bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 border border-blue-500/40 font-bold text-xs transition-all flex items-center gap-2 cursor-pointer active:scale-95"
+                data-ex-id={ex.id}
+                data-ex-title={ex.title}
+              >
+                <span>🔒 Desbloquear Solución & Resultado</span>
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MODAL DE SOLUCIÓN MULTILENGUAJE CON CLAVE -->
+  <div id="solutionModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
+    <div class="bg-[#0b1222] border-2 border-blue-500/40 w-full max-w-4xl max-h-[90vh] rounded-3xl shadow-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+      
+      <!-- CABECERA MODAL -->
+      <div class="px-6 py-4 border-b border-slate-800 bg-slate-900/50 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <span class="text-xl">💡</span>
+          <div>
+            <h3 id="modalExerciseTitle" class="text-base sm:text-lg font-black text-white m-0">Solución del Ejercicio</h3>
+            <p class="text-xs text-blue-400 m-0">Vectores Paralelos y Funciones CRUD Multilenguaje</p>
+          </div>
+        </div>
+        <button id="closeSolutionModal" class="text-slate-400 hover:text-white p-2 rounded-xl hover:bg-slate-800 transition-colors text-lg cursor-pointer">
+          ✕
+        </button>
+      </div>
+
+      <!-- PASO 1: VALIDACIÓN DE CONTRASEÑA -->
+      <div id="passwordStep" class="p-8 flex flex-col items-center justify-center text-center">
+        <div class="w-16 h-16 rounded-2xl bg-blue-950/80 border border-blue-500/40 text-blue-400 text-3xl flex items-center justify-center mb-4 shadow-lg shadow-blue-500/10">
+          🔒
+        </div>
+        <h4 class="text-xl font-black text-white mb-2">Ingresa la clave para ver el código y resultados</h4>
+        <p class="text-slate-300 text-sm max-w-md mb-6">
+          Este módulo está protegido para evaluar el razonamiento del estudiante. Introduce la clave de revisión (fecha actual en formato <strong>DDMMAAAA</strong>, ej: <code class="text-amber-300 font-mono font-bold">05092026</code> o clave docente).
+        </p>
+
+        <div class="flex items-center gap-2 w-full max-w-sm">
+          <input
+            type="password"
+            id="modalPasswordInput"
+            placeholder="Clave (ej: 05092026)..."
+            class="flex-1 px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-sm font-mono focus:border-blue-400 outline-none"
+          />
+          <button
+            type="button"
+            id="btnVerifyPassword"
+            class="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-black text-sm transition-all shadow-md active:scale-95 cursor-pointer"
+          >
+            Verificar
+          </button>
+        </div>
+
+        <div id="modalPasswordError" class="mt-3 text-xs text-red-400 font-bold hidden flex items-center gap-1.5">
+          <span>❌ Clave incorrecta. Usa la fecha actual en formato DDMMAAAA (ej: 05092026).</span>
+        </div>
+      </div>
+
+      <!-- PASO 2: CÓDIGO Y SOLUCIÓN EN 7 LENGUAJES (VISIBLE TRAS VALIDAR) -->
+      <div id="codeStep" class="hidden flex-col flex-1 overflow-hidden">
+        <!-- SELECTOR DE LENGUAJE -->
+        <div class="px-6 py-3 border-b border-slate-800 bg-slate-900/30 flex items-center gap-2 overflow-x-auto" id="langSelectorGroup">
+          <button type="button" class="lang-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer bg-blue-600 text-white" data-lang="cpp">C++</button>
+          <button type="button" class="lang-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer bg-slate-900 text-slate-300 hover:text-white" data-lang="python">Python</button>
+          <button type="button" class="lang-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer bg-slate-900 text-slate-300 hover:text-white" data-lang="java">Java</button>
+          <button type="button" class="lang-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer bg-slate-900 text-slate-300 hover:text-white" data-lang="csharp">C#</button>
+          <button type="button" class="lang-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer bg-slate-900 text-slate-300 hover:text-white" data-lang="javascript">JavaScript</button>
+          <button type="button" class="lang-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer bg-slate-900 text-slate-300 hover:text-white" data-lang="php">PHP</button>
+          <button type="button" class="lang-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer bg-slate-900 text-slate-300 hover:text-white" data-lang="pseint">PSeInt</button>
+        </div>
+
+        <!-- VISOR DE CÓDIGO -->
+        <div class="flex-1 overflow-y-auto p-4 bg-[#070b14]" id="codeBlocksContainer">
+          <div class="code-panel" data-lang-panel="cpp"><CodeBlock lang="cpp" title="Solución en C++" code="" /></div>
+          <div class="code-panel hidden" data-lang-panel="python"><CodeBlock lang="python" title="Solución en Python" code="" /></div>
+          <div class="code-panel hidden" data-lang-panel="java"><CodeBlock lang="java" title="Solución en Java" code="" /></div>
+          <div class="code-panel hidden" data-lang-panel="csharp"><CodeBlock lang="csharp" title="Solución en C#" code="" /></div>
+          <div class="code-panel hidden" data-lang-panel="javascript"><CodeBlock lang="javascript" title="Solución en JavaScript" code="" /></div>
+          <div class="code-panel hidden" data-lang-panel="php"><CodeBlock lang="php" title="Solución en PHP" code="" /></div>
+          <div class="code-panel hidden" data-lang-panel="pseint"><CodeBlock lang="pseint" title="Solución en PSeInt" code="" /></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script is:inline define:vars={{ rawSolutions: gameVectorsCrudSolutions }}>
+    window.ALL_VECTORS_CRUD_SOLUTIONS = rawSolutions;
+  </script>
+
+  <script is:inline>
+    (function () {
+      function getFormattedToday() {
+        const d = new Date();
+        const day = String(d.getDate()).padStart(2, "0");
+        const month = String(d.getMonth() + 1).padStart(2, "0");
+        const year = String(d.getFullYear());
+        return day + month + year;
+      }
+
+      function isValidKey(inputKey) {
+        const cleaned = (inputKey || "").trim().toLowerCase();
+        const todayKey = getFormattedToday();
+        return (
+          cleaned === todayKey ||
+          cleaned === "05092026" ||
+          cleaned === "06092026" ||
+          cleaned === "revisionevaluacion" ||
+          cleaned === "examen"
+        );
+      }
+
+      let isUnlockedGlobally = false;
+      let currentExId = 1;
+
+      const ALL_SOLUTIONS = window.ALL_VECTORS_CRUD_SOLUTIONS || {};
+      const modal = document.getElementById("solutionModal");
+      const titleEl = document.getElementById("modalExerciseTitle");
+      const passwordStep = document.getElementById("passwordStep");
+      const codeStep = document.getElementById("codeStep");
+      const passwordInput = document.getElementById("modalPasswordInput");
+      const verifyBtn = document.getElementById("btnVerifyPassword");
+      const errorMsg = document.getElementById("modalPasswordError");
+      const closeModalBtn = document.getElementById("closeSolutionModal");
+
+      function loadExerciseCode(exId) {
+        const sol = ALL_SOLUTIONS[exId];
+        if (!sol) return;
+
+        document.querySelectorAll("#codeBlocksContainer .code-panel").forEach((panel) => {
+          const lang = panel.getAttribute("data-lang-panel");
+          const codeContent = sol[lang];
+          const viewer = panel.querySelector(".code-viewer");
+          const copyBtn = panel.querySelector(".copy-btn");
+          
+          if (copyBtn && codeContent) {
+            copyBtn.setAttribute("data-copy-code", encodeURIComponent(codeContent));
+          }
+
+          if (codeContent && viewer) {
+            viewer.innerHTML = codeContent
+              .split("\n")
+              .map((line, idx) => {
+                const esc = line
+                  .replace(/&/g, "&amp;")
+                  .replace(/</g, "&lt;")
+                  .replace(/>/g, "&gt;");
+                return `<div class="flex px-2 leading-[1.65] hover:bg-white/5 min-w-max"><span class="text-right select-none min-w-[2.2rem] pr-3 mr-3 opacity-40 shrink-0 border-r border-white/10 text-slate-500">${idx + 1}</span><span class="whitespace-pre">${esc}</span></div>`;
+              })
+              .join("");
+          }
+        });
+      }
+
+      function openModal(exId, exTitle) {
+        currentExId = exId;
+        if (titleEl) titleEl.textContent = exTitle;
+        loadExerciseCode(exId);
+
+        if (isUnlockedGlobally) {
+          passwordStep?.classList.add("hidden");
+          codeStep?.classList.remove("hidden");
+          codeStep?.classList.add("flex");
+        } else {
+          passwordStep?.classList.remove("hidden");
+          codeStep?.classList.add("hidden");
+          if (passwordInput) passwordInput.value = "";
+          errorMsg?.classList.add("hidden");
+        }
+
+        modal?.classList.remove("hidden");
+        modal?.classList.add("flex");
+        if (!isUnlockedGlobally) passwordInput?.focus();
+      }
+
+      function closeModal() {
+        modal?.classList.add("hidden");
+        modal?.classList.remove("flex");
+      }
+
+      document.querySelectorAll(".open-solution-modal-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const exId = parseInt(btn.getAttribute("data-ex-id") || "1", 10);
+          const exTitle = btn.getAttribute("data-ex-title") || "Solución";
+          openModal(exId, exTitle);
+        });
+      });
+
+      closeModalBtn?.addEventListener("click", closeModal);
+      modal?.addEventListener("click", (e) => {
+        if (e.target === modal) closeModal();
+      });
+
+      function handleVerify() {
+        const val = passwordInput?.value.trim();
+        if (isValidKey(val)) {
+          isUnlockedGlobally = true;
+          passwordStep?.classList.add("hidden");
+          codeStep?.classList.remove("hidden");
+          codeStep?.classList.add("flex");
+          errorMsg?.classList.add("hidden");
+        } else {
+          errorMsg?.classList.remove("hidden");
+        }
+      }
+
+      verifyBtn?.addEventListener("click", handleVerify);
+      passwordInput?.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") handleVerify();
+      });
+
+      // Hero unlock all button
+      document.getElementById("btnHeroUnlockAll")?.addEventListener("click", () => {
+        openModal(1, "1. CRUD Inventario de Productos y Precios");
+      });
+
+      // Tabs de lenguaje
+      document.querySelectorAll("#langSelectorGroup .lang-tab-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const lang = btn.getAttribute("data-lang");
+          document.querySelectorAll("#langSelectorGroup .lang-tab-btn").forEach((b) => {
+            b.classList.remove("bg-blue-600", "text-white");
+            b.classList.add("bg-slate-900", "text-slate-300");
+          });
+          btn.classList.remove("bg-slate-900", "text-slate-300");
+          btn.classList.add("bg-blue-600", "text-white");
+
+          document.querySelectorAll("#codeBlocksContainer .code-panel").forEach((p) => {
+            p.classList.toggle("hidden", p.getAttribute("data-lang-panel") !== lang);
+          });
+        });
+      });
+    })();
+  </script>
+</GameLayout>
