@@ -2110,7 +2110,6 @@ class Program {
         return -1.0;
     }
 }`,
-    cpp_full: ``,
     javascript: `function canjear(skins, stock, costos, skin, cant) {
   const i = skins.findIndex(s => s.toLowerCase() === skin.toLowerCase());
   if (i !== -1 && stock[i] >= cant) {
