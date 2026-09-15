@@ -1,0 +1,215 @@
+---
+interface Props {
+  src: any; // ImageMetadata | string
+  alt: string;
+  caption?: string;
+  class?: string;
+  maxWidth?: string;
+}
+
+const { src, alt, caption, class: className = '', maxWidth = '800px' } = Astro.props;
+
+const imageSrc = typeof src === 'string' ? src : (src?.src || src);
+const imageWidth = typeof src === 'object' ? src?.width : undefined;
+const imageHeight = typeof src === 'object' ? src?.height : undefined;
+const imageId = `zoom-img-${Math.random().toString(36).substring(2, 9)}`;
+---
+
+<figure class={`zoomable-image-container my-8 ${className}`} style={{ maxWidth }} id={imageId}>
+  <div class="zoom-trigger-wrapper group relative cursor-zoom-in overflow-hidden rounded-2xl border-[3px] border-slate-900 bg-slate-950 shadow-[6px_6px_0px_#0f172a] transition-all duration-200 hover:-translate-y-1 hover:shadow-[8px_8px_0px_#0f172a]" role="button" tabindex="0" title="Clic para ampliar y hacer zoom">
+    <img
+      src={imageSrc}
+      alt={alt}
+      width={imageWidth}
+      height={imageHeight}
+      class="h-auto w-full object-contain transition-transform duration-300 group-hover:scale-[1.01]"
+      loading="eager"
+      decoding="async"
+    />
+    
+    <!-- Hover Badge -->
+    <div class="pointer-events-none absolute bottom-3 right-3 flex items-center gap-1.5 rounded-full bg-slate-900/90 px-3 py-1 text-xs font-mono font-bold text-white shadow-md backdrop-blur-sm transition-opacity group-hover:bg-emerald-600">
+      <span>🔍</span>
+      <span>Clic para ampliar</span>
+    </div>
+  </div>
+
+  {caption && (
+    <figcaption class="mt-2.5 text-center font-mono text-xs text-slate-500">
+      {caption}
+    </figcaption>
+  )}
+
+  <!-- Fullscreen Modal / Lightbox -->
+  <dialog class="zoom-modal backdrop:bg-slate-950/85 backdrop:backdrop-blur-md p-0 m-0 w-screen h-screen max-w-none max-h-none bg-transparent border-0 fixed inset-0 z-50 overflow-hidden flex flex-col justify-between hidden">
+    <!-- Top Toolbar -->
+    <header class="flex items-center justify-between px-5 py-3 bg-slate-950/90 border-b border-slate-800 text-slate-200 select-none z-10">
+      <div class="flex items-center gap-2 truncate pr-4">
+        <span class="text-sm">🖼️</span>
+        <span class="font-mono text-xs font-bold truncate text-slate-300">{alt}</span>
+      </div>
+
+      <div class="flex items-center gap-1 sm:gap-2">
+        <button type="button" class="btn-zoom-out p-1.5 sm:px-3 sm:py-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-xs font-mono font-bold transition-colors" title="Alejar (tecla -)">
+          −
+        </button>
+        <span class="zoom-percent min-w-[50px] text-center font-mono text-xs text-emerald-400 font-bold">
+          100%
+        </span>
+        <button type="button" class="btn-zoom-in p-1.5 sm:px-3 sm:py-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-xs font-mono font-bold transition-colors" title="Acercar (tecla +)">
+          +
+        </button>
+        <button type="button" class="btn-zoom-reset hidden sm:inline-block px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-xs font-mono font-bold transition-colors" title="Restablecer tamaño (tecla 0)">
+          ↺ 100%
+        </button>
+        <button type="button" class="btn-close-modal ml-2 px-3 py-1 rounded-lg bg-rose-900/80 hover:bg-rose-800 text-white text-xs font-mono font-bold border border-rose-700 transition-colors" title="Cerrar (Escape)">
+          ✕ Cerrar
+        </button>
+      </div>
+    </header>
+
+    <!-- Canvas / Viewer -->
+    <div class="zoom-canvas flex-1 w-full h-full overflow-hidden flex items-center justify-center cursor-grab active:cursor-grabbing select-none relative">
+      <img
+        src={imageSrc}
+        alt={alt}
+        class="zoom-image max-w-[90vw] max-h-[80vh] object-contain transition-transform duration-100 ease-out will-change-transform shadow-2xl rounded-lg pointer-events-auto"
+        draggable="false"
+      />
+    </div>
+
+    <!-- Bottom Help Footer -->
+    <footer class="py-2 px-4 bg-slate-950/90 border-t border-slate-800 text-center font-mono text-[11px] text-slate-400 z-10 flex items-center justify-center gap-4">
+      <span>💡 Rueda del ratón o teclas <strong>+ / -</strong> para zoom</span>
+      <span class="hidden sm:inline">·</span>
+      <span class="hidden sm:inline">Arrastra para mover la imagen</span>
+      <span class="hidden sm:inline">·</span>
+      <span><strong>ESC</strong> para salir</span>
+    </footer>
+  </dialog>
+</figure>
+
+<script is:inline define:vars={{ imageId }}>
+(function() {
+  const container = document.getElementById(imageId);
+  if (!container) return;
+
+  const trigger = container.querySelector('.zoom-trigger-wrapper');
+  const dialog = container.querySelector('.zoom-modal');
+  const img = container.querySelector('.zoom-image');
+  const btnClose = container.querySelector('.btn-close-modal');
+  const btnZoomIn = container.querySelector('.btn-zoom-in');
+  const btnZoomOut = container.querySelector('.btn-zoom-out');
+  const btnZoomReset = container.querySelector('.btn-zoom-reset');
+  const percentLabel = container.querySelector('.zoom-percent');
+  const canvas = container.querySelector('.zoom-canvas');
+
+  let scale = 1;
+  let translateX = 0;
+  let translateY = 0;
+  let isDragging = false;
+  let startX = 0;
+  let startY = 0;
+
+  function updateTransform() {
+    if (!img) return;
+    img.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+    if (percentLabel) {
+      percentLabel.textContent = `${Math.round(scale * 100)}%`;
+    }
+  }
+
+  function resetZoom() {
+    scale = 1;
+    translateX = 0;
+    translateY = 0;
+    updateTransform();
+  }
+
+  function setScale(newScale) {
+    scale = Math.min(Math.max(0.5, newScale), 4.0);
+    updateTransform();
+  }
+
+  function openModal() {
+    resetZoom();
+    dialog.classList.remove('hidden');
+    dialog.showModal();
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    dialog.close();
+    dialog.classList.add('hidden');
+    document.body.style.overflow = '';
+    resetZoom();
+  }
+
+  if (trigger) {
+    trigger.addEventListener('click', openModal);
+    trigger.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        openModal();
+      }
+    });
+  }
+
+  if (btnClose) btnClose.addEventListener('click', closeModal);
+
+  if (btnZoomIn) btnZoomIn.addEventListener('click', () => setScale(scale + 0.25));
+  if (btnZoomOut) btnZoomOut.addEventListener('click', () => setScale(scale - 0.25));
+  if (btnZoomReset) btnZoomReset.addEventListener('click', resetZoom);
+
+  // Wheel Zoom
+  if (canvas) {
+    canvas.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      const delta = e.deltaY < 0 ? 0.2 : -0.2;
+      setScale(scale + delta);
+    }, { passive: false });
+
+    // Drag to Pan
+    canvas.addEventListener('mousedown', (e) => {
+      if (e.target === btnClose || e.target.closest('button')) return;
+      isDragging = true;
+      startX = e.clientX - translateX;
+      startY = e.clientY - translateY;
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      translateX = e.clientX - startX;
+      translateY = e.clientY - startY;
+      updateTransform();
+    });
+
+    window.addEventListener('mouseup', () => {
+      isDragging = false;
+    });
+
+    // Close when clicking canvas outside image if not dragging
+    canvas.addEventListener('click', (e) => {
+      if (e.target === canvas) {
+        closeModal();
+      }
+    });
+  }
+
+  // Keyboard shortcuts
+  dialog.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeModal();
+    } else if (e.key === '+' || e.key === '=') {
+      e.preventDefault();
+      setScale(scale + 0.25);
+    } else if (e.key === '-' || e.key === '_') {
+      e.preventDefault();
+      setScale(scale - 0.25);
+    } else if (e.key === '0') {
+      e.preventDefault();
+      resetZoom();
+    }
+  });
+})();
+</script>

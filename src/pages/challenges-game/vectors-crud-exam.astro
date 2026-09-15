@@ -255,6 +255,210 @@ const exercises = [
       { id: 'step7', title: '6. Reportes de Auditoría', desc: 'Calcula recaudación potencial y skin más valiosa.' },
     ],
   },
+  {
+    id: 11,
+    isGolden: true,
+    icon: '🧪',
+    section: '4. Misiones de Evaluación Especial (CRUD Inventarios)',
+    title: '11. Tienda de Pociones: Almacén Alquímico, Stock y Precios',
+    lore: 'En los confines de Eldoria, regentas la legendaria botica "Elixir & Destilados". Brujos, cazadores de monstruos y paladines se agolpan antes de cada incursión a las mazmorras. El gremio de alquimistas exige un control riguroso de cada frasco en estantería: registrar su nombre, el stock disponible y su valor en monedas de oro. Un descuido en el stock dejará a los héroes sin salvación ante el dragón, y un error en el balance llevará a la botica a la quiebra.',
+    statement: 'Construir una aplicación de consola basada en un Menú interactivo continuo (do-while/while). El sistema administra tres vectores paralelos: nombres de las pociones (vector<string>), cantidades en stock (vector<int>) y precios en monedas de oro (vector<float>). Debe implementar obligatoriamente las 6 operaciones fundamentales de evaluación técnica: 1) Guardar nueva poción en los tres vectores, 2) Listar catálogo completo con índices y precios, 3) Buscar poción por nombre retornando su posición exacta o -1, 4) Actualizar stock o precio por índice validando límites, 5) Eliminar poción agotada o descontinuada simultáneamente en los 3 vectores, 6) Reportes estadísticos de botica (poción más cara, menor stock, valor total de bodega y alerta de stock crítico < 5 frascos), y 7) Salir.',
+    vectors: 'vector<string> nombres | vector<int> cantidades | vector<float> precios',
+    functions: [
+      'void menu() -> Menú interactivo continuo con opciones 1 a 7',
+      'void guardarPocion(vector<string>& nom, vector<int>& cant, vector<float>& pre) -> Registro simultáneo',
+      'void listarPociones(const vector<string>& nom, const vector<int>& cant, const vector<float>& pre) -> Formato [i]',
+      'int buscarPocion(const vector<string>& nom, const string& buscada) -> Búsqueda lineal (retorna i o -1)',
+      'void actualizarPocion(vector<int>& cant, vector<float>& pre) -> Validación de límites 0 <= idx < size',
+      'void eliminarPocion(vector<string>& nom, vector<int>& cant, vector<float>& pre) -> erase() sincronizado',
+      'void reportesPociones(const vector<string>& nom, const vector<int>& cant, const vector<float>& pre) -> Auditoría'
+    ],
+    reports: [
+      '👑 Poción más costosa: Nombre y precio del elixir de mayor valor.',
+      '⚠️ Poción con menor stock: Identificación de la poción con menor cantidad de frascos para reabastecer.',
+      '💰 Valor monetario total del inventario: Suma acumulada de (cantidad * precio) de toda la bodega.',
+      '🚨 Alerta de stock crítico: Filtrar y listar todas las pociones con cantidad < 5 frascos.'
+    ],
+    steps: [
+      { id: 'step1', title: 'Menú Interactivo (do-while)', desc: 'Despliega opciones 1 a 7 y repite hasta seleccionar Salir.' },
+      { id: 'step2', title: '1. Guardar (Create)', desc: 'Inserta nombre, cantidad y precio en los 3 vectores en la misma posición.' },
+      { id: 'step3', title: '2. Listar (Read)', desc: 'Imprime [i] Poción | Stock: X frascos | Precio: $Y Oro.' },
+      { id: 'step4', title: '3. Buscar (Search)', desc: 'Compara nombres en bucle for y retorna el índice del elixir.' },
+      { id: 'step5', title: '4. Actualizar (Update)', desc: 'Comprueba 0 <= idx < size() y sobreescribe stock o precio.' },
+      { id: 'step6', title: '5. Eliminar (Delete)', desc: 'Borrado atómico triple: erase() sincronizado sin dejar huecos.' },
+      { id: 'step7', title: '6. Reportes y Auditoría', desc: 'Calcula más costosa, menor stock, valor total y alerta < 5 frascos.' },
+    ],
+  },
+  {
+    id: 12,
+    isGolden: true,
+    icon: '⚔️',
+    section: '4. Misiones de Evaluación Especial (CRUD Inventarios)',
+    title: '12. Arena de Gladiadores: Salud, Ataque y Triaje de Sangre',
+    lore: 'Bajo el sol abrasador del Coliseo de Sangre, la multitud ruge esperando el torneo imperial. Como Lanista en jefe del Ludus de la Arena, tu vida y reputación dependen del estado físico de tus luchadores. Antes de cada combate a muerte contra fieras y campeones rivales, debes supervisar tres atributos vitales: el nombre del gladiador, sus puntos de salud actuales (HP) y su potencia de ataque físico (ATK). Un guerrero herido enviado a la arena morirá en vano; un campeón letal ganará la gloria del César.',
+    statement: 'Construir el sistema de mando del cuartel de gladiadores mediante un Menú interactivo. Opera con tres vectores paralelos: nombres de los guerreros (vector<string>), vida o salud actual (vector<int>) y poder de ataque físico (vector<int>). Debe permitir: 1) Reclutar nuevo gladiador en los 3 vectores, 2) Listar escuadrón completo con barra de estado, 3) Buscar combatiente por nombre para diagnóstico previo a la batalla, 4) Actualizar vida tras recibir heridas o curaciones, y actualizar ataque tras entrenamiento con armas, 5) Eliminar gladiador caído en combate o que ha comprado su libertad, 6) Reportes de Arena (campeón supremo con mayor ataque, luchador más vulnerable con menor vida, promedio de ataque del ludus y triaje crítico HP < 30), y 7) Salir.',
+    vectors: 'vector<string> nombres | vector<int> vidas | vector<int> ataques',
+    functions: [
+      'void menu() -> Bucle de opciones del cuartel de combate',
+      'void guardarGladiador(vector<string>& nom, vector<int>& vid, vector<int>& atk) -> Alta de luchador',
+      'void listarGladiadores(const vector<string>& nom, const vector<int>& vid, const vector<int>& atk) -> Despliegue de escuadrón',
+      'int buscarGladiador(const vector<string>& nom, const string& target) -> Búsqueda por nombre de guerra',
+      'void actualizarGladiador(vector<int>& vid, vector<int>& atk) -> Modificación de salud y poder',
+      'void eliminarGladiador(vector<string>& nom, vector<int>& vid, vector<int>& atk) -> Baja en los 3 vectores',
+      'void reportesGladiadores(const vector<string>& nom, const vector<int>& vid, const vector<int>& atk) -> Triaje de combate'
+    ],
+    reports: [
+      '🏆 Campeón Supremo: Gladiador con el mayor poder de ataque (MVP del Coliseo).',
+      '🩹 Combatiente más vulnerable: Guerrero con menor vida (HP) actual.',
+      '⚔️ Poder de ataque promedio: Media aritmética del daño de todo el escuadrón.',
+      '🩸 Triaje de emergencia: Listar a todos los gladiadores heridos de gravedad con HP < 30.'
+    ],
+    steps: [
+      { id: 'step1', title: 'Menú del Coliseo', desc: 'Control interactivo continuo para el Lanista.' },
+      { id: 'step2', title: '1. Reclutar Gladiador', desc: 'Registra nombre, HP inicial y ATK en vectores paralelos.' },
+      { id: 'step3', title: '2. Listar Escuadrón', desc: 'Muestra [i] Gladiador | Salud: X HP | Ataque: Y ATK.' },
+      { id: 'step4', title: '3. Buscar Combatiente', desc: 'Localiza la posición del guerrero en el cuartel.' },
+      { id: 'step5', title: '4. Actualizar Estado', desc: 'Ajusta HP o ATK validando rango de índice.' },
+      { id: 'step6', title: '5. Retirar Gladiador', desc: 'Elimina de forma sincronizada en los tres vectores.' },
+      { id: 'step7', title: '6. Triaje y Auditoría', desc: 'Calcula MVP de ataque, menor vida, promedio y alerta HP < 30.' },
+    ],
+  },
+  {
+    id: 13,
+    isGolden: true,
+    icon: '🏎️',
+    section: '4. Misiones de Evaluación Especial (CRUD Inventarios)',
+    title: '13. Gran Premio de Autos: Pilotos, Escuderías y Telemetría',
+    lore: 'Es la noche del Gran Premio de Neón en el circuito urbano de Cyber-Metrópolis. La lluvia resbala sobre el asfalto reflectante mientras los motores V6 híbridos rugen en el pit lane. Como Ingeniero Jefe de Telemetría en el muro de boxes, los sensores instalados en las curvas y rectas de 340 km/h transmiten datos en tiempo real a tu consola. Tienes a tu cargo tres vectores sincronizados: el nombre del piloto, la escudería o modelo de auto y la velocidad punta registrada. Una calibración errónea en pits puede causar un choque contra el muro.',
+    statement: 'Desarrollar el software de telemetría para el control de la carrera con tres vectores paralelos: nombres de los pilotos (vector<string>), modelos/escuderías de autos (vector<string>) y velocidades máximas en km/h (vector<int>). A través de un Menú interactivo continuo, debe soportar: 1) Inscribir bólido en la parrilla con sus 3 datos, 2) Listar la parrilla de salida con posiciones, escuderías y velocidades, 3) Buscar piloto por nombre retornando su lugar en boxes y marca de velocidad, 4) Actualizar velocidad punta tras calibración aerodinámica en boxes, 5) Eliminar bólido por descalificación técnica o retiro mecánico, 6) Reportes de Telemetría (Pole Position con mayor velocidad, bólido con menor velocidad, promedio general de velocidad y bólidos de élite >= 340 km/h), y 7) Salir.',
+    vectors: 'vector<string> pilotos | vector<string> autos | vector<int> velocidades',
+    functions: [
+      'void menu() -> Menú de la consola de telemetría en boxes',
+      'void guardarAuto(vector<string>& pil, vector<string>& aut, vector<int>& vel) -> Ingreso a parrilla',
+      'void listarAutos(const vector<string>& pil, const vector<string>& aut, const vector<int>& vel) -> Telemetría de parrilla',
+      'int buscarPiloto(const vector<string>& pil, const string& buscado) -> Búsqueda por nombre de piloto',
+      'void actualizarVelocidad(vector<int>& vel) -> Ajuste de velocidad punta',
+      'void eliminarAuto(vector<string>& pil, vector<string>& aut, vector<int>& vel) -> Baja simultánea',
+      'void reportesCarrera(const vector<string>& pil, const vector<string>& aut, const vector<int>& vel) -> Récords y promedios'
+    ],
+    reports: [
+      '🚀 Pole Position: Piloto y auto con la mayor velocidad punta registrada.',
+      '🐢 Ritmo más lento: Registro del bólido con la menor velocidad máxima.',
+      '📈 Velocidad promedio: Media aritmética de velocidad de toda la parrilla.',
+      '⚡ Club de los 340+ km/h: Filtrar y listar competidores que superan los 340 km/h.'
+    ],
+    steps: [
+      { id: 'step1', title: 'Menú de Telemetría', desc: 'Bucle interactivo para el equipo de ingenieros en boxes.' },
+      { id: 'step2', title: '1. Inscribir Auto', desc: 'Almacena piloto, escudería y velocidad en la misma posición i.' },
+      { id: 'step3', title: '2. Listar Parrilla', desc: 'Muestra [i] Piloto | Escudería | Velocidad: X km/h.' },
+      { id: 'step4', title: '3. Buscar Piloto', desc: 'Retorna el índice del piloto para telemetría en vivo.' },
+      { id: 'step5', title: '4. Calibrar Velocidad', desc: 'Sobreescribe la velocidad punta tras paso por boxes.' },
+      { id: 'step6', title: '5. Retirar Bólido', desc: 'Elimina de los tres vectores al auto descalificado.' },
+      { id: 'step7', title: '6. Récords de Pista', desc: 'Determina Pole Position, auto más lento, promedio y club 340+.' },
+    ],
+  },
+  {
+    id: 14,
+    isGolden: true,
+    icon: '🐉',
+    section: '4. Misiones de Evaluación Especial (CRUD Inventarios)',
+    title: '14. Bestiario Arcano: Criaturas Míticas, Tipos y Niveles',
+    lore: 'En las tierras sombrías del continente, criaturas ancestrales despiertan de su letargo en bosques prohibidos y simas volcánicas. Los guardianes del Círculo del Lobo recorren las aldeas protegiendo a los campesinos de garras y alientos de fuego. Como Archivero Supremo de la Fortaleza Arcano, tu sagrada encomienda es compilar el Bestiario de Monstruos. Cada espécimen registrado se almacena en tres vectores paralelos: el nombre de la bestia, su tipo o afinidad mágica (Dragón, No-Muerto, Bestia, Elemental) y su nivel de amenaza de combate. Un novato que enfrente a un dragón nivel 70 pensando que es nivel 5 no vivirá para contarlo.',
+    statement: 'Crear el sistema de gestión del bestiario mediante un Menú de consola interactivo. Opera con tres vectores paralelos: nombres de las criaturas (vector<string>), tipo o elemento (vector<string>) y nivel de combate (vector<int>). Debe permitir: 1) Guardar nueva criatura descubierta en los tres vectores, 2) Listar bestiario completo con formato de códice, 3) Buscar criatura por nombre verificando si ya existe en el registro, 4) Actualizar nivel de peligro si la criatura muta o absorbe magia, 5) Eliminar criatura si la especie se extingue o fue purificada, 6) Reportes del Códice (jefe alfa legendario con nivel máximo, promedio general de amenaza y listado de amenazas de rango extremo nivel >= 50), y 7) Salir.',
+    vectors: 'vector<string> nombres | vector<string> tipos | vector<int> niveles',
+    functions: [
+      'void menu() -> Menú del Códice Arcano',
+      'void guardarCriatura(vector<string>& nom, vector<string>& tip, vector<int>& niv) -> Asentar avistamiento',
+      'void listarBestiario(const vector<string>& nom, const vector<string>& tip, const vector<int>& niv) -> Catálogo de bestias',
+      'int buscarCriatura(const vector<string>& nom, const string& target) -> Búsqueda por nombre de especie',
+      'void actualizarNivel(vector<int>& niv) -> Subida de nivel por mutación mágica',
+      'void eliminarCriatura(vector<string>& nom, vector<string>& tip, vector<int>& niv) -> Borrado sincronizado triple',
+      'void reportesBestiario(const vector<string>& nom, const vector<string>& tip, const vector<int>& niv) -> Auditoría de peligro'
+    ],
+    reports: [
+      '👑 Jefe Alfa Legendario: Criatura con el nivel de amenaza más alto del bestiario.',
+      '📈 Nivel promedio de peligro: Media de poder de todas las criaturas registradas.',
+      '⚠️ Amenazas de Rango Extremo: Listado filtrado de bestias con nivel >= 50.',
+      '📊 Total de bestias catalogadas: Conteo total de especímenes asentados en el códice.'
+    ],
+    steps: [
+      { id: 'step1', title: 'Menú del Códice', desc: 'Opciones de consola para archiveros y brujos cazadores.' },
+      { id: 'step2', title: '1. Guardar Criatura', desc: 'Registra especie, afinidad elemental y nivel de combate.' },
+      { id: 'step3', title: '2. Listar Bestiario', desc: 'Muestra [i] Criatura [Tipo] — Amenaza Nivel X.' },
+      { id: 'step4', title: '3. Buscar Criatura', desc: 'Ubica si la criatura ya fue documentada en Kaer-Morhen.' },
+      { id: 'step5', title: '4. Actualizar Nivel', desc: 'Modifica el nivel de combate tras observar mutaciones.' },
+      { id: 'step6', title: '5. Eliminar Criatura', desc: 'Purga del códice a la especie derrotada en los 3 vectores.' },
+      { id: 'step7', title: '6. Reporte de Jefes', desc: 'Destaca al jefe alfa, calcula nivel promedio y filtra nivel >= 50.' },
+    ],
+  },
+  {
+    id: 15,
+    isGolden: true,
+    icon: '🚀',
+    section: '4. Misiones de Evaluación Especial (CRUD Inventarios)',
+    title: '15. Hangar Espacial: Naves, Combustible Warp y Velocidad',
+    lore: 'En el Sector Gamma del cosmos profundo, la estación estelar Orión-Prime orbita alrededor de una anomalía gravitacional. Cazas estelares, cruceros de asalto y fragatas de reconocimiento entran y salen constantemente de las esclusas presurizadas. Como Oficial de Despacho y Bahías de Atraque, tienes a tu cargo tres parámetros críticos en memoria: el nombre o código de la nave, su nivel de combustible de plasma (%) y su velocidad de crucero warp (km/s). Si autorizas el despegue de una nave con combustible insuficiente, quedará a la deriva para siempre en el vacío interestelar.',
+    statement: 'Modelar el software de consola para la torre de control espacial con tres vectores paralelos: nombres o códigos de nave (vector<string>), porcentaje de combustible de plasma (vector<float>) y velocidad warp en km/s (vector<int>). Con un Menú interactivo continuo, debe soportar: 1) Acoplar nueva nave en una bahía del hangar, 2) Listar estado general de la flota estelar con sus métricas, 3) Buscar nave por código o nombre táctico, 4) Actualizar porcentaje de combustible tras reabastecimiento en la bahía o patrulla, 5) Eliminar nave despegada en misión o desguazada, 6) Reportes de la Armada Estelar (crucero más veloz, nave con menor combustible, promedio de plasma de la flota y alerta de naves en riesgo crítico < 25%), y 7) Salir.',
+    vectors: 'vector<string> nombres | vector<float> combustibles | vector<int> velocidades',
+    functions: [
+      'void menu() -> Menú de la torre de despacho espacial',
+      'void guardarNave(vector<string>& nom, vector<float>& com, vector<int>& vel) -> Acoplamiento en bahía',
+      'void listarFlota(const vector<string>& nom, const vector<float>& com, const vector<int>& vel) -> Estado de hangares',
+      'int buscarNave(const vector<string>& nom, const string& buscada) -> Búsqueda por código táctico',
+      'void actualizarCombustible(vector<float>& com) -> Recarga de plasma en bahía',
+      'void eliminarNave(vector<string>& nom, vector<float>& com, vector<int>& vel) -> Despegue definitivo triple',
+      'void reportesFlota(const vector<string>& nom, const vector<float>& com, const vector<int>& vel) -> Métricas espaciales'
+    ],
+    reports: [
+      '⚡ Crucero más rápido: Nave con la mayor velocidad warp registrada en km/s.',
+      '⛽ Alerta de combustible crítico: Nave con el menor porcentaje de combustible restante.',
+      '📊 Promedio de combustible: Porcentaje medio de plasma disponible en toda la flota.',
+      '🚨 Naves en riesgo de varar: Filtrar y listar todas las naves con combustible < 25%.'
+    ],
+    steps: [
+      { id: 'step1', title: 'Menú de Despacho', desc: 'Ciclo interactivo de operaciones en la estación espacial.' },
+      { id: 'step2', title: '1. Acoplar Nave', desc: 'Registra código de nave, plasma % y velocidad en la misma posición.' },
+      { id: 'step3', title: '2. Listar Flota', desc: 'Muestra [i] Nave | Combustible: X% | Velocidad: Y km/s.' },
+      { id: 'step4', title: '3. Buscar Nave', desc: 'Localiza la bahía exacta del crucero espacial.' },
+      { id: 'step5', title: '4. Recargar Combustible', desc: 'Sobreescribe el nivel de plasma tras la carga en boxes.' },
+      { id: 'step6', title: '5. Despegar Nave', desc: 'Libera la bahía borrando sincrónicamente de los 3 vectores.' },
+      { id: 'step7', title: '6. Auditoría de Flota', desc: 'Calcula crucero más rápido, menor plasma, promedio y alerta < 25%.' },
+    ],
+  },
+  {
+    id: 16,
+    isGolden: true,
+    icon: '⚽',
+    section: '4. Misiones de Evaluación Especial (CRUD Inventarios)',
+    title: '16. Torneo de Fútbol: Tabla de Posiciones, Goles y Puntos',
+    lore: 'El estadio ruge con 80,000 aficionados coreando los himnos de sus clubes. Se disputa la última fecha del Torneo Continental de Fútbol, donde cada pase y disparo a portería define al campeón y a los equipos clasificados a copas internacionales. Como Director del Centro de Cómputos y Estadísticas de la Liga, eres el responsable oficial del sistema de tabla general. Administras tres vectores paralelos sincronizados: el nombre del club, los goles a favor anotados (GF) y los puntos acumulados (PTS). La prensa, hinchas y dirigentes esperan tus reportes oficiales.',
+    statement: 'Implementar el sistema administrativo del torneo con tres vectores paralelos: nombres de los clubes (vector<string>), goles a favor acumulados (vector<int>) y puntos en la tabla (vector<int>). A través de un Menú interactivo continuo, debe permitir: 1) Inscribir equipo en la liga con sus estadísticas iniciales, 2) Listar tabla de posiciones general ordenada con formato de liga, 3) Buscar equipo por nombre para consultar su posición y saldo de goles, 4) Actualizar goles y puntos tras disputarse un partido (victoria: +3 pts, empate: +1 pto, derrota: +0 pts), 5) Eliminar equipo descalificado por sanciones disciplinarias, 6) Reportes del Campeonato (equipo puntero o campeón con mayor puntaje, bota de oro colectiva con más goles, total de goles del torneo y promedio de goles por club), y 7) Salir.',
+    vectors: 'vector<string> equipos | vector<int> goles | vector<int> puntos',
+    functions: [
+      'void menu() -> Menú administrativo de la liga de fútbol',
+      'void guardarEquipo(vector<string>& eq, vector<int>& gol, vector<int>& pts) -> Inscripción oficial',
+      'void listarTabla(const vector<string>& eq, const vector<int>& gol, const vector<int>& pts) -> Tabla de posiciones',
+      'int buscarEquipo(const vector<string>& eq, const string& target) -> Búsqueda por nombre de club',
+      'void actualizarPuntosGoles(vector<int>& gol, vector<int>& pts) -> Registro de resultado de partido',
+      'void eliminarEquipo(vector<string>& eq, vector<int>& gol, vector<int>& pts) -> Descalificación en 3 vectores',
+      'void reportesCampeonato(const vector<string>& eq, const vector<int>& gol, const vector<int>& pts) -> Auditoría de liga'
+    ],
+    reports: [
+      '🏆 Puntero / Campeón: Equipo en la cima con la mayor cantidad de puntos.',
+      '⚽ Bota de Oro Colectiva: Club más goleador (mayor cantidad de goles a favor).',
+      '📈 Total de goles marcados: Suma de todos los goles anotados en el torneo.',
+      '📊 Promedio de goles: Media de goles a favor por cada club participante.'
+    ],
+    steps: [
+      { id: 'step1', title: 'Menú del Campeonato', desc: 'Panel de control de consola para la Federación Deportiva.' },
+      { id: 'step2', title: '1. Inscribir Equipo', desc: 'Registra club, goles a favor y puntos iniciales en los 3 vectores.' },
+      { id: 'step3', title: '2. Listar Tabla', desc: 'Muestra [i] Club | Puntos: X PTS | Goles: Y GF.' },
+      { id: 'step4', title: '3. Buscar Equipo', desc: 'Verifica la existencia y situación de un club en la liga.' },
+      { id: 'step5', title: '4. Cargar Partido', desc: 'Suma goles y puntos según victoria (+3), empate (+1) o derrota.' },
+      { id: 'step6', title: '5. Descalificar Club', desc: 'Elimina de forma atómica en los tres vectores simultáneamente.' },
+      { id: 'step7', title: '6. Premiación y Récords', desc: 'Calcula al campeón, club más goleador, total de goles y promedio.' },
+    ],
+  },
 ];
 
 const totalQuests = exercises.length;
@@ -288,8 +492,8 @@ const totalXP = totalQuests * 200;
           </span>
         </div>
         <div class="flex items-center gap-2">
-          <span class="text-xs font-bold text-blue-300 bg-blue-950/80 border border-blue-500/40 px-3 py-1 rounded-full">
-            ⭐ 10 Misiones Tipo Prueba · {totalXP} XP
+          <span class="text-xs font-bold text-amber-300 bg-amber-950/80 border border-amber-500/40 px-3 py-1 rounded-full">
+            ⭐ 16 Misiones Tipo Prueba · {totalXP} XP
           </span>
         </div>
       </div>
@@ -305,7 +509,7 @@ const totalXP = totalQuests * 200;
               <span>📊 Tipo Prueba: Vectores & Funciones CRUD</span>
             </h1>
             <p class="text-slate-300 text-sm sm:text-base mt-2 max-w-3xl leading-relaxed">
-              10 casos prácticos tipo prueba universitaria y técnica. Cada ejercicio modela un <strong>sistema de consola completo con Menú interactivo</strong> y las 6 operaciones fundamentales de arreglos/vectores paralelos en memoria RAM.
+              16 casos prácticos tipo prueba universitaria y técnica (10 sistemas clásicos de consola + 6 misiones especiales doradas de inventarios gamer). Cada ejercicio modela un <strong>sistema de consola completo con Menú interactivo</strong> y las operaciones fundamentales de arreglos/vectores paralelos en memoria RAM.
             </p>
           </div>
         </div>
@@ -435,52 +639,130 @@ const totalXP = totalQuests * 200;
       <!-- LISTA DE EJERCICIOS TIPO PRUEBA -->
       <div class="space-y-6">
         {exercises.map((ex) => (
-          <div class="p-6 rounded-2xl bg-[#0b1222] border-2 border-slate-800 hover:border-blue-500/40 transition-all shadow-lg" id={`mission-${ex.id}`}>
-            <div class="flex flex-wrap items-center justify-between gap-3 mb-4 pb-3 border-b border-slate-800">
+          <div
+            class={`p-6 rounded-3xl transition-all shadow-xl relative overflow-hidden ${
+              ex.isGolden
+                ? 'bg-[#0b1222] border-2 border-amber-500/70 hover:border-amber-400 shadow-[0_0_25px_rgba(245,158,11,0.18)] hover:shadow-[0_0_35px_rgba(245,158,11,0.32)] group'
+                : 'bg-[#0b1222] border-2 border-slate-800 hover:border-blue-500/40 shadow-lg'
+            }`}
+            id={`mission-${ex.id}`}
+          >
+            {ex.isGolden && (
+              <div class="absolute -right-20 -top-20 w-60 h-60 bg-amber-500/10 rounded-full blur-3xl pointer-events-none group-hover:bg-amber-500/20 transition-all"></div>
+            )}
+
+            <div class={`flex flex-wrap items-center justify-between gap-3 mb-4 pb-3 border-b ${ex.isGolden ? 'border-amber-500/30' : 'border-slate-800'} relative z-10`}>
               <div class="flex items-center gap-3">
-                <span class="w-8 h-8 rounded-xl bg-blue-600 text-white font-black flex items-center justify-center text-sm shadow-md">
-                  {ex.id}
+                <span class={`w-9 h-9 sm:w-10 sm:h-10 rounded-2xl text-white font-black flex items-center justify-center text-sm sm:text-base shadow-md ${
+                  ex.isGolden
+                    ? 'bg-gradient-to-br from-amber-500 via-amber-600 to-amber-700 shadow-amber-500/25 border border-amber-300/40 text-lg'
+                    : 'bg-blue-600'
+                }`}>
+                  {ex.icon || ex.id}
                 </span>
                 <div>
-                  <span class="text-[10px] text-blue-400 uppercase font-black tracking-wider block">{ex.section}</span>
-                  <h2 class="text-base sm:text-lg font-black text-white m-0">{ex.title}</h2>
+                  <span class={`text-[10px] uppercase font-black tracking-wider block ${ex.isGolden ? 'text-amber-400' : 'text-blue-400'}`}>
+                    {ex.section}
+                  </span>
+                  <h2 class={`text-base sm:text-lg font-black text-white m-0 font-nunito ${ex.isGolden ? 'group-hover:text-amber-300 transition-colors' : ''}`}>
+                    {ex.title}
+                  </h2>
                 </div>
               </div>
               <div class="flex items-center gap-2">
-                <span class="text-xs font-mono font-bold text-slate-400 bg-slate-900 border border-slate-700 px-2.5 py-1 rounded-lg">
-                  +200 XP
+                <span class={`text-xs font-mono font-bold px-2.5 py-1 rounded-xl ${
+                  ex.isGolden
+                    ? 'text-amber-300 bg-amber-950/80 border border-amber-500/60 shadow-sm'
+                    : 'text-slate-400 bg-slate-900 border border-slate-700'
+                }`}>
+                  {ex.isGolden ? '⭐ +200 XP · 3 Vectores' : '+200 XP'}
                 </span>
               </div>
             </div>
 
+            <!-- HISTORIA / LORE INMERSIVO (SI APLICA) -->
+            {ex.lore && (
+              <div class="p-4 rounded-2xl bg-gradient-to-r from-amber-950/30 via-slate-900/90 to-slate-950 border border-amber-500/35 mb-4 relative overflow-hidden z-10 shadow-inner">
+                <div class="flex items-start gap-3">
+                  <span class="text-xl shrink-0 mt-0.5">📜</span>
+                  <div>
+                    <div class="text-[10px] font-black uppercase tracking-widest text-amber-300 mb-1 flex items-center gap-1.5">
+                      <span>✨</span>
+                      <span>Ambientación & Lore Gamer:</span>
+                    </div>
+                    <p class="text-xs sm:text-sm text-slate-200 leading-relaxed italic m-0">
+                      "{ex.lore}"
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
             <!-- ENUNCIADO -->
-            <p class="text-sm text-slate-300 leading-relaxed mb-4">
+            <p class="text-sm text-slate-300 leading-relaxed mb-4 relative z-10">
               {ex.statement}
             </p>
 
             <!-- ESPECIFICACIÓN TÉCNICA -->
-            <div class="grid grid-cols-1 md:grid-cols-1 gap-3 my-4">
-              <div class="p-3 rounded-xl bg-slate-950/60 border border-slate-800">
-                <div class="text-[10px] text-blue-400 font-bold uppercase tracking-wider mb-1">📦 Vectores en Memoria:</div>
-                <code class="text-xs text-slate-200 font-mono block">{ex.vectors}</code>
-              </div>
-              <div class="p-3 rounded-xl bg-slate-950/60 border border-slate-800">
-                <div class="text-[10px] text-indigo-400 font-bold uppercase tracking-wider mb-1">⚙️ Funciones Clave:</div>
-                <div class="space-y-1">
-                  {ex.functions.map(fn => (
-                    <code class="text-[11px] text-emerald-300 font-mono block truncate">{fn}</code>
-                  ))}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 my-4 relative z-10">
+              <div class={`p-3.5 rounded-2xl bg-slate-950/70 border ${ex.isGolden ? 'border-amber-500/30' : 'border-slate-800'}`}>
+                <div class={`text-[10px] font-bold uppercase tracking-wider mb-1 flex items-center gap-1.5 ${ex.isGolden ? 'text-amber-300' : 'text-blue-400'}`}>
+                  <span>📦</span>
+                  <span>Vectores en Memoria:</span>
                 </div>
+                <code class={`text-xs font-mono block p-2 rounded-xl border ${ex.isGolden ? 'text-amber-200 bg-slate-900/90 border-amber-500/30' : 'text-slate-200 bg-slate-900/90 border-slate-800'}`}>
+                  {ex.vectors}
+                </code>
+              </div>
+
+              <div class={`p-3.5 rounded-2xl bg-slate-950/70 border ${ex.isGolden ? 'border-amber-500/30' : 'border-slate-800'}`}>
+                <div class={`text-[10px] font-bold uppercase tracking-wider mb-1 flex items-center gap-1.5 ${ex.isGolden ? 'text-amber-300' : 'text-indigo-400'}`}>
+                  <span>📊</span>
+                  <span>{ex.reports ? 'Reportes Estadísticos Exigidos:' : '⚙️ Funciones Clave:'}</span>
+                </div>
+                {ex.reports ? (
+                  <div class="space-y-1">
+                    {ex.reports.map((rep) => (
+                      <div class="text-[11px] text-slate-300 leading-tight">• {rep}</div>
+                    ))}
+                  </div>
+                ) : (
+                  <div class="space-y-1">
+                    {ex.functions.map(fn => (
+                      <code class="text-[11px] text-emerald-300 font-mono block truncate">{fn}</code>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
 
+            <!-- FUNCIONES MODULARES (SI TIENE REPORTES APARTE) -->
+            {ex.reports && (
+              <div class="p-3.5 rounded-2xl bg-slate-950/70 border border-amber-500/30 my-4 relative z-10">
+                <div class="text-[10px] text-emerald-400 font-bold uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+                  <span>⚙️</span>
+                  <span>Prototipos de Funciones Clave (Paso por Referencia):</span>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+                  {ex.functions.map(fn => (
+                    <code class="text-[11px] text-emerald-300 font-mono block truncate bg-slate-900/60 px-2 py-1 rounded-lg border border-slate-800/80">
+                      {fn}
+                    </code>
+                  ))}
+                </div>
+              </div>
+            )}
+
             <!-- CHECKLIST DE PASOS -->
-            <div class="my-4 p-4 rounded-xl bg-slate-900/40 border border-slate-800/80">
-              <div class="text-xs font-bold text-slate-300 mb-2">📋 Pasos de Implementación / Criterios de Evaluación:</div>
+            <div class={`my-4 p-4 rounded-2xl bg-slate-900/40 border relative z-10 ${ex.isGolden ? 'border-amber-500/25' : 'border-slate-800/80'}`}>
+              <div class="text-xs font-bold text-slate-300 mb-2 flex items-center gap-1.5">
+                <span>📋</span>
+                <span>Pasos de Implementación / Criterios de Evaluación:</span>
+              </div>
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 {ex.steps.map((st) => (
                   <label class="flex items-start gap-2 text-xs text-slate-400 hover:text-slate-200 cursor-pointer select-none">
-                    <input type="checkbox" class="mt-0.5 rounded border-slate-700 text-blue-600 focus:ring-0" />
+                    <input type="checkbox" class={`mt-0.5 rounded focus:ring-0 ${ex.isGolden ? 'border-slate-700 text-amber-500' : 'border-slate-700 text-blue-600'}`} />
                     <span><strong>{st.title}:</strong> {st.desc}</span>
                   </label>
                 ))}
@@ -488,17 +770,21 @@ const totalXP = totalQuests * 200;
             </div>
 
             <!-- BOTÓN DE DESBLOQUEO DE SOLUCIÓN -->
-            <div class="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between flex-wrap gap-3">
+            <div class={`mt-4 pt-3 border-t flex items-center justify-between flex-wrap gap-3 relative z-10 ${ex.isGolden ? 'border-amber-500/30' : 'border-slate-800/80'}`}>
               <span class="text-xs text-slate-400">
                 Disponible en: <strong>C++, Python, Java, C#, JS, PHP, PSeInt</strong>
               </span>
               <button
                 type="button"
-                class="open-solution-modal-btn px-4 py-2 rounded-xl bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 border border-blue-500/40 font-bold text-xs transition-all flex items-center gap-2 cursor-pointer active:scale-95"
+                class={`open-solution-modal-btn px-4 py-2.5 rounded-xl font-bold text-xs transition-all flex items-center gap-2 cursor-pointer active:scale-95 ${
+                  ex.isGolden
+                    ? 'bg-gradient-to-r from-amber-500 via-amber-600 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-slate-950 font-black shadow-lg shadow-amber-500/25 border border-amber-300'
+                    : 'bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 border border-blue-500/40 shadow-sm'
+                }`}
                 data-ex-id={ex.id}
                 data-ex-title={ex.title}
               >
-                <span>🔒 Desbloquear Solución & Resultado</span>
+                <span>{ex.isGolden ? '🔒 Desbloquear Solución Oficial (Clave Docente)' : '🔒 Desbloquear Solución & Resultado'}</span>
               </button>
             </div>
           </div>
@@ -532,7 +818,7 @@ const totalXP = totalQuests * 200;
           🔒
         </div>
         <h4 class="text-xl font-black text-white mb-2">Ingresa la clave para ver el código y resultados</h4>
-        <p class="text-slate-300 text-sm max-w-md mb-6">
+        <p id="modalHintText" class="text-slate-300 text-sm max-w-md mb-6">
           Este módulo está protegido para evaluar el razonamiento del estudiante. Introduce la clave de revisión (fecha actual en formato <strong>DDMMAAAA</strong>, ej: <code class="text-amber-300 font-mono font-bold">05092026</code> o clave docente).
         </p>
 
@@ -599,19 +885,28 @@ const totalXP = totalQuests * 200;
         return day + month + year;
       }
 
-      function isValidKey(inputKey) {
-        const cleaned = (inputKey || "").trim().toLowerCase();
+      function isValidKey(inputKey, exId) {
+        const cleaned = (inputKey || "").trim().toUpperCase();
+        
+        // De la 11 a la 16 tiene una contraseña única: PROFEBENJA2026
+        if (exId >= 11 && exId <= 16) {
+          return cleaned === "PROFEBENJA2026";
+        }
+
+        // Del 1 al 10: Claves de revisión estándar
         const todayKey = getFormattedToday();
+        const lowerCleaned = (inputKey || "").trim().toLowerCase();
         return (
-          cleaned === todayKey ||
-          cleaned === "05092026" ||
-          cleaned === "06092026" ||
-          cleaned === "revisionevaluacion" ||
-          cleaned === "examen"
+          lowerCleaned === todayKey ||
+          lowerCleaned === "05092026" ||
+          lowerCleaned === "06092026" ||
+          lowerCleaned === "revisionevaluacion" ||
+          lowerCleaned === "examen"
         );
       }
 
-      let isUnlockedGlobally = false;
+      let isClassicUnlocked = false;
+      let isGoldenUnlocked = false;
       let currentExId = 1;
 
       const ALL_SOLUTIONS = window.ALL_VECTORS_CRUD_SOLUTIONS || {};
@@ -653,12 +948,25 @@ const totalXP = totalQuests * 200;
         });
       }
 
+      const modalHintText = document.getElementById("modalHintText");
+
       function openModal(exId, exTitle) {
         currentExId = exId;
         if (titleEl) titleEl.textContent = exTitle;
         loadExerciseCode(exId);
 
-        if (isUnlockedGlobally) {
+        const isGoldenEx = exId >= 11 && exId <= 16;
+        const alreadyUnlocked = isGoldenEx ? isGoldenUnlocked : isClassicUnlocked;
+
+        if (modalHintText) {
+          if (isGoldenEx) {
+            modalHintText.innerHTML = `Misión especial de inventario gamer (11-16). Introduce la <strong>clave docente única</strong> asignada a estas misiones especiales.`;
+          } else {
+            modalHintText.innerHTML = `Este módulo está protegido para evaluar el razonamiento del estudiante. Introduce la clave de revisión (fecha actual en formato <strong>DDMMAAAA</strong>, ej: <code class="text-amber-300 font-mono font-bold">05092026</code> o clave docente).`;
+          }
+        }
+
+        if (alreadyUnlocked) {
           passwordStep?.classList.add("hidden");
           codeStep?.classList.remove("hidden");
           codeStep?.classList.add("flex");
@@ -671,7 +979,7 @@ const totalXP = totalQuests * 200;
 
         modal?.classList.remove("hidden");
         modal?.classList.add("flex");
-        if (!isUnlockedGlobally) passwordInput?.focus();
+        if (!alreadyUnlocked) passwordInput?.focus();
       }
 
       function closeModal() {
@@ -694,14 +1002,27 @@ const totalXP = totalQuests * 200;
 
       function handleVerify() {
         const val = passwordInput?.value.trim();
-        if (isValidKey(val)) {
-          isUnlockedGlobally = true;
+        const isGoldenEx = currentExId >= 11 && currentExId <= 16;
+
+        if (isValidKey(val, currentExId)) {
+          if (isGoldenEx) {
+            isGoldenUnlocked = true;
+          } else {
+            isClassicUnlocked = true;
+          }
           passwordStep?.classList.add("hidden");
           codeStep?.classList.remove("hidden");
           codeStep?.classList.add("flex");
           errorMsg?.classList.add("hidden");
         } else {
-          errorMsg?.classList.remove("hidden");
+          if (errorMsg) {
+            if (isGoldenEx) {
+              errorMsg.innerHTML = `<span>❌ Clave incorrecta. Para las misiones 11 a 16 la clave requerida es la clave docente única asignada.</span>`;
+            } else {
+              errorMsg.innerHTML = `<span>❌ Clave incorrecta. Usa la fecha actual en formato DDMMAAAA (ej: 05092026) o clave docente.</span>`;
+            }
+            errorMsg.classList.remove("hidden");
+          }
         }
       }
 

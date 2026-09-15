@@ -3,6 +3,7 @@ import Layout from '../../../../layouts/Layout.astro';
 import CodeBlock from '../../../../components/CodeBlock.astro';
 import DjangoQuizModal from '../../../../components/quizzes/DjangoQuizModal.astro';
 import VideoGridWithCheck from '../../../../components/VideoGridWithCheck';
+import DjangoInteractiveTerminal from '../../../../components/django/DjangoInteractiveTerminal';
 
 const djangoVideos = [
   { id: 'Hp1TYOhvIBM', title: 'Introducción a Django - Video 1' },
@@ -11,48 +12,213 @@ const djangoVideos = [
 ];
 ---
 
-<Layout title="Introducción a Django" description="Configura tu primer proyecto Django y entiende su estructura básica." courseSlug="django">
+<Layout title="Introducción a Django y Entornos Virtuales" description="Aprende a configurar tu entorno virtual con el indicador (venv), instalar Django, estructurar un proyecto y probarlo en el simulador interactivo." courseSlug="django">
   <article class="content-section">
-    <h1>3. Introducción a Django</h1>
+    <h1>3. Introducción a Django y Entornos Virtuales (venv) 🌿</h1>
 
     <section class="mb-10">
-      <h2>Instalación y proyecto inicial</h2>
+      <h2>1. El Entorno Virtual (venv): Regla #1 en Desarrollo Python</h2>
       <p>
-        Para empezar necesitas Python y un entorno virtual. Luego instalas Django y creas el proyecto base que contendrá tu backend.
+        Antes de escribir una sola línea de código en Django, existe un mandamiento fundamental que todo desarrollador backend debe cumplir: <strong>jamás instalar paquetes de Python directamente en el sistema global</strong>.
       </p>
-      <CodeBlock
-        lang="bash"
-        code={`python -m venv env
-source env/bin/activate  # Mac / Linux
-# env\\Scripts\\activate  # Windows
-pip install django
+      
+      <div class="ejercicio" style="background: #e6fffa; border-left: 4px solid #0c4a3f; padding: 1.25rem; border-radius: 0.5rem; margin-bottom: 1.5rem;">
+        <h3 style="margin-top: 0; color: #0c4a3f;">💡 ¿Por qué es obligatorio un Entorno Virtual?</h3>
+        <ul style="margin-bottom: 0;">
+          <li><strong>Aislamiento total:</strong> Si un proyecto antiguo requiere Django 4.2 y uno nuevo utiliza Django 5.1, ambos pueden coexistir en la misma máquina sin romperse mutuamente.</li>
+          <li><strong>Limpieza del sistema:</strong> Si decides borrar un proyecto, solo tienes que eliminar la carpeta <code>venv</code> del entorno virtual sin dejar residuos en tu sistema operativo.</li>
+          <li><strong>Reproducibilidad con <code>requirements.txt</code>:</strong> Permite compartir con tu equipo la lista exacta de librerías y versiones que necesita la aplicación.</li>
+        </ul>
+      </div>
 
-django-admin startproject mi_proyecto
-cd mi_proyecto
-python manage.py runserver`}
-        title="instalar_django.sh"
+      <h3>1.1 Creación del Entorno Virtual</h3>
+      <p>
+        Python incluye por defecto la herramienta <code>venv</code>. Abrimos nuestra terminal en la carpeta principal de trabajo (<code>C:\proyectos\django</code>) y creamos una carpeta llamada <strong><code>venv</code></strong>:
+      </p>
+
+      <CodeBlock
+        lang="cmd"
+        code={`# Crear el entorno virtual con el nombre de carpeta "venv"
+PS C:\\proyectos\\django> python -m venv venv`}
+        title="Terminal CMD / PowerShell"
+      />
+
+      <h3>1.2 Activación y el Indicador Vital: (venv)</h3>
+      <p>
+        Crear el entorno no basta; <strong>debes activarlo</strong>. Cuando el entorno está correctamente activo, tu terminal sufre una transformación visual imprescindible: <strong>aparece el prefijo <code>(venv)</code> al inicio de la línea de comandos</strong>.
+      </p>
+
+      <div class="ejercicio" style="background: #FEF3C7; border-left: 4px solid #F59E0B; padding: 1.25rem; border-radius: 0.5rem; margin-bottom: 1.5rem;">
+        <h3 style="margin-top: 0; color: #92400E;">⚠️ Regla de Oro: El Indicador (venv)</h3>
+        <p style="margin-bottom: 0; color: #78350F;">
+          <strong>Si NO ves <code>(venv)</code> al comienzo de tu prompt, NO instales Django ni uses pip</strong>. El prefijo te garantiza que cualquier librería instalada quedará encapsulada dentro de la carpeta <code>venv/Lib/site-packages</code>.
+        </p>
+      </div>
+
+      <p>Comandos de activación según tu sistema operativo:</p>
+      <CodeBlock
+        lang="cmd"
+        code={`# ========================================================
+# En Windows (PowerShell):
+# ========================================================
+PS C:\\proyectos\\django> .\\venv\\Scripts\\activate
+(venv) PS C:\\proyectos\\django> 
+
+# Tip Pro: Si PowerShell te arroja error de "política de ejecución de scripts", ejecuta:
+# Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+
+# ========================================================
+# En Windows (CMD clásico):
+# ========================================================
+C:\\proyectos\\django> venv\\Scripts\\activate.bat
+(venv) C:\\proyectos\\django> 
+
+# ========================================================
+# En Linux / macOS (Bash o Zsh):
+# ========================================================
+usuario@laptop:~/proyectos/django$ source venv/bin/activate
+(venv) usuario@laptop:~/proyectos/django$ `}
+        title="Activación de (venv) en CMD y PowerShell"
+      />
+
+      <p>Para salir del entorno cuando termines de trabajar, simplemente ejecuta:</p>
+      <CodeBlock
+        lang="cmd"
+        code={`(venv) PS C:\\proyectos\\django> deactivate
+PS C:\\proyectos\\django> `}
+        title="Desactivar (venv) en CMD"
       />
     </section>
 
     <section class="mb-10">
-      <h2>Estructura del proyecto</h2>
+      <h2>2. Instalación de Django y Creación del Proyecto</h2>
       <p>
-        Django genera carpetas como <code>manage.py</code>, <code>settings.py</code>, <code>urls.py</code> y una carpeta de aplicación. Cada pieza tiene un propósito claro.
+        Con el entorno <code>(venv)</code> activo, instalamos Django mediante <code>pip</code>:
+      </p>
+
+      <CodeBlock
+        lang="cmd"
+        code={`# 1. Actualizar el gestor de paquetes (opcional pero recomendado)
+(venv) PS C:\\proyectos\\django> python -m pip install --upgrade pip
+
+# 2. Instalar el framework Django
+(venv) PS C:\\proyectos\\django> pip install django
+
+# 3. Comprobar la versión instalada
+(venv) PS C:\\proyectos\\django> django-admin --version
+5.1.1`}
+        title="Instalación con pip en (venv)"
+      />
+
+      <h3>2.1 Creación del Proyecto (django-admin startproject biblioteca)</h3>
+      <p>
+        Para iniciar el proyecto utilizamos el comando <code>django-admin startproject NOMBRE_PROYECTO</code>. En nuestro caso, crearemos el proyecto llamado <strong><code>biblioteca</code></strong>:
+      </p>
+
+      <CodeBlock
+        lang="cmd"
+        code={`# 1. Crear el proyecto con el nombre "biblioteca"
+(venv) PS C:\\proyectos\\django> django-admin startproject biblioteca
+
+# 2. Entrar en la carpeta del proyecto recién creado
+(venv) PS C:\\proyectos\\django> cd biblioteca
+(venv) PS C:\\proyectos\\django\\biblioteca> `}
+        title="Creación del Proyecto con (venv)"
+      />
+
+      <h3>2.2 Iniciar el Servidor de Desarrollo</h3>
+      <p>
+        Una vez dentro de la carpeta del proyecto (donde reside <code>manage.py</code>), iniciamos el servidor web ligero de desarrollo:
+      </p>
+
+      <CodeBlock
+        lang="cmd"
+        code={`(venv) PS C:\\proyectos\\django\\biblioteca> python manage.py runserver
+
+Watching for file changes with StatReloader
+Performing system checks...
+
+System check identified no issues (0 silenced).
+Django version 5.1.1, using settings 'biblioteca.settings'
+Starting development server at http://127.0.0.1:8000/
+Quit the server with CTRL-BREAK.`}
+        title="Servidor de Desarrollo en (venv)"
+      />
+
+      <p>
+        Si abres tu navegador en <code>http://127.0.0.1:8000/</code>, verás el famoso cohete de Django despegando con el mensaje <em>"The install worked successfully! Congratulations!"</em>.
       </p>
     </section>
 
     <section class="mb-10">
-      <h2>Crear una aplicación</h2>
+      <h2>3. Anatomía de la Estructura Generada</h2>
       <p>
-        En Django, el proyecto es el contenedor general y las aplicaciones son módulos que agrupan funcionalidades concretas.
+        Al ejecutar <code>django-admin startproject biblioteca</code>, dentro de nuestra carpeta principal <code>C:\proyectos\django</code> se organiza la siguiente estructura:
       </p>
-      <CodeBlock
-        lang="bash"
-        code={`python manage.py startapp cursos
 
-# Luego registra 'cursos' en INSTALLED_APPS dentro de settings.py`}
-        title="crear_app.sh"
+      <CodeBlock
+        lang="text"
+        code={`C:\\proyectos\\django\\
+├── venv/                       <-- Carpeta del entorno virtual aislado
+└── biblioteca/                 <-- Carpeta raíz del proyecto creada por startproject
+    ├── manage.py               <-- Script CLI para ejecutar comandos (runserver, migrate, etc.)
+    └── biblioteca/             <-- Paquete de configuración central del proyecto
+        ├── __init__.py         <-- Marca la carpeta como paquete de Python
+        ├── settings.py         <-- Configuración global (BD, apps, seguridad, idiomas)
+        ├── urls.py             <-- Enrutador raíz principal del proyecto
+        ├── asgi.py             <-- Entrada para servidores asíncronos (WebSockets)
+        └── wsgi.py             <-- Entrada para servidores web tradicionales (WSGI)`}
+        title="estructura_archivos.txt"
       />
+    </section>
+
+    <section class="mb-10">
+      <h2>4. Aplicaciones en Django (Apps)</h2>
+      <p>
+        En Django, existe una distinción crucial entre <strong>Proyecto</strong> y <strong>Aplicación</strong>:
+      </p>
+      <ul>
+        <li><strong>Proyecto:</strong> La configuración global de todo el sitio web (base de datos, middleware, URLs raíz). En nuestro ejemplo: <code>biblioteca</code>.</li>
+        <li><strong>Aplicación (App):</strong> Un módulo reutilizable con un objetivo concreto. Por ejemplo, el catálogo de <code>libros</code>.</li>
+      </ul>
+
+      <p>Desde la carpeta donde está <code>manage.py</code>, creamos nuestra aplicación modular:</p>
+      <CodeBlock
+        lang="cmd"
+        code={`(venv) PS C:\\proyectos\\django\\biblioteca> python manage.py startapp libros`}
+        title="Crear Aplicación en CMD con (venv)"
+      />
+
+      <p>
+        <strong>Paso obligatorio:</strong> Cada vez que creas una aplicación con <code>startapp</code>, debes registrarla en la lista <code>INSTALLED_APPS</code> del archivo <code>biblioteca/settings.py</code>:
+      </p>
+
+      <CodeBlock
+        lang="python"
+        code={`# biblioteca/settings.py
+
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    
+    # Aplicaciones del proyecto:
+    'libros',
+]`}
+        title="biblioteca/settings.py"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>5. Laboratorio Interactivo: Simulador de Terminal y Código 🧪</h2>
+      <p>
+        ¡Es tu turno de ponerte a prueba! Practica todo el flujo real escribiendo comandos en la terminal interactiva inferior. Observa con atención cómo el prompt cambia para mostrar el prefijo <code>(venv)</code> cuando activas el entorno. Luego, pasa al editor para registrar la aplicación en <code>settings.py</code>.
+      </p>
+
+      <DjangoInteractiveTerminal client:load />
     </section>
 
     <section class="mb-10">
@@ -62,7 +228,7 @@ python manage.py runserver`}
 
     <section class="mb-10">
       <h2>Ponte a prueba</h2>
-      <p>Confirma que conoces la estructura inicial de un proyecto Django.</p>
+      <p>Confirma que conoces la estructura inicial de un proyecto Django y el uso del entorno virtual.</p>
       <DjangoQuizModal quizKey="introduccion-django" />
     </section>
 

@@ -2,57 +2,516 @@
 import Layout from '../../../../layouts/Layout.astro';
 import CodeBlock from '../../../../components/CodeBlock.astro';
 import DjangoQuizModal from '../../../../components/quizzes/DjangoQuizModal.astro';
+import DjangoAuthSimulator from '../../../../components/django/DjangoAuthSimulator';
 ---
 
-<Layout title="Autenticación y Seguridad" description="Protege tu aplicación Django con usuarios, permisos y buenas prácticas de seguridad." courseSlug="django">
+<Layout title="Autenticación, Usuario Personalizado y Seguridad" description="Aprende a extender el modelo de usuario con AbstractUser, personalizar UserAdmin con validaciones y acciones masivas, y proteger vistas en Django." courseSlug="django">
   <article class="content-section">
-    <h1>7. Autenticación y Seguridad</h1>
+    <h1>7. Autenticación, Usuario Personalizado y Seguridad 🛡️</h1>
 
+    <!-- 1. MODELO DE USUARIO PERSONALIZADO -->
     <section class="mb-10">
-      <h2>Usuarios y sesiones</h2>
+      <h2>1. Extensión del Modelo de Usuario en Django</h2>
       <p>
-        Django incluye un modelo de usuario listo para usar. El sistema de autenticación permite iniciar sesión, cerrar sesión y proteger rutas.
+        El modelo <code>User</code> por defecto de Django incluye únicamente <code>username</code>, <code>email</code>, <code>first_name</code>, <code>last_name</code> y <code>password</code>. En aplicaciones profesionales casi siempre necesitamos datos adicionales: número de documento (RUT / DNI), teléfono, dirección, rol en el sistema o estado de cuenta.
+      </p>
+
+      <div class="bg-amber-950/20 border-2 border-amber-500/60 rounded-2xl p-4 mb-6 text-xs text-slate-800">
+        <strong class="text-amber-900 font-bold block mb-1">⚠️ Regla de Oro en Django (Official Recommendation):</strong>
+        Configura un modelo de usuario personalizado <strong>al inicio del proyecto</strong> antes de ejecutar la primera migración. Cambiar <code>AUTH_USER_MODEL</code> a mitad de un proyecto en producción requiere migraciones manuales complejas para actualizar las claves foráneas existentes.
+      </div>
+
+      <h3>1.1 Estrategias de Extensión: AbstractUser vs OneToOneField</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        <div class="p-4 rounded-xl border border-slate-700 bg-slate-900 text-slate-200 text-xs">
+          <strong class="text-emerald-400 font-bold text-sm block mb-1.5">Opción A: AbstractUser (Recomendada)</strong>
+          <p class="text-slate-300 leading-relaxed mb-2">
+            Hereda de <code>django.contrib.auth.models.AbstractUser</code>. Mantiene toda la lógica nativa (hash de contraseñas, reseteo de claves, grupos y permisos) y añade nuevas columnas directamente a la tabla del usuario.
+          </p>
+          <span class="text-[11px] text-emerald-400 font-mono font-bold">✔ Sin JOINs extra en base de datos.</span>
+        </div>
+        <div class="p-4 rounded-xl border border-slate-700 bg-slate-900 text-slate-200 text-xs">
+          <strong class="text-cyan-400 font-bold text-sm block mb-1.5">Opción B: Perfil OneToOneField</strong>
+          <p class="text-slate-300 leading-relaxed mb-2">
+            Crea un modelo satélite (ej: <code>PerfilUsuario</code>) enlazado mediante <code>OneToOneField(User)</code>. Útil cuando no puedes alterar la tabla de usuarios existente en un sistema legado.
+          </p>
+          <span class="text-[11px] text-cyan-400 font-mono font-bold">Requiere JOIN extra para cada consulta.</span>
+        </div>
+      </div>
+
+      <h3>1.2 Implementación del Modelo Usuario en usuarios/models.py</h3>
+      <p>
+        Creamos una aplicación dedicada <code>usuarios</code> (<code>python manage.py startapp usuarios</code>) y definimos nuestro modelo extendido:
       </p>
       <CodeBlock
         lang="python"
-        code={`from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+        code={`# usuarios/models.py
+from django.contrib.auth.models import AbstractUser
+from django.core.validators import RegexValidator
+from django.db import models
 
 
-@login_required
-def perfil(request):
-    return render(request, 'perfil.html', {'usuario': request.user})`}
-        title="views_seguridad.py"
+class Usuario(AbstractUser):
+    ROLES = [
+        ('LECTOR', 'Lector / Socio'),
+        ('BIBLIOTECARIO', 'Bibliotecario (Personal)'),
+        ('ADMINISTRADOR', 'Administrador General'),
+    ]
+
+    ESTADOS_CUENTA = [
+        ('ACTIVA', 'Cuenta Activa'),
+        ('SUSPENDIDA', 'Suspendida por Incumplimiento'),
+        ('EN_MORA', 'En Mora / Multas Pendientes'),
+    ]
+
+    # Validador de formato de documento de identidad
+    validador_rut = RegexValidator(
+        regex=r'^[0-9]{1,2}\\.[0-9]{3}\\.[0-9]{3}-[0-9kK]{1}$',
+        message="Formato de RUT/DNI inválido. Debe tener la estructura XX.XXX.XXX-X."
+    )
+
+    rut_dni = models.CharField(
+        max_length=20,
+        unique=True,
+        validators=[validador_rut],
+        verbose_name="RUT / Documento de Identidad"
+    )
+    telefono = models.CharField(max_length=20, blank=True, verbose_name="Teléfono Móvil")
+    direccion = models.CharField(max_length=255, blank=True, verbose_name="Dirección de Residencia")
+    fecha_nacimiento = models.DateField(null=True, blank=True, verbose_name="Fecha de Nacimiento")
+    rol = models.CharField(max_length=20, choices=ROLES, default='LECTOR', db_index=True)
+    estado_cuenta = models.CharField(max_length=20, choices=ESTADOS_CUENTA, default='ACTIVA', db_index=True)
+    multas_pendientes = models.DecimalField(max_digits=8, decimal_places=2, default=0.00)
+    avatar = models.ImageField(upload_to='avatars/%Y/%m/', null=True, blank=True)
+
+    class Meta:
+        verbose_name = "Usuario de Biblioteca"
+        verbose_name_plural = "Usuarios de Biblioteca"
+        ordering = ['username']
+
+    @property
+    def puede_solicitar_prestamos(self):
+        """Regla de negocio: el usuario debe estar activo, sin multas y sin suspensión."""
+        return self.is_active and self.estado_cuenta == 'ACTIVA' and self.multas_pendientes == 0
+
+    def __str__(self):
+        return f"{self.get_full_name() or self.username} ({self.get_rol_display()})"`}
+        title="usuarios/models.py"
       />
-    </section>
 
-    <section class="mb-10">
-      <h2>Protección CSRF</h2>
-      <p>
-        Django protege los formularios con tokens CSRF. Siempre añade {"{% csrf_token %}"} a tus templates de formulario.
+      <p class="mt-4">
+        Luego, registramos el modelo en <code>config/settings.py</code>:
       </p>
       <CodeBlock
-        lang="html"
-        code={'<form method="post">\n  {% csrf_token %}\n  {{ form.as_p }}\n  <button type="submit">Enviar</button>\n</form>'}
-        title="formulario.html"
+        lang="python"
+        code={`# config/settings.py
+AUTH_USER_MODEL = 'usuarios.Usuario'
+
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    # Nuestras Apps del proyecto:
+    'usuarios.apps.UsuariosConfig',
+    'biblioteca.apps.BibliotecaConfig',
+]`}
+        title="config/settings.py"
       />
     </section>
 
+    <!-- 2. PERSONALIZACIÓN DEL USERADMIN -->
     <section class="mb-10">
-      <h2>Buenas prácticas</h2>
-      <ul>
-        <li>No guardes contraseñas en texto plano.</li>
-        <li>Usa variables de entorno para claves secretas.</li>
-        <li>Protege endpoints sensibles con permisos.</li>
-      </ul>
+      <h2>2. Manipulación Avanzada del Django Admin para Usuarios (UserAdmin)</h2>
+      <p>
+        No registres un modelo de usuario con un simple <code>admin.ModelAdmin</code> común, pues perderías los formularios especiales de Django que hashean contraseñas con algoritmos criptográficos (PBKDF2/Argon2). Debes heredar de <code>django.contrib.auth.admin.UserAdmin</code>:
+      </p>
+
+      <CodeBlock
+        lang="python"
+        code={`# usuarios/admin.py
+from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin
+from django.utils.html import format_html
+from .models import Usuario
+
+
+class SolicitudPrestamoInline(admin.TabularInline):
+    """Permite auditar el historial de préstamos del usuario directamente en su ficha."""
+    from biblioteca.models import SolicitudPrestamo
+    model = SolicitudPrestamo
+    extra = 0
+    readonly_fields = ['fecha_solicitud', 'libro', 'estado', 'multa_acumulada']
+    can_delete = False
+
+
+@admin.register(Usuario)
+class CustomUserAdmin(UserAdmin):
+    # Columnas en el listado
+    list_display = [
+        'username', 'email', 'nombre_completo_col', 'rut_dni',
+        'rol_badge', 'estado_badge', 'multas_pendientes', 'is_staff'
+    ]
+    list_filter = ['rol', 'estado_cuenta', 'is_staff', 'is_active']
+    search_fields = ['username', 'email', 'rut_dni', 'first_name', 'last_name']
+    inlines = [SolicitudPrestamoInline]
+
+    # FIELDSETS: Organización de los campos al EDITAR un usuario
+    fieldsets = (
+        ('Credenciales de Acceso', {
+            'fields': ('username', 'password')
+        }),
+        ('Información Personal Extendida', {
+            'fields': ('first_name', 'last_name', 'email', 'rut_dni', 'telefono', 'direccion', 'fecha_nacimiento', 'avatar')
+        }),
+        ('Roles y Permisos de Sistema', {
+            'fields': ('rol', 'is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions'),
+            'classes': ('collapse',)
+        }),
+        ('Estado Operativo y Finanzas', {
+            'fields': ('estado_cuenta', 'multas_pendientes')
+        }),
+        ('Fechas de Auditoría', {
+            'fields': ('last_login', 'date_joined'),
+            'classes': ('collapse',)
+        }),
+    )
+
+    # ADD_FIELDSETS: Campos solicitados al CREAR un nuevo usuario en /admin/usuarios/usuario/add/
+    add_fieldsets = UserAdmin.add_fieldsets + (
+        ('Datos Adicionales Obligatorios', {
+            'fields': ('email', 'rut_dni', 'rol')
+        }),
+    )
+
+    def nombre_completo_col(self, obj):
+        return obj.get_full_name() or "—"
+    nombre_completo_col.short_description = "Nombre Completo"
+
+    def rol_badge(self, obj):
+        colores = {'ADMINISTRADOR': '#7C3AED', 'BIBLIOTECARIO': '#0284C7', 'LECTOR': '#475569'}
+        return format_html(
+            '<span style="background-color: {}; color: white; padding: 2px 8px; border-radius: 9999px; font-weight: bold; font-size: 10px;">{}</span>',
+            colores.get(obj.rol, '#475569'),
+            obj.rol
+        )
+    rol_badge.short_description = "Rol"
+
+    def estado_badge(self, obj):
+        if obj.estado_cuenta == 'ACTIVA':
+            return format_html('<span style="color: #10B981; font-weight: bold;">● Activa</span>')
+        elif obj.estado_cuenta == 'EN_MORA':
+            return format_html('<span style="color: #F59E0B; font-weight: bold;">▲ En Mora</span>')
+        return format_html('<span style="color: #EF4444; font-weight: bold;">✖ Suspendida</span>')
+    estado_badge.short_description = "Estado Cuenta"`}
+        title="usuarios/admin.py"
+      />
     </section>
 
+    <!-- 3. VALIDACIONES Y SEGURIDAD EN EL ADMIN -->
+    <section class="mb-10">
+      <h2>3. Validaciones Críticas en el Administrador y Formularios</h2>
+      <p>
+        Un error común en sistemas administrativos es permitir que un superusuario se desactive a sí mismo o se quite permisos involuntariamente, bloqueando el acceso al sistema. Podemos proteger esto sobreescribiendo el formulario del admin:
+      </p>
+
+      <CodeBlock
+        lang="python"
+        code={`# usuarios/forms.py
+from django import forms
+from django.contrib.auth.forms import UserChangeForm
+from .models import Usuario
+
+
+class CustomUserChangeForm(UserChangeForm):
+    class Meta:
+        model = Usuario
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        self.request_user = kwargs.pop('current_user', None)
+        super().__init__(*args, **kwargs)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        is_active = cleaned_data.get('is_active')
+        is_superuser = cleaned_data.get('is_superuser')
+
+        # REGLA DE AUTO-PROTECCIÓN:
+        # Si el usuario que se está editando es el mismo que está logueado en la sesión
+        if self.instance and self.request_user and self.instance.pk == self.request_user.pk:
+            if not is_active:
+                raise forms.ValidationError(
+                    "Seguridad: No puedes desactivar tu propia cuenta mientras estás administrando el sistema."
+                )
+            if not is_superuser:
+                raise forms.ValidationError(
+                    "Seguridad: No puedes revocar tus propios privilegios de superusuario."
+                )
+
+        # Validación cruzada de estado vs multas
+        multas = cleaned_data.get('multas_pendientes', 0)
+        estado = cleaned_data.get('estado_cuenta')
+        if multas > 0 and estado == 'ACTIVA':
+            # Auto-corregir o advertir
+            cleaned_data['estado_cuenta'] = 'EN_MORA'
+
+        return cleaned_data`}
+        title="usuarios/forms.py (Validaciones de Seguridad)"
+      />
+    </section>
+
+    <!-- 4. ACCIONES MASIVAS EN EL ADMIN -->
+    <section class="mb-10">
+      <h2>4. Acciones Masivas de Administración (@admin.action)</h2>
+      <p>
+        Las acciones permiten al personal de biblioteca procesar decenas o cientos de registros simultáneamente sin tener que abrirlos uno por uno:
+      </p>
+
+      <CodeBlock
+        lang="python"
+        code={`from django.contrib import admin, messages
+
+@admin.action(description="Suspender cuentas seleccionadas con multas pendientes")
+def suspender_por_mora(modeladmin, request, queryset):
+    # Solo aplicamos a quienes registren deuda
+    morosos = queryset.filter(multas_pendientes__gt=0)
+    actualizados = morosos.update(estado_cuenta='SUSPENDIDA', is_active=False)
+    
+    if actualizados > 0:
+        modeladmin.message_user(
+            request,
+            f"Se han suspendido {actualizados} cuenta(s) por registrar multas pendientes.",
+            messages.WARNING
+        )
+    else:
+        modeladmin.message_user(
+            request,
+            "Ninguno de los usuarios seleccionados registraba multas pendientes para suspender.",
+            messages.INFO
+        )
+
+
+@admin.action(description="Promover usuarios a rol de BIBLIOTECARIO (Staff)")
+def promover_a_bibliotecario(modeladmin, request, queryset):
+    actualizados = queryset.update(rol='BIBLIOTECARIO', is_staff=True)
+    modeladmin.message_user(
+        request,
+        f"Se promovieron {actualizados} usuario(s) al rol de Bibliotecario con acceso al panel.",
+        messages.SUCCESS
+    )
+
+
+@admin.action(description="Reactivar cuentas seleccionadas")
+def reactivar_cuentas(modeladmin, request, queryset):
+    actualizados = queryset.update(is_active=True, estado_cuenta='ACTIVA')
+    modeladmin.message_user(
+        request,
+        f"Se han reactivado {actualizados} cuenta(s) exitosamente.",
+        messages.SUCCESS
+    )
+
+# Se registran en CustomUserAdmin:
+CustomUserAdmin.actions = [suspender_por_mora, promover_a_bibliotecario, reactivar_cuentas]`}
+        title="usuarios/actions.py"
+      />
+    </section>
+
+    <!-- 5. LABORATORIO INTERACTIVO DIDÁCTICO -->
+    <section class="mb-10">
+      <h2>⚡ Laboratorio Interactivo: Simulador de Autenticación y UserAdmin</h2>
+      <p>
+        Prueba en vivo la inspección del objeto <code>request.user</code>, cómo reaccionan las vistas protegidas ante diferentes roles y multas, y experimenta las validaciones de auto-protección y acciones masivas del administrador.
+      </p>
+      <DjangoAuthSimulator client:load />
+    </section>
+
+    <!-- 6. CONTROL DE ACCESO EN VISTAS -->
+    <section class="mb-10">
+      <h2>6. Control de Acceso en Vistas (Decoradores y Mixins)</h2>
+      <p>
+        En Django proteges tus vistas utilizando decoradores (para funciones FBV) y mixins de herencia (para clases CBV):
+      </p>
+
+      <CodeBlock
+        lang="python"
+        code={`from django.contrib.auth.decorators import login_required, user_passes_test, permission_required
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.views.generic import TemplateView
+from django.shortcuts import render
+from .models import Usuario
+
+
+# 1. En FBVs: Verificación de estado de cuenta y morosidad
+def es_lector_habilitado(user):
+    return user.is_authenticated and user.puede_solicitar_prestamos
+
+@login_required
+@user_passes_test(es_lector_habilitado, login_url='/cuenta/regularizar-multas/')
+def solicitar_prestamo_libro(request, libro_id):
+    """Solo usuarios autenticados sin multas ni suspensiones pueden pedir préstamos."""
+    return render(request, 'biblioteca/solicitar_prestamo.html', {'libro_id': libro_id})
+
+
+# 2. En CBVs: Vista solo accesible por Bibliotecarios o Administradores
+class PanelGestionBibliotecarioView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
+    template_name = 'biblioteca/panel_bibliotecario.html'
+
+    def test_func(self):
+        user = self.request.user
+        return user.is_staff or user.rol in ['BIBLIOTECARIO', 'ADMINISTRADOR']`}
+        title="seguridad_vistas.py"
+      />
+    </section>
+
+    <!-- 7. EJERCICIOS DIDÁCTICOS PROYECTO 1 -->
+    <section class="mb-10">
+      <h2>7. Ejercicios Didácticos: Proyecto 1 (Biblioteca)</h2>
+      <p>Pon a prueba la gestión de usuarios y permisos sobre la Biblioteca Central.</p>
+
+      <div class="space-y-4">
+        <article class="p-5 rounded-2xl border-2 border-slate-800 bg-slate-50">
+          <h3 class="text-base font-black text-slate-900 mb-2">
+            Ejercicio 7.1: Mixin de Verificación de Multas Pendientes
+          </h3>
+          <p class="text-sm text-slate-600 mb-3">
+            Crea un Mixin personalizado reutilizable para CBVs llamado <code>SinMultasRequiredMixin</code> que rechace con <code>PermissionDenied</code> (HTTP 403) a cualquier usuario que tenga <code>multas_pendientes &gt; 0</code>.
+          </p>
+          <details class="cursor-pointer bg-white p-3 rounded-xl border border-slate-300">
+            <summary class="font-bold text-xs text-[#0c4a3f] font-mono">Ver Solución Explicada</summary>
+            <div class="mt-3 text-xs">
+              <CodeBlock
+                lang="python"
+                code={`from django.core.exceptions import PermissionDenied
+from django.contrib.auth.mixins import AccessMixin
+
+class SinMultasRequiredMixin(AccessMixin):
+    """Mixin que verifica que el usuario autenticado no tenga sanciones económicas activas."""
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return self.handle_no_permission()
+        if request.user.multas_pendientes > 0:
+            raise PermissionDenied("Tu cuenta registra multas pendientes. No puedes realizar préstamos.")
+        return super().dispatch(request, *args, **kwargs)`}
+                title="solucion_mixin_multas.py"
+              />
+            </div>
+          </details>
+        </article>
+
+        <article class="p-5 rounded-2xl border-2 border-slate-800 bg-slate-50">
+          <h3 class="text-base font-black text-slate-900 mb-2">
+            Ejercicio 7.2: Acción de Admin para Condonar y Reactivar
+          </h3>
+          <p class="text-sm text-slate-600 mb-3">
+            Escribe una acción para <code>CustomUserAdmin</code> que ponga las multas a $0.00 y restaure el estado de cuenta a <code>'ACTIVA'</code>.
+          </p>
+          <details class="cursor-pointer bg-white p-3 rounded-xl border border-slate-300">
+            <summary class="font-bold text-xs text-[#0c4a3f] font-mono">Ver Solución Explicada</summary>
+            <div class="mt-3 text-xs">
+              <CodeBlock
+                lang="python"
+                code={`@admin.action(description="Condonar multas y reactivar cuentas seleccionadas")
+def condonar_y_reactivar(modeladmin, request, queryset):
+    actualizados = queryset.update(
+        multas_pendientes=0.00,
+        estado_cuenta='ACTIVA',
+        is_active=True
+    )
+    modeladmin.message_user(
+        request,
+        f"Se han regularizado {actualizados} cuenta(s) de usuarios.",
+        messages.SUCCESS
+    )`}
+                title="solucion_condonar_action.py"
+              />
+            </div>
+          </details>
+        </article>
+      </div>
+    </section>
+
+    <!-- 8. DESAFÍO SEGUNDO PROYECTO TIENDA -->
+    <section class="mb-10">
+      <h2>8. Desafío Práctico: Segundo Proyecto — Tienda Online (`tienda`) 🛒</h2>
+      <p>
+        Aplica los conceptos de usuarios y permisos en el segundo proyecto (<code>C:\proyectos\django\tienda</code>), donde los clientes tienen límites de crédito y categorización VIP.
+      </p>
+
+      <div class="space-y-4">
+        <article class="p-5 rounded-2xl border-2 border-cyan-900/40 bg-cyan-50/40">
+          <h3 class="text-base font-black text-slate-900 mb-2">
+            Reto 8.1: Extensión de Cliente con Límite de Crédito
+          </h3>
+          <p class="text-sm text-slate-600 mb-3">
+            En <code>pedidos/models.py</code>, amplía el modelo de <code>Cliente</code> con un método <code>puede_comprar_a_credito(monto)</code> que valide si el total del pedido no excede su crédito asignado y su cuenta no está bloqueada por fraude.
+          </p>
+          <details class="cursor-pointer bg-white p-3 rounded-xl border border-slate-300">
+            <summary class="font-bold text-xs text-cyan-800 font-mono">Ver Solución Explicada</summary>
+            <div class="mt-3 text-xs">
+              <CodeBlock
+                lang="python"
+                code={`# pedidos/models.py
+from django.db import models
+from django.conf import settings
+
+class PerfilCliente(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='perfil_tienda')
+    es_vip = models.BooleanField(default=False)
+    limite_credito = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    bloqueado_por_fraude = models.BooleanField(default=False)
+
+    def puede_comprar_a_credito(self, monto):
+        if self.bloqueado_por_fraude:
+            return False
+        return self.limite_credito >= monto`}
+                title="solucion_cliente_tienda.py"
+              />
+            </div>
+          </details>
+        </article>
+
+        <article class="p-5 rounded-2xl border-2 border-cyan-900/40 bg-cyan-50/40">
+          <h3 class="text-base font-black text-slate-900 mb-2">
+            Reto 8.2: Acción de Admin para Ascender a Cliente VIP
+          </h3>
+          <p class="text-sm text-slate-600 mb-3">
+            Crea una acción en el panel administrativo de la tienda que convierta a los clientes seleccionados en <code>es_vip = True</code> y les otorgue automáticamente un límite de crédito de $2,000 USD.
+          </p>
+          <details class="cursor-pointer bg-white p-3 rounded-xl border border-slate-300">
+            <summary class="font-bold text-xs text-cyan-800 font-mono">Ver Solución Explicada</summary>
+            <div class="mt-3 text-xs">
+              <CodeBlock
+                lang="python"
+                code={`# pedidos/admin.py
+from django.contrib import admin, messages
+
+@admin.action(description="Promover a CLIENTE VIP (Crédito $2,000 USD)")
+def promover_cliente_vip(modeladmin, request, queryset):
+    actualizados = queryset.update(es_vip=True, limite_credito=2000.00)
+    modeladmin.message_user(
+        request,
+        f"Se han promovido {actualizados} cliente(s) a categoría VIP con crédito habilitado.",
+        messages.SUCCESS
+    )`}
+                title="solucion_vip_action.py"
+              />
+            </div>
+          </details>
+        </article>
+      </div>
+    </section>
+
+    <!-- 9. QUIZ -->
     <section class="mb-10">
       <h2>Ponte a prueba</h2>
-      <p>Verifica que entiendes los conceptos básicos de seguridad en Django.</p>
+      <p>Verifica que comprendes el modelo de usuario personalizado, la configuración de UserAdmin y el control de seguridad.</p>
       <DjangoQuizModal quizKey="seguridad" />
     </section>
 
+    <!-- FOOTER NAV -->
     <nav class="nav-bottom">
       <a href="/course/django/admin-crud/" class="prev">← Django Admin y CRUD</a>
       <a href="/course/django/apis-restful/" class="next">APIs RESTful →</a>

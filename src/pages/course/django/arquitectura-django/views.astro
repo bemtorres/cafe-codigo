@@ -1,0 +1,156 @@
+---
+import Layout from "../../../../layouts/Layout.astro";
+import CodeBlock from "../../../../components/CodeBlock.astro";
+import DjangoViewsPlayground from "../../../../components/django/DjangoViewsPlayground";
+---
+
+<Layout
+  title="Views: Lógica de Petición y Respuesta - Arquitectura Django"
+  description="Módulo 2: Aprende en profundidad cómo funcionan Vistas Basadas en Funciones (FBV), Vistas Basadas en Clases (CBV) y prueba el laboratorio interactivo."
+  courseSlug="django"
+>
+  <article class="content-section">
+    <!-- Header with Sub-Module Navigation -->
+    <header class="mb-8">
+      <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+        <a href="/course/django/arquitectura-django" class="inline-flex items-center text-xs font-mono font-black text-teal-800 bg-teal-100 px-3 py-1 rounded-full border-2 border-slate-900 shadow-[2px_2px_0px_#0f172a] hover:bg-teal-200 transition-colors">
+          ← Volver al Hub de Arquitectura
+        </a>
+        <span class="px-3 py-1 rounded-xl bg-teal-600 text-white font-mono font-black text-xs uppercase border-2 border-slate-900 shadow-[2px_2px_0px_#0f172a]">
+          MÓDULO 2 DE 4
+        </span>
+      </div>
+
+      <h1 class="text-3xl sm:text-4xl font-black text-slate-900 mb-3 font-sans tracking-tight">
+        2. Views: Lógica de Petición y Respuesta 🧠
+      </h1>
+      <p class="text-base text-slate-600 font-medium leading-relaxed">
+        Las Vistas procesan la lógica de negocio en Django. Reciben una instancia de <code>HttpRequest</code>, procesan datos con el ORM y retornan un objeto <code>HttpResponse</code>.
+      </p>
+
+      <!-- Sub-module Bar -->
+      <nav class="mt-6 p-2 rounded-2xl border-2 border-slate-900 bg-slate-100 flex flex-wrap gap-2 text-xs font-mono font-bold">
+        <a href="/course/django/arquitectura-django/urls" class="px-3 py-1.5 rounded-xl bg-white text-slate-700 hover:bg-teal-50 border border-slate-300">
+          1. URLs
+        </a>
+        <a href="/course/django/arquitectura-django/views" class="px-3 py-1.5 rounded-xl bg-teal-600 text-white border-2 border-slate-900 shadow-[2px_2px_0px_#0f172a]">
+          2. Views (Actual)
+        </a>
+        <a href="/course/django/arquitectura-django/template" class="px-3 py-1.5 rounded-xl bg-white text-slate-700 hover:bg-teal-50 border border-slate-300">
+          3. Templates
+        </a>
+        <a href="/course/django/arquitectura-django/training" class="px-3 py-1.5 rounded-xl bg-white text-slate-700 hover:bg-teal-50 border border-slate-300">
+          4. Ejercicios
+        </a>
+      </nav>
+    </header>
+
+    <!-- SUBMÓDULO 2.1 -->
+    <section class="mb-8 p-6 rounded-2xl border-2 border-slate-800 bg-slate-50/70">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="px-2.5 py-0.5 rounded bg-teal-100 text-teal-950 font-mono font-black text-xs border border-teal-400">
+          SUBMÓDULO 2.1
+        </span>
+        <h2 class="text-xl font-black text-slate-900 m-0">
+          Vistas Basadas en Funciones (FBV - Function Based Views)
+        </h2>
+      </div>
+      <p class="text-xs text-slate-600 leading-relaxed mb-3">
+        Son funciones explícitas de Python. Ofrecen un flujo lineal muy transparente cuando se requiere un control milimétrico sobre cada paso de la petición HTTP:
+      </p>
+
+      <CodeBlock
+        lang="python"
+        code={`from django.shortcuts import render, get_object_or_404, redirect
+from django.views.decorators.http import require_http_methods
+from .models import Libro
+
+@require_http_methods(["GET"])
+def libro_detalle_id(request, pk):
+    """FBV que busca por clave primaria. Retorna 404 automático si no existe."""
+    libro = get_object_or_404(Libro, pk=pk)
+    
+    # Registro de auditoría
+    print(f"[Auditoría] Consulta libro ID={pk} por IP={request.META.get('REMOTE_ADDR')}")
+    
+    return render(request, 'biblioteca/libro_detalle.html', {
+        'libro': libro,
+        'puede_prestar': libro.disponible_para_prestamo and request.user.is_authenticated,
+    })`}
+        title="views_fbv.py"
+      />
+    </section>
+
+    <!-- SUBMÓDULO 2.2 -->
+    <section class="mb-8 p-6 rounded-2xl border-2 border-slate-800 bg-slate-50/70">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="px-2.5 py-0.5 rounded bg-teal-100 text-teal-950 font-mono font-black text-xs border border-teal-400">
+          SUBMÓDULO 2.2
+        </span>
+        <h2 class="text-xl font-black text-slate-900 m-0">
+          Vistas Basadas en Clases (CBV - Generic Class Based Views)
+        </h2>
+      </div>
+      <p class="text-xs text-slate-600 leading-relaxed mb-3">
+        Las CBVs eliminan código repetitivo (*boilerplate*) mediante herencia. Django incluye vistas genéricas preconstruidas: <code>ListView</code>, <code>DetailView</code>, <code>CreateView</code>, <code>UpdateView</code> y <code>DeleteView</code>.
+      </p>
+
+      <CodeBlock
+        lang="python"
+        code={`from django.views.generic import ListView, DetailView
+from django.db.models import Q
+from .models import Libro
+
+# 1. ListView con filtros dinámicos y paginación
+class CatalogoLibrosView(ListView):
+    model = Libro
+    template_name = 'biblioteca/catalogo.html'
+    context_object_name = 'libros'
+    paginate_by = 9
+
+    def get_queryset(self):
+        """Filtra la consulta en la base de datos según los parámetros de la URL."""
+        qs = Libro.objects.select_related('autor', 'categoria').filter(disponible_para_prestamo=True)
+        q = self.request.GET.get('q', '').strip()
+        cat = self.request.GET.get('categoria')
+
+        if q:
+            qs = qs.filter(Q(titulo__icontains=q) | Q(autor__nombre_completo__icontains=q))
+        if cat:
+            qs = qs.filter(categoria__slug=cat)
+        return qs
+
+    def get_context_data(self, **kwargs):
+        """Inyecta variables adicionales al diccionario de contexto del template."""
+        context = super().get_context_data(**kwargs)
+        context['busqueda_actual'] = self.request.GET.get('q', '')
+        context['total_activos'] = self.get_queryset().count()
+        return context`}
+        title="views_cbv.py"
+      />
+    </section>
+
+    <!-- SUBMÓDULO 2.3 -->
+    <section class="mb-10 p-6 rounded-2xl border-2 border-slate-800 bg-slate-50/70">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="px-2.5 py-0.5 rounded bg-teal-100 text-teal-950 font-mono font-black text-xs border border-teal-400">
+          SUBMÓDULO 2.3
+        </span>
+        <h2 class="text-xl font-black text-slate-900 m-0">
+          Laboratorio Interactivo: Simulador de URLs y Vistas
+        </h2>
+      </div>
+      <p class="text-xs text-slate-600 leading-relaxed mb-4">
+        Prueba en tiempo real cómo el enrutador de Django ejecuta vistas, extrae convertidores, procesa parámetros <code>request.GET</code> y construye el contexto del template:
+      </p>
+
+      <DjangoViewsPlayground client:load />
+    </section>
+
+    <!-- Module Switcher Footer -->
+    <nav class="nav-bottom">
+      <a href="/course/django/arquitectura-django/urls" class="prev">← Módulo 1: URLs</a>
+      <a href="/course/django/arquitectura-django/template" class="next">Módulo 3: Templates →</a>
+    </nav>
+  </article>
+</Layout>

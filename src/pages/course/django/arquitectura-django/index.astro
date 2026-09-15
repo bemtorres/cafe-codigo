@@ -1,78 +1,134 @@
 ---
-import Layout from '../../../../layouts/Layout.astro';
-import CodeBlock from '../../../../components/CodeBlock.astro';
-import DjangoQuizModal from '../../../../components/quizzes/DjangoQuizModal.astro';
+import Layout from "../../../../layouts/Layout.astro";
+import ZoomableImage from "../../../../components/ZoomableImage.astro";
+import mtv_django from "../../../../assets/images/django/mvt_django.png";
 ---
 
-<Layout title="Arquitectura Django" description="Aprende cómo funcionan URLs, views y templates dentro de Django." courseSlug="django">
+<Layout
+  title="Arquitectura Django: URLs, Views y Templates"
+  description="Hub de aprendizaje de la arquitectura MVT en Django. Selecciona cualquiera de los 4 módulos temáticos."
+  courseSlug="django"
+>
   <article class="content-section">
-    <h1>4. Arquitectura Django: URLs, Views y Templates</h1>
-
-    <section class="mb-10">
-      <h2>MVT: Model, View, Template</h2>
-      <p>
-        Django organiza las aplicaciones con el patrón MVT. El modelo gestiona datos, la vista procesa solicitudes y el template renderiza HTML.
+    <!-- Header -->
+    <header class="mb-10 text-center sm:text-left">
+      <span class="inline-block px-3.5 py-1 rounded-full text-xs font-mono font-black uppercase bg-emerald-100 text-emerald-900 border-2 border-slate-900 shadow-[2px_2px_0px_#0f172a] mb-3">
+        Lección 04 • Hub MVT
+      </span>
+      <h1 class="text-3xl sm:text-4xl font-black text-slate-900 mb-4 font-sans tracking-tight">
+        Arquitectura Django: URLs, Views y Templates 🏛️
+      </h1>
+      <p class="text-base sm:text-lg text-slate-600 leading-relaxed font-medium">
+        Esta lección está estructurada en <strong>4 Módulos Independientes</strong>. Haz clic en cualquiera de ellos para profundizar en su teoría, ejemplos de código, laboratorios en vivo y ejercicios didácticos:
       </p>
-    </section>
+    </header>
 
-    <section class="mb-10">
-      <h2>URLs y rutas</h2>
-      <p>
-        Las rutas convierten una URL en una función o clase que devuelve una respuesta.
+    <!-- Overview Diagram -->
+    <div class="mb-10 p-6 rounded-3xl border-[3px] border-slate-900 bg-white shadow-[8px_8px_0px_#0f172a]">
+      <h2 class="text-xl font-black text-slate-900 mb-2 font-mono">
+        🔄 El Ciclo de Peticiones en el Patrón MVT
+      </h2>
+      <p class="text-xs text-slate-600 mb-4">
+        Django organiza la arquitectura mediante el patrón <strong>Model - View - Template</strong>. El enrutador recibe la petición HTTP, la entrega a la vista y esta coordina los modelos de base de datos y la plantilla HTML.
       </p>
-      <CodeBlock
-        lang="python"
-        code={`from django.urls import path
-from .views import inicio, detalle_curso
+      <div class="flex justify-center my-2">
+        <ZoomableImage
+          src={mtv_django}
+          alt="Arquitectura MVT de Django (Model - View - Template)"
+          caption="Diagrama del patrón MVT en Django (clic para ampliar)."
+          maxWidth="900px"
+        />
+      </div>
+    </div>
 
-urlpatterns = [
-    path('', inicio, name='inicio'),
-    path('cursos/<int:id>/', detalle_curso, name='detalle_curso'),
-]`}
-        title="urls.py"
-      />
-    </section>
+    <!-- 4 Modules Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+      <!-- Módulo 1 -->
+      <a
+        href="/course/django/arquitectura-django/urls"
+        class="group p-6 rounded-3xl border-[3px] border-slate-900 bg-emerald-50/70 hover:bg-emerald-100/90 shadow-[6px_6px_0px_#0f172a] transition-all hover:-translate-y-1 block"
+      >
+        <div class="flex items-center justify-between mb-3">
+          <span class="px-3 py-1 rounded-xl bg-emerald-600 text-white font-mono font-black text-xs uppercase border-2 border-slate-900 shadow-[2px_2px_0px_#0f172a]">
+            MÓDULO 1
+          </span>
+          <span class="text-xs font-mono font-bold text-slate-500 group-hover:text-slate-900">
+            /urls →
+          </span>
+        </div>
+        <h3 class="text-xl font-black text-slate-900 mb-2 font-mono group-hover:text-emerald-950">
+          1. URLs y Enrutamiento Avanzado 🌐
+        </h3>
+        <p class="text-xs text-slate-600 leading-relaxed font-medium">
+          Estructura modular con <code>include()</code>, espacios de nombres (namespaces), convertidores nativos (`int`, `slug`, `uuid`), convertidores personalizados (`ISBNConverter`) y expresiones regulares con `re_path()`.
+        </p>
+      </a>
 
-    <section class="mb-10">
-      <h2>Views</h2>
-      <p>
-        Las views reciben el request y devuelven una response. Pueden renderizar templates o devolver JSON en una API.
-      </p>
-      <CodeBlock
-        lang="python"
-        code={`from django.shortcuts import render
+      <!-- Módulo 2 -->
+      <a
+        href="/course/django/arquitectura-django/views"
+        class="group p-6 rounded-3xl border-[3px] border-slate-900 bg-teal-50/70 hover:bg-teal-100/90 shadow-[6px_6px_0px_#0f172a] transition-all hover:-translate-y-1 block"
+      >
+        <div class="flex items-center justify-between mb-3">
+          <span class="px-3 py-1 rounded-xl bg-teal-600 text-white font-mono font-black text-xs uppercase border-2 border-slate-900 shadow-[2px_2px_0px_#0f172a]">
+            MÓDULO 2
+          </span>
+          <span class="text-xs font-mono font-bold text-slate-500 group-hover:text-slate-900">
+            /views →
+          </span>
+        </div>
+        <h3 class="text-xl font-black text-slate-900 mb-2 font-mono group-hover:text-teal-950">
+          2. Views: Lógica de Petición y Respuesta 🧠
+        </h3>
+        <p class="text-xs text-slate-600 leading-relaxed font-medium">
+          Vistas Basadas en Funciones (FBV) vs Vistas Basadas en Clases (CBV: `ListView`, `DetailView`). Incluye la consola interactiva <strong>Django Views Laboratory</strong>.
+        </p>
+      </a>
 
+      <!-- Módulo 3 -->
+      <a
+        href="/course/django/arquitectura-django/template"
+        class="group p-6 rounded-3xl border-[3px] border-slate-900 bg-amber-50/70 hover:bg-amber-100/90 shadow-[6px_6px_0px_#0f172a] transition-all hover:-translate-y-1 block"
+      >
+        <div class="flex items-center justify-between mb-3">
+          <span class="px-3 py-1 rounded-xl bg-amber-500 text-slate-950 font-mono font-black text-xs uppercase border-2 border-slate-900 shadow-[2px_2px_0px_#0f172a]">
+            MÓDULO 3
+          </span>
+          <span class="text-xs font-mono font-bold text-slate-500 group-hover:text-slate-900">
+            /template →
+          </span>
+        </div>
+        <h3 class="text-xl font-black text-slate-900 mb-2 font-mono group-hover:text-amber-950">
+          3. Templates: Herencia y Renderizado 🎨
+        </h3>
+        <p class="text-xs text-slate-600 leading-relaxed font-medium">
+          Motor DTL (Django Template Language), plantilla base maestra (<code>base.html</code>), herencia con <code>&#123;% extends %&#125;</code>, bucles, filtros y seguridad XSS.
+        </p>
+      </a>
 
-def inicio(request):
-    cursos = ["Django", "Python", "APIs"]
-    return render(request, 'inicio.html', {'cursos': cursos})`}
-        title="views.py"
-      />
-    </section>
+      <!-- Módulo 4 -->
+      <a
+        href="/course/django/arquitectura-django/training"
+        class="group p-6 rounded-3xl border-[3px] border-slate-900 bg-cyan-50/70 hover:bg-cyan-100/90 shadow-[6px_6px_0px_#0f172a] transition-all hover:-translate-y-1 block"
+      >
+        <div class="flex items-center justify-between mb-3">
+          <span class="px-3 py-1 rounded-xl bg-cyan-600 text-white font-mono font-black text-xs uppercase border-2 border-slate-900 shadow-[2px_2px_0px_#0f172a]">
+            MÓDULO 4
+          </span>
+          <span class="text-xs font-mono font-bold text-slate-500 group-hover:text-slate-900">
+            /training →
+          </span>
+        </div>
+        <h3 class="text-xl font-black text-slate-900 mb-2 font-mono group-hover:text-cyan-950">
+          4. Ejercicios y Desafíos Prácticos 🛠️
+        </h3>
+        <p class="text-xs text-slate-600 leading-relaxed font-medium">
+          Ejercicios didácticos sobre el Proyecto 1 (Biblioteca Central), Desafíos del Proyecto 2 (Tienda E-Commerce) y Cuestionario interactivo de evaluación.
+        </p>
+      </a>
+    </div>
 
-    <section class="mb-10">
-      <h2>Templates</h2>
-      <p>
-        Los templates son archivos HTML con sintaxis propia para inyectar datos y controlar la estructura de la página.
-      </p>
-      <CodeBlock
-        lang="html"
-        code={`<h1>Bienvenido</h1>
-<ul>
-{% for curso in cursos %}
-  <li>{{ curso }}</li>
-{% endfor %}
-</ul>`}
-        title="inicio.html"
-      />
-    </section>
-
-    <section class="mb-10">
-      <h2>Ponte a prueba</h2>
-      <p>Valida tus conocimientos sobre la arquitectura básica de Django.</p>
-      <DjangoQuizModal quizKey="arquitectura-django" />
-    </section>
-
+    <!-- Bottom Navigation -->
     <nav class="nav-bottom">
       <a href="/course/django/introduccion-django/" class="prev">← Introducción a Django</a>
       <a href="/course/django/modelo-bd/" class="next">Modelos y Bases de Datos →</a>

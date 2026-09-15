@@ -2138,5 +2138,874 @@ function canjear($skins, &$stock, $costos, $skin, $cant) {
         FinSi
     FinPara
 FinSubProceso`
+  },
+
+  // 11. 🧪 Tienda de Pociones → nombre, cantidad, precio
+  11: {
+    cpp: `#include <iostream>
+#include <vector>
+#include <string>
+#include <iomanip>
+using namespace std;
+
+void guardarPocion(vector<string>& nom, vector<int>& cant, vector<float>& pre) {
+    string n; int c; float p;
+    cout << "\\n--- NUEVA POCION ---\\n";
+    cout << "Nombre de la pocion: "; cin >> n;
+    cout << "Cantidad en frascos: "; cin >> c;
+    cout << "Precio en monedas de oro: "; cin >> p;
+    nom.push_back(n);
+    cant.push_back(c);
+    pre.push_back(p);
+    cout << "-> [OK] Pocion registrada con exito.\\n";
+}
+
+void listarPociones(const vector<string>& nom, const vector<int>& cant, const vector<float>& pre) {
+    cout << "\\n=== 🧪 ESTANTERIA DE POCIONES (TOTAL: " << nom.size() << ") ===\\n";
+    if (nom.empty()) {
+        cout << "(Almacen vacio)\\n";
+        return;
+    }
+    for (size_t i = 0; i < nom.size(); i++) {
+        cout << "[" << i << "] " << nom[i] << " | Stock: " << cant[i] << " frascos | Precio: " << pre[i] << " Oro\\n";
+    }
+}
+
+int buscarPocion(const vector<string>& nom, const string& buscada) {
+    for (size_t i = 0; i < nom.size(); i++) {
+        if (nom[i] == buscada) return (int)i;
+    }
+    return -1;
+}
+
+void actualizarPocion(vector<int>& cant, vector<float>& pre) {
+    int idx;
+    cout << "Indice de la pocion a modificar: "; cin >> idx;
+    if (idx >= 0 && idx < (int)cant.size()) {
+        cout << "Nuevo stock disponible: "; cin >> cant[idx];
+        cout << "Nuevo precio en oro: "; cin >> pre[idx];
+        cout << "-> [OK] Datos actualizados.\\n";
+    } else {
+        cout << "-> [ERROR] Indice invalido.\\n";
+    }
+}
+
+void eliminarPocion(vector<string>& nom, vector<int>& cant, vector<float>& pre) {
+    int idx;
+    cout << "Indice de la pocion a eliminar: "; cin >> idx;
+    if (idx >= 0 && idx < (int)nom.size()) {
+        nom.erase(nom.begin() + idx);
+        cant.erase(cant.begin() + idx);
+        pre.erase(pre.begin() + idx);
+        cout << "-> [OK] Pocion eliminada de ambos vectores.\\n";
+    } else {
+        cout << "-> [ERROR] Indice invalido.\\n";
+    }
+}
+
+void reportesPociones(const vector<string>& nom, const vector<int>& cant, const vector<float>& pre) {
+    if (nom.empty()) {
+        cout << "-> Sin registros para auditoria.\\n";
+        return;
+    }
+    int idxMax = 0, idxMinStock = 0;
+    float valorTotal = 0;
+    for (size_t i = 0; i < nom.size(); i++) {
+        valorTotal += (cant[i] * pre[i]);
+        if (pre[i] > pre[idxMax]) idxMax = (int)i;
+        if (cant[i] < cant[idxMinStock]) idxMinStock = (int)i;
+    }
+    cout << "\\n=== 📊 REPORTE ALQUIMICO DE BOTELLAS ===\\n";
+    cout << "1. Pocion mas costosa: " << nom[idxMax] << " (" << pre[idxMax] << " Oro)\\n";
+    cout << "2. Menor stock: " << nom[idxMinStock] << " (" << cant[idxMinStock] << " frascos)\\n";
+    cout << "3. Valor total en inventario: " << valorTotal << " Oro\\n";
+    cout << "4. Alerta de stock critico (< 5 frascos):\\n";
+    bool hayCritico = false;
+    for (size_t i = 0; i < nom.size(); i++) {
+        if (cant[i] < 5) {
+            cout << "   - " << nom[i] << ": solo " << cant[i] << " frascos disponibles\\n";
+            hayCritico = true;
+        }
+    }
+    if (!hayCritico) cout << "   (Ninguna pocion en nivel critico)\\n";
+}
+
+int main() {
+    vector<string> nombres = {"Curacion_Mayor", "Mana_Puro", "Veneno_Cobra"};
+    vector<int> cantidades = {12, 3, 20};
+    vector<float> precios = {45.5f, 80.0f, 25.0f};
+    int op = 0;
+    do {
+        cout << "\\n--- TIENDA DE POCIONES ---\\n";
+        cout << "1. Guardar pocion\\n2. Listar estanteria\\n3. Buscar pocion\\n4. Actualizar stock/precio\\n5. Eliminar pocion\\n6. Reportes y auditoria\\n7. Salir\\nOpcion: ";
+        cin >> op;
+        if (op == 1) guardarPocion(nombres, cantidades, precios);
+        else if (op == 2) listarPociones(nombres, cantidades, precios);
+        else if (op == 3) {
+            string b; cout << "Nombre a buscar: "; cin >> b;
+            int pos = buscarPocion(nombres, b);
+            if (pos != -1) cout << "-> Encontrada en [" << pos << "] | Stock: " << cantidades[pos] << " | Precio: " << precios[pos] << "\\n";
+            else cout << "-> No encontrada.\\n";
+        }
+        else if (op == 4) actualizarPocion(cantidades, precios);
+        else if (op == 5) eliminarPocion(nombres, cantidades, precios);
+        else if (op == 6) reportesPociones(nombres, cantidades, precios);
+    } while (op != 7);
+    return 0;
+}`,
+    python: `def guardar_pocion(nombres, cantidades, precios):
+    nom = input("Nombre de la pocion: ")
+    cant = int(input("Cantidad de frascos: "))
+    pre = float(input("Precio en oro: "))
+    nombres.append(nom)
+    cantidades.append(cant)
+    precios.append(pre)
+    print("-> [OK] Pocion guardada.")
+
+def listar_pociones(nombres, cantidades, precios):
+    print("\\n=== 🧪 INVENTARIO DE POCIONES ===")
+    if not nombres:
+        print("(Almacen vacio)")
+        return
+    for i in range(len(nombres)):
+        print(f"[{i}] {nombres[i]} | Stock: {cantidades[i]} frascos | Precio: " + str(precios[i]) + " Oro")
+
+def buscar_pocion(nombres, buscada):
+    for i, n in enumerate(nombres):
+        if n.lower() == buscada.lower():
+            return i
+    return -1
+
+def actualizar_pocion(cantidades, precios):
+    idx = int(input("Indice de la pocion: "))
+    if 0 <= idx < len(cantidades):
+        cantidades[idx] = int(input("Nuevo stock: "))
+        precios[idx] = float(input("Nuevo precio: "))
+        print("-> [OK] Actualizado con exito.")
+    else:
+        print("-> [ERROR] Indice invalido.")
+
+def eliminar_pocion(nombres, cantidades, precios):
+    idx = int(input("Indice a eliminar: "))
+    if 0 <= idx < len(nombres):
+        n = nombres.pop(idx)
+        cantidades.pop(idx)
+        precios.pop(idx)
+        print(f"-> [OK] {n} eliminada de la botica.")
+    else:
+        print("-> [ERROR] Indice fuera de rango.")
+
+def reportes_pociones(nombres, cantidades, precios):
+    if not nombres:
+        print("Sin datos.")
+        return
+    val_total = sum(c * p for c, p in zip(cantidades, precios))
+    max_idx = precios.index(max(precios))
+    min_stock_idx = cantidades.index(min(cantidades))
+    print("\\n=== 📊 AUDITORIA ALQUIMICA ===")
+    print(f"1. Mas costosa: {nombres[max_idx]} (" + str(precios[max_idx]) + " Oro)")
+    print(f"2. Menor stock: {nombres[min_stock_idx]} ({cantidades[min_stock_idx]} frascos)")
+    print(f"3. Valor monetario total: " + str(val_total) + " Oro")
+    print("4. Stock critico (< 5 frascos):")
+    criticos = [f" - {n}: {c} frascos" for n, c in zip(nombres, cantidades) if c < 5]
+    print("\\n".join(criticos) if criticos else " - Todo el stock esta sobre 5 frascos.")
+
+nombres = ["Curacion_Mayor", "Mana_Puro", "Veneno_Cobra"]
+cantidades = [12, 3, 20]
+precios = [45.5, 80.0, 25.0]`,
+    java: `import java.util.ArrayList;
+import java.util.Scanner;
+
+public class TiendaPociones {
+    public static void guardarPocion(ArrayList<String> nom, ArrayList<Integer> cant, ArrayList<Double> pre, Scanner sc) {
+        System.out.print("Nombre: "); String n = sc.next();
+        System.out.print("Cantidad: "); int c = sc.nextInt();
+        System.out.print("Precio: "); double p = sc.nextDouble();
+        nom.add(n); cant.add(c); pre.add(p);
+        System.out.println("-> Pocion guardada.");
+    }
+
+    public static void listarPociones(ArrayList<String> nom, ArrayList<Integer> cant, ArrayList<Double> pre) {
+        System.out.println("\\n=== 🧪 BOTICA DE POCIONES ===");
+        for (int i = 0; i < nom.size(); i++) {
+            System.out.println("[" + i + "] " + nom.get(i) + " | Cant: " + cant.get(i) + " | Precio: " + pre.get(i) + " Oro");
+        }
+    }
+
+    public static int buscarPocion(ArrayList<String> nom, String buscada) {
+        for (int i = 0; i < nom.size(); i++) {
+            if (nom.get(i).equalsIgnoreCase(buscada)) return i;
+        }
+        return -1;
+    }
+
+    public static void reportes(ArrayList<String> nom, ArrayList<Integer> cant, ArrayList<Double> pre) {
+        if (nom.isEmpty()) return;
+        int maxP = 0, minC = 0;
+        double total = 0;
+        for (int i = 0; i < nom.size(); i++) {
+            total += cant.get(i) * pre.get(i);
+            if (pre.get(i) > pre.get(maxP)) maxP = i;
+            if (cant.get(i) < cant.get(minC)) minC = i;
+        }
+        System.out.println("Pocion mas cara: " + nom.get(maxP) + " (" + pre.get(maxP) + ")");
+        System.out.println("Menor stock: " + nom.get(minC) + " (" + cant.get(minC) + ")");
+        System.out.println("Valor total: " + total + " Oro");
+    }
+
+    public static void main(String[] args) {
+        ArrayList<String> nombres = new ArrayList<>();
+        ArrayList<Integer> cantidades = new ArrayList<>();
+        ArrayList<Double> precios = new ArrayList<>();
+        nombres.add("Curacion"); cantidades.add(10); precios.add(25.0);
+        listarPociones(nombres, cantidades, precios);
+    }
+}`,
+    csharp: `using System;
+using System.Collections.Generic;
+
+class TiendaPociones {
+    static void Main() {
+        List<string> nombres = new List<string> { "Curacion", "Mana", "Veneno" };
+        List<int> cantidades = new List<int> { 12, 3, 20 };
+        List<double> precios = new List<double> { 45.5, 80.0, 25.0 };
+
+        double total = 0;
+        int maxIdx = 0;
+        for (int i = 0; i < nombres.Count; i++) {
+            total += cantidades[i] * precios[i];
+            if (precios[i] > precios[maxIdx]) maxIdx = i;
+            Console.WriteLine("[" + i + "] " + nombres[i] + " - Stock: " + cantidades[i] + " - Precio: " + precios[i]);
+        }
+        Console.WriteLine("Pocion mas cara: " + nombres[maxIdx] + " (" + precios[maxIdx] + ")");
+        Console.WriteLine("Valor total: " + total);
+    }
+}`,
+    javascript: `const nombres = ["Curacion_Mayor", "Mana_Puro", "Veneno_Cobra"];
+const cantidades = [12, 3, 20];
+const precios = [45.5, 80.0, 25.0];
+
+function guardarPocion(nom, cant, pre, n, c, p) {
+  nom.push(n); cant.push(c); pre.push(p);
+}
+
+function listarPociones(nom, cant, pre) {
+  nom.forEach((n, i) => console.log(\`[\${i}] \${n} | Stock: \${cant[i]} | Precio: \${pre[i]} Oro\`));
+}
+
+function reportesPociones(nom, cant, pre) {
+  const total = cant.reduce((acc, c, i) => acc + c * pre[i], 0);
+  const maxIdx = pre.indexOf(Math.max(...pre));
+  console.log("Pocion mas cara:", nom[maxIdx], pre[maxIdx]);
+  console.log("Valor total en bodega:", total);
+  console.log("Criticos (<5):", nom.filter((_, i) => cant[i] < 5));
+}`,
+    php: `<?php
+$nombres = ["Curacion_Mayor", "Mana_Puro", "Veneno_Cobra"];
+$cantidades = [12, 3, 20];
+$precios = [45.5, 80.0, 25.0];
+
+function listarPociones($nom, $cant, $pre) {
+    foreach ($nom as $i => $n) {
+        echo "[$i] $n | Stock: {$cant[$i]} | Precio: {$pre[$i]} Oro\\n";
+    }
+}
+
+function reportesPociones($nom, $cant, $pre) {
+    $total = 0;
+    $maxIdx = 0;
+    foreach ($pre as $i => $p) {
+        $total += $cant[$i] * $p;
+        if ($p > $pre[$maxIdx]) $maxIdx = $i;
+    }
+    echo "Mas cara: {$nom[$maxIdx]} ({$pre[$maxIdx]} Oro)\\n";
+    echo "Total bodega: $total Oro\\n";
+}
+?>`,
+    pseint: `Proceso TiendaPociones
+    Dimension nombres[100], cantidades[100], precios[100]
+    n <- 3
+    nombres[1] <- "Curacion"
+    cantidades[1] <- 12
+    precios[1] <- 45.5
+    
+    Escribir "=== AUDITORIA DE POCIONES ==="
+    Para i <- 1 Hasta n Hacer
+        Escribir "[", i, "] ", nombres[i], " Stock: ", cantidades[i], " Precio: ", precios[i]
+    FinPara
+FinProceso`
+  },
+
+  // 12. ⚔️ Gladiadores → nombre, vida, ataque
+  12: {
+    cpp: `#include <iostream>
+#include <vector>
+#include <string>
+using namespace std;
+
+void guardarGladiador(vector<string>& nom, vector<int>& vid, vector<int>& atq) {
+    string n; int v, a;
+    cout << "Nombre del luchador: "; cin >> n;
+    cout << "Puntos de vida (HP): "; cin >> v;
+    cout << "Poder de ataque (ATQ): "; cin >> a;
+    nom.push_back(n); vid.push_back(v); atq.push_back(a);
+    cout << "-> Gladiador registrado en la arena.\\n";
+}
+
+void listarGladiadores(const vector<string>& nom, const vector<int>& vid, const vector<int>& atq) {
+    cout << "\\n=== ⚔️ LUDUS DE GLADIADORES ===\\n";
+    for (size_t i = 0; i < nom.size(); i++) {
+        cout << "[" << i << "] " << nom[i] << " | HP: " << vid[i] << " | ATQ: " << atq[i] << "\\n";
+    }
+}
+
+int buscarGladiador(const vector<string>& nom, const string& target) {
+    for (size_t i = 0; i < nom.size(); i++) {
+        if (nom[i] == target) return (int)i;
+    }
+    return -1;
+}
+
+void actualizarStats(vector<int>& vid, vector<int>& atq) {
+    int idx; cout << "Indice de gladiador: "; cin >> idx;
+    if (idx >= 0 && idx < (int)vid.size()) {
+        cout << "Nueva Vida (HP): "; cin >> vid[idx];
+        cout << "Nuevo Ataque (ATQ): "; cin >> atq[idx];
+        cout << "-> Estadisticas actualizadas.\\n";
+    }
+}
+
+void eliminarGladiador(vector<string>& nom, vector<int>& vid, vector<int>& atq) {
+    int idx; cout << "Indice de baja: "; cin >> idx;
+    if (idx >= 0 && idx < (int)nom.size()) {
+        nom.erase(nom.begin() + idx);
+        vid.erase(vid.begin() + idx);
+        atq.erase(atq.begin() + idx);
+        cout << "-> Gladiador retirado de la arena.\\n";
+    }
+}
+
+void reportesArena(const vector<string>& nom, const vector<int>& vid, const vector<int>& atq) {
+    if (nom.empty()) return;
+    int maxAtq = 0, maxHp = 0;
+    float sumHp = 0;
+    for (size_t i = 0; i < nom.size(); i++) {
+        sumHp += vid[i];
+        if (atq[i] > atq[maxAtq]) maxAtq = (int)i;
+        if (vid[i] > vid[maxHp]) maxHp = (int)i;
+    }
+    cout << "\\n=== 🏆 REPORTE DEL COLISEO ===\\n";
+    cout << "Campeon con mas ataque: " << nom[maxAtq] << " (" << atq[maxAtq] << " ATQ)\\n";
+    cout << "Tanque con mas vida: " << nom[maxHp] << " (" << vid[maxHp] << " HP)\\n";
+    cout << "Promedio de vida: " << (sumHp / nom.size()) << " HP\\n";
+}
+
+int main() {
+    vector<string> nombres = {"Spartacus", "Crixus", "Maximus"};
+    vector<int> vidas = {120, 150, 95};
+    vector<int> ataques = {85, 70, 92};
+    listarGladiadores(nombres, vidas, ataques);
+    reportesArena(nombres, vidas, ataques);
+    return 0;
+}`,
+    python: `def guardar_gladiador(nom, vid, atq):
+    nom.append(input("Nombre: "))
+    vid.append(int(input("Vida HP: ")))
+    atq.append(int(input("Ataque ATQ: ")))
+
+def listar_gladiadores(nom, vid, atq):
+    print("\\n=== ⚔️ COLISEO DE GLADIADORES ===")
+    for i in range(len(nom)):
+        print(f"[{i}] {nom[i]} | HP: {vid[i]} | ATQ: {atq[i]}")
+
+def reportes_arena(nom, vid, atq):
+    if not nom: return
+    idx_atq = atq.index(max(atq))
+    idx_hp = vid.index(max(vid))
+    print(f"Campeon ofensivo: {nom[idx_atq]} ({atq[idx_atq]} ATQ)")
+    print(f"Tanque supremo: {nom[idx_hp]} ({vid[idx_hp]} HP)")
+    print(f"Promedio de vida: {sum(vid)/len(vid):.1f} HP")
+    print("Heridos criticos (HP < 30):", [n for n, v in zip(nom, vid) if v < 30])
+
+nombres = ["Spartacus", "Crixus", "Maximus"]
+vidas = [120, 150, 25]
+ataques = [85, 70, 92]
+listar_gladiadores(nombres, vidas, ataques)
+reportes_arena(nombres, vidas, ataques)`,
+    java: `import java.util.ArrayList;
+
+public class GladiadoresArena {
+    public static void main(String[] args) {
+        ArrayList<String> nombres = new ArrayList<>();
+        ArrayList<Integer> vidas = new ArrayList<>();
+        ArrayList<Integer> ataques = new ArrayList<>();
+        
+        nombres.add("Spartacus"); vidas.add(120); ataques.add(85);
+        nombres.add("Crixus"); vidas.add(150); ataques.add(70);
+        
+        int maxAtq = 0;
+        for (int i = 0; i < nombres.size(); i++) {
+            if (ataques.get(i) > ataques.get(maxAtq)) maxAtq = i;
+            System.out.println("[" + i + "] " + nombres.get(i) + " HP:" + vidas.get(i) + " ATQ:" + ataques.get(i));
+        }
+        System.out.println("Maximo Atacante: " + nombres.get(maxAtq));
+    }
+}`,
+    csharp: `using System;
+using System.Collections.Generic;
+
+class GladiadoresArena {
+    static void Main() {
+        var nom = new List<string> { "Spartacus", "Crixus" };
+        var vid = new List<int> { 120, 150 };
+        var atq = new List<int> { 85, 70 };
+        for (int i = 0; i < nom.Count; i++) {
+            Console.WriteLine("[" + i + "] " + nom[i] + " HP:" + vid[i] + " ATQ:" + atq[i]);
+        }
+    }
+}`,
+    javascript: `const nombres = ["Spartacus", "Crixus", "Maximus"];
+const vidas = [120, 150, 25];
+const ataques = [85, 70, 92];
+
+function listarGladiadores(nom, vid, atq) {
+  nom.forEach((n, i) => console.log(\`[\${i}] \${n} | HP: \${vid[i]} | ATQ: \${atq[i]}\`));
+}
+
+function reportesArena(nom, vid, atq) {
+  const maxAtq = atq.indexOf(Math.max(...atq));
+  console.log("Campeon Ofensivo:", nom[maxAtq], "con", atq[maxAtq], "ATQ");
+  console.log("Heridos criticos (HP < 30):", nom.filter((_, i) => vid[i] < 30));
+}`,
+    php: `<?php
+$nombres = ["Spartacus", "Crixus"];
+$vidas = [120, 150];
+$ataques = [85, 70];
+foreach ($nombres as $i => $n) {
+    echo "[$i] $n - HP: {$vidas[$i]} - ATQ: {$ataques[$i]}\\n";
+}
+?>`,
+    pseint: `Proceso ArenaGladiadores
+    Dimension nom[10], vid[10], atq[10]
+    nom[1] <- "Spartacus"; vid[1] <- 120; atq[1] <- 85
+    nom[2] <- "Crixus"; vid[2] <- 150; atq[2] <- 70
+    Para i <- 1 Hasta 2 Hacer
+        Escribir "[", i, "] ", nom[i], " HP: ", vid[i], " ATQ: ", atq[i]
+    FinPara
+FinProceso`
+  },
+
+  // 13. 🏎️ Carrera de Autos → piloto, auto, velocidad
+  13: {
+    cpp: `#include <iostream>
+#include <vector>
+#include <string>
+using namespace std;
+
+void guardarAuto(vector<string>& pil, vector<string>& aut, vector<int>& vel) {
+    string p, a; int v;
+    cout << "Nombre del piloto: "; cin >> p;
+    cout << "Modelo de auto: "; cin >> a;
+    cout << "Velocidad maxima (km/h): "; cin >> v;
+    pil.push_back(p); aut.push_back(a); vel.push_back(v);
+    cout << "-> Vehiculo ingresado al circuito.\\n";
+}
+
+void listarParrilla(const vector<string>& pil, const vector<string>& aut, const vector<int>& vel) {
+    cout << "\\n=== 🏎️ PARRILLA DE SALIDA GP ===\\n";
+    for (size_t i = 0; i < pil.size(); i++) {
+        cout << "[" << i << "] " << pil[i] << " | " << aut[i] << " | " << vel[i] << " km/h\\n";
+    }
+}
+
+int buscarPiloto(const vector<string>& pil, const string& buscado) {
+    for (size_t i = 0; i < pil.size(); i++) {
+        if (pil[i] == buscado) return (int)i;
+    }
+    return -1;
+}
+
+void reportesCarrera(const vector<string>& pil, const vector<string>& aut, const vector<int>& vel) {
+    if (pil.empty()) return;
+    int maxV = 0, sumV = 0;
+    for (size_t i = 0; i < pil.size(); i++) {
+        sumV += vel[i];
+        if (vel[i] > vel[maxV]) maxV = (int)i;
+    }
+    cout << "\\n=== 🏁 ESTADISTICAS DEL GRAN PREMIO ===\\n";
+    cout << "Pole Position (Mas rapido): " << pil[maxV] << " en " << aut[maxV] << " (" << vel[maxV] << " km/h)\\n";
+    cout << "Velocidad promedio: " << (float)sumV / pil.size() << " km/h\\n";
+    cout << "Autos en Categoria Hypercar (vel >= 300 km/h):\\n";
+    for (size_t i = 0; i < pil.size(); i++) {
+        if (vel[i] >= 300) cout << " - " << pil[i] << " (" << vel[i] << " km/h)\\n";
+    }
+}
+
+int main() {
+    vector<string> pilotos = {"Verstappen", "Hamilton", "Alonso"};
+    vector<string> autos = {"RedBull_RB20", "Mercedes_W15", "Aston_AMR24"};
+    vector<int> velocidades = {345, 338, 332};
+    listarParrilla(pilotos, autos, velocidades);
+    reportesCarrera(pilotos, autos, velocidades);
+    return 0;
+}`,
+    python: `def reportes_carrera(pilotos, autos, velocidades):
+    if not pilotos: return
+    idx_max = velocidades.index(max(velocidades))
+    print(f"Pole Position: {pilotos[idx_max]} con {autos[idx_max]} a {velocidades[idx_max]} km/h")
+    print(f"Velocidad promedio: {sum(velocidades)/len(velocidades):.1f} km/h")
+    print("Club 300+ km/h:", [p for p, v in zip(pilotos, velocidades) if v >= 300])
+
+pilotos = ["Verstappen", "Hamilton", "Alonso"]
+autos = ["RedBull_RB20", "Mercedes_W15", "Aston_AMR24"]
+velocidades = [345, 338, 332]
+reportes_carrera(pilotos, autos, velocidades)`,
+    java: `import java.util.ArrayList;
+
+public class CarreraAutos {
+    public static void main(String[] args) {
+        ArrayList<String> pilotos = new ArrayList<>();
+        ArrayList<String> autos = new ArrayList<>();
+        ArrayList<Integer> velocidades = new ArrayList<>();
+        pilotos.add("Verstappen"); autos.add("RB20"); velocidades.add(345);
+        System.out.println("Piloto: " + pilotos.get(0) + " Vel: " + velocidades.get(0) + " km/h");
+    }
+}`,
+    csharp: `using System;
+using System.Collections.Generic;
+
+class CarreraAutos {
+    static void Main() {
+        var pilotos = new List<string> { "Verstappen", "Hamilton" };
+        var velocidades = new List<int> { 345, 338 };
+        Console.WriteLine("Lider: " + pilotos[0] + " a " + velocidades[0] + " km/h");
+    }
+}`,
+    javascript: `const pilotos = ["Verstappen", "Hamilton", "Alonso"];
+const autos = ["RedBull_RB20", "Mercedes_W15", "Aston_AMR24"];
+const velocidades = [345, 338, 332];
+
+function listar(p, a, v) {
+  p.forEach((piloto, i) => console.log(\`[\${i}] \${piloto} (\${a[i]}) -> \${v[i]} km/h\`));
+}`,
+    php: `<?php
+$pilotos = ["Verstappen", "Hamilton"];
+$velocidades = [345, 338];
+echo "Pole: {$pilotos[0]} con {$velocidades[0]} km/h\\n";
+?>`,
+    pseint: `Proceso GranPremio
+    Dimension pilotos[10], velocidades[10]
+    pilotos[1] <- "Verstappen"; velocidades[1] <- 345
+    Escribir "Lider: ", pilotos[1], " Vel: ", velocidades[1], " km/h"
+FinProceso`
+  },
+
+  // 14. 🐉 Bestiario → nombre, tipo, nivel
+  14: {
+    cpp: `#include <iostream>
+#include <vector>
+#include <string>
+using namespace std;
+
+void guardarBestia(vector<string>& nom, vector<string>& tip, vector<int>& niv) {
+    string n, t; int l;
+    cout << "Nombre de criatura: "; cin >> n;
+    cout << "Tipo elemental: "; cin >> t;
+    cout << "Nivel de amenaza (1-100): "; cin >> l;
+    nom.push_back(n); tip.push_back(t); niv.push_back(l);
+    cout << "-> Criatura catalogada en el bestiario.\\n";
+}
+
+void listarBestiario(const vector<string>& nom, const vector<string>& tip, const vector<int>& niv) {
+    cout << "\\n=== 🐉 BESTIARIO DE KAER-MORHEN ===\\n";
+    for (size_t i = 0; i < nom.size(); i++) {
+        cout << "[" << i << "] " << nom[i] << " [" << tip[i] << "] - Nivel " << niv[i] << "\\n";
+    }
+}
+
+void reportesBestiario(const vector<string>& nom, const vector<string>& tip, const vector<int>& niv) {
+    if (nom.empty()) return;
+    int maxNiv = 0, sumNiv = 0;
+    for (size_t i = 0; i < nom.size(); i++) {
+        sumNiv += niv[i];
+        if (niv[i] > niv[maxNiv]) maxNiv = (int)i;
+    }
+    cout << "\\n=== 📜 INFORME DE CAZA ===\\n";
+    cout << "Jefe Alfa de mayor nivel: " << nom[maxNiv] << " (" << tip[maxNiv] << " - Nivel " << niv[maxNiv] << ")\\n";
+    cout << "Nivel promedio de amenaza: " << (float)sumNiv / nom.size() << "\\n";
+    cout << "Amenazas de Rango Extremo (Nivel >= 50):\\n";
+    for (size_t i = 0; i < nom.size(); i++) {
+        if (niv[i] >= 50) cout << " - " << nom[i] << " (Nv. " << niv[i] << ")\\n";
+    }
+}
+
+int main() {
+    vector<string> nombres = {"Grifo_Real", "Basilisco", "Dragon_Ancestral"};
+    vector<string> tipos = {"Hibrido", "Draconido", "Elemental"};
+    vector<int> niveles = {32, 28, 75};
+    listarBestiario(nombres, tipos, niveles);
+    reportesBestiario(nombres, tipos, niveles);
+    return 0;
+}`,
+    python: `def reportes_bestiario(nombres, tipos, niveles):
+    if not nombres: return
+    max_idx = niveles.index(max(niveles))
+    print(f"Jefe Alfa: {nombres[max_idx]} [{tipos[max_idx]}] - Nivel {niveles[max_idx]}")
+    print(f"Nivel medio: {sum(niveles)/len(niveles):.1f}")
+    print("Rango Extremo (>= 50):", [f"{n} (Nv.{lv})" for n, lv in zip(nombres, niveles) if lv >= 50])
+
+nombres = ["Grifo_Real", "Basilisco", "Dragon_Ancestral"]
+tipos = ["Hibrido", "Draconido", "Elemental"]
+niveles = [32, 28, 75]
+reportes_bestiario(nombres, tipos, niveles)`,
+    java: `import java.util.ArrayList;
+
+public class BestiarioMonstruos {
+    public static void main(String[] args) {
+        ArrayList<String> nombres = new ArrayList<>();
+        ArrayList<String> tipos = new ArrayList<>();
+        ArrayList<Integer> niveles = new ArrayList<>();
+        nombres.add("Dragon"); tipos.add("Fuego"); niveles.add(75);
+        System.out.println("Monstruo: " + nombres.get(0) + " Nivel: " + niveles.get(0));
+    }
+}`,
+    csharp: `using System;
+using System.Collections.Generic;
+
+class BestiarioMonstruos {
+    static void Main() {
+        var nombres = new List<string> { "Dragon", "Grifo" };
+        var niveles = new List<int> { 75, 32 };
+        Console.WriteLine("Boss: " + nombres[0] + " Nivel " + niveles[0]);
+    }
+}`,
+    javascript: `const nombres = ["Grifo_Real", "Basilisco", "Dragon_Ancestral"];
+const tipos = ["Hibrido", "Draconido", "Elemental"];
+const niveles = [32, 28, 75];
+
+function listar(n, t, lv) {
+  n.forEach((nombre, i) => console.log(\`[\${i}] \${nombre} [\${t[i]}] -> Nivel \${lv[i]}\`));
+}`,
+    php: `<?php
+$nombres = ["Grifo", "Dragon"];
+$niveles = [32, 75];
+echo "Jefe: {$nombres[1]} Nivel {$niveles[1]}\\n";
+?>`,
+    pseint: `Proceso BestiarioMagico
+    Dimension nombres[10], niveles[10]
+    nombres[1] <- "Dragon"; niveles[1] <- 75
+    Escribir "Criatura: ", nombres[1], " Nivel: ", niveles[1]
+FinProceso`
+  },
+
+  // 15. 🚀 Naves Espaciales → nombre, combustible, velocidad
+  15: {
+    cpp: `#include <iostream>
+#include <vector>
+#include <string>
+using namespace std;
+
+void guardarNave(vector<string>& nom, vector<float>& com, vector<int>& vel) {
+    string n; float c; int v;
+    cout << "Codigo de la nave: "; cin >> n;
+    cout << "Combustible plasma (%): "; cin >> c;
+    cout << "Velocidad warp (km/s): "; cin >> v;
+    nom.push_back(n); com.push_back(c); vel.push_back(v);
+    cout << "-> Nave acoplada a la bahia.\\n";
+}
+
+void listarFlota(const vector<string>& nom, const vector<float>& com, const vector<int>& vel) {
+    cout << "\\n=== 🚀 HANGAR DE LA ARMADA ORION-PRIME ===\\n";
+    for (size_t i = 0; i < nom.size(); i++) {
+        cout << "[" << i << "] " << nom[i] << " | Plasma: " << com[i] << "% | Velocidad: " << vel[i] << " km/s\\n";
+    }
+}
+
+void reportesFlota(const vector<string>& nom, const vector<float>& com, const vector<int>& vel) {
+    if (nom.empty()) return;
+    int maxVel = 0, minCom = 0;
+    float sumCom = 0;
+    for (size_t i = 0; i < nom.size(); i++) {
+        sumCom += com[i];
+        if (vel[i] > vel[maxVel]) maxVel = (int)i;
+        if (com[i] < com[minCom]) minCom = (int)i;
+    }
+    cout << "\\n=== 🛰️ INFORME DE BAHIAS ESPACIALES ===\\n";
+    cout << "Crucero mas veloz: " << nom[maxVel] << " (" << vel[maxVel] << " km/s)\\n";
+    cout << "Menor combustible: " << nom[minCom] << " (" << com[minCom] << "%)\\n";
+    cout << "Promedio de plasma: " << (sumCom / nom.size()) << "%\\n";
+    cout << "Alerta: Riesgo de varar (< 25% plasma):\\n";
+    for (size_t i = 0; i < nom.size(); i++) {
+        if (com[i] < 25.0f) cout << " - " << nom[i] << ": solo " << com[i] << "% restante\\n";
+    }
+}
+
+int main() {
+    vector<string> nombres = {"Halcon_Milenario", "USS_Enterprise", "Prometheus"};
+    vector<float> combustibles = {78.5f, 18.0f, 92.4f};
+    vector<int> velocidades = {10500, 14200, 8900};
+    listarFlota(nombres, combustibles, velocidades);
+    reportesFlota(nombres, combustibles, velocidades);
+    return 0;
+}`,
+    python: `def reportes_flota(nombres, combustibles, velocidades):
+    if not nombres: return
+    idx_vel = velocidades.index(max(velocidades))
+    idx_com = combustibles.index(min(combustibles))
+    print(f"Crucero mas rapido: {nombres[idx_vel]} ({velocidades[idx_vel]} km/s)")
+    print(f"Combustible critico: {nombres[idx_com]} ({combustibles[idx_com]}%)")
+    print(f"Media de combustible: {sum(combustibles)/len(combustibles):.1f}%")
+    print("Naves en peligro (< 25%):", [n for n, c in zip(nombres, combustibles) if c < 25])
+
+nombres = ["Halcon_Milenario", "USS_Enterprise", "Prometheus"]
+combustibles = [78.5, 18.0, 92.4]
+velocidades = [10500, 14200, 8900]
+reportes_flota(nombres, combustibles, velocidades)`,
+    java: `import java.util.ArrayList;
+
+public class HangarEspacial {
+    public static void main(String[] args) {
+        ArrayList<String> nombres = new ArrayList<>();
+        ArrayList<Double> combustibles = new ArrayList<>();
+        ArrayList<Integer> velocidades = new ArrayList<>();
+        nombres.add("Enterprise"); combustibles.add(18.0); velocidades.add(14200);
+        System.out.println("Nave: " + nombres.get(0) + " Plasma: " + combustibles.get(0) + "%");
+    }
+}`,
+    csharp: `using System;
+using System.Collections.Generic;
+
+class HangarEspacial {
+    static void Main() {
+        var nombres = new List<string> { "Enterprise", "Prometheus" };
+        var vel = new List<int> { 14200, 8900 };
+        Console.WriteLine("Nave veloz: " + nombres[0] + " con " + vel[0] + " km/s");
+    }
+}`,
+    javascript: `const nombres = ["Halcon_Milenario", "USS_Enterprise", "Prometheus"];
+const combustibles = [78.5, 18.0, 92.4];
+const velocidades = [10500, 14200, 8900];
+
+function listar(n, c, v) {
+  n.forEach((nave, i) => console.log(\`[\${i}] \${nave} -> Plasma: \${c[i]}% | Vel: \${v[i]} km/s\`));
+}`,
+    php: `<?php
+$nombres = ["Enterprise", "Prometheus"];
+$combustibles = [18.0, 92.4];
+echo "Nave en riesgo: {$nombres[0]} con {$combustibles[0]}%\\n";
+?>`,
+    pseint: `Proceso HangarFlota
+    Dimension nombres[10], combustibles[10]
+    nombres[1] <- "Enterprise"; combustibles[1] <- 18
+    Escribir "Alerta nave: ", nombres[1], " Combustible: ", combustibles[1], "%"
+FinProceso`
+  },
+
+  // 16. ⚽ Torneo de Fútbol → equipo, goles, puntos
+  16: {
+    cpp: `#include <iostream>
+#include <vector>
+#include <string>
+using namespace std;
+
+void guardarEquipo(vector<string>& eq, vector<int>& gol, vector<int>& pts) {
+    string e; int g, p;
+    cout << "Nombre del club: "; cin >> e;
+    cout << "Goles a favor: "; cin >> g;
+    cout << "Puntos acumulados: "; cin >> p;
+    eq.push_back(e); gol.push_back(g); pts.push_back(p);
+    cout << "-> Club inscrito oficialmente.\\n";
+}
+
+void listarTabla(const vector<string>& eq, const vector<int>& gol, const vector<int>& pts) {
+    cout << "\\n=== ⚽ TABLA DE POSICIONES DE LA LIGA ===\\n";
+    for (size_t i = 0; i < eq.size(); i++) {
+        cout << "[" << i << "] " << eq[i] << " | Puntos: " << pts[i] << " PTS | Goles: " << gol[i] << " GF\\n";
+    }
+}
+
+int buscarEquipo(const vector<string>& eq, const string& target) {
+    for (size_t i = 0; i < eq.size(); i++) {
+        if (eq[i] == target) return (int)i;
+    }
+    return -1;
+}
+
+void reportesTorneo(const vector<string>& eq, const vector<int>& gol, const vector<int>& pts) {
+    if (eq.empty()) return;
+    int maxPts = 0, maxGol = 0, totGol = 0;
+    for (size_t i = 0; i < eq.size(); i++) {
+        totGol += gol[i];
+        if (pts[i] > pts[maxPts]) maxPts = (int)i;
+        if (gol[i] > gol[maxGol]) maxGol = (int)i;
+    }
+    cout << "\\n=== 🏆 PREMIACION Y ESTADISTICAS ===\\n";
+    cout << "Campeon / Puntero: " << eq[maxPts] << " (" << pts[maxPts] << " Puntos)\\n";
+    cout << "Bota de Oro (Mas Goleador): " << eq[maxGol] << " (" << gol[maxGol] << " Goles)\\n";
+    cout << "Total de goles marcados: " << totGol << " Goles\\n";
+    cout << "Promedio de goles por equipo: " << (float)totGol / eq.size() << " GF\\n";
+}
+
+int main() {
+    vector<string> equipos = {"Real_Madrid", "Manchester_City", "Bayern_Munich"};
+    vector<int> goles = {38, 42, 35};
+    vector<int> puntos = {45, 43, 39};
+    listarTabla(equipos, goles, puntos);
+    reportesTorneo(equipos, goles, puntos);
+    return 0;
+}`,
+    python: `def reportes_torneo(equipos, goles, puntos):
+    if not equipos: return
+    idx_pts = puntos.index(max(puntos))
+    idx_gol = goles.index(max(goles))
+    tot_gol = sum(goles)
+    print(f"Campeon de Liga: {equipos[idx_pts]} con {puntos[idx_pts]} PTS")
+    print(f"Bota de Oro: {equipos[idx_gol]} con {goles[idx_gol]} GF")
+    print(f"Total goles torneo: {tot_gol}")
+    print(f"Media de goles por club: {tot_gol/len(equipos):.1f}")
+
+equipos = ["Real_Madrid", "Manchester_City", "Bayern_Munich"]
+goles = [38, 42, 35]
+puntos = [45, 43, 39]
+reportes_torneo(equipos, goles, puntos)`,
+    java: `import java.util.ArrayList;
+
+public class TorneoFutbol {
+    public static void main(String[] args) {
+        ArrayList<String> equipos = new ArrayList<>();
+        ArrayList<Integer> goles = new ArrayList<>();
+        ArrayList<Integer> puntos = new ArrayList<>();
+        equipos.add("Real Madrid"); goles.add(38); puntos.add(45);
+        System.out.println("Lider: " + equipos.get(0) + " PTS: " + puntos.get(0));
+    }
+}`,
+    csharp: `using System;
+using System.Collections.Generic;
+
+class TorneoFutbol {
+    static void Main() {
+        var eq = new List<string> { "Real Madrid", "Man City" };
+        var pts = new List<int> { 45, 43 };
+        Console.WriteLine("Puntero: " + eq[0] + " con " + pts[0] + " puntos");
+    }
+}`,
+    javascript: `const equipos = ["Real_Madrid", "Manchester_City", "Bayern_Munich"];
+const goles = [38, 42, 35];
+const puntos = [45, 43, 39];
+
+function listarTabla(eq, gol, pts) {
+  eq.forEach((e, i) => console.log(\`[\${i}] \${e} | Puntos: \${pts[i]} | Goles: \${gol[i]}\`));
+}`,
+    php: `<?php
+$equipos = ["Real Madrid", "Man City"];
+$puntos = [45, 43];
+echo "Campeon: {$equipos[0]} ({$puntos[0]} pts)\\n";
+?>`,
+    pseint: `Proceso TorneoFutbol
+    Dimension equipos[10], puntos[10]
+    equipos[1] <- "Real Madrid"; puntos[1] <- 45
+    Escribir "Puntero de la liga: ", equipos[1], " con ", puntos[1], " pts"
+FinProceso`
   }
 };
+

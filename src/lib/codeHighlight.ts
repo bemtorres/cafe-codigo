@@ -72,9 +72,10 @@ export const langColors: Record<string, string> = {
   typescript: '#3178C6',
   html: '#E34F26',
   css: '#1572B6',
-  bash: '#4EAA25',
+  bash: '#10B981',
   sql: '#2980b9',
-  cmd: '#888888',
+  cmd: '#0284C7',
+  powershell: '#0284C7',
   json: '#13aa52',
   vba:  '#2E75B6',
   php:  '#4f5b90',
@@ -94,6 +95,9 @@ export const idePalettes: Record<string, { bg: string; txt: string; kw: string; 
   pseint: { bg: '#ffffff', txt: '#000000', kw: '#0000FF', str: '#A31515', func: '#000000', type: '#008080', op: '#000000' },
   ruby: { bg: '#2d1f1f', txt: '#e8dcc8', kw: '#ff6b6b', str: '#98d8aa', func: '#f9e79f', type: '#7ec8e3', op: '#c9b8a8' },
   php: { bg: '#1e1f22', txt: '#bcbec4', kw: '#cf8e6d', str: '#6aab73', func: '#56a8f5', type: '#c9a26f', op: '#bcbec4' },
+  cmd: { bg: '#0b1120', txt: '#f8fafc', kw: '#38bdf8', str: '#34d399', func: '#fbbf24', type: '#818cf8', op: '#94a3b8' },
+  powershell: { bg: '#081224', txt: '#f8fafc', kw: '#38bdf8', str: '#34d399', func: '#fbbf24', type: '#818cf8', op: '#94a3b8' },
+  bash: { bg: '#0b1120', txt: '#f8fafc', kw: '#38bdf8', str: '#34d399', func: '#fbbf24', type: '#818cf8', op: '#94a3b8' },
 };
 
 function escape(s: string) {
@@ -337,6 +341,25 @@ function highlightPhp(line: string): string {
   ]);
 }
 
+function highlightCmd(line: string): string {
+  return tokenize(line, [
+    { re: /^(REM\b.*|::.*|#.*)/i, cls: 'hl-comment' },
+    { re: /\(venv\)|\(env\)|\(\.venv\)/, cls: 'hl-annotation' },
+    { re: /(PS\s+[A-Za-z]:\\[^>]*>|[A-Za-z]:\\[^>]*>|[\w.-]+@[\w.-]+:.*[$#]\s+|\$\s+)/, cls: 'hl-type' },
+    { re: /"[^"]*"|'[^']*'/, cls: 'hl-str' },
+    {
+      re: /\b(python3?|py|pip3?|django-admin|manage\.py|deactivate|Set-ExecutionPolicy|activate|source|cd|dir|cls|clear|echo|exit)\b/i,
+      cls: 'hl-kw',
+    },
+    {
+      re: /\b(venv|install|startproject|startapp|runserver|makemigrations|migrate|showmigrations|sqlmigrate|test|shell|check|collectstatic)\b/i,
+      cls: 'hl-func',
+    },
+    { re: /--?[\w.-]+/, cls: 'hl-attr' },
+    { re: /\b\d+\.?\d*\b/, cls: 'hl-num' },
+  ]);
+}
+
 export function highlightLine(line: string, lang: string): string {
   switch (lang) {
     case 'pseint':
@@ -367,6 +390,13 @@ export function highlightLine(line: string, lang: string): string {
       return highlightVba(line);
     case 'php':
       return highlightPhp(line);
+    case 'cmd':
+    case 'powershell':
+    case 'bat':
+    case 'ps1':
+    case 'bash':
+    case 'sh':
+      return highlightCmd(line);
     default:
       return escape(line);
   }

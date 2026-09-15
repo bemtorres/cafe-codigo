@@ -1,0 +1,285 @@
+---
+import Layout from "../../../../layouts/Layout.astro";
+import CodeBlock from "../../../../components/CodeBlock.astro";
+import ZoomableImage from "../../../../components/ZoomableImage.astro";
+import mtv_django from "../../../../assets/images/django/mvt_django.png";
+---
+
+<Layout
+  title="URLs y Enrutamiento Avanzado - Arquitectura Django"
+  description="Módulo 1: Aprende en profundidad cómo funcionan la estructura de rutas, convertidores personalizados y namespaces en Django."
+  courseSlug="django"
+>
+  <article class="content-section">
+    <!-- Header with Sub-Module Navigation -->
+    <header class="mb-8">
+      <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+        <a href="/course/django/arquitectura-django" class="inline-flex items-center text-xs font-mono font-black text-emerald-800 bg-emerald-100 px-3 py-1 rounded-full border-2 border-slate-900 shadow-[2px_2px_0px_#0f172a] hover:bg-emerald-200 transition-colors">
+          ← Volver al Hub de Arquitectura
+        </a>
+        <span class="px-3 py-1 rounded-xl bg-emerald-600 text-white font-mono font-black text-xs uppercase border-2 border-slate-900 shadow-[2px_2px_0px_#0f172a]">
+          MÓDULO 1 DE 4
+        </span>
+      </div>
+
+      <h1 class="text-3xl sm:text-4xl font-black text-slate-900 mb-3 font-sans tracking-tight">
+        1. URLs y Enrutamiento Avanzado 🌐
+      </h1>
+      <p class="text-base text-slate-600 font-medium leading-relaxed">
+        El enrutador de URLs es la primera parada en el patrón MVT de Django. Inspecciona la URL recibida en la petición HTTP y decide qué vista debe procesar la solicitud.
+      </p>
+
+      <!-- Sub-module Bar -->
+      <nav class="mt-6 p-2 rounded-2xl border-2 border-slate-900 bg-slate-100 flex flex-wrap gap-2 text-xs font-mono font-bold">
+        <a href="/course/django/arquitectura-django/urls" class="px-3 py-1.5 rounded-xl bg-emerald-600 text-white border-2 border-slate-900 shadow-[2px_2px_0px_#0f172a]">
+          1. URLs (Actual)
+        </a>
+        <a href="/course/django/arquitectura-django/views" class="px-3 py-1.5 rounded-xl bg-white text-slate-700 hover:bg-emerald-50 border border-slate-300">
+          2. Views
+        </a>
+        <a href="/course/django/arquitectura-django/template" class="px-3 py-1.5 rounded-xl bg-white text-slate-700 hover:bg-emerald-50 border border-slate-300">
+          3. Templates
+        </a>
+        <a href="/course/django/arquitectura-django/training" class="px-3 py-1.5 rounded-xl bg-white text-slate-700 hover:bg-emerald-50 border border-slate-300">
+          4. Ejercicios
+        </a>
+      </nav>
+    </header>
+
+    <!-- SUBMÓDULO 1.1 -->
+    <section class="mb-8 p-6 rounded-2xl border-2 border-slate-800 bg-slate-50/70">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="px-2.5 py-0.5 rounded bg-emerald-100 text-emerald-900 font-mono font-black text-xs border border-emerald-400">
+          SUBMÓDULO 1.1
+        </span>
+        <h2 class="text-xl font-black text-slate-900 m-0">
+          El Patrón MVT y el Enrutador de Rutas
+        </h2>
+      </div>
+      <p class="text-xs text-slate-600 leading-relaxed mb-4">
+        Django organiza las aplicaciones bajo el patrón <strong>Model (ORM)</strong>, <strong>View (Lógica)</strong> y <strong>Template (HTML)</strong>. El enrutador analiza la URL solicitada y determina la vista receptora.
+      </p>
+      <div class="my-3 flex justify-center">
+        <ZoomableImage
+          src={mtv_django}
+          alt="Arquitectura MVT de Django"
+          caption="Diagrama del patrón MVT en Django: URL Dispatcher -> View -> Model/Template (clic para ampliar)."
+          maxWidth="900px"
+        />
+      </div>
+    </section>
+
+    <!-- SUBMÓDULO 1.2 -->
+    <section class="mb-8 p-6 rounded-2xl border-2 border-slate-800 bg-slate-50/70">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="px-2.5 py-0.5 rounded bg-emerald-100 text-emerald-900 font-mono font-black text-xs border border-emerald-400">
+          SUBMÓDULO 1.2
+        </span>
+        <h2 class="text-xl font-black text-slate-900 m-0">
+          Estructura Modular y Namespaces
+        </h2>
+      </div>
+      <p class="text-xs text-slate-600 leading-relaxed mb-3">
+        En proyectos profesionales, el archivo principal <code>config/urls.py</code> delega el tráfico a las URLs de cada app mediante <code>include()</code> y define espacios de nombres para evitar colisiones entre rutas con el mismo nombre.
+      </p>
+
+      <CodeBlock
+        lang="python"
+        code={`# config/urls.py (Enrutador Principal del Proyecto)
+from django.contrib import admin
+from django.urls import path, include
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    
+    # Delegación modular a la app 'biblioteca' con espacio de nombres
+    path('biblioteca/', include('biblioteca.urls'), namespace='biblioteca'),
+]`}
+        title="config/urls.py"
+      />
+    </section>
+
+    <!-- SUBMÓDULO 1.3 -->
+    <section class="mb-8 p-6 rounded-2xl border-2 border-slate-800 bg-slate-50/70">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="px-2.5 py-0.5 rounded bg-emerald-100 text-emerald-900 font-mono font-black text-xs border border-emerald-400">
+          SUBMÓDULO 1.3
+        </span>
+        <h2 class="text-xl font-black text-slate-900 m-0">
+          Path Converters Nativos
+        </h2>
+      </div>
+      <p class="text-xs text-slate-600 leading-relaxed mb-3">
+        Django incluye 5 convertidores automáticos de rutas que capturan segmentos de la URL y los transforman al tipo de dato en Python antes de entregarlos a la vista:
+      </p>
+      <ul class="text-xs text-slate-700 space-y-1 mb-3">
+        <li><code>&lt;int:id&gt;</code>: Enteros positivos (ej: <code>/libro/42/</code> &rarr; <code>id = 42</code>).</li>
+        <li><code>&lt;slug:slug&gt;</code>: Cadenas alfanuméricas amigables para SEO (ej: <code>/libro/clean-code/</code>).</li>
+        <li><code>&lt;str:cadena&gt;</code>: Texto simple sin barras (ej: <code>/autor/gabriel/</code>).</li>
+        <li><code>&lt;uuid:token&gt;</code>: Identificadores UUID v4 (ej: <code>/prestamo/550e8400-e29b-41d4-a716-446655440000/</code>).</li>
+        <li><code>&lt;path:subruta&gt;</code>: Captura rutas completas incluyendo barras (ej: <code>/archivos/2024/09/doc.pdf</code>).</li>
+      </ul>
+
+      <CodeBlock
+        lang="python"
+        code={`# biblioteca/urls.py (Enrutador de la Aplicación)
+from django.urls import path
+from . import views
+
+app_name = 'biblioteca'
+
+urlpatterns = [
+    path('', views.catalogo_libros, name='catalogo'),
+    path('libro/<int:pk>/', views.libro_detalle_id, name='libro_detalle_id'),
+    path('libro/slug/<slug:slug>/', views.libro_detalle_slug, name='libro_detalle_slug'),
+    path('prestamo/<uuid:codigo>/', views.comprobante_prestamo, name='comprobante_prestamo'),
+]`}
+        title="biblioteca/urls.py"
+      />
+    </section>
+
+    <!-- SUBMÓDULO 1.4 -->
+    <section class="mb-8 p-6 rounded-2xl border-2 border-slate-800 bg-slate-50/70">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="px-2.5 py-0.5 rounded bg-emerald-100 text-emerald-900 font-mono font-black text-xs border border-emerald-400">
+          SUBMÓDULO 1.4
+        </span>
+        <h2 class="text-xl font-black text-slate-900 m-0">
+          Convertidores Personalizados (Custom Path Converters)
+        </h2>
+      </div>
+      <p class="text-xs text-slate-600 leading-relaxed mb-3">
+        Permiten validar reglas de negocio complejas en la URL (como un código ISBN o un año de 4 dígitos) mediante una clase con atributo <code>regex</code> y métodos <code>to_python()</code> y <code>to_url()</code>.
+      </p>
+
+      <CodeBlock
+        lang="python"
+        code={`# biblioteca/converters.py
+import re
+
+class ISBNConverter:
+    """Valida códigos ISBN de 10 o 13 dígitos y limpia guiones automáticamente."""
+    regex = r'(?:(?:\d{3}[- ]?)?\d{1,5}[- ]?\d+[- ]?\d+[- ]?[\dX])'
+
+    def to_python(self, value: str) -> str:
+        return re.sub(r'[- ]', '', value)
+
+    def to_url(self, value: str) -> str:
+        return str(value)`}
+        title="biblioteca/converters.py"
+      />
+
+      <p class="text-xs text-slate-600 my-2">Registro e integración en el archivo de rutas:</p>
+
+      <CodeBlock
+        lang="python"
+        code={`# biblioteca/urls.py
+from django.urls import path, register_converter
+from . import converters, views
+
+register_converter(converters.ISBNConverter, 'isbn')
+
+urlpatterns = [
+    path('libro/isbn/<isbn:codigo>/', views.libro_por_isbn, name='libro_por_isbn'),
+]`}
+        title="biblioteca/urls_custom.py"
+      />
+    </section>
+
+    <!-- SUBMÓDULO 1.5 -->
+    <section class="mb-8 p-6 rounded-2xl border-2 border-slate-800 bg-slate-50/70">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="px-2.5 py-0.5 rounded bg-emerald-100 text-emerald-900 font-mono font-black text-xs border border-emerald-400">
+          SUBMÓDULO 1.5
+        </span>
+        <h2 class="text-xl font-black text-slate-900 m-0">
+          Expresiones Regulares con <code>re_path()</code>
+        </h2>
+      </div>
+      <p class="text-xs text-slate-600 leading-relaxed mb-3">
+        Para patrones de ruta que requieren expresiones regulares exactas (como fechas combinadas con nombres de sección):
+      </p>
+      <CodeBlock
+        lang="python"
+        code={`from django.urls import re_path
+from . import views
+
+urlpatterns = [
+    re_path(
+        r'^archivo/(?P<year>[0-9]{4})/(?P<month>[0-9]{2})/(?P<seccion>[a-zA-Z0-9_-]+)/$',
+        views.archivo_historico,
+        name='archivo_historico'
+    ),
+]`}
+        title="re_path.py"
+      />
+    </section>
+
+    <!-- SUBMÓDULO 1.6 -->
+    <section class="mb-8 p-6 rounded-2xl border-2 border-slate-800 bg-slate-50/70">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="px-2.5 py-0.5 rounded bg-emerald-100 text-emerald-900 font-mono font-black text-xs border border-emerald-400">
+          SUBMÓDULO 1.6
+        </span>
+        <h2 class="text-xl font-black text-slate-900 m-0">
+          Query Parameters (Parámetros GET)
+        </h2>
+      </div>
+      <p class="text-xs text-slate-600 leading-relaxed mb-3">
+        Los parámetros tras el signo de interrogación (<code>?q=python&categoria=backend</code>) se capturan en la vista mediante el diccionario de consulta <code>request.GET</code>:
+      </p>
+      <CodeBlock
+        lang="python"
+        code={`def catalogo_libros(request):
+    busqueda = request.GET.get('q', '').strip()
+    categoria = request.GET.get('categoria', None)
+    tags_seleccionados = request.GET.getlist('tag')
+    
+    return render(request, 'catalogo.html', {
+        'busqueda': busqueda,
+        'categoria': categoria,
+        'tags_seleccionados': tags_seleccionados,
+    })`}
+        title="captura_query_params.py"
+      />
+    </section>
+
+    <!-- SUBMÓDULO 1.7 -->
+    <section class="mb-10 p-6 rounded-2xl border-2 border-slate-800 bg-slate-50/70">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="px-2.5 py-0.5 rounded bg-emerald-100 text-emerald-900 font-mono font-black text-xs border border-emerald-400">
+          SUBMÓDULO 1.7
+        </span>
+        <h2 class="text-xl font-black text-slate-900 m-0">
+          Generación Inversa de URLs (Reverse Resolution)
+        </h2>
+      </div>
+      <p class="text-xs text-slate-600 leading-relaxed mb-3">
+        Evita URLs estáticas escritas a mano. Genera URLs dinámicamente con <code>reverse()</code> en Python o el tag <code>&#123;% url %&#125;</code> en las plantillas HTML:
+      </p>
+
+      <CodeBlock
+        lang="python"
+        code={`# En vistas o redirecciones Python:
+from django.urls import reverse
+url_libro = reverse('biblioteca:libro_detalle_id', kwargs={'pk': 15})`}
+        title="reverse_python.py"
+      />
+
+      <CodeBlock
+        lang="html"
+        code={`<!-- En plantillas HTML: -->
+<a href="{% url 'biblioteca:libro_detalle_slug' slug=libro.slug %}">
+    Ver detalle de {{ libro.titulo }}
+</a>`}
+        title="url_template.html"
+      />
+    </section>
+
+    <!-- Module Switcher Footer -->
+    <nav class="nav-bottom">
+      <a href="/course/django/arquitectura-django" class="prev">← Hub de Arquitectura</a>
+      <a href="/course/django/arquitectura-django/views" class="next">Módulo 2: Views →</a>
+    </nav>
+  </article>
+</Layout>

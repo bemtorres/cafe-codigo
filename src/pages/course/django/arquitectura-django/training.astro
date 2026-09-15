@@ -1,0 +1,259 @@
+---
+import Layout from "../../../../layouts/Layout.astro";
+import CodeBlock from "../../../../components/CodeBlock.astro";
+import DjangoQuizModal from "../../../../components/quizzes/DjangoQuizModal.astro";
+---
+
+<Layout
+  title="Ejercicios y Desafíos - Arquitectura Django"
+  description="Módulo 4: Aplica tus conocimientos resolviendo ejercicios didácticos, desafíos en el proyecto de Tienda E-Commerce y el cuestionario final."
+  courseSlug="django"
+>
+  <article class="content-section">
+    <!-- Header with Sub-Module Navigation -->
+    <header class="mb-8">
+      <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+        <a href="/course/django/arquitectura-django" class="inline-flex items-center text-xs font-mono font-black text-cyan-800 bg-cyan-100 px-3 py-1 rounded-full border-2 border-slate-900 shadow-[2px_2px_0px_#0f172a] hover:bg-cyan-200 transition-colors">
+          ← Volver al Hub de Arquitectura
+        </a>
+        <span class="px-3 py-1 rounded-xl bg-cyan-600 text-white font-mono font-black text-xs uppercase border-2 border-slate-900 shadow-[2px_2px_0px_#0f172a]">
+          MÓDULO 4 DE 4
+        </span>
+      </div>
+
+      <h1 class="text-3xl sm:text-4xl font-black text-slate-900 mb-3 font-sans tracking-tight">
+        4. Ejercicios y Desafíos Prácticos 🛠️
+      </h1>
+      <p class="text-base text-slate-600 font-medium leading-relaxed">
+        Pon a prueba y consolida tu aprendizaje resolviendo los ejercicios didácticos basados en nuestros dos proyectos del curso: <strong>Biblioteca Central</strong> y <strong>Tienda E-Commerce</strong>.
+      </p>
+
+      <!-- Sub-module Bar -->
+      <nav class="mt-6 p-2 rounded-2xl border-2 border-slate-900 bg-slate-100 flex flex-wrap gap-2 text-xs font-mono font-bold">
+        <a href="/course/django/arquitectura-django/urls" class="px-3 py-1.5 rounded-xl bg-white text-slate-700 hover:bg-cyan-50 border border-slate-300">
+          1. URLs
+        </a>
+        <a href="/course/django/arquitectura-django/views" class="px-3 py-1.5 rounded-xl bg-white text-slate-700 hover:bg-cyan-50 border border-slate-300">
+          2. Views
+        </a>
+        <a href="/course/django/arquitectura-django/template" class="px-3 py-1.5 rounded-xl bg-white text-slate-700 hover:bg-cyan-50 border border-slate-300">
+          3. Templates
+        </a>
+        <a href="/course/django/arquitectura-django/training" class="px-3 py-1.5 rounded-xl bg-cyan-600 text-white border-2 border-slate-900 shadow-[2px_2px_0px_#0f172a]">
+          4. Ejercicios (Actual)
+        </a>
+      </nav>
+    </header>
+
+    <!-- SUBMÓDULO 4.1 -->
+    <section class="mb-8 p-6 rounded-2xl border-2 border-slate-800 bg-slate-50/70">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="px-2.5 py-0.5 rounded bg-cyan-100 text-cyan-950 font-mono font-black text-xs border border-cyan-400">
+          SUBMÓDULO 4.1
+        </span>
+        <h2 class="text-xl font-black text-slate-900 m-0">
+          Ejercicios Didácticos: Proyecto 1 (Biblioteca Central) 📚
+        </h2>
+      </div>
+
+      <div class="space-y-4">
+        <article class="p-4 rounded-xl border-2 border-slate-800 bg-white">
+          <h3 class="text-sm font-black text-slate-900 mb-2">
+            Ejercicio 1.1: Ruta con Convertidor para Código ISBN
+          </h3>
+          <p class="text-xs text-slate-600 mb-3 leading-relaxed">
+            Registra en <code>biblioteca/urls.py</code> una ruta que capture un código ISBN usando el convertidor personalizado <code>isbn</code> y lo envíe a la vista <code>views.libro_por_isbn</code>.
+          </p>
+          <details class="cursor-pointer bg-slate-50 p-3 rounded-lg border border-slate-300">
+            <summary class="font-bold text-xs text-[#0c4a3f] font-mono">Ver Solución Explicada</summary>
+            <div class="mt-3 text-xs">
+              <CodeBlock
+                lang="python"
+                code={`# biblioteca/urls.py
+from django.urls import path, register_converter
+from . import converters, views
+
+register_converter(converters.ISBNConverter, 'isbn')
+
+urlpatterns = [
+    path('libro/isbn/<isbn:codigo>/', views.libro_por_isbn, name='libro_por_isbn'),
+]`}
+                title="solucion_isbn_url.py"
+              />
+              <p class="text-slate-600 mt-2">
+                <strong>Clave didáctica:</strong> Primero se registra el convertidor con <code>register_converter</code> asociándolo al alias <code>'isbn'</code>. Luego se utiliza en la sintaxis de ruta como <code>&lt;isbn:codigo&gt;</code>.
+              </p>
+            </div>
+          </details>
+        </article>
+
+        <article class="p-4 rounded-xl border-2 border-slate-800 bg-white">
+          <h3 class="text-sm font-black text-slate-900 mb-2">
+            Ejercicio 1.2: FBV con Filtro Múltiple de Etiquetas (request.GET.getlist)
+          </h3>
+          <p class="text-xs text-slate-600 mb-3 leading-relaxed">
+            Implementa una FBV <code>buscar_por_tags(request)</code> que reciba parámetros como <code>?tag=python&tag=backend</code> y filtre los libros que contengan cualquiera de esos tags.
+          </p>
+          <details class="cursor-pointer bg-slate-50 p-3 rounded-lg border border-slate-300">
+            <summary class="font-bold text-xs text-[#0c4a3f] font-mono">Ver Solución Explicada</summary>
+            <div class="mt-3 text-xs">
+              <CodeBlock
+                lang="python"
+                code={`# biblioteca/views.py
+from django.shortcuts import render
+from .models import Libro
+
+def buscar_por_tags(request):
+    tags_solicitados = request.GET.getlist('tag')
+    qs = Libro.objects.filter(disponible_para_prestamo=True)
+    if tags_solicitados:
+        qs = qs.filter(tags__nombre__in=tags_solicitados).distinct()
+        
+    return render(request, 'biblioteca/libros_por_tag.html', {
+        'libros': qs,
+        'tags_activos': tags_solicitados,
+        'total': qs.count()
+    })`}
+                title="solucion_tags_fbv.py"
+              />
+            </div>
+          </details>
+        </article>
+      </div>
+    </section>
+
+    <!-- SUBMÓDULO 4.2 -->
+    <section class="mb-8 p-6 rounded-2xl border-2 border-cyan-900/40 bg-cyan-50/40">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="px-2.5 py-0.5 rounded bg-cyan-200 text-cyan-950 font-mono font-black text-xs border border-cyan-400">
+          SUBMÓDULO 4.2
+        </span>
+        <h2 class="text-xl font-black text-slate-900 m-0">
+          Desafío Práctico: Segundo Proyecto — Tienda Online (`tienda`) 🛒
+        </h2>
+      </div>
+
+      <p class="text-xs text-slate-700 mb-4 font-mono font-bold bg-white p-2.5 rounded-lg border border-cyan-300">
+        📦 Ubicación del proyecto: <code>C:\proyectos\django\tienda</code> (Apps <code>catalogo</code> y <code>pedidos</code>).
+      </p>
+
+      <div class="space-y-4">
+        <article class="p-4 rounded-xl border-2 border-cyan-900/40 bg-white">
+          <h3 class="text-sm font-black text-slate-900 mb-2">
+            Reto 2.1: Enrutamiento Desacoplado con Namespace en la Tienda
+          </h3>
+          <p class="text-xs text-slate-600 mb-3 leading-relaxed">
+            Configura las rutas de la tienda para responder bajo el prefijo <code>/catalogo/</code> con el namespace <code>tienda_catalogo</code>.
+          </p>
+          <details class="cursor-pointer bg-slate-50 p-3 rounded-lg border border-slate-300">
+            <summary class="font-bold text-xs text-cyan-800 font-mono">Ver Solución Explicada</summary>
+            <div class="mt-3 text-xs">
+              <CodeBlock
+                lang="python"
+                code={`# tienda/urls.py
+from django.urls import path, include
+
+urlpatterns = [
+    path('catalogo/', include(('catalogo.urls', 'catalogo'), namespace='tienda_catalogo')),
+]`}
+                title="tienda_urls.py"
+              />
+            </div>
+          </details>
+        </article>
+
+        <article class="p-4 rounded-xl border-2 border-cyan-900/40 bg-white">
+          <h3 class="text-sm font-black text-slate-900 mb-2">
+            Reto 2.2: CBV ListView con Filtros de Precio y Búsqueda Cruzada
+          </h3>
+          <p class="text-xs text-slate-600 mb-3 leading-relaxed">
+            Implementa <code>CatalogoProductosView(ListView)</code> para filtrar por búsqueda (<code>q</code>), categoría (<code>categoria</code>) y precio máximo (<code>precio_max</code>).
+          </p>
+          <details class="cursor-pointer bg-slate-50 p-3 rounded-lg border border-slate-300">
+            <summary class="font-bold text-xs text-cyan-800 font-mono">Ver Solución Explicada</summary>
+            <div class="mt-3 text-xs">
+              <CodeBlock
+                lang="python"
+                code={`# catalogo/views.py
+from django.views.generic import ListView
+from django.db.models import Q
+from .models import Producto
+
+class CatalogoProductosView(ListView):
+    model = Producto
+    template_name = 'catalogo/catalogo.html'
+    context_object_name = 'productos'
+    paginate_by = 12
+
+    def get_queryset(self):
+        qs = Producto.objects.select_related('categoria').filter(disponible=True)
+        q = self.request.GET.get('q', '').strip()
+        categoria_slug = self.request.GET.get('categoria')
+        precio_max = self.request.GET.get('precio_max')
+
+        if q:
+            qs = qs.filter(Q(nombre__icontains=q) | Q(descripcion__icontains=q))
+        if categoria_slug:
+            qs = qs.filter(categoria__slug=categoria_slug)
+        if precio_max:
+            try:
+                qs = qs.filter(precio__lte=float(precio_max))
+            except ValueError:
+                pass
+        return qs`}
+                title="catalogo_view_tienda.py"
+              />
+            </div>
+          </details>
+        </article>
+
+        <article class="p-4 rounded-xl border-2 border-cyan-900/40 bg-white">
+          <h3 class="text-sm font-black text-slate-900 mb-2">
+            Reto 2.3: Vista de Rastreo Seguro con Token UUID (FBV)
+          </h3>
+          <p class="text-xs text-slate-600 mb-3 leading-relaxed">
+            Implementa <code>rastreo_pedido(request, tracking)</code> en <code>pedidos/views.py</code> que reciba un token UUID capturado con <code>&lt;uuid:tracking&gt;</code>.
+          </p>
+          <details class="cursor-pointer bg-slate-50 p-3 rounded-lg border border-slate-300">
+            <summary class="font-bold text-xs text-cyan-800 font-mono">Ver Solución Explicada</summary>
+            <div class="mt-3 text-xs">
+              <CodeBlock
+                lang="python"
+                code={`# pedidos/views.py
+from django.shortcuts import render, get_object_or_404
+from .models import Pedido
+
+def rastreo_pedido(request, tracking):
+    pedido = get_object_or_404(Pedido, numero_seguimiento=tracking)
+    return render(request, 'pedidos/rastreo.html', {'pedido': pedido})`}
+                title="rastreo_pedido_view.py"
+              />
+            </div>
+          </details>
+        </article>
+      </div>
+    </section>
+
+    <!-- SUBMÓDULO 4.3 -->
+    <section class="mb-10 p-6 rounded-2xl border-2 border-slate-800 bg-slate-50/70">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="px-2.5 py-0.5 rounded bg-cyan-100 text-cyan-950 font-mono font-black text-xs border border-cyan-400">
+          SUBMÓDULO 4.3
+        </span>
+        <h2 class="text-xl font-black text-slate-900 m-0">
+          Evaluación de Conocimientos 📝
+        </h2>
+      </div>
+      <p class="text-xs text-slate-600 leading-relaxed mb-4">
+        Responde este cuestionario interactivo para poner a prueba tus conocimientos sobre arquitectura MVT, enrutamiento, vistas y plantillas en Django:
+      </p>
+      <DjangoQuizModal quizKey="arquitectura-django" />
+    </section>
+
+    <!-- Module Switcher Footer -->
+    <nav class="nav-bottom">
+      <a href="/course/django/arquitectura-django/template" class="prev">← Módulo 3: Templates</a>
+      <a href="/course/django/modelo-bd/" class="next">Modelos y Bases de Datos →</a>
+    </nav>
+  </article>
+</Layout>

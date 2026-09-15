@@ -2,85 +2,478 @@
 import Layout from '../../../../layouts/Layout.astro';
 import CodeBlock from '../../../../components/CodeBlock.astro';
 import DjangoQuizModal from '../../../../components/quizzes/DjangoQuizModal.astro';
+import DjangoCrudSimulator from '../../../../components/django/DjangoCrudSimulator';
 ---
 
-<Layout title="Django Admin y CRUD" description="Gestiona datos desde Django Admin y crea operaciones CRUD en vistas y formularios." courseSlug="django">
+<Layout title="Django Admin y Vistas CRUD" description="Domina el panel administrativo de Django y la implementación completa de cada vista CRUD (Create, Read, Update, Delete) con formularios y validaciones avanzadas." courseSlug="django">
   <article class="content-section">
-    <h1>6. Django Admin y CRUD</h1>
+    <h1>6. Django Admin y Vistas CRUD ⚙️</h1>
 
+    <!-- 1. INTRODUCCIÓN Y CREACIÓN DE SUPERUSUARIO -->
     <section class="mb-10">
-      <h2>Django Admin</h2>
+      <h2>1. El Panel Administrativo de Django (Django Admin)</h2>
       <p>
-        Django incluye un panel administrativo listo para usar. Solo necesitas registrar tus modelos para comenzar a administrarlos desde una interfaz web.
+        Uno de los mayores superpoderes de Django frente a otros frameworks backend es su <strong>panel de administración automático</strong> (<code>django.contrib.admin</code>). Lee los metadatos de tus modelos y genera al instante una interfaz web completa para crear, buscar, filtrar y editar registros.
+      </p>
+
+      <h3>1.1 Creación del Superusuario</h3>
+      <p>
+        Para ingresar al panel de administración necesitas una cuenta con privilegios de superusuario (<code>is_superuser = True</code>). Ejecuta en tu terminal con el entorno virtual <code>(venv)</code> activo:
+      </p>
+      <CodeBlock
+        lang="cmd"
+        code={`(venv) C:\\proyectos\\django\\biblioteca> python manage.py createsuperuser
+Username: admin_biblioteca
+Email address: admin@biblioteca.local
+Password: **********
+Password (again): **********
+Superuser created successfully.`}
+        title="Creación de Superusuario en CMD"
+      />
+
+      <h3>1.2 Registro Profesional de Modelos en admin.py</h3>
+      <p>
+        Registrar un modelo con <code>admin.site.register(Libro)</code> solo ofrece una vista básica. En proyectos reales configuramos clases <code>ModelAdmin</code> con tablas interactivas, filtros laterales, búsquedas optimizadas e <strong>inlines</strong> para editar registros relacionados en la misma pantalla:
       </p>
       <CodeBlock
         lang="python"
-        code={`from django.contrib import admin
-from .models import Curso, Alumno
+        code={`# biblioteca/admin.py
+from django.contrib import admin
+from django.utils.html import format_html
+from .models import Autor, Categoria, Libro, SolicitudPrestamo, Tag
 
 
-admin.site.register(Curso)
-admin.site.register(Alumno)`}
-        title="admin.py"
+class SolicitudPrestamoInline(admin.TabularInline):
+    """Permite ver y gestionar los préstamos directamente dentro de la ficha del Libro."""
+    model = SolicitudPrestamo
+    extra = 0
+    raw_id_fields = ['usuario']
+    readonly_fields = ['fecha_solicitud', 'multa_acumulada']
+    fields = ['usuario', 'fecha_solicitud', 'fecha_devolucion_limite', 'estado', 'multa_acumulada']
+
+
+@admin.action(description="Marcar libros seleccionados como DISPONIBLES")
+def marcar_disponible(modeladmin, request, queryset):
+    actualizados = queryset.update(disponible_para_prestamo=True)
+    modeladmin.message_user(
+        request,
+        f"Se han actualizado {actualizados} libro(s) a estado disponible."
+    )
+
+
+@admin.register(Libro)
+class LibroAdmin(admin.ModelAdmin):
+    list_display = ['titulo', 'autor', 'categoria', 'precio_reposicion', 'stock_disponible', 'disponible_badge', 'fecha_publicacion']
+    list_filter = ['disponible_para_prestamo', 'categoria', 'idioma', 'fecha_publicacion']
+    search_fields = ['titulo', 'isbn', 'autor__nombre_completo']
+    prepopulated_fields = {'slug': ('titulo',)}
+    filter_horizontal = ['tags'] # Interfaz de doble caja para relaciones ManyToMany
+    inlines = [SolicitudPrestamoInline]
+    actions = [marcar_disponible]
+    list_per_page = 20
+
+    def disponible_badge(self, obj):
+        if obj.disponible_para_prestamo and obj.stock_disponible > 0:
+            return format_html('<span style="color: #10B981; font-weight: bold;">● Disponible ({})</span>', obj.stock_disponible)
+        return format_html('<span style="color: #EF4444; font-weight: bold;">○ Agotado / No disp.</span>')
+    disponible_badge.short_description = "Disponibilidad"`}
+        title="biblioteca/admin.py"
       />
     </section>
 
+    <!-- 2. CICLO CRUD Y FORMULARIOS -->
     <section class="mb-10">
-      <h2>Operaciones CRUD</h2>
+      <h2>2. Arquitectura de Cada Vista CRUD (Create, Read, Update, Delete)</h2>
       <p>
-        CRUD significa crear, leer, actualizar y eliminar. En Django se puede lograr con formularios, views y el ORM.
+        El acrónimo <strong>CRUD</strong> define las cuatro operaciones fundamentales sobre cualquier base de datos:
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        <div class="p-4 rounded-xl border border-slate-700 bg-slate-900/40">
+          <strong class="text-emerald-400 font-bold block mb-1">C — Create (Crear):</strong>
+          <span class="text-xs text-slate-300 leading-relaxed">
+            Presenta un formulario vacío mediante <code>GET</code> y procesa la carga de datos en base de datos mediante <code>POST</code> con validaciones de tipo e integridad.
+          </span>
+        </div>
+        <div class="p-4 rounded-xl border border-slate-700 bg-slate-900/40">
+          <strong class="text-cyan-400 font-bold block mb-1">R — Read (Leer / Listar):</strong>
+          <span class="text-xs text-slate-300 leading-relaxed">
+            Consulta registros en base de datos para presentarlos en catálogos paginados (<code>ListView</code>) o en fichas individuales (<code>DetailView</code>).
+          </span>
+        </div>
+        <div class="p-4 rounded-xl border border-slate-700 bg-slate-900/40">
+          <strong class="text-amber-400 font-bold block mb-1">U — Update (Actualizar / Editar):</strong>
+          <span class="text-xs text-slate-300 leading-relaxed">
+            Carga la instancia existente en el formulario (<code>instance=obj</code>), permite modificar sus atributos y aplica validaciones antes de guardar.
+          </span>
+        </div>
+        <div class="p-4 rounded-xl border border-slate-700 bg-slate-900/40">
+          <strong class="text-rose-400 font-bold block mb-1">D — Delete (Eliminar):</strong>
+          <span class="text-xs text-slate-300 leading-relaxed">
+            Solicita confirmación mediante <code>POST</code> para prevenir borrados accidentales y ejecuta <code>obj.delete()</code> con chequeo de integridad referencial.
+          </span>
+        </div>
+      </div>
+
+      <h3>2.1 Formularios Basados en Modelos (ModelForm)</h3>
+      <p>
+        En Django, no escribes formularios HTML a mano. Utilizas <code>forms.ModelForm</code>, que genera los campos, etiquetas y validaciones directamente a partir de la definición de tu modelo:
       </p>
       <CodeBlock
         lang="python"
-        code={`from django.shortcuts import redirect, render
-from .models import Curso
-from .forms import CursoForm
+        code={`# biblioteca/forms.py
+from django import forms
+from .models import Libro
 
 
-def crear_curso(request):
+class LibroForm(forms.ModelForm):
+    class Meta:
+        model = Libro
+        fields = [
+            'isbn', 'titulo', 'autor', 'categoria', 'tags',
+            'resumen', 'precio_reposicion', 'stock_disponible',
+            'disponible_para_prestamo', 'idioma', 'fecha_publicacion'
+        ]
+        widgets = {
+            'fecha_publicacion': forms.DateInput(attrs={'type': 'date', 'class': 'form-input'}),
+            'resumen': forms.Textarea(attrs={'rows': 4, 'placeholder': 'Sinopsis o resumen del libro...'}),
+            'precio_reposicion': forms.NumberInput(attrs={'step': '0.01', 'min': '0.01'}),
+        }
+
+    # Validación de Campo Único (clean_<nombre_campo>)
+    def clean_isbn(self):
+        isbn = self.cleaned_data.get('isbn', '').strip().replace('-', '')
+        if len(isbn) not in [10, 13]:
+            raise forms.ValidationError("El ISBN debe contener exactamente 10 o 13 dígitos numéricos.")
+        return isbn
+
+    # Validación Cruzada Global (clean)
+    def clean(self):
+        cleaned_data = super().clean()
+        stock = cleaned_data.get('stock_disponible')
+        disponible = cleaned_data.get('disponible_para_prestamo')
+
+        if disponible and (stock is None or stock <= 0):
+            raise forms.ValidationError({
+                'stock_disponible': "No puedes marcar el libro como disponible si el stock es cero."
+            })
+        return cleaned_data`}
+        title="biblioteca/forms.py"
+      />
+
+      <h3>2.2 Implementación de Cada Vista CRUD (FBV vs CBV)</h3>
+      <p>
+        A continuación comparamos cómo se implementan las 4 operaciones mediante funciones (FBV) y mediante clases genéricas (CBV):
+      </p>
+      <CodeBlock
+        lang="python"
+        code={`# biblioteca/views_crud.py
+from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse_lazy
+from django.contrib import messages
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from .models import Libro
+from .forms import LibroForm
+
+
+# ===============================================================
+# 1. CREATE (Crear Nuevo Libro)
+# ===============================================================
+# A. Como FBV:
+def libro_crear_fbv(request):
     if request.method == 'POST':
-        form = CursoForm(request.POST)
+        form = LibroForm(request.POST, request.FILES)
+        if form.is_valid():
+            nuevo_libro = form.save()
+            messages.success(request, f"¡Libro '{nuevo_libro.titulo}' registrado con éxito!")
+            return redirect('biblioteca:libro_detalle_id', pk=nuevo_libro.id)
+    else:
+        form = LibroForm()
+    return render(request, 'biblioteca/libro_form.html', {'form': form, 'accion': 'Crear'})
+
+# B. Como CBV:
+class LibroCreateView(CreateView):
+    model = Libro
+    form_class = LibroForm
+    template_name = 'biblioteca/libro_form.html'
+    success_url = reverse_lazy('biblioteca:catalogo')
+
+    def form_valid(self, form):
+        messages.success(self.request, "Libro creado exitosamente.")
+        return super().form_valid(form)
+
+
+# ===============================================================
+# 2. UPDATE (Editar Libro Existente)
+# ===============================================================
+# A. Como FBV (Importante: pasar instance=libro):
+def libro_editar_fbv(request, pk):
+    libro = get_object_or_404(Libro, pk=pk)
+    if request.method == 'POST':
+        # Al pasar instance=libro, form.save() actualiza el registro en vez de crear uno nuevo
+        form = LibroForm(request.POST, request.FILES, instance=libro)
         if form.is_valid():
             form.save()
-            return redirect('lista_cursos')
+            messages.info(request, f"Libro '{libro.titulo}' actualizado.")
+            return redirect('biblioteca:libro_detalle_id', pk=libro.id)
     else:
-        form = CursoForm()
-    return render(request, 'crear_curso.html', {'form': form})`}
-        title="views_crud.py"
+        form = LibroForm(instance=libro)
+    return render(request, 'biblioteca/libro_form.html', {'form': form, 'libro': libro, 'accion': 'Editar'})
+
+# B. Como CBV:
+class LibroUpdateView(UpdateView):
+    model = Libro
+    form_class = LibroForm
+    template_name = 'biblioteca/libro_form.html'
+    success_url = reverse_lazy('biblioteca:catalogo')
+
+
+# ===============================================================
+# 3. DELETE (Eliminar Libro)
+# ===============================================================
+# A. Como FBV:
+def libro_eliminar_fbv(request, pk):
+    libro = get_object_or_404(Libro, pk=pk)
+    if request.method == 'POST': # Siempre validar que la eliminación sea por POST
+        titulo = libro.titulo
+        libro.delete()
+        messages.warning(request, f"El libro '{titulo}' ha sido eliminado.")
+        return redirect('biblioteca:catalogo')
+    return render(request, 'biblioteca/libro_confirm_delete.html', {'libro': libro})
+
+# B. Como CBV:
+class LibroDeleteView(DeleteView):
+    model = Libro
+    template_name = 'biblioteca/libro_confirm_delete.html'
+    success_url = reverse_lazy('biblioteca:catalogo')`}
+        title="biblioteca/views_crud.py"
       />
     </section>
 
+    <!-- 3. SIMULADOR INTERACTIVO CRUD Y ADMIN -->
     <section class="mb-10">
-      <h2>Validaciones</h2>
+      <h2>⚡ Laboratorio Interactivo: Simulador de Django Admin y CRUD</h2>
       <p>
-        Las validaciones del lado del servidor evitan que se guarde información incorrecta. Django Forms ayudan a controlar campos obligatorios y tipos de dato.
+        Experimenta el ciclo de vida completo de un CRUD en tiempo real: crea registros pasando por las validaciones de <code>clean()</code>, busca y filtra como en Django Admin, edita instancias existentes y elimina elementos con confirmación.
       </p>
-      <CodeBlock
-        lang="python"
-        code={`from django import forms
-from .models import Curso
-
-
-class CursoForm(forms.ModelForm):
-    class Meta:
-        model = Curso
-        fields = ['nombre', 'descripcion', 'duracion']
-
-    def clean_duracion(self):
-        duracion = self.cleaned_data['duracion']
-        if duracion <= 0:
-            raise forms.ValidationError('La duración debe ser mayor que cero')
-        return duracion`}
-        title="forms.py"
-      />
+      <DjangoCrudSimulator client:load />
     </section>
 
+    <!-- 4. EJERCICIOS DIDÁCTICOS PROYECTO 1 -->
+    <section class="mb-10">
+      <h2>3. Ejercicios Didácticos: Proyecto 1 (Biblioteca)</h2>
+      <p>Aplica las técnicas de administración y formularios sobre el dominio de la biblioteca.</p>
+
+      <div class="space-y-4">
+        <article class="p-5 rounded-2xl border-2 border-slate-800 bg-slate-50">
+          <h3 class="text-base font-black text-slate-900 mb-2">
+            Ejercicio 3.1: Formulario con Validación de Préstamos
+          </h3>
+          <p class="text-sm text-slate-600 mb-3">
+            Crea un <code>ModelForm</code> para <code>SolicitudPrestamo</code> que impida fijar una fecha de devolución superior a 30 días en el futuro.
+          </p>
+          <details class="cursor-pointer bg-white p-3 rounded-xl border border-slate-300">
+            <summary class="font-bold text-xs text-[#0c4a3f] font-mono">Ver Solución Explicada</summary>
+            <div class="mt-3 text-xs">
+              <CodeBlock
+                lang="python"
+                code={`from django import forms
+from django.utils import timezone
+from datetime import timedelta
+from .models import SolicitudPrestamo
+
+class SolicitudPrestamoForm(forms.ModelForm):
+    class Meta:
+        model = SolicitudPrestamo
+        fields = ['libro', 'fecha_devolucion_limite', 'observaciones']
+
+    def clean_fecha_devolucion_limite(self):
+        fecha_limite = self.cleaned_data.get('fecha_devolucion_limite')
+        hoy = timezone.now().date()
+        maximo_permitido = hoy + timedelta(days=30)
+
+        if fecha_limite < hoy:
+            raise forms.ValidationError("La fecha de devolución no puede ser una fecha pasada.")
+        if fecha_limite > maximo_permitido:
+            raise forms.ValidationError("El período máximo de préstamo de la biblioteca es de 30 días.")
+        return fecha_limite`}
+                title="solucion_prestamo_form.py"
+              />
+            </div>
+          </details>
+        </article>
+
+        <article class="p-5 rounded-2xl border-2 border-slate-800 bg-slate-50">
+          <h3 class="text-base font-black text-slate-900 mb-2">
+            Ejercicio 3.2: Acción Personalizada en Django Admin con Mensajes
+          </h3>
+          <p class="text-sm text-slate-600 mb-3">
+            Escribe una acción en <code>SolicitudPrestamoAdmin</code> que permita seleccionar múltiples solicitudes atrasadas y condonar sus multas acumuladas poniéndolas en $0.00.
+          </p>
+          <details class="cursor-pointer bg-white p-3 rounded-xl border border-slate-300">
+            <summary class="font-bold text-xs text-[#0c4a3f] font-mono">Ver Solución Explicada</summary>
+            <div class="mt-3 text-xs">
+              <CodeBlock
+                lang="python"
+                code={`@admin.action(description="Condonar multas acumuladas a los préstamos seleccionados")
+def condonar_multas(modeladmin, request, queryset):
+    afectados = queryset.filter(multa_acumulada__gt=0).update(multa_acumulada=0.00)
+    modeladmin.message_user(
+        request,
+        f"Se han condonado las multas de {afectados} préstamo(s) con éxito.",
+        messages.SUCCESS
+    )
+
+@admin.register(SolicitudPrestamo)
+class SolicitudPrestamoAdmin(admin.ModelAdmin):
+    list_display = ['id', 'usuario', 'libro', 'estado', 'multa_acumulada']
+    actions = [condonar_multas]`}
+                title="solucion_condonar_admin.py"
+              />
+            </div>
+          </details>
+        </article>
+      </div>
+    </section>
+
+    <!-- 5. DESAFÍO SEGUNDO PROYECTO TIENDA -->
+    <section class="mb-10">
+      <h2>4. Desafío Práctico: Segundo Proyecto — Tienda Online (`tienda`) 🛒</h2>
+      <p>
+        Implementa el panel administrativo y los formularios CRUD del segundo proyecto ubicado en <code>C:\proyectos\django\tienda</code>.
+      </p>
+
+      <div class="space-y-4">
+        <article class="p-5 rounded-2xl border-2 border-cyan-900/40 bg-cyan-50/40">
+          <h3 class="text-base font-black text-slate-900 mb-2">
+            Reto 4.1: PedidoAdmin con TabularInline de Ítems y Acción de Despacho
+          </h3>
+          <p class="text-sm text-slate-600 mb-3">
+            En <code>pedidos/admin.py</code>, registra <code>Pedido</code> con una relación tabular de <code>ItemPedidoInline</code> para ver los productos comprados, cantidades y subtotales en la misma vista de administración. Añade una acción para marcar los pedidos seleccionados como 'ENVIADO'.
+          </p>
+          <details class="cursor-pointer bg-white p-3 rounded-xl border border-slate-300">
+            <summary class="font-bold text-xs text-cyan-800 font-mono">Ver Solución Explicada</summary>
+            <div class="mt-3 text-xs">
+              <CodeBlock
+                lang="python"
+                code={`# pedidos/admin.py
+from django.contrib import admin
+from .models import Pedido, ItemPedido
+
+class ItemPedidoInline(admin.TabularInline):
+    model = ItemPedido
+    extra = 0
+    raw_id_fields = ['producto']
+    readonly_fields = ['precio_unitario', 'subtotal']
+
+@admin.action(description="Marcar pedidos seleccionados como ENVIADOS")
+def marcar_como_enviado(modeladmin, request, queryset):
+    actualizados = queryset.filter(estado='PAGADO').update(estado='ENVIADO')
+    modeladmin.message_user(request, f"{actualizados} pedidos marcados como despachados.")
+
+@admin.register(Pedido)
+class PedidoAdmin(admin.ModelAdmin):
+    list_display = ['id', 'numero_seguimiento', 'cliente', 'estado', 'total', 'fecha_creacion']
+    list_filter = ['estado', 'fecha_creacion']
+    search_fields = ['id', 'cliente__user__username', 'numero_seguimiento']
+    inlines = [ItemPedidoInline]
+    actions = [marcar_como_enviado]`}
+                title="solucion_pedido_admin.py"
+              />
+            </div>
+          </details>
+        </article>
+
+        <article class="p-5 rounded-2xl border-2 border-cyan-900/40 bg-cyan-50/40">
+          <h3 class="text-base font-black text-slate-900 mb-2">
+            Reto 4.2: ModelForm con Validación Cruzada (Precio vs Costo)
+          </h3>
+          <p class="text-sm text-slate-600 mb-3">
+            En <code>catalogo/forms.py</code>, crea <code>ProductoForm</code> garantizando que:
+            1. El SKU se guarde siempre en mayúsculas y tenga al menos 4 caracteres.
+            2. El precio de venta nunca sea inferior al costo de adquisición.
+          </p>
+          <details class="cursor-pointer bg-white p-3 rounded-xl border border-slate-300">
+            <summary class="font-bold text-xs text-cyan-800 font-mono">Ver Solución Explicada</summary>
+            <div class="mt-3 text-xs">
+              <CodeBlock
+                lang="python"
+                code={`# catalogo/forms.py
+from django import forms
+from .models import Producto
+
+class ProductoForm(forms.ModelForm):
+    class Meta:
+        model = Producto
+        fields = ['sku', 'nombre', 'categoria', 'descripcion', 'precio', 'costo', 'stock', 'destacado']
+
+    def clean_sku(self):
+        sku = self.cleaned_data.get('sku', '').strip().upper()
+        if len(sku) < 4:
+            raise forms.ValidationError("El código SKU debe contener al menos 4 caracteres.")
+        return sku
+
+    def clean(self):
+        cleaned_data = super().clean()
+        precio = cleaned_data.get('precio')
+        costo = cleaned_data.get('costo')
+
+        if precio is not None and costo is not None:
+            if precio < costo:
+                raise forms.ValidationError({
+                    'precio': "El precio de venta no puede ser menor al costo comercial del producto."
+                })
+        return cleaned_data`}
+                title="solucion_producto_form.py"
+              />
+            </div>
+          </details>
+        </article>
+
+        <article class="p-5 rounded-2xl border-2 border-cyan-900/40 bg-cyan-50/40">
+          <h3 class="text-base font-black text-slate-900 mb-2">
+            Reto 4.3: Vista de Eliminación Suave (Soft Delete)
+          </h3>
+          <p class="text-sm text-slate-600 mb-3">
+            En comercio electrónico nunca se borra físicamente un producto si ya forma parte del historial de compras de clientes pasados (provocaría error de integridad referencial). Escribe una vista FBV <code>desactivar_producto(request, pk)</code> que al recibir un POST cambie <code>disponible = False</code> en vez de ejecutar <code>delete()</code>.
+          </p>
+          <details class="cursor-pointer bg-white p-3 rounded-xl border border-slate-300">
+            <summary class="font-bold text-xs text-cyan-800 font-mono">Ver Solución Explicada</summary>
+            <div class="mt-3 text-xs">
+              <CodeBlock
+                lang="python"
+                code={`# catalogo/views.py
+from django.shortcuts import get_object_or_404, redirect, render
+from django.contrib import messages
+from .models import Producto
+
+def desactivar_producto_view(request, pk):
+    producto = get_object_or_404(Producto, pk=pk)
+    
+    if request.method == 'POST':
+        # Soft delete: se desactiva sin borrarlo de la base de datos
+        producto.disponible = False
+        producto.save(update_fields=['disponible'])
+        messages.warning(request, f"El producto '{producto.nombre}' ha sido desactivado del catálogo.")
+        return redirect('catalogo:lista')
+        
+    return render(request, 'catalogo/producto_confirm_deactivate.html', {'producto': producto})`}
+                title="soft_delete_view.py"
+              />
+            </div>
+          </details>
+        </article>
+      </div>
+    </section>
+
+    <!-- 6. QUIZ -->
     <section class="mb-10">
       <h2>Ponte a prueba</h2>
-      <p>Repasa cómo implementar un CRUD con Django.</p>
+      <p>Comprueba que dominas el panel de administración, la arquitectura CRUD y la validación de formularios en Django.</p>
       <DjangoQuizModal quizKey="admin-crud" />
     </section>
 
+    <!-- FOOTER NAV -->
     <nav class="nav-bottom">
       <a href="/course/django/modelo-bd/" class="prev">← Modelos y Bases de Datos</a>
       <a href="/course/django/seguridad/" class="next">Autenticación y Seguridad →</a>

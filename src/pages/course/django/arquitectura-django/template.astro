@@ -1,0 +1,135 @@
+---
+import Layout from "../../../../layouts/Layout.astro";
+import CodeBlock from "../../../../components/CodeBlock.astro";
+---
+
+<Layout
+  title="Templates: Herencia y Renderizado - Arquitectura Django"
+  description="Módulo 3: Aprende en profundidad cómo funcionan el motor DTL, las plantillas base maestras y la herencia en Django."
+  courseSlug="django"
+>
+  <article class="content-section">
+    <!-- Header with Sub-Module Navigation -->
+    <header class="mb-8">
+      <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+        <a href="/course/django/arquitectura-django" class="inline-flex items-center text-xs font-mono font-black text-amber-800 bg-amber-100 px-3 py-1 rounded-full border-2 border-slate-900 shadow-[2px_2px_0px_#0f172a] hover:bg-amber-200 transition-colors">
+          ← Volver al Hub de Arquitectura
+        </a>
+        <span class="px-3 py-1 rounded-xl bg-amber-500 text-slate-950 font-mono font-black text-xs uppercase border-2 border-slate-900 shadow-[2px_2px_0px_#0f172a]">
+          MÓDULO 3 DE 4
+        </span>
+      </div>
+
+      <h1 class="text-3xl sm:text-4xl font-black text-slate-900 mb-3 font-sans tracking-tight">
+        3. Templates: Herencia y Renderizado 🎨
+      </h1>
+      <p class="text-base text-slate-600 font-medium leading-relaxed">
+        El motor de plantillas de Django (DTL - Django Template Language) separa la capa de presentación de la lógica en Python. Permite mostrar variables, iterar datos, aplicar filtros y estructurar maquetas modulares mediante herencia.
+      </p>
+
+      <!-- Sub-module Bar -->
+      <nav class="mt-6 p-2 rounded-2xl border-2 border-slate-900 bg-slate-100 flex flex-wrap gap-2 text-xs font-mono font-bold">
+        <a href="/course/django/arquitectura-django/urls" class="px-3 py-1.5 rounded-xl bg-white text-slate-700 hover:bg-amber-50 border border-slate-300">
+          1. URLs
+        </a>
+        <a href="/course/django/arquitectura-django/views" class="px-3 py-1.5 rounded-xl bg-white text-slate-700 hover:bg-amber-50 border border-slate-300">
+          2. Views
+        </a>
+        <a href="/course/django/arquitectura-django/template" class="px-3 py-1.5 rounded-xl bg-amber-500 text-slate-950 border-2 border-slate-900 shadow-[2px_2px_0px_#0f172a]">
+          3. Templates (Actual)
+        </a>
+        <a href="/course/django/arquitectura-django/training" class="px-3 py-1.5 rounded-xl bg-white text-slate-700 hover:bg-amber-50 border border-slate-300">
+          4. Ejercicios
+        </a>
+      </nav>
+    </header>
+
+    <!-- SUBMÓDULO 3.1 -->
+    <section class="mb-8 p-6 rounded-2xl border-2 border-slate-800 bg-slate-50/70">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="px-2.5 py-0.5 rounded bg-amber-100 text-amber-950 font-mono font-black text-xs border border-amber-400">
+          SUBMÓDULO 3.1
+        </span>
+        <h2 class="text-xl font-black text-slate-900 m-0">
+          Plantilla Base Maestra (base.html)
+        </h2>
+      </div>
+      <p class="text-xs text-slate-600 leading-relaxed mb-3">
+        Define el esqueleto HTML global de la aplicación (encabezados, estilos, navegación y bloques reutilizables <code>&#123;% block %&#125;</code>):
+      </p>
+
+      <CodeBlock
+        lang="html"
+        code={`<!-- templates/base.html (Plantilla Base Maestra) -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Biblioteca Central{% endblock %}</title>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="{% url 'biblioteca:catalogo' %}">Catálogo</a>
+        </nav>
+    </header>
+
+    <main>
+        {% block content %}
+        <!-- El contenido de cada vista hija se inyectará en este bloque -->
+        {% endblock %}
+    </main>
+</body>
+</html>`}
+        title="templates/base.html"
+      />
+    </section>
+
+    <!-- SUBMÓDULO 3.2 -->
+    <section class="mb-10 p-6 rounded-2xl border-2 border-slate-800 bg-slate-50/70">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="px-2.5 py-0.5 rounded bg-amber-100 text-amber-950 font-mono font-black text-xs border border-amber-400">
+          SUBMÓDULO 3.2
+        </span>
+        <h2 class="text-xl font-black text-slate-900 m-0">
+          Plantilla Hija y Renderizado DTL
+        </h2>
+      </div>
+      <p class="text-xs text-slate-600 leading-relaxed mb-3">
+        Las plantillas hijas extienden la plantilla maestra con <code>&#123;% extends 'base.html' %&#125;</code> y sobreescriben únicamente los bloques necesarios:
+      </p>
+
+      <CodeBlock
+        lang="html"
+        code={`<!-- templates/biblioteca/catalogo.html (Plantilla Hija) -->
+{% extends 'base.html' %}
+
+{% block title %}Catálogo de Libros - Biblioteca{% endblock %}
+
+{% block content %}
+<h1>Libros Disponibles ({{ libros|length }})</h1>
+
+<div class="grid-libros">
+    {% for libro in libros %}
+        <article class="tarjeta-libro">
+            <h3>{{ libro.titulo }}</h3>
+            <p>Autor: <strong>{{ libro.autor.nombre_completo }}</strong></p>
+            <p>Precio de Reposición: \${{ libro.precio_reposicion|floatformat:2 }}</p>
+            <a href="{% url 'biblioteca:libro_detalle_id' pk=libro.id %}">Consultar</a>
+        </article>
+    {% empty %}
+        <p>No se encontraron libros que coincidan con la búsqueda.</p>
+    {% endfor %}
+</div>
+{% endblock %}`}
+        title="templates/biblioteca/catalogo.html"
+      />
+    </section>
+
+    <!-- Module Switcher Footer -->
+    <nav class="nav-bottom">
+      <a href="/course/django/arquitectura-django/views" class="prev">← Módulo 2: Views</a>
+      <a href="/course/django/arquitectura-django/training" class="next">Módulo 4: Ejercicios →</a>
+    </nav>
+  </article>
+</Layout>

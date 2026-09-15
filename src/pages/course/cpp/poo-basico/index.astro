@@ -4,51 +4,205 @@ import CodeBlock from '../../../../components/CodeBlock.astro';
 import PooChallengesCta from '../../../../components/challenges/PooChallengesCta.astro';
 ---
 
-<Layout title="POO básico en C++" description="Clases, objetos y encapsulamiento" courseSlug="cpp">
+<Layout title="POO básico en C++" description="Clases, objetos, encapsulamiento y asociación con Espada y Player" courseSlug="cpp">
   <article class="content-section">
     <h1>9. POO básico</h1>
 
+    <p>
+      La <strong>Programación Orientada a Objetos (POO)</strong> nos permite estructurar el código pensando en entidades del mundo real o de un videojuego.
+    </p>
+
     <section class="mb-10">
-      <h2>Clase simple</h2>
+      <h2>1. Clases vs Objetos (La clase <code>Espada</code>)</h2>
+      <p>
+        Una <strong>clase</strong> es como el plano o plantilla. Un <strong>objeto</strong> es una instancia concreta creada a partir de esa plantilla.
+      </p>
+
       <CodeBlock
         lang="cpp"
         code={`#include <iostream>
 #include <string>
 
-class Persona {
-public:
-    Persona(std::string n, int e) : nombre(std::move(n)), edad(e) {}
+using namespace std;
 
-    void saludar() const {
-        std::cout << "Hola, soy " << nombre << "\\n";
+class Espada {
+private:
+    string name;
+    string type;
+    int damage;
+    int durability;
+
+public:
+    // Constructor
+    Espada(string name, string type, int damage, int durability) {
+        this->name = name;
+        this->type = type;
+        this->damage = damage;
+        this->durability = durability;
     }
 
-    int getEdad() const { return edad; }
+    // Métodos
+    void atacar() {
+        cout << name << " ataca y causa " << damage << " de daño." << endl;
+        durability--;
+    }
 
-private:
-    std::string nombre;
-    int edad;
+    void mostrarInfo() {
+        cout << "Nombre: " << name << "\\n"
+             << "Tipo: " << type << "\\n"
+             << "Daño: " << damage << "\\n"
+             << "Durabilidad: " << durability << endl;
+    }
 };
 
 int main() {
-    Persona p("Lucía", 22);
-    p.saludar();
+    // Creación de objetos a partir de la clase Espada
+    Espada excalibur("Excalibur", "Legendaria", 100, 50);
+    Espada katana("Katana", "Samurai", 70, 80);
+    Espada espadaHierro("Espada de Hierro", "Medieval", 40, 100);
+
+    excalibur.mostrarInfo();
+    excalibur.atacar();
+
     return 0;
 }`}
-        title="class Persona"
+        title="Clase Espada y creación de objetos"
       />
     </section>
 
     <section class="mb-10">
-      <h2><code>public</code> y <code>private</code></h2>
+      <h2>2. Encapsulamiento: <code>private</code>, <code>public</code> y Getters/Setters</h2>
       <p>
-        <code>private</code> oculta los datos; solo la propia clase (o amigas) puede tocarlos directamente. Es el corazón del <strong>encapsulamiento</strong>.
+        Los atributos definidos como <code>private</code> solo se pueden acceder o modificar desde dentro de la propia clase.
       </p>
+      <p>
+        <strong>¿Es obligatorio crear <code>get</code> y <code>set</code> para todos los atributos?</strong><br />
+        No. Solo debes crearlos cuando sea necesario acceder o modificar un atributo desde fuera de forma controlada (por ejemplo, para validar que el daño no sea negativo). Si un valor solo se usa internamente (como la durabilidad al usar la espada), no necesitas getters ni setters para él.
+      </p>
+
+      <CodeBlock
+        lang="cpp"
+        code={`class Espada {
+private:
+    string name;
+    int damage;
+    int durability;
+
+public:
+    Espada(string name, int damage, int durability)
+        : name(name), damage(damage), durability(durability) {}
+
+    // Getter: Solo lectura para consultar el daño desde fuera
+    int getDamage() const {
+        return damage;
+    }
+
+    string getName() const {
+        return name;
+    }
+
+    // Método que modifica el estado interno sin requerir un setter
+    void usar() {
+        durability--;
+        if (durability < 0) durability = 0;
+    }
+};`}
+        title="Uso práctico de Getters y Encapsulamiento"
+      />
+    </section>
+
+    <section class="mb-10">
+      <h2>3. Asociación entre Clases (<code>Player</code> tiene una <code>Espada</code>)</h2>
+      <p>
+        Las clases pueden relacionarse entre sí. Por ejemplo, un <code>Player</code> puede contener una <code>Espada</code> como atributo y combatir contra otro <code>Player</code>.
+      </p>
+
+      <CodeBlock
+        lang="cpp"
+        code={`#include <iostream>
+#include <string>
+
+using namespace std;
+
+class Espada {
+private:
+    string name;
+    string type;
+    int damage;
+    int durability;
+
+public:
+    Espada(string name, string type, int damage, int durability)
+        : name(name), type(type), damage(damage), durability(durability) {}
+
+    int getDamage() const { return damage; }
+    string getName() const { return name; }
+
+    void usar() {
+        durability--;
+        if (durability < 0) durability = 0;
+    }
+};
+
+class Player {
+private:
+    string name;
+    int health;
+    Espada espada;
+
+public:
+    Player(string name, int health, Espada espada)
+        : name(name), health(health), espada(espada) {}
+
+    // Recibe otro Player por referencia para aplicarle el ataque
+    void atacar(Player &enemigo) {
+        cout << name << " ataca a " << enemigo.name 
+             << " usando " << espada.getName() << "!" << endl;
+
+        enemigo.health -= espada.getDamage();
+        espada.usar();
+
+        if (enemigo.health < 0) enemigo.health = 0;
+    }
+
+    void mostrarEstado() const {
+        cout << name << " | Vida: " << health << endl;
+    }
+
+    bool estaVivo() const {
+        return health > 0;
+    }
+};
+
+int main() {
+    Espada excalibur("Excalibur", "Legendaria", 30, 100);
+    Espada katana("Katana", "Samurai", 20, 100);
+
+    Player guerrero("Guerrero", 100, excalibur);
+    Player samurai("Samurai", 100, katana);
+
+    guerrero.mostrarEstado();
+    samurai.mostrarEstado();
+
+    cout << "\\n--- COMBATE ---\\n" << endl;
+
+    guerrero.atacar(samurai);
+    samurai.mostrarEstado();
+
+    samurai.atacar(guerrero);
+    guerrero.mostrarEstado();
+
+    return 0;
+}`}
+        title="Combate entre Players usando la clase Espada"
+      />
     </section>
 
     <div class="ejercicio">
       <h3>Ejercicio</h3>
-      <p class="enunciado">Creá una clase <code>Rectangulo</code> con ancho y alto, un método <code>area()</code> y otro <code>perimetro()</code>.</p>
+      <p class="enunciado">
+        Agregá a la clase <code>Espada</code> una comprobación para que si <code>durability == 0</code>, la espada ya no cause daño en <code>getDamage()</code> o devuelva 0 de daño. Luego probá realizar varios ataques en <code>main()</code> hasta romper la espada.
+      </p>
     </div>
 
     <PooChallengesCta />
