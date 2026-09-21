@@ -1,0 +1,723 @@
+---
+import type { DbTable } from '../../data/databaseChallenges';
+
+interface Props {
+  tables: DbTable[];
+  title?: string;
+  challengeId?: string | number;
+}
+
+const { tables, title, challengeId = '1' } = Astro.props;
+
+// Extraer relaciones automáticamente analizando los campos con fk
+interface Relation {
+  fromTable: string;
+  fromField: string;
+  toTable: string;
+  toField: string;
+  type: '1:1' | '1:N' | 'N:M';
+}
+
+const relations: Relation[] = [];
+
+tables.forEach((tbl) => {
+  tbl.fields.forEach((fld) => {
+    if (fld.fk) {
+      const parts = fld.fk.split('.');
+      const targetTable = parts[0];
+      const targetField = parts[1] || 'id';
+      const isUnique = fld.unique;
+      const isCompositePk = fld.pk && tbl.fields.filter(f => f.pk).length > 1;
+
+      relations.push({
+        fromTable: tbl.name,
+        fromField: fld.name,
+        toTable: targetTable,
+        toField: targetField,
+        type: isUnique ? '1:1' : isCompositePk ? 'N:M' : '1:N',
+      });
+    }
+  });
+});
+---
+
+<div class="datamodeler-window" id={`dm-win-${challengeId}`}>
+  <!-- BARRA DE TÍTULO Y PESTAÑA ESTILO ORACLE DATA MODELER -->
+  <div class="dm-topbar">
+    <div class="dm-tab-bar">
+      <div class="dm-tab is-active">
+        <span class="dm-tab-icon">📊</span>
+        <span class="dm-tab-name">Relational_1 ({title || 'Modelo Relacional'})</span>
+        <span class="dm-tab-close">×</span>
+      </div>
+      <div class="dm-tab dm-tab-secondary">
+        <span class="dm-tab-icon">📐</span>
+        <span class="dm-tab-name">Logical (Entidad-Relación)</span>
+      </div>
+    </div>
+
+    <div class="dm-toolbar">
+      <div class="dm-tool-group">
+        <span class="dm-badge-info">🎯 Modo 3FN Relacional</span>
+        <span class="dm-badge-count">{tables.length} {tables.length === 1 ? 'Tabla' : 'Tablas'}</span>
+        {relations.length > 0 && (
+          <span class="dm-badge-rel">{relations.length} {relations.length === 1 ? 'Relación' : 'Relaciones'} (FK)</span>
+        )}
+      </div>
+      <div class="dm-zoom-controls">
+        <button type="button" class="dm-btn-zoom dm-zoom-in" title="Aumentar zoom" data-zoom-target={`dm-stage-${challengeId}`}>🔍 +</button>
+        <button type="button" class="dm-btn-zoom dm-zoom-out" title="Disminuir zoom" data-zoom-target={`dm-stage-${challengeId}`}>🔍 −</button>
+        <button type="button" class="dm-btn-zoom dm-zoom-reset" title="Restablecer" data-zoom-target={`dm-stage-${challengeId}`}>⟲</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CANVAS / ÁREA DE DIBUJO CON CUADRÍCULA -->
+  <div class="dm-canvas-viewport">
+    <div class="dm-canvas-stage" id={`dm-stage-${challengeId}`}>
+      
+      <!-- MAPA DE RELACIONES CONECTIVAS (FLECHAS Y PATAS DE GALLO) -->
+      {relations.length > 0 && (
+        <div class="dm-relations-legend">
+          <div class="dm-legend-title">
+            <span>🔗</span> <strong>Mapa de Integridad Referencial (Foreign Keys & Cardinalidad)</strong>
+          </div>
+          <div class="dm-relations-grid">
+            {relations.map((rel) => (
+              <div class="dm-rel-card">
+                <div class="dm-rel-head">
+                  <span class={`dm-cardinality-tag ${rel.type === '1:1' ? 'is-1-1' : rel.type === 'N:M' ? 'is-nm' : 'is-1-n'}`}>
+                    {rel.type === '1:1' ? '1 a 1 (1:1)' : rel.type === 'N:M' ? 'Muchos a Muchos (N:M)' : 'Uno a Muchos (1:N)'}
+                  </span>
+                  <span class="dm-rel-3fn">3FN</span>
+                </div>
+
+                <div class="dm-rel-diagram">
+                  <!-- Lado Origen (Tabla Hija / FK) -->
+                  <div class="dm-rel-node">
+                    <span class="dm-node-table">{rel.fromTable}</span>
+                    <span class="dm-node-field">F* {rel.fromField}</span>
+                  </div>
+
+                  <!-- Conector Data Modeler Crow's Foot & Flecha -->
+                  <div class="dm-crows-foot-arrow">
+                    <div class="dm-crows-symbol">
+                      {rel.type === '1:1' ? (
+                        <span class="dm-arrow-one" title="Exactamente Uno (1)">||</span>
+                      ) : (
+                        <span class="dm-crows-foot" title="Muchos (Pata de Gallo)">&gt;|</span>
+                      )}
+                    </div>
+                    <div class="dm-connector-line">
+                      <span class="dm-connector-badge">{rel.type}</span>
+                    </div>
+                    <div class="dm-arrow-head" title="Apunta a Clave Primaria (1)">
+                      <span class="dm-arrow-point">►|</span>
+                    </div>
+                  </div>
+
+                  <!-- Lado Destino (Tabla Padre / PK) -->
+                  <div class="dm-rel-node dm-node-target">
+                    <span class="dm-node-table">{rel.toTable}</span>
+                    <span class="dm-node-field">P* {rel.toField}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <!-- TABLAS CON ESTILO DATA MODELER -->
+      <div class={`dm-tables-grid ${tables.length === 1 ? 'is-single' : tables.length === 2 ? 'is-double' : tables.length <= 5 ? 'is-medium' : 'is-macro'}`}>
+        {tables.map((tbl) => {
+          const pkFields = tbl.fields.filter(f => f.pk);
+          const fkFields = tbl.fields.filter(f => f.fk);
+          
+          return (
+            <div class={`dm-table-box ${pkFields.length > 1 ? 'is-junction' : ''}`} id={`dm-tbl-${tbl.name}`}>
+              
+              <!-- ENCABEZADO DE LA TABLA (Azul marino / Amarillo Data Modeler) -->
+              <div class="dm-table-header">
+                <span class="dm-table-title">{tbl.name}</span>
+              </div>
+
+              <!-- CUERPO DE COLUMNAS (P, F, PF, *, Tipo en verde) -->
+              <div class="dm-table-columns">
+                {tbl.fields.map((fld) => {
+                  const isPk = fld.pk;
+                  const isFk = !!fld.fk;
+                  const isNotNull = fld.notNull || isPk;
+                  
+                  let prefix = '';
+                  if (isPk && isFk) prefix = 'PF';
+                  else if (isPk) prefix = 'P';
+                  else if (isFk) prefix = 'F';
+
+                  return (
+                    <div class={`dm-col-row ${isPk ? 'is-pk-row' : isFk ? 'is-fk-row' : ''}`}>
+                      <!-- Indicador de Clave (P, F, PF) -->
+                      <div class="dm-col-prefix">
+                        <span class="dm-key-type">{prefix}</span>
+                        <span class={`dm-req-mark ${isNotNull ? 'is-mandatory' : 'is-optional'}`}>
+                          {isNotNull ? '*' : 'o'}
+                        </span>
+                      </div>
+
+                      <!-- Nombre de la Columna -->
+                      <div class="dm-col-name" title={fld.desc || fld.name}>
+                        <span>{fld.name}</span>
+                      </div>
+
+                      <!-- Tipo de Dato en Verde Data Modeler -->
+                      <div class="dm-col-type">
+                        <span>{fld.type}</span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <!-- PIE DE RESTRICCIONES Y CLAVES (PK / FKs) -->
+              <div class="dm-table-footer">
+                {pkFields.length > 0 && (
+                  <div class="dm-constraint-item dm-pk-constraint">
+                    <span class="dm-cons-icon" title="Clave Primaria">🗝️</span>
+                    <span class="dm-cons-text">{tbl.name}_PK ({pkFields.map(f => f.name).join(', ')})</span>
+                  </div>
+                )}
+                {fkFields.map((fkFld) => (
+                  <div class="dm-constraint-item dm-fk-constraint">
+                    <span class="dm-cons-icon" title={`Clave Foránea hacia ${fkFld.fk}`}>🔗</span>
+                    <span class="dm-cons-text">{tbl.name}_{fkFld.fk?.split('.')[0] || 'Ref'}_FK ({fkFld.name})</span>
+                  </div>
+                ))}
+              </div>
+
+            </div>
+          );
+        })}
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<style>
+  /* =======================================================
+     VENTANA ESTILO ORACLE SQL DEVELOPER DATA MODELER
+     ======================================================= */
+  .datamodeler-window {
+    background-color: #f0f4f8;
+    border: 3px solid #003366;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 5px 5px 0px #003366;
+    margin: 1rem 0;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  }
+
+  /* BARRA SUPERIOR Y PESTAÑAS */
+  .dm-topbar {
+    background: linear-gradient(180deg, #dbe4ee 0%, #c4d4e6 100%);
+    border-bottom: 2px solid #003366;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.35rem 0.6rem 0;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .dm-tab-bar {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.25rem;
+  }
+
+  .dm-tab {
+    background: #e2e8f0;
+    border: 2px solid #003366;
+    border-bottom: none;
+    border-radius: 8px 8px 0 0;
+    padding: 0.35rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: #1e3a8a;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    cursor: default;
+    user-select: none;
+  }
+
+  .dm-tab.is-active {
+    background: #ffffff;
+    border-bottom: 2px solid #ffffff;
+    margin-bottom: -2px;
+    color: #003366;
+    box-shadow: 0 -2px 5px rgba(0, 51, 102, 0.1);
+  }
+
+  .dm-tab-secondary {
+    opacity: 0.6;
+    background: #cbd5e1;
+  }
+
+  .dm-tab-close {
+    font-size: 0.9rem;
+    color: #64748b;
+    margin-left: 0.3rem;
+  }
+
+  .dm-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding-bottom: 0.35rem;
+    flex-wrap: wrap;
+  }
+
+  .dm-tool-group {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  .dm-badge-info {
+    background: #003366;
+    color: #ffffff;
+    font-size: 0.68rem;
+    font-weight: 800;
+    padding: 0.2rem 0.5rem;
+    border-radius: 6px;
+    letter-spacing: 0.02em;
+  }
+
+  .dm-badge-count {
+    background: #e0f2fe;
+    color: #0369a1;
+    border: 1px solid #7dd3fc;
+    font-size: 0.68rem;
+    font-weight: 800;
+    padding: 0.15rem 0.45rem;
+    border-radius: 6px;
+  }
+
+  .dm-badge-rel {
+    background: #ecfdf5;
+    color: #047857;
+    border: 1px solid #6ee7b7;
+    font-size: 0.68rem;
+    font-weight: 800;
+    padding: 0.15rem 0.45rem;
+    border-radius: 6px;
+  }
+
+  .dm-zoom-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+  }
+
+  .dm-btn-zoom {
+    background: #ffffff;
+    border: 1.5px solid #003366;
+    color: #003366;
+    border-radius: 6px;
+    padding: 0.15rem 0.4rem;
+    font-size: 0.7rem;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 1px 1px 0px #003366;
+    transition: all 0.1s ease;
+  }
+
+  .dm-btn-zoom:hover {
+    background: #f0fdf4;
+    transform: translateY(-1px);
+  }
+
+  /* CANVAS CON CUADRÍCULA */
+  .dm-canvas-viewport {
+    background-color: #ffffff;
+    background-image: 
+      radial-gradient(circle, #cbd5e1 1px, transparent 1px);
+    background-size: 20px 20px;
+    padding: 1.25rem;
+    overflow-x: auto;
+  }
+
+  .dm-canvas-stage {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    min-width: min-content;
+    transform-origin: top left;
+    transition: transform 0.2s ease;
+  }
+
+  /* =======================================================
+     MAPA DE RELACIONES CONECTIVAS (CROW'S FOOT Y FLECHAS)
+     ======================================================= */
+  .dm-relations-legend {
+    background: #f8fafc;
+    border: 2px solid #003366;
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    box-shadow: 2px 2px 0px rgba(0, 51, 102, 0.2);
+  }
+
+  .dm-legend-title {
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: #003366;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .dm-relations-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 0.6rem;
+  }
+
+  .dm-rel-card {
+    background: #ffffff;
+    border: 1.5px solid #003366;
+    border-radius: 8px;
+    padding: 0.5rem 0.6rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .dm-rel-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .dm-cardinality-tag {
+    font-size: 0.65rem;
+    font-weight: 800;
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+    border: 1px solid currentColor;
+  }
+
+  .dm-cardinality-tag.is-1-n {
+    background: #eff6ff;
+    color: #1d4ed8;
+  }
+
+  .dm-cardinality-tag.is-1-1 {
+    background: #fdf4ff;
+    color: #a21caf;
+  }
+
+  .dm-cardinality-tag.is-nm {
+    background: #fef2f2;
+    color: #b91c1c;
+  }
+
+  .dm-rel-3fn {
+    font-size: 0.65rem;
+    font-weight: 900;
+    color: #dc2626;
+    background: #fee2e2;
+    padding: 0.05rem 0.3rem;
+    border-radius: 3px;
+  }
+
+  .dm-rel-diagram {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.2rem 0;
+  }
+
+  .dm-rel-node {
+    background: #ffffdb;
+    border: 1.5px solid #003366;
+    border-radius: 4px;
+    padding: 0.25rem 0.5rem;
+    display: flex;
+    flex-direction: column;
+    min-width: 90px;
+  }
+
+  .dm-node-table {
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: #003366;
+  }
+
+  .dm-node-field {
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: #475569;
+  }
+
+  .dm-node-target {
+    background: #fff9db;
+  }
+
+  /* CONECTOR CROW'S FOOT (PATA DE GALLO) ESTILO DATA MODELER */
+  .dm-crows-foot-arrow {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    position: relative;
+  }
+
+  .dm-crows-symbol {
+    font-family: monospace;
+    font-size: 0.85rem;
+    font-weight: 900;
+    color: #003366;
+    letter-spacing: -2px;
+  }
+
+  .dm-connector-line {
+    flex: 1;
+    height: 2px;
+    background: #003366;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  .dm-connector-badge {
+    background: #ffffff;
+    border: 1px solid #003366;
+    color: #003366;
+    font-size: 0.58rem;
+    font-weight: 900;
+    padding: 0 0.25rem;
+    border-radius: 3px;
+    margin-top: -10px;
+  }
+
+  .dm-arrow-head {
+    font-family: monospace;
+    font-size: 0.8rem;
+    font-weight: 900;
+    color: #003366;
+  }
+
+  /* =======================================================
+     TABLAS DATA MODELER (Fondo amarillo crema y borde azul)
+     ======================================================= */
+  .dm-tables-grid {
+    display: grid;
+    gap: 1.25rem;
+    align-items: start;
+  }
+
+  .dm-tables-grid.is-single {
+    grid-template-columns: minmax(300px, 450px);
+    justify-content: center;
+  }
+
+  .dm-tables-grid.is-double {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+
+  .dm-tables-grid.is-medium {
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  }
+
+  .dm-tables-grid.is-macro {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  }
+
+  .dm-table-box {
+    background-color: #ffffd1;
+    border: 2px solid #003366;
+    border-radius: 4px;
+    box-shadow: 3px 3px 0px rgba(0, 51, 102, 0.25);
+    overflow: hidden;
+    font-family: 'Consolas', 'Courier New', monospace;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .dm-table-box:hover {
+    transform: translateY(-2px);
+    box-shadow: 5px 5px 0px rgba(0, 51, 102, 0.35);
+  }
+
+  .dm-table-box.is-junction {
+    background-color: #fff9db;
+    border-color: #c2410c;
+  }
+
+  /* ENCABEZADO DE TABLA */
+  .dm-table-header {
+    background: linear-gradient(180deg, #ffffea 0%, #ffffd1 100%);
+    border-bottom: 2px solid #003366;
+    padding: 0.4rem 0.6rem;
+    text-align: center;
+  }
+
+  .dm-table-box.is-junction .dm-table-header {
+    border-bottom-color: #c2410c;
+  }
+
+  .dm-table-title {
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 800;
+    color: #003366;
+    letter-spacing: 0.02em;
+    text-transform: capitalize;
+  }
+
+  /* FILAS DE COLUMNAS */
+  .dm-table-columns {
+    padding: 0.2rem 0;
+  }
+
+  .dm-col-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.18rem 0.5rem;
+    font-size: 0.72rem;
+    line-height: 1.3;
+    border-bottom: 1px dotted rgba(0, 51, 102, 0.15);
+  }
+
+  .dm-col-row:last-child {
+    border-bottom: none;
+  }
+
+  .dm-col-row:hover {
+    background: rgba(0, 51, 102, 0.05);
+  }
+
+  .dm-col-row.is-pk-row {
+    background: rgba(254, 240, 138, 0.4);
+    font-weight: 700;
+  }
+
+  .dm-col-row.is-fk-row {
+    background: rgba(224, 242, 254, 0.3);
+  }
+
+  .dm-col-prefix {
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+    min-width: 32px;
+  }
+
+  .dm-key-type {
+    font-weight: 900;
+    color: #b91c1c;
+    font-size: 0.68rem;
+  }
+
+  .dm-req-mark.is-mandatory {
+    color: #dc2626;
+    font-weight: 900;
+    font-size: 0.75rem;
+  }
+
+  .dm-req-mark.is-optional {
+    color: #64748b;
+    font-weight: 700;
+    font-size: 0.65rem;
+  }
+
+  .dm-col-name {
+    flex: 1;
+    color: #0f172a;
+    padding: 0 0.35rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 600;
+  }
+
+  .dm-col-type {
+    color: #15803d; /* VERDE DATA MODELER */
+    font-size: 0.68rem;
+    font-weight: 800;
+    white-space: nowrap;
+    text-align: right;
+  }
+
+  /* PIE DE CLAVES Y RESTRICCIONES */
+  .dm-table-footer {
+    border-top: 2px solid #003366;
+    background: rgba(0, 51, 102, 0.03);
+    padding: 0.3rem 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  .dm-table-box.is-junction .dm-table-footer {
+    border-top-color: #c2410c;
+  }
+
+  .dm-constraint-item {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.65rem;
+    color: #334155;
+    font-weight: 700;
+  }
+
+  .dm-pk-constraint {
+    color: #78350f;
+  }
+
+  .dm-fk-constraint {
+    color: #0369a1;
+  }
+
+  .dm-cons-icon {
+    font-size: 0.65rem;
+  }
+
+  .dm-cons-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+</style>
+
+<script>
+  // Control de Zoom interactivo en el canvas de Data Modeler
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.dm-btn-zoom').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const targetId = btn.getAttribute('data-zoom-target');
+        if (!targetId) return;
+        const stage = document.getElementById(targetId);
+        if (!stage) return;
+
+        let currentScale = parseFloat(stage.getAttribute('data-scale') || '1');
+
+        if (btn.classList.contains('dm-zoom-in')) {
+          currentScale = Math.min(currentScale + 0.15, 1.6);
+        } else if (btn.classList.contains('dm-zoom-out')) {
+          currentScale = Math.max(currentScale - 0.15, 0.65);
+        } else if (btn.classList.contains('dm-zoom-reset')) {
+          currentScale = 1;
+        }
+
+        stage.setAttribute('data-scale', currentScale.toString());
+        stage.style.transform = `scale(${currentScale})`;
+      });
+    });
+  });
+</script>

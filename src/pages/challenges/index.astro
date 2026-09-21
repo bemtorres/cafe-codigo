@@ -281,6 +281,26 @@ const modules = [
       },
     ],
   },
+  {
+    block: "Bases de Datos y Modelamiento Relacional",
+    blockNum: 4,
+    color: "#059669",
+    items: [
+      {
+        slug: "database",
+        title: "Bases de Datos & SQL (40 Desafíos)",
+        level: "Básico a Experto",
+        count: 40,
+        countLabel: "40 Desafíos",
+        icon: "🗄️",
+        color: "#059669",
+        bgIcon: "#ECFDF5",
+        desc: "Ruta completa: Tablas Simples, 2 Tablas (1:N), Multi-Tabla (1:1, N:M) y 10 Macro-Sistemas Empresariales de 10 tablas completas con DDL, DML y consultas analíticas.",
+        keywords:
+          "database bases de datos sql postgresql mysql sqlite tablas simple 1 a n foreign key muchos a muchos join 10 tablas",
+      },
+    ],
+  },
 ];
 
 const totalModules = modules.reduce((acc, b) => acc + b.items.length, 0);
@@ -291,8 +311,8 @@ const totalExercises = modules.reduce(
 ---
 
 <Layout
-  title="Ruta de Desafíos de Programación — Estructuras de Datos y POO"
-  description="Ruta pedagógica progresiva de desafíos de programación: desde lógica básica hasta Arreglos, Diccionarios, Matrices y POO."
+  title="Ruta de Desafíos de Programación — Estructuras de Datos, POO y Bases de Datos"
+  description="Ruta pedagógica progresiva de desafíos de programación: lógica básica, Arreglos, Diccionarios, POO y 40 Desafíos de Bases de Datos Relacionales."
 >
   <article class="challenges-hub">
     <!-- ═══ HERO HEADER ═══ -->
@@ -300,12 +320,12 @@ const totalExercises = modules.reduce(
       <div class="hero-glow"></div>
       <div class="hero-content">
         <span class="hero-badge">Ruta Pedagógica Progresiva</span>
-        <h1 class="hero-title">Desafíos de Programación</h1>
+        <h1 class="hero-title">Desafíos de Programación & SQL</h1>
         <p class="hero-sub">
           Una ruta ordenada desde <strong>conceptos iniciales</strong> hasta <strong
-            >POO y sistemas completos</strong
+            >POO, sistemas completos y Bases de Datos Relacionales</strong
           >. Válido para <strong
-            >Python, Java, C#, C++, JavaScript, PHP o PSeInt</strong
+            >Python, Java, C#, C++, SQL, JS o PHP</strong
           >.
         </p>
         <div class="hero-stats">
@@ -322,7 +342,7 @@ const totalExercises = modules.reduce(
           </div>
           <div class="stat-divider"></div>
           <div class="stat-pill">
-            <span class="stat-num">3</span>
+            <span class="stat-num">{modules.length}</span>
             <span class="stat-label">bloques</span>
           </div>
         </div>
