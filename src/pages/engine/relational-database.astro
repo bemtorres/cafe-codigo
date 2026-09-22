@@ -1,0 +1,11 @@
+---
+import EngineLayout from '../../layouts/EngineLayout.astro';
+import RelationalDatabaseEngine from '../../components/engine/RelationalDatabaseEngine';
+---
+
+<EngineLayout
+  title="Motor de Diseño Relacional de Bases de Datos (.CYC)"
+  description="Diseñador visual de bases de datos relacionales en pantalla completa con React Flow, exportación .cyc, JSON, SQL DDL e imágenes PNG."
+>
+  <RelationalDatabaseEngine client:only="react" />
+</EngineLayout>
