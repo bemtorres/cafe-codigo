@@ -181,7 +181,7 @@ export default function DatabaseSchemaFlow({ tables, title, challengeId = '1' }:
             ⚡
           </span>
           <span className="font-sans font-black text-xs sm:text-sm tracking-wide">
-            React Flow — Schema Canvas ({tables.length} Tablas)
+            {title ? `${title} · Esquema Relacional` : `React Flow — Schema Canvas (${tables.length} Tablas)`}
           </span>
           <span className="text-[0.65rem] font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 px-2 py-0.5 rounded-full">
             ● Interactivo (Arrastra las tablas)
