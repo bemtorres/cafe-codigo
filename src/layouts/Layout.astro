@@ -15,13 +15,14 @@ import CafeDelDiaNavBtn from '../components/CafeDelDiaNavBtn';
 import CoffeeTimerWidget from '../components/CoffeeTimerWidget';
 import ChallengeTimerWidget from '../components/ChallengeTimerWidget';
 import ShareEmbedButton from '../components/ShareEmbedButton';
-import MobileNavProfile from '../components/auth/MobileNavProfile';
 import LessonBookmarkToggle from '../components/auth/LessonBookmarkToggle';
 import CourseFavoriteButton from '../components/auth/CourseFavoriteButton';
 import CourseLoginUnlock from '../components/auth/CourseLoginUnlock';
 import SupportModal from '../components/SupportModal';
+import { isAuthEnabled } from '../lib/supabase/client';
 import LanguageCuriosity from '../components/LanguageCuriosity.astro';
 import LayoutEmbedPdfHead from './LayoutEmbedPdfHead.astro';
+import SeoHead from '../components/SeoHead.astro';
 
 const KO_FI_URL = 'https://ko-fi.com/cafeycodigo';
 
@@ -29,10 +30,20 @@ interface Props {
   title: string;
   description?: string;
   courseSlug?: string;
+  canonicalUrl?: string;
+  noindex?: boolean;
 }
 
-const { title, description = "Aprende a programar gratis con cursos paso a paso", courseSlug } = Astro.props;
+const { title, description = "Aprende a programar gratis con cursos paso a paso", courseSlug, canonicalUrl, noindex = false } = Astro.props;
 const currentCourse = courseSlug ? courses.find((c) => c.slug === courseSlug) : null;
+
+// URL canónica autoritativa (HTTPS, dominio principal sin www, trailing slash consistente)
+const CANONICAL_SITE = 'https://cafeycodigo.org';
+const rawPath = Astro.url.pathname;
+const normalizedCanonicalPath = rawPath === '' || rawPath === '/'
+  ? '/'
+  : (rawPath.endsWith('/') || rawPath.includes('.') ? rawPath : `${rawPath}/`);
+const computedCanonicalUrl = canonicalUrl || `${CANONICAL_SITE}${normalizedCanonicalPath}`;
 /** Lenguajes en el modal «Elige un curso», orden cronológico por año de lanzamiento público */
 const menuLanguageCourses = [...courses.filter((c) => c.category === 'language')].sort(
   (a, b) => (a.communityReleaseYear ?? 0) - (b.communityReleaseYear ?? 0),
@@ -49,10 +60,18 @@ const showCodeThemeSelector =
 
 // Navegación de lecciones para mobile
 const lessons = currentCourse?.lessons ?? [];
-const currentLessonIdx = lessons.findIndex(l => {
-  const lessonPath = `${COURSE_PATH_PREFIX}/${currentCourse?.slug}/${l.slug}`.replace(/\/$/, '');
-  return normalizedPath === lessonPath || normalizedPath.startsWith(lessonPath);
-});
+const currentLessonIdx = (() => {
+  const exactIdx = lessons.findIndex(l => {
+    const lessonPath = `${COURSE_PATH_PREFIX}/${currentCourse?.slug}/${l.slug}`.replace(/\/$/, '');
+    const lessonHref = (l.href || lessonPath).replace(/\/$/, '');
+    return normalizedPath === lessonHref || normalizedPath === lessonPath;
+  });
+  if (exactIdx !== -1) return exactIdx;
+  return lessons.findIndex(l => {
+    const lessonPath = `${COURSE_PATH_PREFIX}/${currentCourse?.slug}/${l.slug}`.replace(/\/$/, '');
+    return normalizedPath.startsWith(`${lessonPath}/`);
+  });
+})();
 const prevLesson = currentLessonIdx > 0 ? lessons[currentLessonIdx - 1] : null;
 const nextLesson = currentLessonIdx >= 0 && currentLessonIdx < lessons.length - 1 ? lessons[currentLessonIdx + 1] : null;
 const isInsideLesson = lessons.length > 0 && currentLessonIdx >= 0;
@@ -71,6 +90,10 @@ const showLanguageCuriosity =
       isLanguageCourse &&
       (isCourseHome || (isInsideLesson && !isIntroLesson)),
   );
+/** Diapositivas (PPT): desactivadas por defecto en todos los módulos; solo se muestran si la lección tiene hasSlides: true explícitamente */
+const showPptButton = Boolean(currentLesson?.hasSlides === true);
+/** Autenticación y Supabase: activos solo si está habilitado en .env y con credenciales válidas */
+const authActive = isAuthEnabled();
 ---
 
 <!DOCTYPE html>
@@ -79,21 +102,20 @@ const showLanguageCuriosity =
     <meta charset="utf-8" />
     <link rel="icon" type="image/png" href={logoCafeycodigo.src} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width" />
-    <meta name="description" content={description} />
+    <SeoHead
+      title={title}
+      description={description}
+      canonicalUrl={computedCanonicalUrl}
+      noindex={noindex}
+      course={currentCourse}
+      lesson={currentLesson}
+      type={isInsideLesson || isCourseHome ? 'article' : 'website'}
+      ogImage={ogLogo.src}
+    />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Eagle+Lake&family=Orbitron:wght@400;700;900&family=Press+Start+2P&display=swap" rel="stylesheet">
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content={ogLogo.src} />
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:title" content={title} />
-    <meta property="twitter:description" content={description} />
-    <meta property="twitter:image" content={ogLogo.src} />
     <meta name="generator" content={Astro.generator} />
-    <title>{title} | cafeycodigo</title>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-CSJTCX1FHC"></script>
     <script is:inline>
       window.dataLayer = window.dataLayer || [];
@@ -590,7 +612,7 @@ const showLanguageCuriosity =
 
       <!-- CONTENIDO PRINCIPAL -->
       <main class="flex-1 min-w-0 w-full">
-        {isCourseHome && currentCourse && (
+        {authActive && isCourseHome && currentCourse && (
           <div class="embed-hide">
             <CourseFavoriteButton
               client:only="react"
@@ -599,29 +621,33 @@ const showLanguageCuriosity =
             />
           </div>
         )}
-        {currentCourse && currentLesson && (
+        {currentCourse && currentLesson && (authActive || showPptButton) && (
           <div class="embed-hide flex items-center justify-between gap-3 mb-2 flex-wrap">
-            <div class="flex-1 min-w-[220px]">
-              <LessonBookmarkToggle
-                client:only="react"
-                courseSlug={currentCourse.slug}
-                lessonSlug={currentLesson.slug}
-                lessonTitle={currentLesson.title}
-              />
-            </div>
-            <a
-              href={`/course-slides/${currentCourse.slug}/${currentLesson.slug}/`}
-              class="shrink-0 mb-4 inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl border-[3px] border-border bg-gradient-to-r from-[#1e293b] to-[#0f172a] text-white font-nunito font-black text-sm shadow-[3px_3px_0px_#1E1210] hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_#1E1210] transition-all no-underline"
-              title="Ver presentación interactiva en diapositivas estilo PowerPoint"
-            >
-              <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12H4z" />
-              </svg>
-              <span>Presentación</span>
-              <span class="bg-amber-400 text-slate-950 text-[10px] px-2 py-0.5 rounded-full uppercase font-black tracking-wider">
-                PPT 📊
-              </span>
-            </a>
+            {authActive && (
+              <div class="flex-1 min-w-[220px]">
+                <LessonBookmarkToggle
+                  client:only="react"
+                  courseSlug={currentCourse.slug}
+                  lessonSlug={currentLesson.slug}
+                  lessonTitle={currentLesson.title}
+                />
+              </div>
+            )}
+            {showPptButton && (
+              <a
+                href={`/course-slides/${currentCourse.slug}/${currentLesson.slug}/`}
+                class="shrink-0 mb-4 inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl border-[3px] border-border bg-gradient-to-r from-[#1e293b] to-[#0f172a] text-white font-nunito font-black text-sm shadow-[3px_3px_0px_#1E1210] hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_#1E1210] transition-all no-underline"
+                title="Ver presentación interactiva en diapositivas estilo PowerPoint"
+              >
+                <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12H4z" />
+                </svg>
+                <span>Presentación</span>
+                <span class="bg-amber-400 text-slate-950 text-[10px] px-2 py-0.5 rounded-full uppercase font-black tracking-wider">
+                  PPT 📊
+                </span>
+              </a>
+            )}
           </div>
         )}
         <slot />
@@ -633,6 +659,7 @@ const showLanguageCuriosity =
               lessonSlug={currentLesson.slug}
               courseName={currentCourse.name}
               lessonTitle={currentLesson.title}
+              hasSlides={showPptButton}
             />
           </div>
         )}
@@ -1988,7 +2015,7 @@ const showLanguageCuriosity =
             <span class="text-[10px] font-nunito font-extrabold tracking-wide">Ko-fi</span>
           </button>
 
-          <MobileNavProfile client:only="react" />
+          {authActive && <MobileNavProfile client:only="react" />}
 
         </div>
       )}

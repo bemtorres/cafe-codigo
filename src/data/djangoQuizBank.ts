@@ -137,31 +137,113 @@ export const djangoQuizBank: Record<string, DjangoQuizDefinition> = {
   },
   'modelo-bd': {
     key: 'modelo-bd',
-    title: 'Quiz: Modelos y Bases de Datos',
+    title: 'Quiz: Modelos y Tipos de Datos (SQL)',
     questions: [
       {
-        prompt: '¿Qué clase base usan los modelos de Django?',
-        options: ['Document', 'Model', 'Database', 'Schema'],
+        prompt: '¿Qué parámetro es estrictamente obligatorio al definir un models.CharField?',
+        options: ['default', 'max_length', 'blank', 'null'],
         correctIndex: 1,
       },
       {
-        prompt: '¿Cómo se define una relación uno a muchos en Django?',
-        options: ['ManyToManyField', 'OneToOneField', 'ForeignKey', 'RelationField'],
+        prompt: '¿Qué comando de Django permite inspeccionar el SQL exacto que generará una migración antes de ejecutarla?',
+        options: ['sqlmigrate', 'showmigrations', 'makemigrations', 'inspectdb'],
+        correctIndex: 0,
+      },
+      {
+        prompt: '¿Por qué la documentación oficial de Django desaconseja usar null=True en CharField y TextField?',
+        options: [
+          'Porque la base de datos produce un error de sintaxis',
+          'Porque crea dos valores posibles para "sin datos": NULL y cadena vacía ""',
+          'Porque hace que el campo sea de solo lectura',
+          'Porque deshabilita el panel de administración',
+        ],
+        correctIndex: 1,
+      },
+      {
+        prompt: '¿Qué tipo de campo debe usarse obligatoriamente para almacenar precios o dinero con precisión exacta?',
+        options: ['FloatField', 'IntegerField', 'DecimalField', 'BigIntegerField'],
         correctIndex: 2,
       },
       {
-        prompt: '¿Qué comando crea las migraciones después de cambiar un modelo?',
-        options: ['makemigrations', 'migrate', 'create migrations', 'syncdb'],
+        prompt: 'Si en el modelo defines "autor = models.ForeignKey(Autor, ...)", ¿cómo se llama físicamente la columna en la tabla SQL?',
+        options: ['fk_autor', 'autor_fk', 'autor_id', 'autor'],
+        correctIndex: 2,
+      },
+    ],
+  },
+  'modelo-bd-step': {
+    key: 'modelo-bd-step',
+    title: 'Quiz: Boletas y Migraciones Evolutivas',
+    questions: [
+      {
+        prompt: '¿Por qué DetalleBoleta debe guardar su propio precio_unitario en lugar de leer siempre producto.precio?',
+        options: [
+          'Porque Django no permite acceder a relaciones en cálculos',
+          'Para congelar el precio histórico de la venta y que no cambie si el producto sube de precio en el futuro',
+          'Porque de lo contrario no se puede crear la clave primaria',
+          'Para evitar crear una clave foránea con el producto',
+        ],
+        correctIndex: 1,
+      },
+      {
+        prompt: 'Al agregar "cliente = ForeignKey(Cliente)" a una tabla Boleta que ya tiene 1.000 ventas registradas, ¿qué configuración permite aplicar la migración limpiamente?',
+        options: [
+          'unique=True',
+          'null=True, blank=True (permitiendo que las 1.000 boletas previas sean ventas anónimas)',
+          'auto_now_add=True',
+          'primary_key=True',
+        ],
+        correctIndex: 1,
+      },
+      {
+        prompt: 'Si un cliente pide eliminar su perfil de usuario, ¿qué opción on_delete garantiza que sus boletas históricas no se borren de la base de datos?',
+        options: ['models.CASCADE', 'models.SET_NULL', 'models.DO_NOTHING', 'models.PROTECT_ALL'],
+        correctIndex: 1,
+      },
+      {
+        prompt: '¿Qué clase se define en Meta.constraints para que la base de datos SQL rechace cualquier detalle con cantidad <= 0?',
+        options: ['models.CheckConstraint', 'models.UniqueConstraint', 'models.IndexConstraint', 'models.RuleConstraint'],
         correctIndex: 0,
       },
       {
-        prompt: '¿Qué método se usa para consultar todos los registros de un modelo?',
-        options: ['Model.objects.all()', 'Model.query()', 'Model.fetchAll()', 'Model.getAll()'],
-        correctIndex: 0,
+        prompt: 'En una migración de datos con RunPython, ¿cómo se debe obtener el modelo para evitar problemas con cambios futuros?',
+        options: [
+          'from ventas.models import Categoria',
+          'apps.get_model("ventas", "Categoria")',
+          'django.models.fetch("Categoria")',
+          'Categoria = Model.get("ventas.Categoria")',
+        ],
+        correctIndex: 1,
+      },
+    ],
+  },
+  'modelo-bd-library': {
+    key: 'modelo-bd-library',
+    title: 'Quiz: Biblioteca Digital y Django ORM',
+    questions: [
+      {
+        prompt: '¿Qué método del ORM realiza un SQL JOIN directo para evitar el problema N+1 en claves foráneas (1:N y 1:1)?',
+        options: ['prefetch_related', 'select_related', 'join_related', 'aggregate'],
+        correctIndex: 1,
       },
       {
-        prompt: '¿Qué campo es ideal para almacenar texto corto?',
-        options: ['TextField', 'CharField', 'IntegerField', 'DateTimeField'],
+        prompt: '¿Qué método del ORM se utiliza para precargar eficientemente relaciones ManyToMany mediante WHERE id IN (...) en Python?',
+        options: ['select_related', 'prefetch_related', 'values_list', 'annotate'],
+        correctIndex: 1,
+      },
+      {
+        prompt: '¿Qué objeto del ORM de Django se utiliza para construir filtros lógicos con operadores OR (|) y NOT (~)?',
+        options: ['F()', 'Q()', 'Case()', 'When()'],
+        correctIndex: 1,
+      },
+      {
+        prompt: '¿Qué objeto permite realizar operaciones y comparaciones a nivel de base de datos directamente entre columnas de la misma fila (ej: stock - 1)?',
+        options: ['Q()', 'F()', 'Value()', 'Expression()'],
+        correctIndex: 1,
+      },
+      {
+        prompt: '¿Qué función añade una columna calculada (ej: total_libros con Count) a cada fila del QuerySet de forma similar a GROUP BY?',
+        options: ['aggregate()', 'annotate()', 'values()', 'filter()'],
         correctIndex: 1,
       },
     ],

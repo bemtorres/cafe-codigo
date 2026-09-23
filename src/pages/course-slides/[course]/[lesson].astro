@@ -32,6 +32,7 @@ export async function getStaticPaths() {
 
 const { course, lesson } = Astro.params;
 const { courseName, lessonTitle } = Astro.props;
+const canonicalLessonUrl = `https://cafeycodigo.org/course/${course}/${lesson}/`;
 ---
 
 <!DOCTYPE html>
@@ -39,11 +40,19 @@ const { courseName, lessonTitle } = Astro.props;
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Presentación: {lessonTitle || lesson} | {courseName || course} - cafeycodigo</title>
+    <link rel="icon" type="image/png" href="/images/cafeycodigo.png" />
+    <link rel="canonical" href={canonicalLessonUrl} />
+    <title>Presentación: {lessonTitle || lesson} | {courseName || course} - Café y Código</title>
     <meta
       name="description"
       content={`Presentación interactiva en diapositivas para la lección ${lessonTitle} del curso de ${courseName}.`}
     />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta property="og:title" content={`Presentación: ${lessonTitle || lesson} | ${courseName || course} - Café y Código`} />
+    <meta property="og:description" content={`Presentación interactiva en diapositivas para la lección ${lessonTitle} del curso de ${courseName}.`} />
+    <meta property="og:url" content={canonicalLessonUrl} />
+    <meta property="og:type" content="article" />
+    <meta property="og:image" content="https://cafeycodigo.org/images/logo-cafecodigo.png" />
   </head>
   <body class="m-0 p-0 bg-[#0f172a] text-white font-sans antialiased overflow-x-hidden" style="background-image: none !important; background-color: #0f172a !important;">
     <CourseSlideViewer

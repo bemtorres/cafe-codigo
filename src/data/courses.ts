@@ -20,6 +20,7 @@ export interface Lesson {
   title: string;
   href: string;
   isSubItem?: boolean;
+  hasSlides?: boolean;
 }
 
 export interface Course {
@@ -33,6 +34,7 @@ export interface Course {
   lessons?: Lesson[];
   requiresPassword?: boolean;
   styleMode?: CourseStyleMode;
+  hasSlides?: boolean;
   /** Año de la primera versión pública orientada a la comunidad (p. ej. lenguajes). */
   communityReleaseYear?: number;
 }
@@ -196,12 +198,18 @@ export const courses: Course[] = [
       { slug: 'python-para-backend', title: '2. Python para Backend', href: '/course/django/python-para-backend/' },
       { slug: 'introduccion-django', title: '3. Introducción a Django', href: '/course/django/introduccion-django/' },
       { slug: 'arquitectura-django', title: '4. Arquitectura Django', href: '/course/django/arquitectura-django/' },
-      { slug: 'modelo-bd', title: '5. Modelos y Bases de Datos', href: '/course/django/modelo-bd/' },
-      { slug: 'admin-crud', title: '6. Django Admin y CRUD', href: '/course/django/admin-crud/' },
-      { slug: 'seguridad', title: '7. Autenticación y Seguridad', href: '/course/django/seguridad/' },
-      { slug: 'apis-restful', title: '8. APIs RESTful', href: '/course/django/apis-restful/' },
-      { slug: 'drf-jwt', title: '9. Django REST Framework y JWT', href: '/course/django/drf-jwt/' },
-      { slug: 'proyecto-integrador', title: '10. Proyecto Integrador', href: '/course/django/proyecto-integrador/' },
+      { slug: 'arquitectura-django/urls', title: '4.1 URLs y Enrutamiento', href: '/course/django/arquitectura-django/urls/', isSubItem: true },
+      { slug: 'arquitectura-django/views', title: '4.2 Views (Vistas)', href: '/course/django/arquitectura-django/views/', isSubItem: true },
+      { slug: 'arquitectura-django/template', title: '4.3 Templates y DTL', href: '/course/django/arquitectura-django/template/', isSubItem: true },
+      { slug: 'arquitectura-django/training', title: '4.4 Ejercicios y Retos', href: '/course/django/arquitectura-django/training/', isSubItem: true },
+      { slug: 'modelo-bd', title: '5. Modelos y Campos SQL', href: '/course/django/modelo-bd/' },
+      { slug: 'modelo-bd-step', title: '6. Paso a Paso: Boletas y Migraciones', href: '/course/django/modelo-bd-step/' },
+      { slug: 'modelo-bd-library', title: '7. Caso Práctico: Biblioteca y ORM', href: '/course/django/modelo-bd-library/' },
+      { slug: 'admin-crud', title: '8. Django Admin y CRUD', href: '/course/django/admin-crud/' },
+      { slug: 'seguridad', title: '9. Autenticación y Seguridad', href: '/course/django/seguridad/' },
+      { slug: 'apis-restful', title: '10. APIs RESTful', href: '/course/django/apis-restful/' },
+      { slug: 'drf-jwt', title: '11. Django REST Framework y JWT', href: '/course/django/drf-jwt/' },
+      { slug: 'proyecto-integrador', title: '12. Proyecto Integrador', href: '/course/django/proyecto-integrador/' },
     ],
   },
   {

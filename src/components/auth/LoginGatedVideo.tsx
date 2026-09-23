@@ -26,7 +26,9 @@ export default function LoginGatedVideo({ videoId, title = 'Video' }: Props) {
     );
   }
 
-  if (!supabase || !unlocked) {
+  // Solo bloquear si Supabase/Auth está activo y el usuario no tiene sesión iniciada.
+  // Si Supabase está desconectado o auth desactivado, se permite ver el video libremente.
+  if (supabase && !unlocked) {
     return (
       <div className="relative mt-4 aspect-video w-full overflow-hidden rounded-xl border-2 border-white/25 bg-black/40 shadow-[4px_4px_0px_rgba(0,0,0,0.25)]">
         <img

@@ -2,888 +2,769 @@
 import Layout from '../../../../layouts/Layout.astro';
 import CodeBlock from '../../../../components/CodeBlock.astro';
 import DjangoQuizModal from '../../../../components/quizzes/DjangoQuizModal.astro';
-import DjangoOrmPlayground from '../../../../components/django/DjangoOrmPlayground';
+import DjangoFieldSqlExplorer from '../../../../components/django/DjangoFieldSqlExplorer';
 ---
 
-<Layout title="Modelos, Migraciones y Django ORM" description="Aprende a modelar con todos los tipos de datos en Django, gestionar migraciones evolutivas, crear seeders con Faker y dominar el ORM desde nivel básico a avanzado." courseSlug="django">
+<Layout title="Modelos y Tipos de Datos: De Python a SQL" description="Aprende cómo funcionan los modelos en Django desde cero: desglose exhaustivo de CharField, catálogo completo de campos y su traducción exacta a tablas y columnas SQL con sqlmigrate." courseSlug="django">
   <article class="content-section">
-    <h1>5. Bases de Datos, Modelos, Migraciones y Django ORM 📚</h1>
+    <h1>5. Modelos y Tipos de Datos: De Python a SQL 🧱</h1>
 
+    <!-- 1. INTRODUCCIÓN Y CONCEPTO DEL ORM -->
     <section class="mb-10">
-      <h2>1. Caso de Estudio: Sistema de Biblioteca Digital</h2>
+      <h2>1. ¿Qué es un Modelo en Django y cómo se conecta a SQL?</h2>
       <p>
-        Para dominar las bases de datos en Django no basta con un modelo simple de 4 campos. A lo largo de esta lección desarrollaremos el modelo de datos de una <strong>Biblioteca Digital Universitaria</strong>, un sistema con alta riqueza relacional y reglas de negocio reales:
+        En el desarrollo web moderno casi nunca escribes sentencias SQL a mano como <code>CREATE TABLE</code> o <code>INSERT INTO</code> para tus operaciones cotidianas. En su lugar, Django utiliza un <strong>ORM (Object-Relational Mapper)</strong>, una capa que traduce clases y atributos de Python en tablas y columnas de base de datos relacionales (PostgreSQL, SQLite, MySQL o MariaDB).
       </p>
-      <ul>
-        <li><strong>PerfilLector:</strong> Relación <code>1:1</code> con el usuario del sistema, carnet UUID, fotos de credencial y límites de préstamos.</li>
-        <li><strong>Autor:</strong> Información bibliográfica, correos de contacto y fechas de nacimiento.</li>
-        <li><strong>Categoría:</strong> Estructura jerárquica en árbol autorreferencial (ej: <em>Tecnología &gt; Programación &gt; Python</em>).</li>
-        <li><strong>Tag (Etiqueta):</strong> Clasificación flexible muchos a muchos (<code>N:M</code>) con colores hexadecimales.</li>
-        <li><strong>Libro:</strong> La entidad central, que incorpora prácticamente <strong>todos los tipos de datos</strong> que ofrece Django (UUID, Slugs, Decimales, Duraciones, Archivos, JSON de metadatos, Enums, restricciones <code>CheckConstraint</code> e índices).</li>
-        <li><strong>SolicitudPrestamo:</strong> Modelo intermedio (<code>Through Model</code>) enriquecido que gestiona el ciclo de vida de los préstamos, fechas límite, estados y multas por mora.</li>
-      </ul>
-    </section>
 
-    <section class="mb-10">
-      <h2>2. Modelos con Todos los Tipos de Datos y Relaciones</h2>
+      <div class="my-6 overflow-x-auto">
+        <table class="w-full text-left border-collapse border border-slate-200 rounded-xl overflow-hidden text-sm">
+          <thead class="bg-slate-100 text-slate-800 font-bold border-b border-slate-200">
+            <tr>
+              <th class="p-3">Concepto en Python (Django)</th>
+              <th class="p-3">Equivalente en Base de Datos (SQL)</th>
+              <th class="p-3">Ejemplo Práctico</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-200">
+            <tr class="hover:bg-slate-50">
+              <td class="p-3 font-mono text-emerald-700 font-semibold">class Articulo(models.Model)</td>
+              <td class="p-3">Tabla en la base de datos</td>
+              <td class="p-3 font-mono text-xs">CREATE TABLE "blog_articulo" (...)</td>
+            </tr>
+            <tr class="hover:bg-slate-50">
+              <td class="p-3 font-mono text-emerald-700 font-semibold">titulo = models.CharField(...)</td>
+              <td class="p-3">Columna con tipo y restricciones</td>
+              <td class="p-3 font-mono text-xs">"titulo" varchar(150) NOT NULL</td>
+            </tr>
+            <tr class="hover:bg-slate-50">
+              <td class="p-3 font-mono text-emerald-700 font-semibold">art = Articulo(titulo="Django")</td>
+              <td class="p-3">Fila / Registro (Row)</td>
+              <td class="p-3 font-mono text-xs">INSERT INTO "blog_articulo" VALUES (...)</td>
+            </tr>
+            <tr class="hover:bg-slate-50">
+              <td class="p-3 font-mono text-emerald-700 font-semibold">id (automático)</td>
+              <td class="p-3">Clave Primaria (Primary Key)</td>
+              <td class="p-3 font-mono text-xs">"id" bigint NOT NULL PRIMARY KEY</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>El Puente de las Migraciones: `makemigrations` y `sqlmigrate`</h3>
       <p>
-        A continuación se presenta la definición profesional completa en <code>models.py</code>:
+        Cuando defines un modelo en <code>models.py</code>, la base de datos aún no sabe nada al respecto. El flujo para materializar tus cambios consta de 3 comandos:
       </p>
+      <ol class="space-y-2 mb-4">
+        <li>
+          <strong><code>python manage.py makemigrations</code>:</strong> Compara tus modelos actuales con el historial previo y genera un archivo de migración en Python (ej: <code>0001_initial.py</code>).
+        </li>
+        <li>
+          <strong><code>python manage.py sqlmigrate &lt;app&gt; &lt;numero&gt;</code>:</strong> <em>El comando más educativo de Django.</em> Te muestra el código SQL puro y exacto que Django va a enviar a tu motor de base de datos.
+        </li>
+        <li>
+          <strong><code>python manage.py migrate</code>:</strong> Ejecuta las sentencias SQL en la base de datos física para crear o alterar las tablas.
+        </li>
+      </ol>
 
       <CodeBlock
+        lang="cmd"
+        code={`(venv) C:\\proyectos\\django\\mi_blog> python manage.py makemigrations blog
+Migrations for 'blog':
+  blog/migrations/0001_initial.py
+    - Create model Articulo
+
+(venv) C:\\proyectos\\django\\mi_blog> python manage.py sqlmigrate blog 0001
+--
+-- Create model Articulo
+--
+CREATE TABLE "blog_articulo" (
+    "id" bigint NOT NULL PRIMARY KEY GENERATED BY DEFAULT AS IDENTITY,
+    "titulo" varchar(150) NOT NULL
+);`}
+        title="Inspección de SQL generado con sqlmigrate"
+      />
+    </section>
+
+    <!-- 2. PROFUNDIZANDO EN CHARFIELD -->
+    <section class="mb-10">
+      <h2>2. El Campo Fundamental: `models.CharField` a Fondo</h2>
+      <p>
+        <code>models.CharField</code> es el campo más utilizado en cualquier proyecto de backend. Representa cadenas de texto de longitud limitada (nombres, títulos, códigos, slugs, emails, etc.).
+      </p>
+
+      <h3>2.1 El Parámetro Obligatorio: `max_length`</h3>
+      <p>
+        A diferencia de otros campos, <code>CharField</code> <strong>exige obligatoriamente</strong> definir el argumento <code>max_length</code>. Si lo omites, Django arrojará un error <code>system check</code> antes de arrancar.
+      </p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-4">
+        <div class="p-4 rounded-xl bg-slate-900 text-slate-100 font-mono text-xs">
+          <span class="text-slate-400"># En Python (models.py):</span><br />
+          nombre = models.CharField(<span class="text-emerald-400">max_length=100</span>)
+        </div>
+        <div class="p-4 rounded-xl bg-slate-900 text-slate-100 font-mono text-xs">
+          <span class="text-slate-400"># En SQL generado:</span><br />
+          <span class="text-amber-300">"nombre" varchar(100) NOT NULL</span>
+        </div>
+      </div>
+      <p class="text-sm text-slate-600">
+        <strong>¿Por qué se exige?</strong> Los motores relacionales como PostgreSQL y MySQL optimizan el almacenamiento y los índices en disco reservando espacio en base a la longitud máxima <code>VARCHAR(n)</code>.
+      </p>
+
+      <h3>2.2 Opciones Clave de `CharField` y su Impacto en la Base de Datos</h3>
+
+      <div class="space-y-6 my-6">
+        <article class="p-4 rounded-xl border border-slate-200 bg-slate-50">
+          <h4 class="font-bold text-slate-900 text-base mb-1">A. `null=False` (Por Defecto) vs `null=True`</h4>
+          <p class="text-sm text-slate-700 mb-2">
+            Controla si la base de datos permite guardar valores <code>NULL</code> en esa columna:
+          </p>
+          <ul class="text-xs list-disc pl-5 space-y-1 text-slate-600">
+            <li><code>null=False</code> (comportamiento predeterminado): Genera la restricción SQL <code>NOT NULL</code>. Cualquier intento de insertar una fila sin valor fallará a nivel de motor.</li>
+            <li><code>null=True</code>: Permite que la columna contenga <code>NULL</code> en la base de datos.</li>
+          </ul>
+        </article>
+
+        <article class="p-4 rounded-xl border border-slate-200 bg-slate-50">
+          <h4 class="font-bold text-slate-900 text-base mb-1">B. `blank=False` (Por Defecto) vs `blank=True`</h4>
+          <p class="text-sm text-slate-700 mb-2">
+            <strong>Diferencia crucial:</strong> <code>blank</code> no tiene ningún efecto en la base de datos SQL. Es una validación exclusiva a nivel de <strong>formularios y del panel de administración de Django</strong>:
+          </p>
+          <ul class="text-xs list-disc pl-5 space-y-1 text-slate-600">
+            <li><code>blank=False</code>: Django exigirá que el usuario rellene el campo en el formulario HTML antes de enviarlo.</li>
+            <li><code>blank=True</code>: Django permite que el campo quede en blanco (se guardará una cadena vacía <code>""</code> en la BD).</li>
+          </ul>
+        </article>
+
+        <div class="p-4 rounded-xl bg-amber-50 border-l-4 border-amber-500 text-amber-900">
+          <h4 class="font-black text-sm uppercase tracking-wider mb-1 flex items-center gap-2">
+            <span>⚠️</span> La Regla de Oro en Django: Evita `null=True` en campos de texto
+          </h4>
+          <p class="text-xs leading-relaxed">
+            La documentación oficial de Django recomienda tajantemente: <strong>no utilices <code>null=True</code> en campos basados en texto (<code>CharField</code> y <code>TextField</code>)</strong>.
+          </p>
+          <p class="text-xs leading-relaxed mt-2">
+            Si lo haces, tu base de datos tendrá <strong>dos formas distintas de representar la ausencia de datos</strong>: el valor <code>NULL</code> y la cadena vacía <code>""</code>. Esto provoca bugs silenciosos en búsquedas y filtros. La convención recomendada es usar simplemente <code>blank=True, default=""</code>.
+          </p>
+          <p class="text-xs leading-relaxed mt-1 text-slate-600 italic">
+            *Única excepción:* cuando el campo de texto tiene <code>unique=True</code> y además es opcional (como un código de socio o ISBN que puede no existir, pero si existe debe ser único).
+          </p>
+        </div>
+
+        <article class="p-4 rounded-xl border border-slate-200 bg-slate-50">
+          <h4 class="font-bold text-slate-900 text-base mb-1">C. `unique=True` (Restricción de Unicidad)</h4>
+          <p class="text-sm text-slate-700 mb-2">
+            Garantiza que no existan dos registros con el mismo valor (ej: nombres de usuario, correos o códigos SKU):
+          </p>
+          <div class="p-3 bg-slate-900 text-slate-100 rounded-lg font-mono text-xs">
+            <span class="text-purple-400">sku</span> = models.CharField(max_length=30, <span class="text-yellow-400">unique=True</span>)<br />
+            <span class="text-slate-400">-- SQL resultante:</span><br />
+            <span class="text-emerald-400">"sku" varchar(30) NOT NULL CONSTRAINT "app_sku_key" UNIQUE</span>
+          </div>
+        </article>
+
+        <article class="p-4 rounded-xl border border-slate-200 bg-slate-50">
+          <h4 class="font-bold text-slate-900 text-base mb-1">D. `db_index=True` (Índices para Búsqueda Rápida)</h4>
+          <p class="text-sm text-slate-700 mb-2">
+            Si planeas filtrar constantemente por ese campo (ej: <code>Articulo.objects.filter(slug=...)</code> o <code>titulo__icontains=...</code>), agrega <code>db_index=True</code>. Django creará un índice B-Tree en la base de datos:
+          </p>
+          <div class="p-3 bg-slate-900 text-slate-100 rounded-lg font-mono text-xs">
+            <span class="text-slate-400">-- SQL ejecutado automáticamente tras crear la tabla:</span><br />
+            <span class="text-cyan-300">CREATE INDEX "blog_articulo_slug_idx" ON "blog_articulo" ("slug");</span>
+          </div>
+        </article>
+
+        <article class="p-4 rounded-xl border border-slate-200 bg-slate-50">
+          <h4 class="font-bold text-slate-900 text-base mb-1">E. `choices` y `models.TextChoices` (Enums Elegantes)</h4>
+          <p class="text-sm text-slate-700 mb-2">
+            Permite restringir las opciones seleccionables en formularios y en el Admin, sin requerir tipos ENUM propietarios en la base de datos:
+          </p>
+          <CodeBlock
+            lang="python"
+            code={`class Articulo(models.Model):
+    class Estado(models.TextChoices):
+        BORRADOR = 'BORRADOR', 'Borrador en revisión'
+        PUBLICADO = 'PUBLICADO', 'Público en el blog'
+        ARCHIVADO = 'ARCHIVADO', 'Archivado'
+
+    estado = models.CharField(
+        max_length=15,
+        choices=Estado.choices,
+        default=Estado.BORRADOR
+    )
+
+# En la base de datos se guarda como VARCHAR(15):
+# "estado" varchar(15) DEFAULT 'BORRADOR' NOT NULL
+
+# Y en Python obtienes el texto legible automáticamente:
+# articulo.get_estado_display() -> "Borrador en revisión"`}
+            title="articulo_choices.py"
+          />
+        </article>
+      </div>
+    </section>
+
+    <!-- 3. CATÁLOGO COMPLETO DE CAMPOS A SQL -->
+    <section class="mb-10">
+      <h2>3. Catálogo Completo de Campos de Django y su Traducción a SQL</h2>
+      <p>
+        Django provee una amplia variedad de campos especializados. A continuación se analiza cada grupo, cómo se define en Python y qué columna genera en el motor relacional.
+      </p>
+
+      <!-- TABLA RESUMEN -->
+      <div class="my-6 overflow-x-auto">
+        <table class="w-full text-left border-collapse border border-slate-200 rounded-xl overflow-hidden text-xs">
+          <thead class="bg-slate-900 text-slate-100 font-bold">
+            <tr>
+              <th class="p-3">Campo Django</th>
+              <th class="p-3">Tipo en PostgreSQL</th>
+              <th class="p-3">Tipo en SQLite</th>
+              <th class="p-3">Uso Recomendado</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-200 text-slate-700">
+            <tr class="hover:bg-slate-50">
+              <td class="p-2.5 font-mono font-bold text-emerald-700">CharField(max_length=n)</td>
+              <td class="p-2.5 font-mono">varchar(n)</td>
+              <td class="p-2.5 font-mono">varchar(n)</td>
+              <td class="p-2.5">Textos cortos (nombres, títulos, códigos)</td>
+            </tr>
+            <tr class="hover:bg-slate-50">
+              <td class="p-2.5 font-mono font-bold text-emerald-700">TextField()</td>
+              <td class="p-2.5 font-mono">text</td>
+              <td class="p-2.5 font-mono">text</td>
+              <td class="p-2.5">Contenido largo, párrafos, notas sin límite</td>
+            </tr>
+            <tr class="hover:bg-slate-50">
+              <td class="p-2.5 font-mono font-bold text-emerald-700">IntegerField()</td>
+              <td class="p-2.5 font-mono">integer</td>
+              <td class="p-2.5 font-mono">integer</td>
+              <td class="p-2.5">Números enteros (-2.147M a +2.147M)</td>
+            </tr>
+            <tr class="hover:bg-slate-50">
+              <td class="p-2.5 font-mono font-bold text-emerald-700">PositiveIntegerField()</td>
+              <td class="p-2.5 font-mono">integer CHECK &ge; 0</td>
+              <td class="p-2.5 font-mono">integer unsigned</td>
+              <td class="p-2.5">Cantidades, stocks, edades (nunca negativos)</td>
+            </tr>
+            <tr class="hover:bg-slate-50">
+              <td class="p-2.5 font-mono font-bold text-emerald-700">DecimalField(max_digits, decimal_places)</td>
+              <td class="p-2.5 font-mono">numeric(p, s)</td>
+              <td class="p-2.5 font-mono">decimal(p, s)</td>
+              <td class="p-2.5"><strong>Precios y dinero</strong> (precisión exacta sin redondeo)</td>
+            </tr>
+            <tr class="hover:bg-slate-50">
+              <td class="p-2.5 font-mono font-bold text-emerald-700">FloatField()</td>
+              <td class="p-2.5 font-mono">double precision</td>
+              <td class="p-2.5 font-mono">real</td>
+              <td class="p-2.5">Cálculos científicos aproximados (no usar para dinero)</td>
+            </tr>
+            <tr class="hover:bg-slate-50">
+              <td class="p-2.5 font-mono font-bold text-emerald-700">BooleanField(default=False)</td>
+              <td class="p-2.5 font-mono">boolean</td>
+              <td class="p-2.5 font-mono">bool (0 o 1)</td>
+              <td class="p-2.5">Banderas lógicas (activo, verificado, publicado)</td>
+            </tr>
+            <tr class="hover:bg-slate-50">
+              <td class="p-2.5 font-mono font-bold text-emerald-700">DateField()</td>
+              <td class="p-2.5 font-mono">date</td>
+              <td class="p-2.5 font-mono">date</td>
+              <td class="p-2.5">Fechas sin hora (cumpleaños, vencimiento)</td>
+            </tr>
+            <tr class="hover:bg-slate-50">
+              <td class="p-2.5 font-mono font-bold text-emerald-700">DateTimeField()</td>
+              <td class="p-2.5 font-mono">timestamp with time zone</td>
+              <td class="p-2.5 font-mono">datetime</td>
+              <td class="p-2.5">Marcas de tiempo exactas (created_at, updated_at)</td>
+            </tr>
+            <tr class="hover:bg-slate-50">
+              <td class="p-2.5 font-mono font-bold text-emerald-700">UUIDField(default=uuid.uuid4)</td>
+              <td class="p-2.5 font-mono">uuid</td>
+              <td class="p-2.5 font-mono">char(32)</td>
+              <td class="p-2.5">Identificadores únicos no adivinables</td>
+            </tr>
+            <tr class="hover:bg-slate-50">
+              <td class="p-2.5 font-mono font-bold text-emerald-700">FileField() / ImageField()</td>
+              <td class="p-2.5 font-mono">varchar(100)</td>
+              <td class="p-2.5 font-mono">varchar(100)</td>
+              <td class="p-2.5">Ruta del archivo en el servidor (no el archivo binario)</td>
+            </tr>
+            <tr class="hover:bg-slate-50">
+              <td class="p-2.5 font-mono font-bold text-emerald-700">ForeignKey(Target, on_delete=...)</td>
+              <td class="p-2.5 font-mono">bigint REFERENCES ...</td>
+              <td class="p-2.5 font-mono">integer REFERENCES ...</td>
+              <td class="p-2.5">Relaciones 1 a Muchos (crea columna <code>_id</code>)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- DESGLOSE DETALLADO POR CATEGORÍAS -->
+      <h3>3.1 Campos Numéricos: ¿Por qué DecimalField y no FloatField para Dinero?</h3>
+      <p>
+        Uno de los errores más peligrosos en desarrollo backend es usar <code>FloatField</code> para almacenar monedas o saldos. Los números de coma flotante en computación utilizan el estándar IEEE 754 de base 2, produciendo micro-errores como <code>0.1 + 0.2 = 0.30000000000000004</code>.
+      </p>
+      <CodeBlock
         lang="python"
-        code={`import uuid
-from datetime import timedelta
-from django.db import models
-from django.contrib.auth.models import User
-from django.core.exceptions import ValidationError
-from django.core.validators import MinValueValidator, MaxValueValidator
-from django.utils.text import slugify
+        code={`# ❌ NUNCA PARA DINERO:
+precio = models.FloatField()  # Puede perder centavos en sumas y multiplicaciones
 
+# ✔ LA FORMA PROFESIONAL:
+precio = models.DecimalField(
+    max_digits=10,       # Cantidad total de dígitos (incluyendo decimales)
+    decimal_places=2,    # Dígitos reservados para la parte decimal
+    default=0.00
+)
+# SQL generado: "precio" numeric(10, 2) DEFAULT 0.00 NOT NULL
+# Permite guardar hasta 99,999,999.99 con precisión matemática absoluta`}
+        title="comparativa_dinero.py"
+      />
 
-def validar_isbn(valor: str):
-    limpio = valor.replace("-", "").replace(" ", "").upper()
-    if len(limpio) not in (10, 13):
-        raise ValidationError("El ISBN debe contener exactamente 10 o 13 caracteres numéricos.")
-
-
-# ========================================================
-# 1. PERFIL DE LECTOR (OneToOneField con User)
-# ========================================================
-class PerfilLector(models.Model):
-    user = models.OneToOneField(
-        User,
-        on_delete=models.CASCADE,
-        related_name='perfil_lector',
-        verbose_name="Usuario"
-    )
-    codigo_socio = models.UUIDField(
-        default=uuid.uuid4,
-        unique=True,
-        editable=False,
-        help_text="Identificador único global del socio"
-    )
-    telefono = models.CharField(max_length=20, blank=True)
-    direccion = models.TextField(blank=True, verbose_name="Dirección de residencia")
-    fecha_nacimiento = models.DateField(null=True, blank=True)
-    foto_perfil = models.ImageField(upload_to='lectores/fotos/%Y/%m/', null=True, blank=True)
-    limite_prestamos_simultaneos = models.PositiveSmallIntegerField(
-        default=3,
-        validators=[MinValueValidator(1), MaxValueValidator(10)]
-    )
-    esta_sancionado = models.BooleanField(
-        default=False,
-        help_text="Impide nuevos préstamos si tiene deudas o entregas fuera de plazo"
-    )
+      <h3>3.2 Campos de Fecha y Hora: `auto_now_add` vs `auto_now`</h3>
+      <p>
+        Casi todo modelo en producción requiere dos columnas de auditoría temporal:
+      </p>
+      <CodeBlock
+        lang="python"
+        code={`class AuditoriaBase(models.Model):
+    # auto_now_add=True: Solo se establece 1 vez, al momento de hacer INSERT
     created_at = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return f"{self.user.get_full_name() or self.user.username} (Carnet: {str(self.codigo_socio)[:8]})"
-
-
-# ========================================================
-# 2. AUTOR (One-to-Many con Libro)
-# ========================================================
-class Autor(models.Model):
-    nombre = models.CharField(max_length=150, db_index=True)
-    apellidos = models.CharField(max_length=150)
-    pseudonimo = models.CharField(max_length=100, blank=True, null=True)
-    biografia = models.TextField(blank=True)
-    email = models.EmailField(blank=True, null=True)
-    sitio_web = models.URLField(blank=True)
-    fecha_nacimiento = models.DateField(null=True, blank=True)
-    es_autor_destacado = models.BooleanField(default=False)
+    # auto_now=True: Se refresca automáticamente a la hora actual en cada SAVE / UPDATE
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        verbose_name_plural = "Autores"
-        ordering = ['apellidos', 'nombre']
+        abstract = True  # Clase base que no crea tabla física por sí misma`}
+        title="auditoria_model.py"
+      />
 
-    @property
-    def nombre_completo(self):
-        return f"{self.nombre} {self.apellidos}"
+      <h3>3.3 Archivos e Imágenes: `FileField` e `ImageField`</h3>
+      <p>
+        Una duda muy común de los principiantes es pensar que la imagen o el PDF se almacenan en una columna binaria (BLOB) dentro de la base de datos. <strong>Esto es una pésima práctica de arquitectura</strong>.
+      </p>
+      <p>
+        Django únicamente guarda en la base de datos una <strong>cadena de texto</strong> con la ruta relativa del archivo:
+      </p>
+      <CodeBlock
+        lang="python"
+        code={`portada = models.ImageField(upload_to='portadas/%Y/%m/', blank=True)
+# En la BD SQL solo se almacena un VARCHAR(100):
+# 'portadas/2026/09/clean_code.jpg'`}
+        title="guardar_imagenes.py"
+      />
 
-    def __str__(self):
-        return self.nombre_completo
+      <h3>3.4 Relaciones entre Modelos: Las 3 Grandes Conexiones SQL</h3>
+      <p>
+        En bases de datos relacionales, casi nunca trabajamos con tablas aisladas. La fuerza de Django ORM radica en cómo modela las <strong>3 relaciones cardinales</strong> de SQL a través de Python, garantizando integridad referencial mediante claves foráneas y tablas intermedias.
+      </p>
 
+      <!-- 1. UNO A MUCHOS (ForeignKey) -->
+      <div class="my-6 rounded-2xl border-2 border-emerald-500/30 bg-emerald-50/40 p-5 dark:bg-emerald-950/20">
+        <div class="flex items-center gap-2 mb-3">
+          <span class="rounded-lg bg-emerald-600 px-2.5 py-1 text-xs font-black text-white uppercase tracking-wider font-mono">1 a N</span>
+          <h4 class="m-0 text-lg font-black text-slate-900">Uno a Muchos — <code>models.ForeignKey</code></h4>
+        </div>
+        <p class="text-sm text-slate-700 leading-relaxed mb-3">
+          <strong>Regla:</strong> Un registro de la Tabla A puede estar vinculado con múltiples registros de la Tabla B, pero cada registro de la Tabla B pertenece a un único registro de la Tabla A.
+          <em>Ejemplo: Una Categoría tiene muchos Productos, pero cada Producto pertenece a una sola Categoría.</em>
+        </p>
 
-# ========================================================
-# 3. CATEGORÍA (Relación Autorreferencial / Árbol)
-# ========================================================
+        <CodeBlock
+          lang="python"
+          code={`from django.db import models
+
 class Categoria(models.Model):
-    nombre = models.CharField(max_length=100, unique=True)
-    slug = models.SlugField(max_length=120, unique=True)
-    descripcion = models.TextField(blank=True)
-    # Jerarquía: una categoría puede tener una categoría padre
-    parent = models.ForeignKey(
-        'self',
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True,
-        related_name='subcategorias'
-    )
-
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.nombre)
-        super().save(*args, **kwargs)
+    nombre = models.CharField(max_length=50)
 
     def __str__(self):
-        if self.parent:
-            return f"{self.parent} > {self.nombre}"
         return self.nombre
 
 
-# ========================================================
-# 4. TAG / ETIQUETA (ManyToMany con Libro)
-# ========================================================
-class Tag(models.Model):
-    nombre = models.CharField(max_length=50, unique=True)
-    slug = models.SlugField(max_length=60, unique=True)
-    color_hex = models.CharField(max_length=7, default="#3B82F6", help_text="Color HEX (ej: #10B981)")
+class Producto(models.Model):
+    nombre = models.CharField(max_length=100)
+    precio = models.DecimalField(max_digits=10, decimal_places=2)
 
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.nombre)
-        super().save(*args, **kwargs)
+    # 1:N -> La FK siempre se define en el modelo 'Muchos' (el hijo)
+    categoria = models.ForeignKey(
+        Categoria,
+        on_delete=models.CASCADE,       # ¿Qué pasa si borran la categoría?
+        related_name='productos',       # Acceso inverso desde la categoría
+        help_text="Categoría a la que pertenece el producto"
+    )
 
     def __str__(self):
-        return f"#{self.nombre}"
+        return self.nombre`}
+          title="tienda/models.py (1 a N)"
+        />
 
+        <div class="mt-4 rounded-xl bg-slate-900 p-4 text-xs font-mono text-slate-200">
+          <p class="text-emerald-400 font-bold mb-2">⚡ ¿Qué genera Django físicamente en la Base de Datos SQL?</p>
+          <pre class="overflow-x-auto text-[0.8rem] leading-relaxed"><code>-- Tabla Padre
+CREATE TABLE "tienda_categoria" (
+    "id" bigint NOT NULL PRIMARY KEY GENERATED BY DEFAULT AS IDENTITY,
+    "nombre" varchar(50) NOT NULL
+);
 
-# ========================================================
-# 5. LIBRO (Tipos Exhaustivos, Constraints e Índices)
-# ========================================================
-class Libro(models.Model):
-    class Formato(models.TextChoices):
-        TAPA_DURA = 'TAPA_DURA', 'Tapa Dura'
-        TAPA_BLANDA = 'TAPA_BLANDA', 'Tapa Blanda'
-        BOLSILLO = 'BOLSILLO', 'Edición de Bolsillo'
-        DIGITAL = 'DIGITAL', 'E-Book / Digital'
+-- Tabla Hija: Django añade automáticamente el sufijo '_id' y un ÍNDICE
+CREATE TABLE "tienda_producto" (
+    "id" bigint NOT NULL PRIMARY KEY GENERATED BY DEFAULT AS IDENTITY,
+    "nombre" varchar(100) NOT NULL,
+    "precio" numeric(10, 2) NOT NULL,
+    "categoria_id" bigint NOT NULL REFERENCES "tienda_categoria" ("id") ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED
+);
 
-    class Idioma(models.TextChoices):
-        ES = 'es', 'Español'
-        EN = 'en', 'Inglés'
-        FR = 'fr', 'Francés'
+-- Django crea un índice para búsquedas ultra rápidas por FK
+CREATE INDEX "tienda_producto_categoria_id_idx" ON "tienda_producto" ("categoria_id");</code></pre>
+        </div>
 
-    # Identificadores
-    id = models.BigAutoField(primary_key=True)
-    uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
-    titulo = models.CharField(max_length=255, db_index=True)
-    subtitulo = models.CharField(max_length=255, blank=True)
-    slug = models.SlugField(max_length=280, unique=True)
-    isbn = models.CharField(max_length=20, unique=True, validators=[validar_isbn])
-    
-    # Texto largo y números
-    sinopsis = models.TextField()
-    paginas = models.PositiveIntegerField(validators=[MinValueValidator(1)])
-    edicion = models.PositiveSmallIntegerField(default=1)
-    stock_total = models.PositiveIntegerField(default=1)
-    stock_disponible = models.PositiveIntegerField(default=1)
-    precio_reposicion = models.DecimalField(
-        max_digits=8,
-        decimal_places=2,
-        help_text="Costo en caso de extravío"
+        <div class="mt-4 space-y-2">
+          <p class="text-xs font-bold uppercase tracking-wider text-slate-600">Políticas de Eliminación obligatorias (<code>on_delete</code>):</p>
+          <ul class="text-xs text-slate-700 space-y-1.5 pl-4 list-disc">
+            <li><code>models.CASCADE</code>: Si se elimina la categoría, <strong>se borran automáticamente</strong> todos sus productos vinculados (peligroso para ventas o facturas).</li>
+            <li><code>models.PROTECT</code>: <strong>Impide eliminar</strong> la categoría si todavía tiene productos asociados. Lanza la excepción <code>ProtectedError</code>. Ideal para catálogos y clientes con facturas.</li>
+            <li><code>models.SET_NULL</code>: Si se elimina la categoría, el producto queda con <code>categoria_id = NULL</code> (requiere obligatoriamente <code>null=True</code> en el campo).</li>
+            <li><code>models.SET_DEFAULT</code>: Reasigna el producto a una categoría por defecto predefinida (requiere <code>default=...</code>).</li>
+            <li><code>models.DO_NOTHING</code>: Django no ejecuta nada; delega la integridad exclusivamente al motor de base de datos SQL.</li>
+          </ul>
+        </div>
+
+        <div class="mt-4 rounded-xl bg-white p-3 border border-slate-200 text-xs">
+          <strong class="text-slate-900">¿Cómo se navega en Python gracias a <code>related_name</code>?</strong>
+          <pre class="bg-slate-100 p-2 rounded mt-1 font-mono text-[0.78rem]"><code># Navegación hacia adelante (Producto -> Categoría)
+producto = Producto.objects.get(id=1)
+print(producto.categoria.nombre)        # "Electrónica"
+
+# Navegación inversa (Categoría -> Productos) usando related_name='productos'
+cat = Categoria.objects.get(nombre="Electrónica")
+todos_los_prods = cat.productos.all()   # QuerySet de todos los productos de esa categoría</code></pre>
+        </div>
+      </div>
+
+      <!-- 2. UNO A UNO (OneToOneField) -->
+      <div class="my-6 rounded-2xl border-2 border-blue-500/30 bg-blue-50/40 p-5 dark:bg-blue-950/20">
+        <div class="flex items-center gap-2 mb-3">
+          <span class="rounded-lg bg-blue-600 px-2.5 py-1 text-xs font-black text-white uppercase tracking-wider font-mono">1 a 1</span>
+          <h4 class="m-0 text-lg font-black text-slate-900">Uno a Uno — <code>models.OneToOneField</code></h4>
+        </div>
+        <p class="text-sm text-slate-700 leading-relaxed mb-3">
+          <strong>Regla:</strong> Un registro de la Tabla A se corresponde con <strong>exactamente un registro</strong> de la Tabla B, y viceversa.
+          <em>Ejemplo: El modelo de usuario oficial de Django y su Perfil extendido con teléfono y biografía.</em>
+        </p>
+
+        <CodeBlock
+          lang="python"
+          code={`from django.db import models
+from django.contrib.auth.models import User
+
+class PerfilUsuario(models.Model):
+    # Relación 1:1 estricta con el usuario de Django
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        related_name='perfil'
     )
-    
-    # Enums y opciones
-    formato = models.CharField(max_length=20, choices=Formato.choices, default=Formato.TAPA_BLANDA)
-    idioma = models.CharField(max_length=2, choices=Idioma.choices, default=Idioma.ES)
-    
-    # Fechas y Duraciones
-    fecha_publicacion = models.DateField()
-    tiempo_estimado_lectura = models.DurationField(null=True, blank=True, help_text="Ej: 14 horas de lectura")
+    biografia = models.TextField(blank=True)
+    telefono = models.CharField(max_length=20, blank=True)
+    avatar = models.ImageField(upload_to='avatares/', blank=True)
+
+    def __str__(self):
+        return f"Perfil de {self.user.username}"`}
+          title="usuarios/models.py (1 a 1)"
+        />
+
+        <div class="mt-4 rounded-xl bg-slate-900 p-4 text-xs font-mono text-slate-200">
+          <p class="text-blue-400 font-bold mb-2">⚡ ¿Cuál es la diferencia física en SQL frente a una ForeignKey?</p>
+          <pre class="overflow-x-auto text-[0.8rem] leading-relaxed"><code>-- Django crea exactamente una clave foránea, pero le agrega la restricción UNIQUE:
+CREATE TABLE "usuarios_perfilusuario" (
+    "id" bigint NOT NULL PRIMARY KEY GENERATED BY DEFAULT AS IDENTITY,
+    "biografia" text NOT NULL,
+    "telefono" varchar(20) NOT NULL,
+    "avatar" varchar(100) NOT NULL,
+    "user_id" integer NOT NULL UNIQUE REFERENCES "auth_user" ("id") ON DELETE CASCADE
+);</code></pre>
+        </div>
+
+        <div class="mt-4 rounded-xl bg-white p-3 border border-slate-200 text-xs">
+          <strong class="text-slate-900">Diferencia fundamental de acceso en Python:</strong>
+          <p class="mt-1 text-slate-600">
+            A diferencia de <code>ForeignKey</code> donde el inverso entrega una lista o QuerySet (<code>user.pedidos.all()</code>), en <code>OneToOneField</code> el inverso retorna <strong>directamente la instancia única del modelo</strong> (o lanza <code>DoesNotExist</code>):
+          </p>
+          <pre class="bg-slate-100 p-2 rounded mt-1 font-mono text-[0.78rem]"><code>usuario = User.objects.get(username="ada_lovelace")
+# Acceso directo al objeto único, ¡no requiere .all() ni .first()!
+print(usuario.perfil.biografia)</code></pre>
+        </div>
+      </div>
+
+      <!-- 3. MUCHOS A MUCHOS (ManyToManyField) -->
+      <div class="my-6 rounded-2xl border-2 border-purple-500/30 bg-purple-50/40 p-5 dark:bg-purple-950/20">
+        <div class="flex items-center gap-2 mb-3">
+          <span class="rounded-lg bg-purple-600 px-2.5 py-1 text-xs font-black text-white uppercase tracking-wider font-mono">N a M</span>
+          <h4 class="m-0 text-lg font-black text-slate-900">Muchos a Muchos — <code>models.ManyToManyField</code></h4>
+        </div>
+        <p class="text-sm text-slate-700 leading-relaxed mb-3">
+          <strong>Regla:</strong> Un registro de la Tabla A puede asociarse a varios registros de la Tabla B, y a su vez cada registro de la Tabla B puede vincularse a varios de la Tabla A.
+          <em>Ejemplo: Un Artículo de blog tiene múltiples Etiquetas (Tags), y cada Etiqueta clasifica a múltiples Artículos.</em>
+        </p>
+
+        <CodeBlock
+          lang="python"
+          code={`from django.db import models
+
+class Etiqueta(models.Model):
+    nombre = models.CharField(max_length=30, unique=True)
+    slug = models.SlugField(max_length=30, unique=True)
+
+    def __str__(self):
+        return self.nombre
+
+
+class Articulo(models.Model):
+    titulo = models.CharField(max_length=150)
+    cuerpo = models.TextField()
+
+    # Relación N:M -> Puede definirse en cualquiera de los dos modelos
+    etiquetas = models.ManyToManyField(
+        Etiqueta,
+        related_name='articulos',
+        blank=True  # Permite guardar artículos sin etiquetas al inicio
+    )
+
+    def __str__(self):
+        return self.titulo`}
+          title="blog/models.py (N a M)"
+        />
+
+        <div class="mt-4 rounded-xl bg-slate-900 p-4 text-xs font-mono text-slate-200">
+          <p class="text-purple-400 font-bold mb-2">⚡ El secreto SQL: ¡Ni la tabla Articulo ni la tabla Etiqueta sufren cambios!</p>
+          <p class="text-slate-300 text-[0.8rem] mb-2">
+            Los motores relacionales no pueden almacenar múltiples claves en una sola celda. Por tanto, Django crea silenciosamente una <strong>tercera tabla intermedia (Join Table o Tabla Puente)</strong>:
+          </p>
+          <pre class="overflow-x-auto text-[0.8rem] leading-relaxed"><code>-- Tabla intermedia generada automáticamente: "blog_articulo_etiquetas"
+CREATE TABLE "blog_articulo_etiquetas" (
+    "id" bigint NOT NULL PRIMARY KEY GENERATED BY DEFAULT AS IDENTITY,
+    "articulo_id" bigint NOT NULL REFERENCES "blog_articulo" ("id") ON DELETE CASCADE,
+    "etiqueta_id" bigint NOT NULL REFERENCES "blog_etiqueta" ("id") ON DELETE CASCADE,
+    CONSTRAINT "blog_articulo_etiquetas_uniq" UNIQUE ("articulo_id", "etiqueta_id")
+);</code></pre>
+        </div>
+
+        <div class="mt-4 rounded-xl bg-white p-3 border border-slate-200 text-xs">
+          <strong class="text-slate-900">Operaciones ORM especiales para Muchos a Muchos:</strong>
+          <pre class="bg-slate-100 p-2 rounded mt-1 font-mono text-[0.78rem]"><code>articulo = Articulo.objects.get(id=1)
+tag_python = Etiqueta.objects.get(nombre="Python")
+tag_django = Etiqueta.objects.get(nombre="Django")
+
+# 1. Asociar etiquetas (.add)
+articulo.etiquetas.add(tag_python, tag_django)
+
+# 2. Desvincular una etiqueta (.remove)
+articulo.etiquetas.remove(tag_python)
+
+# 3. Consultar todas las etiquetas del artículo
+print(articulo.etiquetas.all())
+
+# 4. Consulta inversa: todos los artículos con el tag 'Django'
+print(tag_django.articulos.all())
+
+# 5. Vaciar todas las relaciones del artículo (.clear)
+articulo.etiquetas.clear()</code></pre>
+        </div>
+
+        <!-- THROUGH MODEL: CUANDO LA RELACIÓN TIENE ATRIBUTOS PROPIOS -->
+        <div class="mt-4 rounded-xl border border-amber-300 bg-amber-50 p-4 text-xs">
+          <p class="font-bold text-amber-900 mb-1">💡 ¿Qué pasa si la relación Muchos a Muchos requiere datos extra? (Argumento <code>through</code>)</p>
+          <p class="text-amber-800 leading-relaxed mb-2">
+            Imagina alumnos inscribiéndose en cursos. No basta con saber qué alumno está en qué curso; también necesitas registrar la <strong>fecha de inscripción</strong> y su <strong>calificación final</strong>. Para esto, creas tú mismo el modelo intermedio con <code>through</code>:
+          </p>
+          <CodeBlock
+            lang="python"
+            code={`class Curso(models.Model):
+    nombre = models.CharField(max_length=100)
+    estudiantes = models.ManyToManyField('Estudiante', through='Inscripcion')
+
+class Estudiante(models.Model):
+    nombre = models.CharField(max_length=100)
+
+# Modelo Intermedio Personalizado
+class Inscripcion(models.Model):
+    curso = models.ForeignKey(Curso, on_delete=models.CASCADE)
+    estudiante = models.ForeignKey(Estudiante, on_delete=models.CASCADE)
+    fecha_inscripcion = models.DateField(auto_now_add=True)
+    nota_final = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True)
+
+    class Meta:
+        unique_together = ('curso', 'estudiante')  # Un estudiante no se inscribe dos veces al mismo curso`}
+            title="academia/models.py (ManyToMany con through)"
+          />
+        </div>
+      </div>
+
+      <!-- TABLA RESUMEN DE RELACIONES -->
+      <div class="overflow-x-auto my-6">
+        <table class="w-full text-left text-xs border-collapse rounded-xl overflow-hidden shadow-sm">
+          <thead>
+            <tr class="bg-slate-900 text-white">
+              <th class="p-3">Relación</th>
+              <th class="p-3">Campo Django</th>
+              <th class="p-3">¿Qué crea en la BD SQL?</th>
+              <th class="p-3">Navegación Directa</th>
+              <th class="p-3">Navegación Inversa</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-200 bg-white">
+            <tr class="hover:bg-slate-50">
+              <td class="p-3 font-bold text-emerald-600">1 a N (Uno a Muchos)</td>
+              <td class="p-3 font-mono">models.ForeignKey(B, on_delete=...)</td>
+              <td class="p-3">Columna física <code>b_id</code> en tabla A + Índice</td>
+              <td class="p-3 font-mono">a.b (objeto)</td>
+              <td class="p-3 font-mono">b.as.all() (QuerySet)</td>
+            </tr>
+            <tr class="hover:bg-slate-50">
+              <td class="p-3 font-bold text-blue-600">1 a 1 (Uno a Uno)</td>
+              <td class="p-3 font-mono">models.OneToOneField(B, on_delete=...)</td>
+              <td class="p-3">Columna física <code>b_id</code> en tabla A + Restricción <code>UNIQUE</code></td>
+              <td class="p-3 font-mono">a.b (objeto)</td>
+              <td class="p-3 font-mono">b.a (objeto único)</td>
+            </tr>
+            <tr class="hover:bg-slate-50">
+              <td class="p-3 font-bold text-purple-600">N a M (Muchos a Muchos)</td>
+              <td class="p-3 font-mono">models.ManyToManyField(B)</td>
+              <td class="p-3"><strong>Tercera tabla intermedia</strong> puente con las dos FKs</td>
+              <td class="p-3 font-mono">a.bs.all() (.add, .remove)</td>
+              <td class="p-3 font-mono">b.as.all() (.add, .remove)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 4. COMPONENTE INTERACTIVO EXPLORER -->
+    <section class="mb-10">
+      <h2>4. Laboratorio Interactivo: Simulador de Campos a SQL</h2>
+      <p>
+        Experimenta ajustando los nombres, tipos y opciones de cada campo para comprobar en tiempo real cómo cambia la sentencia SQL y qué restricciones aplica el motor:
+      </p>
+      <DjangoFieldSqlExplorer client:load />
+    </section>
+
+    <!-- 5. CASO PRÁCTICO PASO A PASO -->
+    <section class="mb-10">
+      <h2>5. Práctica Guiada: De `models.py` a la Base de Datos Física</h2>
+      <p>
+        Veamos un ejemplo completo paso a paso creando el modelo <code>Articulo</code> para un blog de tecnología.
+      </p>
+
+      <h3>Paso 1: Definir el Modelo en `blog/models.py`</h3>
+      <CodeBlock
+        lang="python"
+        code={`from django.db import models
+from django.utils.text import slugify
+
+class Categoria(models.Model):
+    nombre = models.CharField(max_length=50, unique=True)
+
+    def __str__(self):
+        return self.nombre
+
+
+class Articulo(models.Model):
+    class Estado(models.TextChoices):
+        BORRADOR = 'BORRADOR', 'Borrador'
+        PUBLICADO = 'PUBLICADO', 'Publicado'
+
+    # Campos de texto
+    titulo = models.CharField(max_length=200, db_index=True)
+    slug = models.SlugField(max_length=220, unique=True, blank=True)
+    contenido = models.TextField(help_text="Cuerpo del artículo en formato Markdown")
+
+    # Números y booleano
+    visitas = models.PositiveIntegerField(default=0)
+    destacado = models.BooleanField(default=False)
+
+    # Opciones y Enums
+    estado = models.CharField(max_length=15, choices=Estado.choices, default=Estado.BORRADOR)
+
+    # Fechas
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
-    # Archivos y Multimedia
-    portada = models.ImageField(upload_to='libros/portadas/', null=True, blank=True)
-    capitulo_muestra_pdf = models.FileField(upload_to='libros/muestras/', null=True, blank=True)
-    
-    # JSONField para datos no estructurados
-    metadatos = models.JSONField(
-        default=dict,
-        blank=True,
-        help_text="Datos libres: {'dimensiones': '21x15 cm', 'editorial': 'O\\'Reilly', 'peso_gr': 420}"
-    )
-    
-    disponible_para_prestamo = models.BooleanField(default=True)
 
-    # Relaciones
-    autor = models.ForeignKey(Autor, on_delete=models.CASCADE, related_name='libros')
-    categoria = models.ForeignKey(Categoria, on_delete=models.PROTECT, related_name='libros')
-    tags = models.ManyToManyField(Tag, related_name='libros', blank=True)
-
-    class Meta:
-        ordering = ['-created_at']
-        indexes = [
-            models.Index(fields=['titulo', 'fecha_publicacion']),
-            models.Index(fields=['slug']),
-        ]
-        constraints = [
-            # El stock disponible nunca puede ser mayor al stock total
-            models.CheckConstraint(
-                check=models.Q(stock_disponible__lte=models.F('stock_total')),
-                name='chk_stock_disponible_valido'
-            ),
-            # El stock disponible no puede ser negativo
-            models.CheckConstraint(
-                check=models.Q(stock_disponible__gte=0),
-                name='chk_stock_no_negativo'
-            )
-        ]
+    # Clave Foránea (1:N)
+    categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE, related_name='articulos')
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(f"{self.titulo}-{str(self.uuid)[:8]}")
+            self.slug = slugify(self.titulo)
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.titulo} - {self.autor.nombre_completo}"
-
-
-# ========================================================
-# 6. SOLICITUD DE PRÉSTAMO (Through Model / M:N Enriquecida)
-# ========================================================
-class SolicitudPrestamo(models.Model):
-    class Estado(models.TextChoices):
-        PENDIENTE = 'PENDIENTE', 'Pendiente de Aprobación'
-        APROBADA = 'APROBADA', 'En Préstamo (Activa)'
-        RECHAZADA = 'RECHAZADA', 'Rechazada'
-        DEVUELTA = 'DEVUELTA', 'Devuelta a Tiempo'
-        DEVUELTA_CON_MORA = 'DEVUELTA_CON_MORA', 'Devuelta Fuera de Plazo'
-        EXTRAVIADO = 'EXTRAVIADO', 'Libro Extraviado'
-
-    codigo_prestamo = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
-    usuario = models.ForeignKey(User, on_delete=models.CASCADE, related_name='solicitudes_prestamo')
-    libro = models.ForeignKey(Libro, on_delete=models.CASCADE, related_name='solicitudes_prestamo')
-    estado = models.CharField(max_length=25, choices=Estado.choices, default=Estado.PENDIENTE, db_index=True)
-    
-    fecha_solicitud = models.DateTimeField(auto_now_add=True)
-    fecha_inicio = models.DateField(null=True, blank=True)
-    fecha_limite_devolucion = models.DateField(null=True, blank=True)
-    fecha_devolucion_real = models.DateField(null=True, blank=True)
-    
-    multa_acumulada = models.DecimalField(max_digits=6, decimal_places=2, default=0.00)
-    notas_usuario = models.TextField(blank=True)
-    notas_bibliotecario = models.TextField(blank=True)
-
-    class Meta:
-        ordering = ['-fecha_solicitud']
-        # Evita que un mismo usuario solicite el mismo libro si ya tiene una solicitud pendiente
-        constraints = [
-            models.UniqueConstraint(
-                fields=['usuario', 'libro'],
-                condition=models.Q(estado='PENDIENTE'),
-                name='unique_solicitud_pendiente_usuario_libro'
-            )
-        ]
-
-    def __str__(self):
-        return f"Préstamo #{str(self.codigo_prestamo)[:8]} - {self.usuario.username} ({self.estado})"`}
-        title="biblioteca/models.py"
-      />
-    </section>
-
-    <section class="mb-10">
-      <h2>3. Migraciones a Fondo: Ciclo de Vida y Ejercicios</h2>
-      <p>
-        Una migración en Django es la forma en que el framework propaga los cambios que realizas en tus modelos (agregar un campo, borrar un modelo, etc.) hacia el esquema de tu base de datos (PostgreSQL, SQLite, MySQL).
-      </p>
-
-      <h3>3.1 Los 4 Comandos Esenciales</h3>
-      <ul>
-        <li><code>python manage.py makemigrations</code>: Inspecciona tus modelos y crea un nuevo archivo de migración con las operaciones detectadas.</li>
-        <li><code>python manage.py migrate</code>: Aplica las migraciones pendientes sobre la base de datos física.</li>
-        <li><code>python manage.py showmigrations</code>: Muestra una lista visual con <code>[X]</code> para migraciones ya aplicadas y <code>[ ]</code> para pendientes.</li>
-        <li><code>python manage.py sqlmigrate app 0001</code>: Muestra el código SQL exacto que ejecutará Django antes de correrlo (ideal para auditoría en producción).</li>
-      </ul>
-
-      <h3>3.2 El Gran Reto en Producción: Agregar Campos NOT NULL</h3>
-      <p>
-        Si tu tabla <code>Libro</code> ya tiene 5.000 registros creados y de pronto agregas una clave foránea <code>autor = ForeignKey(Autor, on_delete=CASCADE)</code> sin valor por defecto, la base de datos rechazará la migración.
-      </p>
-      <p>
-        <strong>La estrategia profesional en 3 pasos:</strong>
-      </p>
-      <ol>
-        <li><strong>Fase 1:</strong> Agregar el campo como nullable: <code>autor = ForeignKey(Autor, null=True, blank=True)</code> y correr <code>makemigrations</code> + <code>migrate</code>.</li>
-        <li><strong>Fase 2:</strong> Ejecutar una <strong>Migración de Datos (Data Migration)</strong> con <code>RunPython</code> para calcular o asignar los autores existentes.</li>
-        <li><strong>Fase 3:</strong> Cambiar el campo a <code>null=False</code> y generar la última migración. Ahora que ninguna fila tiene <code>NULL</code>, la base de datos aplica la restricción sin errores.</li>
-      </ol>
-
-      <h3>3.3 Migración de Datos con RunPython</h3>
-      <p>
-        Django permite escribir código Python dentro de las migraciones para transformar datos de manera segura:
-      </p>
-
-      <CodeBlock
-        lang="python"
-        code={`# migrations/0003_migrar_autores_texto_a_fk.py
-from django.db import migrations
-
-def migrar_hacia_adelante(apps, schema_editor):
-    # REGLA CRÍTICA: Usar apps.get_model() en lugar de importar el modelo directamente
-    Libro = apps.get_model('biblioteca', 'Libro')
-    Autor = apps.get_model('biblioteca', 'Autor')
-    
-    # Autor por defecto para libros huérfanos
-    autor_defecto, _ = Autor.objects.get_or_create(
-        nombre='Autor',
-        apellidos='Desconocido'
-    )
-    
-    for libro in Libro.objects.filter(autor__isnull=True):
-        libro.autor = autor_defecto
-        libro.save(update_fields=['autor'])
-
-def revertir_migracion(apps, schema_editor):
-    # Lógica inversa si se hace rollback
-    pass
-
-class Migration(migrations.Migration):
-    dependencies = [
-        ('biblioteca', '0002_autor_libro_autor_nullable'),
-    ]
-
-    operations = [
-        migrations.RunPython(migrar_hacia_adelante, reverse_code=revertir_migracion),
-    ]`}
-        title="migracion_runpython.py"
+        return self.titulo`}
+        title="blog/models.py"
       />
 
-      <h3>3.4 Reversión y Rollbacks</h3>
-      <p>
-        Si una migración causa problemas, puedes revertirla retrocediendo al identificador anterior:
-      </p>
+      <h3>Paso 2: Generar e Inspeccionar la Migración SQL</h3>
       <CodeBlock
         lang="cmd"
-        code={`# 1. Revertir la app biblioteca hasta la migración 0002
-(env) PS C:\\proyectos\\biblioteca> python manage.py migrate biblioteca 0002
+        code={`(venv) C:\\proyectos\\django\\blog> python manage.py makemigrations blog
+Migrations for 'blog':
+  blog/migrations/0001_initial.py
+    - Create model Categoria
+    - Create model Articulo
 
-# 2. Revertir absolutamente todas las migraciones de la app biblioteca
-(env) PS C:\\proyectos\\biblioteca> python manage.py migrate biblioteca zero`}
-        title="Reversión de Migraciones (CMD / PowerShell)"
+(venv) C:\\proyectos\\django\\blog> python manage.py sqlmigrate blog 0001`}
+        title="Generar e inspeccionar migración"
       />
 
-      <div class="ejercicio" style="background: #e6fffa; border-left: 4px solid #0c4a3f; padding: 1.25rem; border-radius: 0.5rem; margin-top: 1.5rem;">
-        <h3 style="margin-top: 0; color: #0c4a3f;">🎯 Ejercicios Prácticos de Migraciones</h3>
-        
-        <p><strong>Ejercicio 1: Añadir ISBN único a una tabla con registros</strong></p>
-        <p>
-          <em>Problema:</em> Tienes 100 libros en la BD sin ISBN y necesitas agregar <code>isbn = CharField(unique=True)</code>. Si agregas <code>default=""</code>, todas las filas tendrán la misma cadena vacía, violando la unicidad.
-        </p>
-        <p>
-          <em>Solución:</em> Agrega el campo con <code>null=True, unique=True</code>. Luego crea una migración vacía con <code>RunPython</code> que asigne un código temporal único (ej: <code>TEMP-0001</code>) a cada libro existente. Finalmente, cambia a <code>null=False, unique=True</code>.
-        </p>
-
-        <p><strong>Ejercicio 2: Migrar campo de texto separado por comas a ManyToManyField</strong></p>
-        <p>
-          <em>Problema:</em> El modelo anterior tenía <code>etiquetas_texto = "python, backend, web"</code>. Ahora tenemos el modelo <code>Tag</code>.
-        </p>
-        <CodeBlock
-          lang="python"
-          code={`def poblar_tags(apps, schema_editor):
-    Libro = apps.get_model('biblioteca', 'Libro')
-    Tag = apps.get_model('biblioteca', 'Tag')
-    for libro in Libro.objects.all():
-        for tag_nombre in libro.etiquetas_texto.split(','):
-            nombre = tag_nombre.strip()
-            if nombre:
-                tag_obj, _ = Tag.objects.get_or_create(nombre=nombre)
-                libro.tags.add(tag_obj)`}
-          title="poblar_tags_m2m.py"
-        />
-      </div>
-    </section>
-
-    <section class="mb-10">
-      <h2>4. Seeder con Faker: Generación Masiva de Datos</h2>
-      <p>
-        Probar consultas avanzadas de ORM con solo 2 o 3 registros es imposible. La mejor práctica en Django es crear un <strong>Management Command</strong> que utilice la librería <code>faker</code>:
-      </p>
-
+      <h3>Paso 3: Análisis del SQL Real Emitido por Django</h3>
       <CodeBlock
-        lang="python"
-        code={`# biblioteca/management/commands/seed_biblioteca.py
-import random
-from datetime import timedelta
-from django.core.management.base import BaseCommand
-from django.contrib.auth.models import User
-from django.db import transaction
-from django.utils import timezone
-from faker import Faker
+        lang="sql"
+        code={`-- 1. Tabla de Categorías
+CREATE TABLE "blog_categoria" (
+    "id" bigint NOT NULL PRIMARY KEY GENERATED BY DEFAULT AS IDENTITY,
+    "nombre" varchar(50) NOT NULL UNIQUE
+);
 
-from biblioteca.models import (
-    PerfilLector, Autor, Categoria, Tag, Libro, SolicitudPrestamo
-)
+-- 2. Tabla de Artículos
+CREATE TABLE "blog_articulo" (
+    "id" bigint NOT NULL PRIMARY KEY GENERATED BY DEFAULT AS IDENTITY,
+    "titulo" varchar(200) NOT NULL,
+    "slug" varchar(220) NOT NULL UNIQUE,
+    "contenido" text NOT NULL,
+    "visitas" integer NOT NULL CHECK ("visitas" >= 0),
+    "destacado" boolean NOT NULL,
+    "estado" varchar(15) NOT NULL,
+    "created_at" timestamp with time zone NOT NULL,
+    "updated_at" timestamp with time zone NOT NULL,
+    "categoria_id" bigint NOT NULL REFERENCES "blog_categoria" ("id") DEFERRABLE INITIALLY DEFERRED
+);
 
-class Command(BaseCommand):
-    help = "Puebla la biblioteca con datos realistas usando Faker"
-
-    @transaction.atomic
-    def handle(self, *args, **options):
-        fake = Faker(['es_ES'])
-        self.stdout.write("Generando datos de prueba...")
-
-        # 1. Categorías con jerarquía
-        padre_tec, _ = Categoria.objects.get_or_create(nombre="Tecnología")
-        cat_python, _ = Categoria.objects.get_or_create(nombre="Python", parent=padre_tec)
-        cat_db, _ = Categoria.objects.get_or_create(nombre="Bases de Datos", parent=padre_tec)
-        
-        # 2. Tags
-        tags = [Tag.objects.get_or_create(nombre=n)[0] for n in ["Backend", "Principiantes", "Avanzado", "Destacado"]]
-
-        # 3. Autores
-        autores = []
-        for _ in range(8):
-            autores.append(Autor.objects.create(
-                nombre=fake.first_name(),
-                apellidos=fake.last_name(),
-                biografia=fake.paragraph(),
-                email=fake.unique.email()
-            ))
-
-        # 4. Socios y usuarios
-        for i in range(10):
-            user = User.objects.create_user(username=f"lector_{i}", password="password123")
-            PerfilLector.objects.create(
-                user=user,
-                telefono=fake.phone_number(),
-                limite_prestamos_simultaneos=3
-            )
-
-        # 5. Libros
-        for _ in range(40):
-            stock = random.randint(2, 8)
-            libro = Libro.objects.create(
-                titulo=fake.catch_phrase().title(),
-                isbn=fake.unique.isbn13(),
-                sinopsis=fake.text(max_nb_chars=300),
-                paginas=random.randint(120, 800),
-                stock_total=stock,
-                stock_disponible=random.randint(0, stock),
-                precio_reposicion=round(random.uniform(20.0, 75.0), 2),
-                fecha_publicacion=fake.date_between(start_date='-5y', end_date='today'),
-                autor=random.choice(autores),
-                categoria=random.choice([cat_python, cat_db]),
-                metadatos={"editorial": fake.company(), "edicion": random.randint(1, 3)}
-            )
-            libro.tags.set(random.sample(tags, k=random.randint(1, 2)))
-
-        self.stdout.write(self.style.SUCCESS("✔ 40 libros, autores y lectores creados con éxito!"))`}
-        title="seed_biblioteca.py"
+-- 3. Índices B-Tree automáticos para acelerar búsquedas
+CREATE INDEX "blog_articulo_titulo_idx" ON "blog_articulo" ("titulo");
+CREATE INDEX "blog_articulo_categoria_id_idx" ON "blog_articulo" ("categoria_id");`}
+        title="SQL Generado por PostgreSQL / SQLite"
       />
 
-      <p>Para ejecutar el seeder en la terminal con el entorno virtual activo:</p>
+      <h3>Paso 4: Aplicar Cambios a la Base de Datos</h3>
       <CodeBlock
         lang="cmd"
-        code={`(env) PS C:\\proyectos\\biblioteca> pip install faker
-(env) PS C:\\proyectos\\biblioteca> python manage.py seed_biblioteca`}
-        title="Ejecución de Seeder en CMD con (env)"
+        code={`(venv) C:\\proyectos\\django\\blog> python manage.py migrate
+Operations to perform:
+  Apply all migrations: admin, auth, blog, contenttypes, sessions
+Running migrations:
+  Applying blog.0001_initial... OK`}
+        title="Aplicar la migración definitiva"
       />
     </section>
 
-    <section class="mb-10">
-      <h2>5. Django ORM: De Consultas Básicas a Experto</h2>
-      <p>
-        El ORM (Object-Relational Mapping) de Django traduce tus métodos de Python en sentencias SQL optimizadas. A continuación exploramos su potencial desde lo fundamental hasta técnicas de optimización empresarial.
-      </p>
-
-      <h3>5.1 Nivel 1: Consultas y Lookups Básicos</h3>
-      <CodeBlock
-        lang="python"
-        code={`from biblioteca.models import Libro, Autor
-
-# 1. Obtener todos los registros (Lazy QuerySet: no va a la BD hasta que se itera)
-todos = Libro.objects.all()
-
-# 2. Obtener un único elemento (lanza DoesNotExist o MultipleObjectsReturned)
-libro = Libro.objects.get(id=1)
-primer_libro = Libro.objects.filter(disponible_para_prestamo=True).first()
-
-# 3. Comprobación de existencia y conteo ultra-rápidos en SQL
-hay_disponibles = Libro.objects.filter(stock_disponible__gt=0).exists() # Genera SELECT EXISTS(...)
-total_libros = Libro.objects.count()                                   # Genera SELECT COUNT(*)
-
-# 4. Operadores de Filtro (Field Lookups):
-Libro.objects.filter(titulo__icontains="django")      # ILIKE '%django%'
-Libro.objects.filter(paginas__gte=300)                # WHERE paginas >= 300
-Libro.objects.filter(idioma__in=['es', 'en'])         # WHERE idioma IN ('es', 'en')
-Libro.objects.filter(fecha_publicacion__range=["2022-01-01", "2024-12-31"]) # BETWEEN
-Autor.objects.filter(email__isnull=False)             # WHERE email IS NOT NULL`}
-        title="orm_nivel_1.py"
-      />
-
-      <h3>5.2 Nivel 2: Consultas Relacionales y Proyecciones</h3>
-      <CodeBlock
-        lang="python"
-        code={`# 1. Filtrar a través de relaciones mediante doble guion bajo (__)
-# Libros cuyo autor se apellida "García"
-libros_garcia = Libro.objects.filter(autor__apellidos__iexact="García")
-
-# Libros que tengan el Tag con nombre "Backend" (relación ManyToMany)
-libros_backend = Libro.objects.filter(tags__nombre="Backend").distinct()
-
-# Consulta inversa: Autores que tengan algún libro de más de 600 páginas
-autores_extensos = Autor.objects.filter(libros__paginas__gt=600).distinct()
-
-# 2. Proyecciones (Optimizar ancho de banda solicitando solo ciertas columnas)
-# Devuelve lista de diccionarios: [{'id': 1, 'titulo': 'Clean Code'}]
-Libro.objects.values('id', 'titulo', 'autor__nombre')[:5]
-
-# Devuelve una lista plana de valores: ['Clean Code', 'The Pragmatic Programmer', ...]
-titulos = Libro.objects.values_list('titulo', flat=True)[:10]
-
-# 3. Ordenación
-Libro.objects.order_by('-fecha_publicacion', 'titulo')`}
-        title="orm_nivel_2.py"
-      />
-
-      <h3>5.3 Nivel 3: El Problema N+1 y su Solución</h3>
-      <p>
-        El <strong>problema N+1</strong> es el asesino de rendimiento número 1 en aplicaciones web. Ocurre cuando iteras sobre un listado y en cada iteración disparas una nueva consulta SQL para traer la relación:
-      </p>
-      <CodeBlock
-        lang="python"
-        code={`# ❌ CÓDIGO INEFICIENTE: 1 consulta para traer 100 libros + 100 consultas para cada autor = 101 consultas!
-for libro in Libro.objects.all()[:100]:
-    print(libro.titulo, libro.autor.nombre)`}
-        title="problema_n_mas_1.py"
-      />
-
-      <p>
-        Django resuelve esto con dos métodos fundamentales:
-      </p>
-      <ul>
-        <li><strong><code>select_related(*fields)</code>:</strong> Para relaciones <code>1:1</code> y <code>ForeignKey</code> (muchos a uno). Realiza un <code>INNER JOIN</code> o <code>LEFT JOIN</code> en una sola consulta SQL.</li>
-        <li><strong><code>prefetch_related(*fields)</code>:</strong> Para relaciones <code>ManyToMany</code> y relaciones inversas. Realiza consultas separadas agrupadas con <code>WHERE id IN (...)</code> y las ensambla en memoria en Python.</li>
-      </ul>
-
-      <CodeBlock
-        lang="python"
-        code={`from django.db.models import Prefetch
-from biblioteca.models import Libro, SolicitudPrestamo
-
-# ✔ CÓDIGO HIPER-OPTIMIZADO: Resuelve 100 libros, autores, categorías y tags en solo 2 consultas SQL:
-libros = Libro.objects.select_related(
-    'autor', 'categoria'      # SQL JOIN directo
-).prefetch_related(
-    'tags'                   # Query separada con WHERE id IN (...)
-)
-
-for l in libros[:100]:
-    print(l.titulo, l.autor.nombre_completo, l.categoria.nombre, [t.nombre for t in l.tags.all()])
-
-# Prefetch avanzado con filtros: Traer libros precargando SOLO sus solicitudes aprobadas
-solicitudes_activas = SolicitudPrestamo.objects.filter(estado=SolicitudPrestamo.Estado.APROBADA)
-libros_con_prestamos = Libro.objects.prefetch_related(
-    Prefetch('solicitudes_prestamo', queryset=solicitudes_activas, to_attr='prestamos_activos')
-)`}
-        title="select_prefetch_related.py"
-      />
-
-      <h3>5.4 Nivel 4: Agregaciones y Anotaciones</h3>
-      <ul>
-        <li><code>aggregate()</code>: Reduce todo el QuerySet a un <strong>único diccionario resumen</strong> (ej: promedio o total global).</li>
-        <li><code>annotate()</code>: Añade una <strong>columna calculada a cada fila</strong> del QuerySet (equivalente al <code>GROUP BY</code> de SQL).</li>
-      </ul>
-
-      <CodeBlock
-        lang="python"
-        code={`from django.db.models import Avg, Sum, Count, Max, Q
-from django.contrib.auth.models import User
-
-# 1. Agregación Global
-resumen = Libro.objects.aggregate(
-    total_ejemplares=Sum('stock_total'),
-    precio_promedio=Avg('precio_reposicion'),
-    libro_mas_costoso=Max('precio_reposicion')
-)
-# Retorna: {'total_ejemplares': 350, 'precio_promedio': 42.50, 'libro_mas_costoso': 89.90}
-
-# 2. Anotación por fila: ¿Cuántos libros ha escrito cada autor?
-autores_productivos = Autor.objects.annotate(
-    total_libros=Count('libros')
-).filter(total_libros__gte=2).order_by('-total_libros')
-
-for autor in autores_productivos:
-    print(f"{autor.nombre_completo}: {autor.total_libros} libros en catálogo")
-
-# 3. Anotación condicional: Usuarios con su total de préstamos y cuántos tuvieron mora
-lectores_reporte = User.objects.annotate(
-    total_pedidos=Count('solicitudes_prestamo'),
-    pedidos_con_mora=Count(
-        'solicitudes_prestamo',
-        filter=Q(solicitudes_prestamo__estado='DEVUELTA_CON_MORA')
-    )
-)`}
-        title="aggregate_annotate.py"
-      />
-
-      <h3>5.5 Nivel 5: Consultas Avanzadas (Q, F, Case/When, Subquery)</h3>
-
-      <h4>1. Objetos <code>Q</code> (Lógica Booleana Compleja)</h4>
-      <p>Permiten utilizar operadores OR (<code>|</code>), AND (<code>&amp;</code>) y NOT (<code>~</code>):</p>
-      <CodeBlock
-        lang="python"
-        code={`from django.db.models import Q
-
-# Libros de la categoría 'Python' O que tengan el tag 'Backend', pero que NO estén agotados:
-disponibles = Libro.objects.filter(
-    (Q(categoria__nombre="Python") | Q(tags__nombre="Backend")) &
-    ~Q(stock_disponible=0)
-).distinct()`}
-        title="q_objects.py"
-      />
-
-      <h4>2. Objetos <code>F</code> (Comparar columnas y actualizar sin Race Conditions)</h4>
-      <CodeBlock
-        lang="python"
-        code={`from django.db.models import F
-
-# 1. Comparar columnas de la misma fila: Libros donde el stock disponible sea menor al 30% del total
-libros_escasos = Libro.objects.filter(
-    stock_disponible__lt=F('stock_total') * 0.30
-)
-
-# 2. Actualización atómica directa en la base de datos (Thread-safe):
-# Descontar 1 del stock disponible sin leer primero el valor en Python
-Libro.objects.filter(id=5).update(stock_disponible=F('stock_disponible') - 1)`}
-        title="f_objects.py"
-      />
-
-      <h4>3. Expresiones Condicionales con <code>Case</code> y <code>When</code> (IF-THEN-ELSE en SQL)</h4>
-      <CodeBlock
-        lang="python"
-        code={`from django.db.models import Case, When, Value, CharField
-
-# Clasificar la urgencia de reabastecimiento en una sola consulta
-libros_prioridad = Libro.objects.annotate(
-    urgencia=Case(
-        When(stock_disponible=0, then=Value('URGENTE: Agotado')),
-        When(stock_disponible__lte=2, then=Value('ALTA: Pocas copias')),
-        default=Value('NORMAL: Disponible'),
-        output_field=CharField()
-    )
-).values('titulo', 'stock_disponible', 'urgencia')`}
-        title="case_when.py"
-      />
-
-      <h4>4. Subconsultas Correlacionadas (<code>Subquery</code> y <code>OuterRef</code>)</h4>
-      <p>Permiten traer campos calculados de otra tabla sin hacer múltiples consultas:</p>
-      <CodeBlock
-        lang="python"
-        code={`from django.db.models import Subquery, OuterRef
-
-# Para cada Autor, traer el título de su libro publicado más recientemente
-libro_reciente = Libro.objects.filter(
-    autor=OuterRef('pk')
-).order_by('-fecha_publicacion')
-
-autores = Autor.objects.annotate(
-    ultimo_libro=Subquery(libro_reciente.values('titulo')[:1]),
-    fecha_ultimo_libro=Subquery(libro_reciente.values('fecha_publicacion')[:1])
-)
-
-for a in autores:
-    print(f"{a.nombre_completo} -> {a.ultimo_libro} ({a.fecha_ultimo_libro})")`}
-        title="subquery_outerref.py"
-      />
-
-      <div class="ejercicio" style="background: #FFF9C4; border-left: 4px solid #F59E0B; padding: 1.25rem; border-radius: 0.5rem; margin-top: 1.5rem;">
-        <h3 style="margin-top: 0; color: #78350F;">💼 Desafíos Prácticos de ORM</h3>
-        
-        <p><strong>Desafío 1: Top 5 Usuarios más Deudores</strong></p>
-        <p><em>Consulta:</em> Obtener los 5 usuarios que acumulen la mayor cantidad total de multas impagas en la biblioteca.</p>
-        <CodeBlock
-          lang="python"
-          code={`from django.db.models import Sum
-
-top_deudores = User.objects.annotate(
-    total_deuda=Sum('solicitudes_prestamo__multa_acumulada')
-).filter(total_deuda__gt=0).order_by('-total_deuda')[:5]`}
-          title="top_deudores.py"
-        />
-
-        <p><strong>Desafío 2: Autores Inactivos / Sin Publicaciones</strong></p>
-        <p><em>Consulta:</em> Encontrar autores que no tengan ningún libro registrado.</p>
-        <CodeBlock
-          lang="python"
-          code={`# Libros con relación nula en el join inverso:
-autores_sin_libros = Autor.objects.filter(libros__isnull=True)`}
-          title="autores_sin_libros.py"
-        />
-      </div>
-    </section>
-
-    <!-- Interactive ORM Playground -->
-    <section class="mb-10">
-      <h2>⚡ Laboratorio Interactivo: Inspector de Django ORM y SQL Nativo</h2>
-      <p>
-        El ORM de Django es perezoso (<em>lazy</em>): solo ejecuta una consulta SQL cuando los datos son efectivamente consumidos (al iterar, indexar o evaluar). Usa este laboratorio para comparar la consulta en Python con la instrucción SQL nativa generada para ambos proyectos.
-      </p>
-      <DjangoOrmPlayground client:load />
-    </section>
-
-    <!-- Didactic Exercises: Project 2 - E-Commerce Tienda -->
-    <section class="mb-10">
-      <h2>5. Ejercicios con Segundo Proyecto: Modelos y ORM de E-Commerce (`tienda`) 🛒</h2>
-      <p>
-        Aplica los conceptos de modelado, restricciones a nivel de base de datos y consultas agregadas sobre el segundo proyecto: <strong>Tienda E-Commerce</strong> (<code>C:\proyectos\django\tienda</code>).
-      </p>
-
-      <div class="space-y-4">
-        <article class="p-5 rounded-2xl border-2 border-cyan-900/40 bg-cyan-50/40">
-          <h3 class="text-base font-black text-slate-900 mb-2">
-            Reto 5.1: Modelo Producto con Restricciones CheckConstraint y Slugify
-          </h3>
-          <p class="text-sm text-slate-600 mb-3">
-            Modela en <code>catalogo/models.py</code> la clase <code>Producto</code> con clave foránea a <code>CategoriaProducto</code> (protegiendo el borrado con <code>PROTECT</code>), campos <code>precio</code> y <code>costo</code>, y dos restricciones de integridad en <code>Meta.constraints</code>:
-            1. El precio debe ser mayor o igual al costo (<code>precio__gte=F('costo')</code>).
-            2. El stock no puede ser negativo (<code>stock__gte=0</code>).
-          </p>
-          <details class="cursor-pointer bg-white p-3 rounded-xl border border-slate-300">
-            <summary class="font-bold text-xs text-cyan-800 font-mono">Ver Solución Explicada</summary>
-            <div class="mt-3 text-xs">
-              <CodeBlock
-                lang="python"
-                code={`# catalogo/models.py
-from django.db import models
-from django.utils.text import slugify
-from django.core.validators import MinValueValidator
-
-class Producto(models.Model):
-    sku = models.CharField(max_length=30, unique=True)
-    nombre = models.CharField(max_length=200, db_index=True)
-    slug = models.SlugField(max_length=220, unique=True, blank=True)
-    categoria = models.ForeignKey(
-        'CategoriaProducto',
-        on_delete=models.PROTECT,
-        related_name='productos'
-    )
-    precio = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0.01)])
-    costo = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0.00)])
-    stock = models.PositiveIntegerField(default=0)
-    disponible = models.BooleanField(default=True)
-
-    class Meta:
-        constraints = [
-            models.CheckConstraint(
-                check=models.Q(precio__gte=models.F('costo')),
-                name='chk_precio_gte_costo'
-            ),
-            models.CheckConstraint(
-                check=models.Q(stock__gte=0),
-                name='chk_stock_no_negativo'
-            ),
-        ]
-
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.nombre)
-        if self.stock == 0:
-            self.disponible = False
-        super().save(*args, **kwargs)`}
-                title="solucion_producto_model.py"
-              />
-            </div>
-          </details>
-        </article>
-
-        <article class="p-5 rounded-2xl border-2 border-cyan-900/40 bg-cyan-50/40">
-          <h3 class="text-base font-black text-slate-900 mb-2">
-            Reto 5.2: Migración de Datos (RunPython) para Sembrar Categorías
-          </h3>
-          <p class="text-sm text-slate-600 mb-3">
-            Crea una migración de datos vacía (<code>python manage.py makemigrations catalogo --empty --name sembrar_categorias</code>) que inserte de forma idempotente las categorías esenciales: <code>'Laptops'</code>, <code>'Smartphones'</code>, <code>'Monitores'</code> y <code>'Periféricos'</code>.
-          </p>
-          <details class="cursor-pointer bg-white p-3 rounded-xl border border-slate-300">
-            <summary class="font-bold text-xs text-cyan-800 font-mono">Ver Solución Explicada</summary>
-            <div class="mt-3 text-xs">
-              <CodeBlock
-                lang="python"
-                code={`# catalogo/migrations/0002_sembrar_categorias.py
-from django.db import migrations
-from django.utils.text import slugify
-
-CATEGORIAS = ['Laptops', 'Smartphones', 'Monitores', 'Periféricos']
-
-def crear_categorias(apps, schema_editor):
-    CategoriaProducto = apps.get_model('catalogo', 'CategoriaProducto')
-    for nombre in CATEGORIAS:
-        CategoriaProducto.objects.get_or_create(
-            nombre=nombre,
-            defaults={'slug': slugify(nombre), 'activa': True}
-        )
-
-def revertir_categorias(apps, schema_editor):
-    CategoriaProducto = apps.get_model('catalogo', 'CategoriaProducto')
-    CategoriaProducto.objects.filter(nombre__in=CATEGORIAS).delete()
-
-class Migration(migrations.Migration):
-    dependencies = [
-        ('catalogo', '0001_initial'),
-    ]
-
-    operations = [
-        migrations.RunPython(crear_categorias, reverse_code=revertir_categorias),
-    ]`}
-                title="0002_sembrar_categorias.py"
-              />
-            </div>
-          </details>
-        </article>
-
-        <article class="p-5 rounded-2xl border-2 border-cyan-900/40 bg-cyan-50/40">
-          <h3 class="text-base font-black text-slate-900 mb-2">
-            Reto 5.3: Consultas de Negocio Avanzadas con el ORM de la Tienda
-          </h3>
-          <p class="text-sm text-slate-600 mb-3">
-            Escribe las consultas optimizadas en Python para responder a estas 3 necesidades de la dirección comercial:
-          </p>
-          <ul class="list-disc pl-5 text-xs text-slate-700 space-y-1 mb-3">
-            <li><strong>A. Ticket Promedio:</strong> Calcular el promedio de compra de todos los pedidos en estado 'PAGADO'.</li>
-            <li><strong>B. Clientes VIP:</strong> Clientes cuyos pedidos acumulados superen los $1,000 USD.</li>
-            <li><strong>C. Margen Unitario:</strong> Anotar cada producto con su margen de ganancia (<code>precio - costo</code>) usando <code>F()</code>.</li>
-          </ul>
-          <details class="cursor-pointer bg-white p-3 rounded-xl border border-slate-300">
-            <summary class="font-bold text-xs text-cyan-800 font-mono">Ver Solución Explicada</summary>
-            <div class="mt-3 text-xs">
-              <CodeBlock
-                lang="python"
-                code={`from django.db.models import Avg, Sum, F
-from pedidos.models import Pedido, Cliente
-from catalogo.models import Producto
-
-# A. Ticket Promedio
-ticket_promedio = Pedido.objects.filter(estado='PAGADO').aggregate(promedio=Avg('total'))['promedio'] or 0.0
-
-# B. Clientes VIP con más de $1,000 acumulados
-clientes_vip = Cliente.objects.annotate(
-    gasto_total=Sum('pedidos__total')
-).filter(gasto_total__gt=1000).select_related('user').order_by('-gasto_total')
-
-# C. Margen Unitario calculado por el motor de base de datos
-productos_con_margen = Producto.objects.annotate(
-    margen_ganancia=F('precio') - F('costo')
-).filter(disponible=True).order_by('-margen_ganancia')`}
-                title="consultas_negocio_tienda.py"
-              />
-            </div>
-          </details>
-        </article>
-      </div>
-    </section>
-
+    <!-- 6. QUIZ -->
     <section class="mb-10">
       <h2>Ponte a prueba</h2>
-      <p>Comprueba que entiendes el modelado de datos, las relaciones y las optimizaciones del ORM de Django.</p>
+      <p>Comprueba que dominas los tipos de campos de Django, las opciones `null` vs `blank`, y su traducción a SQL.</p>
       <DjangoQuizModal quizKey="modelo-bd" />
     </section>
 
+    <!-- 7. NAV -->
     <nav class="nav-bottom">
-      <a href="/course/django/arquitectura-django/" class="prev">← Arquitectura Django</a>
-      <a href="/course/django/admin-crud/" class="next">Django Admin y CRUD →</a>
+      <a href="/course/django/arquitectura-django/" class="prev">← 4. Arquitectura Django</a>
+      <a href="/course/django/modelo-bd-step/" class="next">6. Paso a Paso: Boletas y Migraciones →</a>
     </nav>
   </article>
 </Layout>

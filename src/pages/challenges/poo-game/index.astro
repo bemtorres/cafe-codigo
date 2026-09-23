@@ -1,0 +1,716 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import MermaidDiagram from '../../../components/challenges/MermaidDiagram.astro';
+import { pooGameChallenges, toMermaidGame } from '../../../data/pooGameChallenges';
+
+const totalChallenges = pooGameChallenges.length;
+---
+
+<Layout
+  title="Desafíos de POO Game — Asociación y Combate por Turnos (20 Desafíos)"
+  description="20 desafíos de POO enfocados exclusivamente en Clases y Asociación (sin herencia) con mecánicas de combate por turnos inspirados en Pokémon, Yu-Gi-Oh, Minecraft, Fortnite, RPGs y más."
+>
+  <article class="content-section">
+    <div class="header-badge-row">
+      <p class="kicker">POO Gamer · Clases & Asociación</p>
+      <span class="game-pill">🎮 20 Batallas por Turnos</span>
+    </div>
+    <h1>Desafíos de POO Game — Batallas por Turnos</h1>
+    <p class="hero-desc">
+      Aprende a modelar <strong>asociación y composición pura entre clases</strong> (sin herencia) mediante simulaciones de 
+      <strong>combate por turnos 1v1</strong>. Cada entidad principal equipa armas, escudos, habilidades o listas de ítems/pociones consumibles 
+      para enfrentarse a su oponente en el campo de batalla.
+    </p>
+    <p class="muted">
+      Ruta canónica: <code>/challenges/poo-game</code> · Módulos relacionados: <a href="/challenges/poo/">/challenges/poo</a> (clases básicas), <a href="/challenges/inheritance/">/challenges/inheritance</a> (herencia) y <a href="/challenges/interface/">/challenges/interface</a> (interfaces).
+    </p>
+
+    <!-- Barra de herramientas superior -->
+    <div class="exercise-toolbar">
+      <p class="exercise-toolbar-hint">
+        <strong>{totalChallenges} combates</strong> · Selecciona o expande para ver el diagrama de asociación UML y probar la lógica:
+      </p>
+      <div class="exercise-toolbar-actions">
+        <div class="global-uml-switch" role="group" aria-label="Notación UML global">
+          <button type="button" class="global-format-btn" data-global-format="classic" title="Formato Clásico (nombre: Tipo)">🏛️ Clásico</button>
+          <button type="button" class="global-format-btn" data-global-format="alt" title="Formato Alternativo (Tipo nombre)">⚡ Alternativo</button>
+        </div>
+        <button type="button" id="expandAll" class="toolbar-btn">Expandir todo</button>
+        <button type="button" id="collapseAll" class="toolbar-btn toolbar-btn--ghost">Colapsar todo</button>
+      </div>
+    </div>
+
+    <!-- Lista de Desafíos Gamer -->
+    <div id="exerciseList" class="exercise-list">
+      {pooGameChallenges.map((ch) => (
+        <details class="ex-card" id={ch.slug} data-ex-id={`poo-game-${ch.id}`}>
+          <summary class="ex-summary">
+            <span class="ex-num" aria-hidden="true">{String(ch.id).padStart(2, '0')}</span>
+            <div class="ex-summary-main">
+              <div class="ex-title-row">
+                <h3>{ch.id}. {ch.title}</h3>
+                <span class="theme-tag">{ch.icon} {ch.gameTheme}</span>
+              </div>
+              <span class="ex-summary-meta">
+                Clase Principal: <strong>{ch.mainClass.name}</strong> · {ch.associatedClasses.length} clases asociadas · {ch.relations.length} conexiones (o-- / *--)
+              </span>
+            </div>
+            <span class="ex-progress" data-progress-for={`poo-game-${ch.id}`}>0 / 4</span>
+            <span class="ex-chevron" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6" /></svg>
+            </span>
+          </summary>
+          <div class="ex-body">
+            <div class="battle-scenario-banner">
+              <span class="scenario-icon">{ch.icon}</span>
+              <div class="scenario-text">
+                <strong>Escenario de Batalla:</strong>
+                <p>{ch.context}</p>
+              </div>
+            </div>
+
+            <p class="ex-task">
+              <strong>🎯 Misión POO:</strong> {ch.task}
+            </p>
+
+            <!-- Diagrama UML en Mermaid con relaciones de Asociación y Composición -->
+            <div class="diagram-wrapper">
+              <MermaidDiagram title={`Diagrama de Asociación — ${ch.title}`} code={toMermaidGame(ch)} />
+            </div>
+
+            <div class="ex-checks">
+              <label class="chk"><input type="checkbox" data-check-id="diagrama" /> Analicé las clases ({ch.mainClass.name} y asociadas: {ch.associatedClasses.map(c => c.name).join(', ')})</label>
+              <label class="chk"><input type="checkbox" data-check-id="asociacion" /> Modelé la asociación y composición en constructores y atributos</label>
+              <label class="chk"><input type="checkbox" data-check-id="metodos" /> Implementé las acciones del combate (ataque, defensa, daño, curación)</label>
+              <label class="chk"><input type="checkbox" data-check-id="pelea_turnos" /> Simulé la batalla por turnos 1v1 en el método Main</label>
+            </div>
+
+            <!-- Botón de Solución Protegido -->
+            <div class="solution-trigger-wrap" style="margin-top: 1.25rem;">
+              <button type="button" class="solution-btn open-solution-btn" data-target-solution={`poo-game-sol-${ch.id}`}>
+                🔒 Ingresa la clave para ver la solución en Java
+              </button>
+            </div>
+
+            <div id={`poo-game-sol-${ch.id}`} class="solution-content-hidden" style="display:none;">
+              <div class="sol-header">
+                <h4>
+                  <span>💡 Simulación Java Completa:</span>
+                  <span class="sol-badge">{ch.mainClass.name} (Batalla por Turnos)</span>
+                </h4>
+              </div>
+              <p class="sol-desc">
+                Código Java funcional listo para compilar y ejecutar con simulación de combate en consola:
+              </p>
+              <div class="code-block-wrap">
+                <pre><code>{ch.solutionCodeJava}</code></pre>
+              </div>
+            </div>
+          </div>
+        </details>
+      ))}
+    </div>
+
+    <!-- Modal de Contraseña para Soluciones -->
+    <div id="passwordModal" class="poo-modal" aria-hidden="true">
+      <div class="poo-modal-backdrop" id="closePassModalBackdrop"></div>
+      <div class="poo-modal-panel" role="dialog" aria-modal="true" style="max-width: 420px; text-align: center; padding: 2rem;">
+        <div class="modal-lock-icon" style="font-size: 2.5rem; margin-bottom: 0.5rem;">🔐</div>
+        <h3 style="margin-bottom: 0.5rem; font-size: 1.3rem;">Acceso Privado a Resultados</h3>
+        <p style="font-size: 0.92rem; color: var(--text-secondary); margin-bottom: 1.5rem;">
+          Ingresa la clave para ver el código de solución en Java
+        </p>
+
+        <form id="passForm" style="display: flex; flex-direction: column; gap: 1rem;">
+          <input
+            type="password"
+            id="passInput"
+            placeholder="Clave (ej: ddmmyyyy)"
+            required
+            style="padding: 0.75rem 1rem; border-radius: 8px; border: 2px solid var(--border-color); font-size: 1.1rem; text-align: center; font-weight: 700; background: var(--bg-primary); color: var(--text-primary);"
+          />
+          <p id="passErrorMsg" style="color: #ef4444; font-weight: 700; font-size: 0.88rem; display: none; margin: 0;">
+            ⚠️ Clave incorrecta. Inténtalo de nuevo.
+          </p>
+          <div style="display: flex; gap: 0.75rem; justify-content: center; margin-top: 0.5rem;">
+            <button type="button" id="btnCancelPass" style="padding: 0.6rem 1.2rem; border-radius: 8px; border: 1.5px solid var(--border-color); background: transparent; color: var(--text-primary); font-weight: 700; cursor: pointer;">
+              Cancelar
+            </button>
+            <button type="submit" style="padding: 0.6rem 1.4rem; border-radius: 8px; border: none; background: #1e1210; color: white; font-weight: 800; cursor: pointer;">
+              Desbloquear 🔓
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Navegación a otros módulos POO -->
+    <div class="next-modules">
+      <a href="/challenges/poo/" class="unit-card unit-card--basic">
+        <h3>← POO Básico (Clases Únicas)</h3>
+        <p>20 clases sin herencia para dominar constructores y atributos.</p>
+      </a>
+      <a href="/challenges/inheritance/" class="unit-card unit-card--inheritance">
+        <h3>→ Herencia y Polimorfismo</h3>
+        <p>20 jerarquías de herencia clase base + hijas para el siguiente nivel.</p>
+      </a>
+      <a href="/challenges/interface/" class="unit-card unit-card--interface">
+        <h3>→ Interfaces y Contratos</h3>
+        <p>20 contratos de desacoplamiento y polimorfismo por interfaz.</p>
+      </a>
+    </div>
+  </article>
+
+  <script is:inline>
+    (function () {
+      const KEY = 'aprende_poo_game_v1';
+      const readStore = () => {
+        try { return JSON.parse(localStorage.getItem(KEY) || '{}'); } catch { return {}; }
+      };
+      const writeStore = (s) => localStorage.setItem(KEY, JSON.stringify(s));
+      const updateProgressFor = (exId) => {
+        const card = document.querySelector('.ex-card[data-ex-id="' + exId + '"]');
+        if (!card) return;
+        const boxes = card.querySelectorAll('input[type="checkbox"][data-check-id]');
+        const done = Array.from(boxes).filter((b) => b.checked).length;
+        const total = boxes.length;
+        const els = card.querySelectorAll('[data-progress-for="' + exId + '"]');
+        els.forEach((el) => {
+          el.textContent = done + ' / ' + total;
+          el.classList.toggle('is-done', done === total && total > 0);
+        });
+      };
+
+      document.querySelectorAll('.ex-card[data-ex-id]').forEach((card) => {
+        const exId = card.getAttribute('data-ex-id');
+        const perEx = (readStore()[exId]) || {};
+        card.querySelectorAll('input[type="checkbox"][data-check-id]').forEach((input) => {
+          const checkId = input.getAttribute('data-check-id');
+          input.checked = Boolean(perEx[checkId]);
+          input.addEventListener('click', (e) => e.stopPropagation());
+          input.addEventListener('change', () => {
+            const s = readStore();
+            if (!s[exId]) s[exId] = {};
+            s[exId][checkId] = input.checked;
+            writeStore(s);
+            updateProgressFor(exId);
+          });
+        });
+        updateProgressFor(exId);
+      });
+
+      document.getElementById('expandAll')?.addEventListener('click', () => {
+        document.querySelectorAll('.ex-card[id]').forEach((d) => (d.open = true));
+      });
+      document.getElementById('collapseAll')?.addEventListener('click', () => {
+        document.querySelectorAll('.ex-card[id]').forEach((d) => (d.open = false));
+      });
+
+      // Lógica de contraseña para soluciones inline
+      let targetSolId = null;
+      const passModal = document.getElementById('passwordModal');
+      const passForm = document.getElementById('passForm');
+      const passInput = document.getElementById('passInput');
+      const passErrorMsg = document.getElementById('passErrorMsg');
+      const passBackdrop = document.getElementById('closePassModalBackdrop');
+      const btnCancelPass = document.getElementById('btnCancelPass');
+
+      function getExpectedKey() {
+        const now = new Date();
+        const dd = String(now.getDate()).padStart(2, '0');
+        const mm = String(now.getMonth() + 1).padStart(2, '0');
+        const yyyy = now.getFullYear();
+        return dd + mm + yyyy; // Ej: 27082026
+      }
+
+      function openPassModal(solId) {
+        targetSolId = solId;
+        if (passInput) passInput.value = '';
+        if (passErrorMsg) passErrorMsg.style.display = 'none';
+        if (passModal) {
+          passModal.classList.add('is-open');
+          passModal.setAttribute('aria-hidden', 'false');
+          setTimeout(() => passInput?.focus(), 100);
+        }
+      }
+
+      function closePassModal() {
+        if (passModal) {
+          passModal.classList.remove('is-open');
+          passModal.setAttribute('aria-hidden', 'true');
+        }
+        targetSolId = null;
+      }
+
+      document.querySelectorAll('.open-solution-btn').forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const solId = btn.getAttribute('data-target-solution');
+          const targetDiv = document.getElementById(solId);
+          if (targetDiv && targetDiv.style.display !== 'none') {
+            targetDiv.style.display = 'none';
+            btn.textContent = '🔒 Ingresa la clave para ver la solución en Java';
+            return;
+          }
+          openPassModal(solId);
+        });
+      });
+
+      if (passBackdrop) passBackdrop.addEventListener('click', closePassModal);
+      if (btnCancelPass) btnCancelPass.addEventListener('click', closePassModal);
+
+      if (passForm) {
+        passForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const enteredKey = passInput.value.trim();
+          const expectedKey = getExpectedKey();
+
+          if (enteredKey === expectedKey) {
+            if (targetSolId) {
+              const targetDiv = document.getElementById(targetSolId);
+              if (targetDiv) {
+                targetDiv.style.display = 'block';
+                const triggerBtn = document.querySelector('[data-target-solution="' + targetSolId + '"]');
+                if (triggerBtn) {
+                  triggerBtn.textContent = '🔓 Ocultar Solución';
+                }
+              }
+            }
+            closePassModal();
+          } else {
+            if (passErrorMsg) passErrorMsg.style.display = 'block';
+            passInput?.select();
+          }
+        });
+      }
+
+      const openFromHash = () => {
+        const hash = location.hash.replace(/^#/, '');
+        if (!hash) return;
+        const target = document.getElementById(hash);
+        if (target && target.classList.contains('ex-card') && 'open' in target) {
+          target.open = true;
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      };
+      window.addEventListener('hashchange', openFromHash);
+      if (location.hash) setTimeout(openFromHash, 80);
+    })();
+  </script>
+
+  <style>
+    .kicker {
+      margin: 0;
+      font-size: 0.72rem;
+      font-weight: 900;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: #b45309;
+    }
+    .header-badge-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.35rem;
+    }
+    .game-pill {
+      background: #7c2d12;
+      color: #fff8ee;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      font-size: 0.78rem;
+      padding: 0.3rem 0.75rem;
+      border-radius: 999px;
+      border: 2px solid #1e1210;
+      box-shadow: 2px 2px 0 #1e1210;
+    }
+    .hero-desc {
+      font-size: 1.05rem;
+      line-height: 1.6;
+      color: var(--text-primary);
+      margin: 0.5rem 0 0.8rem;
+    }
+    .muted {
+      color: var(--text-muted);
+      font-weight: 650;
+      line-height: 1.6;
+    }
+    .exercise-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      margin: 1.25rem 0 0.85rem;
+      padding: 0.75rem 1rem;
+      background: rgba(255, 255, 255, 0.7);
+      border: 2.5px solid var(--border);
+      border-radius: 16px;
+    }
+    .exercise-toolbar-hint {
+      margin: 0;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+    }
+    .exercise-toolbar-actions {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .toolbar-btn {
+      appearance: none;
+      border: 2px solid #1e1210;
+      background: #06d6a0;
+      color: #1e1210;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      font-size: 0.82rem;
+      padding: 0.42rem 0.85rem;
+      border-radius: 999px;
+      cursor: pointer;
+      box-shadow: 3px 3px 0 #1e1210;
+      transition: transform 0.1s, box-shadow 0.1s;
+    }
+    .toolbar-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 4px 4px 0 #1e1210;
+    }
+    .toolbar-btn--ghost {
+      background: #fff;
+      color: #1e1210;
+    }
+    .exercise-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-top: 0.5rem;
+    }
+    .ex-card {
+      border: 3px solid var(--border);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.88);
+      box-shadow: 0 16px 34px rgba(30, 18, 16, 0.08);
+      scroll-margin-top: 1.25rem;
+      overflow: hidden;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .ex-card[open] {
+      background: #fff;
+      border-color: #1e1210;
+      box-shadow: 6px 6px 0 #1e1210;
+    }
+    .ex-summary {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      padding: 0.95rem 1.1rem;
+      cursor: pointer;
+      list-style: none;
+      user-select: none;
+    }
+    .ex-summary::-webkit-details-marker {
+      display: none;
+    }
+    .ex-num {
+      flex-shrink: 0;
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      background: #1e1210;
+      color: #fff8ee;
+      border: 2px solid #1e1210;
+      border-radius: 12px;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      font-size: 0.9rem;
+      box-shadow: 2px 2px 0 rgba(30, 18, 16, 0.14);
+    }
+    .ex-card[open] .ex-num {
+      background: #b45309;
+      color: #fff;
+    }
+    .ex-summary-main {
+      flex: 1;
+      min-width: 0;
+    }
+    .ex-title-row {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+    .ex-summary-main h3 {
+      margin: 0;
+      color: #7c2d12;
+      font-size: 1.08rem;
+      line-height: 1.25;
+    }
+    .theme-tag {
+      background: #fef3c7;
+      color: #92400e;
+      border: 1.5px solid #d97706;
+      border-radius: 999px;
+      padding: 0.15rem 0.55rem;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      font-size: 0.72rem;
+      white-space: nowrap;
+    }
+    .ex-summary-meta {
+      display: block;
+      margin-top: 0.2rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.73rem;
+      font-weight: 650;
+      color: var(--text-muted);
+      line-height: 1.35;
+    }
+    .ex-progress {
+      flex-shrink: 0;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      font-size: 0.78rem;
+      color: #1e1210;
+      background: #fff9c4;
+      border: 2px solid #1e1210;
+      border-radius: 999px;
+      padding: 0.22rem 0.6rem;
+      min-width: 70px;
+      text-align: center;
+      box-shadow: 2px 2px 0 rgba(30, 18, 16, 0.1);
+    }
+    .ex-progress.is-done {
+      background: #06d6a0;
+      color: #1e1210;
+    }
+    .ex-chevron {
+      flex-shrink: 0;
+      width: 32px;
+      height: 32px;
+      display: grid;
+      place-items: center;
+      background: #fff;
+      border: 2px solid #1e1210;
+      border-radius: 999px;
+      box-shadow: 2px 2px 0 rgba(30, 18, 16, 0.1);
+      transition: transform 0.2s, background 0.2s;
+      color: #1e1210;
+    }
+    .ex-card[open] .ex-chevron {
+      transform: rotate(180deg);
+      background: #ffd166;
+    }
+    .ex-body {
+      padding: 1rem 1.25rem 1.25rem;
+      border-top: 2px dashed rgba(30, 18, 16, 0.14);
+      background: rgba(255, 255, 255, 0.45);
+    }
+    .battle-scenario-banner {
+      display: flex;
+      gap: 0.85rem;
+      align-items: flex-start;
+      background: linear-gradient(135deg, rgba(254, 243, 199, 0.85), rgba(255, 255, 255, 0.95));
+      border: 2px solid #d97706;
+      border-radius: 14px;
+      padding: 0.85rem 1rem;
+      margin-bottom: 0.85rem;
+      box-shadow: 3px 3px 0 rgba(217, 119, 6, 0.2);
+    }
+    .scenario-icon {
+      font-size: 1.6rem;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+    .scenario-text strong {
+      display: block;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.82rem;
+      color: #92400e;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.2rem;
+    }
+    .scenario-text p {
+      margin: 0;
+      font-size: 0.92rem;
+      color: var(--text-primary);
+      line-height: 1.5;
+      font-weight: 650;
+    }
+    .ex-task {
+      margin: 0 0 0.85rem;
+      color: var(--text-secondary);
+      font-weight: 650;
+      line-height: 1.55;
+      background: #f8fafc;
+      padding: 0.75rem 0.9rem;
+      border-radius: 12px;
+      border-left: 4px solid #06d6a0;
+    }
+    .diagram-wrapper {
+      margin: 1rem 0;
+    }
+    .ex-checks {
+      display: grid;
+      gap: 0.45rem;
+      margin-top: 1rem;
+      background: #fff;
+      padding: 0.85rem 1rem;
+      border: 2px solid var(--border);
+      border-radius: 14px;
+    }
+    .chk {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      color: var(--text-secondary);
+      font-weight: 650;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+    .chk input {
+      width: 19px;
+      height: 19px;
+      accent-color: #06d6a0;
+      cursor: pointer;
+    }
+    .solution-btn {
+      background: #1e1210;
+      color: #fff;
+      border: none;
+      font-weight: 800;
+      padding: 0.65rem 1.1rem;
+      border-radius: 10px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-size: 0.88rem;
+      box-shadow: 3px 3px 0 #06d6a0;
+      transition: transform 0.1s, box-shadow 0.1s;
+    }
+    .solution-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 4px 4px 0 #06d6a0;
+    }
+    .solution-content-hidden {
+      margin-top: 1rem;
+      padding: 1.25rem;
+      background: #fffdf7;
+      border-radius: 14px;
+      border: 2.5px solid #1e1210;
+      box-shadow: 4px 4px 0 #1e1210;
+    }
+    .sol-header h4 {
+      margin: 0;
+      color: var(--text-primary);
+      font-size: 1.08rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .sol-badge {
+      background: #06d6a0;
+      color: #1e1210;
+      padding: 0.2rem 0.6rem;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 900;
+      border: 1.5px solid #1e1210;
+    }
+    .sol-desc {
+      font-size: 0.9rem;
+      margin: 0.4rem 0 0.75rem;
+      color: var(--text-secondary);
+      font-weight: 650;
+    }
+    .code-block-wrap pre {
+      background: #1e1210;
+      color: #38edf6;
+      padding: 1rem 1.15rem;
+      border-radius: 10px;
+      font-size: 0.86rem;
+      overflow-x: auto;
+      max-height: 520px;
+      border: 2px solid #1e1210;
+      line-height: 1.45;
+    }
+    .next-modules {
+      margin-top: 2rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+    }
+    .unit-card {
+      text-decoration: none;
+      background: #fff;
+      border: 3px solid #1e1210;
+      border-radius: 16px;
+      padding: 1.1rem;
+      box-shadow: 4px 4px 0 #1e1210;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .unit-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 6px 6px 0 #1e1210;
+    }
+    .unit-card--basic h3 { color: #b45309; margin: 0 0 0.35rem; }
+    .unit-card--inheritance h3 { color: #7c2d12; margin: 0 0 0.35rem; }
+    .unit-card--interface h3 { color: #6d28d9; margin: 0 0 0.35rem; }
+    .unit-card p {
+      margin: 0;
+      color: var(--text-secondary);
+      font-weight: 650;
+      font-size: 0.88rem;
+      line-height: 1.45;
+    }
+
+    /* Modal de Contraseña */
+    .poo-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .poo-modal.is-open {
+      display: flex;
+    }
+    .poo-modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(30, 18, 16, 0.55);
+      backdrop-filter: blur(6px);
+    }
+    .poo-modal-panel {
+      position: relative;
+      width: min(100%, 860px);
+      max-height: min(86vh, 820px);
+      overflow: auto;
+      background: #fffdf7;
+      border: 3px solid #1e1210;
+      border-radius: 20px;
+      box-shadow: 8px 8px 0 #1e1210;
+      padding: 1.15rem;
+    }
+    @media (max-width: 640px) {
+      .ex-summary {
+        gap: 0.6rem;
+        padding: 0.75rem;
+      }
+      .ex-num {
+        width: 36px;
+        height: 36px;
+        font-size: 0.82rem;
+      }
+    }
+  </style>
+</Layout>

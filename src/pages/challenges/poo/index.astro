@@ -20,14 +20,14 @@ const totalBasicLangs = new Set(basicLessons.map((l) => l.course)).size;
 ---
 
 <Layout
-  title="Desafíos de POO — Básico (10 clases)"
-  description="10 ejercicios de POO básico: una sola clase con atributos y métodos, sin herencia. Diagramas de clase incluidos."
+  title="Desafíos de POO — Básico (20 clases)"
+  description="20 ejercicios de POO básico: una sola clase con atributos y métodos, sin herencia. Incluye 10 modelos clásicos y 10 con temática gamer. Diagramas de clase incluidos."
 >
   <article class="content-section">
     <p class="kicker">POO Básico</p>
     <h1>Desafíos de POO — Básico</h1>
     <p>
-      10 clases únicas <strong>sin herencia</strong> para dominar <strong>atributos, métodos y creación de objetos</strong>.
+      20 clases únicas (10 clásicas + 10 con <strong>temática gamer</strong>) <strong>sin herencia</strong> para dominar <strong>atributos, métodos y creación de objetos</strong>.
       Cada ejercicio trae su <strong>diagrama de clase interactivo</strong> (una sola caja). Ideal como primer paso antes de herencia e interfaces.
     </p>
     <p class="muted">
@@ -81,7 +81,7 @@ const totalBasicLangs = new Set(basicLessons.map((l) => l.course)).size;
     </div>
 
     <div class="exercise-toolbar">
-      <p class="exercise-toolbar-hint">10 clases · clic para expandir diagrama y checklist</p>
+      <p class="exercise-toolbar-hint">{pooBasicChallenges.length} clases · clic para expandir diagrama y checklist</p>
       <div class="exercise-toolbar-actions">
         <div class="global-uml-switch" role="group" aria-label="Notación UML global">
           <button type="button" class="global-format-btn" data-global-format="classic" title="Formato Clásico (nombre: Tipo)">🏛️ Clásico</button>
@@ -190,6 +190,10 @@ public class Main {
     </div>
 
     <div class="next-modules" style="margin-top:1.5rem; display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:0.85rem;">
+      <a href="/challenges/poo-game/" class="unit-card" style="text-decoration:none; background:#fff; border:3px solid #1e1210; border-radius:16px; padding:1rem; box-shadow:4px 4px 0 #1e1210;">
+        <h3 style="margin:0 0 0.3rem; color:#b45309">🎮 POO Game (Turnos & Asociación)</h3>
+        <p style="margin:0; color:var(--text-secondary); font-weight:650">20 desafíos de combate por turnos 1v1: Pokémon, Yu-Gi-Oh, Minecraft, Fortnite y RPGs.</p>
+      </a>
       <a href="/challenges/inheritance/" class="unit-card" style="text-decoration:none; background:#fff; border:3px solid #1e1210; border-radius:16px; padding:1rem; box-shadow:4px 4px 0 #1e1210;">
         <h3 style="margin:0 0 0.3rem; color:#7c2d12">→ Herencia (Avanzado)</h3>
         <p style="margin:0; color:var(--text-secondary); font-weight:650">20 jerarquías base + 3 hijas. Siguiente nivel después de dominar clases únicas.</p>

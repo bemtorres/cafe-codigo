@@ -1,0 +1,295 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import DjangoQuizModal from '../../../../components/quizzes/DjangoQuizModal.astro';
+import DjangoMigrationStepper from '../../../../components/django/DjangoMigrationStepper';
+---
+
+<Layout title="Paso a Paso: Sistema de Boletas y Migraciones Evolutivas" description="Aprende a construir una base de datos real de ventas y facturación (Categoría, Producto, Boleta, Detalle y Cliente opcional) paso a paso mediante migraciones evolutivas en Django." courseSlug="django">
+  <article class="content-section">
+    <h1>6. Paso a Paso: Sistema de Boletas y Migraciones Evolutivas 🧾</h1>
+
+    <!-- 1. INTRODUCCIÓN AL PROBLEMA -->
+    <section class="mb-10">
+      <h2>1. El Reto Real: Construir una Base de Datos que Evoluciona</h2>
+      <p>
+        En los tutoriales introductorios es común ver que todos los modelos se escriben de una sola vez en un único archivo <code>models.py</code> y se ejecuta una única migración <code>0001_initial</code>. <strong>En el mundo laboral real, ningún software se construye así.</strong>
+      </p>
+      <p>
+        Los sistemas crecen incrementalmente: primero lanzas un catálogo básico, luego añades el módulo de ventas, más adelante incorporas la gestión de clientes sin romper las ventas anteriores, y finalmente blindas la base de datos con restricciones de integridad y migraciones de datos.
+      </p>
+      <p>
+        A lo largo de esta lección construiremos el núcleo de datos de un <strong>Sistema de Punto de Venta (POS) y Facturación</strong> a través de 5 migraciones sucesivas:
+      </p>
+      <ul class="space-y-1 my-3">
+        <li><strong>Fase 1 (`0001`):</strong> Catálogo maestro con <code>Categoria</code> y <code>Producto</code>.</li>
+        <li><strong>Fase 2 (`0002`):</strong> Transacciones de venta con <code>Boleta</code> y <code>DetalleBoleta</code> (congelando el precio histórico).</li>
+        <li><strong>Fase 3 (`0003`):</strong> Incorporación de <code>Cliente</code> como relación opcional (<code>null=True, blank=True</code>) sobre tablas con datos previos.</li>
+        <li><strong>Fase 4 (`0004`):</strong> Restricciones a nivel de base de datos con <code>CheckConstraint</code> y cálculos automáticos en <code>save()</code>.</li>
+        <li><strong>Fase 5 (`0005`):</strong> Migración de datos idempotente con <code>RunPython</code> para sembrar categorías maestras.</li>
+      </ul>
+    </section>
+
+    <!-- 2. SIMULADOR INTERACTIVO -->
+    <section class="mb-10">
+      <h2>2. Línea de Tiempo Interactiva de la Base de Datos</h2>
+      <p>
+        Explora visualmente cómo cambia el código en Python, qué comando se ejecuta en la terminal y qué tablas se generan en la base de datos en cada una de las 5 fases:
+      </p>
+      <DjangoMigrationStepper client:load />
+    </section>
+
+    <!-- 3. PASO A PASO DETALLADO -->
+    <section class="mb-10">
+      <h2>3. Desglose Técnico Paso a Paso</h2>
+
+      <!-- FASE 1 -->
+      <article class="my-6 p-5 rounded-2xl border border-slate-200 bg-slate-50">
+        <h3 class="text-lg font-black text-slate-900 mb-2">
+          Paso 1: Catálogo Base (Migración `0001_initial.py`)
+        </h3>
+        <p class="text-sm text-slate-700 mb-3">
+          Comenzamos en la aplicación <code>ventas</code> creando los dos modelos fundacionales de nuestro inventario:
+        </p>
+        <CodeBlock
+          lang="python"
+          code={`# ventas/models.py
+from django.db import models
+
+class Categoria(models.Model):
+    nombre = models.CharField(max_length=50, unique=True)
+    descripcion = models.TextField(blank=True)
+
+    def __str__(self):
+        return self.nombre
+
+
+class Producto(models.Model):
+    nombre = models.CharField(max_length=150, db_index=True)
+    codigo_barra = models.CharField(max_length=30, unique=True)
+    precio = models.DecimalField(max_digits=10, decimal_places=2)
+    stock = models.PositiveIntegerField(default=0)
+    categoria = models.ForeignKey(
+        Categoria,
+        on_delete=models.PROTECT,
+        related_name='productos'
+    )
+
+    def __str__(self):
+        return f"{self.nombre} (\${self.precio})"`}
+          title="ventas/models.py - Fase 1"
+        />
+
+        <div class="mt-4 p-3.5 rounded-xl bg-cyan-50 border-l-4 border-cyan-600 text-cyan-900 text-xs">
+          <strong class="font-bold">¿Por qué `on_delete=models.PROTECT`?</strong><br />
+          Si un empleado intenta eliminar la categoría "Bebidas", pero ya existen 20 productos registrados en ella, la base de datos lanzará un error <code>ProtectedError</code> impidiendo el borrado. Esto evita que los productos queden huérfanos o se borren por accidente.
+        </div>
+      </article>
+
+      <!-- FASE 2 -->
+      <article class="my-6 p-5 rounded-2xl border border-slate-200 bg-slate-50">
+        <h3 class="text-lg font-black text-slate-900 mb-2">
+          Paso 2: Transacciones de Venta (Migración `0002_boleta_detalleboleta.py`)
+        </h3>
+        <p class="text-sm text-slate-700 mb-3">
+          Una venta requiere un patrón <strong>Maestro-Detalle (Master-Detail)</strong>:
+        </p>
+        <ul>
+          <li><strong>Boleta (Maestro):</strong> Representa la transacción global (folio único, fecha, hora, total).</li>
+          <li><strong>DetalleBoleta (Detalle):</strong> Representa cada ítem vendido dentro de esa boleta (qué producto, cuántas unidades y a qué precio).</li>
+        </ul>
+
+        <CodeBlock
+          lang="python"
+          code={`from django.utils import timezone
+
+class Boleta(models.Model):
+    folio = models.CharField(max_length=20, unique=True, db_index=True)
+    fecha = models.DateField(default=timezone.now)
+    hora = models.TimeField(default=timezone.now)
+    total = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
+
+    def __str__(self):
+        return f"Boleta #{self.folio} - \${self.total}"
+
+
+class DetalleBoleta(models.Model):
+    boleta = models.ForeignKey(
+        Boleta,
+        on_delete=models.CASCADE,
+        related_name='detalles'
+    )
+    producto = models.ForeignKey(
+        Producto,
+        on_delete=models.PROTECT,
+        related_name='ventas_detalle'
+    )
+    # REGLA DE ARQUITECTURA CRÍTICA:
+    precio_unitario = models.DecimalField(max_digits=10, decimal_places=2)
+    cantidad = models.PositiveIntegerField(default=1)
+    total_linea = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def __str__(self):
+        return f"{self.cantidad}x {self.producto.nombre} (\${self.total_linea})"`}
+          title="ventas/models.py - Fase 2"
+        />
+
+        <div class="mt-4 p-3.5 rounded-xl bg-amber-50 border-l-4 border-amber-500 text-amber-900 text-xs">
+          <strong class="font-bold">⚠️ El Principio del Snapshot (Instantánea de Precios):</strong><br />
+          Muchos desarrolladores novatos omiten el campo <code>precio_unitario</code> en <code>DetalleBoleta</code> pensando: <em>"¿Para qué guardarlo si puedo hacer <code>detalle.producto.precio</code>?"</em>.<br />
+          <strong>¡Esto es un error financiero grave!</strong> Si vendes un café a $2.00 hoy, y dentro de 4 meses subes el precio a $3.50, al consultar las boletas del año pasado verías que todas aumentaron su valor mágicamente. En cualquier sistema de facturación, el detalle <strong>debe congelar</strong> el precio exacto al que se vendió en ese milisegundo.
+        </div>
+      </article>
+
+      <!-- FASE 3 -->
+      <article class="my-6 p-5 rounded-2xl border border-slate-200 bg-slate-50">
+        <h3 class="text-lg font-black text-slate-900 mb-2">
+          Paso 3: Incorporación de Cliente Opcional (Migración `0003_cliente_boleta_cliente.py`)
+        </h3>
+        <p class="text-sm text-slate-700 mb-3">
+          Ahora la empresa decide implementar un programa de fidelización y necesita asociar boletas a clientes registrados. Sin embargo, en una cafetería o tienda muchas ventas son anónimas (público general que no entrega sus datos).
+        </p>
+
+        <CodeBlock
+          lang="python"
+          code={`class Cliente(models.Model):
+    rut_o_dni = models.CharField(max_length=20, unique=True)
+    nombre = models.CharField(max_length=120)
+    email = models.EmailField(blank=True)
+    telefono = models.CharField(max_length=20, blank=True)
+
+    def __str__(self):
+        return f"{self.nombre} ({self.rut_o_dni})"
+
+
+# En el modelo Boleta agregamos la clave foránea como opcional:
+class Boleta(models.Model):
+    # ... campos anteriores ...
+    cliente = models.ForeignKey(
+        Cliente,
+        on_delete=models.SET_NULL,  # Si se elimina el cliente, la boleta NO se borra
+        null=True,                  # Admite NULL en la BD (ventas anónimas)
+        blank=True,                 # Opcional en formularios y panel administrativo
+        related_name='boletas'
+    )`}
+          title="ventas/models.py - Fase 3"
+        />
+
+        <div class="mt-4 p-3.5 rounded-xl bg-emerald-50 border-l-4 border-emerald-600 text-emerald-900 text-xs">
+          <strong class="font-bold">¿Cómo afecta esto a las migraciones con datos existentes?</strong><br />
+          Si ejecutas <code>python manage.py makemigrations</code> sobre una tabla que ya tiene registros reales:
+          <ul class="list-disc pl-5 mt-1 space-y-1">
+            <li>Si el campo <strong>no permite nulos</strong> (<code>null=False</code>), Django te detendrá en seco pidiéndote un valor por defecto para las filas anteriores.</li>
+            <li>Al declarar <code>null=True</code>, la migración ejecuta un <code>ALTER TABLE "ventas_boleta" ADD COLUMN "cliente_id" bigint NULL;</code> limpio e inmediato, manteniendo todas las ventas anteriores como compras anónimas sin romper el sistema.</li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- FASE 4 -->
+      <article class="my-6 p-5 rounded-2xl border border-slate-200 bg-slate-50">
+        <h3 class="text-lg font-black text-slate-900 mb-2">
+          Paso 4: Blindaje con Restricciones CheckConstraint y `save()` Automatizado
+        </h3>
+        <p class="text-sm text-slate-700 mb-3">
+          Para que el sistema sea confiable, no podemos permitir que nadie inserte un detalle con cantidad <code>0</code> o negativa, ni precios negativos. Agregamos restricciones a nivel de motor SQL en <code>Meta.constraints</code>:
+        </p>
+
+        <CodeBlock
+          lang="python"
+          code={`class DetalleBoleta(models.Model):
+    # ... campos ...
+
+    class Meta:
+        constraints = [
+            models.CheckConstraint(
+                check=models.Q(cantidad__gt=0),
+                name='chk_cantidad_positiva'
+            ),
+            models.CheckConstraint(
+                check=models.Q(precio_unitario__gte=0),
+                name='chk_precio_unitario_positivo'
+            ),
+        ]
+
+    def save(self, *args, **kwargs):
+        # 1. Si no viene precio unitario, tomar el precio actual del producto
+        if not self.precio_unitario:
+            self.precio_unitario = self.producto.precio
+        
+        # 2. Calcular automáticamente el total de la línea
+        self.total_linea = self.precio_unitario * self.cantidad
+        
+        super().save(*args, **kwargs)`}
+          title="ventas/models.py - Fase 4"
+        />
+      </article>
+
+      <!-- FASE 5 -->
+      <article class="my-6 p-5 rounded-2xl border border-slate-200 bg-slate-50">
+        <h3 class="text-lg font-black text-slate-900 mb-2">
+          Paso 5: Migración de Datos con `RunPython` (`0005_sembrar_categorias_iniciales.py`)
+        </h3>
+        <p class="text-sm text-slate-700 mb-3">
+          ¿Cómo garantizamos que cuando un nuevo desarrollador o un servidor de despliegue clone el proyecto, existan categorías listas para usar? Creamos una migración de datos con <code>--empty</code>:
+        </p>
+        <CodeBlock
+          lang="cmd"
+          code={`(venv) C:\\proyectos\\django\\ventas> python manage.py makemigrations ventas --empty --name sembrar_categorias_iniciales`}
+          title="Crear archivo de migración vacío"
+        />
+
+        <p class="text-sm text-slate-700 mt-3 mb-2">
+          Luego editamos el archivo generado usando <code>apps.get_model()</code>:
+        </p>
+
+        <CodeBlock
+          lang="python"
+          code={`# ventas/migrations/0005_sembrar_categorias_iniciales.py
+from django.db import migrations
+
+CATEGORIAS = [
+    {"nombre": "Bebidas y Cafetería", "descripcion": "Café de grano, té e infusiones"},
+    {"nombre": "Pastelería", "descripcion": "Tortas y pasteles del día"},
+    {"nombre": "Snacks Salados", "descripcion": "Empanadas y sándwiches"},
+]
+
+def sembrar_categorias(apps, schema_editor):
+    # REGLA CRÍTICA: Usar apps.get_model() en vez de importar el modelo
+    Categoria = apps.get_model('ventas', 'Categoria')
+    for cat in CATEGORIAS:
+        Categoria.objects.get_or_create(
+            nombre=cat["nombre"],
+            defaults={"descripcion": cat["descripcion"]}
+        )
+
+def desempadronar_categorias(apps, schema_editor):
+    Categoria = apps.get_model('ventas', 'Categoria')
+    Categoria.objects.filter(nombre__in=[c["nombre"] for c in CATEGORIAS]).delete()
+
+class Migration(migrations.Migration):
+    dependencies = [
+        ('ventas', '0004_constraints_reglas_negocio'),
+    ]
+
+    operations = [
+        migrations.RunPython(sembrar_categorias, reverse_code=desempadronar_categorias),
+    ]`}
+          title="0005_sembrar_categorias_iniciales.py"
+        />
+      </article>
+    </section>
+
+    <!-- 4. QUIZ -->
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>Comprueba que comprendes el ciclo de vida de migraciones progresivas, snapshots de precios y claves foráneas opcionales.</p>
+      <DjangoQuizModal quizKey="modelo-bd-step" />
+    </section>
+
+    <!-- 5. NAV -->
+    <nav class="nav-bottom">
+      <a href="/course/django/modelo-bd/" class="prev">← 5. Modelos y Tipos de Datos (SQL)</a>
+      <a href="/course/django/modelo-bd-library/" class="next">7. Caso Práctico: Biblioteca Digital y ORM →</a>
+    </nav>
+  </article>
+</Layout>

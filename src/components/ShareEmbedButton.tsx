@@ -5,11 +5,12 @@ interface Props {
   lessonSlug?: string;
   courseName: string;
   lessonTitle?: string;
+  hasSlides?: boolean;
 }
 
 type QuizMode = 'show' | 'hide';
 
-export default function ShareEmbedButton({ courseSlug, lessonSlug, courseName, lessonTitle }: Props) {
+export default function ShareEmbedButton({ courseSlug, lessonSlug, courseName, lessonTitle, hasSlides }: Props) {
   const [open, setOpen]       = useState(false);
   const [copied, setCopied]   = useState(false);
   const [width, setWidth]     = useState('100%');
@@ -150,7 +151,7 @@ export default function ShareEmbedButton({ courseSlug, lessonSlug, courseName, l
               </div>
 
               {/* NUEVA SECCIÓN: Presentación de Diapositivas (PPT Mode) */}
-              {lessonSlug && (
+              {lessonSlug && hasSlides && (
                 <div className="rounded-2xl border-2 border-amber-400/80 bg-amber-50/70 p-4 flex flex-col gap-3">
                   <div className="flex items-center justify-between">
                     <p className="font-nunito font-black text-[0.9rem] text-amber-950 m-0 flex items-center gap-2">

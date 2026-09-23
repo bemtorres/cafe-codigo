@@ -5,12 +5,7 @@ export default function MobileNavProfile() {
   const { supabase, loading, user } = useSupabaseAuth();
 
   if (!supabase) {
-    return (
-      <span className="mobile-nav-item flex flex-col items-center justify-center gap-0.5 flex-1 text-textSecondary/50">
-        <span className="text-[22px] leading-none">···</span>
-        <span className="text-[10px] font-nunito font-extrabold tracking-wide">…</span>
-      </span>
-    );
+    return null;
   }
 
   if (loading) {

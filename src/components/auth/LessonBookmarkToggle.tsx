@@ -104,8 +104,12 @@ export default function LessonBookmarkToggle({ courseSlug, lessonSlug, lessonTit
     }
   };
 
-  /** Sin supabase en SSR: mismo skeleton que auth cargando (evita hydration mismatch). */
-  if (!supabase || authLoading || (sessionUserId && !dataReady)) {
+  /** Si no hay supabase conectado o auth está desactivado: no renderizar nada (ocultar por completo). */
+  if (!supabase) {
+    return null;
+  }
+
+  if (authLoading || (sessionUserId && !dataReady)) {
     return (
       <div
         className="mb-4 h-20 animate-pulse rounded-2xl border-2 border-border/30 bg-white/50"

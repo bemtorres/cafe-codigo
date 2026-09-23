@@ -1,9 +1,7 @@
 User-agent: *
 Allow: /
 
-# Excluir páginas privadas/de administración
+# Excluir páginas privadas de administración interna
 Disallow: /admin/
-Disallow: /panel/
-Disallow: /cuenta/
 
 Sitemap: https://cafeycodigo.org/sitemap.xml

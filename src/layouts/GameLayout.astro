@@ -20,6 +20,13 @@ const {
 const currentPath = Astro.url.pathname;
 const normalizedPath = currentPath.replace(/\/$/, "");
 
+const CANONICAL_SITE = 'https://cafeycodigo.org';
+const rawPath = Astro.url.pathname;
+const normalizedCanonicalPath = rawPath === '' || rawPath === '/'
+  ? '/'
+  : (rawPath.endsWith('/') || rawPath.includes('.') ? rawPath : `${rawPath}/`);
+const computedCanonicalUrl = `${CANONICAL_SITE}${normalizedCanonicalPath}`;
+
 const navLinks = [
   // { href: '/challenges-game/', label: 'Hub Principal', icon: '🏠', id: 'hub' },
   // { href: '/challenges-game/functions/', label: '01. Funciones', icon: '⚡', id: 'functions', count: 50 },
@@ -38,6 +45,7 @@ const navLinks = [
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
+    <link rel="canonical" href={computedCanonicalUrl} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -49,6 +57,7 @@ const navLinks = [
     <meta property="og:title" content={`${title} | Zona Gamer`} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
+    <meta property="og:url" content={computedCanonicalUrl} />
     <meta property="og:image" content={ogLogo.src} />
     <meta property="twitter:card" content="summary_large_image" />
     <meta property="twitter:title" content={`${title} | Zona Gamer`} />

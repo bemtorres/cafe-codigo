@@ -1,0 +1,424 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout
+  title="404 — Página no encontrada | Café y Código"
+  description="La página o ruta que buscas no existe o ha sido movida. Explora nuestros cursos y desafíos de programación."
+>
+  <main class="not-found-container">
+    <div class="not-found-card">
+      <div class="coffee-animation-wrap" aria-hidden="true">
+        <span class="coffee-steam steam-1">~</span>
+        <span class="coffee-steam steam-2">~</span>
+        <span class="coffee-steam steam-3">~</span>
+        <div class="coffee-cup">
+          <span class="coffee-emoji">☕</span>
+        </div>
+      </div>
+
+      <p class="error-kicker">Error 404 · Not Found</p>
+      <h1 class="error-title">¡Ups! Café derramado en el código</h1>
+      <p class="error-msg">
+        La ruta que intentaste cargar no existe, fue movida o se la tomó el recolector de basura de memoria.
+      </p>
+
+      <!-- Terminal interactiva simulada -->
+      <div class="terminal-box" role="region" aria-label="Terminal de depuración">
+        <div class="terminal-bar">
+          <span class="term-dot dot-red"></span>
+          <span class="term-dot dot-yellow"></span>
+          <span class="term-dot dot-green"></span>
+          <span class="term-title">terminal://cafe-y-codigo/debug.log</span>
+        </div>
+        <div class="terminal-body">
+          <p><span class="term-prompt">&gt;</span> <span class="term-cmd">GET</span> <span class="term-path" id="currentPathDisplay">/desconocido</span></p>
+          <p class="term-error"><span class="term-tag">[HTTP 404]</span> ResourceNotFoundException: La página solicitada no está en el servidor.</p>
+          <p class="term-tip"><span class="term-hint">Sugerencia:</span> Vuelve al menú principal o elige una de las rutas populares abajo.</p>
+        </div>
+      </div>
+
+      <!-- Acciones principales -->
+      <div class="action-buttons">
+        <a href="/" class="btn-primary">
+          🏠 Ir al Inicio
+        </a>
+        <a href="/cursos/" class="btn-secondary">
+          📚 Ver Cursos
+        </a>
+        <a href="/challenges/" class="btn-secondary">
+          ⚡ Banco de Desafíos
+        </a>
+        <a href="/challenges/poo-game/" class="btn-accent">
+          🎮 POO Game (Batallas)
+        </a>
+      </div>
+
+      <!-- Accesos Rápidos Populares -->
+      <div class="quick-links-section">
+        <p class="quick-links-title">Rutas populares para seguir programando:</p>
+        <div class="quick-grid">
+          <a href="/course/python/" class="quick-card">
+            <span class="qc-icon">🐍</span>
+            <div class="qc-info">
+              <strong>Python</strong>
+              <span>Desde cero a POO</span>
+            </div>
+          </a>
+          <a href="/course/java/" class="quick-card">
+            <span class="qc-icon">☕</span>
+            <div class="qc-info">
+              <strong>Java</strong>
+              <span>Fundamentos y POO</span>
+            </div>
+          </a>
+          <a href="/course/pseint/" class="quick-card">
+            <span class="qc-icon">💡</span>
+            <div class="qc-info">
+              <strong>PSeInt</strong>
+              <span>Lógica y Algoritmos</span>
+            </div>
+          </a>
+          <a href="/course/cpp/" class="quick-card">
+            <span class="qc-icon">⚙️</span>
+            <div class="qc-info">
+              <strong>C++</strong>
+              <span>Estructuras y Memoria</span>
+            </div>
+          </a>
+          <a href="/challenges/poo/" class="quick-card">
+            <span class="qc-icon">🧱</span>
+            <div class="qc-info">
+              <strong>POO Básico</strong>
+              <span>20 Clases y Diagramas</span>
+            </div>
+          </a>
+          <a href="/cafe-del-dia/" class="quick-card">
+            <span class="qc-icon">☕</span>
+            <div class="qc-info">
+              <strong>Café del Día</strong>
+              <span>Reto diario de código</span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script is:inline>
+    // Mostrar la ruta actual en la consola de depuración
+    (function () {
+      try {
+        const pathEl = document.getElementById('currentPathDisplay');
+        if (pathEl && typeof window !== 'undefined') {
+          pathEl.textContent = window.location.pathname || '/desconocido';
+        }
+      } catch (e) {
+        // Silencioso
+      }
+    })();
+  </script>
+
+  <style>
+    .not-found-container {
+      min-height: calc(85vh - 80px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2.5rem 1rem;
+    }
+
+    .not-found-card {
+      width: min(100%, 780px);
+      background: #fffdf7;
+      border: 3.5px solid #1e1210;
+      border-radius: 24px;
+      box-shadow: 8px 8px 0 #1e1210;
+      padding: 2.5rem 2rem;
+      text-align: center;
+      position: relative;
+    }
+
+    /* Animación Taza de Café */
+    .coffee-animation-wrap {
+      position: relative;
+      width: 90px;
+      height: 90px;
+      margin: 0 auto 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .coffee-cup {
+      width: 76px;
+      height: 76px;
+      background: #1e1210;
+      border: 3px solid #1e1210;
+      border-radius: 20px;
+      display: grid;
+      place-items: center;
+      box-shadow: 4px 4px 0 #d97706;
+      position: relative;
+      animation: cupTilt 3s ease-in-out infinite;
+    }
+
+    .coffee-emoji {
+      font-size: 2.5rem;
+      line-height: 1;
+    }
+
+    .coffee-steam {
+      position: absolute;
+      font-size: 1.4rem;
+      font-weight: 900;
+      color: #d97706;
+      opacity: 0;
+      animation: steamFloat 2.4s infinite ease-out;
+    }
+
+    .steam-1 { top: -8px; left: 24px; animation-delay: 0s; }
+    .steam-2 { top: -14px; left: 42px; animation-delay: 0.8s; }
+    .steam-3 { top: -8px; left: 60px; animation-delay: 1.6s; }
+
+    @keyframes steamFloat {
+      0% { opacity: 0; transform: translateY(6px) scale(0.8); }
+      50% { opacity: 0.8; transform: translateY(-10px) scale(1.1); }
+      100% { opacity: 0; transform: translateY(-22px) scale(1.3); }
+    }
+
+    @keyframes cupTilt {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(-4deg); }
+      75% { transform: rotate(4deg); }
+    }
+
+    .error-kicker {
+      margin: 0;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 900;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: #b45309;
+    }
+
+    .error-title {
+      font-family: 'Nunito', sans-serif;
+      font-size: 2.1rem;
+      font-weight: 900;
+      color: #7c2d12;
+      margin: 0.35rem 0 0.6rem;
+      line-height: 1.2;
+    }
+
+    .error-msg {
+      font-size: 1.05rem;
+      color: var(--text-secondary);
+      font-weight: 650;
+      max-width: 580px;
+      margin: 0 auto 1.75rem;
+      line-height: 1.55;
+    }
+
+    /* Terminal */
+    .terminal-box {
+      background: #1e1210;
+      border: 2.5px solid #1e1210;
+      border-radius: 14px;
+      text-align: left;
+      margin: 0 auto 1.85rem;
+      overflow: hidden;
+      box-shadow: 4px 4px 0 rgba(30, 18, 16, 0.2);
+    }
+
+    .terminal-bar {
+      background: #2b1810;
+      padding: 0.5rem 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      border-bottom: 1.5px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .term-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      display: inline-block;
+    }
+    .dot-red { background: #ef4444; }
+    .dot-yellow { background: #eab308; }
+    .dot-green { background: #22c55e; }
+
+    .term-title {
+      margin-left: 0.4rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: #fde68a;
+      opacity: 0.9;
+    }
+
+    .terminal-body {
+      padding: 1rem 1.15rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.84rem;
+      line-height: 1.5;
+    }
+
+    .terminal-body p {
+      margin: 0.25rem 0;
+    }
+
+    .term-prompt { color: #06d6a0; font-weight: 900; }
+    .term-cmd { color: #38edf6; font-weight: 700; }
+    .term-path { color: #fde047; font-weight: 700; }
+    .term-error { color: #f87171; font-weight: 650; }
+    .term-tag { font-weight: 900; }
+    .term-tip { color: #cbd5e1; font-size: 0.8rem; margin-top: 0.5rem; }
+    .term-hint { color: #06d6a0; font-weight: 700; }
+
+    /* Botones de acción */
+    .action-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.85rem;
+      margin-bottom: 2.2rem;
+    }
+
+    .btn-primary, .btn-secondary, .btn-accent {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      text-decoration: none;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      font-size: 0.92rem;
+      padding: 0.7rem 1.3rem;
+      border-radius: 999px;
+      border: 2.5px solid #1e1210;
+      transition: transform 0.12s, box-shadow 0.12s;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: #7c2d12;
+      color: #fff8ee;
+      box-shadow: 3px 3px 0 #1e1210;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 5px 5px 0 #1e1210;
+      background: #5c1f0c;
+    }
+
+    .btn-secondary {
+      background: #fff;
+      color: #1e1210;
+      box-shadow: 3px 3px 0 #1e1210;
+    }
+    .btn-secondary:hover {
+      transform: translateY(-2px);
+      box-shadow: 5px 5px 0 #1e1210;
+      background: #fff9c4;
+    }
+
+    .btn-accent {
+      background: #06d6a0;
+      color: #1e1210;
+      box-shadow: 3px 3px 0 #1e1210;
+    }
+    .btn-accent:hover {
+      transform: translateY(-2px);
+      box-shadow: 5px 5px 0 #1e1210;
+      background: #05b889;
+    }
+
+    /* Enlaces Rápidos */
+    .quick-links-section {
+      border-top: 2px dashed rgba(30, 18, 16, 0.15);
+      padding-top: 1.5rem;
+      text-align: left;
+    }
+
+    .quick-links-title {
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 800;
+      color: var(--text-muted);
+      margin: 0 0 0.85rem;
+      text-align: center;
+    }
+
+    .quick-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .quick-card {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      background: #fff;
+      border: 2px solid #1e1210;
+      border-radius: 14px;
+      padding: 0.65rem 0.85rem;
+      text-decoration: none;
+      box-shadow: 2px 2px 0 rgba(30, 18, 16, 0.1);
+      transition: transform 0.12s, box-shadow 0.12s, background 0.12s;
+    }
+
+    .quick-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 4px 4px 0 #1e1210;
+      background: #fffdf7;
+    }
+
+    .qc-icon {
+      font-size: 1.4rem;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .qc-info {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .qc-info strong {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      font-size: 0.9rem;
+      color: #7c2d12;
+      line-height: 1.2;
+    }
+
+    .qc-info span {
+      font-size: 0.73rem;
+      color: var(--text-muted);
+      font-weight: 650;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    @media (max-width: 640px) {
+      .not-found-card {
+        padding: 1.75rem 1.15rem;
+      }
+      .error-title {
+        font-size: 1.65rem;
+      }
+      .action-buttons {
+        flex-direction: column;
+      }
+      .btn-primary, .btn-secondary, .btn-accent {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
+</Layout>

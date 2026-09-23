@@ -1,6 +1,7 @@
 ---
 import "../styles/global.css";
 import "../styles/code-themes.css";
+import "@xyflow/react/dist/style.css";
 import logoCafeycodigo from "../assets/images/cafeycodigo.png";
 import ogLogo from "../assets/images/logo-cafecodigo.png";
 
@@ -13,6 +14,13 @@ const {
   title = "Motor de Diseño Relacional de Bases de Datos (.CYC)",
   description = "Diseñador visual de bases de datos relacionales en pantalla completa con React Flow, exportación .cyc, JSON, SQL DDL e imágenes PNG.",
 } = Astro.props;
+
+const CANONICAL_SITE = 'https://cafeycodigo.org';
+const rawPath = Astro.url.pathname;
+const normalizedCanonicalPath = rawPath === '' || rawPath === '/'
+  ? '/'
+  : (rawPath.endsWith('/') || rawPath.includes('.') ? rawPath : `${rawPath}/`);
+const computedCanonicalUrl = `${CANONICAL_SITE}${normalizedCanonicalPath}`;
 ---
 
 <!doctype html>
@@ -23,6 +31,7 @@ const {
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="description" content={description} />
+    <link rel="canonical" href={computedCanonicalUrl} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -34,6 +43,7 @@ const {
     <meta property="og:title" content={`${title} | Café y Código Engine`} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
+    <meta property="og:url" content={computedCanonicalUrl} />
     <meta property="og:image" content={ogLogo.src} />
     <meta property="twitter:card" content="summary_large_image" />
     <meta property="twitter:title" content={`${title} | Café y Código Engine`} />

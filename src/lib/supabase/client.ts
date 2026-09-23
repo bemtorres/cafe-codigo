@@ -51,9 +51,18 @@ export function isSupabaseConfigured(): boolean {
   return Boolean(url?.length && key?.length);
 }
 
+/** Verifica si la autenticación y Supabase están habilitados por variable de entorno y configuración. */
+export function isAuthEnabled(): boolean {
+  const envVal = import.meta.env.PUBLIC_ENABLE_AUTH ?? import.meta.env.PUBLIC_AUTH_ENABLED;
+  if (envVal !== undefined) {
+    if (envVal === 'false' || envVal === '0' || envVal === '') return false;
+  }
+  return isSupabaseConfigured();
+}
+
 /** Cliente singleton para el navegador (Astro estático / GitHub Pages). */
 export function getSupabaseBrowser(): SupabaseClient | null {
-  if (!isSupabaseConfigured()) return null;
+  if (!isAuthEnabled()) return null;
   if (typeof window === 'undefined') return null;
   if (browserClient) return browserClient;
   const url = supabaseUrl()!;

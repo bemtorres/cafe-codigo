@@ -4,6 +4,8 @@ interface ImportMetaEnv {
   readonly PUBLIC_SUPABASE_URL?: string;
   readonly PUBLIC_SUPABASE_ANON_KEY?: string;
   readonly PUBLIC_EMBED_CODE_SECRET?: string;
+  readonly PUBLIC_ENABLE_AUTH?: string;
+  readonly PUBLIC_AUTH_ENABLED?: string;
   readonly SUPABASE_URL?: string;
   readonly SUPABASE_KEY?: string;
 }

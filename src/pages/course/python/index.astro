@@ -37,14 +37,16 @@ if (!pythonCourse) {
               >
                 Leer lección →
               </a>
-              <a
-                href={`/course-slides/python/${lesson.slug}/`}
-                class="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-black bg-slate-900 text-amber-400 border-2 border-slate-900 rounded-lg shadow-[2px_2px_0px_#ffd43b] hover:-translate-y-0.5 hover:shadow-[3px_3px_0px_#ffd43b] hover:bg-[#3776ab] hover:text-white hover:border-[#3776ab] transition-all font-mono"
-                title={`Ver presentación en diapositivas 📊 de: ${lesson.title}`}
-              >
-                <span>Slides</span>
-                <span>📊</span>
-              </a>
+              {lesson.hasSlides && (
+                <a
+                  href={`/course-slides/python/${lesson.slug}/`}
+                  class="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-black bg-slate-900 text-amber-400 border-2 border-slate-900 rounded-lg shadow-[2px_2px_0px_#ffd43b] hover:-translate-y-0.5 hover:shadow-[3px_3px_0px_#ffd43b] hover:bg-[#3776ab] hover:text-white hover:border-[#3776ab] transition-all font-mono"
+                  title={`Ver presentación en diapositivas 📊 de: ${lesson.title}`}
+                >
+                  <span>Slides</span>
+                  <span>📊</span>
+                </a>
+              )}
             </div>
           </div>
         </div>

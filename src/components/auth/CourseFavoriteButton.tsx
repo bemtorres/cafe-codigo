@@ -95,8 +95,12 @@ export default function CourseFavoriteButton({ courseSlug, courseName }: Props) 
     }
   };
 
-  /** Sin supabase en SSR (no hay window): mismo placeholder que “cargando” para evitar hydration mismatch. */
-  if (!supabase || authLoading || (userId && !profileReady)) {
+  /** Si no hay supabase conectado o auth está desactivado: no renderizar nada. */
+  if (!supabase) {
+    return null;
+  }
+
+  if (authLoading || (userId && !profileReady)) {
     return (
       <div
         className="mb-6 h-16 animate-pulse rounded-2xl border-2 border-border/30 bg-white/50"

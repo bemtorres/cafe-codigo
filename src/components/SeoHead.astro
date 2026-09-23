@@ -1,0 +1,175 @@
+---
+import type { Course, Lesson } from '../data/courses';
+
+interface Props {
+  title: string;
+  description?: string;
+  canonicalUrl: string;
+  noindex?: boolean;
+  ogImage?: string;
+  course?: Course | null;
+  lesson?: Lesson | null;
+  type?: 'website' | 'article';
+  keywords?: string;
+}
+
+const {
+  title,
+  description = 'Aprende a programar gratis con cursos paso a paso, ejercicios interactivos, desafíos con diagramas UML y simulaciones de código.',
+  canonicalUrl,
+  noindex = false,
+  ogImage = 'https://cafeycodigo.org/images/logo-cafecodigo.png',
+  course,
+  lesson,
+  type = 'website',
+  keywords = 'aprender a programar, cursos de programacion gratis, python, java, c++, c#, kotlin, php, sql, pseint, poo, desafios de codigo, diagramas uml, algoritmos',
+} = Astro.props;
+
+const SITE_NAME = 'Café y Código';
+const SITE_URL = 'https://cafeycodigo.org';
+
+const displayTitle = title.toLowerCase().includes('café y código') || title.toLowerCase().includes('cafeycodigo')
+  ? title
+  : `${title} | ${SITE_NAME}`;
+
+// Generador automático de migas de pan (BreadcrumbList) para Google Search
+const pathSegments = new URL(canonicalUrl).pathname
+  .split('/')
+  .filter(Boolean);
+
+const breadcrumbItems = [
+  {
+    '@type': 'ListItem',
+    position: 1,
+    name: 'Inicio',
+    item: `${SITE_URL}/`,
+  },
+];
+
+let accumulatedPath = '';
+pathSegments.forEach((segment, index) => {
+  accumulatedPath += `/${segment}`;
+  let cleanName = segment.replace(/-/g, ' ');
+  // Capitalización de nombres
+  if (segment === 'course') cleanName = 'Cursos';
+  else if (segment === 'challenges') cleanName = 'Desafíos';
+  else if (segment === 'challenges-game') cleanName = 'Zona Gamer';
+  else if (segment === 'challenges-express') cleanName = 'Desafíos Express';
+  else if (segment === 'ejercicios') cleanName = 'Ejercicios';
+  else if (course && segment === course.slug) cleanName = course.name;
+  else if (lesson && segment === lesson.slug) cleanName = lesson.title;
+  else cleanName = cleanName.charAt(0).toUpperCase() + cleanName.slice(1);
+
+  breadcrumbItems.push({
+    '@type': 'ListItem',
+    position: index + 2,
+    name: cleanName,
+    item: `${SITE_URL}${accumulatedPath}/`,
+  });
+});
+
+// JSON-LD: Organización y WebSite
+const organizationSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: SITE_NAME,
+  url: SITE_URL,
+  logo: `${SITE_URL}/images/logo-cafecodigo.png`,
+  description: 'Plataforma educativa interactiva y gratuita de programación, algoritmos y software engineering en español.',
+  sameAs: [
+    'https://github.com/bemtorres/cafe-codigo',
+    'https://ko-fi.com/cafeycodigo',
+  ],
+};
+
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: SITE_NAME,
+  url: SITE_URL,
+  description: 'Aprende a programar gratis con cursos prácticos, ejercicios paso a paso y desafíos con diagramas.',
+  inLanguage: 'es',
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: breadcrumbItems,
+};
+
+// JSON-LD: Curso o Recurso Educativo (si aplica)
+let courseSchema = null;
+if (course) {
+  courseSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Course',
+    name: lesson ? `${course.name} — ${lesson.title}` : course.name,
+    description: lesson ? `Lección ${lesson.title} del curso de ${course.name}. ${course.description}` : course.description,
+    provider: {
+      '@type': 'Organization',
+      name: SITE_NAME,
+      sameAs: SITE_URL,
+    },
+    educationalLevel: 'Beginner to Advanced',
+    inLanguage: 'es',
+    isAccessibleForFree: true,
+    hasCourseInstance: {
+      '@type': 'CourseInstance',
+      courseMode: 'Online',
+      courseWorkload: 'PT10H',
+    },
+  };
+}
+---
+
+<title>{displayTitle}</title>
+
+<!-- Meta Básicos y de Indexación -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content={description} />
+<meta name="keywords" content={keywords} />
+<meta name="author" content="Café y Código" />
+<meta name="publisher" content="Café y Código" />
+<meta name="theme-color" content="#7c2d12" />
+<meta name="apple-mobile-web-app-title" content="Café y Código" />
+<meta http-equiv="content-language" content="es" />
+
+{
+  noindex ? (
+    <meta name="robots" content="noindex, nofollow" />
+  ) : (
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+  )
+}
+
+<!-- URL Canónica -->
+<link rel="canonical" href={canonicalUrl} />
+
+<!-- Open Graph (Facebook, WhatsApp, LinkedIn, Discord) -->
+<meta property="og:site_name" content={SITE_NAME} />
+<meta property="og:title" content={displayTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonicalUrl} />
+<meta property="og:type" content={type} />
+<meta property="og:locale" content="es_LA" />
+<meta property="og:image" content={ogImage} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content={`${displayTitle}`} />
+
+<!-- Twitter Cards -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:site" content="@cafeycodigo" />
+<meta name="twitter:creator" content="@cafeycodigo" />
+<meta name="twitter:title" content={displayTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImage} />
+<meta name="twitter:image:alt" content={`${displayTitle}`} />
+
+<!-- Datos Estructurados JSON-LD para Google Search y Rich Snippets -->
+<script type="application/ld+json" is:inline set:html={JSON.stringify(organizationSchema)} />
+<script type="application/ld+json" is:inline set:html={JSON.stringify(websiteSchema)} />
+<script type="application/ld+json" is:inline set:html={JSON.stringify(breadcrumbSchema)} />
+{courseSchema && (
+  <script type="application/ld+json" is:inline set:html={JSON.stringify(courseSchema)} />
+)}

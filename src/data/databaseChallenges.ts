@@ -61,7 +61,10 @@ export const databaseChallenges: DbChallenge[] = [
           { name: 'cargo', type: 'VARCHAR(50)', notNull: true, desc: 'Puesto que desempeña' },
           { name: 'salario', type: 'DECIMAL(10,2)', notNull: true, desc: 'Sueldo base mensual (CHECK salario > 0)' },
           { name: 'fecha_ingreso', type: 'DATE', defaultValue: 'CURRENT_DATE', desc: 'Fecha de contratación' },
-          { name: 'activo', type: 'BOOLEAN', defaultValue: 'TRUE', desc: 'Estado del contrato laboral' }
+          { name: 'activo', type: 'BOOLEAN', defaultValue: 'TRUE', desc: 'Estado del contrato laboral' },
+          { name: 'email', type: 'VARCHAR(100)', desc: 'Correo electrónico corporativo' },
+          { name: 'telefono', type: 'VARCHAR(15)', desc: 'Teléfono de contacto' },
+          { name: 'fecha_creacion', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Fecha de creación del registro' }
         ]
       }
     ],
@@ -73,7 +76,10 @@ CREATE TABLE empleados (
     cargo VARCHAR(50) NOT NULL,
     salario DECIMAL(10, 2) NOT NULL CHECK (salario > 0),
     fecha_ingreso DATE DEFAULT CURRENT_DATE,
-    activo BOOLEAN DEFAULT TRUE
+    activo BOOLEAN DEFAULT TRUE,
+    email VARCHAR(100),
+    telefono VARCHAR(15),
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );`,
     seedSql: `INSERT INTO empleados (rut, nombre_completo, cargo, salario, fecha_ingreso) VALUES
 ('11.111.111-1', 'Ana Martínez', 'Desarrolladora Senior', 2200000.00, '2022-03-15'),
@@ -129,7 +135,10 @@ FROM empleados;`
           { name: 'precio_unitario', type: 'DECIMAL(8,2)', notNull: true, desc: 'Precio al consumidor' },
           { name: 'costo', type: 'DECIMAL(8,2)', notNull: true, desc: 'Costo de adquisición' },
           { name: 'stock_actual', type: 'INT', defaultValue: '0', desc: 'Cantidad física disponible' },
-          { name: 'stock_minimo', type: 'INT', defaultValue: '5', desc: 'Umbral para reposición' }
+          { name: 'stock_minimo', type: 'INT', defaultValue: '5', desc: 'Umbral para reposición' },
+          { name: 'categoria', type: 'VARCHAR(40)', desc: 'Categoría del producto' },
+          { name: 'peso_kg', type: 'DECIMAL(6,2)', desc: 'Peso en kilogramos' },
+          { name: 'activo', type: 'BOOLEAN', defaultValue: 'TRUE', desc: 'Disponible para la venta' }
         ]
       }
     ],
@@ -140,7 +149,10 @@ FROM empleados;`
     precio_unitario DECIMAL(8,2) NOT NULL CHECK (precio_unitario >= 0),
     costo DECIMAL(8,2) NOT NULL CHECK (costo >= 0),
     stock_actual INT DEFAULT 0 CHECK (stock_actual >= 0),
-    stock_minimo INT DEFAULT 5 CHECK (stock_minimo >= 0)
+    stock_minimo INT DEFAULT 5 CHECK (stock_minimo >= 0),
+    categoria VARCHAR(40),
+    peso_kg DECIMAL(6,2),
+    activo BOOLEAN DEFAULT TRUE
 );`,
     seedSql: `INSERT INTO productos (sku, nombre, precio_unitario, costo, stock_actual, stock_minimo) VALUES
 ('BEB-001', 'Café Espresso Grano 500g', 8990.00, 4500.00, 15, 5),
@@ -196,7 +208,9 @@ ORDER BY ganancia_neta DESC;`
           { name: 'fecha_nacimiento', type: 'DATE', notNull: true, desc: 'Fecha de natalicio' },
           { name: 'grupo_sanguineo', type: 'VARCHAR(3)', notNull: true, desc: 'Grupo y factor Rh' },
           { name: 'telefono_emergencia', type: 'VARCHAR(15)', notNull: true, desc: 'Contacto de urgencia' },
-          { name: 'alergias', type: 'TEXT', desc: 'Listado de alergias conocidas o NINGUNA' }
+          { name: 'alergias', type: 'TEXT', desc: 'Listado de alergias conocidas o NINGUNA' },
+          { name: 'email', type: 'VARCHAR(100)', desc: 'Correo electrónico del paciente' },
+          { name: 'estado_civil', type: 'VARCHAR(15)', desc: 'Estado civil del paciente' }
         ]
       }
     ],
@@ -208,7 +222,9 @@ ORDER BY ganancia_neta DESC;`
     fecha_nacimiento DATE NOT NULL,
     grupo_sanguineo VARCHAR(3) NOT NULL CHECK (grupo_sanguineo IN ('A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-')),
     telefono_emergencia VARCHAR(15) NOT NULL,
-    alergias TEXT DEFAULT 'Ninguna'
+    alergias TEXT DEFAULT 'Ninguna',
+    email VARCHAR(100),
+    estado_civil VARCHAR(15)
 );`,
     seedSql: `INSERT INTO pacientes (rut, nombres, apellidos, fecha_nacimiento, grupo_sanguineo, telefono_emergencia, alergias) VALUES
 ('18.234.567-8', 'Mateo', 'Rojas Castro', '1995-04-12', 'O+', '+56911223344', 'Penicilina'),
@@ -251,7 +267,10 @@ WHERE grupo_sanguineo = 'O-' OR (alergias IS NOT NULL AND alergias <> 'Ninguna')
           { name: 'autor_principal', type: 'VARCHAR(100)', notNull: true, desc: 'Nombre del autor' },
           { name: 'anio_publicacion', type: 'INT', notNull: true, desc: 'Año de edición' },
           { name: 'num_paginas', type: 'INT', notNull: true, desc: 'Páginas impresas' },
-          { name: 'disponible', type: 'BOOLEAN', defaultValue: 'TRUE', desc: 'Indica si no está prestado' }
+          { name: 'disponible', type: 'BOOLEAN', defaultValue: 'TRUE', desc: 'Indica si no está prestado' },
+          { name: 'editorial', type: 'VARCHAR(80)', desc: 'Editorial de la edición' },
+          { name: 'categoria', type: 'VARCHAR(40)', desc: 'Categoría o sección bibliográfica' },
+          { name: 'fecha_ingreso', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Fecha de ingreso al catálogo' }
         ]
       }
     ],
@@ -262,7 +281,10 @@ WHERE grupo_sanguineo = 'O-' OR (alergias IS NOT NULL AND alergias <> 'Ninguna')
     autor_principal VARCHAR(100) NOT NULL,
     anio_publicacion INT NOT NULL CHECK (anio_publicacion BETWEEN 1450 AND 2030),
     num_paginas INT NOT NULL CHECK (num_paginas > 0),
-    disponible BOOLEAN DEFAULT TRUE
+    disponible BOOLEAN DEFAULT TRUE,
+    editorial VARCHAR(80),
+    categoria VARCHAR(40),
+    fecha_ingreso TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );`,
     seedSql: `INSERT INTO libros (isbn, titulo, autor_principal, anio_publicacion, num_paginas, disponible) VALUES
 ('9780132350884', 'Clean Code', 'Robert C. Martin', 2008, 464, TRUE),
@@ -308,7 +330,10 @@ ORDER BY anio_publicacion DESC;`
           { name: 'tipo_operacion', type: 'VARCHAR(20)', notNull: true, desc: 'Tipo de flujo' },
           { name: 'monto', type: 'DECIMAL(12,2)', notNull: true, desc: 'Monto de la transacción' },
           { name: 'fecha_hora', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Timestamp exacto' },
-          { name: 'estado', type: 'VARCHAR(15)', defaultValue: "'EXITOSA'", desc: 'EXITOSA, RECHAZADA, PENDIENTE' }
+          { name: 'estado', type: 'VARCHAR(15)', defaultValue: "'EXITOSA'", desc: 'EXITOSA, RECHAZADA, PENDIENTE' },
+          { name: 'id_cuenta_destino', type: 'INT', desc: 'Cuenta destino en transferencias' },
+          { name: 'descripcion', type: 'VARCHAR(120)', desc: 'Glosa o concepto del movimiento' },
+          { name: 'moneda', type: 'VARCHAR(3)', defaultValue: "'CLP'", desc: 'Moneda de la operación' }
         ]
       }
     ],
@@ -318,7 +343,10 @@ ORDER BY anio_publicacion DESC;`
     tipo_operacion VARCHAR(20) NOT NULL CHECK (tipo_operacion IN ('INGRESO', 'RETIRO', 'TRANSFERENCIA', 'PAGO')),
     monto DECIMAL(12,2) NOT NULL CHECK (monto > 0),
     fecha_hora TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    estado VARCHAR(15) DEFAULT 'EXITOSA' CHECK (estado IN ('EXITOSA', 'RECHAZADA', 'PENDIENTE'))
+    estado VARCHAR(15) DEFAULT 'EXITOSA' CHECK (estado IN ('EXITOSA', 'RECHAZADA', 'PENDIENTE')),
+    id_cuenta_destino INT,
+    descripcion VARCHAR(120),
+    moneda VARCHAR(3) DEFAULT 'CLP'
 );`,
     seedSql: `INSERT INTO transacciones (id_cuenta, tipo_operacion, monto, estado) VALUES
 (1001, 'INGRESO', 500000.00, 'EXITOSA'),
@@ -367,7 +395,10 @@ ORDER BY volumen_total DESC;`
           { name: 'modelo', type: 'VARCHAR(40)', notNull: true, desc: 'Modelo comercial' },
           { name: 'anio', type: 'INT', notNull: true, desc: 'Año de fabricación' },
           { name: 'kilometraje', type: 'INT', defaultValue: '0', desc: 'Odómetro en KM' },
-          { name: 'combustible', type: 'VARCHAR(15)', notNull: true, desc: 'Bencina, Diesel, Híbrido, Eléctrico' }
+          { name: 'combustible', type: 'VARCHAR(15)', notNull: true, desc: 'Bencina, Diesel, Híbrido, Eléctrico' },
+          { name: 'color', type: 'VARCHAR(20)', desc: 'Color exterior del vehículo' },
+          { name: 'capacidad_pasajeros', type: 'INT', desc: 'Cantidad de asientos disponibles' },
+          { name: 'fecha_registro', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Fecha de alta en la flota' }
         ]
       }
     ],
@@ -378,7 +409,10 @@ ORDER BY volumen_total DESC;`
     modelo VARCHAR(40) NOT NULL,
     anio INT NOT NULL CHECK (anio >= 2000),
     kilometraje INT DEFAULT 0 CHECK (kilometraje >= 0),
-    combustible VARCHAR(15) NOT NULL CHECK (combustible IN ('Bencina', 'Diesel', 'Híbrido', 'Eléctrico'))
+    combustible VARCHAR(15) NOT NULL CHECK (combustible IN ('Bencina', 'Diesel', 'Híbrido', 'Eléctrico')),
+    color VARCHAR(20),
+    capacidad_pasajeros INT,
+    fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );`,
     seedSql: `INSERT INTO vehiculos (patente, marca, modelo, anio, kilometraje, combustible) VALUES
 ('BBCL-12', 'Toyota', 'RAV4', 2022, 34500, 'Híbrido'),
@@ -423,7 +457,10 @@ ORDER BY kilometraje ASC;`
           { name: 'email', type: 'VARCHAR(100)', unique: true, notNull: true, desc: 'Correo universitario' },
           { name: 'carrera', type: 'VARCHAR(80)', notNull: true, desc: 'Plan de estudios' },
           { name: 'pga', type: 'DECIMAL(3,2)', notNull: true, desc: 'Promedio general acumulado (1.00 a 7.00)' },
-          { name: 'semestre_actual', type: 'INT', defaultValue: '1', desc: 'Semestre en curso' }
+          { name: 'semestre_actual', type: 'INT', defaultValue: '1', desc: 'Semestre en curso' },
+          { name: 'fecha_nacimiento', type: 'DATE', desc: 'Fecha de nacimiento del estudiante' },
+          { name: 'telefono', type: 'VARCHAR(15)', desc: 'Teléfono de contacto' },
+          { name: 'activo', type: 'BOOLEAN', defaultValue: 'TRUE', desc: 'Matrícula vigente' }
         ]
       }
     ],
@@ -434,7 +471,10 @@ ORDER BY kilometraje ASC;`
     email VARCHAR(100) UNIQUE NOT NULL,
     carrera VARCHAR(80) NOT NULL,
     pga DECIMAL(3,2) NOT NULL CHECK (pga BETWEEN 1.00 AND 7.00),
-    semestre_actual INT DEFAULT 1 CHECK (semestre_actual BETWEEN 1 AND 12)
+    semestre_actual INT DEFAULT 1 CHECK (semestre_actual BETWEEN 1 AND 12),
+    fecha_nacimiento DATE,
+    telefono VARCHAR(15),
+    activo BOOLEAN DEFAULT TRUE
 );`,
     seedSql: `INSERT INTO estudiantes (rut, nombre_completo, email, carrera, pga, semestre_actual) VALUES
 ('19.987.654-3', 'Felipe Morales', 'felipe.morales@universidad.cl', 'Ingeniería en Informática', 6.25, 6),
@@ -481,7 +521,10 @@ GROUP BY carrera;`
           { name: 'temperatura_celsius', type: 'DECIMAL(4,2)', notNull: true, desc: 'Temperatura registrada' },
           { name: 'humedad_relativa', type: 'DECIMAL(5,2)', notNull: true, desc: 'Humedad en %' },
           { name: 'luminosidad_lux', type: 'INT', notNull: true, desc: 'Nivel de luz' },
-          { name: 'fecha_registro', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Fecha y hora' }
+          { name: 'fecha_registro', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Fecha y hora' },
+          { name: 'ubicacion', type: 'VARCHAR(60)', desc: 'Zona o bancal del invernadero' },
+          { name: 'bateria_pct', type: 'INT', desc: 'Nivel de batería del sensor (%)' },
+          { name: 'presion_atmosferica', type: 'DECIMAL(6,2)', desc: 'Presión atmosférica en hPa' }
         ]
       }
     ],
@@ -491,7 +534,10 @@ GROUP BY carrera;`
     temperatura_celsius DECIMAL(4,2) NOT NULL CHECK (temperatura_celsius BETWEEN -20.00 AND 60.00),
     humedad_relativa DECIMAL(5,2) NOT NULL CHECK (humedad_relativa BETWEEN 0.00 AND 100.00),
     luminosidad_lux INT NOT NULL CHECK (luminosidad_lux >= 0),
-    fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    ubicacion VARCHAR(60),
+    bateria_pct INT,
+    presion_atmosferica DECIMAL(6,2)
 );`,
     seedSql: `INSERT INTO lecturas_iot (codigo_sensor, temperatura_celsius, humedad_relativa, luminosidad_lux) VALUES
 ('SENSOR-NORTE', 24.50, 65.00, 1200),
@@ -538,7 +584,10 @@ GROUP BY codigo_sensor;`
           { name: 'piso', type: 'INT', notNull: true, desc: 'Piso del edificio' },
           { name: 'tipo', type: 'VARCHAR(20)', notNull: true, desc: 'Simple, Doble, Suite, Presidencial' },
           { name: 'tarifa_noche', type: 'DECIMAL(9,2)', notNull: true, desc: 'Precio en USD o CLP' },
-          { name: 'estado', type: 'VARCHAR(15)', defaultValue: "'DISPONIBLE'", desc: 'DISPONIBLE, OCUPADA, MANTENCION' }
+          { name: 'estado', type: 'VARCHAR(15)', defaultValue: "'DISPONIBLE'", desc: 'DISPONIBLE, OCUPADA, MANTENCION' },
+          { name: 'capacidad', type: 'INT', desc: 'Número de huéspedes que admite' },
+          { name: 'vista', type: 'VARCHAR(30)', desc: 'Tipo de vista (ciudad, jardín, mar)' },
+          { name: 'fecha_ultima_limpieza', type: 'DATE', desc: 'Fecha de la última limpieza registrada' }
         ]
       }
     ],
@@ -548,7 +597,10 @@ GROUP BY codigo_sensor;`
     piso INT NOT NULL CHECK (piso >= 1),
     tipo VARCHAR(20) NOT NULL CHECK (tipo IN ('Simple', 'Doble', 'Suite', 'Presidencial')),
     tarifa_noche DECIMAL(9,2) NOT NULL CHECK (tarifa_noche > 0),
-    estado VARCHAR(15) DEFAULT 'DISPONIBLE' CHECK (estado IN ('DISPONIBLE', 'OCUPADA', 'MANTENCION'))
+    estado VARCHAR(15) DEFAULT 'DISPONIBLE' CHECK (estado IN ('DISPONIBLE', 'OCUPADA', 'MANTENCION')),
+    capacidad INT,
+    vista VARCHAR(30),
+    fecha_ultima_limpieza DATE
 );`,
     seedSql: `INSERT INTO habitaciones (numero_habitacion, piso, tipo, tarifa_noche, estado) VALUES
 ('101', 1, 'Simple', 45000.00, 'DISPONIBLE'),
@@ -595,7 +647,10 @@ ORDER BY tarifa_noche ASC;`
           { name: 'nivel', type: 'VARCHAR(15)', notNull: true, desc: 'Principiante, Intermedio, Avanzado' },
           { name: 'duracion_horas', type: 'INT', notNull: true, desc: 'Horas cronológicas de contenido' },
           { name: 'precio', type: 'DECIMAL(8,2)', notNull: true, desc: 'Valor del curso' },
-          { name: 'publicado', type: 'BOOLEAN', defaultValue: 'FALSE', desc: 'Visibilidad en la web' }
+          { name: 'publicado', type: 'BOOLEAN', defaultValue: 'FALSE', desc: 'Visibilidad en la web' },
+          { name: 'instructor', type: 'VARCHAR(100)', desc: 'Nombre del instructor a cargo' },
+          { name: 'idioma', type: 'VARCHAR(20)', defaultValue: "'Español'", desc: 'Idioma del contenido' },
+          { name: 'fecha_creacion', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Fecha de creación del registro' }
         ]
       }
     ],
@@ -606,7 +661,10 @@ ORDER BY tarifa_noche ASC;`
     nivel VARCHAR(15) NOT NULL CHECK (nivel IN ('Principiante', 'Intermedio', 'Avanzado')),
     duracion_horas INT NOT NULL CHECK (duracion_horas > 0),
     precio DECIMAL(8,2) NOT NULL CHECK (precio >= 0),
-    publicado BOOLEAN DEFAULT FALSE
+    publicado BOOLEAN DEFAULT FALSE,
+    instructor VARCHAR(100),
+    idioma VARCHAR(20) DEFAULT 'Español',
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );`,
     seedSql: `INSERT INTO cursos (slug, titulo, nivel, duracion_horas, precio, publicado) VALUES
 ('python-desde-cero', 'Python Moderno desde Cero', 'Principiante', 24, 29990.00, TRUE),
@@ -652,7 +710,11 @@ ORDER BY precio DESC;`
           { name: 'id_depto', type: 'INT', pk: true, notNull: true, desc: 'ID del departamento' },
           { name: 'nombre_depto', type: 'VARCHAR(60)', unique: true, notNull: true, desc: 'Nombre del área' },
           { name: 'presupuesto_anual', type: 'DECIMAL(12,2)', notNull: true, desc: 'Presupuesto asignado' },
-          { name: 'ubicacion_piso', type: 'INT', notNull: true, desc: 'Piso del edificio corporativo' }
+          { name: 'ubicacion_piso', type: 'INT', notNull: true, desc: 'Piso del edificio corporativo' },
+          { name: 'email_depto', type: 'VARCHAR(100)', desc: 'Correo del departamento' },
+          { name: 'telefono', type: 'VARCHAR(20)', desc: 'Teléfono de contacto' },
+          { name: 'jefe_depto', type: 'VARCHAR(80)', desc: 'Nombre del jefe a cargo' },
+          { name: 'activo', type: 'BOOLEAN', defaultValue: 'TRUE', desc: 'Departamento en operación' }
         ]
       },
       {
@@ -663,7 +725,10 @@ ORDER BY precio DESC;`
           { name: 'id_depto', type: 'INT', fk: 'departamentos.id_depto', notNull: true, desc: 'Llave foránea al departamento' },
           { name: 'nombre', type: 'VARCHAR(80)', notNull: true, desc: 'Nombre del colaborador' },
           { name: 'email', type: 'VARCHAR(100)', unique: true, notNull: true, desc: 'Correo corporativo' },
-          { name: 'salario', type: 'DECIMAL(10,2)', notNull: true, desc: 'Sueldo mensual' }
+          { name: 'salario', type: 'DECIMAL(10,2)', notNull: true, desc: 'Sueldo mensual' },
+          { name: 'telefono', type: 'VARCHAR(20)', desc: 'Teléfono de contacto' },
+          { name: 'fecha_ingreso', type: 'DATE', desc: 'Fecha de ingreso a la empresa' },
+          { name: 'estado', type: 'VARCHAR(20)', defaultValue: "'ACTIVO'", desc: 'ACTIVO, LICENCIA, INACTIVO' }
         ]
       }
     ],
@@ -671,7 +736,11 @@ ORDER BY precio DESC;`
     id_depto SERIAL PRIMARY KEY,
     nombre_depto VARCHAR(60) UNIQUE NOT NULL,
     presupuesto_anual DECIMAL(12,2) NOT NULL CHECK (presupuesto_anual > 0),
-    ubicacion_piso INT NOT NULL
+    ubicacion_piso INT NOT NULL,
+    email_depto VARCHAR(100),
+    telefono VARCHAR(20),
+    jefe_depto VARCHAR(80),
+    activo BOOLEAN DEFAULT TRUE
 );
 
 CREATE TABLE empleados (
@@ -680,6 +749,9 @@ CREATE TABLE empleados (
     nombre VARCHAR(80) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
     salario DECIMAL(10,2) NOT NULL CHECK (salario > 0),
+    telefono VARCHAR(20),
+    fecha_ingreso DATE,
+    estado VARCHAR(20) DEFAULT 'ACTIVO',
     CONSTRAINT fk_empleado_depto FOREIGN KEY (id_depto)
         REFERENCES departamentos(id_depto)
         ON DELETE RESTRICT
@@ -744,7 +816,11 @@ ORDER BY total_gasto_nomina DESC;`
           { name: 'id_cliente', type: 'INT', pk: true, notNull: true, desc: 'ID único del cliente' },
           { name: 'nombre', type: 'VARCHAR(60)', notNull: true, desc: 'Nombre del cliente' },
           { name: 'email', type: 'VARCHAR(100)', unique: true, notNull: true, desc: 'Correo electrónico' },
-          { name: 'ciudad', type: 'VARCHAR(50)', notNull: true, desc: 'Ciudad de residencia' }
+          { name: 'ciudad', type: 'VARCHAR(50)', notNull: true, desc: 'Ciudad de residencia' },
+          { name: 'telefono', type: 'VARCHAR(20)', desc: 'Teléfono de contacto' },
+          { name: 'direccion', type: 'VARCHAR(120)', desc: 'Dirección de residencia' },
+          { name: 'fecha_registro', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Alta en la plataforma' },
+          { name: 'activo', type: 'BOOLEAN', defaultValue: 'TRUE', desc: 'Cliente activo' }
         ]
       },
       {
@@ -755,7 +831,10 @@ ORDER BY total_gasto_nomina DESC;`
           { name: 'id_cliente', type: 'INT', fk: 'clientes.id_cliente', notNull: true, desc: 'Cliente que compra' },
           { name: 'fecha_pedido', type: 'DATE', defaultValue: 'CURRENT_DATE', desc: 'Fecha de la orden' },
           { name: 'total', type: 'DECIMAL(10,2)', notNull: true, desc: 'Monto total de la compra' },
-          { name: 'estado', type: 'VARCHAR(20)', defaultValue: "'PENDIENTE'", desc: 'PENDIENTE, PAGADO, ENVIADO, CANCELADO' }
+          { name: 'estado', type: 'VARCHAR(20)', defaultValue: "'PENDIENTE'", desc: 'PENDIENTE, PAGADO, ENVIADO, CANCELADO' },
+          { name: 'direccion_envio', type: 'VARCHAR(120)', desc: 'Dirección de entrega' },
+          { name: 'fecha_actualizacion', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Última actualización' },
+          { name: 'notas', type: 'TEXT', desc: 'Observaciones del pedido' }
         ]
       }
     ],
@@ -763,7 +842,11 @@ ORDER BY total_gasto_nomina DESC;`
     id_cliente SERIAL PRIMARY KEY,
     nombre VARCHAR(60) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
-    ciudad VARCHAR(50) NOT NULL
+    ciudad VARCHAR(50) NOT NULL,
+    telefono VARCHAR(20),
+    direccion VARCHAR(120),
+    fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    activo BOOLEAN DEFAULT TRUE
 );
 
 CREATE TABLE pedidos (
@@ -772,6 +855,9 @@ CREATE TABLE pedidos (
     fecha_pedido DATE DEFAULT CURRENT_DATE,
     total DECIMAL(10,2) NOT NULL CHECK (total > 0),
     estado VARCHAR(20) DEFAULT 'PENDIENTE' CHECK (estado IN ('PENDIENTE', 'PAGADO', 'ENVIADO', 'CANCELADO')),
+    direccion_envio VARCHAR(120),
+    fecha_actualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    notas TEXT,
     FOREIGN KEY (id_cliente) REFERENCES clientes(id_cliente) ON DELETE CASCADE
 );`,
     seedSql: `INSERT INTO clientes (nombre, email, ciudad) VALUES
@@ -824,7 +910,11 @@ ORDER BY total_gastado DESC;`
         fields: [
           { name: 'id_categoria', type: 'INT', pk: true, notNull: true, desc: 'ID categoría' },
           { name: 'nombre_categoria', type: 'VARCHAR(50)', unique: true, notNull: true, desc: 'Nombre descriptivo' },
-          { name: 'descripcion', type: 'TEXT', desc: 'Detalles de la familia' }
+          { name: 'descripcion', type: 'TEXT', desc: 'Detalles de la familia' },
+          { name: 'activo', type: 'BOOLEAN', defaultValue: 'TRUE', desc: 'Categoría visible en catálogo' },
+          { name: 'orden_mostrar', type: 'INT', defaultValue: '0', desc: 'Orden en el menú' },
+          { name: 'fecha_creacion', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Alta de la categoría' },
+          { name: 'seccion', type: 'VARCHAR(40)', desc: 'Sección del almacén' }
         ]
       },
       {
@@ -835,14 +925,21 @@ ORDER BY total_gastado DESC;`
           { name: 'id_categoria', type: 'INT', fk: 'categorias.id_categoria', desc: 'Categoría a la que pertenece' },
           { name: 'nombre', type: 'VARCHAR(80)', notNull: true, desc: 'Nombre del producto' },
           { name: 'precio', type: 'DECIMAL(8,2)', notNull: true, desc: 'Precio al detalle' },
-          { name: 'stock', type: 'INT', defaultValue: '0', desc: 'Unidades en góndola' }
+          { name: 'stock', type: 'INT', defaultValue: '0', desc: 'Unidades en góndola' },
+          { name: 'sku', type: 'VARCHAR(30)', desc: 'Código interno del artículo' },
+          { name: 'estado', type: 'VARCHAR(15)', defaultValue: "'ACTIVO'", desc: 'ACTIVO, DESCONTINUADO' },
+          { name: 'fecha_creacion', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Alta en catálogo' }
         ]
       }
     ],
     ddlSql: `CREATE TABLE categorias (
     id_categoria SERIAL PRIMARY KEY,
     nombre_categoria VARCHAR(50) UNIQUE NOT NULL,
-    descripcion TEXT
+    descripcion TEXT,
+    activo BOOLEAN DEFAULT TRUE,
+    orden_mostrar INT DEFAULT 0,
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    seccion VARCHAR(40)
 );
 
 CREATE TABLE productos (
@@ -851,6 +948,9 @@ CREATE TABLE productos (
     nombre VARCHAR(80) NOT NULL,
     precio DECIMAL(8,2) NOT NULL CHECK (precio >= 0),
     stock INT DEFAULT 0 CHECK (stock >= 0),
+    sku VARCHAR(30),
+    estado VARCHAR(15) DEFAULT 'ACTIVO',
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (id_categoria) REFERENCES categorias(id_categoria) ON DELETE SET NULL
 );`,
     seedSql: `INSERT INTO categorias (nombre_categoria, descripcion) VALUES
@@ -898,7 +998,10 @@ LEFT JOIN categorias c ON p.id_categoria = c.id_categoria;`
           { name: 'id_autor', type: 'INT', pk: true, notNull: true, desc: 'ID del autor' },
           { name: 'nombre_autor', type: 'VARCHAR(80)', notNull: true, desc: 'Nombre literario' },
           { name: 'nacionalidad', type: 'VARCHAR(40)', notNull: true, desc: 'País de origen' },
-          { name: 'anio_nacimiento', type: 'INT', notNull: true, desc: 'Año de nacimiento' }
+          { name: 'anio_nacimiento', type: 'INT', notNull: true, desc: 'Año de nacimiento' },
+          { name: 'email', type: 'VARCHAR(100)', desc: 'Correo del autor' },
+          { name: 'biografia', type: 'TEXT', desc: 'Resumen biográfico' },
+          { name: 'activo', type: 'BOOLEAN', defaultValue: 'TRUE', desc: 'Autor vigente en catálogo' }
         ]
       },
       {
@@ -909,7 +1012,10 @@ LEFT JOIN categorias c ON p.id_categoria = c.id_categoria;`
           { name: 'id_autor', type: 'INT', fk: 'autores.id_autor', notNull: true, desc: 'Autor de la obra' },
           { name: 'titulo', type: 'VARCHAR(120)', notNull: true, desc: 'Título del libro' },
           { name: 'genero', type: 'VARCHAR(30)', notNull: true, desc: 'Género literario' },
-          { name: 'anio_publicacion', type: 'INT', notNull: true, desc: 'Año de edición' }
+          { name: 'anio_publicacion', type: 'INT', notNull: true, desc: 'Año de edición' },
+          { name: 'isbn', type: 'VARCHAR(20)', desc: 'ISBN del ejemplar' },
+          { name: 'precio', type: 'DECIMAL(8,2)', desc: 'Precio de venta' },
+          { name: 'estado', type: 'VARCHAR(20)', defaultValue: "'PUBLICADO'", desc: 'PUBLICADO, AGOTADO, PROXIMAMENTE' }
         ]
       }
     ],
@@ -917,7 +1023,10 @@ LEFT JOIN categorias c ON p.id_categoria = c.id_categoria;`
     id_autor SERIAL PRIMARY KEY,
     nombre_autor VARCHAR(80) NOT NULL,
     nacionalidad VARCHAR(40) NOT NULL,
-    anio_nacimiento INT NOT NULL
+    anio_nacimiento INT NOT NULL,
+    email VARCHAR(100),
+    biografia TEXT,
+    activo BOOLEAN DEFAULT TRUE
 );
 
 CREATE TABLE libros (
@@ -926,6 +1035,9 @@ CREATE TABLE libros (
     titulo VARCHAR(120) NOT NULL,
     genero VARCHAR(30) NOT NULL,
     anio_publicacion INT NOT NULL,
+    isbn VARCHAR(20),
+    precio DECIMAL(8,2),
+    estado VARCHAR(20) DEFAULT 'PUBLICADO',
     FOREIGN KEY (id_autor) REFERENCES autores(id_autor) ON DELETE CASCADE
 );`,
     seedSql: `INSERT INTO autores (nombre_autor, nacionalidad, anio_nacimiento) VALUES
@@ -975,7 +1087,11 @@ ORDER BY total_libros_publicados DESC;`
         fields: [
           { name: 'id_marca', type: 'INT', pk: true, notNull: true, desc: 'ID de la marca' },
           { name: 'nombre_marca', type: 'VARCHAR(40)', unique: true, notNull: true, desc: 'Nombre del fabricante' },
-          { name: 'pais_origen', type: 'VARCHAR(40)', notNull: true, desc: 'País central' }
+          { name: 'pais_origen', type: 'VARCHAR(40)', notNull: true, desc: 'País central' },
+          { name: 'pagina_web', type: 'VARCHAR(150)', desc: 'Sitio oficial' },
+          { name: 'email_contacto', type: 'VARCHAR(100)', desc: 'Correo comercial' },
+          { name: 'anio_fundacion', type: 'INT', desc: 'Año de fundación' },
+          { name: 'activo', type: 'BOOLEAN', defaultValue: 'TRUE', desc: 'Marca activa' }
         ]
       },
       {
@@ -985,14 +1101,21 @@ ORDER BY total_libros_publicados DESC;`
           { name: 'id_modelo', type: 'INT', pk: true, notNull: true, desc: 'ID del modelo' },
           { name: 'id_marca', type: 'INT', fk: 'marcas.id_marca', notNull: true, desc: 'Marca fabricante' },
           { name: 'nombre_modelo', type: 'VARCHAR(50)', notNull: true, desc: 'Nombre del modelo' },
-          { name: 'carroceria', type: 'VARCHAR(20)', notNull: true, desc: 'Sedan, SUV, Hatchback, Pickup' }
+          { name: 'carroceria', type: 'VARCHAR(20)', notNull: true, desc: 'Sedan, SUV, Hatchback, Pickup' },
+          { name: 'anio_lanzamiento', type: 'INT', desc: 'Año de lanzamiento' },
+          { name: 'precio_lista', type: 'DECIMAL(10,2)', desc: 'Precio de lista' },
+          { name: 'disponible', type: 'BOOLEAN', defaultValue: 'TRUE', desc: 'Disponible en concesionario' }
         ]
       }
     ],
     ddlSql: `CREATE TABLE marcas (
     id_marca SERIAL PRIMARY KEY,
     nombre_marca VARCHAR(40) UNIQUE NOT NULL,
-    pais_origen VARCHAR(40) NOT NULL
+    pais_origen VARCHAR(40) NOT NULL,
+    pagina_web VARCHAR(150),
+    email_contacto VARCHAR(100),
+    anio_fundacion INT,
+    activo BOOLEAN DEFAULT TRUE
 );
 
 CREATE TABLE modelos (
@@ -1000,6 +1123,9 @@ CREATE TABLE modelos (
     id_marca INT NOT NULL,
     nombre_modelo VARCHAR(50) NOT NULL,
     carroceria VARCHAR(20) NOT NULL CHECK (carroceria IN ('Sedan', 'SUV', 'Hatchback', 'Pickup', 'Coupe')),
+    anio_lanzamiento INT,
+    precio_lista DECIMAL(10,2),
+    disponible BOOLEAN DEFAULT TRUE,
     FOREIGN KEY (id_marca) REFERENCES marcas(id_marca) ON DELETE CASCADE
 );`,
     seedSql: `INSERT INTO marcas (nombre_marca, pais_origen) VALUES
@@ -1050,7 +1176,11 @@ ORDER BY m.nombre_marca;`
           { name: 'id_medico', type: 'INT', pk: true, notNull: true, desc: 'ID del médico' },
           { name: 'nombre_medico', type: 'VARCHAR(80)', notNull: true, desc: 'Nombre del doctor' },
           { name: 'especialidad', type: 'VARCHAR(50)', notNull: true, desc: 'Área médica' },
-          { name: 'valor_consulta', type: 'DECIMAL(8,2)', notNull: true, desc: 'Tarifa por consulta' }
+          { name: 'valor_consulta', type: 'DECIMAL(8,2)', notNull: true, desc: 'Tarifa por consulta' },
+          { name: 'rut_medico', type: 'VARCHAR(12)', desc: 'RUN del profesional' },
+          { name: 'telefono', type: 'VARCHAR(20)', desc: 'Teléfono de contacto' },
+          { name: 'email', type: 'VARCHAR(100)', desc: 'Correo institucional' },
+          { name: 'activo', type: 'BOOLEAN', defaultValue: 'TRUE', desc: 'Médico contratado' }
         ]
       },
       {
@@ -1061,7 +1191,10 @@ ORDER BY m.nombre_marca;`
           { name: 'id_medico', type: 'INT', fk: 'medicos.id_medico', notNull: true, desc: 'Médico que atendió' },
           { name: 'rut_paciente', type: 'VARCHAR(12)', notNull: true, desc: 'Paciente atendido' },
           { name: 'fecha_hora', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Fecha y hora' },
-          { name: 'diagnostico_resumen', type: 'TEXT', notNull: true, desc: 'Dictamen clínico' }
+          { name: 'diagnostico_resumen', type: 'TEXT', notNull: true, desc: 'Dictamen clínico' },
+          { name: 'estado', type: 'VARCHAR(20)', defaultValue: "'ATENDIDA'", desc: 'ATENDIDA, PENDIENTE, CANCELADA' },
+          { name: 'costo', type: 'DECIMAL(8,2)', desc: 'Costo cobrado en la atención' },
+          { name: 'observaciones', type: 'TEXT', desc: 'Notas adicionales' }
         ]
       }
     ],
@@ -1069,7 +1202,11 @@ ORDER BY m.nombre_marca;`
     id_medico SERIAL PRIMARY KEY,
     nombre_medico VARCHAR(80) NOT NULL,
     especialidad VARCHAR(50) NOT NULL,
-    valor_consulta DECIMAL(8,2) NOT NULL CHECK (valor_consulta > 0)
+    valor_consulta DECIMAL(8,2) NOT NULL CHECK (valor_consulta > 0),
+    rut_medico VARCHAR(12),
+    telefono VARCHAR(20),
+    email VARCHAR(100),
+    activo BOOLEAN DEFAULT TRUE
 );
 
 CREATE TABLE consultas (
@@ -1078,6 +1215,9 @@ CREATE TABLE consultas (
     rut_paciente VARCHAR(12) NOT NULL,
     fecha_hora TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     diagnostico_resumen TEXT NOT NULL,
+    estado VARCHAR(20) DEFAULT 'ATENDIDA',
+    costo DECIMAL(8,2),
+    observaciones TEXT,
     FOREIGN KEY (id_medico) REFERENCES medicos(id_medico) ON DELETE RESTRICT
 );`,
     seedSql: `INSERT INTO medicos (nombre_medico, especialidad, valor_consulta) VALUES
@@ -1127,7 +1267,11 @@ ORDER BY total_recaudado DESC;`
         fields: [
           { name: 'id_docente', type: 'INT', pk: true, notNull: true, desc: 'ID del docente' },
           { name: 'nombre', type: 'VARCHAR(80)', notNull: true, desc: 'Nombre del profesor' },
-          { name: 'grado_academico', type: 'VARCHAR(30)', notNull: true, desc: 'Licenciado, Magíster, Doctor' }
+          { name: 'grado_academico', type: 'VARCHAR(30)', notNull: true, desc: 'Licenciado, Magíster, Doctor' },
+          { name: 'email', type: 'VARCHAR(100)', desc: 'Correo institucional' },
+          { name: 'telefono', type: 'VARCHAR(20)', desc: 'Teléfono de contacto' },
+          { name: 'departamento', type: 'VARCHAR(60)', desc: 'Departamento académico' },
+          { name: 'activo', type: 'BOOLEAN', defaultValue: 'TRUE', desc: 'Docente activo' }
         ]
       },
       {
@@ -1138,14 +1282,21 @@ ORDER BY total_recaudado DESC;`
           { name: 'id_docente', type: 'INT', fk: 'docentes.id_docente', notNull: true, desc: 'Profesor responsable' },
           { name: 'codigo_ramo', type: 'VARCHAR(15)', unique: true, notNull: true, desc: 'Código curricular (ej. INF-201)' },
           { name: 'nombre_ramo', type: 'VARCHAR(80)', notNull: true, desc: 'Nombre de la materia' },
-          { name: 'creditos', type: 'INT', notNull: true, desc: 'Créditos SCT (1 a 12)' }
+          { name: 'creditos', type: 'INT', notNull: true, desc: 'Créditos SCT (1 a 12)' },
+          { name: 'semestre', type: 'VARCHAR(20)', desc: 'Semestre académico (ej. 2024-S1)' },
+          { name: 'horas_semanales', type: 'INT', desc: 'Horas de clase por semana' },
+          { name: 'activa', type: 'BOOLEAN', defaultValue: 'TRUE', desc: 'Asignatura activa' }
         ]
       }
     ],
     ddlSql: `CREATE TABLE docentes (
     id_docente SERIAL PRIMARY KEY,
     nombre VARCHAR(80) NOT NULL,
-    grado_academico VARCHAR(30) NOT NULL CHECK (grado_academico IN ('Licenciado', 'Magíster', 'Doctor'))
+    grado_academico VARCHAR(30) NOT NULL CHECK (grado_academico IN ('Licenciado', 'Magíster', 'Doctor')),
+    email VARCHAR(100),
+    telefono VARCHAR(20),
+    departamento VARCHAR(60),
+    activo BOOLEAN DEFAULT TRUE
 );
 
 CREATE TABLE asignaturas (
@@ -1154,6 +1305,9 @@ CREATE TABLE asignaturas (
     codigo_ramo VARCHAR(15) UNIQUE NOT NULL,
     nombre_ramo VARCHAR(80) NOT NULL,
     creditos INT NOT NULL CHECK (creditos BETWEEN 1 AND 12),
+    semestre VARCHAR(20),
+    horas_semanales INT,
+    activa BOOLEAN DEFAULT TRUE,
     FOREIGN KEY (id_docente) REFERENCES docentes(id_docente) ON DELETE CASCADE
 );`,
     seedSql: `INSERT INTO docentes (nombre, grado_academico) VALUES
@@ -1202,7 +1356,12 @@ HAVING SUM(a.creditos) >= 10;`
         fields: [
           { name: 'id_proveedor', type: 'INT', pk: true, notNull: true, desc: 'ID del proveedor' },
           { name: 'rut_empresa', type: 'VARCHAR(12)', unique: true, notNull: true, desc: 'RUT tributario' },
-          { name: 'razon_social', type: 'VARCHAR(100)', notNull: true, desc: 'Nombre comercial de la empresa' }
+          { name: 'razon_social', type: 'VARCHAR(100)', notNull: true, desc: 'Nombre comercial de la empresa' },
+          { name: 'email', type: 'VARCHAR(100)', desc: 'Correo de contacto' },
+          { name: 'telefono', type: 'VARCHAR(20)', desc: 'Teléfono comercial' },
+          { name: 'direccion', type: 'VARCHAR(120)', desc: 'Dirección fiscal' },
+          { name: 'rubro', type: 'VARCHAR(60)', desc: 'Giro del negocio' },
+          { name: 'activo', type: 'BOOLEAN', defaultValue: 'TRUE', desc: 'Proveedor habilitado' }
         ]
       },
       {
@@ -1215,14 +1374,20 @@ HAVING SUM(a.creditos) >= 10;`
           { name: 'monto_neto', type: 'DECIMAL(12,2)', notNull: true, desc: 'Valor antes de IVA' },
           { name: 'iva', type: 'DECIMAL(12,2)', notNull: true, desc: 'Impuesto al valor agregado' },
           { name: 'monto_total', type: 'DECIMAL(12,2)', notNull: true, desc: 'Total a pagar' },
-          { name: 'estado_pago', type: 'VARCHAR(15)', defaultValue: "'PENDIENTE'", desc: 'PENDIENTE, PAGADA, ANULADA' }
+          { name: 'estado_pago', type: 'VARCHAR(15)', defaultValue: "'PENDIENTE'", desc: 'PENDIENTE, PAGADA, ANULADA' },
+          { name: 'fecha_factura', type: 'DATE', defaultValue: 'CURRENT_DATE', desc: 'Fecha de emisión' }
         ]
       }
     ],
     ddlSql: `CREATE TABLE proveedores (
     id_proveedor SERIAL PRIMARY KEY,
     rut_empresa VARCHAR(12) UNIQUE NOT NULL,
-    razon_social VARCHAR(100) NOT NULL
+    razon_social VARCHAR(100) NOT NULL,
+    email VARCHAR(100),
+    telefono VARCHAR(20),
+    direccion VARCHAR(120),
+    rubro VARCHAR(60),
+    activo BOOLEAN DEFAULT TRUE
 );
 
 CREATE TABLE facturas_compra (
@@ -1233,6 +1398,7 @@ CREATE TABLE facturas_compra (
     iva DECIMAL(12,2) NOT NULL CHECK (iva >= 0),
     monto_total DECIMAL(12,2) NOT NULL CHECK (monto_total > monto_neto),
     estado_pago VARCHAR(15) DEFAULT 'PENDIENTE' CHECK (estado_pago IN ('PENDIENTE', 'PAGADA', 'ANULADA')),
+    fecha_factura DATE DEFAULT CURRENT_DATE,
     UNIQUE (id_proveedor, folio_factura),
     FOREIGN KEY (id_proveedor) REFERENCES proveedores(id_proveedor) ON DELETE RESTRICT
 );`,
@@ -1284,7 +1450,11 @@ ORDER BY deuda_total_pendiente DESC;`
           { name: 'id_hotel', type: 'INT', pk: true, notNull: true, desc: 'ID del hotel' },
           { name: 'nombre_hotel', type: 'VARCHAR(80)', notNull: true, desc: 'Nombre de la sucursal' },
           { name: 'ciudad', type: 'VARCHAR(50)', notNull: true, desc: 'Ciudad de ubicación' },
-          { name: 'estrellas', type: 'INT', notNull: true, desc: 'Categoría (1 a 5 estrellas)' }
+          { name: 'estrellas', type: 'INT', notNull: true, desc: 'Categoría (1 a 5 estrellas)' },
+          { name: 'direccion', type: 'VARCHAR(120)', desc: 'Dirección de la sucursal' },
+          { name: 'telefono', type: 'VARCHAR(20)', desc: 'Teléfono de recepción' },
+          { name: 'email', type: 'VARCHAR(100)', desc: 'Correo de reservas' },
+          { name: 'activo', type: 'BOOLEAN', defaultValue: 'TRUE', desc: 'Hotel en operación' }
         ]
       },
       {
@@ -1295,7 +1465,10 @@ ORDER BY deuda_total_pendiente DESC;`
           { name: 'id_hotel', type: 'INT', fk: 'hoteles.id_hotel', notNull: true, desc: 'Hotel perteneciente' },
           { name: 'numero_habitacion', type: 'VARCHAR(10)', notNull: true, desc: 'Número de cuarto' },
           { name: 'tarifa', type: 'DECIMAL(9,2)', notNull: true, desc: 'Precio por noche' },
-          { name: 'disponible', type: 'BOOLEAN', defaultValue: 'TRUE', desc: 'Disponibilidad actual' }
+          { name: 'disponible', type: 'BOOLEAN', defaultValue: 'TRUE', desc: 'Disponibilidad actual' },
+          { name: 'tipo_habitacion', type: 'VARCHAR(30)', desc: 'Individual, Doble, Suite' },
+          { name: 'piso', type: 'INT', desc: 'Piso donde se ubica' },
+          { name: 'fecha_actualizacion', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Última actualización de estado' }
         ]
       }
     ],
@@ -1303,7 +1476,11 @@ ORDER BY deuda_total_pendiente DESC;`
     id_hotel SERIAL PRIMARY KEY,
     nombre_hotel VARCHAR(80) NOT NULL,
     ciudad VARCHAR(50) NOT NULL,
-    estrellas INT NOT NULL CHECK (estrellas BETWEEN 1 AND 5)
+    estrellas INT NOT NULL CHECK (estrellas BETWEEN 1 AND 5),
+    direccion VARCHAR(120),
+    telefono VARCHAR(20),
+    email VARCHAR(100),
+    activo BOOLEAN DEFAULT TRUE
 );
 
 CREATE TABLE habitaciones (
@@ -1312,6 +1489,9 @@ CREATE TABLE habitaciones (
     numero_habitacion VARCHAR(10) NOT NULL,
     tarifa DECIMAL(9,2) NOT NULL CHECK (tarifa > 0),
     disponible BOOLEAN DEFAULT TRUE,
+    tipo_habitacion VARCHAR(30),
+    piso INT,
+    fecha_actualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     UNIQUE (id_hotel, numero_habitacion),
     FOREIGN KEY (id_hotel) REFERENCES hoteles(id_hotel) ON DELETE CASCADE
 );`,
@@ -1362,7 +1542,12 @@ GROUP BY h.id_hotel, h.nombre_hotel, h.ciudad, h.estrellas;`
         fields: [
           { name: 'id_proyecto', type: 'INT', pk: true, notNull: true, desc: 'ID del proyecto' },
           { name: 'nombre_proyecto', type: 'VARCHAR(80)', notNull: true, desc: 'Nombre del software' },
-          { name: 'cliente', type: 'VARCHAR(60)', notNull: true, desc: 'Empresa mandante' }
+          { name: 'cliente', type: 'VARCHAR(60)', notNull: true, desc: 'Empresa mandante' },
+          { name: 'descripcion', type: 'TEXT', desc: 'Objetivo del proyecto' },
+          { name: 'fecha_inicio', type: 'DATE', desc: 'Inicio planificado' },
+          { name: 'fecha_termino', type: 'DATE', desc: 'Cierre estimado' },
+          { name: 'estado', type: 'VARCHAR(20)', defaultValue: "'EN_CURSO'", desc: 'PLANIFICADO, EN_CURSO, FINALIZADO' },
+          { name: 'presupuesto', type: 'DECIMAL(12,2)', desc: 'Presupuesto aprobado' }
         ]
       },
       {
@@ -1373,14 +1558,22 @@ GROUP BY h.id_hotel, h.nombre_hotel, h.ciudad, h.estrellas;`
           { name: 'id_proyecto', type: 'INT', fk: 'proyectos.id_proyecto', notNull: true, desc: 'Proyecto al que pertenece' },
           { name: 'titulo_tarea', type: 'VARCHAR(100)', notNull: true, desc: 'Descripción de la labor' },
           { name: 'prioridad', type: 'VARCHAR(10)', defaultValue: "'MEDIA'", desc: 'ALTA, MEDIA, BAJA' },
-          { name: 'completada', type: 'BOOLEAN', defaultValue: 'FALSE', desc: 'Estado de término' }
+          { name: 'completada', type: 'BOOLEAN', defaultValue: 'FALSE', desc: 'Estado de término' },
+          { name: 'fecha_limite', type: 'DATE', desc: 'Fecha límite de entrega' },
+          { name: 'horas_estimadas', type: 'DECIMAL(6,2)', desc: 'Estimación en horas' },
+          { name: 'fecha_creacion', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Alta de la tarea' }
         ]
       }
     ],
     ddlSql: `CREATE TABLE proyectos (
     id_proyecto SERIAL PRIMARY KEY,
     nombre_proyecto VARCHAR(80) NOT NULL,
-    cliente VARCHAR(60) NOT NULL
+    cliente VARCHAR(60) NOT NULL,
+    descripcion TEXT,
+    fecha_inicio DATE,
+    fecha_termino DATE,
+    estado VARCHAR(20) DEFAULT 'EN_CURSO',
+    presupuesto DECIMAL(12,2)
 );
 
 CREATE TABLE tareas (
@@ -1389,6 +1582,9 @@ CREATE TABLE tareas (
     titulo_tarea VARCHAR(100) NOT NULL,
     prioridad VARCHAR(10) DEFAULT 'MEDIA' CHECK (prioridad IN ('ALTA', 'MEDIA', 'BAJA')),
     completada BOOLEAN DEFAULT FALSE,
+    fecha_limite DATE,
+    horas_estimadas DECIMAL(6,2),
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (id_proyecto) REFERENCES proyectos(id_proyecto) ON DELETE CASCADE
 );`,
     seedSql: `INSERT INTO proyectos (nombre_proyecto, cliente) VALUES
@@ -1442,7 +1638,11 @@ GROUP BY p.id_proyecto, p.nombre_proyecto, p.cliente;`
         fields: [
           { name: 'id_cliente', type: 'INT', pk: true, notNull: true, desc: 'ID cliente' },
           { name: 'nombre', type: 'VARCHAR(80)', notNull: true, desc: 'Nombre completo' },
-          { name: 'email', type: 'VARCHAR(100)', unique: true, notNull: true, desc: 'Correo único' }
+          { name: 'email', type: 'VARCHAR(100)', unique: true, notNull: true, desc: 'Correo único' },
+          { name: 'telefono', type: 'VARCHAR(20)', desc: 'Teléfono de contacto' },
+          { name: 'direccion', type: 'VARCHAR(120)', desc: 'Dirección de envío' },
+          { name: 'fecha_registro', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Alta en la tienda' },
+          { name: 'activo', type: 'BOOLEAN', defaultValue: 'TRUE', desc: 'Cuenta habilitada' }
         ]
       },
       {
@@ -1451,7 +1651,10 @@ GROUP BY p.id_proyecto, p.nombre_proyecto, p.cliente;`
         fields: [
           { name: 'id_producto', type: 'INT', pk: true, notNull: true, desc: 'ID producto' },
           { name: 'nombre_producto', type: 'VARCHAR(80)', notNull: true, desc: 'Nombre' },
-          { name: 'precio_actual', type: 'DECIMAL(10,2)', notNull: true, desc: 'Precio catálogo' }
+          { name: 'precio_actual', type: 'DECIMAL(10,2)', notNull: true, desc: 'Precio catálogo' },
+          { name: 'categoria', type: 'VARCHAR(50)', desc: 'Categoría del producto' },
+          { name: 'stock', type: 'INT', defaultValue: '0', desc: 'Unidades disponibles' },
+          { name: 'descripcion', type: 'VARCHAR(200)', desc: 'Descripción corta' }
         ]
       },
       {
@@ -1461,7 +1664,10 @@ GROUP BY p.id_proyecto, p.nombre_proyecto, p.cliente;`
           { name: 'id_pedido', type: 'INT', pk: true, notNull: true, desc: 'ID orden' },
           { name: 'id_cliente', type: 'INT', fk: 'clientes.id_cliente', notNull: true, desc: 'Comprador (1:N)' },
           { name: 'fecha_pedido', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Fecha y hora' },
-          { name: 'estado', type: 'VARCHAR(20)', defaultValue: "'PAGADO'", desc: 'Estado del pedido' }
+          { name: 'estado', type: 'VARCHAR(20)', defaultValue: "'PAGADO'", desc: 'Estado del pedido' },
+          { name: 'metodo_pago', type: 'VARCHAR(30)', desc: 'Tarjeta, transferencia, etc.' },
+          { name: 'direccion_envio', type: 'VARCHAR(120)', desc: 'Dirección de entrega' },
+          { name: 'observaciones', type: 'VARCHAR(200)', desc: 'Notas del pedido' }
         ]
       },
       {
@@ -1472,20 +1678,28 @@ GROUP BY p.id_proyecto, p.nombre_proyecto, p.cliente;`
           { name: 'id_pedido', type: 'INT', fk: 'pedidos.id_pedido', notNull: true, desc: 'Orden asociada' },
           { name: 'id_producto', type: 'INT', fk: 'productos.id_producto', notNull: true, desc: 'Producto comprado' },
           { name: 'cantidad', type: 'INT', notNull: true, desc: 'Unidades compradas (>0)' },
-          { name: 'precio_unitario_historico', type: 'DECIMAL(10,2)', notNull: true, desc: 'Precio al momento de comprar' }
+          { name: 'precio_unitario_historico', type: 'DECIMAL(10,2)', notNull: true, desc: 'Precio al momento de comprar' },
+          { name: 'descuento', type: 'DECIMAL(5,2)', defaultValue: '0', desc: 'Descuento aplicado (%)' }
         ]
       }
     ],
     ddlSql: `CREATE TABLE clientes (
     id_cliente SERIAL PRIMARY KEY,
     nombre VARCHAR(80) NOT NULL,
-    email VARCHAR(100) UNIQUE NOT NULL
+    email VARCHAR(100) UNIQUE NOT NULL,
+    telefono VARCHAR(20),
+    direccion VARCHAR(120),
+    fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    activo BOOLEAN DEFAULT TRUE
 );
 
 CREATE TABLE productos (
     id_producto SERIAL PRIMARY KEY,
     nombre_producto VARCHAR(80) NOT NULL,
-    precio_actual DECIMAL(10,2) NOT NULL CHECK (precio_actual > 0)
+    precio_actual DECIMAL(10,2) NOT NULL CHECK (precio_actual > 0),
+    categoria VARCHAR(50),
+    stock INT DEFAULT 0,
+    descripcion VARCHAR(200)
 );
 
 CREATE TABLE pedidos (
@@ -1493,6 +1707,9 @@ CREATE TABLE pedidos (
     id_cliente INT NOT NULL,
     fecha_pedido TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     estado VARCHAR(20) DEFAULT 'PAGADO',
+    metodo_pago VARCHAR(30),
+    direccion_envio VARCHAR(120),
+    observaciones VARCHAR(200),
     FOREIGN KEY (id_cliente) REFERENCES clientes(id_cliente) ON DELETE CASCADE
 );
 
@@ -1502,6 +1719,7 @@ CREATE TABLE detalle_pedidos (
     id_producto INT NOT NULL,
     cantidad INT NOT NULL CHECK (cantidad > 0),
     precio_unitario_historico DECIMAL(10,2) NOT NULL CHECK (precio_unitario_historico > 0),
+    descuento DECIMAL(5,2) DEFAULT 0,
     UNIQUE (id_pedido, id_producto),
     FOREIGN KEY (id_pedido) REFERENCES pedidos(id_pedido) ON DELETE CASCADE,
     FOREIGN KEY (id_producto) REFERENCES productos(id_producto) ON DELETE RESTRICT
@@ -1558,7 +1776,10 @@ ORDER BY total_recaudado DESC;`
         fields: [
           { name: 'id_profesor', type: 'INT', pk: true, notNull: true, desc: 'ID profesor' },
           { name: 'nombre', type: 'VARCHAR(80)', notNull: true, desc: 'Nombre' },
-          { name: 'departamento', type: 'VARCHAR(60)', notNull: true, desc: 'Facultad' }
+          { name: 'departamento', type: 'VARCHAR(60)', notNull: true, desc: 'Facultad' },
+          { name: 'email', type: 'VARCHAR(100)', desc: 'Correo institucional' },
+          { name: 'telefono', type: 'VARCHAR(20)', desc: 'Teléfono de contacto' },
+          { name: 'fecha_contratacion', type: 'DATE', desc: 'Fecha de ingreso' }
         ]
       },
       {
@@ -1568,7 +1789,9 @@ ORDER BY total_recaudado DESC;`
           { name: 'id_curso', type: 'INT', pk: true, notNull: true, desc: 'ID curso' },
           { name: 'id_profesor', type: 'INT', fk: 'profesores.id_profesor', notNull: true, desc: 'Profesor titular' },
           { name: 'nombre_curso', type: 'VARCHAR(80)', notNull: true, desc: 'Materia' },
-          { name: 'creditos', type: 'INT', notNull: true, desc: 'Créditos' }
+          { name: 'creditos', type: 'INT', notNull: true, desc: 'Créditos' },
+          { name: 'aula', type: 'VARCHAR(20)', desc: 'Sala de clases' },
+          { name: 'capacidad_max', type: 'INT', defaultValue: '40', desc: 'Cupos disponibles' }
         ]
       },
       {
@@ -1577,7 +1800,10 @@ ORDER BY total_recaudado DESC;`
         fields: [
           { name: 'id_estudiante', type: 'INT', pk: true, notNull: true, desc: 'ID alumno' },
           { name: 'nombre', type: 'VARCHAR(80)', notNull: true, desc: 'Nombre completo' },
-          { name: 'rut', type: 'VARCHAR(12)', unique: true, notNull: true, desc: 'RUT' }
+          { name: 'rut', type: 'VARCHAR(12)', unique: true, notNull: true, desc: 'RUT' },
+          { name: 'email', type: 'VARCHAR(100)', desc: 'Correo personal' },
+          { name: 'fecha_nacimiento', type: 'DATE', desc: 'Fecha de nacimiento' },
+          { name: 'telefono', type: 'VARCHAR(20)', desc: 'Teléfono de contacto' }
         ]
       },
       {
@@ -1588,14 +1814,18 @@ ORDER BY total_recaudado DESC;`
           { name: 'id_estudiante', type: 'INT', fk: 'estudiantes.id_estudiante', notNull: true, desc: 'Estudiante' },
           { name: 'id_curso', type: 'INT', fk: 'cursos.id_curso', notNull: true, desc: 'Curso' },
           { name: 'semestre', type: 'VARCHAR(10)', notNull: true, desc: 'Periodo (ej. 2024-1)' },
-          { name: 'nota_final', type: 'DECIMAL(3,2)', desc: 'Calificación obtenida (1.00 a 7.00)' }
+          { name: 'nota_final', type: 'DECIMAL(3,2)', desc: 'Calificación obtenida (1.00 a 7.00)' },
+          { name: 'fecha_inscripcion', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Alta de matrícula' }
         ]
       }
     ],
     ddlSql: `CREATE TABLE profesores (
     id_profesor SERIAL PRIMARY KEY,
     nombre VARCHAR(80) NOT NULL,
-    departamento VARCHAR(60) NOT NULL
+    departamento VARCHAR(60) NOT NULL,
+    email VARCHAR(100),
+    telefono VARCHAR(20),
+    fecha_contratacion DATE
 );
 
 CREATE TABLE cursos (
@@ -1603,13 +1833,18 @@ CREATE TABLE cursos (
     id_profesor INT NOT NULL,
     nombre_curso VARCHAR(80) NOT NULL,
     creditos INT NOT NULL CHECK (creditos > 0),
+    aula VARCHAR(20),
+    capacidad_max INT DEFAULT 40,
     FOREIGN KEY (id_profesor) REFERENCES profesores(id_profesor)
 );
 
 CREATE TABLE estudiantes (
     id_estudiante SERIAL PRIMARY KEY,
     nombre VARCHAR(80) NOT NULL,
-    rut VARCHAR(12) UNIQUE NOT NULL
+    rut VARCHAR(12) UNIQUE NOT NULL,
+    email VARCHAR(100),
+    fecha_nacimiento DATE,
+    telefono VARCHAR(20)
 );
 
 CREATE TABLE inscripciones (
@@ -1618,6 +1853,7 @@ CREATE TABLE inscripciones (
     id_curso INT NOT NULL,
     semestre VARCHAR(10) NOT NULL,
     nota_final DECIMAL(3,2) CHECK (nota_final BETWEEN 1.00 AND 7.00),
+    fecha_inscripcion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     UNIQUE (id_estudiante, id_curso, semestre),
     FOREIGN KEY (id_estudiante) REFERENCES estudiantes(id_estudiante) ON DELETE CASCADE,
     FOREIGN KEY (id_curso) REFERENCES cursos(id_curso) ON DELETE CASCADE
@@ -1675,7 +1911,10 @@ ORDER BY c.nombre_curso, i.nota_final DESC;`
         fields: [
           { name: 'id_pelicula', type: 'INT', pk: true, notNull: true, desc: 'ID película' },
           { name: 'titulo', type: 'VARCHAR(100)', notNull: true, desc: 'Nombre' },
-          { name: 'duracion_min', type: 'INT', notNull: true, desc: 'Minutos' }
+          { name: 'duracion_min', type: 'INT', notNull: true, desc: 'Minutos' },
+          { name: 'genero', type: 'VARCHAR(30)', desc: 'Género cinematográfico' },
+          { name: 'clasificacion', type: 'VARCHAR(10)', desc: 'Rating (ej. +13)' },
+          { name: 'sinopsis', type: 'VARCHAR(255)', desc: 'Resumen de la trama' }
         ]
       },
       {
@@ -1684,7 +1923,10 @@ ORDER BY c.nombre_curso, i.nota_final DESC;`
         fields: [
           { name: 'id_sala', type: 'INT', pk: true, notNull: true, desc: 'ID sala' },
           { name: 'nombre_sala', type: 'VARCHAR(30)', notNull: true, desc: 'Sala 1 IMAX, Sala 2 3D' },
-          { name: 'capacidad_butacas', type: 'INT', notNull: true, desc: 'Aforo' }
+          { name: 'capacidad_butacas', type: 'INT', notNull: true, desc: 'Aforo' },
+          { name: 'tipo_sala', type: 'VARCHAR(30)', defaultValue: "'2D'", desc: '2D, 3D o IMAX' },
+          { name: 'piso', type: 'VARCHAR(20)', desc: 'Ubicación en el complejo' },
+          { name: 'activo', type: 'BOOLEAN', defaultValue: 'TRUE', desc: 'Sala operativa' }
         ]
       },
       {
@@ -1694,7 +1936,9 @@ ORDER BY c.nombre_curso, i.nota_final DESC;`
           { name: 'id_funcion', type: 'INT', pk: true, notNull: true, desc: 'ID función' },
           { name: 'id_pelicula', type: 'INT', fk: 'peliculas.id_pelicula', notNull: true, desc: 'Película' },
           { name: 'id_sala', type: 'INT', fk: 'salas.id_sala', notNull: true, desc: 'Sala' },
-          { name: 'fecha_hora', type: 'TIMESTAMP', notNull: true, desc: 'Inicio' }
+          { name: 'fecha_hora', type: 'TIMESTAMP', notNull: true, desc: 'Inicio' },
+          { name: 'precio_base', type: 'DECIMAL(8,2)', desc: 'Precio de la entrada' },
+          { name: 'estado', type: 'VARCHAR(20)', defaultValue: "'PROGRAMADA'", desc: 'Programada, cancelada' }
         ]
       },
       {
@@ -1704,20 +1948,29 @@ ORDER BY c.nombre_curso, i.nota_final DESC;`
           { name: 'id_boleto', type: 'INT', pk: true, notNull: true, desc: 'ID boleto' },
           { name: 'id_funcion', type: 'INT', fk: 'funciones.id_funcion', notNull: true, desc: 'Función' },
           { name: 'codigo_butaca', type: 'VARCHAR(5)', notNull: true, desc: 'Fila y Asiento (ej. A-12)' },
-          { name: 'precio_pagado', type: 'DECIMAL(8,2)', notNull: true, desc: 'Valor entrada' }
+          { name: 'precio_pagado', type: 'DECIMAL(8,2)', notNull: true, desc: 'Valor entrada' },
+          { name: 'tipo_entrada', type: 'VARCHAR(20)', defaultValue: "'GENERAL'", desc: 'General, niño, adulto mayor' },
+          { name: 'estado', type: 'VARCHAR(20)', defaultValue: "'VENDIDO'", desc: 'Vendido o anulado' },
+          { name: 'fecha_compra', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Momento de la venta' }
         ]
       }
     ],
     ddlSql: `CREATE TABLE peliculas (
     id_pelicula SERIAL PRIMARY KEY,
     titulo VARCHAR(100) NOT NULL,
-    duracion_min INT NOT NULL CHECK (duracion_min > 0)
+    duracion_min INT NOT NULL CHECK (duracion_min > 0),
+    genero VARCHAR(30),
+    clasificacion VARCHAR(10),
+    sinopsis VARCHAR(255)
 );
 
 CREATE TABLE salas (
     id_sala SERIAL PRIMARY KEY,
     nombre_sala VARCHAR(30) NOT NULL,
-    capacidad_butacas INT NOT NULL CHECK (capacidad_butacas > 0)
+    capacidad_butacas INT NOT NULL CHECK (capacidad_butacas > 0),
+    tipo_sala VARCHAR(30) DEFAULT '2D',
+    piso VARCHAR(20),
+    activo BOOLEAN DEFAULT TRUE
 );
 
 CREATE TABLE funciones (
@@ -1725,6 +1978,8 @@ CREATE TABLE funciones (
     id_pelicula INT NOT NULL,
     id_sala INT NOT NULL,
     fecha_hora TIMESTAMP NOT NULL,
+    precio_base DECIMAL(8,2),
+    estado VARCHAR(20) DEFAULT 'PROGRAMADA',
     FOREIGN KEY (id_pelicula) REFERENCES peliculas(id_pelicula),
     FOREIGN KEY (id_sala) REFERENCES salas(id_sala)
 );
@@ -1734,6 +1989,9 @@ CREATE TABLE boletos (
     id_funcion INT NOT NULL,
     codigo_butaca VARCHAR(5) NOT NULL,
     precio_pagado DECIMAL(8,2) NOT NULL CHECK (precio_pagado > 0),
+    tipo_entrada VARCHAR(20) DEFAULT 'GENERAL',
+    estado VARCHAR(20) DEFAULT 'VENDIDO',
+    fecha_compra TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     UNIQUE (id_funcion, codigo_butaca),
     FOREIGN KEY (id_funcion) REFERENCES funciones(id_funcion) ON DELETE CASCADE
 );`,
@@ -1794,7 +2052,10 @@ GROUP BY f.id_funcion, p.titulo, s.nombre_sala, f.fecha_hora, s.capacidad_butaca
           { name: 'id_usuario', type: 'INT', pk: true, notNull: true, desc: 'ID usuario' },
           { name: 'username', type: 'VARCHAR(40)', unique: true, notNull: true, desc: 'Nombre de cuenta' },
           { name: 'email', type: 'VARCHAR(100)', unique: true, notNull: true, desc: 'Email único' },
-          { name: 'id_rol', type: 'INT', fk: 'roles.id_rol', notNull: true, desc: 'Rol principal' }
+          { name: 'id_rol', type: 'INT', fk: 'roles.id_rol', notNull: true, desc: 'Rol principal' },
+          { name: 'password_hash', type: 'VARCHAR(255)', desc: 'Hash de la contraseña' },
+          { name: 'activo', type: 'BOOLEAN', defaultValue: 'TRUE', desc: 'Cuenta habilitada' },
+          { name: 'fecha_creacion', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Alta de la cuenta' }
         ]
       },
       {
@@ -1804,7 +2065,10 @@ GROUP BY f.id_funcion, p.titulo, s.nombre_sala, f.fecha_hora, s.capacidad_butaca
           { name: 'id_perfil', type: 'INT', pk: true, notNull: true, desc: 'ID perfil' },
           { name: 'id_usuario', type: 'INT', fk: 'usuarios.id_usuario', unique: true, notNull: true, desc: '1 a 1 UNIQUE' },
           { name: 'avatar_url', type: 'VARCHAR(255)', desc: 'URL foto' },
-          { name: 'telefono', type: 'VARCHAR(20)', desc: 'Teléfono' }
+          { name: 'telefono', type: 'VARCHAR(20)', desc: 'Teléfono' },
+          { name: 'nombres', type: 'VARCHAR(80)', desc: 'Nombres completos' },
+          { name: 'fecha_nacimiento', type: 'DATE', desc: 'Fecha de nacimiento' },
+          { name: 'direccion', type: 'VARCHAR(120)', desc: 'Dirección particular' }
         ]
       },
       {
@@ -1812,7 +2076,10 @@ GROUP BY f.id_funcion, p.titulo, s.nombre_sala, f.fecha_hora, s.capacidad_butaca
         desc: 'Roles del sistema (Admin, Editor, Auditor).',
         fields: [
           { name: 'id_rol', type: 'INT', pk: true, notNull: true, desc: 'ID rol' },
-          { name: 'nombre_rol', type: 'VARCHAR(40)', unique: true, notNull: true, desc: 'Nombre rol' }
+          { name: 'nombre_rol', type: 'VARCHAR(40)', unique: true, notNull: true, desc: 'Nombre rol' },
+          { name: 'descripcion', type: 'VARCHAR(120)', desc: 'Qué hace el rol' },
+          { name: 'activo', type: 'BOOLEAN', defaultValue: 'TRUE', desc: 'Rol vigente' },
+          { name: 'fecha_creacion', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Alta del rol' }
         ]
       },
       {
@@ -1820,7 +2087,10 @@ GROUP BY f.id_funcion, p.titulo, s.nombre_sala, f.fecha_hora, s.capacidad_butaca
         desc: 'Permisos atómicos (crear_usuario, borrar_post).',
         fields: [
           { name: 'id_permiso', type: 'INT', pk: true, notNull: true, desc: 'ID permiso' },
-          { name: 'codigo_permiso', type: 'VARCHAR(50)', unique: true, notNull: true, desc: 'Código' }
+          { name: 'codigo_permiso', type: 'VARCHAR(50)', unique: true, notNull: true, desc: 'Código' },
+          { name: 'descripcion', type: 'VARCHAR(120)', desc: 'Acción permitida' },
+          { name: 'categoria', type: 'VARCHAR(40)', desc: 'Área funcional' },
+          { name: 'activo', type: 'BOOLEAN', defaultValue: 'TRUE', desc: 'Permiso vigente' }
         ]
       },
       {
@@ -1828,23 +2098,33 @@ GROUP BY f.id_funcion, p.titulo, s.nombre_sala, f.fecha_hora, s.capacidad_butaca
         desc: 'Tabla intermedia N:M entre roles y permisos.',
         fields: [
           { name: 'id_rol', type: 'INT', pk: true, fk: 'roles.id_rol', notNull: true, desc: 'Rol' },
-          { name: 'id_permiso', type: 'INT', pk: true, fk: 'permisos.id_permiso', notNull: true, desc: 'Permiso' }
+          { name: 'id_permiso', type: 'INT', pk: true, fk: 'permisos.id_permiso', notNull: true, desc: 'Permiso' },
+          { name: 'fecha_asignacion', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Fecha de asignación' },
+          { name: 'asignado_por', type: 'VARCHAR(40)', desc: 'Usuario admin que asignó' }
         ]
       }
     ],
     ddlSql: `CREATE TABLE roles (
     id_rol SERIAL PRIMARY KEY,
-    nombre_rol VARCHAR(40) UNIQUE NOT NULL
+    nombre_rol VARCHAR(40) UNIQUE NOT NULL,
+    descripcion VARCHAR(120),
+    activo BOOLEAN DEFAULT TRUE,
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE permisos (
     id_permiso SERIAL PRIMARY KEY,
-    codigo_permiso VARCHAR(50) UNIQUE NOT NULL
+    codigo_permiso VARCHAR(50) UNIQUE NOT NULL,
+    descripcion VARCHAR(120),
+    categoria VARCHAR(40),
+    activo BOOLEAN DEFAULT TRUE
 );
 
 CREATE TABLE rol_permisos (
     id_rol INT NOT NULL,
     id_permiso INT NOT NULL,
+    fecha_asignacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    asignado_por VARCHAR(40),
     PRIMARY KEY (id_rol, id_permiso),
     FOREIGN KEY (id_rol) REFERENCES roles(id_rol) ON DELETE CASCADE,
     FOREIGN KEY (id_permiso) REFERENCES permisos(id_permiso) ON DELETE CASCADE
@@ -1855,6 +2135,9 @@ CREATE TABLE usuarios (
     username VARCHAR(40) UNIQUE NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
     id_rol INT NOT NULL,
+    password_hash VARCHAR(255),
+    activo BOOLEAN DEFAULT TRUE,
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (id_rol) REFERENCES roles(id_rol)
 );
 
@@ -1863,6 +2146,9 @@ CREATE TABLE perfiles (
     id_usuario INT UNIQUE NOT NULL,
     avatar_url VARCHAR(255),
     telefono VARCHAR(20),
+    nombres VARCHAR(80),
+    fecha_nacimiento DATE,
+    direccion VARCHAR(120),
     FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON DELETE CASCADE
 );`,
     seedSql: `INSERT INTO roles (nombre_rol) VALUES ('SuperAdmin'), ('Editor'), ('Viewer');
@@ -1916,7 +2202,10 @@ WHERE u.username = 'cgonzalez' AND p.codigo_permiso = 'POST_PUBLISH';`
         desc: 'Áreas de la medicina.',
         fields: [
           { name: 'id_especialidad', type: 'INT', pk: true, notNull: true, desc: 'ID especialidad' },
-          { name: 'nombre_especialidad', type: 'VARCHAR(50)', unique: true, notNull: true, desc: 'Nombre' }
+          { name: 'nombre_especialidad', type: 'VARCHAR(50)', unique: true, notNull: true, desc: 'Nombre' },
+          { name: 'descripcion', type: 'VARCHAR(200)', desc: 'Área de atención' },
+          { name: 'costo_consulta', type: 'DECIMAL(8,2)', defaultValue: '0', desc: 'Valor base de la consulta' },
+          { name: 'activo', type: 'BOOLEAN', defaultValue: 'TRUE', desc: 'Oferta activa' }
         ]
       },
       {
@@ -1925,7 +2214,11 @@ WHERE u.username = 'cgonzalez' AND p.codigo_permiso = 'POST_PUBLISH';`
         fields: [
           { name: 'id_medico', type: 'INT', pk: true, notNull: true, desc: 'ID médico' },
           { name: 'id_especialidad', type: 'INT', fk: 'especialidades.id_especialidad', notNull: true, desc: 'Especialidad' },
-          { name: 'nombre', type: 'VARCHAR(80)', notNull: true, desc: 'Doctor' }
+          { name: 'nombre', type: 'VARCHAR(80)', notNull: true, desc: 'Doctor' },
+          { name: 'rut', type: 'VARCHAR(12)', unique: true, desc: 'RUT del médico' },
+          { name: 'telefono', type: 'VARCHAR(20)', desc: 'Teléfono de consulta' },
+          { name: 'email', type: 'VARCHAR(100)', desc: 'Correo institucional' },
+          { name: 'activo', type: 'BOOLEAN', defaultValue: 'TRUE', desc: 'Médico contratado' }
         ]
       },
       {
@@ -1934,7 +2227,10 @@ WHERE u.username = 'cgonzalez' AND p.codigo_permiso = 'POST_PUBLISH';`
         fields: [
           { name: 'id_paciente', type: 'INT', pk: true, notNull: true, desc: 'ID paciente' },
           { name: 'nombre', type: 'VARCHAR(80)', notNull: true, desc: 'Nombre' },
-          { name: 'rut', type: 'VARCHAR(12)', unique: true, notNull: true, desc: 'RUT' }
+          { name: 'rut', type: 'VARCHAR(12)', unique: true, notNull: true, desc: 'RUT' },
+          { name: 'fecha_nacimiento', type: 'DATE', desc: 'Fecha de nacimiento' },
+          { name: 'telefono', type: 'VARCHAR(20)', desc: 'Teléfono de contacto' },
+          { name: 'direccion', type: 'VARCHAR(120)', desc: 'Dirección' }
         ]
       },
       {
@@ -1944,7 +2240,10 @@ WHERE u.username = 'cgonzalez' AND p.codigo_permiso = 'POST_PUBLISH';`
           { name: 'id_cita', type: 'INT', pk: true, notNull: true, desc: 'ID cita' },
           { name: 'id_paciente', type: 'INT', fk: 'pacientes.id_paciente', notNull: true, desc: 'Paciente' },
           { name: 'id_medico', type: 'INT', fk: 'medicos.id_medico', notNull: true, desc: 'Médico' },
-          { name: 'fecha_hora', type: 'TIMESTAMP', notNull: true, desc: 'Horario' }
+          { name: 'fecha_hora', type: 'TIMESTAMP', notNull: true, desc: 'Horario' },
+          { name: 'estado', type: 'VARCHAR(20)', defaultValue: "'AGENDADA'", desc: 'Agendada, atendida, cancelada' },
+          { name: 'motivo', type: 'VARCHAR(150)', desc: 'Motivo de consulta' },
+          { name: 'fecha_registro', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Creación de la cita' }
         ]
       },
       {
@@ -1954,26 +2253,39 @@ WHERE u.username = 'cgonzalez' AND p.codigo_permiso = 'POST_PUBLISH';`
           { name: 'id_receta', type: 'INT', pk: true, notNull: true, desc: 'ID receta' },
           { name: 'id_cita', type: 'INT', fk: 'citas.id_cita', notNull: true, desc: 'Cita asociada' },
           { name: 'medicamento', type: 'VARCHAR(100)', notNull: true, desc: 'Fármaco' },
-          { name: 'posologia', type: 'VARCHAR(150)', notNull: true, desc: 'Dosis e indicaciones' }
+          { name: 'posologia', type: 'VARCHAR(150)', notNull: true, desc: 'Dosis e indicaciones' },
+          { name: 'dosis', type: 'VARCHAR(60)', desc: 'Cantidad por toma' },
+          { name: 'duracion_dias', type: 'INT', desc: 'Días de tratamiento' },
+          { name: 'observaciones', type: 'VARCHAR(200)', desc: 'Indicaciones adicionales' }
         ]
       }
     ],
     ddlSql: `CREATE TABLE especialidades (
     id_especialidad SERIAL PRIMARY KEY,
-    nombre_especialidad VARCHAR(50) UNIQUE NOT NULL
+    nombre_especialidad VARCHAR(50) UNIQUE NOT NULL,
+    descripcion VARCHAR(200),
+    costo_consulta DECIMAL(8,2) DEFAULT 0,
+    activo BOOLEAN DEFAULT TRUE
 );
 
 CREATE TABLE medicos (
     id_medico SERIAL PRIMARY KEY,
     id_especialidad INT NOT NULL,
     nombre VARCHAR(80) NOT NULL,
+    rut VARCHAR(12) UNIQUE,
+    telefono VARCHAR(20),
+    email VARCHAR(100),
+    activo BOOLEAN DEFAULT TRUE,
     FOREIGN KEY (id_especialidad) REFERENCES especialidades(id_especialidad)
 );
 
 CREATE TABLE pacientes (
     id_paciente SERIAL PRIMARY KEY,
     nombre VARCHAR(80) NOT NULL,
-    rut VARCHAR(12) UNIQUE NOT NULL
+    rut VARCHAR(12) UNIQUE NOT NULL,
+    fecha_nacimiento DATE,
+    telefono VARCHAR(20),
+    direccion VARCHAR(120)
 );
 
 CREATE TABLE citas (
@@ -1981,6 +2293,9 @@ CREATE TABLE citas (
     id_paciente INT NOT NULL,
     id_medico INT NOT NULL,
     fecha_hora TIMESTAMP NOT NULL,
+    estado VARCHAR(20) DEFAULT 'AGENDADA',
+    motivo VARCHAR(150),
+    fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (id_paciente) REFERENCES pacientes(id_paciente),
     FOREIGN KEY (id_medico) REFERENCES medicos(id_medico)
 );
@@ -1990,6 +2305,9 @@ CREATE TABLE recetas (
     id_cita INT NOT NULL,
     medicamento VARCHAR(100) NOT NULL,
     posologia VARCHAR(150) NOT NULL,
+    dosis VARCHAR(60),
+    duracion_dias INT,
+    observaciones VARCHAR(200),
     FOREIGN KEY (id_cita) REFERENCES citas(id_cita) ON DELETE CASCADE
 );`,
     seedSql: `INSERT INTO especialidades (nombre_especialidad) VALUES ('Traumatología'), ('Neurología');
@@ -2035,7 +2353,10 @@ LEFT JOIN recetas r ON c.id_cita = r.id_cita;`
           { name: 'id_persona', type: 'INT', pk: true, notNull: true, desc: 'ID persona' },
           { name: 'nombre', type: 'VARCHAR(80)', notNull: true, desc: 'Nombre' },
           { name: 'direccion', type: 'VARCHAR(120)', notNull: true, desc: 'Dirección' },
-          { name: 'ciudad', type: 'VARCHAR(50)', notNull: true, desc: 'Ciudad' }
+          { name: 'ciudad', type: 'VARCHAR(50)', notNull: true, desc: 'Ciudad' },
+          { name: 'telefono', type: 'VARCHAR(20)', desc: 'Teléfono' },
+          { name: 'email', type: 'VARCHAR(100)', desc: 'Correo electrónico' },
+          { name: 'activo', type: 'BOOLEAN', defaultValue: 'TRUE', desc: 'Contacto vigente' }
         ]
       },
       {
@@ -2044,7 +2365,10 @@ LEFT JOIN recetas r ON c.id_cita = r.id_cita;`
         fields: [
           { name: 'id_transportista', type: 'INT', pk: true, notNull: true, desc: 'ID chofer' },
           { name: 'nombre_chofer', type: 'VARCHAR(80)', notNull: true, desc: 'Nombre' },
-          { name: 'patente_camion', type: 'VARCHAR(8)', notNull: true, desc: 'Vehículo' }
+          { name: 'patente_camion', type: 'VARCHAR(8)', notNull: true, desc: 'Vehículo' },
+          { name: 'telefono', type: 'VARCHAR(20)', desc: 'Teléfono del chofer' },
+          { name: 'licencia', type: 'VARCHAR(20)', desc: 'Categoría de licencia' },
+          { name: 'activo', type: 'BOOLEAN', defaultValue: 'TRUE', desc: 'Chofer disponible' }
         ]
       },
       {
@@ -2056,7 +2380,8 @@ LEFT JOIN recetas r ON c.id_cita = r.id_cita;`
           { name: 'id_remitente', type: 'INT', fk: 'personas.id_persona', notNull: true, desc: 'Emisor' },
           { name: 'id_destinatario', type: 'INT', fk: 'personas.id_persona', notNull: true, desc: 'Receptor' },
           { name: 'id_transportista', type: 'INT', fk: 'transportistas.id_transportista', notNull: true, desc: 'Conductor' },
-          { name: 'estado', type: 'VARCHAR(20)', defaultValue: "'EN_BODEGA'", desc: 'Estado' }
+          { name: 'estado', type: 'VARCHAR(20)', defaultValue: "'EN_BODEGA'", desc: 'Estado' },
+          { name: 'fecha_creacion', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Creación de la guía' }
         ]
       }
     ],
@@ -2064,13 +2389,19 @@ LEFT JOIN recetas r ON c.id_cita = r.id_cita;`
     id_persona SERIAL PRIMARY KEY,
     nombre VARCHAR(80) NOT NULL,
     direccion VARCHAR(120) NOT NULL,
-    ciudad VARCHAR(50) NOT NULL
+    ciudad VARCHAR(50) NOT NULL,
+    telefono VARCHAR(20),
+    email VARCHAR(100),
+    activo BOOLEAN DEFAULT TRUE
 );
 
 CREATE TABLE transportistas (
     id_transportista SERIAL PRIMARY KEY,
     nombre_chofer VARCHAR(80) NOT NULL,
-    patente_camion VARCHAR(8) NOT NULL
+    patente_camion VARCHAR(8) NOT NULL,
+    telefono VARCHAR(20),
+    licencia VARCHAR(20),
+    activo BOOLEAN DEFAULT TRUE
 );
 
 CREATE TABLE envios (
@@ -2080,6 +2411,7 @@ CREATE TABLE envios (
     id_destinatario INT NOT NULL,
     id_transportista INT NOT NULL,
     estado VARCHAR(20) DEFAULT 'EN_BODEGA' CHECK (estado IN ('EN_BODEGA', 'EN_TRANSITO', 'ENTREGADO', 'DEVUELTO')),
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (id_remitente) REFERENCES personas(id_persona),
     FOREIGN KEY (id_destinatario) REFERENCES personas(id_persona),
     FOREIGN KEY (id_transportista) REFERENCES transportistas(id_transportista)
@@ -2128,7 +2460,14 @@ INNER JOIN transportistas t ON e.id_transportista = t.id_transportista;`
       {
         name: 'artistas',
         desc: 'Músicos y bandas.',
-        fields: [{ name: 'id_artista', type: 'INT', pk: true, notNull: true, desc: 'ID artista' }, { name: 'nombre_artista', type: 'VARCHAR(80)', notNull: true, desc: 'Nombre' }]
+        fields: [
+          { name: 'id_artista', type: 'INT', pk: true, notNull: true, desc: 'ID artista' },
+          { name: 'nombre_artista', type: 'VARCHAR(80)', notNull: true, desc: 'Nombre' },
+          { name: 'nacionalidad', type: 'VARCHAR(50)', desc: 'País de origen' },
+          { name: 'descripcion', type: 'VARCHAR(200)', desc: 'Biografía breve' },
+          { name: 'pagina_web', type: 'VARCHAR(100)', desc: 'Sitio oficial' },
+          { name: 'activo', type: 'BOOLEAN', defaultValue: 'TRUE', desc: 'Artista vigente' }
+        ]
       },
       {
         name: 'albumes',
@@ -2137,7 +2476,9 @@ INNER JOIN transportistas t ON e.id_transportista = t.id_transportista;`
           { name: 'id_album', type: 'INT', pk: true, notNull: true, desc: 'ID álbum' },
           { name: 'id_artista', type: 'INT', fk: 'artistas.id_artista', notNull: true, desc: 'Artista' },
           { name: 'titulo_album', type: 'VARCHAR(100)', notNull: true, desc: 'Título' },
-          { name: 'anio', type: 'INT', notNull: true, desc: 'Año' }
+          { name: 'anio', type: 'INT', notNull: true, desc: 'Año' },
+          { name: 'fecha_lanzamiento', type: 'DATE', desc: 'Fecha de estreno' },
+          { name: 'sello', type: 'VARCHAR(60)', desc: 'Sello discográfico' }
         ]
       },
       {
@@ -2147,13 +2488,22 @@ INNER JOIN transportistas t ON e.id_transportista = t.id_transportista;`
           { name: 'id_cancion', type: 'INT', pk: true, notNull: true, desc: 'ID track' },
           { name: 'id_album', type: 'INT', fk: 'albumes.id_album', notNull: true, desc: 'Álbum' },
           { name: 'titulo', type: 'VARCHAR(100)', notNull: true, desc: 'Canción' },
-          { name: 'duracion_segundos', type: 'INT', notNull: true, desc: 'Segundos' }
+          { name: 'duracion_segundos', type: 'INT', notNull: true, desc: 'Segundos' },
+          { name: 'numero_pista', type: 'INT', desc: 'Orden en el álbum' },
+          { name: 'explicito', type: 'BOOLEAN', defaultValue: 'FALSE', desc: 'Contenido explícito' }
         ]
       },
       {
         name: 'playlists',
         desc: 'Listas creadas por usuarios.',
-        fields: [{ name: 'id_playlist', type: 'INT', pk: true, notNull: true, desc: 'ID lista' }, { name: 'nombre_lista', type: 'VARCHAR(80)', notNull: true, desc: 'Nombre' }]
+        fields: [
+          { name: 'id_playlist', type: 'INT', pk: true, notNull: true, desc: 'ID lista' },
+          { name: 'nombre_lista', type: 'VARCHAR(80)', notNull: true, desc: 'Nombre' },
+          { name: 'descripcion', type: 'VARCHAR(200)', desc: 'Descripción de la lista' },
+          { name: 'creada_por', type: 'VARCHAR(60)', desc: 'Usuario dueño' },
+          { name: 'es_publica', type: 'BOOLEAN', defaultValue: 'TRUE', desc: 'Visible para todos' },
+          { name: 'fecha_creacion', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Alta de la lista' }
+        ]
       },
       {
         name: 'playlist_canciones',
@@ -2161,13 +2511,18 @@ INNER JOIN transportistas t ON e.id_transportista = t.id_transportista;`
         fields: [
           { name: 'id_playlist', type: 'INT', pk: true, fk: 'playlists.id_playlist', notNull: true, desc: 'Playlist' },
           { name: 'id_cancion', type: 'INT', pk: true, fk: 'canciones.id_cancion', notNull: true, desc: 'Canción' },
-          { name: 'orden', type: 'INT', notNull: true, desc: 'Posición' }
+          { name: 'orden', type: 'INT', notNull: true, desc: 'Posición' },
+          { name: 'fecha_agregado', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Cuándo se agregó' }
         ]
       }
     ],
     ddlSql: `CREATE TABLE artistas (
     id_artista SERIAL PRIMARY KEY,
-    nombre_artista VARCHAR(80) NOT NULL
+    nombre_artista VARCHAR(80) NOT NULL,
+    nacionalidad VARCHAR(50),
+    descripcion VARCHAR(200),
+    pagina_web VARCHAR(100),
+    activo BOOLEAN DEFAULT TRUE
 );
 
 CREATE TABLE albumes (
@@ -2175,6 +2530,8 @@ CREATE TABLE albumes (
     id_artista INT NOT NULL,
     titulo_album VARCHAR(100) NOT NULL,
     anio INT NOT NULL,
+    fecha_lanzamiento DATE,
+    sello VARCHAR(60),
     FOREIGN KEY (id_artista) REFERENCES artistas(id_artista) ON DELETE CASCADE
 );
 
@@ -2183,18 +2540,25 @@ CREATE TABLE canciones (
     id_album INT NOT NULL,
     titulo VARCHAR(100) NOT NULL,
     duracion_segundos INT NOT NULL CHECK (duracion_segundos > 0),
+    numero_pista INT,
+    explicito BOOLEAN DEFAULT FALSE,
     FOREIGN KEY (id_album) REFERENCES albumes(id_album) ON DELETE CASCADE
 );
 
 CREATE TABLE playlists (
     id_playlist SERIAL PRIMARY KEY,
-    nombre_lista VARCHAR(80) NOT NULL
+    nombre_lista VARCHAR(80) NOT NULL,
+    descripcion VARCHAR(200),
+    creada_por VARCHAR(60),
+    es_publica BOOLEAN DEFAULT TRUE,
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE playlist_canciones (
     id_playlist INT NOT NULL,
     id_cancion INT NOT NULL,
     orden INT NOT NULL,
+    fecha_agregado TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id_playlist, id_cancion),
     FOREIGN KEY (id_playlist) REFERENCES playlists(id_playlist) ON DELETE CASCADE,
     FOREIGN KEY (id_cancion) REFERENCES canciones(id_cancion) ON DELETE CASCADE
@@ -2241,7 +2605,14 @@ GROUP BY pl.id_playlist, pl.nombre_lista;`
       {
         name: 'libros',
         desc: 'Títulos registrados.',
-        fields: [{ name: 'id_libro', type: 'INT', pk: true, notNull: true, desc: 'ID libro' }, { name: 'titulo', type: 'VARCHAR(120)', notNull: true, desc: 'Título' }]
+        fields: [
+          { name: 'id_libro', type: 'INT', pk: true, notNull: true, desc: 'ID libro' },
+          { name: 'titulo', type: 'VARCHAR(120)', notNull: true, desc: 'Título' },
+          { name: 'autor', type: 'VARCHAR(100)', desc: 'Autor' },
+          { name: 'isbn', type: 'VARCHAR(17)', unique: true, desc: 'ISBN' },
+          { name: 'editorial', type: 'VARCHAR(60)', desc: 'Editorial' },
+          { name: 'anio_publicacion', type: 'INT', desc: 'Año de edición' }
+        ]
       },
       {
         name: 'ejemplares',
@@ -2249,7 +2620,10 @@ GROUP BY pl.id_playlist, pl.nombre_lista;`
         fields: [
           { name: 'id_ejemplar', type: 'INT', pk: true, notNull: true, desc: 'ID ejemplar' },
           { name: 'id_libro', type: 'INT', fk: 'libros.id_libro', notNull: true, desc: 'Libro' },
-          { name: 'codigo_barra', type: 'VARCHAR(20)', unique: true, notNull: true, desc: 'Código barra' }
+          { name: 'codigo_barra', type: 'VARCHAR(20)', unique: true, notNull: true, desc: 'Código barra' },
+          { name: 'estado', type: 'VARCHAR(20)', defaultValue: "'DISPONIBLE'", desc: 'Disponible, prestado, dañado' },
+          { name: 'fecha_adquisicion', type: 'DATE', desc: 'Fecha de compra' },
+          { name: 'ubicacion', type: 'VARCHAR(40)', desc: 'Estantería' }
         ]
       },
       {
@@ -2260,7 +2634,9 @@ GROUP BY pl.id_playlist, pl.nombre_lista;`
           { name: 'id_ejemplar', type: 'INT', fk: 'ejemplares.id_ejemplar', notNull: true, desc: 'Ejemplar prestado' },
           { name: 'rut_usuario', type: 'VARCHAR(12)', notNull: true, desc: 'Usuario' },
           { name: 'fecha_prestamo', type: 'DATE', notNull: true, desc: 'Fecha salida' },
-          { name: 'fecha_devolucion_pactada', type: 'DATE', notNull: true, desc: 'Fecha límite' }
+          { name: 'fecha_devolucion_pactada', type: 'DATE', notNull: true, desc: 'Fecha límite' },
+          { name: 'fecha_devolucion_real', type: 'DATE', desc: 'Fecha efectiva de retorno' },
+          { name: 'estado', type: 'VARCHAR(20)', defaultValue: "'ACTIVO'", desc: 'Activo, devuelto, atrasado' }
         ]
       },
       {
@@ -2271,19 +2647,28 @@ GROUP BY pl.id_playlist, pl.nombre_lista;`
           { name: 'id_prestamo', type: 'INT', fk: 'prestamos.id_prestamo', unique: true, notNull: true, desc: '1 a 1 UNIQUE' },
           { name: 'dias_retraso', type: 'INT', notNull: true, desc: 'Días de atraso' },
           { name: 'monto_multa', type: 'DECIMAL(8,2)', notNull: true, desc: 'Valor sanción' },
-          { name: 'pagada', type: 'BOOLEAN', defaultValue: 'FALSE', desc: 'Estado pago' }
+          { name: 'pagada', type: 'BOOLEAN', defaultValue: 'FALSE', desc: 'Estado pago' },
+          { name: 'fecha_generacion', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Creación de la multa' },
+          { name: 'motivo', type: 'VARCHAR(150)', desc: 'Detalle de la infracción' }
         ]
       }
     ],
     ddlSql: `CREATE TABLE libros (
     id_libro SERIAL PRIMARY KEY,
-    titulo VARCHAR(120) NOT NULL
+    titulo VARCHAR(120) NOT NULL,
+    autor VARCHAR(100),
+    isbn VARCHAR(17) UNIQUE,
+    editorial VARCHAR(60),
+    anio_publicacion INT
 );
 
 CREATE TABLE ejemplares (
     id_ejemplar SERIAL PRIMARY KEY,
     id_libro INT NOT NULL,
     codigo_barra VARCHAR(20) UNIQUE NOT NULL,
+    estado VARCHAR(20) DEFAULT 'DISPONIBLE',
+    fecha_adquisicion DATE,
+    ubicacion VARCHAR(40),
     FOREIGN KEY (id_libro) REFERENCES libros(id_libro)
 );
 
@@ -2293,6 +2678,8 @@ CREATE TABLE prestamos (
     rut_usuario VARCHAR(12) NOT NULL,
     fecha_prestamo DATE NOT NULL,
     fecha_devolucion_pactada DATE NOT NULL,
+    fecha_devolucion_real DATE,
+    estado VARCHAR(20) DEFAULT 'ACTIVO',
     FOREIGN KEY (id_ejemplar) REFERENCES ejemplares(id_ejemplar)
 );
 
@@ -2302,6 +2689,8 @@ CREATE TABLE multas (
     dias_retraso INT NOT NULL CHECK (dias_retraso > 0),
     monto_multa DECIMAL(8,2) NOT NULL CHECK (monto_multa > 0),
     pagada BOOLEAN DEFAULT FALSE,
+    fecha_generacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    motivo VARCHAR(150),
     FOREIGN KEY (id_prestamo) REFERENCES prestamos(id_prestamo) ON DELETE CASCADE
 );`,
     seedSql: `INSERT INTO libros (titulo) VALUES ('Algoritmos de Inteligencia Artificial');
@@ -2343,7 +2732,14 @@ WHERE m.pagada = FALSE;`
       {
         name: 'equipos',
         desc: 'Clubes de fútbol.',
-        fields: [{ name: 'id_equipo', type: 'INT', pk: true, notNull: true, desc: 'ID club' }, { name: 'nombre_club', type: 'VARCHAR(60)', unique: true, notNull: true, desc: 'Nombre' }]
+        fields: [
+          { name: 'id_equipo', type: 'INT', pk: true, notNull: true, desc: 'ID club' },
+          { name: 'nombre_club', type: 'VARCHAR(60)', unique: true, notNull: true, desc: 'Nombre' },
+          { name: 'ciudad', type: 'VARCHAR(50)', desc: 'Ciudad' },
+          { name: 'estadio', type: 'VARCHAR(80)', desc: 'Estadio local' },
+          { name: 'fecha_fundacion', type: 'DATE', desc: 'Fecha de fundación' },
+          { name: 'activo', type: 'BOOLEAN', defaultValue: 'TRUE', desc: 'Club en competencia' }
+        ]
       },
       {
         name: 'jugadores',
@@ -2352,7 +2748,10 @@ WHERE m.pagada = FALSE;`
           { name: 'id_jugador', type: 'INT', pk: true, notNull: true, desc: 'ID jugador' },
           { name: 'id_equipo', type: 'INT', fk: 'equipos.id_equipo', notNull: true, desc: 'Club' },
           { name: 'nombre', type: 'VARCHAR(80)', notNull: true, desc: 'Nombre' },
-          { name: 'posicion', type: 'VARCHAR(20)', notNull: true, desc: 'Delantero, Volante, etc.' }
+          { name: 'posicion', type: 'VARCHAR(20)', notNull: true, desc: 'Delantero, Volante, etc.' },
+          { name: 'numero_camiseta', type: 'INT', desc: 'Dorsal' },
+          { name: 'fecha_nacimiento', type: 'DATE', desc: 'Fecha de nacimiento' },
+          { name: 'nacionalidad', type: 'VARCHAR(50)', desc: 'País' }
         ]
       },
       {
@@ -2362,7 +2761,10 @@ WHERE m.pagada = FALSE;`
           { name: 'id_partido', type: 'INT', pk: true, notNull: true, desc: 'ID partido' },
           { name: 'id_equipo_local', type: 'INT', fk: 'equipos.id_equipo', notNull: true, desc: 'Local' },
           { name: 'id_equipo_visita', type: 'INT', fk: 'equipos.id_equipo', notNull: true, desc: 'Visita' },
-          { name: 'fecha_partido', type: 'DATE', notNull: true, desc: 'Fecha' }
+          { name: 'fecha_partido', type: 'DATE', notNull: true, desc: 'Fecha' },
+          { name: 'jornada', type: 'INT', desc: 'Fecha del campeonato' },
+          { name: 'hora_partido', type: 'TIME', desc: 'Hora de inicio' },
+          { name: 'estado', type: 'VARCHAR(20)', defaultValue: "'PROGRAMADO'", desc: 'Programado, jugado, suspendido' }
         ]
       },
       {
@@ -2372,13 +2774,19 @@ WHERE m.pagada = FALSE;`
           { name: 'id_gol', type: 'INT', pk: true, notNull: true, desc: 'ID gol' },
           { name: 'id_partido', type: 'INT', fk: 'partidos.id_partido', notNull: true, desc: 'Partido' },
           { name: 'id_jugador', type: 'INT', fk: 'jugadores.id_jugador', notNull: true, desc: 'Goleador' },
-          { name: 'minuto', type: 'INT', notNull: true, desc: 'Minuto de juego' }
+          { name: 'minuto', type: 'INT', notNull: true, desc: 'Minuto de juego' },
+          { name: 'es_penalti', type: 'BOOLEAN', defaultValue: 'FALSE', desc: 'Gol de penal' },
+          { name: 'fecha_registro', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Registro del gol' }
         ]
       }
     ],
     ddlSql: `CREATE TABLE equipos (
     id_equipo SERIAL PRIMARY KEY,
-    nombre_club VARCHAR(60) UNIQUE NOT NULL
+    nombre_club VARCHAR(60) UNIQUE NOT NULL,
+    ciudad VARCHAR(50),
+    estadio VARCHAR(80),
+    fecha_fundacion DATE,
+    activo BOOLEAN DEFAULT TRUE
 );
 
 CREATE TABLE jugadores (
@@ -2386,6 +2794,9 @@ CREATE TABLE jugadores (
     id_equipo INT NOT NULL,
     nombre VARCHAR(80) NOT NULL,
     posicion VARCHAR(20) NOT NULL,
+    numero_camiseta INT,
+    fecha_nacimiento DATE,
+    nacionalidad VARCHAR(50),
     FOREIGN KEY (id_equipo) REFERENCES equipos(id_equipo)
 );
 
@@ -2394,6 +2805,9 @@ CREATE TABLE partidos (
     id_equipo_local INT NOT NULL,
     id_equipo_visita INT NOT NULL,
     fecha_partido DATE NOT NULL,
+    jornada INT,
+    hora_partido TIME,
+    estado VARCHAR(20) DEFAULT 'PROGRAMADO',
     CHECK (id_equipo_local <> id_equipo_visita),
     FOREIGN KEY (id_equipo_local) REFERENCES equipos(id_equipo),
     FOREIGN KEY (id_equipo_visita) REFERENCES equipos(id_equipo)
@@ -2404,6 +2818,8 @@ CREATE TABLE goles (
     id_partido INT NOT NULL,
     id_jugador INT NOT NULL,
     minuto INT NOT NULL CHECK (minuto BETWEEN 1 AND 120),
+    es_penalti BOOLEAN DEFAULT FALSE,
+    fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (id_partido) REFERENCES partidos(id_partido) ON DELETE CASCADE,
     FOREIGN KEY (id_jugador) REFERENCES jugadores(id_jugador)
 );`,
@@ -2447,7 +2863,14 @@ ORDER BY total_goles DESC;`
       {
         name: 'meseros',
         desc: 'Personal de atención en salón.',
-        fields: [{ name: 'id_mesero', type: 'INT', pk: true, notNull: true, desc: 'ID mesero' }, { name: 'nombre', type: 'VARCHAR(60)', notNull: true, desc: 'Nombre' }]
+        fields: [
+          { name: 'id_mesero', type: 'INT', pk: true, notNull: true, desc: 'ID mesero' },
+          { name: 'nombre', type: 'VARCHAR(60)', notNull: true, desc: 'Nombre' },
+          { name: 'telefono', type: 'VARCHAR(20)', desc: 'Teléfono' },
+          { name: 'email', type: 'VARCHAR(100)', desc: 'Correo' },
+          { name: 'fecha_contratacion', type: 'DATE', desc: 'Fecha de ingreso' },
+          { name: 'activo', type: 'BOOLEAN', defaultValue: 'TRUE', desc: 'En turno' }
+        ]
       },
       {
         name: 'comandas',
@@ -2456,7 +2879,10 @@ ORDER BY total_goles DESC;`
           { name: 'id_comanda', type: 'INT', pk: true, notNull: true, desc: 'ID comanda' },
           { name: 'numero_mesa', type: 'INT', notNull: true, desc: 'Mesa' },
           { name: 'id_mesero', type: 'INT', fk: 'meseros.id_mesero', notNull: true, desc: 'Mesero a cargo' },
-          { name: 'hora_apertura', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Apertura' }
+          { name: 'hora_apertura', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Apertura' },
+          { name: 'estado', type: 'VARCHAR(20)', defaultValue: "'ABIERTA'", desc: 'Abierta, cerrada, pagada' },
+          { name: 'hora_cierre', type: 'TIMESTAMP', desc: 'Cierre de la orden' },
+          { name: 'observaciones', type: 'VARCHAR(200)', desc: 'Notas de la mesa' }
         ]
       },
       {
@@ -2465,7 +2891,10 @@ ORDER BY total_goles DESC;`
         fields: [
           { name: 'id_plato', type: 'INT', pk: true, notNull: true, desc: 'ID plato' },
           { name: 'nombre_plato', type: 'VARCHAR(80)', notNull: true, desc: 'Nombre' },
-          { name: 'precio', type: 'DECIMAL(8,2)', notNull: true, desc: 'Precio' }
+          { name: 'precio', type: 'DECIMAL(8,2)', notNull: true, desc: 'Precio' },
+          { name: 'categoria', type: 'VARCHAR(40)', desc: 'Entrante, fuerte, bebida' },
+          { name: 'descripcion', type: 'VARCHAR(200)', desc: 'Descripción del plato' },
+          { name: 'disponible', type: 'BOOLEAN', defaultValue: 'TRUE', desc: 'En el menú hoy' }
         ]
       },
       {
@@ -2474,13 +2903,19 @@ ORDER BY total_goles DESC;`
         fields: [
           { name: 'id_comanda', type: 'INT', pk: true, fk: 'comandas.id_comanda', notNull: true, desc: 'Comanda' },
           { name: 'id_plato', type: 'INT', pk: true, fk: 'platos.id_plato', notNull: true, desc: 'Plato' },
-          { name: 'cantidad', type: 'INT', notNull: true, desc: 'Cantidad' }
+          { name: 'cantidad', type: 'INT', notNull: true, desc: 'Cantidad' },
+          { name: 'subtotal', type: 'DECIMAL(8,2)', desc: 'cantidad × precio' },
+          { name: 'notas', type: 'VARCHAR(150)', desc: 'Ej. sin cebolla' }
         ]
       }
     ],
     ddlSql: `CREATE TABLE meseros (
     id_mesero SERIAL PRIMARY KEY,
-    nombre VARCHAR(60) NOT NULL
+    nombre VARCHAR(60) NOT NULL,
+    telefono VARCHAR(20),
+    email VARCHAR(100),
+    fecha_contratacion DATE,
+    activo BOOLEAN DEFAULT TRUE
 );
 
 CREATE TABLE comandas (
@@ -2488,19 +2923,27 @@ CREATE TABLE comandas (
     numero_mesa INT NOT NULL CHECK (numero_mesa > 0),
     id_mesero INT NOT NULL,
     hora_apertura TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    estado VARCHAR(20) DEFAULT 'ABIERTA',
+    hora_cierre TIMESTAMP,
+    observaciones VARCHAR(200),
     FOREIGN KEY (id_mesero) REFERENCES meseros(id_mesero)
 );
 
 CREATE TABLE platos (
     id_plato SERIAL PRIMARY KEY,
     nombre_plato VARCHAR(80) NOT NULL,
-    precio DECIMAL(8,2) NOT NULL CHECK (precio > 0)
+    precio DECIMAL(8,2) NOT NULL CHECK (precio > 0),
+    categoria VARCHAR(40),
+    descripcion VARCHAR(200),
+    disponible BOOLEAN DEFAULT TRUE
 );
 
 CREATE TABLE detalle_comanda (
     id_comanda INT NOT NULL,
     id_plato INT NOT NULL,
     cantidad INT NOT NULL CHECK (cantidad > 0),
+    subtotal DECIMAL(8,2),
+    notas VARCHAR(150),
     PRIMARY KEY (id_comanda, id_plato),
     FOREIGN KEY (id_comanda) REFERENCES comandas(id_comanda) ON DELETE CASCADE,
     FOREIGN KEY (id_plato) REFERENCES platos(id_plato)
@@ -2549,23 +2992,140 @@ GROUP BY c.id_comanda, c.numero_mesa, m.nombre;`
     context: 'Una multinacional de comercio electrónico diseña su arquitectura de base de datos relacional para gestionar usuarios, perfiles, direcciones de despacho, categorías de productos, catálogo, inventario en bodegas múltiples, órdenes de compra, ítems del pedido, métodos de pago y transacciones de pasarela.',
     statement: 'Diseñar e implementar el esquema completo de 10 tablas interconectadas con llaves primarias, foráneas, índices, restricciones de integridad y consultas analíticas de reportería gerencial.',
     tables: [
-      { name: 'usuarios', desc: 'Cuentas de usuario', fields: [{ name: 'id_usuario', type: 'BIGINT', pk: true, desc: 'PK' }, { name: 'email', type: 'VARCHAR(120)', unique: true, notNull: true, desc: 'Email único' }, { name: 'password_hash', type: 'VARCHAR(255)', notNull: true, desc: 'Hash seguro' }] },
-      { name: 'perfiles', desc: 'Datos personales 1:1', fields: [{ name: 'id_perfil', type: 'BIGINT', pk: true, desc: 'PK' }, { name: 'id_usuario', type: 'BIGINT', fk: 'usuarios.id_usuario', unique: true, desc: '1:1' }, { name: 'nombre', type: 'VARCHAR(80)', notNull: true, desc: 'Nombre' }, { name: 'telefono', type: 'VARCHAR(20)', desc: 'Fono' }] },
-      { name: 'direcciones', desc: 'Direcciones de envío (1:N)', fields: [{ name: 'id_direccion', type: 'BIGINT', pk: true, desc: 'PK' }, { name: 'id_usuario', type: 'BIGINT', fk: 'usuarios.id_usuario', desc: 'Usuario' }, { name: 'calle', type: 'VARCHAR(150)', notNull: true, desc: 'Calle' }, { name: 'ciudad', type: 'VARCHAR(60)', notNull: true, desc: 'Ciudad' }] },
-      { name: 'categorias', desc: 'Árbol de categorías', fields: [{ name: 'id_categoria', type: 'INT', pk: true, desc: 'PK' }, { name: 'nombre_categoria', type: 'VARCHAR(60)', unique: true, notNull: true, desc: 'Nombre' }] },
-      { name: 'productos', desc: 'Catálogo comercial', fields: [{ name: 'id_producto', type: 'BIGINT', pk: true, desc: 'PK' }, { name: 'id_categoria', type: 'INT', fk: 'categorias.id_categoria', desc: 'Categoría' }, { name: 'sku', type: 'VARCHAR(30)', unique: true, desc: 'SKU' }, { name: 'precio', type: 'DECIMAL(12,2)', notNull: true, desc: 'Precio' }] },
-      { name: 'inventario_bodega', desc: 'Stock físico por bodega', fields: [{ name: 'id_inventario', type: 'BIGINT', pk: true, desc: 'PK' }, { name: 'id_producto', type: 'BIGINT', fk: 'productos.id_producto', desc: 'Producto' }, { name: 'bodega_codigo', type: 'VARCHAR(20)', desc: 'Bodega' }, { name: 'stock_disponible', type: 'INT', notNull: true, desc: 'Stock' }] },
-      { name: 'pedidos', desc: 'Órdenes de compra', fields: [{ name: 'id_pedido', type: 'BIGINT', pk: true, desc: 'PK' }, { name: 'id_usuario', type: 'BIGINT', fk: 'usuarios.id_usuario', desc: 'Comprador' }, { name: 'id_direccion_envio', type: 'BIGINT', fk: 'direcciones.id_direccion', desc: 'Destino' }, { name: 'monto_total', type: 'DECIMAL(12,2)', notNull: true, desc: 'Total' }] },
-      { name: 'detalle_pedidos', desc: 'Líneas de la orden N:M', fields: [{ name: 'id_detalle', type: 'BIGINT', pk: true, desc: 'PK' }, { name: 'id_pedido', type: 'BIGINT', fk: 'pedidos.id_pedido', desc: 'Pedido' }, { name: 'id_producto', type: 'BIGINT', fk: 'productos.id_producto', desc: 'Producto' }, { name: 'cantidad', type: 'INT', notNull: true, desc: 'Cantidad' }, { name: 'precio_unitario', type: 'DECIMAL(12,2)', notNull: true, desc: 'Precio' }] },
-      { name: 'metodos_pago', desc: 'Medios aceptados', fields: [{ name: 'id_metodo', type: 'INT', pk: true, desc: 'PK' }, { name: 'codigo', type: 'VARCHAR(30)', unique: true, notNull: true, desc: 'WEBPAY, STRIPE, PAYPAL' }] },
-      { name: 'pagos_transaccion', desc: 'Bitácora de cobros', fields: [{ name: 'id_pago', type: 'BIGINT', pk: true, desc: 'PK' }, { name: 'id_pedido', type: 'BIGINT', fk: 'pedidos.id_pedido', desc: 'Pedido' }, { name: 'id_metodo', type: 'INT', fk: 'metodos_pago.id_metodo', desc: 'Método' }, { name: 'monto_pagado', type: 'DECIMAL(12,2)', notNull: true, desc: 'Monto' }, { name: 'estado_pago', type: 'VARCHAR(20)', desc: 'APROBADO, RECHAZADO' }] }
+      {
+        name: 'usuarios',
+        desc: 'Cuentas de usuario',
+        fields: [
+          { name: 'id_usuario', type: 'BIGINT', pk: true, desc: 'PK' },
+          { name: 'email', type: 'VARCHAR(120)', unique: true, notNull: true, desc: 'Email único' },
+          { name: 'password_hash', type: 'VARCHAR(255)', notNull: true, desc: 'Hash seguro' },
+          { name: 'fecha_registro', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Alta de la cuenta' },
+          { name: 'telefono', type: 'VARCHAR(20)', desc: 'Teléfono de contacto' },
+          { name: 'estado', type: 'VARCHAR(20)', defaultValue: "'ACTIVO'", desc: 'ACTIVO, BLOQUEADO, BAJA' },
+          { name: 'avatar_url', type: 'VARCHAR(255)', desc: 'Foto de perfil' }
+        ]
+      },
+      {
+        name: 'perfiles',
+        desc: 'Datos personales 1:1',
+        fields: [
+          { name: 'id_perfil', type: 'BIGINT', pk: true, desc: 'PK' },
+          { name: 'id_usuario', type: 'BIGINT', fk: 'usuarios.id_usuario', unique: true, desc: '1:1' },
+          { name: 'nombre', type: 'VARCHAR(80)', notNull: true, desc: 'Nombre' },
+          { name: 'telefono', type: 'VARCHAR(20)', desc: 'Fono' },
+          { name: 'fecha_nacimiento', type: 'DATE', desc: 'Fecha de nacimiento' },
+          { name: 'genero', type: 'VARCHAR(10)', desc: 'Género declarado' }
+        ]
+      },
+      {
+        name: 'direcciones',
+        desc: 'Direcciones de envío (1:N)',
+        fields: [
+          { name: 'id_direccion', type: 'BIGINT', pk: true, desc: 'PK' },
+          { name: 'id_usuario', type: 'BIGINT', fk: 'usuarios.id_usuario', desc: 'Usuario' },
+          { name: 'calle', type: 'VARCHAR(150)', notNull: true, desc: 'Calle' },
+          { name: 'ciudad', type: 'VARCHAR(60)', notNull: true, desc: 'Ciudad' },
+          { name: 'region', type: 'VARCHAR(60)', desc: 'Región / estado' },
+          { name: 'codigo_postal', type: 'VARCHAR(10)', desc: 'Código postal' },
+          { name: 'es_principal', type: 'BOOLEAN', defaultValue: 'FALSE', desc: 'Dirección por defecto' }
+        ]
+      },
+      {
+        name: 'categorias',
+        desc: 'Árbol de categorías',
+        fields: [
+          { name: 'id_categoria', type: 'INT', pk: true, desc: 'PK' },
+          { name: 'nombre_categoria', type: 'VARCHAR(60)', unique: true, notNull: true, desc: 'Nombre' },
+          { name: 'descripcion', type: 'TEXT', desc: 'Descripción de la categoría' },
+          { name: 'activo', type: 'BOOLEAN', defaultValue: 'TRUE', desc: 'Visible en catálogo' },
+          { name: 'orden', type: 'INT', desc: 'Orden de exhibición' },
+          { name: 'fecha_creacion', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Alta de la categoría' }
+        ]
+      },
+      {
+        name: 'productos',
+        desc: 'Catálogo comercial',
+        fields: [
+          { name: 'id_producto', type: 'BIGINT', pk: true, desc: 'PK' },
+          { name: 'id_categoria', type: 'INT', fk: 'categorias.id_categoria', desc: 'Categoría' },
+          { name: 'sku', type: 'VARCHAR(30)', unique: true, desc: 'SKU' },
+          { name: 'nombre_producto', type: 'VARCHAR(120)', notNull: true, desc: 'Nombre comercial' },
+          { name: 'precio', type: 'DECIMAL(12,2)', notNull: true, desc: 'Precio' },
+          { name: 'descripcion', type: 'TEXT', desc: 'Ficha del producto' },
+          { name: 'activo', type: 'BOOLEAN', defaultValue: 'TRUE', desc: 'Publicado en la tienda' }
+        ]
+      },
+      {
+        name: 'inventario_bodega',
+        desc: 'Stock físico por bodega',
+        fields: [
+          { name: 'id_inventario', type: 'BIGINT', pk: true, desc: 'PK' },
+          { name: 'id_producto', type: 'BIGINT', fk: 'productos.id_producto', desc: 'Producto' },
+          { name: 'bodega_codigo', type: 'VARCHAR(20)', desc: 'Bodega' },
+          { name: 'stock_disponible', type: 'INT', notNull: true, desc: 'Stock' },
+          { name: 'stock_minimo', type: 'INT', defaultValue: '5', desc: 'Umbral de reposición' },
+          { name: 'fecha_ultima_entrada', type: 'TIMESTAMP', desc: 'Última recepción de mercadería' }
+        ]
+      },
+      {
+        name: 'pedidos',
+        desc: 'Órdenes de compra',
+        fields: [
+          { name: 'id_pedido', type: 'BIGINT', pk: true, desc: 'PK' },
+          { name: 'id_usuario', type: 'BIGINT', fk: 'usuarios.id_usuario', desc: 'Comprador' },
+          { name: 'id_direccion_envio', type: 'BIGINT', fk: 'direcciones.id_direccion', desc: 'Destino' },
+          { name: 'fecha_pedido', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Creación de la orden' },
+          { name: 'monto_total', type: 'DECIMAL(12,2)', notNull: true, desc: 'Total' },
+          { name: 'estado', type: 'VARCHAR(20)', defaultValue: "'PENDIENTE'", desc: 'PENDIENTE, PAGADO, ENVIADO, CANCELADO' },
+          { name: 'canal', type: 'VARCHAR(30)', defaultValue: "'WEB'", desc: 'WEB, APP, MARKETPLACE' }
+        ]
+      },
+      {
+        name: 'detalle_pedidos',
+        desc: 'Líneas de la orden N:M',
+        fields: [
+          { name: 'id_detalle', type: 'BIGINT', pk: true, desc: 'PK' },
+          { name: 'id_pedido', type: 'BIGINT', fk: 'pedidos.id_pedido', desc: 'Pedido' },
+          { name: 'id_producto', type: 'BIGINT', fk: 'productos.id_producto', desc: 'Producto' },
+          { name: 'cantidad', type: 'INT', notNull: true, desc: 'Cantidad' },
+          { name: 'precio_unitario', type: 'DECIMAL(12,2)', notNull: true, desc: 'Precio' },
+          { name: 'descuento', type: 'DECIMAL(12,2)', defaultValue: '0', desc: 'Descuento de la línea' }
+        ]
+      },
+      {
+        name: 'metodos_pago',
+        desc: 'Medios aceptados',
+        fields: [
+          { name: 'id_metodo', type: 'INT', pk: true, desc: 'PK' },
+          { name: 'codigo', type: 'VARCHAR(30)', unique: true, notNull: true, desc: 'WEBPAY, STRIPE, PAYPAL' },
+          { name: 'nombre', type: 'VARCHAR(50)', notNull: true, desc: 'Nombre del medio' },
+          { name: 'descripcion', type: 'TEXT', desc: 'Detalle del medio de pago' },
+          { name: 'activo', type: 'BOOLEAN', defaultValue: 'TRUE', desc: 'Habilitado en caja' }
+        ]
+      },
+      {
+        name: 'pagos_transaccion',
+        desc: 'Bitácora de cobros',
+        fields: [
+          { name: 'id_pago', type: 'BIGINT', pk: true, desc: 'PK' },
+          { name: 'id_pedido', type: 'BIGINT', fk: 'pedidos.id_pedido', desc: 'Pedido' },
+          { name: 'id_metodo', type: 'INT', fk: 'metodos_pago.id_metodo', desc: 'Método' },
+          { name: 'monto_pagado', type: 'DECIMAL(12,2)', notNull: true, desc: 'Monto' },
+          { name: 'estado_pago', type: 'VARCHAR(20)', desc: 'APROBADO, RECHAZADO' },
+          { name: 'fecha_pago', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Timestamp del cobro' },
+          { name: 'observaciones', type: 'TEXT', desc: 'Notas de la transacción' }
+        ]
+      }
     ],
     ddlSql: `-- 1. Usuarios y Perfiles (1:1)
 CREATE TABLE usuarios (
     id_usuario BIGSERIAL PRIMARY KEY,
     email VARCHAR(120) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
-    fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    telefono VARCHAR(20),
+    estado VARCHAR(20) DEFAULT 'ACTIVO',
+    avatar_url VARCHAR(255)
 );
 
 CREATE TABLE perfiles (
@@ -2573,6 +3133,8 @@ CREATE TABLE perfiles (
     id_usuario BIGINT UNIQUE NOT NULL,
     nombre VARCHAR(80) NOT NULL,
     telefono VARCHAR(20),
+    fecha_nacimiento DATE,
+    genero VARCHAR(10),
     FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON DELETE CASCADE
 );
 
@@ -2582,13 +3144,20 @@ CREATE TABLE direcciones (
     id_usuario BIGINT NOT NULL,
     calle VARCHAR(150) NOT NULL,
     ciudad VARCHAR(60) NOT NULL,
+    region VARCHAR(60),
+    codigo_postal VARCHAR(10),
+    es_principal BOOLEAN DEFAULT FALSE,
     FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON DELETE CASCADE
 );
 
 -- 3. Categorías y Productos
 CREATE TABLE categorias (
     id_categoria SERIAL PRIMARY KEY,
-    nombre_categoria VARCHAR(60) UNIQUE NOT NULL
+    nombre_categoria VARCHAR(60) UNIQUE NOT NULL,
+    descripcion TEXT,
+    activo BOOLEAN DEFAULT TRUE,
+    orden INT,
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE productos (
@@ -2597,6 +3166,8 @@ CREATE TABLE productos (
     sku VARCHAR(30) UNIQUE NOT NULL,
     nombre_producto VARCHAR(120) NOT NULL,
     precio DECIMAL(12,2) NOT NULL CHECK (precio > 0),
+    descripcion TEXT,
+    activo BOOLEAN DEFAULT TRUE,
     FOREIGN KEY (id_categoria) REFERENCES categorias(id_categoria)
 );
 
@@ -2606,6 +3177,8 @@ CREATE TABLE inventario_bodega (
     id_producto BIGINT NOT NULL,
     bodega_codigo VARCHAR(20) NOT NULL,
     stock_disponible INT NOT NULL CHECK (stock_disponible >= 0),
+    stock_minimo INT DEFAULT 5,
+    fecha_ultima_entrada TIMESTAMP,
     UNIQUE (id_producto, bodega_codigo),
     FOREIGN KEY (id_producto) REFERENCES productos(id_producto) ON DELETE CASCADE
 );
@@ -2617,6 +3190,8 @@ CREATE TABLE pedidos (
     id_direccion_envio BIGINT NOT NULL,
     fecha_pedido TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     monto_total DECIMAL(12,2) NOT NULL CHECK (monto_total >= 0),
+    estado VARCHAR(20) DEFAULT 'PENDIENTE',
+    canal VARCHAR(30) DEFAULT 'WEB',
     FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario),
     FOREIGN KEY (id_direccion_envio) REFERENCES direcciones(id_direccion)
 );
@@ -2627,6 +3202,7 @@ CREATE TABLE detalle_pedidos (
     id_producto BIGINT NOT NULL,
     cantidad INT NOT NULL CHECK (cantidad > 0),
     precio_unitario DECIMAL(12,2) NOT NULL CHECK (precio_unitario > 0),
+    descuento DECIMAL(12,2) DEFAULT 0,
     UNIQUE (id_pedido, id_producto),
     FOREIGN KEY (id_pedido) REFERENCES pedidos(id_pedido) ON DELETE CASCADE,
     FOREIGN KEY (id_producto) REFERENCES productos(id_producto)
@@ -2636,7 +3212,9 @@ CREATE TABLE detalle_pedidos (
 CREATE TABLE metodos_pago (
     id_metodo SERIAL PRIMARY KEY,
     codigo VARCHAR(30) UNIQUE NOT NULL,
-    nombre VARCHAR(50) NOT NULL
+    nombre VARCHAR(50) NOT NULL,
+    descripcion TEXT,
+    activo BOOLEAN DEFAULT TRUE
 );
 
 CREATE TABLE pagos_transaccion (
@@ -2646,6 +3224,7 @@ CREATE TABLE pagos_transaccion (
     monto_pagado DECIMAL(12,2) NOT NULL,
     estado_pago VARCHAR(20) DEFAULT 'APROBADO' CHECK (estado_pago IN ('APROBADO', 'RECHAZADO', 'PENDIENTE')),
     fecha_pago TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    observaciones TEXT,
     FOREIGN KEY (id_pedido) REFERENCES pedidos(id_pedido) ON DELETE CASCADE,
     FOREIGN KEY (id_metodo) REFERENCES metodos_pago(id_metodo)
 );`,
@@ -2696,39 +3275,160 @@ ORDER BY p.fecha_pedido DESC;`
     context: 'Un complejo hospitalario clínico gestiona pacientes, historiales clínicos 1:1, médicos, especialidades, turnos de guardia, citas médicas, diagnósticos CIE-10, catálogo de medicamentos, recetas médicas y dispensaciones de farmacia.',
     statement: 'Crear el esquema relacional hospitalario de 10 tablas y formular la consulta de trazabilidad de medicamentos dispensados a pacientes.',
     tables: [
-      { name: 'pacientes', desc: 'Ficha paciente', fields: [{ name: 'id_paciente', type: 'BIGINT', pk: true, desc: 'PK' }, { name: 'rut', type: 'VARCHAR(12)', unique: true, desc: 'RUT' }, { name: 'nombre', type: 'VARCHAR(80)', notNull: true, desc: 'Nombre' }] },
-      { name: 'historiales_clinicos', desc: 'Expediente 1:1', fields: [{ name: 'id_historial', type: 'BIGINT', pk: true, desc: 'PK' }, { name: 'id_paciente', type: 'BIGINT', fk: 'pacientes.id_paciente', unique: true, desc: '1:1' }, { name: 'grupo_sangre', type: 'VARCHAR(3)', desc: 'Sangre' }] },
-      { name: 'especialidades', desc: 'Especialidades', fields: [{ name: 'id_especialidad', type: 'INT', pk: true, desc: 'PK' }, { name: 'nombre_especialidad', type: 'VARCHAR(60)', unique: true, desc: 'Nombre' }] },
-      { name: 'medicos', desc: 'Personal médico', fields: [{ name: 'id_medico', type: 'INT', pk: true, desc: 'PK' }, { name: 'id_especialidad', type: 'INT', fk: 'especialidades.id_especialidad', desc: 'Especialidad' }, { name: 'nombre', type: 'VARCHAR(80)', notNull: true, desc: 'Doctor' }] },
-      { name: 'turnos_guardia', desc: 'Guardias de médicos', fields: [{ name: 'id_turno', type: 'BIGINT', pk: true, desc: 'PK' }, { name: 'id_medico', type: 'INT', fk: 'medicos.id_medico', desc: 'Médico' }, { name: 'fecha', type: 'DATE', notNull: true, desc: 'Fecha' }] },
-      { name: 'citas_medicas', desc: 'Citas y consultas', fields: [{ name: 'id_cita', type: 'BIGINT', pk: true, desc: 'PK' }, { name: 'id_paciente', type: 'BIGINT', fk: 'pacientes.id_paciente', desc: 'Paciente' }, { name: 'id_medico', type: 'INT', fk: 'medicos.id_medico', desc: 'Médico' }, { name: 'fecha_hora', type: 'TIMESTAMP', notNull: true, desc: 'Hora' }] },
-      { name: 'diagnosticos', desc: 'Dictámenes CIE-10', fields: [{ name: 'id_diagnostico', type: 'BIGINT', pk: true, desc: 'PK' }, { name: 'id_cita', type: 'BIGINT', fk: 'citas_medicas.id_cita', desc: 'Cita' }, { name: 'codigo_cie10', type: 'VARCHAR(10)', notNull: true, desc: 'CIE-10' }] },
-      { name: 'medicamentos', desc: 'Stock farmacológico', fields: [{ name: 'id_medicamento', type: 'INT', pk: true, desc: 'PK' }, { name: 'nombre_generico', type: 'VARCHAR(100)', unique: true, desc: 'Fármaco' }, { name: 'stock', type: 'INT', notNull: true, desc: 'Stock' }] },
-      { name: 'recetas', desc: 'Prescripciones', fields: [{ name: 'id_receta', type: 'BIGINT', pk: true, desc: 'PK' }, { name: 'id_cita', type: 'BIGINT', fk: 'citas_medicas.id_cita', desc: 'Cita' }, { name: 'id_medicamento', type: 'INT', fk: 'medicamentos.id_medicamento', desc: 'Fármaco' }, { name: 'dosis', type: 'VARCHAR(100)', desc: 'Dosis' }] },
-      { name: 'dispensaciones_farmacia', desc: 'Entrega en farmacia', fields: [{ name: 'id_dispensacion', type: 'BIGINT', pk: true, desc: 'PK' }, { name: 'id_receta', type: 'BIGINT', fk: 'recetas.id_receta', desc: 'Receta' }, { name: 'cantidad_entregada', type: 'INT', notNull: true, desc: 'Unidades' }, { name: 'fecha_entrega', type: 'TIMESTAMP', desc: 'Timestamp' }] }
+      {
+        name: 'pacientes',
+        desc: 'Ficha paciente',
+        fields: [
+          { name: 'id_paciente', type: 'BIGINT', pk: true, desc: 'PK' },
+          { name: 'rut', type: 'VARCHAR(12)', unique: true, desc: 'RUT' },
+          { name: 'nombre', type: 'VARCHAR(80)', notNull: true, desc: 'Nombre' },
+          { name: 'fecha_nacimiento', type: 'DATE', desc: 'Nacimiento' },
+          { name: 'telefono', type: 'VARCHAR(20)', desc: 'Teléfono de contacto' },
+          { name: 'sexo', type: 'VARCHAR(1)', desc: 'Sexo registrado (M/F)' }
+        ]
+      },
+      {
+        name: 'historiales_clinicos',
+        desc: 'Expediente 1:1',
+        fields: [
+          { name: 'id_historial', type: 'BIGINT', pk: true, desc: 'PK' },
+          { name: 'id_paciente', type: 'BIGINT', fk: 'pacientes.id_paciente', unique: true, desc: '1:1' },
+          { name: 'grupo_sangre', type: 'VARCHAR(3)', desc: 'Sangre' },
+          { name: 'alergias', type: 'TEXT', desc: 'Alergias conocidas' },
+          { name: 'fecha_apertura', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Apertura del expediente' }
+        ]
+      },
+      {
+        name: 'especialidades',
+        desc: 'Especialidades',
+        fields: [
+          { name: 'id_especialidad', type: 'INT', pk: true, desc: 'PK' },
+          { name: 'nombre_especialidad', type: 'VARCHAR(60)', unique: true, desc: 'Nombre' },
+          { name: 'descripcion', type: 'TEXT', desc: 'Descripción de la especialidad' },
+          { name: 'activo', type: 'BOOLEAN', defaultValue: 'TRUE', desc: 'Oferta activa' },
+          { name: 'orden', type: 'INT', desc: 'Orden en el listado' }
+        ]
+      },
+      {
+        name: 'medicos',
+        desc: 'Personal médico',
+        fields: [
+          { name: 'id_medico', type: 'INT', pk: true, desc: 'PK' },
+          { name: 'id_especialidad', type: 'INT', fk: 'especialidades.id_especialidad', desc: 'Especialidad' },
+          { name: 'nombre', type: 'VARCHAR(80)', notNull: true, desc: 'Doctor' },
+          { name: 'rut', type: 'VARCHAR(12)', desc: 'Cédula profesional' },
+          { name: 'telefono', type: 'VARCHAR(20)', desc: 'Fono de guardia' },
+          { name: 'activo', type: 'BOOLEAN', defaultValue: 'TRUE', desc: 'Médico contratado' }
+        ]
+      },
+      {
+        name: 'turnos_guardia',
+        desc: 'Guardias de médicos',
+        fields: [
+          { name: 'id_turno', type: 'BIGINT', pk: true, desc: 'PK' },
+          { name: 'id_medico', type: 'INT', fk: 'medicos.id_medico', desc: 'Médico' },
+          { name: 'fecha', type: 'DATE', notNull: true, desc: 'Fecha' },
+          { name: 'hora_inicio', type: 'TIMESTAMP', desc: 'Inicio de la guardia' },
+          { name: 'hora_fin', type: 'TIMESTAMP', desc: 'Término de la guardia' },
+          { name: 'tipo_turno', type: 'VARCHAR(20)', defaultValue: "'DIURNO'", desc: 'DIURNO, NOCTURNO' }
+        ]
+      },
+      {
+        name: 'citas_medicas',
+        desc: 'Citas y consultas',
+        fields: [
+          { name: 'id_cita', type: 'BIGINT', pk: true, desc: 'PK' },
+          { name: 'id_paciente', type: 'BIGINT', fk: 'pacientes.id_paciente', desc: 'Paciente' },
+          { name: 'id_medico', type: 'INT', fk: 'medicos.id_medico', desc: 'Médico' },
+          { name: 'fecha_hora', type: 'TIMESTAMP', notNull: true, desc: 'Hora' },
+          { name: 'estado', type: 'VARCHAR(20)', defaultValue: "'PROGRAMADA'", desc: 'PROGRAMADA, ATENDIDA, CANCELADA' },
+          { name: 'motivo', type: 'TEXT', desc: 'Motivo de la consulta' },
+          { name: 'canal', type: 'VARCHAR(30)', defaultValue: "'PRESENCIAL'", desc: 'PRESENCIAL, TELEMEDICINA' }
+        ]
+      },
+      {
+        name: 'diagnosticos',
+        desc: 'Dictámenes CIE-10',
+        fields: [
+          { name: 'id_diagnostico', type: 'BIGINT', pk: true, desc: 'PK' },
+          { name: 'id_cita', type: 'BIGINT', fk: 'citas_medicas.id_cita', desc: 'Cita' },
+          { name: 'codigo_cie10', type: 'VARCHAR(10)', notNull: true, desc: 'CIE-10' },
+          { name: 'descripcion', type: 'TEXT', notNull: true, desc: 'Detalle del diagnóstico' },
+          { name: 'severidad', type: 'VARCHAR(20)', desc: 'LEVE, MODERADA, GRAVE' },
+          { name: 'fecha_diagnostico', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Emisión del dictamen' }
+        ]
+      },
+      {
+        name: 'medicamentos',
+        desc: 'Stock farmacológico',
+        fields: [
+          { name: 'id_medicamento', type: 'INT', pk: true, desc: 'PK' },
+          { name: 'nombre_generico', type: 'VARCHAR(100)', unique: true, desc: 'Fármaco' },
+          { name: 'stock', type: 'INT', notNull: true, desc: 'Stock' },
+          { name: 'laboratorio', type: 'VARCHAR(80)', desc: 'Laboratorio fabricante' },
+          { name: 'stock_minimo', type: 'INT', defaultValue: '10', desc: 'Umbral de reposición' },
+          { name: 'fecha_vencimiento', type: 'DATE', desc: 'Vencimiento del lote' }
+        ]
+      },
+      {
+        name: 'recetas',
+        desc: 'Prescripciones',
+        fields: [
+          { name: 'id_receta', type: 'BIGINT', pk: true, desc: 'PK' },
+          { name: 'id_cita', type: 'BIGINT', fk: 'citas_medicas.id_cita', desc: 'Cita' },
+          { name: 'id_medicamento', type: 'INT', fk: 'medicamentos.id_medicamento', desc: 'Fármaco' },
+          { name: 'dosis', type: 'VARCHAR(100)', desc: 'Dosis' },
+          { name: 'frecuencia', type: 'VARCHAR(50)', desc: 'Cada cuántas horas' },
+          { name: 'duracion_dias', type: 'INT', desc: 'Días de tratamiento' },
+          { name: 'fecha_receta', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Emisión de la receta' }
+        ]
+      },
+      {
+        name: 'dispensaciones_farmacia',
+        desc: 'Entrega en farmacia',
+        fields: [
+          { name: 'id_dispensacion', type: 'BIGINT', pk: true, desc: 'PK' },
+          { name: 'id_receta', type: 'BIGINT', fk: 'recetas.id_receta', desc: 'Receta' },
+          { name: 'cantidad_entregada', type: 'INT', notNull: true, desc: 'Unidades' },
+          { name: 'fecha_entrega', type: 'TIMESTAMP', desc: 'Timestamp' },
+          { name: 'dispensario', type: 'VARCHAR(50)', desc: 'Módulo de entrega' },
+          { name: 'estado', type: 'VARCHAR(20)', defaultValue: "'ENTREGADA'", desc: 'ENTREGADA, PENDIENTE, ANULADA' }
+        ]
+      }
     ],
     ddlSql: `CREATE TABLE pacientes (
     id_paciente BIGSERIAL PRIMARY KEY,
     rut VARCHAR(12) UNIQUE NOT NULL,
-    nombre VARCHAR(80) NOT NULL
+    nombre VARCHAR(80) NOT NULL,
+    fecha_nacimiento DATE,
+    telefono VARCHAR(20),
+    sexo VARCHAR(1)
 );
 
 CREATE TABLE historiales_clinicos (
     id_historial BIGSERIAL PRIMARY KEY,
     id_paciente BIGINT UNIQUE NOT NULL,
     grupo_sangre VARCHAR(3) NOT NULL,
+    alergias TEXT,
+    fecha_apertura TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (id_paciente) REFERENCES pacientes(id_paciente) ON DELETE CASCADE
 );
 
 CREATE TABLE especialidades (
     id_especialidad SERIAL PRIMARY KEY,
-    nombre_especialidad VARCHAR(60) UNIQUE NOT NULL
+    nombre_especialidad VARCHAR(60) UNIQUE NOT NULL,
+    descripcion TEXT,
+    activo BOOLEAN DEFAULT TRUE,
+    orden INT
 );
 
 CREATE TABLE medicos (
     id_medico SERIAL PRIMARY KEY,
     id_especialidad INT NOT NULL,
     nombre VARCHAR(80) NOT NULL,
+    rut VARCHAR(12),
+    telefono VARCHAR(20),
+    activo BOOLEAN DEFAULT TRUE,
     FOREIGN KEY (id_especialidad) REFERENCES especialidades(id_especialidad)
 );
 
@@ -2736,6 +3436,9 @@ CREATE TABLE turnos_guardia (
     id_turno BIGSERIAL PRIMARY KEY,
     id_medico INT NOT NULL,
     fecha DATE NOT NULL,
+    hora_inicio TIMESTAMP,
+    hora_fin TIMESTAMP,
+    tipo_turno VARCHAR(20) DEFAULT 'DIURNO',
     FOREIGN KEY (id_medico) REFERENCES medicos(id_medico)
 );
 
@@ -2744,6 +3447,9 @@ CREATE TABLE citas_medicas (
     id_paciente BIGINT NOT NULL,
     id_medico INT NOT NULL,
     fecha_hora TIMESTAMP NOT NULL,
+    estado VARCHAR(20) DEFAULT 'PROGRAMADA',
+    motivo TEXT,
+    canal VARCHAR(30) DEFAULT 'PRESENCIAL',
     FOREIGN KEY (id_paciente) REFERENCES pacientes(id_paciente),
     FOREIGN KEY (id_medico) REFERENCES medicos(id_medico)
 );
@@ -2753,13 +3459,18 @@ CREATE TABLE diagnosticos (
     id_cita BIGINT NOT NULL,
     codigo_cie10 VARCHAR(10) NOT NULL,
     descripcion TEXT NOT NULL,
+    severidad VARCHAR(20),
+    fecha_diagnostico TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (id_cita) REFERENCES citas_medicas(id_cita)
 );
 
 CREATE TABLE medicamentos (
     id_medicamento SERIAL PRIMARY KEY,
     nombre_generico VARCHAR(100) UNIQUE NOT NULL,
-    stock INT NOT NULL CHECK (stock >= 0)
+    stock INT NOT NULL CHECK (stock >= 0),
+    laboratorio VARCHAR(80),
+    stock_minimo INT DEFAULT 10,
+    fecha_vencimiento DATE
 );
 
 CREATE TABLE recetas (
@@ -2767,6 +3478,9 @@ CREATE TABLE recetas (
     id_cita BIGINT NOT NULL,
     id_medicamento INT NOT NULL,
     dosis VARCHAR(100) NOT NULL,
+    frecuencia VARCHAR(50),
+    duracion_dias INT,
+    fecha_receta TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (id_cita) REFERENCES citas_medicas(id_cita),
     FOREIGN KEY (id_medicamento) REFERENCES medicamentos(id_medicamento)
 );
@@ -2776,6 +3490,8 @@ CREATE TABLE dispensaciones_farmacia (
     id_receta BIGINT NOT NULL,
     cantidad_entregada INT NOT NULL CHECK (cantidad_entregada > 0),
     fecha_entrega TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    dispensario VARCHAR(50),
+    estado VARCHAR(20) DEFAULT 'ENTREGADA',
     FOREIGN KEY (id_receta) REFERENCES recetas(id_receta)
 );`,
     seedSql: `INSERT INTO pacientes (rut, nombre) VALUES ('12.345.678-9', 'Mario Hugo');
@@ -2824,27 +3540,135 @@ INNER JOIN diagnosticos d ON cm.id_cita = d.id_cita;`
     context: 'Una plataforma tipo Platzi/Canvas estructura instituciones, usuarios, roles, carreras, cursos, módulos, lecciones de video, inscripciones, evaluaciones y calificaciones.',
     statement: 'Crear el esquema educativo de 10 tablas y calcular el promedio ponderado de calificaciones de los estudiantes en cada curso.',
     tables: [
-      { name: 'instituciones', desc: 'Universidad / Academia', fields: [{ name: 'id_institucion', type: 'INT', pk: true, desc: 'PK' }, { name: 'nombre_institucion', type: 'VARCHAR(100)', unique: true, desc: 'Nombre' }] },
-      { name: 'roles', desc: 'Docente, Alumno, Tutor', fields: [{ name: 'id_rol', type: 'INT', pk: true, desc: 'PK' }, { name: 'nombre_rol', type: 'VARCHAR(30)', unique: true, desc: 'Rol' }] },
-      { name: 'usuarios', desc: 'Usuarios registrados', fields: [{ name: 'id_usuario', type: 'BIGINT', pk: true, desc: 'PK' }, { name: 'id_institucion', type: 'INT', fk: 'instituciones.id_institucion', desc: 'Institución' }, { name: 'id_rol', type: 'INT', fk: 'roles.id_rol', desc: 'Rol' }, { name: 'email', type: 'VARCHAR(100)', unique: true, desc: 'Email' }] },
-      { name: 'carreras', desc: 'Programas de estudio', fields: [{ name: 'id_carrera', type: 'INT', pk: true, desc: 'PK' }, { name: 'nombre_carrera', type: 'VARCHAR(80)', desc: 'Carrera' }] },
-      { name: 'cursos', desc: 'Cursos', fields: [{ name: 'id_curso', type: 'BIGINT', pk: true, desc: 'PK' }, { name: 'id_carrera', type: 'INT', fk: 'carreras.id_carrera', desc: 'Carrera' }, { name: 'titulo', type: 'VARCHAR(100)', desc: 'Título' }] },
-      { name: 'modulos', desc: 'Unidades temáticas', fields: [{ name: 'id_modulo', type: 'BIGINT', pk: true, desc: 'PK' }, { name: 'id_curso', type: 'BIGINT', fk: 'cursos.id_curso', desc: 'Curso' }, { name: 'titulo_modulo', type: 'VARCHAR(80)', desc: 'Módulo' }] },
-      { name: 'lecciones', desc: 'Videos y contenidos', fields: [{ name: 'id_leccion', type: 'BIGINT', pk: true, desc: 'PK' }, { name: 'id_modulo', type: 'BIGINT', fk: 'modulos.id_modulo', desc: 'Módulo' }, { name: 'titulo_leccion', type: 'VARCHAR(100)', desc: 'Lección' }] },
-      { name: 'inscripciones', desc: 'Matrículas N:M', fields: [{ name: 'id_inscripcion', type: 'BIGINT', pk: true, desc: 'PK' }, { name: 'id_usuario', type: 'BIGINT', fk: 'usuarios.id_usuario', desc: 'Alumno' }, { name: 'id_curso', type: 'BIGINT', fk: 'cursos.id_curso', desc: 'Curso' }] },
-      { name: 'evaluaciones', desc: 'Pruebas / Exámenes', fields: [{ name: 'id_evaluacion', type: 'BIGINT', pk: true, desc: 'PK' }, { name: 'id_curso', type: 'BIGINT', fk: 'cursos.id_curso', desc: 'Curso' }, { name: 'ponderacion', type: 'DECIMAL(4,2)', desc: 'Ponderación (0 a 100%)' }] },
-      { name: 'calificaciones', desc: 'Notas obtenidas', fields: [{ name: 'id_calificacion', type: 'BIGINT', pk: true, desc: 'PK' }, { name: 'id_inscripcion', type: 'BIGINT', fk: 'inscripciones.id_inscripcion', desc: 'Inscripción' }, { name: 'id_evaluacion', type: 'BIGINT', fk: 'evaluaciones.id_evaluacion', desc: 'Evaluación' }, { name: 'nota', type: 'DECIMAL(3,2)', desc: 'Nota (1 a 7)' }] }
+      {
+        name: 'instituciones',
+        desc: 'Universidad / Academia',
+        fields: [
+          { name: 'id_institucion', type: 'INT', pk: true, desc: 'PK' },
+          { name: 'nombre_institucion', type: 'VARCHAR(100)', unique: true, desc: 'Nombre' },
+          { name: 'descripcion', type: 'TEXT', desc: 'Perfil de la institución' },
+          { name: 'activo', type: 'BOOLEAN', defaultValue: 'TRUE', desc: 'Institución vigente' },
+          { name: 'orden', type: 'INT', desc: 'Orden en el directorio' }
+        ]
+      },
+      {
+        name: 'roles',
+        desc: 'Docente, Alumno, Tutor',
+        fields: [
+          { name: 'id_rol', type: 'INT', pk: true, desc: 'PK' },
+          { name: 'nombre_rol', type: 'VARCHAR(30)', unique: true, desc: 'Rol' },
+          { name: 'descripcion', type: 'TEXT', desc: 'Permisos del rol' },
+          { name: 'activo', type: 'BOOLEAN', defaultValue: 'TRUE', desc: 'Rol vigente' },
+          { name: 'orden', type: 'INT', desc: 'Orden de aparición' }
+        ]
+      },
+      {
+        name: 'usuarios',
+        desc: 'Usuarios registrados',
+        fields: [
+          { name: 'id_usuario', type: 'BIGINT', pk: true, desc: 'PK' },
+          { name: 'id_institucion', type: 'INT', fk: 'instituciones.id_institucion', desc: 'Institución' },
+          { name: 'id_rol', type: 'INT', fk: 'roles.id_rol', desc: 'Rol' },
+          { name: 'email', type: 'VARCHAR(100)', unique: true, desc: 'Email' },
+          { name: 'nombre', type: 'VARCHAR(80)', notNull: true, desc: 'Nombre completo' },
+          { name: 'fecha_registro', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Alta en la plataforma' },
+          { name: 'estado', type: 'VARCHAR(20)', defaultValue: "'ACTIVO'", desc: 'ACTIVO, SUSPENDIDO, BAJA' }
+        ]
+      },
+      {
+        name: 'carreras',
+        desc: 'Programas de estudio',
+        fields: [
+          { name: 'id_carrera', type: 'INT', pk: true, desc: 'PK' },
+          { name: 'nombre_carrera', type: 'VARCHAR(80)', desc: 'Carrera' },
+          { name: 'descripcion', type: 'TEXT', desc: 'Objetivo del programa' },
+          { name: 'duracion_semestres', type: 'INT', desc: 'Duración nominal' },
+          { name: 'activo', type: 'BOOLEAN', defaultValue: 'TRUE', desc: 'Plan vigente' }
+        ]
+      },
+      {
+        name: 'cursos',
+        desc: 'Cursos',
+        fields: [
+          { name: 'id_curso', type: 'BIGINT', pk: true, desc: 'PK' },
+          { name: 'id_carrera', type: 'INT', fk: 'carreras.id_carrera', desc: 'Carrera' },
+          { name: 'titulo', type: 'VARCHAR(100)', desc: 'Título' },
+          { name: 'descripcion', type: 'TEXT', desc: 'Sílabo resumido' },
+          { name: 'creditos', type: 'INT', desc: 'Créditos académicos' },
+          { name: 'activo', type: 'BOOLEAN', defaultValue: 'TRUE', desc: 'Curso impartido' }
+        ]
+      },
+      {
+        name: 'modulos',
+        desc: 'Unidades temáticas',
+        fields: [
+          { name: 'id_modulo', type: 'BIGINT', pk: true, desc: 'PK' },
+          { name: 'id_curso', type: 'BIGINT', fk: 'cursos.id_curso', desc: 'Curso' },
+          { name: 'titulo_modulo', type: 'VARCHAR(80)', desc: 'Módulo' },
+          { name: 'orden', type: 'INT', desc: 'Posición en el curso' },
+          { name: 'descripcion', type: 'TEXT', desc: 'Objetivo del módulo' },
+          { name: 'activo', type: 'BOOLEAN', defaultValue: 'TRUE', desc: 'Módulo publicado' }
+        ]
+      },
+      {
+        name: 'lecciones',
+        desc: 'Videos y contenidos',
+        fields: [
+          { name: 'id_leccion', type: 'BIGINT', pk: true, desc: 'PK' },
+          { name: 'id_modulo', type: 'BIGINT', fk: 'modulos.id_modulo', desc: 'Módulo' },
+          { name: 'titulo_leccion', type: 'VARCHAR(100)', desc: 'Lección' },
+          { name: 'duracion_min', type: 'INT', notNull: true, desc: 'Duración en minutos' },
+          { name: 'orden', type: 'INT', desc: 'Orden en el módulo' },
+          { name: 'tipo_recurso', type: 'VARCHAR(30)', defaultValue: "'VIDEO'", desc: 'VIDEO, DOCUMENTO, QUIZ' }
+        ]
+      },
+      {
+        name: 'inscripciones',
+        desc: 'Matrículas N:M',
+        fields: [
+          { name: 'id_inscripcion', type: 'BIGINT', pk: true, desc: 'PK' },
+          { name: 'id_usuario', type: 'BIGINT', fk: 'usuarios.id_usuario', desc: 'Alumno' },
+          { name: 'id_curso', type: 'BIGINT', fk: 'cursos.id_curso', desc: 'Curso' },
+          { name: 'fecha_inscripcion', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Alta de matrícula' },
+          { name: 'estado', type: 'VARCHAR(20)', defaultValue: "'ACTIVA'", desc: 'ACTIVA, RETIRADA, CURSADA' },
+          { name: 'progreso_pct', type: 'DECIMAL(5,2)', defaultValue: '0', desc: 'Avance en el curso (%)' }
+        ]
+      },
+      {
+        name: 'evaluaciones',
+        desc: 'Pruebas / Exámenes',
+        fields: [
+          { name: 'id_evaluacion', type: 'BIGINT', pk: true, desc: 'PK' },
+          { name: 'id_curso', type: 'BIGINT', fk: 'cursos.id_curso', desc: 'Curso' },
+          { name: 'nombre_evaluacion', type: 'VARCHAR(60)', notNull: true, desc: 'Nombre de la prueba' },
+          { name: 'ponderacion', type: 'DECIMAL(4,2)', desc: 'Ponderación (0 a 100%)' },
+          { name: 'fecha_evaluacion', type: 'DATE', desc: 'Fecha programada' },
+          { name: 'tipo', type: 'VARCHAR(30)', defaultValue: "'EXAMEN'", desc: 'EXAMEN, TAREA, PROYECTO' }
+        ]
+      },
+      {
+        name: 'calificaciones',
+        desc: 'Notas obtenidas',
+        fields: [
+          { name: 'id_calificacion', type: 'BIGINT', pk: true, desc: 'PK' },
+          { name: 'id_inscripcion', type: 'BIGINT', fk: 'inscripciones.id_inscripcion', desc: 'Inscripción' },
+          { name: 'id_evaluacion', type: 'BIGINT', fk: 'evaluaciones.id_evaluacion', desc: 'Evaluación' },
+          { name: 'nota', type: 'DECIMAL(3,2)', desc: 'Nota (1 a 7)' },
+          { name: 'fecha_calificacion', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Registro de la nota' },
+          { name: 'intento', type: 'INT', defaultValue: '1', desc: 'N° de intento' }
+        ]
+      }
     ],
-    ddlSql: `CREATE TABLE instituciones (id_institucion SERIAL PRIMARY KEY, nombre_institucion VARCHAR(100) UNIQUE NOT NULL);
-CREATE TABLE roles (id_rol SERIAL PRIMARY KEY, nombre_rol VARCHAR(30) UNIQUE NOT NULL);
-CREATE TABLE usuarios (id_usuario BIGSERIAL PRIMARY KEY, id_institucion INT NOT NULL, id_rol INT NOT NULL, email VARCHAR(100) UNIQUE NOT NULL, nombre VARCHAR(80) NOT NULL, FOREIGN KEY (id_institucion) REFERENCES instituciones(id_institucion), FOREIGN KEY (id_rol) REFERENCES roles(id_rol));
-CREATE TABLE carreras (id_carrera SERIAL PRIMARY KEY, nombre_carrera VARCHAR(80) NOT NULL);
-CREATE TABLE cursos (id_curso BIGSERIAL PRIMARY KEY, id_carrera INT NOT NULL, titulo VARCHAR(100) NOT NULL, FOREIGN KEY (id_carrera) REFERENCES carreras(id_carrera));
-CREATE TABLE modulos (id_modulo BIGSERIAL PRIMARY KEY, id_curso BIGINT NOT NULL, titulo_modulo VARCHAR(80) NOT NULL, FOREIGN KEY (id_curso) REFERENCES cursos(id_curso) ON DELETE CASCADE);
-CREATE TABLE lecciones (id_leccion BIGSERIAL PRIMARY KEY, id_modulo BIGINT NOT NULL, titulo_leccion VARCHAR(100) NOT NULL, duracion_min INT NOT NULL, FOREIGN KEY (id_modulo) REFERENCES modulos(id_modulo) ON DELETE CASCADE);
-CREATE TABLE inscripciones (id_inscripcion BIGSERIAL PRIMARY KEY, id_usuario BIGINT NOT NULL, id_curso BIGINT NOT NULL, UNIQUE (id_usuario, id_curso), FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario), FOREIGN KEY (id_curso) REFERENCES cursos(id_curso));
-CREATE TABLE evaluaciones (id_evaluacion BIGSERIAL PRIMARY KEY, id_curso BIGINT NOT NULL, nombre_evaluacion VARCHAR(60) NOT NULL, ponderacion DECIMAL(4,2) NOT NULL, FOREIGN KEY (id_curso) REFERENCES cursos(id_curso));
-CREATE TABLE calificaciones (id_calificacion BIGSERIAL PRIMARY KEY, id_inscripcion BIGINT NOT NULL, id_evaluacion BIGINT NOT NULL, nota DECIMAL(3,2) NOT NULL CHECK (nota BETWEEN 1.00 AND 7.00), UNIQUE (id_inscripcion, id_evaluacion), FOREIGN KEY (id_inscripcion) REFERENCES inscripciones(id_inscripcion) ON DELETE CASCADE, FOREIGN KEY (id_evaluacion) REFERENCES evaluaciones(id_evaluacion));`,
+    ddlSql: `CREATE TABLE instituciones (id_institucion SERIAL PRIMARY KEY, nombre_institucion VARCHAR(100) UNIQUE NOT NULL, descripcion TEXT, activo BOOLEAN DEFAULT TRUE, orden INT);
+CREATE TABLE roles (id_rol SERIAL PRIMARY KEY, nombre_rol VARCHAR(30) UNIQUE NOT NULL, descripcion TEXT, activo BOOLEAN DEFAULT TRUE, orden INT);
+CREATE TABLE usuarios (id_usuario BIGSERIAL PRIMARY KEY, id_institucion INT NOT NULL, id_rol INT NOT NULL, email VARCHAR(100) UNIQUE NOT NULL, nombre VARCHAR(80) NOT NULL, fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP, estado VARCHAR(20) DEFAULT 'ACTIVO', FOREIGN KEY (id_institucion) REFERENCES instituciones(id_institucion), FOREIGN KEY (id_rol) REFERENCES roles(id_rol));
+CREATE TABLE carreras (id_carrera SERIAL PRIMARY KEY, nombre_carrera VARCHAR(80) NOT NULL, descripcion TEXT, duracion_semestres INT, activo BOOLEAN DEFAULT TRUE);
+CREATE TABLE cursos (id_curso BIGSERIAL PRIMARY KEY, id_carrera INT NOT NULL, titulo VARCHAR(100) NOT NULL, descripcion TEXT, creditos INT, activo BOOLEAN DEFAULT TRUE, FOREIGN KEY (id_carrera) REFERENCES carreras(id_carrera));
+CREATE TABLE modulos (id_modulo BIGSERIAL PRIMARY KEY, id_curso BIGINT NOT NULL, titulo_modulo VARCHAR(80) NOT NULL, orden INT, descripcion TEXT, activo BOOLEAN DEFAULT TRUE, FOREIGN KEY (id_curso) REFERENCES cursos(id_curso) ON DELETE CASCADE);
+CREATE TABLE lecciones (id_leccion BIGSERIAL PRIMARY KEY, id_modulo BIGINT NOT NULL, titulo_leccion VARCHAR(100) NOT NULL, duracion_min INT NOT NULL, orden INT, tipo_recurso VARCHAR(30) DEFAULT 'VIDEO', FOREIGN KEY (id_modulo) REFERENCES modulos(id_modulo) ON DELETE CASCADE);
+CREATE TABLE inscripciones (id_inscripcion BIGSERIAL PRIMARY KEY, id_usuario BIGINT NOT NULL, id_curso BIGINT NOT NULL, fecha_inscripcion TIMESTAMP DEFAULT CURRENT_TIMESTAMP, estado VARCHAR(20) DEFAULT 'ACTIVA', progreso_pct DECIMAL(5,2) DEFAULT 0, UNIQUE (id_usuario, id_curso), FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario), FOREIGN KEY (id_curso) REFERENCES cursos(id_curso));
+CREATE TABLE evaluaciones (id_evaluacion BIGSERIAL PRIMARY KEY, id_curso BIGINT NOT NULL, nombre_evaluacion VARCHAR(60) NOT NULL, ponderacion DECIMAL(4,2) NOT NULL, fecha_evaluacion DATE, tipo VARCHAR(30) DEFAULT 'EXAMEN', FOREIGN KEY (id_curso) REFERENCES cursos(id_curso));
+CREATE TABLE calificaciones (id_calificacion BIGSERIAL PRIMARY KEY, id_inscripcion BIGINT NOT NULL, id_evaluacion BIGINT NOT NULL, nota DECIMAL(3,2) NOT NULL CHECK (nota BETWEEN 1.00 AND 7.00), fecha_calificacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP, intento INT DEFAULT 1, UNIQUE (id_inscripcion, id_evaluacion), FOREIGN KEY (id_inscripcion) REFERENCES inscripciones(id_inscripcion) ON DELETE CASCADE, FOREIGN KEY (id_evaluacion) REFERENCES evaluaciones(id_evaluacion));`,
     seedSql: `INSERT INTO instituciones (nombre_institucion) VALUES ('Tech Academy Global');
 INSERT INTO roles (nombre_rol) VALUES ('Estudiante');
 INSERT INTO usuarios (id_institucion, id_rol, email, nombre) VALUES (1, 1, 'alumno@tech.com', 'Lucas Prado');
@@ -2886,27 +3710,139 @@ GROUP BY i.id_inscripcion, u.nombre, u.email, c.titulo;`
     context: 'Una institución bancaria diseña su núcleo transaccional: clientes, sucursales físicas, empleados bancarios, cuentas de ahorro/corriente, tipos de cuenta, tarjetas de débito/crédito, transacciones de saldo, transferencias interbancarias, créditos/préstamos otorgados y cuotas de pago.',
     statement: 'Implementar el esquema bancario de 10 tablas con validaciones ACID y reporte de saldos consolidados.',
     tables: [
-      { name: 'sucursales', desc: 'Oficinas', fields: [{ name: 'id_sucursal', type: 'INT', pk: true, desc: 'PK' }, { name: 'nombre_sucursal', type: 'VARCHAR(60)', desc: 'Nombre' }] },
-      { name: 'empleados', desc: 'Ejecutivos', fields: [{ name: 'id_empleado', type: 'INT', pk: true, desc: 'PK' }, { name: 'id_sucursal', type: 'INT', fk: 'sucursales.id_sucursal', desc: 'Sucursal' }, { name: 'nombre', type: 'VARCHAR(80)', desc: 'Nombre' }] },
-      { name: 'clientes', desc: 'Titulares', fields: [{ name: 'id_cliente', type: 'BIGINT', pk: true, desc: 'PK' }, { name: 'rut', type: 'VARCHAR(12)', unique: true, desc: 'RUT' }, { name: 'nombre', type: 'VARCHAR(80)', desc: 'Nombre' }] },
-      { name: 'tipos_cuenta', desc: 'Corriente, Ahorro', fields: [{ name: 'id_tipo_cuenta', type: 'INT', pk: true, desc: 'PK' }, { name: 'nombre_tipo', type: 'VARCHAR(40)', unique: true, desc: 'Tipo' }] },
-      { name: 'cuentas', desc: 'Cuentas bancarias', fields: [{ name: 'id_cuenta', type: 'BIGINT', pk: true, desc: 'PK' }, { name: 'id_cliente', type: 'BIGINT', fk: 'clientes.id_cliente', desc: 'Cliente' }, { name: 'id_tipo_cuenta', type: 'INT', fk: 'tipos_cuenta.id_tipo_cuenta', desc: 'Tipo' }, { name: 'saldo', type: 'DECIMAL(14,2)', notNull: true, desc: 'Saldo' }] },
-      { name: 'tarjetas', desc: 'Plásticos emitidos', fields: [{ name: 'id_tarjeta', type: 'BIGINT', pk: true, desc: 'PK' }, { name: 'id_cuenta', type: 'BIGINT', fk: 'cuentas.id_cuenta', desc: 'Cuenta' }, { name: 'numero_tarjeta_mask', type: 'VARCHAR(20)', desc: 'Tarjeta' }] },
-      { name: 'transacciones', desc: 'Movimientos de saldo', fields: [{ name: 'id_transaccion', type: 'BIGINT', pk: true, desc: 'PK' }, { name: 'id_cuenta', type: 'BIGINT', fk: 'cuentas.id_cuenta', desc: 'Cuenta' }, { name: 'monto', type: 'DECIMAL(14,2)', desc: 'Monto' }] },
-      { name: 'transferencias_interbancarias', desc: 'Transferencias', fields: [{ name: 'id_transferencia', type: 'BIGINT', pk: true, desc: 'PK' }, { name: 'id_cuenta_origen', type: 'BIGINT', fk: 'cuentas.id_cuenta', desc: 'Origen' }, { name: 'id_cuenta_destino', type: 'BIGINT', fk: 'cuentas.id_cuenta', desc: 'Destino' }] },
-      { name: 'creditos_prestamos', desc: 'Créditos aprobados', fields: [{ name: 'id_credito', type: 'BIGINT', pk: true, desc: 'PK' }, { name: 'id_cliente', type: 'BIGINT', fk: 'clientes.id_cliente', desc: 'Deudor' }, { name: 'monto_solicitado', type: 'DECIMAL(14,2)', desc: 'Capital' }] },
-      { name: 'cuotas_pago', desc: 'Calendario de amortización', fields: [{ name: 'id_cuota', type: 'BIGINT', pk: true, desc: 'PK' }, { name: 'id_credito', type: 'BIGINT', fk: 'creditos_prestamos.id_credito', desc: 'Crédito' }, { name: 'numero_cuota', type: 'INT', desc: 'N°' }, { name: 'monto_cuota', type: 'DECIMAL(14,2)', desc: 'Valor' }] }
+      {
+        name: 'sucursales',
+        desc: 'Oficinas',
+        fields: [
+          { name: 'id_sucursal', type: 'INT', pk: true, desc: 'PK' },
+          { name: 'nombre_sucursal', type: 'VARCHAR(60)', desc: 'Nombre' },
+          { name: 'ciudad', type: 'VARCHAR(60)', desc: 'Ciudad de la oficina' },
+          { name: 'direccion', type: 'VARCHAR(150)', desc: 'Dirección física' },
+          { name: 'telefono', type: 'VARCHAR(20)', desc: 'Teléfono de atención' },
+          { name: 'activo', type: 'BOOLEAN', defaultValue: 'TRUE', desc: 'Sucursal operativa' }
+        ]
+      },
+      {
+        name: 'empleados',
+        desc: 'Ejecutivos',
+        fields: [
+          { name: 'id_empleado', type: 'INT', pk: true, desc: 'PK' },
+          { name: 'id_sucursal', type: 'INT', fk: 'sucursales.id_sucursal', desc: 'Sucursal' },
+          { name: 'nombre', type: 'VARCHAR(80)', desc: 'Nombre' },
+          { name: 'cargo', type: 'VARCHAR(60)', desc: 'Cargo desempeñado' },
+          { name: 'email', type: 'VARCHAR(100)', desc: 'Email corporativo' },
+          { name: 'fecha_ingreso', type: 'DATE', desc: 'Fecha de contratación' }
+        ]
+      },
+      {
+        name: 'clientes',
+        desc: 'Titulares',
+        fields: [
+          { name: 'id_cliente', type: 'BIGINT', pk: true, desc: 'PK' },
+          { name: 'rut', type: 'VARCHAR(12)', unique: true, desc: 'RUT' },
+          { name: 'nombre', type: 'VARCHAR(80)', desc: 'Nombre' },
+          { name: 'email', type: 'VARCHAR(100)', desc: 'Email' },
+          { name: 'telefono', type: 'VARCHAR(20)', desc: 'Teléfono' },
+          { name: 'fecha_nacimiento', type: 'DATE', desc: 'Nacimiento' },
+          { name: 'estado', type: 'VARCHAR(20)', defaultValue: "'ACTIVO'", desc: 'ACTIVO, BLOQUEADO, INACTIVO' }
+        ]
+      },
+      {
+        name: 'tipos_cuenta',
+        desc: 'Corriente, Ahorro',
+        fields: [
+          { name: 'id_tipo_cuenta', type: 'INT', pk: true, desc: 'PK' },
+          { name: 'nombre_tipo', type: 'VARCHAR(40)', unique: true, desc: 'Tipo' },
+          { name: 'descripcion', type: 'TEXT', desc: 'Características del producto' },
+          { name: 'activo', type: 'BOOLEAN', defaultValue: 'TRUE', desc: 'Producto vigente' },
+          { name: 'orden', type: 'INT', desc: 'Orden en el menú bancario' }
+        ]
+      },
+      {
+        name: 'cuentas',
+        desc: 'Cuentas bancarias',
+        fields: [
+          { name: 'id_cuenta', type: 'BIGINT', pk: true, desc: 'PK' },
+          { name: 'id_cliente', type: 'BIGINT', fk: 'clientes.id_cliente', desc: 'Cliente' },
+          { name: 'id_tipo_cuenta', type: 'INT', fk: 'tipos_cuenta.id_tipo_cuenta', desc: 'Tipo' },
+          { name: 'numero_cuenta', type: 'VARCHAR(20)', unique: true, notNull: true, desc: 'Número de cuenta' },
+          { name: 'saldo', type: 'DECIMAL(14,2)', notNull: true, desc: 'Saldo' },
+          { name: 'fecha_apertura', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Apertura de la cuenta' },
+          { name: 'estado', type: 'VARCHAR(20)', defaultValue: "'ACTIVA'", desc: 'ACTIVA, BLOQUEADA, CERRADA' }
+        ]
+      },
+      {
+        name: 'tarjetas',
+        desc: 'Plásticos emitidos',
+        fields: [
+          { name: 'id_tarjeta', type: 'BIGINT', pk: true, desc: 'PK' },
+          { name: 'id_cuenta', type: 'BIGINT', fk: 'cuentas.id_cuenta', desc: 'Cuenta' },
+          { name: 'numero_tarjeta_mask', type: 'VARCHAR(20)', desc: 'Tarjeta' },
+          { name: 'tipo_tarjeta', type: 'VARCHAR(20)', defaultValue: "'DEBITO'", desc: 'DEBITO, CREDITO' },
+          { name: 'fecha_vencimiento', type: 'DATE', desc: 'Vencimiento del plástico' },
+          { name: 'estado', type: 'VARCHAR(20)', defaultValue: "'ACTIVA'", desc: 'ACTIVA, BLOQUEADA, VENCIDA' }
+        ]
+      },
+      {
+        name: 'transacciones',
+        desc: 'Movimientos de saldo',
+        fields: [
+          { name: 'id_transaccion', type: 'BIGINT', pk: true, desc: 'PK' },
+          { name: 'id_cuenta', type: 'BIGINT', fk: 'cuentas.id_cuenta', desc: 'Cuenta' },
+          { name: 'tipo', type: 'VARCHAR(20)', notNull: true, desc: 'DEPOSITO, RETIRO, ABONO' },
+          { name: 'monto', type: 'DECIMAL(14,2)', desc: 'Monto' },
+          { name: 'fecha_hora', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Momento del movimiento' },
+          { name: 'canal', type: 'VARCHAR(30)', defaultValue: "'APP'", desc: 'APP, CAJA, ATM, TRANSFERENCIA' }
+        ]
+      },
+      {
+        name: 'transferencias_interbancarias',
+        desc: 'Transferencias',
+        fields: [
+          { name: 'id_transferencia', type: 'BIGINT', pk: true, desc: 'PK' },
+          { name: 'id_cuenta_origen', type: 'BIGINT', fk: 'cuentas.id_cuenta', desc: 'Origen' },
+          { name: 'id_cuenta_destino', type: 'BIGINT', fk: 'cuentas.id_cuenta', desc: 'Destino' },
+          { name: 'monto', type: 'DECIMAL(14,2)', notNull: true, desc: 'Monto transferido' },
+          { name: 'fecha', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Fecha de la transferencia' },
+          { name: 'estado', type: 'VARCHAR(20)', defaultValue: "'COMPLETADA'", desc: 'COMPLETADA, PENDIENTE, RECHAZADA' }
+        ]
+      },
+      {
+        name: 'creditos_prestamos',
+        desc: 'Créditos aprobados',
+        fields: [
+          { name: 'id_credito', type: 'BIGINT', pk: true, desc: 'PK' },
+          { name: 'id_cliente', type: 'BIGINT', fk: 'clientes.id_cliente', desc: 'Deudor' },
+          { name: 'monto_solicitado', type: 'DECIMAL(14,2)', desc: 'Capital' },
+          { name: 'tasa_interes', type: 'DECIMAL(4,2)', notNull: true, desc: 'Tasa mensual (%)' },
+          { name: 'plazo_meses', type: 'INT', notNull: true, desc: 'Plazo en meses' },
+          { name: 'fecha_solicitud', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Solicitud del crédito' },
+          { name: 'estado', type: 'VARCHAR(20)', defaultValue: "'PENDIENTE'", desc: 'PENDIENTE, APROBADO, RECHAZADO, PAGADO' }
+        ]
+      },
+      {
+        name: 'cuotas_pago',
+        desc: 'Calendario de amortización',
+        fields: [
+          { name: 'id_cuota', type: 'BIGINT', pk: true, desc: 'PK' },
+          { name: 'id_credito', type: 'BIGINT', fk: 'creditos_prestamos.id_credito', desc: 'Crédito' },
+          { name: 'numero_cuota', type: 'INT', desc: 'N°' },
+          { name: 'monto_cuota', type: 'DECIMAL(14,2)', desc: 'Valor' },
+          { name: 'fecha_vencimiento', type: 'DATE', desc: 'Vence de la cuota' },
+          { name: 'pagada', type: 'BOOLEAN', defaultValue: 'FALSE', desc: 'Estado de pago' }
+        ]
+      }
     ],
-    ddlSql: `CREATE TABLE sucursales (id_sucursal SERIAL PRIMARY KEY, nombre_sucursal VARCHAR(60) NOT NULL);
-CREATE TABLE empleados (id_empleado SERIAL PRIMARY KEY, id_sucursal INT NOT NULL, nombre VARCHAR(80) NOT NULL, FOREIGN KEY (id_sucursal) REFERENCES sucursales(id_sucursal));
-CREATE TABLE clientes (id_cliente BIGSERIAL PRIMARY KEY, rut VARCHAR(12) UNIQUE NOT NULL, nombre VARCHAR(80) NOT NULL);
-CREATE TABLE tipos_cuenta (id_tipo_cuenta SERIAL PRIMARY KEY, nombre_tipo VARCHAR(40) UNIQUE NOT NULL);
-CREATE TABLE cuentas (id_cuenta BIGSERIAL PRIMARY KEY, id_cliente BIGINT NOT NULL, id_tipo_cuenta INT NOT NULL, numero_cuenta VARCHAR(20) UNIQUE NOT NULL, saldo DECIMAL(14,2) DEFAULT 0.00 CHECK (saldo >= 0), FOREIGN KEY (id_cliente) REFERENCES clientes(id_cliente), FOREIGN KEY (id_tipo_cuenta) REFERENCES tipos_cuenta(id_tipo_cuenta));
-CREATE TABLE tarjetas (id_tarjeta BIGSERIAL PRIMARY KEY, id_cuenta BIGINT NOT NULL, numero_tarjeta_mask VARCHAR(20) NOT NULL, FOREIGN KEY (id_cuenta) REFERENCES cuentas(id_cuenta));
-CREATE TABLE transacciones (id_transaccion BIGSERIAL PRIMARY KEY, id_cuenta BIGINT NOT NULL, tipo VARCHAR(20) NOT NULL, monto DECIMAL(14,2) NOT NULL, fecha_hora TIMESTAMP DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (id_cuenta) REFERENCES cuentas(id_cuenta));
-CREATE TABLE transferencias_interbancarias (id_transferencia BIGSERIAL PRIMARY KEY, id_cuenta_origen BIGINT NOT NULL, id_cuenta_destino BIGINT NOT NULL, monto DECIMAL(14,2) NOT NULL, CHECK (id_cuenta_origen <> id_cuenta_destino), FOREIGN KEY (id_cuenta_origen) REFERENCES cuentas(id_cuenta), FOREIGN KEY (id_cuenta_destino) REFERENCES cuentas(id_cuenta));
-CREATE TABLE creditos_prestamos (id_credito BIGSERIAL PRIMARY KEY, id_cliente BIGINT NOT NULL, monto_solicitado DECIMAL(14,2) NOT NULL, tasa_interes DECIMAL(4,2) NOT NULL, plazo_meses INT NOT NULL, FOREIGN KEY (id_cliente) REFERENCES clientes(id_cliente));
-CREATE TABLE cuotas_pago (id_cuota BIGSERIAL PRIMARY KEY, id_credito BIGINT NOT NULL, numero_cuota INT NOT NULL, monto_cuota DECIMAL(14,2) NOT NULL, pagada BOOLEAN DEFAULT FALSE, FOREIGN KEY (id_credito) REFERENCES creditos_prestamos(id_credito));`,
+    ddlSql: `CREATE TABLE sucursales (id_sucursal SERIAL PRIMARY KEY, nombre_sucursal VARCHAR(60) NOT NULL, ciudad VARCHAR(60), direccion VARCHAR(150), telefono VARCHAR(20), activo BOOLEAN DEFAULT TRUE);
+CREATE TABLE empleados (id_empleado SERIAL PRIMARY KEY, id_sucursal INT NOT NULL, nombre VARCHAR(80) NOT NULL, cargo VARCHAR(60), email VARCHAR(100), fecha_ingreso DATE, FOREIGN KEY (id_sucursal) REFERENCES sucursales(id_sucursal));
+CREATE TABLE clientes (id_cliente BIGSERIAL PRIMARY KEY, rut VARCHAR(12) UNIQUE NOT NULL, nombre VARCHAR(80) NOT NULL, email VARCHAR(100), telefono VARCHAR(20), fecha_nacimiento DATE, estado VARCHAR(20) DEFAULT 'ACTIVO');
+CREATE TABLE tipos_cuenta (id_tipo_cuenta SERIAL PRIMARY KEY, nombre_tipo VARCHAR(40) UNIQUE NOT NULL, descripcion TEXT, activo BOOLEAN DEFAULT TRUE, orden INT);
+CREATE TABLE cuentas (id_cuenta BIGSERIAL PRIMARY KEY, id_cliente BIGINT NOT NULL, id_tipo_cuenta INT NOT NULL, numero_cuenta VARCHAR(20) UNIQUE NOT NULL, saldo DECIMAL(14,2) DEFAULT 0.00 CHECK (saldo >= 0), fecha_apertura TIMESTAMP DEFAULT CURRENT_TIMESTAMP, estado VARCHAR(20) DEFAULT 'ACTIVA', FOREIGN KEY (id_cliente) REFERENCES clientes(id_cliente), FOREIGN KEY (id_tipo_cuenta) REFERENCES tipos_cuenta(id_tipo_cuenta));
+CREATE TABLE tarjetas (id_tarjeta BIGSERIAL PRIMARY KEY, id_cuenta BIGINT NOT NULL, numero_tarjeta_mask VARCHAR(20) NOT NULL, tipo_tarjeta VARCHAR(20) DEFAULT 'DEBITO', fecha_vencimiento DATE, estado VARCHAR(20) DEFAULT 'ACTIVA', FOREIGN KEY (id_cuenta) REFERENCES cuentas(id_cuenta));
+CREATE TABLE transacciones (id_transaccion BIGSERIAL PRIMARY KEY, id_cuenta BIGINT NOT NULL, tipo VARCHAR(20) NOT NULL, monto DECIMAL(14,2) NOT NULL, fecha_hora TIMESTAMP DEFAULT CURRENT_TIMESTAMP, canal VARCHAR(30) DEFAULT 'APP', FOREIGN KEY (id_cuenta) REFERENCES cuentas(id_cuenta));
+CREATE TABLE transferencias_interbancarias (id_transferencia BIGSERIAL PRIMARY KEY, id_cuenta_origen BIGINT NOT NULL, id_cuenta_destino BIGINT NOT NULL, monto DECIMAL(14,2) NOT NULL, fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP, estado VARCHAR(20) DEFAULT 'COMPLETADA', CHECK (id_cuenta_origen <> id_cuenta_destino), FOREIGN KEY (id_cuenta_origen) REFERENCES cuentas(id_cuenta), FOREIGN KEY (id_cuenta_destino) REFERENCES cuentas(id_cuenta));
+CREATE TABLE creditos_prestamos (id_credito BIGSERIAL PRIMARY KEY, id_cliente BIGINT NOT NULL, monto_solicitado DECIMAL(14,2) NOT NULL, tasa_interes DECIMAL(4,2) NOT NULL, plazo_meses INT NOT NULL, fecha_solicitud TIMESTAMP DEFAULT CURRENT_TIMESTAMP, estado VARCHAR(20) DEFAULT 'PENDIENTE', FOREIGN KEY (id_cliente) REFERENCES clientes(id_cliente));
+CREATE TABLE cuotas_pago (id_cuota BIGSERIAL PRIMARY KEY, id_credito BIGINT NOT NULL, numero_cuota INT NOT NULL, monto_cuota DECIMAL(14,2) NOT NULL, pagada BOOLEAN DEFAULT FALSE, fecha_vencimiento DATE, FOREIGN KEY (id_credito) REFERENCES creditos_prestamos(id_credito));`,
     seedSql: `INSERT INTO sucursales (nombre_sucursal) VALUES ('Sucursal Casa Matriz');
 INSERT INTO empleados (id_sucursal, nombre) VALUES (1, 'Verónica Castro');
 INSERT INTO clientes (rut, nombre) VALUES ('16.555.444-2', 'Sebastián Piñera E.');
@@ -2947,27 +3883,135 @@ GROUP BY c.id_cliente, c.rut, c.nombre;`
     context: 'Una cadena hotelera gestiona sucursales en el mundo, tipos de habitación, inventario de cuartos, amenidades (WiFi, Jacuzzi, Vista al Mar), relación habitación-amenidad (N:M), huéspedes, reservas, desglose de noches, consumos adicionales y facturación al checkout.',
     statement: 'Crear el esquema de 10 tablas hoteleras y calcular la factura de liquidación final al momento del check-out.',
     tables: [
-      { name: 'hoteles', desc: 'Sucursales', fields: [{ name: 'id_hotel', type: 'INT', pk: true, desc: 'PK' }, { name: 'nombre', type: 'VARCHAR(80)', desc: 'Hotel' }] },
-      { name: 'tipos_habitacion', desc: 'Categorías', fields: [{ name: 'id_tipo', type: 'INT', pk: true, desc: 'PK' }, { name: 'nombre_tipo', type: 'VARCHAR(40)', desc: 'Tipo' }] },
-      { name: 'habitaciones', desc: 'Cuartos físicos', fields: [{ name: 'id_habitacion', type: 'INT', pk: true, desc: 'PK' }, { name: 'id_hotel', type: 'INT', fk: 'hoteles.id_hotel', desc: 'Hotel' }, { name: 'id_tipo', type: 'INT', fk: 'tipos_habitacion.id_tipo', desc: 'Tipo' }, { name: 'tarifa_base', type: 'DECIMAL(10,2)', desc: 'Tarifa' }] },
-      { name: 'amenidades', desc: 'Servicios de confort', fields: [{ name: 'id_amenidad', type: 'INT', pk: true, desc: 'PK' }, { name: 'nombre_amenidad', type: 'VARCHAR(50)', desc: 'Amenidad' }] },
-      { name: 'habitacion_amenidades', desc: 'Pivote N:M', fields: [{ name: 'id_habitacion', type: 'INT', pk: true, fk: 'habitaciones.id_habitacion', desc: 'Cuarto' }, { name: 'id_amenidad', type: 'INT', pk: true, fk: 'amenidades.id_amenidad', desc: 'Amenidad' }] },
-      { name: 'huespedes', desc: 'Viajeros', fields: [{ name: 'id_huesped', type: 'BIGINT', pk: true, desc: 'PK' }, { name: 'pasaporte', type: 'VARCHAR(20)', unique: true, desc: 'Pasaporte' }, { name: 'nombre', type: 'VARCHAR(80)', desc: 'Nombre' }] },
-      { name: 'reservas', desc: 'Estadía pactada', fields: [{ name: 'id_reserva', type: 'BIGINT', pk: true, desc: 'PK' }, { name: 'id_huesped', type: 'BIGINT', fk: 'huespedes.id_huesped', desc: 'Huésped' }, { name: 'id_habitacion', type: 'INT', fk: 'habitaciones.id_habitacion', desc: 'Habitación' }, { name: 'fecha_checkin', type: 'DATE', desc: 'Ingreso' }, { name: 'fecha_checkout', type: 'DATE', desc: 'Salida' }] },
-      { name: 'detalle_reserva_noches', desc: 'Noches tarifadas', fields: [{ name: 'id_noche', type: 'BIGINT', pk: true, desc: 'PK' }, { name: 'id_reserva', type: 'BIGINT', fk: 'reservas.id_reserva', desc: 'Reserva' }, { name: 'fecha', type: 'DATE', desc: 'Día' }, { name: 'tarifa_noche', type: 'DECIMAL(10,2)', desc: 'Precio' }] },
-      { name: 'servicios_adicionales', desc: 'Room service y Spa', fields: [{ name: 'id_servicio', type: 'BIGINT', pk: true, desc: 'PK' }, { name: 'id_reserva', type: 'BIGINT', fk: 'reservas.id_reserva', desc: 'Reserva' }, { name: 'concepto', type: 'VARCHAR(80)', desc: 'Consumo' }, { name: 'monto', type: 'DECIMAL(10,2)', desc: 'Valor' }] },
-      { name: 'facturas_checkout', desc: 'Liquidación final', fields: [{ name: 'id_factura', type: 'BIGINT', pk: true, desc: 'PK' }, { name: 'id_reserva', type: 'BIGINT', fk: 'reservas.id_reserva', unique: true, desc: '1:1' }, { name: 'total_final', type: 'DECIMAL(12,2)', desc: 'Total' }] }
+      {
+        name: 'hoteles',
+        desc: 'Sucursales',
+        fields: [
+          { name: 'id_hotel', type: 'INT', pk: true, desc: 'PK' },
+          { name: 'nombre', type: 'VARCHAR(80)', desc: 'Hotel' },
+          { name: 'ciudad', type: 'VARCHAR(60)', desc: 'Ciudad' },
+          { name: 'pais', type: 'VARCHAR(60)', desc: 'País' },
+          { name: 'direccion', type: 'VARCHAR(150)', desc: 'Dirección' },
+          { name: 'estrellas', type: 'INT', desc: 'Categoría (1 a 5 estrellas)' }
+        ]
+      },
+      {
+        name: 'tipos_habitacion',
+        desc: 'Categorías',
+        fields: [
+          { name: 'id_tipo', type: 'INT', pk: true, desc: 'PK' },
+          { name: 'nombre_tipo', type: 'VARCHAR(40)', desc: 'Tipo' },
+          { name: 'descripcion', type: 'TEXT', desc: 'Descripción de la categoría' },
+          { name: 'capacidad', type: 'INT', desc: 'Huéspedes máximos' },
+          { name: 'activo', type: 'BOOLEAN', defaultValue: 'TRUE', desc: 'Categoría vigente' }
+        ]
+      },
+      {
+        name: 'habitaciones',
+        desc: 'Cuartos físicos',
+        fields: [
+          { name: 'id_habitacion', type: 'INT', pk: true, desc: 'PK' },
+          { name: 'id_hotel', type: 'INT', fk: 'hoteles.id_hotel', desc: 'Hotel' },
+          { name: 'id_tipo', type: 'INT', fk: 'tipos_habitacion.id_tipo', desc: 'Tipo' },
+          { name: 'numero_cuarto', type: 'VARCHAR(10)', notNull: true, desc: 'Número de habitación' },
+          { name: 'tarifa_base', type: 'DECIMAL(10,2)', desc: 'Tarifa' },
+          { name: 'piso', type: 'INT', desc: 'Piso del hotel' },
+          { name: 'estado', type: 'VARCHAR(20)', defaultValue: "'DISPONIBLE'", desc: 'DISPONIBLE, OCUPADA, MANTENCION' }
+        ]
+      },
+      {
+        name: 'amenidades',
+        desc: 'Servicios de confort',
+        fields: [
+          { name: 'id_amenidad', type: 'INT', pk: true, desc: 'PK' },
+          { name: 'nombre_amenidad', type: 'VARCHAR(50)', desc: 'Amenidad' },
+          { name: 'descripcion', type: 'TEXT', desc: 'Detalle del servicio' },
+          { name: 'categoria', type: 'VARCHAR(40)', desc: 'SPA, INTERNET, DEPORTE' },
+          { name: 'activo', type: 'BOOLEAN', defaultValue: 'TRUE', desc: 'Servicio vigente' }
+        ]
+      },
+      {
+        name: 'habitacion_amenidades',
+        desc: 'Pivote N:M',
+        fields: [
+          { name: 'id_habitacion', type: 'INT', pk: true, fk: 'habitaciones.id_habitacion', desc: 'Cuarto' },
+          { name: 'id_amenidad', type: 'INT', pk: true, fk: 'amenidades.id_amenidad', desc: 'Amenidad' },
+          { name: 'fecha_vinculo', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Cuándo se asoció' },
+          { name: 'activo', type: 'BOOLEAN', defaultValue: 'TRUE', desc: 'Asociación vigente' }
+        ]
+      },
+      {
+        name: 'huespedes',
+        desc: 'Viajeros',
+        fields: [
+          { name: 'id_huesped', type: 'BIGINT', pk: true, desc: 'PK' },
+          { name: 'pasaporte', type: 'VARCHAR(20)', unique: true, desc: 'Pasaporte' },
+          { name: 'nombre', type: 'VARCHAR(80)', desc: 'Nombre' },
+          { name: 'email', type: 'VARCHAR(100)', desc: 'Email' },
+          { name: 'telefono', type: 'VARCHAR(20)', desc: 'Teléfono' },
+          { name: 'pais', type: 'VARCHAR(60)', desc: 'País de origen' }
+        ]
+      },
+      {
+        name: 'reservas',
+        desc: 'Estadía pactada',
+        fields: [
+          { name: 'id_reserva', type: 'BIGINT', pk: true, desc: 'PK' },
+          { name: 'id_huesped', type: 'BIGINT', fk: 'huespedes.id_huesped', desc: 'Huésped' },
+          { name: 'id_habitacion', type: 'INT', fk: 'habitaciones.id_habitacion', desc: 'Habitación' },
+          { name: 'fecha_checkin', type: 'DATE', desc: 'Ingreso' },
+          { name: 'fecha_checkout', type: 'DATE', desc: 'Salida' },
+          { name: 'estado', type: 'VARCHAR(20)', defaultValue: "'CONFIRMADA'", desc: 'CONFIRMADA, CHECKOUT, CANCELADA' },
+          { name: 'fecha_reserva', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Alta de la reserva' }
+        ]
+      },
+      {
+        name: 'detalle_reserva_noches',
+        desc: 'Noches tarifadas',
+        fields: [
+          { name: 'id_noche', type: 'BIGINT', pk: true, desc: 'PK' },
+          { name: 'id_reserva', type: 'BIGINT', fk: 'reservas.id_reserva', desc: 'Reserva' },
+          { name: 'fecha', type: 'DATE', desc: 'Día' },
+          { name: 'tarifa_noche', type: 'DECIMAL(10,2)', desc: 'Precio' },
+          { name: 'descuento', type: 'DECIMAL(10,2)', defaultValue: '0', desc: 'Descuento de la noche' },
+          { name: 'es_festivo', type: 'BOOLEAN', defaultValue: 'FALSE', desc: 'Fecha con recargo' }
+        ]
+      },
+      {
+        name: 'servicios_adicionales',
+        desc: 'Room service y Spa',
+        fields: [
+          { name: 'id_servicio', type: 'BIGINT', pk: true, desc: 'PK' },
+          { name: 'id_reserva', type: 'BIGINT', fk: 'reservas.id_reserva', desc: 'Reserva' },
+          { name: 'concepto', type: 'VARCHAR(80)', desc: 'Consumo' },
+          { name: 'monto', type: 'DECIMAL(10,2)', desc: 'Valor' },
+          { name: 'fecha_consumo', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Momento del consumo' },
+          { name: 'categoria', type: 'VARCHAR(40)', defaultValue: "'ROOM_SERVICE'", desc: 'ROOM_SERVICE, SPA, MINIBAR' }
+        ]
+      },
+      {
+        name: 'facturas_checkout',
+        desc: 'Liquidación final',
+        fields: [
+          { name: 'id_factura', type: 'BIGINT', pk: true, desc: 'PK' },
+          { name: 'id_reserva', type: 'BIGINT', fk: 'reservas.id_reserva', unique: true, desc: '1:1' },
+          { name: 'total_final', type: 'DECIMAL(12,2)', desc: 'Total' },
+          { name: 'fecha_emision', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Emisión de la boleta' },
+          { name: 'estado', type: 'VARCHAR(20)', defaultValue: "'EMITIDA'", desc: 'EMITIDA, PAGADA, ANULADA' },
+          { name: 'metodo_pago', type: 'VARCHAR(30)', desc: 'TARJETA, EFECTIVO, TRANSFERENCIA' }
+        ]
+      }
     ],
-    ddlSql: `CREATE TABLE hoteles (id_hotel SERIAL PRIMARY KEY, nombre VARCHAR(80) NOT NULL);
-CREATE TABLE tipos_habitacion (id_tipo SERIAL PRIMARY KEY, nombre_tipo VARCHAR(40) NOT NULL);
-CREATE TABLE habitaciones (id_habitacion SERIAL PRIMARY KEY, id_hotel INT NOT NULL, id_tipo INT NOT NULL, numero_cuarto VARCHAR(10) NOT NULL, tarifa_base DECIMAL(10,2) NOT NULL, UNIQUE(id_hotel, numero_cuarto), FOREIGN KEY (id_hotel) REFERENCES hoteles(id_hotel), FOREIGN KEY (id_tipo) REFERENCES tipos_habitacion(id_tipo));
-CREATE TABLE amenidades (id_amenidad SERIAL PRIMARY KEY, nombre_amenidad VARCHAR(50) UNIQUE NOT NULL);
-CREATE TABLE habitacion_amenidades (id_habitacion INT NOT NULL, id_amenidad INT NOT NULL, PRIMARY KEY (id_habitacion, id_amenidad), FOREIGN KEY (id_habitacion) REFERENCES habitaciones(id_habitacion), FOREIGN KEY (id_amenidad) REFERENCES amenidades(id_amenidad));
-CREATE TABLE huespedes (id_huesped BIGSERIAL PRIMARY KEY, pasaporte VARCHAR(20) UNIQUE NOT NULL, nombre VARCHAR(80) NOT NULL);
-CREATE TABLE reservas (id_reserva BIGSERIAL PRIMARY KEY, id_huesped BIGINT NOT NULL, id_habitacion INT NOT NULL, fecha_checkin DATE NOT NULL, fecha_checkout DATE NOT NULL, CHECK (fecha_checkout > fecha_checkin), FOREIGN KEY (id_huesped) REFERENCES huespedes(id_huesped), FOREIGN KEY (id_habitacion) REFERENCES habitaciones(id_habitacion));
-CREATE TABLE detalle_reserva_noches (id_noche BIGSERIAL PRIMARY KEY, id_reserva BIGINT NOT NULL, fecha DATE NOT NULL, tarifa_noche DECIMAL(10,2) NOT NULL, FOREIGN KEY (id_reserva) REFERENCES reservas(id_reserva));
-CREATE TABLE servicios_adicionales (id_servicio BIGSERIAL PRIMARY KEY, id_reserva BIGINT NOT NULL, concepto VARCHAR(80) NOT NULL, monto DECIMAL(10,2) NOT NULL, FOREIGN KEY (id_reserva) REFERENCES reservas(id_reserva));
-CREATE TABLE facturas_checkout (id_factura BIGSERIAL PRIMARY KEY, id_reserva BIGINT UNIQUE NOT NULL, total_final DECIMAL(12,2) NOT NULL, fecha_emision TIMESTAMP DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (id_reserva) REFERENCES reservas(id_reserva));`,
+    ddlSql: `CREATE TABLE hoteles (id_hotel SERIAL PRIMARY KEY, nombre VARCHAR(80) NOT NULL, ciudad VARCHAR(60), pais VARCHAR(60), direccion VARCHAR(150), estrellas INT);
+CREATE TABLE tipos_habitacion (id_tipo SERIAL PRIMARY KEY, nombre_tipo VARCHAR(40) NOT NULL, descripcion TEXT, capacidad INT, activo BOOLEAN DEFAULT TRUE);
+CREATE TABLE habitaciones (id_habitacion SERIAL PRIMARY KEY, id_hotel INT NOT NULL, id_tipo INT NOT NULL, numero_cuarto VARCHAR(10) NOT NULL, tarifa_base DECIMAL(10,2) NOT NULL, piso INT, estado VARCHAR(20) DEFAULT 'DISPONIBLE', UNIQUE(id_hotel, numero_cuarto), FOREIGN KEY (id_hotel) REFERENCES hoteles(id_hotel), FOREIGN KEY (id_tipo) REFERENCES tipos_habitacion(id_tipo));
+CREATE TABLE amenidades (id_amenidad SERIAL PRIMARY KEY, nombre_amenidad VARCHAR(50) UNIQUE NOT NULL, descripcion TEXT, categoria VARCHAR(40), activo BOOLEAN DEFAULT TRUE);
+CREATE TABLE habitacion_amenidades (id_habitacion INT NOT NULL, id_amenidad INT NOT NULL, PRIMARY KEY (id_habitacion, id_amenidad), fecha_vinculo TIMESTAMP DEFAULT CURRENT_TIMESTAMP, activo BOOLEAN DEFAULT TRUE, FOREIGN KEY (id_habitacion) REFERENCES habitaciones(id_habitacion), FOREIGN KEY (id_amenidad) REFERENCES amenidades(id_amenidad));
+CREATE TABLE huespedes (id_huesped BIGSERIAL PRIMARY KEY, pasaporte VARCHAR(20) UNIQUE NOT NULL, nombre VARCHAR(80) NOT NULL, email VARCHAR(100), telefono VARCHAR(20), pais VARCHAR(60));
+CREATE TABLE reservas (id_reserva BIGSERIAL PRIMARY KEY, id_huesped BIGINT NOT NULL, id_habitacion INT NOT NULL, fecha_checkin DATE NOT NULL, fecha_checkout DATE NOT NULL, estado VARCHAR(20) DEFAULT 'CONFIRMADA', fecha_reserva TIMESTAMP DEFAULT CURRENT_TIMESTAMP, CHECK (fecha_checkout > fecha_checkin), FOREIGN KEY (id_huesped) REFERENCES huespedes(id_huesped), FOREIGN KEY (id_habitacion) REFERENCES habitaciones(id_habitacion));
+CREATE TABLE detalle_reserva_noches (id_noche BIGSERIAL PRIMARY KEY, id_reserva BIGINT NOT NULL, fecha DATE NOT NULL, tarifa_noche DECIMAL(10,2) NOT NULL, descuento DECIMAL(10,2) DEFAULT 0, es_festivo BOOLEAN DEFAULT FALSE, FOREIGN KEY (id_reserva) REFERENCES reservas(id_reserva));
+CREATE TABLE servicios_adicionales (id_servicio BIGSERIAL PRIMARY KEY, id_reserva BIGINT NOT NULL, concepto VARCHAR(80) NOT NULL, monto DECIMAL(10,2) NOT NULL, fecha_consumo TIMESTAMP DEFAULT CURRENT_TIMESTAMP, categoria VARCHAR(40) DEFAULT 'ROOM_SERVICE', FOREIGN KEY (id_reserva) REFERENCES reservas(id_reserva));
+CREATE TABLE facturas_checkout (id_factura BIGSERIAL PRIMARY KEY, id_reserva BIGINT UNIQUE NOT NULL, total_final DECIMAL(12,2) NOT NULL, fecha_emision TIMESTAMP DEFAULT CURRENT_TIMESTAMP, estado VARCHAR(20) DEFAULT 'EMITIDA', metodo_pago VARCHAR(30), FOREIGN KEY (id_reserva) REFERENCES reservas(id_reserva));`,
     seedSql: `INSERT INTO hoteles (nombre) VALUES ('Hotel Valle Nevado Resort');
 INSERT INTO tipos_habitacion (nombre_tipo) VALUES ('Suite Presidencial');
 INSERT INTO habitaciones (id_hotel, id_tipo, numero_cuarto, tarifa_base) VALUES (1, 1, '501', 280000.00);
@@ -3008,27 +4052,135 @@ WHERE r.id_reserva = 1;`
     context: 'Una aerolínea internacional modela aeropuertos, rutas de vuelo, flota de aviones, asientos configurados, tripulación (pilotos, sobrecargos), vuelos programados, asignación de tripulantes a vuelos, pasajeros, reservas de vuelo y boletos con check-in emitidos.',
     statement: 'Crear el esquema aeronáutico de 10 tablas con validaciones IATA y cálculo de manifiesto de vuelo.',
     tables: [
-      { name: 'aeropuertos', desc: 'Códigos IATA', fields: [{ name: 'codigo_iata', type: 'VARCHAR(3)', pk: true, desc: 'IATA' }, { name: 'nombre_aeropuerto', type: 'VARCHAR(80)', desc: 'Nombre' }, { name: 'ciudad', type: 'VARCHAR(50)', desc: 'Ciudad' }] },
-      { name: 'rutas', desc: 'Trayectos', fields: [{ name: 'id_ruta', type: 'INT', pk: true, desc: 'PK' }, { name: 'origen_iata', type: 'VARCHAR(3)', fk: 'aeropuertos.codigo_iata', desc: 'Origen' }, { name: 'destino_iata', type: 'VARCHAR(3)', fk: 'aeropuertos.codigo_iata', desc: 'Destino' }] },
-      { name: 'aviones', desc: 'Aeronaves', fields: [{ name: 'id_avion', type: 'INT', pk: true, desc: 'PK' }, { name: 'matricula', type: 'VARCHAR(10)', unique: true, desc: 'Matrícula' }, { name: 'modelo', type: 'VARCHAR(40)', desc: 'Modelo' }] },
-      { name: 'asientos', desc: 'Configuración de butacas', fields: [{ name: 'id_asiento', type: 'INT', pk: true, desc: 'PK' }, { name: 'id_avion', type: 'INT', fk: 'aviones.id_avion', desc: 'Avión' }, { name: 'codigo_asiento', type: 'VARCHAR(5)', desc: '12A' }] },
-      { name: 'tripulacion', desc: 'Pilotos y azafatas', fields: [{ name: 'id_tripulante', type: 'INT', pk: true, desc: 'PK' }, { name: 'nombre', type: 'VARCHAR(80)', desc: 'Nombre' }, { name: 'rol', type: 'VARCHAR(20)', desc: 'Piloto, Copiloto' }] },
-      { name: 'vuelos', desc: 'Operaciones', fields: [{ name: 'id_vuelo', type: 'BIGINT', pk: true, desc: 'PK' }, { name: 'numero_vuelo', type: 'VARCHAR(10)', desc: 'LA-500' }, { name: 'id_ruta', type: 'INT', fk: 'rutas.id_ruta', desc: 'Ruta' }, { name: 'id_avion', type: 'INT', fk: 'aviones.id_avion', desc: 'Aeronave' }] },
-      { name: 'asignacion_tripulacion', fields: [{ name: 'id_vuelo', type: 'BIGINT', pk: true, fk: 'vuelos.id_vuelo', desc: 'Vuelo' }, { name: 'id_tripulante', type: 'INT', pk: true, fk: 'tripulacion.id_tripulante', desc: 'Tripulante' }], desc: 'Tripulación asignada' },
-      { name: 'pasajeros', desc: 'Viajeros', fields: [{ name: 'id_pasajero', type: 'BIGINT', pk: true, desc: 'PK' }, { name: 'pasaporte', type: 'VARCHAR(20)', unique: true, desc: 'Pasaporte' }, { name: 'nombre', type: 'VARCHAR(80)', desc: 'Nombre' }] },
-      { name: 'reservas_vuelo', desc: 'PNR de reserva', fields: [{ name: 'id_reserva', type: 'BIGINT', pk: true, desc: 'PK' }, { name: 'codigo_pnr', type: 'VARCHAR(6)', unique: true, desc: 'PNR' }, { name: 'id_pasajero', type: 'BIGINT', fk: 'pasajeros.id_pasajero', desc: 'Pasajero' }] },
-      { name: 'boletos_checkin', desc: 'Pases de abordar', fields: [{ name: 'id_boleto', type: 'BIGINT', pk: true, desc: 'PK' }, { name: 'id_reserva', type: 'BIGINT', fk: 'reservas_vuelo.id_reserva', desc: 'Reserva' }, { name: 'id_vuelo', type: 'BIGINT', fk: 'vuelos.id_vuelo', desc: 'Vuelo' }, { name: 'id_asiento', type: 'INT', fk: 'asientos.id_asiento', desc: 'Asiento' }] }
+      {
+        name: 'aeropuertos',
+        desc: 'Códigos IATA',
+        fields: [
+          { name: 'codigo_iata', type: 'VARCHAR(3)', pk: true, desc: 'IATA' },
+          { name: 'nombre_aeropuerto', type: 'VARCHAR(80)', desc: 'Nombre' },
+          { name: 'ciudad', type: 'VARCHAR(50)', desc: 'Ciudad' },
+          { name: 'pais', type: 'VARCHAR(50)', defaultValue: "'Chile'", desc: 'País del aeropuerto' },
+          { name: 'fuso_horario', type: 'VARCHAR(20)', desc: 'Zona horaria IANA' }
+        ]
+      },
+      {
+        name: 'rutas',
+        desc: 'Trayectos',
+        fields: [
+          { name: 'id_ruta', type: 'INT', pk: true, desc: 'PK' },
+          { name: 'origen_iata', type: 'VARCHAR(3)', fk: 'aeropuertos.codigo_iata', desc: 'Origen' },
+          { name: 'destino_iata', type: 'VARCHAR(3)', fk: 'aeropuertos.codigo_iata', desc: 'Destino' },
+          { name: 'distancia_km', type: 'DECIMAL(8,2)', desc: 'Distancia del trayecto (km)' },
+          { name: 'duracion_minutos', type: 'INT', desc: 'Duración promedio (min)' }
+        ]
+      },
+      {
+        name: 'aviones',
+        desc: 'Aeronaves',
+        fields: [
+          { name: 'id_avion', type: 'INT', pk: true, desc: 'PK' },
+          { name: 'matricula', type: 'VARCHAR(10)', unique: true, desc: 'Matrícula' },
+          { name: 'modelo', type: 'VARCHAR(40)', desc: 'Modelo' },
+          { name: 'anio_fabricacion', type: 'INT', desc: 'Año de fabricación' },
+          { name: 'capacidad_pasajeros', type: 'INT', desc: 'Cupos totales' },
+          { name: 'estado_avion', type: 'VARCHAR(20)', defaultValue: "'OPERATIVO'", desc: 'OPERATIVO, MANTENCION, BAJA' }
+        ]
+      },
+      {
+        name: 'asientos',
+        desc: 'Configuración de butacas',
+        fields: [
+          { name: 'id_asiento', type: 'INT', pk: true, desc: 'PK' },
+          { name: 'id_avion', type: 'INT', fk: 'aviones.id_avion', desc: 'Avión' },
+          { name: 'codigo_asiento', type: 'VARCHAR(5)', desc: '12A' },
+          { name: 'clase', type: 'VARCHAR(20)', defaultValue: "'ECONOMY'", desc: 'ECONOMY, BUSINESS' },
+          { name: 'fila', type: 'INT', desc: 'Número de fila' },
+          { name: 'equipaje_cabina_kg', type: 'DECIMAL(5,2)', defaultValue: '10', desc: 'Equipaje de cabina permitido (kg)' }
+        ]
+      },
+      {
+        name: 'tripulacion',
+        desc: 'Pilotos y azafatas',
+        fields: [
+          { name: 'id_tripulante', type: 'INT', pk: true, desc: 'PK' },
+          { name: 'nombre', type: 'VARCHAR(80)', desc: 'Nombre' },
+          { name: 'rol', type: 'VARCHAR(20)', desc: 'Piloto, Copiloto' },
+          { name: 'numero_licencia', type: 'VARCHAR(20)', desc: 'Licencia de vuelo' },
+          { name: 'fecha_vencimiento_licencia', type: 'DATE', desc: 'Vencimiento de la licencia' },
+          { name: 'telefono', type: 'VARCHAR(20)', desc: 'Teléfono de contacto' }
+        ]
+      },
+      {
+        name: 'vuelos',
+        desc: 'Operaciones',
+        fields: [
+          { name: 'id_vuelo', type: 'BIGINT', pk: true, desc: 'PK' },
+          { name: 'numero_vuelo', type: 'VARCHAR(10)', desc: 'LA-500' },
+          { name: 'id_ruta', type: 'INT', fk: 'rutas.id_ruta', desc: 'Ruta' },
+          { name: 'id_avion', type: 'INT', fk: 'aviones.id_avion', desc: 'Aeronave' },
+          { name: 'fecha_salida', type: 'TIMESTAMP', notNull: true, desc: 'Fecha y hora de salida' },
+          { name: 'fecha_llegada', type: 'TIMESTAMP', desc: 'Fecha y hora estimada de llegada' },
+          { name: 'estado_vuelo', type: 'VARCHAR(20)', defaultValue: "'PROGRAMADO'", desc: 'PROGRAMADO, EN_AIRE, ATERRIZADO, CANCELADO' }
+        ]
+      },
+      {
+        name: 'asignacion_tripulacion',
+        fields: [
+          { name: 'id_vuelo', type: 'BIGINT', pk: true, fk: 'vuelos.id_vuelo', desc: 'Vuelo' },
+          { name: 'id_tripulante', type: 'INT', pk: true, fk: 'tripulacion.id_tripulante', desc: 'Tripulante' },
+          { name: 'fecha_asignacion', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Fecha de asignación' },
+          { name: 'rol_vuelo', type: 'VARCHAR(20)', desc: 'Rol desempeñado en el vuelo' },
+          { name: 'activo', type: 'BOOLEAN', defaultValue: 'TRUE', desc: 'Asignación vigente' }
+        ],
+        desc: 'Tripulación asignada'
+      },
+      {
+        name: 'pasajeros',
+        desc: 'Viajeros',
+        fields: [
+          { name: 'id_pasajero', type: 'BIGINT', pk: true, desc: 'PK' },
+          { name: 'pasaporte', type: 'VARCHAR(20)', unique: true, desc: 'Pasaporte' },
+          { name: 'nombre', type: 'VARCHAR(80)', desc: 'Nombre' },
+          { name: 'email', type: 'VARCHAR(100)', desc: 'Correo electrónico' },
+          { name: 'fecha_nacimiento', type: 'DATE', desc: 'Fecha de nacimiento' },
+          { name: 'telefono', type: 'VARCHAR(20)', desc: 'Teléfono de contacto' }
+        ]
+      },
+      {
+        name: 'reservas_vuelo',
+        desc: 'PNR de reserva',
+        fields: [
+          { name: 'id_reserva', type: 'BIGINT', pk: true, desc: 'PK' },
+          { name: 'codigo_pnr', type: 'VARCHAR(6)', unique: true, desc: 'PNR' },
+          { name: 'id_pasajero', type: 'BIGINT', fk: 'pasajeros.id_pasajero', desc: 'Pasajero' },
+          { name: 'fecha_reserva', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Fecha de emisión del PNR' },
+          { name: 'estado_reserva', type: 'VARCHAR(20)', defaultValue: "'CONFIRMADA'", desc: 'CONFIRMADA, PAGADA, CANCELADA' },
+          { name: 'precio_base', type: 'DECIMAL(10,2)', desc: 'Precio base del pasaje' }
+        ]
+      },
+      {
+        name: 'boletos_checkin',
+        desc: 'Pases de abordar',
+        fields: [
+          { name: 'id_boleto', type: 'BIGINT', pk: true, desc: 'PK' },
+          { name: 'id_reserva', type: 'BIGINT', fk: 'reservas_vuelo.id_reserva', desc: 'Reserva' },
+          { name: 'id_vuelo', type: 'BIGINT', fk: 'vuelos.id_vuelo', desc: 'Vuelo' },
+          { name: 'id_asiento', type: 'INT', fk: 'asientos.id_asiento', desc: 'Asiento' },
+          { name: 'fecha_checkin', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Momento del check-in' },
+          { name: 'equipaje_facturado_kg', type: 'DECIMAL(5,2)', desc: 'Equipaje facturado (kg)' }
+        ]
+      }
     ],
-    ddlSql: `CREATE TABLE aeropuertos (codigo_iata VARCHAR(3) PRIMARY KEY, nombre_aeropuerto VARCHAR(80) NOT NULL, ciudad VARCHAR(50) NOT NULL);
-CREATE TABLE rutas (id_ruta SERIAL PRIMARY KEY, origen_iata VARCHAR(3) NOT NULL, destino_iata VARCHAR(3) NOT NULL, CHECK (origen_iata <> destino_iata), FOREIGN KEY (origen_iata) REFERENCES aeropuertos(codigo_iata), FOREIGN KEY (destino_iata) REFERENCES aeropuertos(codigo_iata));
-CREATE TABLE aviones (id_avion SERIAL PRIMARY KEY, matricula VARCHAR(10) UNIQUE NOT NULL, modelo VARCHAR(40) NOT NULL);
-CREATE TABLE asientos (id_asiento SERIAL PRIMARY KEY, id_avion INT NOT NULL, codigo_asiento VARCHAR(5) NOT NULL, clase VARCHAR(20) DEFAULT 'ECONOMY', UNIQUE (id_avion, codigo_asiento), FOREIGN KEY (id_avion) REFERENCES aviones(id_avion));
-CREATE TABLE tripulacion (id_tripulante SERIAL PRIMARY KEY, nombre VARCHAR(80) NOT NULL, rol VARCHAR(20) NOT NULL);
-CREATE TABLE vuelos (id_vuelo BIGSERIAL PRIMARY KEY, numero_vuelo VARCHAR(10) NOT NULL, id_ruta INT NOT NULL, id_avion INT NOT NULL, fecha_salida TIMESTAMP NOT NULL, FOREIGN KEY (id_ruta) REFERENCES rutas(id_ruta), FOREIGN KEY (id_avion) REFERENCES aviones(id_avion));
-CREATE TABLE asignacion_tripulacion (id_vuelo BIGINT NOT NULL, id_tripulante INT NOT NULL, PRIMARY KEY (id_vuelo, id_tripulante), FOREIGN KEY (id_vuelo) REFERENCES vuelos(id_vuelo), FOREIGN KEY (id_tripulante) REFERENCES tripulacion(id_tripulante));
-CREATE TABLE pasajeros (id_pasajero BIGSERIAL PRIMARY KEY, pasaporte VARCHAR(20) UNIQUE NOT NULL, nombre VARCHAR(80) NOT NULL);
-CREATE TABLE reservas_vuelo (id_reserva BIGSERIAL PRIMARY KEY, codigo_pnr VARCHAR(6) UNIQUE NOT NULL, id_pasajero BIGINT NOT NULL, FOREIGN KEY (id_pasajero) REFERENCES pasajeros(id_pasajero));
-CREATE TABLE boletos_checkin (id_boleto BIGSERIAL PRIMARY KEY, id_reserva BIGINT NOT NULL, id_vuelo BIGINT NOT NULL, id_asiento INT NOT NULL, UNIQUE (id_vuelo, id_asiento), FOREIGN KEY (id_reserva) REFERENCES reservas_vuelo(id_reserva), FOREIGN KEY (id_vuelo) REFERENCES vuelos(id_vuelo), FOREIGN KEY (id_asiento) REFERENCES asientos(id_asiento));`,
+    ddlSql: `CREATE TABLE aeropuertos (codigo_iata VARCHAR(3) PRIMARY KEY, nombre_aeropuerto VARCHAR(80) NOT NULL, ciudad VARCHAR(50) NOT NULL, pais VARCHAR(50) DEFAULT 'Chile', fuso_horario VARCHAR(20));
+CREATE TABLE rutas (id_ruta SERIAL PRIMARY KEY, origen_iata VARCHAR(3) NOT NULL, destino_iata VARCHAR(3) NOT NULL, distancia_km DECIMAL(8,2), duracion_minutos INT, CHECK (origen_iata <> destino_iata), FOREIGN KEY (origen_iata) REFERENCES aeropuertos(codigo_iata), FOREIGN KEY (destino_iata) REFERENCES aeropuertos(codigo_iata));
+CREATE TABLE aviones (id_avion SERIAL PRIMARY KEY, matricula VARCHAR(10) UNIQUE NOT NULL, modelo VARCHAR(40) NOT NULL, anio_fabricacion INT, capacidad_pasajeros INT, estado_avion VARCHAR(20) DEFAULT 'OPERATIVO');
+CREATE TABLE asientos (id_asiento SERIAL PRIMARY KEY, id_avion INT NOT NULL, codigo_asiento VARCHAR(5) NOT NULL, clase VARCHAR(20) DEFAULT 'ECONOMY', fila INT, equipaje_cabina_kg DECIMAL(5,2) DEFAULT 10, UNIQUE (id_avion, codigo_asiento), FOREIGN KEY (id_avion) REFERENCES aviones(id_avion));
+CREATE TABLE tripulacion (id_tripulante SERIAL PRIMARY KEY, nombre VARCHAR(80) NOT NULL, rol VARCHAR(20) NOT NULL, numero_licencia VARCHAR(20), fecha_vencimiento_licencia DATE, telefono VARCHAR(20));
+CREATE TABLE vuelos (id_vuelo BIGSERIAL PRIMARY KEY, numero_vuelo VARCHAR(10) NOT NULL, id_ruta INT NOT NULL, id_avion INT NOT NULL, fecha_salida TIMESTAMP NOT NULL, fecha_llegada TIMESTAMP, estado_vuelo VARCHAR(20) DEFAULT 'PROGRAMADO', FOREIGN KEY (id_ruta) REFERENCES rutas(id_ruta), FOREIGN KEY (id_avion) REFERENCES aviones(id_avion));
+CREATE TABLE asignacion_tripulacion (id_vuelo BIGINT NOT NULL, id_tripulante INT NOT NULL, fecha_asignacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP, rol_vuelo VARCHAR(20), activo BOOLEAN DEFAULT TRUE, PRIMARY KEY (id_vuelo, id_tripulante), FOREIGN KEY (id_vuelo) REFERENCES vuelos(id_vuelo), FOREIGN KEY (id_tripulante) REFERENCES tripulacion(id_tripulante));
+CREATE TABLE pasajeros (id_pasajero BIGSERIAL PRIMARY KEY, pasaporte VARCHAR(20) UNIQUE NOT NULL, nombre VARCHAR(80) NOT NULL, email VARCHAR(100), fecha_nacimiento DATE, telefono VARCHAR(20));
+CREATE TABLE reservas_vuelo (id_reserva BIGSERIAL PRIMARY KEY, codigo_pnr VARCHAR(6) UNIQUE NOT NULL, id_pasajero BIGINT NOT NULL, fecha_reserva TIMESTAMP DEFAULT CURRENT_TIMESTAMP, estado_reserva VARCHAR(20) DEFAULT 'CONFIRMADA', precio_base DECIMAL(10,2), FOREIGN KEY (id_pasajero) REFERENCES pasajeros(id_pasajero));
+CREATE TABLE boletos_checkin (id_boleto BIGSERIAL PRIMARY KEY, id_reserva BIGINT NOT NULL, id_vuelo BIGINT NOT NULL, id_asiento INT NOT NULL, fecha_checkin TIMESTAMP DEFAULT CURRENT_TIMESTAMP, equipaje_facturado_kg DECIMAL(5,2), UNIQUE (id_vuelo, id_asiento), FOREIGN KEY (id_reserva) REFERENCES reservas_vuelo(id_reserva), FOREIGN KEY (id_vuelo) REFERENCES vuelos(id_vuelo), FOREIGN KEY (id_asiento) REFERENCES asientos(id_asiento));`,
     seedSql: `INSERT INTO aeropuertos (codigo_iata, nombre_aeropuerto, ciudad) VALUES ('SCL', 'Arturo Merino Benítez', 'Santiago'), ('MIA', 'Miami International', 'Miami');
 INSERT INTO rutas (origen_iata, destino_iata) VALUES ('SCL', 'MIA');
 INSERT INTO aviones (matricula, modelo) VALUES ('CC-BBA', 'Boeing 787-9 Dreamliner');
@@ -3073,27 +4225,130 @@ WHERE v.numero_vuelo = 'LA-500';`
     context: 'Una red social tipo Instagram/Twitter estructura usuarios, perfiles 1:1, seguidores (seguidor/seguido), publicaciones, etiquetas/hashtags, post_etiquetas (N:M), comentarios, reacciones con emoji, mensajes directos de chat y notificaciones.',
     statement: 'Diseñar las 10 tablas de la red social y calcular el engagement total (reacciones + comentarios) de cada post.',
     tables: [
-      { name: 'usuarios', desc: 'Cuentas', fields: [{ name: 'id_usuario', type: 'BIGINT', pk: true, desc: 'PK' }, { name: 'handle', type: 'VARCHAR(30)', unique: true, desc: '@usuario' }] },
-      { name: 'perfiles', desc: 'Bio 1:1', fields: [{ name: 'id_perfil', type: 'BIGINT', pk: true, desc: 'PK' }, { name: 'id_usuario', type: 'BIGINT', fk: 'usuarios.id_usuario', unique: true, desc: '1:1' }, { name: 'bio', type: 'TEXT', desc: 'Biografía' }] },
-      { name: 'seguidores', desc: 'Grafo social N:M', fields: [{ name: 'id_seguidor', type: 'BIGINT', pk: true, fk: 'usuarios.id_usuario', desc: 'Follower' }, { name: 'id_seguido', type: 'BIGINT', pk: true, fk: 'usuarios.id_usuario', desc: 'Following' }] },
-      { name: 'publicaciones', desc: 'Posts multimedia', fields: [{ name: 'id_post', type: 'BIGINT', pk: true, desc: 'PK' }, { name: 'id_usuario', type: 'BIGINT', fk: 'usuarios.id_usuario', desc: 'Autor' }, { name: 'contenido', type: 'TEXT', notNull: true, desc: 'Texto' }] },
-      { name: 'etiquetas', desc: 'Hashtags', fields: [{ name: 'id_tag', type: 'INT', pk: true, desc: 'PK' }, { name: 'hashtag', type: 'VARCHAR(50)', unique: true, desc: '#tag' }] },
-      { name: 'publicacion_etiquetas', desc: 'Pivote N:M', fields: [{ name: 'id_post', type: 'BIGINT', pk: true, fk: 'publicaciones.id_post', desc: 'Post' }, { name: 'id_tag', type: 'INT', pk: true, fk: 'etiquetas.id_tag', desc: 'Tag' }] },
-      { name: 'comentarios', desc: 'Comentarios', fields: [{ name: 'id_comentario', type: 'BIGINT', pk: true, desc: 'PK' }, { name: 'id_post', type: 'BIGINT', fk: 'publicaciones.id_post', desc: 'Post' }, { name: 'id_usuario', type: 'BIGINT', fk: 'usuarios.id_usuario', desc: 'Usuario' }] },
-      { name: 'reacciones', desc: 'Likes, Love, Fire', fields: [{ name: 'id_post', type: 'BIGINT', pk: true, fk: 'publicaciones.id_post', desc: 'Post' }, { name: 'id_usuario', type: 'BIGINT', pk: true, fk: 'usuarios.id_usuario', desc: 'Usuario' }, { name: 'tipo_reaccion', type: 'VARCHAR(20)', desc: 'LIKE' }] },
-      { name: 'mensajes_chat', desc: 'DMs directos', fields: [{ name: 'id_mensaje', type: 'BIGINT', pk: true, desc: 'PK' }, { name: 'id_emisor', type: 'BIGINT', fk: 'usuarios.id_usuario', desc: 'De' }, { name: 'id_receptor', type: 'BIGINT', fk: 'usuarios.id_usuario', desc: 'Para' }] },
-      { name: 'notificaciones', desc: 'Alertas push', fields: [{ name: 'id_notificacion', type: 'BIGINT', pk: true, desc: 'PK' }, { name: 'id_usuario', type: 'BIGINT', fk: 'usuarios.id_usuario', desc: 'Destinatario' }, { name: 'mensaje', type: 'VARCHAR(255)', desc: 'Alerta' }] }
+      {
+        name: 'usuarios',
+        desc: 'Cuentas',
+        fields: [
+          { name: 'id_usuario', type: 'BIGINT', pk: true, desc: 'PK' },
+          { name: 'handle', type: 'VARCHAR(30)', unique: true, desc: '@usuario' },
+          { name: 'email', type: 'VARCHAR(100)', unique: true, notNull: true, desc: 'Correo de la cuenta' },
+          { name: 'fecha_registro', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Alta en la plataforma' },
+          { name: 'es_verificado', type: 'BOOLEAN', defaultValue: 'FALSE', desc: 'Cuenta con check azul' }
+        ]
+      },
+      {
+        name: 'perfiles',
+        desc: 'Bio 1:1',
+        fields: [
+          { name: 'id_perfil', type: 'BIGINT', pk: true, desc: 'PK' },
+          { name: 'id_usuario', type: 'BIGINT', fk: 'usuarios.id_usuario', unique: true, desc: '1:1' },
+          { name: 'bio', type: 'TEXT', desc: 'Biografía' },
+          { name: 'foto_url', type: 'VARCHAR(255)', desc: 'URL de la foto de perfil' },
+          { name: 'fecha_nacimiento', type: 'DATE', desc: 'Fecha de nacimiento' },
+          { name: 'visibilidad', type: 'VARCHAR(20)', defaultValue: "'PUBLICO'", desc: 'PUBLICO, PRIVADO, SOLO_SEGUIDORES' }
+        ]
+      },
+      {
+        name: 'seguidores',
+        desc: 'Grafo social N:M',
+        fields: [
+          { name: 'id_seguidor', type: 'BIGINT', pk: true, fk: 'usuarios.id_usuario', desc: 'Follower' },
+          { name: 'id_seguido', type: 'BIGINT', pk: true, fk: 'usuarios.id_usuario', desc: 'Following' },
+          { name: 'fecha_vinculo', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Fecha en que se siguió' },
+          { name: 'activo', type: 'BOOLEAN', defaultValue: 'TRUE', desc: 'Seguimiento vigente' }
+        ]
+      },
+      {
+        name: 'publicaciones',
+        desc: 'Posts multimedia',
+        fields: [
+          { name: 'id_post', type: 'BIGINT', pk: true, desc: 'PK' },
+          { name: 'id_usuario', type: 'BIGINT', fk: 'usuarios.id_usuario', desc: 'Autor' },
+          { name: 'contenido', type: 'TEXT', notNull: true, desc: 'Texto' },
+          { name: 'fecha_publicacion', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Fecha de publicación' },
+          { name: 'tipo_contenido', type: 'VARCHAR(20)', defaultValue: "'TEXTO'", desc: 'TEXTO, FOTO, VIDEO, REEL' },
+          { name: 'estado_post', type: 'VARCHAR(20)', defaultValue: "'PUBLICADO'", desc: 'PUBLICADO, BORRADOR, OCULTO' }
+        ]
+      },
+      {
+        name: 'etiquetas',
+        desc: 'Hashtags',
+        fields: [
+          { name: 'id_tag', type: 'INT', pk: true, desc: 'PK' },
+          { name: 'hashtag', type: 'VARCHAR(50)', unique: true, desc: '#tag' },
+          { name: 'fecha_creacion', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Alta del hashtag' },
+          { name: 'descripcion', type: 'VARCHAR(150)', desc: 'Descripción corta del tag' },
+          { name: 'es_trending', type: 'BOOLEAN', defaultValue: 'FALSE', desc: 'Etiqueta en tendencia' }
+        ]
+      },
+      {
+        name: 'publicacion_etiquetas',
+        desc: 'Pivote N:M',
+        fields: [
+          { name: 'id_post', type: 'BIGINT', pk: true, fk: 'publicaciones.id_post', desc: 'Post' },
+          { name: 'id_tag', type: 'INT', pk: true, fk: 'etiquetas.id_tag', desc: 'Tag' },
+          { name: 'fecha_vinculo', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Fecha de vinculación' },
+          { name: 'orden', type: 'INT', desc: 'Orden de aparición en el post' }
+        ]
+      },
+      {
+        name: 'comentarios',
+        desc: 'Comentarios',
+        fields: [
+          { name: 'id_comentario', type: 'BIGINT', pk: true, desc: 'PK' },
+          { name: 'id_post', type: 'BIGINT', fk: 'publicaciones.id_post', desc: 'Post' },
+          { name: 'id_usuario', type: 'BIGINT', fk: 'usuarios.id_usuario', desc: 'Usuario' },
+          { name: 'texto', type: 'VARCHAR(500)', notNull: true, desc: 'Texto del comentario' },
+          { name: 'fecha_comentario', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Fecha del comentario' },
+          { name: 'es_editado', type: 'BOOLEAN', defaultValue: 'FALSE', desc: 'Comentario editado' }
+        ]
+      },
+      {
+        name: 'reacciones',
+        desc: 'Likes, Love, Fire',
+        fields: [
+          { name: 'id_post', type: 'BIGINT', pk: true, fk: 'publicaciones.id_post', desc: 'Post' },
+          { name: 'id_usuario', type: 'BIGINT', pk: true, fk: 'usuarios.id_usuario', desc: 'Usuario' },
+          { name: 'tipo_reaccion', type: 'VARCHAR(20)', desc: 'LIKE' },
+          { name: 'fecha_reaccion', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Fecha de la reacción' },
+          { name: 'activo', type: 'BOOLEAN', defaultValue: 'TRUE', desc: 'Reacción vigente' }
+        ]
+      },
+      {
+        name: 'mensajes_chat',
+        desc: 'DMs directos',
+        fields: [
+          { name: 'id_mensaje', type: 'BIGINT', pk: true, desc: 'PK' },
+          { name: 'id_emisor', type: 'BIGINT', fk: 'usuarios.id_usuario', desc: 'De' },
+          { name: 'id_receptor', type: 'BIGINT', fk: 'usuarios.id_usuario', desc: 'Para' },
+          { name: 'mensaje', type: 'TEXT', notNull: true, desc: 'Cuerpo del mensaje' },
+          { name: 'fecha_envio', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Fecha de envío' },
+          { name: 'leido', type: 'BOOLEAN', defaultValue: 'FALSE', desc: 'Mensaje leído' }
+        ]
+      },
+      {
+        name: 'notificaciones',
+        desc: 'Alertas push',
+        fields: [
+          { name: 'id_notificacion', type: 'BIGINT', pk: true, desc: 'PK' },
+          { name: 'id_usuario', type: 'BIGINT', fk: 'usuarios.id_usuario', desc: 'Destinatario' },
+          { name: 'mensaje', type: 'VARCHAR(255)', desc: 'Alerta' },
+          { name: 'leida', type: 'BOOLEAN', defaultValue: 'FALSE', desc: 'Notificación leída' },
+          { name: 'tipo_notificacion', type: 'VARCHAR(30)', defaultValue: "'SISTEMA'", desc: 'SISTEMA, LIKE, COMENTARIO, SEGUIDOR' },
+          { name: 'fecha_notificacion', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Fecha de la alerta' }
+        ]
+      }
     ],
-    ddlSql: `CREATE TABLE usuarios (id_usuario BIGSERIAL PRIMARY KEY, handle VARCHAR(30) UNIQUE NOT NULL, email VARCHAR(100) UNIQUE NOT NULL);
-CREATE TABLE perfiles (id_perfil BIGSERIAL PRIMARY KEY, id_usuario BIGINT UNIQUE NOT NULL, bio TEXT, foto_url VARCHAR(255), FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON DELETE CASCADE);
-CREATE TABLE seguidores (id_seguidor BIGINT NOT NULL, id_seguido BIGINT NOT NULL, PRIMARY KEY (id_seguidor, id_seguido), CHECK (id_seguidor <> id_seguido), FOREIGN KEY (id_seguidor) REFERENCES usuarios(id_usuario), FOREIGN KEY (id_seguido) REFERENCES usuarios(id_usuario));
-CREATE TABLE publicaciones (id_post BIGSERIAL PRIMARY KEY, id_usuario BIGINT NOT NULL, contenido TEXT NOT NULL, fecha_publicacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario));
-CREATE TABLE etiquetas (id_tag SERIAL PRIMARY KEY, hashtag VARCHAR(50) UNIQUE NOT NULL);
-CREATE TABLE publicacion_etiquetas (id_post BIGINT NOT NULL, id_tag INT NOT NULL, PRIMARY KEY (id_post, id_tag), FOREIGN KEY (id_post) REFERENCES publicaciones(id_post) ON DELETE CASCADE, FOREIGN KEY (id_tag) REFERENCES etiquetas(id_tag));
-CREATE TABLE comentarios (id_comentario BIGSERIAL PRIMARY KEY, id_post BIGINT NOT NULL, id_usuario BIGINT NOT NULL, texto VARCHAR(500) NOT NULL, FOREIGN KEY (id_post) REFERENCES publicaciones(id_post) ON DELETE CASCADE, FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario));
-CREATE TABLE reacciones (id_post BIGINT NOT NULL, id_usuario BIGINT NOT NULL, tipo_reaccion VARCHAR(20) NOT NULL, PRIMARY KEY (id_post, id_usuario), FOREIGN KEY (id_post) REFERENCES publicaciones(id_post) ON DELETE CASCADE, FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario));
-CREATE TABLE mensajes_chat (id_mensaje BIGSERIAL PRIMARY KEY, id_emisor BIGINT NOT NULL, id_receptor BIGINT NOT NULL, mensaje TEXT NOT NULL, CHECK (id_emisor <> id_receptor), FOREIGN KEY (id_emisor) REFERENCES usuarios(id_usuario), FOREIGN KEY (id_receptor) REFERENCES usuarios(id_usuario));
-CREATE TABLE notificaciones (id_notificacion BIGSERIAL PRIMARY KEY, id_usuario BIGINT NOT NULL, mensaje VARCHAR(255) NOT NULL, leida BOOLEAN DEFAULT FALSE, FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON DELETE CASCADE);`,
+    ddlSql: `CREATE TABLE usuarios (id_usuario BIGSERIAL PRIMARY KEY, handle VARCHAR(30) UNIQUE NOT NULL, email VARCHAR(100) UNIQUE NOT NULL, fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP, es_verificado BOOLEAN DEFAULT FALSE);
+CREATE TABLE perfiles (id_perfil BIGSERIAL PRIMARY KEY, id_usuario BIGINT UNIQUE NOT NULL, bio TEXT, foto_url VARCHAR(255), fecha_nacimiento DATE, visibilidad VARCHAR(20) DEFAULT 'PUBLICO', FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON DELETE CASCADE);
+CREATE TABLE seguidores (id_seguidor BIGINT NOT NULL, id_seguido BIGINT NOT NULL, fecha_vinculo TIMESTAMP DEFAULT CURRENT_TIMESTAMP, activo BOOLEAN DEFAULT TRUE, PRIMARY KEY (id_seguidor, id_seguido), CHECK (id_seguidor <> id_seguido), FOREIGN KEY (id_seguidor) REFERENCES usuarios(id_usuario), FOREIGN KEY (id_seguido) REFERENCES usuarios(id_usuario));
+CREATE TABLE publicaciones (id_post BIGSERIAL PRIMARY KEY, id_usuario BIGINT NOT NULL, contenido TEXT NOT NULL, fecha_publicacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP, tipo_contenido VARCHAR(20) DEFAULT 'TEXTO', estado_post VARCHAR(20) DEFAULT 'PUBLICADO', FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario));
+CREATE TABLE etiquetas (id_tag SERIAL PRIMARY KEY, hashtag VARCHAR(50) UNIQUE NOT NULL, fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP, descripcion VARCHAR(150), es_trending BOOLEAN DEFAULT FALSE);
+CREATE TABLE publicacion_etiquetas (id_post BIGINT NOT NULL, id_tag INT NOT NULL, fecha_vinculo TIMESTAMP DEFAULT CURRENT_TIMESTAMP, orden INT, PRIMARY KEY (id_post, id_tag), FOREIGN KEY (id_post) REFERENCES publicaciones(id_post) ON DELETE CASCADE, FOREIGN KEY (id_tag) REFERENCES etiquetas(id_tag));
+CREATE TABLE comentarios (id_comentario BIGSERIAL PRIMARY KEY, id_post BIGINT NOT NULL, id_usuario BIGINT NOT NULL, texto VARCHAR(500) NOT NULL, fecha_comentario TIMESTAMP DEFAULT CURRENT_TIMESTAMP, es_editado BOOLEAN DEFAULT FALSE, FOREIGN KEY (id_post) REFERENCES publicaciones(id_post) ON DELETE CASCADE, FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario));
+CREATE TABLE reacciones (id_post BIGINT NOT NULL, id_usuario BIGINT NOT NULL, tipo_reaccion VARCHAR(20) NOT NULL, fecha_reaccion TIMESTAMP DEFAULT CURRENT_TIMESTAMP, activo BOOLEAN DEFAULT TRUE, PRIMARY KEY (id_post, id_usuario), FOREIGN KEY (id_post) REFERENCES publicaciones(id_post) ON DELETE CASCADE, FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario));
+CREATE TABLE mensajes_chat (id_mensaje BIGSERIAL PRIMARY KEY, id_emisor BIGINT NOT NULL, id_receptor BIGINT NOT NULL, mensaje TEXT NOT NULL, fecha_envio TIMESTAMP DEFAULT CURRENT_TIMESTAMP, leido BOOLEAN DEFAULT FALSE, CHECK (id_emisor <> id_receptor), FOREIGN KEY (id_emisor) REFERENCES usuarios(id_usuario), FOREIGN KEY (id_receptor) REFERENCES usuarios(id_usuario));
+CREATE TABLE notificaciones (id_notificacion BIGSERIAL PRIMARY KEY, id_usuario BIGINT NOT NULL, mensaje VARCHAR(255) NOT NULL, leida BOOLEAN DEFAULT FALSE, tipo_notificacion VARCHAR(30) DEFAULT 'SISTEMA', fecha_notificacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON DELETE CASCADE);`,
     seedSql: `INSERT INTO usuarios (handle, email) VALUES ('antigravity_dev', 'dev@ai.com'), ('code_master', 'code@ai.com');
 INSERT INTO perfiles (id_usuario, bio) VALUES (1, 'Construyendo el futuro del código.');
 INSERT INTO seguidores (id_seguidor, id_seguido) VALUES (2, 1);
@@ -3132,27 +4387,133 @@ INNER JOIN usuarios u ON p.id_usuario = u.id_usuario;`
     context: 'Una multinacional naviera y de supply chain opera proveedores de carga, puertos/aduanas marítimas, buques portacontenedores, contenedores ISO, almacenes de depósito fiscal, órdenes de importación, ítems de carga, guías de despacho, rutas marítimas y eventos de tracking satelital.',
     statement: 'Crear el esquema de 10 tablas marítimas y reportar el estado de contenedores en altamar.',
     tables: [
-      { name: 'proveedores', desc: 'Exportadores', fields: [{ name: 'id_proveedor', type: 'BIGINT', pk: true, desc: 'PK' }, { name: 'razon_social', type: 'VARCHAR(100)', desc: 'Empresa' }] },
-      { name: 'puertos_aduanas', desc: 'Terminales portuarios', fields: [{ name: 'codigo_puerto', type: 'VARCHAR(5)', pk: true, desc: 'UN/LOCODE' }, { name: 'nombre_puerto', type: 'VARCHAR(80)', desc: 'Puerto' }] },
-      { name: 'buques_transporte', desc: 'Navíos', fields: [{ name: 'id_buque', type: 'INT', pk: true, desc: 'PK' }, { name: 'nombre_buque', type: 'VARCHAR(80)', desc: 'Nombre' }, { name: 'imo_number', type: 'VARCHAR(10)', unique: true, desc: 'IMO' }] },
-      { name: 'contenedores', desc: 'TEUs ISO', fields: [{ name: 'codigo_contenedor', type: 'VARCHAR(11)', pk: true, desc: 'ISO 6346' }, { name: 'tipo', type: 'VARCHAR(20)', desc: '20ft, 40ft High Cube' }] },
-      { name: 'almacenes', desc: 'Patios de acopio', fields: [{ name: 'id_almacen', type: 'INT', pk: true, desc: 'PK' }, { name: 'codigo_puerto', type: 'VARCHAR(5)', fk: 'puertos_aduanas.codigo_puerto', desc: 'Puerto' }] },
-      { name: 'ordenes_compra', desc: 'Órdenes de flete', fields: [{ name: 'id_orden', type: 'BIGINT', pk: true, desc: 'PK' }, { name: 'id_proveedor', type: 'BIGINT', fk: 'proveedores.id_proveedor', desc: 'Proveedor' }] },
-      { name: 'items_compra', desc: 'Manifiesto de carga', fields: [{ name: 'id_item', type: 'BIGINT', pk: true, desc: 'PK' }, { name: 'id_orden', type: 'BIGINT', fk: 'ordenes_compra.id_orden', desc: 'Orden' }, { name: 'codigo_contenedor', type: 'VARCHAR(11)', fk: 'contenedores.codigo_contenedor', desc: 'Contenedor' }] },
-      { name: 'rutas_envio', desc: 'Líneas marítimas', fields: [{ name: 'id_ruta', type: 'INT', pk: true, desc: 'PK' }, { name: 'puerto_origen', type: 'VARCHAR(5)', fk: 'puertos_aduanas.codigo_puerto', desc: 'Origen' }, { name: 'puerto_destino', type: 'VARCHAR(5)', fk: 'puertos_aduanas.codigo_puerto', desc: 'Destino' }] },
-      { name: 'guias_despacho', desc: 'Bill of Lading B/L', fields: [{ name: 'id_guia', type: 'BIGINT', pk: true, desc: 'PK' }, { name: 'bl_number', type: 'VARCHAR(30)', unique: true, desc: 'Bill of Lading' }, { name: 'id_buque', type: 'INT', fk: 'buques_transporte.id_buque', desc: 'Buque' }] },
-      { name: 'tracking_eventos', desc: 'Eventos satelitales AIS', fields: [{ name: 'id_evento', type: 'BIGINT', pk: true, desc: 'PK' }, { name: 'id_guia', type: 'BIGINT', fk: 'guias_despacho.id_guia', desc: 'B/L' }, { name: 'latitud', type: 'DECIMAL(9,6)', desc: 'Lat' }, { name: 'longitud', type: 'DECIMAL(9,6)', desc: 'Lon' }] }
+      {
+        name: 'proveedores',
+        desc: 'Exportadores',
+        fields: [
+          { name: 'id_proveedor', type: 'BIGINT', pk: true, desc: 'PK' },
+          { name: 'razon_social', type: 'VARCHAR(100)', desc: 'Empresa' },
+          { name: 'pais', type: 'VARCHAR(50)', desc: 'País de origen' },
+          { name: 'contacto_email', type: 'VARCHAR(100)', desc: 'Email de contacto' },
+          { name: 'estado_proveedor', type: 'VARCHAR(20)', defaultValue: "'ACTIVO'", desc: 'ACTIVO, INACTIVO, EN_REVISION' }
+        ]
+      },
+      {
+        name: 'puertos_aduanas',
+        desc: 'Terminales portuarios',
+        fields: [
+          { name: 'codigo_puerto', type: 'VARCHAR(5)', pk: true, desc: 'UN/LOCODE' },
+          { name: 'nombre_puerto', type: 'VARCHAR(80)', desc: 'Puerto' },
+          { name: 'pais', type: 'VARCHAR(50)', notNull: true, desc: 'País del puerto' },
+          { name: 'ciudad', type: 'VARCHAR(60)', desc: 'Ciudad portuaria' },
+          { name: 'es_aduana', type: 'BOOLEAN', defaultValue: 'TRUE', desc: 'Tiene recinto aduanero' }
+        ]
+      },
+      {
+        name: 'buques_transporte',
+        desc: 'Navíos',
+        fields: [
+          { name: 'id_buque', type: 'INT', pk: true, desc: 'PK' },
+          { name: 'nombre_buque', type: 'VARCHAR(80)', desc: 'Nombre' },
+          { name: 'imo_number', type: 'VARCHAR(10)', unique: true, desc: 'IMO' },
+          { name: 'capacidad_teu', type: 'INT', desc: 'Capacidad en TEU' },
+          { name: 'bandera', type: 'VARCHAR(50)', desc: 'País de bandera' },
+          { name: 'estado_buque', type: 'VARCHAR(20)', defaultValue: "'EN_OPERACION'", desc: 'EN_OPERACION, DRY_DOCK, RETIRADO' }
+        ]
+      },
+      {
+        name: 'contenedores',
+        desc: 'TEUs ISO',
+        fields: [
+          { name: 'codigo_contenedor', type: 'VARCHAR(11)', pk: true, desc: 'ISO 6346' },
+          { name: 'tipo', type: 'VARCHAR(20)', desc: '20ft, 40ft High Cube' },
+          { name: 'capacidad_toneladas', type: 'DECIMAL(6,2)', notNull: true, desc: 'Capacidad de carga (t)' },
+          { name: 'estado_contenedor', type: 'VARCHAR(20)', defaultValue: "'VACIO'", desc: 'VACIO, CARGADO, EN_TRÁNSITO, MANTENCION' },
+          { name: 'fecha_ultima_inspeccion', type: 'DATE', desc: 'Última inspección CSC' }
+        ]
+      },
+      {
+        name: 'almacenes',
+        desc: 'Patios de acopio',
+        fields: [
+          { name: 'id_almacen', type: 'INT', pk: true, desc: 'PK' },
+          { name: 'codigo_puerto', type: 'VARCHAR(5)', fk: 'puertos_aduanas.codigo_puerto', desc: 'Puerto' },
+          { name: 'nombre_almacen', type: 'VARCHAR(80)', notNull: true, desc: 'Nombre del almacén' },
+          { name: 'capacidad_m2', type: 'DECIMAL(10,2)', desc: 'Superficie útil (m²)' },
+          { name: 'es_fiscal', type: 'BOOLEAN', defaultValue: 'TRUE', desc: 'Depósito fiscal' }
+        ]
+      },
+      {
+        name: 'ordenes_compra',
+        desc: 'Órdenes de flete',
+        fields: [
+          { name: 'id_orden', type: 'BIGINT', pk: true, desc: 'PK' },
+          { name: 'id_proveedor', type: 'BIGINT', fk: 'proveedores.id_proveedor', desc: 'Proveedor' },
+          { name: 'fecha_orden', type: 'DATE', notNull: true, desc: 'Fecha de la orden' },
+          { name: 'estado_orden', type: 'VARCHAR(20)', defaultValue: "'EMITIDA'", desc: 'EMITIDA, PAGADA, CERRADA, CANCELADA' },
+          { name: 'monto_total', type: 'DECIMAL(12,2)', desc: 'Monto total de la orden' }
+        ]
+      },
+      {
+        name: 'items_compra',
+        desc: 'Manifiesto de carga',
+        fields: [
+          { name: 'id_item', type: 'BIGINT', pk: true, desc: 'PK' },
+          { name: 'id_orden', type: 'BIGINT', fk: 'ordenes_compra.id_orden', desc: 'Orden' },
+          { name: 'codigo_contenedor', type: 'VARCHAR(11)', fk: 'contenedores.codigo_contenedor', desc: 'Contenedor' },
+          { name: 'descripcion_mercancia', type: 'TEXT', notNull: true, desc: 'Descripción de la mercancía' },
+          { name: 'peso_toneladas', type: 'DECIMAL(8,3)', desc: 'Peso de la carga (t)' },
+          { name: 'cantidad', type: 'INT', defaultValue: '1', desc: 'Unidades despachadas' }
+        ]
+      },
+      {
+        name: 'rutas_envio',
+        desc: 'Líneas marítimas',
+        fields: [
+          { name: 'id_ruta', type: 'INT', pk: true, desc: 'PK' },
+          { name: 'puerto_origen', type: 'VARCHAR(5)', fk: 'puertos_aduanas.codigo_puerto', desc: 'Origen' },
+          { name: 'puerto_destino', type: 'VARCHAR(5)', fk: 'puertos_aduanas.codigo_puerto', desc: 'Destino' },
+          { name: 'duracion_dias', type: 'INT', desc: 'Travesía estimada (días)' },
+          { name: 'estado_ruta', type: 'VARCHAR(20)', defaultValue: "'ACTIVA'", desc: 'ACTIVA, SUSPENDIDA' }
+        ]
+      },
+      {
+        name: 'guias_despacho',
+        desc: 'Bill of Lading B/L',
+        fields: [
+          { name: 'id_guia', type: 'BIGINT', pk: true, desc: 'PK' },
+          { name: 'bl_number', type: 'VARCHAR(30)', unique: true, desc: 'Bill of Lading' },
+          { name: 'id_buque', type: 'INT', fk: 'buques_transporte.id_buque', desc: 'Buque' },
+          { name: 'id_ruta', type: 'INT', fk: 'rutas_envio.id_ruta', notNull: true, desc: 'Ruta marítima' },
+          { name: 'fecha_emision', type: 'DATE', defaultValue: 'CURRENT_DATE', desc: 'Fecha de emisión del B/L' },
+          { name: 'fecha_estimada_llegada', type: 'DATE', desc: 'ETA al puerto destino' },
+          { name: 'estado_despacho', type: 'VARCHAR(30)', defaultValue: "'EN_TRANSITO'", desc: 'EN_TRANSITO, ARIBADO, ENTREGADO, RETENIDO' }
+        ]
+      },
+      {
+        name: 'tracking_eventos',
+        desc: 'Eventos satelitales AIS',
+        fields: [
+          { name: 'id_evento', type: 'BIGINT', pk: true, desc: 'PK' },
+          { name: 'id_guia', type: 'BIGINT', fk: 'guias_despacho.id_guia', desc: 'B/L' },
+          { name: 'latitud', type: 'DECIMAL(9,6)', desc: 'Lat' },
+          { name: 'longitud', type: 'DECIMAL(9,6)', desc: 'Lon' },
+          { name: 'estado', type: 'VARCHAR(30)', notNull: true, desc: 'Estado reportado por AIS' },
+          { name: 'fecha_hora', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Timestamp del evento' },
+          { name: 'velocidad_nudos', type: 'DECIMAL(5,1)', desc: 'Velocidad en nudos' }
+        ]
+      }
     ],
-    ddlSql: `CREATE TABLE proveedores (id_proveedor BIGSERIAL PRIMARY KEY, razon_social VARCHAR(100) NOT NULL);
-CREATE TABLE puertos_aduanas (codigo_puerto VARCHAR(5) PRIMARY KEY, nombre_puerto VARCHAR(80) NOT NULL, pais VARCHAR(50) NOT NULL);
-CREATE TABLE buques_transporte (id_buque SERIAL PRIMARY KEY, nombre_buque VARCHAR(80) NOT NULL, imo_number VARCHAR(10) UNIQUE NOT NULL);
-CREATE TABLE contenedores (codigo_contenedor VARCHAR(11) PRIMARY KEY, tipo VARCHAR(20) NOT NULL, capacidad_toneladas DECIMAL(6,2) NOT NULL);
-CREATE TABLE almacenes (id_almacen SERIAL PRIMARY KEY, codigo_puerto VARCHAR(5) NOT NULL, nombre_almacen VARCHAR(80) NOT NULL, FOREIGN KEY (codigo_puerto) REFERENCES puertos_aduanas(codigo_puerto));
-CREATE TABLE ordenes_compra (id_orden BIGSERIAL PRIMARY KEY, id_proveedor BIGINT NOT NULL, fecha_orden DATE NOT NULL, FOREIGN KEY (id_proveedor) REFERENCES proveedores(id_proveedor));
-CREATE TABLE items_compra (id_item BIGSERIAL PRIMARY KEY, id_orden BIGINT NOT NULL, codigo_contenedor VARCHAR(11) NOT NULL, descripcion_mercancia TEXT NOT NULL, FOREIGN KEY (id_orden) REFERENCES ordenes_compra(id_orden), FOREIGN KEY (codigo_contenedor) REFERENCES contenedores(codigo_contenedor));
-CREATE TABLE rutas_envio (id_ruta SERIAL PRIMARY KEY, puerto_origen VARCHAR(5) NOT NULL, puerto_destino VARCHAR(5) NOT NULL, FOREIGN KEY (puerto_origen) REFERENCES puertos_aduanas(codigo_puerto), FOREIGN KEY (puerto_destino) REFERENCES puertos_aduanas(codigo_puerto));
-CREATE TABLE guias_despacho (id_guia BIGSERIAL PRIMARY KEY, bl_number VARCHAR(30) UNIQUE NOT NULL, id_buque INT NOT NULL, id_ruta INT NOT NULL, FOREIGN KEY (id_buque) REFERENCES buques_transporte(id_buque), FOREIGN KEY (id_ruta) REFERENCES rutas_envio(id_ruta));
-CREATE TABLE tracking_eventos (id_evento BIGSERIAL PRIMARY KEY, id_guia BIGINT NOT NULL, estado VARCHAR(30) NOT NULL, latitud DECIMAL(9,6), longitud DECIMAL(9,6), fecha_hora TIMESTAMP DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (id_guia) REFERENCES guias_despacho(id_guia));`,
+    ddlSql: `CREATE TABLE proveedores (id_proveedor BIGSERIAL PRIMARY KEY, razon_social VARCHAR(100) NOT NULL, pais VARCHAR(50), contacto_email VARCHAR(100), estado_proveedor VARCHAR(20) DEFAULT 'ACTIVO');
+CREATE TABLE puertos_aduanas (codigo_puerto VARCHAR(5) PRIMARY KEY, nombre_puerto VARCHAR(80) NOT NULL, pais VARCHAR(50) NOT NULL, ciudad VARCHAR(60), es_aduana BOOLEAN DEFAULT TRUE);
+CREATE TABLE buques_transporte (id_buque SERIAL PRIMARY KEY, nombre_buque VARCHAR(80) NOT NULL, imo_number VARCHAR(10) UNIQUE NOT NULL, capacidad_teu INT, bandera VARCHAR(50), estado_buque VARCHAR(20) DEFAULT 'EN_OPERACION');
+CREATE TABLE contenedores (codigo_contenedor VARCHAR(11) PRIMARY KEY, tipo VARCHAR(20) NOT NULL, capacidad_toneladas DECIMAL(6,2) NOT NULL, estado_contenedor VARCHAR(20) DEFAULT 'VACIO', fecha_ultima_inspeccion DATE);
+CREATE TABLE almacenes (id_almacen SERIAL PRIMARY KEY, codigo_puerto VARCHAR(5) NOT NULL, nombre_almacen VARCHAR(80) NOT NULL, capacidad_m2 DECIMAL(10,2), es_fiscal BOOLEAN DEFAULT TRUE, FOREIGN KEY (codigo_puerto) REFERENCES puertos_aduanas(codigo_puerto));
+CREATE TABLE ordenes_compra (id_orden BIGSERIAL PRIMARY KEY, id_proveedor BIGINT NOT NULL, fecha_orden DATE NOT NULL, estado_orden VARCHAR(20) DEFAULT 'EMITIDA', monto_total DECIMAL(12,2), FOREIGN KEY (id_proveedor) REFERENCES proveedores(id_proveedor));
+CREATE TABLE items_compra (id_item BIGSERIAL PRIMARY KEY, id_orden BIGINT NOT NULL, codigo_contenedor VARCHAR(11) NOT NULL, descripcion_mercancia TEXT NOT NULL, peso_toneladas DECIMAL(8,3), cantidad INT DEFAULT 1, FOREIGN KEY (id_orden) REFERENCES ordenes_compra(id_orden), FOREIGN KEY (codigo_contenedor) REFERENCES contenedores(codigo_contenedor));
+CREATE TABLE rutas_envio (id_ruta SERIAL PRIMARY KEY, puerto_origen VARCHAR(5) NOT NULL, puerto_destino VARCHAR(5) NOT NULL, duracion_dias INT, estado_ruta VARCHAR(20) DEFAULT 'ACTIVA', FOREIGN KEY (puerto_origen) REFERENCES puertos_aduanas(codigo_puerto), FOREIGN KEY (puerto_destino) REFERENCES puertos_aduanas(codigo_puerto));
+CREATE TABLE guias_despacho (id_guia BIGSERIAL PRIMARY KEY, bl_number VARCHAR(30) UNIQUE NOT NULL, id_buque INT NOT NULL, id_ruta INT NOT NULL, fecha_emision DATE DEFAULT CURRENT_DATE, fecha_estimada_llegada DATE, estado_despacho VARCHAR(30) DEFAULT 'EN_TRANSITO', FOREIGN KEY (id_buque) REFERENCES buques_transporte(id_buque), FOREIGN KEY (id_ruta) REFERENCES rutas_envio(id_ruta));
+CREATE TABLE tracking_eventos (id_evento BIGSERIAL PRIMARY KEY, id_guia BIGINT NOT NULL, estado VARCHAR(30) NOT NULL, latitud DECIMAL(9,6), longitud DECIMAL(9,6), fecha_hora TIMESTAMP DEFAULT CURRENT_TIMESTAMP, velocidad_nudos DECIMAL(5,1), FOREIGN KEY (id_guia) REFERENCES guias_despacho(id_guia));`,
     seedSql: `INSERT INTO proveedores (razon_social) VALUES ('Shanghai Electronics Corp');
 INSERT INTO puertos_aduanas (codigo_puerto, nombre_puerto, pais) VALUES ('CNSHA', 'Port of Shanghai', 'China'), ('CLVAP', 'Puerto de Valparaíso', 'Chile');
 INSERT INTO buques_transporte (nombre_buque, imo_number) VALUES ('Ever Given', 'IMO9811000');
@@ -3200,27 +4561,135 @@ LIMIT 1;`
     context: 'Un software SaaS B2B de gestión de ingeniería administra organizaciones cliente, planes de suscripción, facturación recurrente, usuarios, equipos de trabajo, miembros de equipo, proyectos ágiles, sprints de desarrollo, tareas/issues y bitácora de auditoría de cambios.',
     statement: 'Crear el esquema de 10 tablas para la plataforma SaaS y formular la consulta del burndown de tareas por sprint.',
     tables: [
-      { name: 'planes_suscripcion', desc: 'Free, Pro, Enterprise', fields: [{ name: 'id_plan', type: 'INT', pk: true, desc: 'PK' }, { name: 'nombre_plan', type: 'VARCHAR(40)', desc: 'Plan' }] },
-      { name: 'organizaciones', desc: 'Empresas clientes', fields: [{ name: 'id_organizacion', type: 'BIGINT', pk: true, desc: 'PK' }, { name: 'id_plan', type: 'INT', fk: 'planes_suscripcion.id_plan', desc: 'Plan' }, { name: 'nombre_empresa', type: 'VARCHAR(100)', desc: 'Empresa' }] },
-      { name: 'facturacion_saas', desc: 'Cobros recurrentes', fields: [{ name: 'id_factura', type: 'BIGINT', pk: true, desc: 'PK' }, { name: 'id_organizacion', type: 'BIGINT', fk: 'organizaciones.id_organizacion', desc: 'Organización' }, { name: 'monto_mensual', type: 'DECIMAL(10,2)', desc: 'Monto' }] },
-      { name: 'usuarios', desc: 'Miembros', fields: [{ name: 'id_usuario', type: 'BIGINT', pk: true, desc: 'PK' }, { name: 'id_organizacion', type: 'BIGINT', fk: 'organizaciones.id_organizacion', desc: 'Organización' }, { name: 'email', type: 'VARCHAR(100)', unique: true, desc: 'Email' }] },
-      { name: 'equipos', desc: 'Squads', fields: [{ name: 'id_equipo', type: 'INT', pk: true, desc: 'PK' }, { name: 'id_organizacion', type: 'BIGINT', fk: 'organizaciones.id_organizacion', desc: 'Organización' }, { name: 'nombre_squad', type: 'VARCHAR(50)', desc: 'Equipo' }] },
-      { name: 'miembros_equipo', desc: 'Pivote N:M', fields: [{ name: 'id_equipo', type: 'INT', pk: true, fk: 'equipos.id_equipo', desc: 'Squad' }, { name: 'id_usuario', type: 'BIGINT', pk: true, fk: 'usuarios.id_usuario', desc: 'Usuario' }] },
-      { name: 'proyectos', desc: 'Tableros Kanban/Scrum', fields: [{ name: 'id_proyecto', type: 'BIGINT', pk: true, desc: 'PK' }, { name: 'id_equipo', type: 'INT', fk: 'equipos.id_equipo', desc: 'Squad' }, { name: 'clave_proyecto', type: 'VARCHAR(10)', unique: true, desc: 'KEY (ej. CORE)' }] },
-      { name: 'sprints', desc: 'Iteraciones', fields: [{ name: 'id_sprint', type: 'BIGINT', pk: true, desc: 'PK' }, { name: 'id_proyecto', type: 'BIGINT', fk: 'proyectos.id_proyecto', desc: 'Proyecto' }, { name: 'nombre_sprint', type: 'VARCHAR(50)', desc: 'Sprint 1' }] },
-      { name: 'tareas_issues', desc: 'Tickets y Bugs', fields: [{ name: 'id_issue', type: 'BIGINT', pk: true, desc: 'PK' }, { name: 'id_sprint', type: 'BIGINT', fk: 'sprints.id_sprint', desc: 'Sprint' }, { name: 'id_asignado', type: 'BIGINT', fk: 'usuarios.id_usuario', desc: 'Dev' }, { name: 'story_points', type: 'INT', desc: 'Puntos' }, { name: 'estado', type: 'VARCHAR(20)', desc: 'DONE, IN_PROGRESS' }] },
-      { name: 'historial_cambios', desc: 'Audit Log', fields: [{ name: 'id_log', type: 'BIGINT', pk: true, desc: 'PK' }, { name: 'id_issue', type: 'BIGINT', fk: 'tareas_issues.id_issue', desc: 'Issue' }, { name: 'cambio', type: 'TEXT', desc: 'Acción' }] }
+      {
+        name: 'planes_suscripcion',
+        desc: 'Free, Pro, Enterprise',
+        fields: [
+          { name: 'id_plan', type: 'INT', pk: true, desc: 'PK' },
+          { name: 'nombre_plan', type: 'VARCHAR(40)', desc: 'Plan' },
+          { name: 'precio_mensual', type: 'DECIMAL(10,2)', notNull: true, desc: 'Precio mensual (USD)' },
+          { name: 'limite_usuarios', type: 'INT', desc: 'Cupos de usuarios incluidos' },
+          { name: 'dias_trial', type: 'INT', defaultValue: '14', desc: 'Días de prueba gratuita' }
+        ]
+      },
+      {
+        name: 'organizaciones',
+        desc: 'Empresas clientes',
+        fields: [
+          { name: 'id_organizacion', type: 'BIGINT', pk: true, desc: 'PK' },
+          { name: 'id_plan', type: 'INT', fk: 'planes_suscripcion.id_plan', desc: 'Plan' },
+          { name: 'nombre_empresa', type: 'VARCHAR(100)', desc: 'Empresa' },
+          { name: 'estado_suscripcion', type: 'VARCHAR(20)', defaultValue: "'TRIAL'", desc: 'TRIAL, ACTIVA, SUSPENDIDA, CANCELADA' },
+          { name: 'fecha_trial_termino', type: 'DATE', desc: 'Fin del período de prueba' },
+          { name: 'fecha_registro', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Alta de la organización' }
+        ]
+      },
+      {
+        name: 'facturacion_saas',
+        desc: 'Cobros recurrentes',
+        fields: [
+          { name: 'id_factura', type: 'BIGINT', pk: true, desc: 'PK' },
+          { name: 'id_organizacion', type: 'BIGINT', fk: 'organizaciones.id_organizacion', desc: 'Organización' },
+          { name: 'monto_mensual', type: 'DECIMAL(10,2)', desc: 'Monto' },
+          { name: 'pagada', type: 'BOOLEAN', defaultValue: 'TRUE', desc: 'Estado de pago' },
+          { name: 'fecha_emision', type: 'DATE', defaultValue: 'CURRENT_DATE', desc: 'Fecha de emisión' },
+          { name: 'fecha_vencimiento', type: 'DATE', desc: 'Fecha límite de pago' }
+        ]
+      },
+      {
+        name: 'usuarios',
+        desc: 'Miembros',
+        fields: [
+          { name: 'id_usuario', type: 'BIGINT', pk: true, desc: 'PK' },
+          { name: 'id_organizacion', type: 'BIGINT', fk: 'organizaciones.id_organizacion', desc: 'Organización' },
+          { name: 'email', type: 'VARCHAR(100)', unique: true, desc: 'Email' },
+          { name: 'nombre', type: 'VARCHAR(80)', notNull: true, desc: 'Nombre del miembro' },
+          { name: 'cargo', type: 'VARCHAR(60)', desc: 'Cargo en la empresa' },
+          { name: 'fecha_registro', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Alta en el tenant' }
+        ]
+      },
+      {
+        name: 'equipos',
+        desc: 'Squads',
+        fields: [
+          { name: 'id_equipo', type: 'INT', pk: true, desc: 'PK' },
+          { name: 'id_organizacion', type: 'BIGINT', fk: 'organizaciones.id_organizacion', desc: 'Organización' },
+          { name: 'nombre_squad', type: 'VARCHAR(50)', desc: 'Equipo' },
+          { name: 'fecha_creacion', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Creación del squad' },
+          { name: 'activo', type: 'BOOLEAN', defaultValue: 'TRUE', desc: 'Squad activo' }
+        ]
+      },
+      {
+        name: 'miembros_equipo',
+        desc: 'Pivote N:M',
+        fields: [
+          { name: 'id_equipo', type: 'INT', pk: true, fk: 'equipos.id_equipo', desc: 'Squad' },
+          { name: 'id_usuario', type: 'BIGINT', pk: true, fk: 'usuarios.id_usuario', desc: 'Usuario' },
+          { name: 'fecha_vinculo', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Fecha de incorporación' },
+          { name: 'rol_equipo', type: 'VARCHAR(20)', defaultValue: "'MIEMBRO'", desc: 'LÍDER, MIEMBRO, OBSERVADOR' },
+          { name: 'activo', type: 'BOOLEAN', defaultValue: 'TRUE', desc: 'Membresía vigente' }
+        ]
+      },
+      {
+        name: 'proyectos',
+        desc: 'Tableros Kanban/Scrum',
+        fields: [
+          { name: 'id_proyecto', type: 'BIGINT', pk: true, desc: 'PK' },
+          { name: 'id_equipo', type: 'INT', fk: 'equipos.id_equipo', desc: 'Squad' },
+          { name: 'clave_proyecto', type: 'VARCHAR(10)', unique: true, desc: 'KEY (ej. CORE)' },
+          { name: 'nombre', type: 'VARCHAR(80)', notNull: true, desc: 'Nombre del tablero' },
+          { name: 'estado_proyecto', type: 'VARCHAR(20)', defaultValue: "'ACTIVO'", desc: 'ACTIVO, PAUSADO, CERRADO' },
+          { name: 'fecha_creacion', type: 'DATE', defaultValue: 'CURRENT_DATE', desc: 'Alta del proyecto' }
+        ]
+      },
+      {
+        name: 'sprints',
+        desc: 'Iteraciones',
+        fields: [
+          { name: 'id_sprint', type: 'BIGINT', pk: true, desc: 'PK' },
+          { name: 'id_proyecto', type: 'BIGINT', fk: 'proyectos.id_proyecto', desc: 'Proyecto' },
+          { name: 'nombre_sprint', type: 'VARCHAR(50)', desc: 'Sprint 1' },
+          { name: 'fecha_inicio', type: 'DATE', notNull: true, desc: 'Inicio del sprint' },
+          { name: 'fecha_fin', type: 'DATE', notNull: true, desc: 'Fin del sprint' },
+          { name: 'objetivo', type: 'TEXT', desc: 'Sprint goal' }
+        ]
+      },
+      {
+        name: 'tareas_issues',
+        desc: 'Tickets y Bugs',
+        fields: [
+          { name: 'id_issue', type: 'BIGINT', pk: true, desc: 'PK' },
+          { name: 'id_sprint', type: 'BIGINT', fk: 'sprints.id_sprint', desc: 'Sprint' },
+          { name: 'id_asignado', type: 'BIGINT', fk: 'usuarios.id_usuario', desc: 'Dev' },
+          { name: 'story_points', type: 'INT', desc: 'Puntos' },
+          { name: 'estado', type: 'VARCHAR(20)', desc: 'DONE, IN_PROGRESS' },
+          { name: 'titulo', type: 'VARCHAR(120)', notNull: true, desc: 'Título del ticket' },
+          { name: 'prioridad', type: 'VARCHAR(10)', defaultValue: "'MEDIA'", desc: 'ALTA, MEDIA, BAJA' }
+        ]
+      },
+      {
+        name: 'historial_cambios',
+        desc: 'Audit Log',
+        fields: [
+          { name: 'id_log', type: 'BIGINT', pk: true, desc: 'PK' },
+          { name: 'id_issue', type: 'BIGINT', fk: 'tareas_issues.id_issue', desc: 'Issue' },
+          { name: 'cambio', type: 'TEXT', desc: 'Acción' },
+          { name: 'fecha_cambio', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Momento del cambio' },
+          { name: 'campo', type: 'VARCHAR(50)', desc: 'Columna afectada' },
+          { name: 'valor_anterior', type: 'TEXT', desc: 'Valor previo del campo' }
+        ]
+      }
     ],
-    ddlSql: `CREATE TABLE planes_suscripcion (id_plan SERIAL PRIMARY KEY, nombre_plan VARCHAR(40) UNIQUE NOT NULL, precio_mensual DECIMAL(10,2) NOT NULL);
-CREATE TABLE organizaciones (id_organizacion BIGSERIAL PRIMARY KEY, id_plan INT NOT NULL, nombre_empresa VARCHAR(100) NOT NULL, FOREIGN KEY (id_plan) REFERENCES planes_suscripcion(id_plan));
-CREATE TABLE facturacion_saas (id_factura BIGSERIAL PRIMARY KEY, id_organizacion BIGINT NOT NULL, monto_mensual DECIMAL(10,2) NOT NULL, pagada BOOLEAN DEFAULT TRUE, FOREIGN KEY (id_organizacion) REFERENCES organizaciones(id_organizacion));
-CREATE TABLE usuarios (id_usuario BIGSERIAL PRIMARY KEY, id_organizacion BIGINT NOT NULL, email VARCHAR(100) UNIQUE NOT NULL, nombre VARCHAR(80) NOT NULL, FOREIGN KEY (id_organizacion) REFERENCES organizaciones(id_organizacion) ON DELETE CASCADE);
-CREATE TABLE equipos (id_equipo SERIAL PRIMARY KEY, id_organizacion BIGINT NOT NULL, nombre_squad VARCHAR(50) NOT NULL, FOREIGN KEY (id_organizacion) REFERENCES organizaciones(id_organizacion));
-CREATE TABLE miembros_equipo (id_equipo INT NOT NULL, id_usuario BIGINT NOT NULL, PRIMARY KEY (id_equipo, id_usuario), FOREIGN KEY (id_equipo) REFERENCES equipos(id_equipo) ON DELETE CASCADE, FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON DELETE CASCADE);
-CREATE TABLE proyectos (id_proyecto BIGSERIAL PRIMARY KEY, id_equipo INT NOT NULL, clave_proyecto VARCHAR(10) UNIQUE NOT NULL, nombre VARCHAR(80) NOT NULL, FOREIGN KEY (id_equipo) REFERENCES equipos(id_equipo));
-CREATE TABLE sprints (id_sprint BIGSERIAL PRIMARY KEY, id_proyecto BIGINT NOT NULL, nombre_sprint VARCHAR(50) NOT NULL, fecha_inicio DATE NOT NULL, fecha_fin DATE NOT NULL, FOREIGN KEY (id_proyecto) REFERENCES proyectos(id_proyecto));
-CREATE TABLE tareas_issues (id_issue BIGSERIAL PRIMARY KEY, id_sprint BIGINT NOT NULL, id_asignado BIGINT, titulo VARCHAR(120) NOT NULL, story_points INT DEFAULT 1 CHECK (story_points >= 0), estado VARCHAR(20) DEFAULT 'TODO' CHECK (estado IN ('TODO', 'IN_PROGRESS', 'REVIEW', 'DONE')), FOREIGN KEY (id_sprint) REFERENCES sprints(id_sprint), FOREIGN KEY (id_asignado) REFERENCES usuarios(id_usuario));
-CREATE TABLE historial_cambios (id_log BIGSERIAL PRIMARY KEY, id_issue BIGINT NOT NULL, cambio TEXT NOT NULL, fecha_cambio TIMESTAMP DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (id_issue) REFERENCES tareas_issues(id_issue) ON DELETE CASCADE);`,
+    ddlSql: `CREATE TABLE planes_suscripcion (id_plan SERIAL PRIMARY KEY, nombre_plan VARCHAR(40) UNIQUE NOT NULL, precio_mensual DECIMAL(10,2) NOT NULL, limite_usuarios INT, dias_trial INT DEFAULT 14);
+CREATE TABLE organizaciones (id_organizacion BIGSERIAL PRIMARY KEY, id_plan INT NOT NULL, nombre_empresa VARCHAR(100) NOT NULL, estado_suscripcion VARCHAR(20) DEFAULT 'TRIAL', fecha_trial_termino DATE, fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (id_plan) REFERENCES planes_suscripcion(id_plan));
+CREATE TABLE facturacion_saas (id_factura BIGSERIAL PRIMARY KEY, id_organizacion BIGINT NOT NULL, monto_mensual DECIMAL(10,2) NOT NULL, pagada BOOLEAN DEFAULT TRUE, fecha_emision DATE DEFAULT CURRENT_DATE, fecha_vencimiento DATE, FOREIGN KEY (id_organizacion) REFERENCES organizaciones(id_organizacion));
+CREATE TABLE usuarios (id_usuario BIGSERIAL PRIMARY KEY, id_organizacion BIGINT NOT NULL, email VARCHAR(100) UNIQUE NOT NULL, nombre VARCHAR(80) NOT NULL, cargo VARCHAR(60), fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (id_organizacion) REFERENCES organizaciones(id_organizacion) ON DELETE CASCADE);
+CREATE TABLE equipos (id_equipo SERIAL PRIMARY KEY, id_organizacion BIGINT NOT NULL, nombre_squad VARCHAR(50) NOT NULL, fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP, activo BOOLEAN DEFAULT TRUE, FOREIGN KEY (id_organizacion) REFERENCES organizaciones(id_organizacion));
+CREATE TABLE miembros_equipo (id_equipo INT NOT NULL, id_usuario BIGINT NOT NULL, fecha_vinculo TIMESTAMP DEFAULT CURRENT_TIMESTAMP, rol_equipo VARCHAR(20) DEFAULT 'MIEMBRO', activo BOOLEAN DEFAULT TRUE, PRIMARY KEY (id_equipo, id_usuario), FOREIGN KEY (id_equipo) REFERENCES equipos(id_equipo) ON DELETE CASCADE, FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON DELETE CASCADE);
+CREATE TABLE proyectos (id_proyecto BIGSERIAL PRIMARY KEY, id_equipo INT NOT NULL, clave_proyecto VARCHAR(10) UNIQUE NOT NULL, nombre VARCHAR(80) NOT NULL, estado_proyecto VARCHAR(20) DEFAULT 'ACTIVO', fecha_creacion DATE DEFAULT CURRENT_DATE, FOREIGN KEY (id_equipo) REFERENCES equipos(id_equipo));
+CREATE TABLE sprints (id_sprint BIGSERIAL PRIMARY KEY, id_proyecto BIGINT NOT NULL, nombre_sprint VARCHAR(50) NOT NULL, fecha_inicio DATE NOT NULL, fecha_fin DATE NOT NULL, objetivo TEXT, FOREIGN KEY (id_proyecto) REFERENCES proyectos(id_proyecto));
+CREATE TABLE tareas_issues (id_issue BIGSERIAL PRIMARY KEY, id_sprint BIGINT NOT NULL, id_asignado BIGINT, titulo VARCHAR(120) NOT NULL, story_points INT DEFAULT 1 CHECK (story_points >= 0), estado VARCHAR(20) DEFAULT 'TODO' CHECK (estado IN ('TODO', 'IN_PROGRESS', 'REVIEW', 'DONE')), prioridad VARCHAR(10) DEFAULT 'MEDIA', FOREIGN KEY (id_sprint) REFERENCES sprints(id_sprint), FOREIGN KEY (id_asignado) REFERENCES usuarios(id_usuario));
+CREATE TABLE historial_cambios (id_log BIGSERIAL PRIMARY KEY, id_issue BIGINT NOT NULL, cambio TEXT NOT NULL, fecha_cambio TIMESTAMP DEFAULT CURRENT_TIMESTAMP, campo VARCHAR(50), valor_anterior TEXT, FOREIGN KEY (id_issue) REFERENCES tareas_issues(id_issue) ON DELETE CASCADE);`,
     seedSql: `INSERT INTO planes_suscripcion (nombre_plan, precio_mensual) VALUES ('Enterprise Scale', 499.00);
 INSERT INTO organizaciones (id_plan, nombre_empresa) VALUES (1, 'Fintech Unicorn Latam');
 INSERT INTO facturacion_saas (id_organizacion, monto_mensual) VALUES (1, 499.00);
@@ -3266,27 +4735,134 @@ GROUP BY s.id_sprint, s.nombre_sprint, pr.clave_proyecto;`
     context: 'Una red automotriz de concesionarios y servicios técnicos gestiona sucursales de venta, clientes, marcas, catálogo maestro de autos, inventario físico de vehículos, ventas de autos nuevos/usados, mecánicos de taller, órdenes de reparación/mantención, catálogo de servicios de taller y detalle de repuestos utilizados con descuento de bodega.',
     statement: 'Crear el esquema de 10 tablas automotrices y formular el cálculo de la liquidación de una orden de taller (Mano de obra + Repuestos).',
     tables: [
-      { name: 'concesionarios', desc: 'Sucursales', fields: [{ name: 'id_concesionario', type: 'INT', pk: true, desc: 'PK' }, { name: 'nombre_sucursal', type: 'VARCHAR(80)', desc: 'Sucursal' }] },
-      { name: 'clientes', desc: 'Compradores y dueños', fields: [{ name: 'id_cliente', type: 'BIGINT', pk: true, desc: 'PK' }, { name: 'rut', type: 'VARCHAR(12)', unique: true, desc: 'RUT' }, { name: 'nombre', type: 'VARCHAR(80)', desc: 'Nombre' }] },
-      { name: 'marcas', desc: 'Fabricantes', fields: [{ name: 'id_marca', type: 'INT', pk: true, desc: 'PK' }, { name: 'nombre_marca', type: 'VARCHAR(40)', unique: true, desc: 'Marca' }] },
-      { name: 'vehiculos_catalogo', desc: 'Ficha técnica', fields: [{ name: 'id_modelo', type: 'INT', pk: true, desc: 'PK' }, { name: 'id_marca', type: 'INT', fk: 'marcas.id_marca', desc: 'Marca' }, { name: 'modelo', type: 'VARCHAR(50)', desc: 'Modelo' }] },
-      { name: 'inventario_vehiculos', desc: 'Chasis físicos VIN', fields: [{ name: 'id_vehiculo', type: 'BIGINT', pk: true, desc: 'PK' }, { name: 'id_concesionario', type: 'INT', fk: 'concesionarios.id_concesionario', desc: 'Sucursal' }, { name: 'vin_chasis', type: 'VARCHAR(17)', unique: true, desc: 'VIN' }] },
-      { name: 'ventas_autos', desc: 'Contratos de venta', fields: [{ name: 'id_venta', type: 'BIGINT', pk: true, desc: 'PK' }, { name: 'id_vehiculo', type: 'BIGINT', fk: 'inventario_vehiculos.id_vehiculo', unique: true, desc: 'Auto' }, { name: 'id_cliente', type: 'BIGINT', fk: 'clientes.id_cliente', desc: 'Comprador' }, { name: 'monto_venta', type: 'DECIMAL(12,2)', desc: 'Precio' }] },
-      { name: 'mecanicos', desc: 'Técnicos de taller', fields: [{ name: 'id_mecanico', type: 'INT', pk: true, desc: 'PK' }, { name: 'nombre', type: 'VARCHAR(80)', desc: 'Nombre' }, { name: 'tarifa_hora', type: 'DECIMAL(8,2)', desc: 'Tarifa/Hora' }] },
-      { name: 'servicios_catalogo', desc: 'Mantenciones', fields: [{ name: 'id_servicio', type: 'INT', pk: true, desc: 'PK' }, { name: 'nombre_servicio', type: 'VARCHAR(80)', desc: 'Servicio' }, { name: 'precio_mano_obra', type: 'DECIMAL(10,2)', desc: 'Mano de obra' }] },
-      { name: 'ordenes_taller', desc: 'Ingresos a servicio', fields: [{ name: 'id_orden', type: 'BIGINT', pk: true, desc: 'PK' }, { name: 'id_cliente', type: 'BIGINT', fk: 'clientes.id_cliente', desc: 'Cliente' }, { name: 'id_mecanico', type: 'INT', fk: 'mecanicos.id_mecanico', desc: 'Mecánico' }, { name: 'patente_auto', type: 'VARCHAR(8)', desc: 'Patente' }] },
-      { name: 'detalle_repuestos_utilizados', desc: 'Repuestos N:M', fields: [{ name: 'id_detalle', type: 'BIGINT', pk: true, desc: 'PK' }, { name: 'id_orden', type: 'BIGINT', fk: 'ordenes_taller.id_orden', desc: 'Orden' }, { name: 'nombre_repuesto', type: 'VARCHAR(80)', desc: 'Repuesto' }, { name: 'precio_repuesto', type: 'DECIMAL(10,2)', desc: 'Valor' }] }
+      {
+        name: 'concesionarios',
+        desc: 'Sucursales',
+        fields: [
+          { name: 'id_concesionario', type: 'INT', pk: true, desc: 'PK' },
+          { name: 'nombre_sucursal', type: 'VARCHAR(80)', desc: 'Sucursal' },
+          { name: 'ciudad', type: 'VARCHAR(50)', desc: 'Ciudad de la sucursal' },
+          { name: 'direccion', type: 'VARCHAR(120)', desc: 'Dirección física' },
+          { name: 'es_taller', type: 'BOOLEAN', defaultValue: 'TRUE', desc: 'Tiene taller habilitado' }
+        ]
+      },
+      {
+        name: 'clientes',
+        desc: 'Compradores y dueños',
+        fields: [
+          { name: 'id_cliente', type: 'BIGINT', pk: true, desc: 'PK' },
+          { name: 'rut', type: 'VARCHAR(12)', unique: true, desc: 'RUT' },
+          { name: 'nombre', type: 'VARCHAR(80)', desc: 'Nombre' },
+          { name: 'email', type: 'VARCHAR(100)', desc: 'Correo electrónico' },
+          { name: 'telefono', type: 'VARCHAR(20)', desc: 'Teléfono de contacto' },
+          { name: 'fecha_registro', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Alta en el CRM' }
+        ]
+      },
+      {
+        name: 'marcas',
+        desc: 'Fabricantes',
+        fields: [
+          { name: 'id_marca', type: 'INT', pk: true, desc: 'PK' },
+          { name: 'nombre_marca', type: 'VARCHAR(40)', unique: true, desc: 'Marca' },
+          { name: 'pais_origen', type: 'VARCHAR(50)', desc: 'País del fabricante' },
+          { name: 'sitio_web', type: 'VARCHAR(100)', desc: 'Sitio web oficial' },
+          { name: 'activa', type: 'BOOLEAN', defaultValue: 'TRUE', desc: 'Marca en portafolio' }
+        ]
+      },
+      {
+        name: 'vehiculos_catalogo',
+        desc: 'Ficha técnica',
+        fields: [
+          { name: 'id_modelo', type: 'INT', pk: true, desc: 'PK' },
+          { name: 'id_marca', type: 'INT', fk: 'marcas.id_marca', desc: 'Marca' },
+          { name: 'modelo', type: 'VARCHAR(50)', desc: 'Modelo' },
+          { name: 'anio_modelo', type: 'INT', desc: 'Año del modelo' },
+          { name: 'tipo_combustible', type: 'VARCHAR(20)', desc: 'Bencina, Diésel, Eléctrico, Híbrido' }
+        ]
+      },
+      {
+        name: 'inventario_vehiculos',
+        desc: 'Chasis físicos VIN',
+        fields: [
+          { name: 'id_vehiculo', type: 'BIGINT', pk: true, desc: 'PK' },
+          { name: 'id_concesionario', type: 'INT', fk: 'concesionarios.id_concesionario', desc: 'Sucursal' },
+          { name: 'vin_chasis', type: 'VARCHAR(17)', unique: true, desc: 'VIN' },
+          { name: 'id_modelo', type: 'INT', fk: 'vehiculos_catalogo.id_modelo', notNull: true, desc: 'Modelo del catálogo' },
+          { name: 'precio_lista', type: 'DECIMAL(12,2)', notNull: true, desc: 'Precio de lista' },
+          { name: 'vendido', type: 'BOOLEAN', defaultValue: 'FALSE', desc: 'Unidad vendida' },
+          { name: 'estado_vehiculo', type: 'VARCHAR(20)', defaultValue: "'DISPONIBLE'", desc: 'DISPONIBLE, RESERVADO, EN_TRANSPORTE' }
+        ]
+      },
+      {
+        name: 'ventas_autos',
+        desc: 'Contratos de venta',
+        fields: [
+          { name: 'id_venta', type: 'BIGINT', pk: true, desc: 'PK' },
+          { name: 'id_vehiculo', type: 'BIGINT', fk: 'inventario_vehiculos.id_vehiculo', unique: true, desc: 'Auto' },
+          { name: 'id_cliente', type: 'BIGINT', fk: 'clientes.id_cliente', desc: 'Comprador' },
+          { name: 'monto_venta', type: 'DECIMAL(12,2)', desc: 'Precio' },
+          { name: 'fecha_venta', type: 'DATE', defaultValue: 'CURRENT_DATE', desc: 'Fecha del contrato' },
+          { name: 'forma_pago', type: 'VARCHAR(30)', defaultValue: "'CONTADO'", desc: 'CONTADO, CREDITO, LEASING' }
+        ]
+      },
+      {
+        name: 'mecanicos',
+        desc: 'Técnicos de taller',
+        fields: [
+          { name: 'id_mecanico', type: 'INT', pk: true, desc: 'PK' },
+          { name: 'nombre', type: 'VARCHAR(80)', desc: 'Nombre' },
+          { name: 'tarifa_hora', type: 'DECIMAL(8,2)', desc: 'Tarifa/Hora' },
+          { name: 'especialidad', type: 'VARCHAR(50)', desc: 'Motor, Eléctrica, Chasis' },
+          { name: 'telefono', type: 'VARCHAR(20)', desc: 'Teléfono de contacto' }
+        ]
+      },
+      {
+        name: 'servicios_catalogo',
+        desc: 'Mantenciones',
+        fields: [
+          { name: 'id_servicio', type: 'INT', pk: true, desc: 'PK' },
+          { name: 'nombre_servicio', type: 'VARCHAR(80)', desc: 'Servicio' },
+          { name: 'precio_mano_obra', type: 'DECIMAL(10,2)', desc: 'Mano de obra' },
+          { name: 'categoria', type: 'VARCHAR(40)', desc: 'Mantención, Reparación, Diagnóstico' },
+          { name: 'duracion_minutos', type: 'INT', desc: 'Duración estimada (min)' }
+        ]
+      },
+      {
+        name: 'ordenes_taller',
+        desc: 'Ingresos a servicio',
+        fields: [
+          { name: 'id_orden', type: 'BIGINT', pk: true, desc: 'PK' },
+          { name: 'id_cliente', type: 'BIGINT', fk: 'clientes.id_cliente', desc: 'Cliente' },
+          { name: 'id_mecanico', type: 'INT', fk: 'mecanicos.id_mecanico', desc: 'Mecánico' },
+          { name: 'patente_auto', type: 'VARCHAR(8)', desc: 'Patente' },
+          { name: 'id_servicio', type: 'INT', fk: 'servicios_catalogo.id_servicio', notNull: true, desc: 'Servicio contratado' },
+          { name: 'fecha_ingreso', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP', desc: 'Fecha de ingreso al taller' },
+          { name: 'estado_orden', type: 'VARCHAR(20)', defaultValue: "'EN_PROCESO'", desc: 'INGRESADO, EN_PROCESO, LISTO, ENTREGADO' }
+        ]
+      },
+      {
+        name: 'detalle_repuestos_utilizados',
+        desc: 'Repuestos N:M',
+        fields: [
+          { name: 'id_detalle', type: 'BIGINT', pk: true, desc: 'PK' },
+          { name: 'id_orden', type: 'BIGINT', fk: 'ordenes_taller.id_orden', desc: 'Orden' },
+          { name: 'nombre_repuesto', type: 'VARCHAR(80)', desc: 'Repuesto' },
+          { name: 'precio_repuesto', type: 'DECIMAL(10,2)', desc: 'Valor' },
+          { name: 'cantidad', type: 'INT', notNull: true, desc: 'Unidades usadas (CHECK > 0)' },
+          { name: 'descuento_bodega_pct', type: 'DECIMAL(5,2)', defaultValue: '0', desc: 'Descuento de bodega (%)' }
+        ]
+      }
     ],
-    ddlSql: `CREATE TABLE concesionarios (id_concesionario SERIAL PRIMARY KEY, nombre_sucursal VARCHAR(80) NOT NULL);
-CREATE TABLE clientes (id_cliente BIGSERIAL PRIMARY KEY, rut VARCHAR(12) UNIQUE NOT NULL, nombre VARCHAR(80) NOT NULL);
-CREATE TABLE marcas (id_marca SERIAL PRIMARY KEY, nombre_marca VARCHAR(40) UNIQUE NOT NULL);
-CREATE TABLE vehiculos_catalogo (id_modelo SERIAL PRIMARY KEY, id_marca INT NOT NULL, modelo VARCHAR(50) NOT NULL, FOREIGN KEY (id_marca) REFERENCES marcas(id_marca));
-CREATE TABLE inventario_vehiculos (id_vehiculo BIGSERIAL PRIMARY KEY, id_concesionario INT NOT NULL, id_modelo INT NOT NULL, vin_chasis VARCHAR(17) UNIQUE NOT NULL, precio_lista DECIMAL(12,2) NOT NULL, vendido BOOLEAN DEFAULT FALSE, FOREIGN KEY (id_concesionario) REFERENCES concesionarios(id_concesionario), FOREIGN KEY (id_modelo) REFERENCES vehiculos_catalogo(id_modelo));
-CREATE TABLE ventas_autos (id_venta BIGSERIAL PRIMARY KEY, id_vehiculo BIGINT UNIQUE NOT NULL, id_cliente BIGINT NOT NULL, monto_venta DECIMAL(12,2) NOT NULL, fecha_venta DATE DEFAULT CURRENT_DATE, FOREIGN KEY (id_vehiculo) REFERENCES inventario_vehiculos(id_vehiculo), FOREIGN KEY (id_cliente) REFERENCES clientes(id_cliente));
-CREATE TABLE mecanicos (id_mecanico SERIAL PRIMARY KEY, nombre VARCHAR(80) NOT NULL, tarifa_hora DECIMAL(8,2) NOT NULL);
-CREATE TABLE servicios_catalogo (id_servicio SERIAL PRIMARY KEY, nombre_servicio VARCHAR(80) NOT NULL, precio_mano_obra DECIMAL(10,2) NOT NULL);
-CREATE TABLE ordenes_taller (id_orden BIGSERIAL PRIMARY KEY, id_cliente BIGINT NOT NULL, id_mecanico INT NOT NULL, id_servicio INT NOT NULL, patente_auto VARCHAR(8) NOT NULL, fecha_ingreso TIMESTAMP DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (id_cliente) REFERENCES clientes(id_cliente), FOREIGN KEY (id_mecanico) REFERENCES mecanicos(id_mecanico), FOREIGN KEY (id_servicio) REFERENCES servicios_catalogo(id_servicio));
-CREATE TABLE detalle_repuestos_utilizados (id_detalle BIGSERIAL PRIMARY KEY, id_orden BIGINT NOT NULL, nombre_repuesto VARCHAR(80) NOT NULL, cantidad INT NOT NULL CHECK (cantidad > 0), precio_repuesto DECIMAL(10,2) NOT NULL, FOREIGN KEY (id_orden) REFERENCES ordenes_taller(id_orden) ON DELETE CASCADE);`,
+    ddlSql: `CREATE TABLE concesionarios (id_concesionario SERIAL PRIMARY KEY, nombre_sucursal VARCHAR(80) NOT NULL, ciudad VARCHAR(50), direccion VARCHAR(120), es_taller BOOLEAN DEFAULT TRUE);
+CREATE TABLE clientes (id_cliente BIGSERIAL PRIMARY KEY, rut VARCHAR(12) UNIQUE NOT NULL, nombre VARCHAR(80) NOT NULL, email VARCHAR(100), telefono VARCHAR(20), fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
+CREATE TABLE marcas (id_marca SERIAL PRIMARY KEY, nombre_marca VARCHAR(40) UNIQUE NOT NULL, pais_origen VARCHAR(50), sitio_web VARCHAR(100), activa BOOLEAN DEFAULT TRUE);
+CREATE TABLE vehiculos_catalogo (id_modelo SERIAL PRIMARY KEY, id_marca INT NOT NULL, modelo VARCHAR(50) NOT NULL, anio_modelo INT, tipo_combustible VARCHAR(20), FOREIGN KEY (id_marca) REFERENCES marcas(id_marca));
+CREATE TABLE inventario_vehiculos (id_vehiculo BIGSERIAL PRIMARY KEY, id_concesionario INT NOT NULL, id_modelo INT NOT NULL, vin_chasis VARCHAR(17) UNIQUE NOT NULL, precio_lista DECIMAL(12,2) NOT NULL, vendido BOOLEAN DEFAULT FALSE, estado_vehiculo VARCHAR(20) DEFAULT 'DISPONIBLE', FOREIGN KEY (id_concesionario) REFERENCES concesionarios(id_concesionario), FOREIGN KEY (id_modelo) REFERENCES vehiculos_catalogo(id_modelo));
+CREATE TABLE ventas_autos (id_venta BIGSERIAL PRIMARY KEY, id_vehiculo BIGINT UNIQUE NOT NULL, id_cliente BIGINT NOT NULL, monto_venta DECIMAL(12,2) NOT NULL, fecha_venta DATE DEFAULT CURRENT_DATE, forma_pago VARCHAR(30) DEFAULT 'CONTADO', FOREIGN KEY (id_vehiculo) REFERENCES inventario_vehiculos(id_vehiculo), FOREIGN KEY (id_cliente) REFERENCES clientes(id_cliente));
+CREATE TABLE mecanicos (id_mecanico SERIAL PRIMARY KEY, nombre VARCHAR(80) NOT NULL, tarifa_hora DECIMAL(8,2) NOT NULL, especialidad VARCHAR(50), telefono VARCHAR(20));
+CREATE TABLE servicios_catalogo (id_servicio SERIAL PRIMARY KEY, nombre_servicio VARCHAR(80) NOT NULL, precio_mano_obra DECIMAL(10,2) NOT NULL, categoria VARCHAR(40), duracion_minutos INT);
+CREATE TABLE ordenes_taller (id_orden BIGSERIAL PRIMARY KEY, id_cliente BIGINT NOT NULL, id_mecanico INT NOT NULL, id_servicio INT NOT NULL, patente_auto VARCHAR(8) NOT NULL, fecha_ingreso TIMESTAMP DEFAULT CURRENT_TIMESTAMP, estado_orden VARCHAR(20) DEFAULT 'EN_PROCESO', FOREIGN KEY (id_cliente) REFERENCES clientes(id_cliente), FOREIGN KEY (id_mecanico) REFERENCES mecanicos(id_mecanico), FOREIGN KEY (id_servicio) REFERENCES servicios_catalogo(id_servicio));
+CREATE TABLE detalle_repuestos_utilizados (id_detalle BIGSERIAL PRIMARY KEY, id_orden BIGINT NOT NULL, nombre_repuesto VARCHAR(80) NOT NULL, cantidad INT NOT NULL CHECK (cantidad > 0), precio_repuesto DECIMAL(10,2) NOT NULL, descuento_bodega_pct DECIMAL(5,2) DEFAULT 0, FOREIGN KEY (id_orden) REFERENCES ordenes_taller(id_orden) ON DELETE CASCADE);`,
     seedSql: `INSERT INTO concesionarios (nombre_sucursal) VALUES ('Concesionario Central Las Condes');
 INSERT INTO clientes (rut, nombre) VALUES ('15.444.333-1', 'Ignacio Abarca');
 INSERT INTO marcas (nombre_marca) VALUES ('Toyota');

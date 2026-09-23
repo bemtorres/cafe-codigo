@@ -59,13 +59,13 @@ export default function DatabaseSchemaFlow({ tables, title, challengeId = '1' }:
       pos[tables[0].name] = { x: 60, y: 50 };
       pos[tables[1].name] = { x: 440, y: 50 };
     } else if (count <= 5) {
-      // Distribución en 2 filas
+      // Distribución en 2 filas (espaciado para nodos de hasta ~9 columnas)
       const topCount = Math.ceil(count / 2);
       tables.forEach((tbl, idx) => {
         if (idx < topCount) {
           pos[tbl.name] = { x: 40 + idx * 300, y: 40 };
         } else {
-          pos[tbl.name] = { x: 60 + (idx - topCount) * 320, y: 320 };
+          pos[tbl.name] = { x: 60 + (idx - topCount) * 320, y: 370 };
         }
       });
     } else {
@@ -75,7 +75,7 @@ export default function DatabaseSchemaFlow({ tables, title, challengeId = '1' }:
         const row = Math.floor(idx / 3);
         pos[tbl.name] = {
           x: 40 + col * 320,
-          y: 40 + row * 260,
+          y: 40 + row * 310,
         };
       });
     }
