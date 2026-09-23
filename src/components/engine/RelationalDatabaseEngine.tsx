@@ -1304,7 +1304,7 @@ function RelationalDatabaseEngineInner() {
   // Cerrar menús contextuales y menús de barra al hacer clic fuera o presionar Escape
   useEffect(() => {
     const handleGlobalClick = (e: MouseEvent) => {
-      if (menuBarRef.current && !menuBarRef.current.contains(e.target as Node)) {
+      if (menuBarRef.current && !menuBarRef.current.contains(e.target as unknown as globalThis.Node)) {
         setActiveTopMenu(null);
       }
       setTableCtxMenu(null);
@@ -2075,13 +2075,14 @@ function RelationalDatabaseEngineInner() {
   const handleClearCanvas = useCallback(() => {
     if (confirm('¿Estás seguro de que deseas limpiar el lienzo? Se borrarán todas las tablas y notas del modelo actual.')) {
       const emptySchema: CycSchemaFile = {
-        format: 'CYC_RELATIONAL_SCHEMA_V1',
+        version: '1.0',
+        generator: 'CafeYCodigo Relational DB Engine',
         metadata: {
-          id: `schema-${Date.now()}`,
           name: 'Nuevo Modelo Relacional',
-          version: '1.0.0',
+          description: 'Modelo de base de datos en blanco',
           author: 'Usuario',
           createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
         },
         tables: [],
         relationships: [],
