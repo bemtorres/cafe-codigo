@@ -142,6 +142,102 @@ export const TABLE_THEMES: Record<string, TableTheme> = {
   },
 };
 
+// ==========================================
+// NOTAS Y ANOTACIONES DE TEXTO EN EL LIENZO
+// ==========================================
+
+export type NoteFontFamily = 'sans' | 'mono' | 'serif' | 'handwriting';
+export type NoteFontSize = 'xs' | 'sm' | 'base' | 'lg' | 'xl';
+
+export interface NoteTheme {
+  id: string;
+  name: string;
+  bg: string;
+  border: string;
+  textColor: string;
+  accent: string;
+}
+
+export const NOTE_THEMES: Record<string, NoteTheme> = {
+  yellow: {
+    id: 'yellow',
+    name: 'Post-it Amarillo',
+    bg: '#fef9c3',
+    border: '#ca8a04',
+    textColor: '#713f12',
+    accent: '#eab308',
+  },
+  blue: {
+    id: 'blue',
+    name: 'Cielo Pastel',
+    bg: '#e0f2fe',
+    border: '#0284c7',
+    textColor: '#0c4a6e',
+    accent: '#38bdf8',
+  },
+  green: {
+    id: 'green',
+    name: 'Menta Fresca',
+    bg: '#dcfce7',
+    border: '#16a34a',
+    textColor: '#14532d',
+    accent: '#4ade80',
+  },
+  pink: {
+    id: 'pink',
+    name: 'Rosa Coral',
+    bg: '#ffe4e6',
+    border: '#e11d48',
+    textColor: '#881337',
+    accent: '#fb7185',
+  },
+  purple: {
+    id: 'purple',
+    name: 'Lavanda',
+    bg: '#f3e8ff',
+    border: '#9333ea',
+    textColor: '#581c87',
+    accent: '#c084fc',
+  },
+  amber: {
+    id: 'amber',
+    name: 'Ámbar Cálido',
+    bg: '#fef3c7',
+    border: '#d97706',
+    textColor: '#78350f',
+    accent: '#f59e0b',
+  },
+  dark: {
+    id: 'dark',
+    name: 'Pizarra Oscura',
+    bg: '#1e293b',
+    border: '#475569',
+    textColor: '#f8fafc',
+    accent: '#38bdf8',
+  },
+  minimal: {
+    id: 'minimal',
+    name: 'Minimalista Blanco',
+    bg: '#ffffff',
+    border: '#94a3b8',
+    textColor: '#1e293b',
+    accent: '#64748b',
+  },
+};
+
+export interface NoteNode {
+  id: string;
+  title?: string;
+  text: string;
+  theme: string;
+  fontFamily?: NoteFontFamily;
+  fontSize?: NoteFontSize;
+  width?: number;
+  x: number;
+  y: number;
+  locked?: boolean;
+}
+
 export interface TableNode {
   id: string;
   name: string;
@@ -182,6 +278,7 @@ export interface CycSchemaFile {
   };
   tables: TableNode[];
   relationships: RelationshipEdge[];
+  notes?: NoteNode[];
 }
 
 // ==========================================
@@ -294,57 +391,71 @@ const TEMPLATES: Record<string, { name: string; desc: string; data: CycSchemaFil
           businessRule: 'Un producto puede estar en múltiples órdenes de compra (1:N)',
         },
       ],
+      notes: [
+        {
+          id: 'note-eco-1',
+          title: '📌 Arquitectura E-Commerce',
+          text: '• La tabla detalle_pedidos resuelve la relación N:M entre Pedidos y Productos.\n• id_usuario en pedidos mantiene integridad referencial (ON DELETE CASCADE).\n• Las notas de texto no interfieren con las tablas ni el SQL generado.',
+          theme: 'yellow',
+          fontFamily: 'sans',
+          fontSize: 'sm',
+          width: 320,
+          x: 40,
+          y: 560,
+          locked: false,
+        },
+      ],
     },
   },
   rbac: {
     name: '🔐 Seguridad RBAC (Usuarios, Perfil 1:1, Roles y Permisos)',
-    desc: 'Esquema de autenticación con Perfil 1:1, Roles y Permisos en relación N:M.',
+    desc: 'Modelo de autenticación con perfil extendido 1:1, roles y permisos granulares N:M.',
     data: {
       version: '1.0',
       generator: 'CafeYCodigo Relational DB Engine',
       metadata: {
-        name: 'Sistema de Autenticación RBAC',
-        description: 'Control de acceso basado en roles y permisos atómicos.',
+        name: 'Modelo de Autorización RBAC',
+        description: 'Control de acceso basado en roles con relación 1:1 de perfiles.',
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         author: 'Cafe & Codigo',
       },
-      canvas: { bgPattern: 'blueprint', zoom: 1 },
+      canvas: { bgPattern: 'blueprint', zoom: 0.95 },
       tables: [
         {
           id: 'tbl-usuarios',
           name: 'usuarios',
           comment: 'Credenciales de acceso',
-          theme: 'slate',
+          theme: 'indigo',
           x: 40,
           y: 40,
           columns: [
             { id: 'u-1', name: 'id_usuario', type: 'SERIAL', pk: true, notNull: true },
             { id: 'u-2', name: 'username', type: 'VARCHAR(50)', unique: true, notNull: true },
-            { id: 'u-3', name: 'email', type: 'VARCHAR(100)', unique: true, notNull: true },
-            { id: 'u-4', name: 'password_hash', type: 'VARCHAR(255)', notNull: true },
+            { id: 'u-3', name: 'password_hash', type: 'VARCHAR(255)', notNull: true },
+            { id: 'u-4', name: 'activo', type: 'BOOLEAN', defaultValue: 'TRUE' },
             { id: 'u-5', name: 'id_rol', type: 'INT', fk: true, notNull: true },
           ],
         },
         {
           id: 'tbl-perfiles',
-          name: 'perfiles',
-          comment: 'Datos personales 1:1',
-          theme: 'amber',
+          name: 'perfiles_usuario',
+          comment: 'Información adicional 1:1',
+          theme: 'rose',
           x: 40,
-          y: 310,
+          y: 280,
           columns: [
             { id: 'pf-1', name: 'id_perfil', type: 'SERIAL', pk: true, notNull: true },
-            { id: 'pf-2', name: 'id_usuario', type: 'INT', fk: true, unique: true, notNull: true },
-            { id: 'pf-3', name: 'avatar_url', type: 'VARCHAR(255)' },
-            { id: 'pf-4', name: 'telefono', type: 'VARCHAR(50)' },
+            { id: 'pf-2', name: 'id_usuario', type: 'INT', unique: true, fk: true, notNull: true },
+            { id: 'pf-3', name: 'bio', type: 'TEXT' },
+            { id: 'pf-4', name: 'avatar_url', type: 'VARCHAR(255)' },
           ],
         },
         {
           id: 'tbl-roles',
           name: 'roles',
-          comment: 'Grupos de roles',
-          theme: 'indigo',
+          comment: 'Roles del sistema (ADMIN, EDITOR, ETC)',
+          theme: 'amber',
           x: 380,
           y: 40,
           columns: [
@@ -420,6 +531,20 @@ const TEMPLATES: Record<string, { name: string; desc: string; data: CycSchemaFil
           businessRule: 'Un permiso puede pertenecer a múltiples roles (1:N)',
         },
       ],
+      notes: [
+        {
+          id: 'note-rbac-1',
+          title: '🔐 Regla de Seguridad 1:1',
+          text: 'La clave id_usuario en perfiles_usuario posee constraint UNIQUE para forzar relación 1:1 exacta.',
+          theme: 'blue',
+          fontFamily: 'handwriting',
+          fontSize: 'sm',
+          width: 260,
+          x: 40,
+          y: 460,
+          locked: false,
+        },
+      ],
     },
   },
 };
@@ -465,6 +590,19 @@ type TableFlowData = {
 
 type TableFlowNode = Node<TableFlowData, 'table'>;
 
+type NoteFlowData = {
+  note: NoteNode;
+  theme: NoteTheme;
+  locked: boolean;
+  onEdit: (note: NoteNode) => void;
+  onDelete: (id: string) => void;
+  onToggleLock: (id: string) => void;
+  onDuplicate: (id: string) => void;
+  onOpenMenu: (id: string, x: number, y: number) => void;
+};
+
+type NoteFlowNode = Node<NoteFlowData, 'note'>;
+
 type CardinalityFlowData = { rel: RelationshipEdge };
 type CardinalityFlowEdge = Edge<CardinalityFlowData, 'cardinality'>;
 
@@ -502,7 +640,7 @@ const TableNodeCard = React.memo(function TableNodeCard({
     >
       {/* CABECERA DE TABLA */}
       <div
-        className="table-node-header px-3 py-2 flex items-center justify-between cursor-move border-b-2 touch-none"
+        className="table-node-header px-3 py-2 flex items-center justify-between cursor-move border-b-2 touch-none select-none"
         style={{
           backgroundColor: theme.headerBg,
           color: theme.headerText,
@@ -649,6 +787,151 @@ const TableNodeCard = React.memo(function TableNodeCard({
 });
 
 // ==========================================
+// NODO DE NOTA / ANOTACIÓN DE TEXTO
+// ==========================================
+
+const NoteNodeCard = React.memo(function NoteNodeCard({
+  data,
+  selected,
+}: NodeProps<NoteFlowNode>) {
+  const { note, theme, locked, onEdit, onDelete, onToggleLock, onOpenMenu } = data;
+
+  const fontClass = useMemo(() => {
+    switch (note.fontFamily) {
+      case 'handwriting':
+        return 'font-["Caveat",_cursive]';
+      case 'mono':
+        return 'font-mono';
+      case 'serif':
+        return 'font-serif';
+      case 'sans':
+      default:
+        return 'font-sans';
+    }
+  }, [note.fontFamily]);
+
+  const sizeClass = useMemo(() => {
+    switch (note.fontSize) {
+      case 'xs':
+        return 'text-[0.7rem] leading-snug';
+      case 'base':
+        return note.fontFamily === 'handwriting' ? 'text-lg leading-snug' : 'text-[0.88rem] leading-relaxed';
+      case 'lg':
+        return note.fontFamily === 'handwriting' ? 'text-xl leading-snug' : 'text-base leading-snug';
+      case 'xl':
+        return note.fontFamily === 'handwriting' ? 'text-2xl leading-snug' : 'text-lg leading-snug';
+      case 'sm':
+      default:
+        return note.fontFamily === 'handwriting' ? 'text-base leading-snug' : 'text-xs leading-relaxed';
+    }
+  }, [note.fontSize, note.fontFamily]);
+
+  const widthStyle = note.width ? `${note.width}px` : '260px';
+
+  return (
+    <div
+      className={`note-schema-node rounded-xl border-2 transition-shadow overflow-hidden group ${
+        selected
+          ? 'ring-4 ring-amber-500 ring-offset-2 shadow-[6px_6px_0px_#1E1210]'
+          : 'shadow-[4px_4px_0px_rgba(0,0,0,0.2)] hover:shadow-[6px_6px_0px_rgba(0,0,0,0.3)]'
+      } ${locked ? 'opacity-95' : ''}`}
+      style={{
+        backgroundColor: theme.bg,
+        borderColor: theme.border,
+        color: theme.textColor,
+        width: widthStyle,
+      }}
+      onDoubleClick={(e) => {
+        e.stopPropagation();
+        onEdit(note);
+      }}
+      onContextMenu={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        onOpenMenu(note.id, e.clientX, e.clientY);
+      }}
+    >
+      {/* HEADER DE NOTA */}
+      <div
+        className="px-2.5 py-1.5 flex items-center justify-between border-b border-black/10 cursor-move touch-none select-none"
+        style={{
+          backgroundColor: theme.accent + '25',
+        }}
+      >
+        <div className="flex items-center gap-1.5 min-w-0 flex-1 pr-1">
+          <span className="text-xs shrink-0">📝</span>
+          {note.title ? (
+            <span className="font-bold text-xs truncate" title={note.title}>
+              {note.title}
+            </span>
+          ) : (
+            <span className="text-[0.68rem] opacity-70 font-semibold italic truncate">
+              Nota / Detalle
+            </span>
+          )}
+          {locked && (
+            <span className="text-[0.68rem]" title="Nota bloqueada">
+              🔒
+            </span>
+          )}
+        </div>
+
+        <div className="flex items-center gap-1 shrink-0 opacity-70 group-hover:opacity-100 transition-opacity">
+          {!locked && (
+            <>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onEdit(note);
+                }}
+                className="w-5 h-5 flex items-center justify-center rounded bg-black/10 hover:bg-black/20 text-current text-[0.65rem] cursor-pointer"
+                title="Editar Nota"
+              >
+                ✏️
+              </button>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDelete(note.id);
+                }}
+                className="w-5 h-5 flex items-center justify-center rounded bg-red-500/80 hover:bg-red-600 text-white text-[0.65rem] cursor-pointer"
+                title="Eliminar Nota"
+              >
+                ✕
+              </button>
+            </>
+          )}
+          {locked && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onToggleLock(note.id);
+              }}
+              className="w-5 h-5 flex items-center justify-center rounded bg-black/10 hover:bg-black/20 text-current text-[0.65rem] cursor-pointer"
+              title="Desbloquear Nota"
+            >
+              🔓
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* CUERPO DEL TEXTO */}
+      <div className={`p-3 whitespace-pre-wrap break-words ${fontClass} ${sizeClass}`}>
+        {note.text || (
+          <span className="opacity-50 italic">
+            Haz doble clic para escribir una nota o descripción...
+          </span>
+        )}
+      </div>
+    </div>
+  );
+});
+
+// ==========================================
 // ARISTA CON BADGE DE CARDINALIDAD
 // ==========================================
 
@@ -662,6 +945,7 @@ const CardinalityEdge = React.memo(function CardinalityEdge({
   targetY,
   sourcePosition,
   targetPosition,
+  markerEnd,
 }: EdgeProps<CardinalityFlowEdge>) {
   if (!data) return null;
   const rel = data.rel;
@@ -686,7 +970,7 @@ const CardinalityEdge = React.memo(function CardinalityEdge({
         stroke={emphasized ? '#10b981' : '#2563eb'}
         strokeWidth={emphasized ? 3.5 : 2.5}
         strokeDasharray={rel.cardinality === '1:1' ? '6 4' : undefined}
-        markerEnd={`url(#${emphasized ? 'engine-arrow-head-hover' : 'engine-arrow-head'})`}
+        markerEnd={markerEnd || `url(#${emphasized ? 'engine-arrow-head-hover' : 'engine-arrow-head'})`}
         className="transition-all duration-150"
       />
       <path d={path} fill="none" stroke="transparent" strokeWidth={20} />
@@ -711,14 +995,25 @@ const CardinalityEdge = React.memo(function CardinalityEdge({
   );
 });
 
-const nodeTypes = { table: TableNodeCard };
+const nodeTypes = {
+  table: TableNodeCard,
+  note: NoteNodeCard,
+};
 const edgeTypes = { cardinality: CardinalityEdge };
 
 // ==========================================
-// MENÚ CONTEXTUAL DE TABLA
+// MENÚS CONTEXTUALES FLOTANTES
 // ==========================================
 
-type CtxMenuState = { tableId: string; x: number; y: number } | null;
+type TableCtxMenuState = { tableId: string; x: number; y: number } | null;
+type NoteCtxMenuState = { noteId: string; x: number; y: number } | null;
+type PaneCtxMenuState = { x: number; y: number; canvasX: number; canvasY: number } | null;
+
+type DeleteTarget =
+  | { type: 'table'; id: string; name: string; relCount: number }
+  | { type: 'note'; id: string; title: string }
+  | { type: 'relationship'; id: string; desc: string }
+  | null;
 
 function TableContextMenu({
   menu,
@@ -729,7 +1024,7 @@ function TableContextMenu({
   onDelete,
   onClose,
 }: {
-  menu: NonNullable<CtxMenuState>;
+  menu: NonNullable<TableCtxMenuState>;
   locked: boolean;
   onEdit: () => void;
   onDuplicate: () => void;
@@ -761,7 +1056,7 @@ function TableContextMenu({
           onClose();
         }}
       >
-        ✏️ Editar
+        ✏️ Editar Tabla
       </button>
       <button
         type="button"
@@ -802,6 +1097,158 @@ function TableContextMenu({
   );
 }
 
+function NoteContextMenu({
+  menu,
+  locked,
+  onEdit,
+  onDuplicate,
+  onToggleLock,
+  onDelete,
+  onClose,
+}: {
+  menu: NonNullable<NoteCtxMenuState>;
+  locked: boolean;
+  onEdit: () => void;
+  onDuplicate: () => void;
+  onToggleLock: () => void;
+  onDelete: () => void;
+  onClose: () => void;
+}) {
+  const left = Math.min(menu.x, window.innerWidth - 180);
+  const top = Math.min(menu.y, window.innerHeight - 170);
+
+  const itemCls =
+    'w-full text-left px-3 py-2 text-xs font-bold flex items-center gap-2 hover:bg-slate-100 cursor-pointer rounded-md transition-colors';
+  const disabledCls = 'opacity-40 cursor-not-allowed hover:bg-transparent';
+
+  return (
+    <div
+      className="fixed z-[70] min-w-[170px] bg-white border-2 border-[#1E1210] rounded-xl shadow-[4px_4px_0px_#1E1210] py-1.5"
+      style={{ left, top }}
+      onClick={(e) => e.stopPropagation()}
+      onContextMenu={(e) => e.preventDefault()}
+    >
+      <button
+        type="button"
+        className={`${itemCls} ${locked ? disabledCls : ''}`}
+        disabled={locked}
+        onClick={() => {
+          if (locked) return;
+          onEdit();
+          onClose();
+        }}
+      >
+        ✏️ Editar Nota
+      </button>
+      <button
+        type="button"
+        className={`${itemCls} ${locked ? disabledCls : ''}`}
+        disabled={locked}
+        onClick={() => {
+          if (locked) return;
+          onDuplicate();
+          onClose();
+        }}
+      >
+        📋 Duplicar
+      </button>
+      <button
+        type="button"
+        className={itemCls}
+        onClick={() => {
+          onToggleLock();
+          onClose();
+        }}
+      >
+        {locked ? '🔓 Desbloquear' : '🔒 Bloquear'}
+      </button>
+      <div className="h-px bg-slate-200 my-1" />
+      <button
+        type="button"
+        className={`${itemCls} text-red-600 hover:bg-red-50 ${locked ? disabledCls : ''}`}
+        disabled={locked}
+        onClick={() => {
+          if (locked) return;
+          onDelete();
+          onClose();
+        }}
+      >
+        🗑️ Eliminar
+      </button>
+    </div>
+  );
+}
+
+function PaneContextMenu({
+  menu,
+  onAddNote,
+  onAddTable,
+  onCenter,
+  onClose,
+}: {
+  menu: NonNullable<PaneCtxMenuState>;
+  onAddNote: (x: number, y: number) => void;
+  onAddTable: (x: number, y: number) => void;
+  onCenter: () => void;
+  onClose: () => void;
+}) {
+  const left = Math.min(menu.x, window.innerWidth - 210);
+  const top = Math.min(menu.y, window.innerHeight - 200);
+
+  const itemCls =
+    'w-full text-left px-3 py-2 text-xs font-bold flex items-center gap-2 hover:bg-slate-100 cursor-pointer rounded-md transition-colors text-slate-800';
+
+  return (
+    <div
+      className="fixed z-[70] min-w-[190px] bg-white border-2 border-[#1E1210] rounded-xl shadow-[4px_4px_0px_#1E1210] py-1.5"
+      style={{ left, top }}
+      onClick={(e) => e.stopPropagation()}
+      onContextMenu={(e) => e.preventDefault()}
+    >
+      <div className="px-3 py-1 text-[0.65rem] font-black uppercase tracking-wider text-slate-400 border-b border-slate-100 mb-1 flex items-center justify-between">
+        <span>Lienzo</span>
+        <span className="font-mono text-[0.6rem] text-slate-400">
+          ({menu.canvasX}, {menu.canvasY})
+        </span>
+      </div>
+      <button
+        type="button"
+        className={`${itemCls} text-amber-900 hover:bg-amber-50`}
+        onClick={() => {
+          onAddNote(menu.canvasX, menu.canvasY);
+          onClose();
+        }}
+      >
+        <span>📝</span>
+        <span>Nueva Nota / Texto</span>
+      </button>
+      <button
+        type="button"
+        className={`${itemCls} text-blue-900 hover:bg-blue-50`}
+        onClick={() => {
+          onAddTable(menu.canvasX, menu.canvasY);
+          onClose();
+        }}
+      >
+        <span>🗄️</span>
+        <span>Nueva Tabla</span>
+      </button>
+      <div className="h-px bg-slate-200 my-1" />
+      <button
+        type="button"
+        className={itemCls}
+        onClick={() => {
+          onCenter();
+          onClose();
+        }}
+      >
+        <span>⟲</span>
+        <span>Centrar Lienzo</span>
+      </button>
+    </div>
+  );
+}
+
 // ==========================================
 // MOTOR PRINCIPAL (dentro del provider)
 // ==========================================
@@ -810,13 +1257,17 @@ function RelationalDatabaseEngineInner() {
   const initialDraft = useMemo(() => loadDraft(), []);
   const [schema, setSchema] = useState<CycSchemaFile>(() => initialDraft ?? TEMPLATES.ecommerce.data);
   const [selectedTableId, setSelectedTableId] = useState<string | null>(null);
+  const [selectedNoteId, setSelectedNoteId] = useState<string | null>(null);
   const [selectedRelationshipId, setSelectedRelationshipId] = useState<string | null>(null);
 
   const [activeModal, setActiveModal] = useState<
-    'table' | 'relation' | 'json' | 'sql' | 'templates' | 'guide' | null
+    'table' | 'relation' | 'json' | 'sql' | 'templates' | 'guide' | 'note' | null
   >(null);
+  const [deleteTarget, setDeleteTarget] = useState<DeleteTarget>(null);
+
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
   const [editingTable, setEditingTable] = useState<TableNode | null>(null);
+  const [editingNote, setEditingNote] = useState<NoteNode | null>(null);
   const [jsonText, setJsonText] = useState<string>('');
   const [sqlDialect, setSqlDialect] = useState<'postgresql' | 'mysql' | 'sqlite' | 'oracle'>(
     'postgresql'
@@ -824,7 +1275,15 @@ function RelationalDatabaseEngineInner() {
   const [bgPattern, setBgPattern] = useState<'grid' | 'dots' | 'blueprint' | 'dark'>(
     initialDraft?.canvas?.bgPattern ?? TEMPLATES.ecommerce.data.canvas.bgPattern
   );
-  const [ctxMenu, setCtxMenu] = useState<CtxMenuState>(null);
+
+  // Estado para la barra de menú superior de la aplicación
+  const [activeTopMenu, setActiveTopMenu] = useState<'archivo' | 'editar' | 'ver' | 'sql' | 'ayuda' | null>(null);
+  const [isEditingTitle, setIsEditingTitle] = useState<boolean>(false);
+  const menuBarRef = useRef<HTMLDivElement>(null);
+
+  const [tableCtxMenu, setTableCtxMenu] = useState<TableCtxMenuState>(null);
+  const [noteCtxMenu, setNoteCtxMenu] = useState<NoteCtxMenuState>(null);
+  const [paneCtxMenu, setPaneCtxMenu] = useState<PaneCtxMenuState>(null);
 
   const [toast, setToast] = useState<{ msg: string; kind: 'ok' | 'err' } | null>(null);
   const toastTimerRef = useRef<number | null>(null);
@@ -839,25 +1298,37 @@ function RelationalDatabaseEngineInner() {
   const schemaRef = useRef(schema);
   schemaRef.current = schema;
 
-  const { zoomIn, zoomOut, setViewport } = useReactFlow();
+  const { zoomIn, zoomOut, setViewport, screenToFlowPosition, fitView } = useReactFlow();
   const { zoom } = useViewport();
 
-  // Cerrar menú contextual
+  // Cerrar menús contextuales y menús de barra al hacer clic fuera o presionar Escape
   useEffect(() => {
-    if (!ctxMenu) return;
-    const close = () => setCtxMenu(null);
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setCtxMenu(null);
+    const handleGlobalClick = (e: MouseEvent) => {
+      if (menuBarRef.current && !menuBarRef.current.contains(e.target as Node)) {
+        setActiveTopMenu(null);
+      }
+      setTableCtxMenu(null);
+      setNoteCtxMenu(null);
+      setPaneCtxMenu(null);
     };
-    window.addEventListener('click', close);
-    window.addEventListener('keydown', onKey);
-    window.addEventListener('blur', close);
+
+    const handleGlobalKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setActiveTopMenu(null);
+        setTableCtxMenu(null);
+        setNoteCtxMenu(null);
+        setPaneCtxMenu(null);
+        setIsEditingTitle(false);
+      }
+    };
+
+    window.addEventListener('click', handleGlobalClick);
+    window.addEventListener('keydown', handleGlobalKeyDown);
     return () => {
-      window.removeEventListener('click', close);
-      window.removeEventListener('keydown', onKey);
-      window.removeEventListener('blur', close);
+      window.removeEventListener('click', handleGlobalClick);
+      window.removeEventListener('keydown', handleGlobalKeyDown);
     };
-  }, [ctxMenu]);
+  }, []);
 
   // Persistencia: doble clave v2/v1
   const saveToLocalStorage = useCallback((updated: CycSchemaFile) => {
@@ -881,7 +1352,7 @@ function RelationalDatabaseEngineInner() {
   }, [schema]);
 
   // ==========================================
-  // NODOS / ARISTAS DESDE EL ESQUEMA
+  // MANEJADORES DE TABLAS Y SOLICITUD DE ELIMINACIÓN
   // ==========================================
   const handleOpenEditTable = useCallback(
     (tbl: TableNode) => {
@@ -895,25 +1366,26 @@ function RelationalDatabaseEngineInner() {
     [notify]
   );
 
-  const handleDeleteTable = useCallback(
+  const requestDeleteTable = useCallback(
     (tableId: string) => {
       const tbl = schemaRef.current.tables.find((t) => t.id === tableId);
-      if (tbl?.locked) {
+      if (!tbl) return;
+      if (tbl.locked) {
         notify('La tabla está bloqueada. Desbloquéala para eliminar.', 'err');
         return;
       }
-      if (!confirm('¿Seguro que deseas eliminar esta tabla y sus relaciones?')) return;
-      updateSchema((prev) => ({
-        ...prev,
-        tables: prev.tables.filter((t) => t.id !== tableId),
-        relationships: prev.relationships.filter(
-          (r) => r.sourceTableId !== tableId && r.targetTableId !== tableId
-        ),
-      }));
-      setSelectedTableId((cur) => (cur === tableId ? null : cur));
-      setCtxMenu(null);
+      const relCount = schemaRef.current.relationships.filter(
+        (r) => r.sourceTableId === tableId || r.targetTableId === tableId
+      ).length;
+      setDeleteTarget({
+        type: 'table',
+        id: tableId,
+        name: tbl.name,
+        relCount,
+      });
+      setTableCtxMenu(null);
     },
-    [notify, updateSchema]
+    [notify]
   );
 
   const handleToggleLock = useCallback(
@@ -924,7 +1396,7 @@ function RelationalDatabaseEngineInner() {
           t.id === tableId ? { ...t, locked: !t.locked } : t
         ),
       }));
-      setCtxMenu(null);
+      setTableCtxMenu(null);
     },
     [updateSchema]
   );
@@ -945,6 +1417,7 @@ function RelationalDatabaseEngineInner() {
       };
       updateSchema((prev) => ({ ...prev, tables: [...prev.tables, copy] }));
       setSelectedTableId(copy.id);
+      setSelectedNoteId(null);
       setSelectedRelationshipId(null);
       notify('Tabla duplicada (sin relaciones).');
     },
@@ -953,17 +1426,224 @@ function RelationalDatabaseEngineInner() {
 
   const openTableMenu = useCallback((tableId: string, x: number, y: number) => {
     setSelectedTableId(tableId);
+    setSelectedNoteId(null);
     setSelectedRelationshipId(null);
-    setCtxMenu({ tableId, x, y });
+    setTableCtxMenu({ tableId, x, y });
+    setNoteCtxMenu(null);
+    setPaneCtxMenu(null);
   }, []);
 
-  // Nodos/edges viven en el store de React Flow (drag suave, sin re-render del schema por frame)
-  const buildNodes = useCallback((): TableFlowNode[] => {
-    return schema.tables.map((tbl) => {
+  // ==========================================
+  // MANEJADORES DE NOTAS Y SOLICITUD DE ELIMINACIÓN
+  // ==========================================
+  const handleAddNewNote = useCallback(
+    (x?: number, y?: number) => {
+      const stamp = Date.now();
+      const notesCount = (schemaRef.current.notes || []).length + 1;
+      const newNote: NoteNode = {
+        id: `note-${stamp}`,
+        title: `Nota ${notesCount}`,
+        text: 'Escribe aquí anotaciones, reglas de negocio o comentarios de la arquitectura...',
+        theme: 'yellow',
+        fontFamily: 'sans',
+        fontSize: 'sm',
+        width: 260,
+        x: x ?? (60 + (notesCount % 3) * 260),
+        y: y ?? (120 + Math.floor(notesCount / 3) * 200),
+        locked: false,
+      };
+
+      updateSchema((prev) => ({
+        ...prev,
+        notes: [...(prev.notes || []), newNote],
+      }));
+      setSelectedNoteId(newNote.id);
+      setSelectedTableId(null);
+      setSelectedRelationshipId(null);
+      notify('Nota de texto añadida.');
+    },
+    [notify, updateSchema]
+  );
+
+  const handleOpenEditNote = useCallback(
+    (note: NoteNode) => {
+      if (note.locked) {
+        notify('La nota está bloqueada. Desbloquéala para editar.', 'err');
+        return;
+      }
+      setEditingNote(JSON.parse(JSON.stringify(note)));
+      setActiveModal('note');
+    },
+    [notify]
+  );
+
+  const handleSaveEditedNote = useCallback(() => {
+    if (!editingNote) return;
+    updateSchema((prev) => ({
+      ...prev,
+      notes: (prev.notes || []).map((n) => (n.id === editingNote.id ? editingNote : n)),
+    }));
+    setActiveModal(null);
+    setEditingNote(null);
+    notify('Nota actualizada.');
+  }, [editingNote, notify, updateSchema]);
+
+  const requestDeleteNote = useCallback(
+    (noteId: string) => {
+      const note = (schemaRef.current.notes || []).find((n) => n.id === noteId);
+      if (!note) return;
+      if (note.locked) {
+        notify('La nota está bloqueada. Desbloquéala para eliminar.', 'err');
+        return;
+      }
+      setDeleteTarget({
+        type: 'note',
+        id: noteId,
+        title: note.title || note.text.slice(0, 35) || 'Nota de texto',
+      });
+      setNoteCtxMenu(null);
+    },
+    [notify]
+  );
+
+  const handleToggleLockNote = useCallback(
+    (noteId: string) => {
+      updateSchema((prev) => ({
+        ...prev,
+        notes: (prev.notes || []).map((n) =>
+          n.id === noteId ? { ...n, locked: !n.locked } : n
+        ),
+      }));
+      setNoteCtxMenu(null);
+    },
+    [updateSchema]
+  );
+
+  const handleDuplicateNote = useCallback(
+    (noteId: string) => {
+      const src = (schemaRef.current.notes || []).find((n) => n.id === noteId);
+      if (!src || src.locked) return;
+      const stamp = Date.now();
+      const copy: NoteNode = {
+        ...JSON.parse(JSON.stringify(src)),
+        id: `note-${stamp}`,
+        title: src.title ? `${src.title} (Copia)` : 'Nota Copia',
+        x: src.x + 30,
+        y: src.y + 30,
+        locked: false,
+      };
+      updateSchema((prev) => ({
+        ...prev,
+        notes: [...(prev.notes || []), copy],
+      }));
+      setSelectedNoteId(copy.id);
+      setSelectedTableId(null);
+      setSelectedRelationshipId(null);
+      notify('Nota duplicada.');
+    },
+    [notify, updateSchema]
+  );
+
+  const openNoteMenu = useCallback((noteId: string, x: number, y: number) => {
+    setSelectedNoteId(noteId);
+    setSelectedTableId(null);
+    setSelectedRelationshipId(null);
+    setNoteCtxMenu({ noteId, x, y });
+    setTableCtxMenu(null);
+    setPaneCtxMenu(null);
+  }, []);
+
+  const requestDeleteRelationship = useCallback(
+    (relId: string) => {
+      const rel = schemaRef.current.relationships.find((r) => r.id === relId);
+      if (!rel) return;
+      const src = schemaRef.current.tables.find((t) => t.id === rel.sourceTableId);
+      const tgt = schemaRef.current.tables.find((t) => t.id === rel.targetTableId);
+      if (src?.locked || tgt?.locked) {
+        notify('Una de las tablas involucradas está bloqueada.', 'err');
+        return;
+      }
+      setDeleteTarget({
+        type: 'relationship',
+        id: relId,
+        desc: `${src?.name || 'Tabla Origen'} → ${tgt?.name || 'Tabla Destino'}`,
+      });
+    },
+    [notify]
+  );
+
+  // Ejecución definitiva de eliminación al confirmar en el modal
+  const handleConfirmDelete = useCallback(() => {
+    if (!deleteTarget) return;
+
+    if (deleteTarget.type === 'table') {
+      const tableId = deleteTarget.id;
+      updateSchema((prev) => ({
+        ...prev,
+        tables: prev.tables.filter((t) => t.id !== tableId),
+        relationships: prev.relationships.filter(
+          (r) => r.sourceTableId !== tableId && r.targetTableId !== tableId
+        ),
+      }));
+      setSelectedTableId((cur) => (cur === tableId ? null : cur));
+      notify(`Tabla "${deleteTarget.name}" eliminada.`);
+    } else if (deleteTarget.type === 'note') {
+      const noteId = deleteTarget.id;
+      updateSchema((prev) => ({
+        ...prev,
+        notes: (prev.notes || []).filter((n) => n.id !== noteId),
+      }));
+      setSelectedNoteId((cur) => (cur === noteId ? null : cur));
+      notify('Nota eliminada.');
+    } else if (deleteTarget.type === 'relationship') {
+      const relId = deleteTarget.id;
+      updateSchema((prev) => ({
+        ...prev,
+        relationships: prev.relationships.filter((r) => r.id !== relId),
+      }));
+      setSelectedRelationshipId(null);
+      notify('Relación eliminada.');
+    }
+
+    setDeleteTarget(null);
+  }, [deleteTarget, notify, updateSchema]);
+
+  // Manejo de clic derecho en el lienzo (Pane)
+  const handlePaneContextMenu = useCallback(
+    (event: React.MouseEvent | MouseEvent) => {
+      event.preventDefault();
+      let canvasX = 80;
+      let canvasY = 80;
+      try {
+        if (screenToFlowPosition) {
+          const pos = screenToFlowPosition({ x: event.clientX, y: event.clientY });
+          canvasX = Math.round(pos.x);
+          canvasY = Math.round(pos.y);
+        }
+      } catch {
+        // Fallback
+      }
+      setPaneCtxMenu({
+        x: event.clientX,
+        y: event.clientY,
+        canvasX: Math.max(10, canvasX),
+        canvasY: Math.max(10, canvasY),
+      });
+      setTableCtxMenu(null);
+      setNoteCtxMenu(null);
+    },
+    [screenToFlowPosition]
+  );
+
+  // ==========================================
+  // CONSTRUCCIÓN DE NODOS Y ARISTAS REACT FLOW
+  // ==========================================
+  const buildNodes = useCallback((): Node[] => {
+    const tableNodes: Node[] = schema.tables.map((tbl) => {
       const locked = !!tbl.locked;
       return {
         id: tbl.id,
-        type: 'table' as const,
+        type: 'table',
         position: { x: tbl.x, y: tbl.y },
         selected: selectedTableId === tbl.id,
         draggable: !locked,
@@ -978,19 +1658,55 @@ function RelationalDatabaseEngineInner() {
           theme: TABLE_THEMES[tbl.theme] || TABLE_THEMES.datamodeler,
           locked,
           onEdit: handleOpenEditTable,
-          onDelete: handleDeleteTable,
+          onDelete: requestDeleteTable,
           onToggleLock: handleToggleLock,
           onOpenMenu: openTableMenu,
         },
       };
     });
+
+    const noteNodes: Node[] = (schema.notes || []).map((note) => {
+      const locked = !!note.locked;
+      return {
+        id: note.id,
+        type: 'note',
+        position: { x: note.x, y: note.y },
+        selected: selectedNoteId === note.id,
+        draggable: !locked,
+        connectable: false,
+        deletable: false,
+        extent: [
+          [10, 10],
+          [Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER],
+        ] satisfies CoordinateExtent,
+        data: {
+          note,
+          theme: NOTE_THEMES[note.theme] || NOTE_THEMES.yellow,
+          locked,
+          onEdit: handleOpenEditNote,
+          onDelete: requestDeleteNote,
+          onToggleLock: handleToggleLockNote,
+          onDuplicate: handleDuplicateNote,
+          onOpenMenu: openNoteMenu,
+        },
+      };
+    });
+
+    return [...tableNodes, ...noteNodes];
   }, [
     schema.tables,
+    schema.notes,
     selectedTableId,
+    selectedNoteId,
     handleOpenEditTable,
-    handleDeleteTable,
+    requestDeleteTable,
     handleToggleLock,
     openTableMenu,
+    handleOpenEditNote,
+    requestDeleteNote,
+    handleToggleLockNote,
+    handleDuplicateNote,
+    openNoteMenu,
   ]);
 
   const buildEdges = useCallback((): CardinalityFlowEdge[] => {
@@ -1006,7 +1722,7 @@ function RelationalDatabaseEngineInner() {
     }));
   }, [schema.relationships, selectedRelationshipId]);
 
-  const [rfNodes, setRfNodes] = useNodesState<TableFlowNode>(buildNodes());
+  const [rfNodes, setRfNodes] = useNodesState<Node>(buildNodes());
   const [rfEdges, setRfEdges] = useEdgesState<CardinalityFlowEdge>(buildEdges());
 
   // Re-sincronizar solo cuando cambia el modelo (no durante el drag)
@@ -1018,7 +1734,7 @@ function RelationalDatabaseEngineInner() {
     setRfEdges(buildEdges());
   }, [buildEdges, setRfEdges]);
 
-  const handleNodesChangeStable: OnNodesChange<TableFlowNode> = useCallback(
+  const handleNodesChangeStable: OnNodesChange<Node> = useCallback(
     (changes) => {
       setRfNodes((nds) => applyNodeChanges(changes, nds));
     },
@@ -1034,17 +1750,30 @@ function RelationalDatabaseEngineInner() {
 
   // Posición definitiva → schema (una sola escritura al soltar)
   const handleNodeDragStop = useCallback(
-    (_event: unknown, node: TableFlowNode) => {
+    (_event: unknown, node: Node) => {
       const x = Math.max(10, Math.round(node.position.x));
       const y = Math.max(10, Math.round(node.position.y));
-      setSchema((prev) => {
-        const current = prev.tables.find((t) => t.id === node.id);
-        if (!current || (current.x === x && current.y === y)) return prev;
-        return {
-          ...prev,
-          tables: prev.tables.map((t) => (t.id === node.id ? { ...t, x, y } : t)),
-        };
-      });
+
+      if (node.type === 'table') {
+        setSchema((prev) => {
+          const current = prev.tables.find((t) => t.id === node.id);
+          if (!current || (current.x === x && current.y === y)) return prev;
+          return {
+            ...prev,
+            tables: prev.tables.map((t) => (t.id === node.id ? { ...t, x, y } : t)),
+          };
+        });
+      } else if (node.type === 'note') {
+        setSchema((prev) => {
+          const notes = prev.notes || [];
+          const current = notes.find((n) => n.id === node.id);
+          if (!current || (current.x === x && current.y === y)) return prev;
+          return {
+            ...prev,
+            notes: notes.map((n) => (n.id === node.id ? { ...n, x, y } : n)),
+          };
+        });
+      }
     },
     []
   );
@@ -1185,7 +1914,9 @@ function RelationalDatabaseEngineInner() {
     svgEl.appendChild(bgRect);
 
     const clone = root.cloneNode(true) as HTMLElement;
-    clone.querySelectorAll('.react-flow__controls, .react-flow__minimap, .react-flow__attribution').forEach((el) => el.remove());
+    clone
+      .querySelectorAll('.react-flow__controls, .react-flow__minimap, .react-flow__attribution')
+      .forEach((el) => el.remove());
     clone.style.width = `${canvasWidth}px`;
     clone.style.height = `${canvasHeight}px`;
     clone.style.background = 'transparent';
@@ -1275,34 +2006,56 @@ function RelationalDatabaseEngineInner() {
       lines.push(`);\n`);
     });
 
+    // Anotar notas al final del SQL como comentarios
+    if (schema.notes && schema.notes.length > 0) {
+      lines.push(`-- =================================================`);
+      lines.push(`-- NOTAS Y COMENTARIOS DEL DIAGRAMA`);
+      lines.push(`-- =================================================`);
+      schema.notes.forEach((note, idx) => {
+        lines.push(`-- [Nota ${idx + 1}${note.title ? `: ${note.title}` : ''}]`);
+        note.text.split('\n').forEach((tl) => {
+          lines.push(`-- ${tl}`);
+        });
+        lines.push(`--`);
+      });
+      lines.push(`\n`);
+    }
+
     return lines.join('\n');
   }, [schema, sqlDialect, activeModal]);
 
   // ==========================================
-  // CRUD
+  // CRUD CREACIÓN DE TABLAS
   // ==========================================
-  const handleAddNewTable = () => {
-    const count = schema.tables.length + 1;
-    const newTbl: TableNode = {
-      id: `tbl-${Date.now()}`,
-      name: `tabla_${count}`,
-      theme: 'datamodeler',
-      x: 60 + (count % 3) * 280,
-      y: 60 + Math.floor(count / 3) * 240,
-      columns: [
-        { id: `c-${Date.now()}-1`, name: `id_${count}`, type: 'SERIAL', pk: true, notNull: true },
-        { id: `c-${Date.now()}-2`, name: 'nombre', type: 'VARCHAR(100)', notNull: true },
-        { id: `c-${Date.now()}-3`, name: 'creado_el', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP' },
-      ],
-    };
+  const handleAddNewTable = useCallback(
+    (x?: number, y?: number) => {
+      const count = schemaRef.current.tables.length + 1;
+      const posX = x ?? (60 + (count % 3) * 280);
+      const posY = y ?? (60 + Math.floor(count / 3) * 240);
+      const newTbl: TableNode = {
+        id: `tbl-${Date.now()}`,
+        name: `tabla_${count}`,
+        theme: 'datamodeler',
+        x: posX,
+        y: posY,
+        columns: [
+          { id: `c-${Date.now()}-1`, name: `id_${count}`, type: 'SERIAL', pk: true, notNull: true },
+          { id: `c-${Date.now()}-2`, name: 'nombre', type: 'VARCHAR(100)', notNull: true },
+          { id: `c-${Date.now()}-3`, name: 'creado_el', type: 'TIMESTAMP', defaultValue: 'CURRENT_TIMESTAMP' },
+        ],
+      };
 
-    updateSchema((prev) => ({
-      ...prev,
-      tables: [...prev.tables, newTbl],
-    }));
-    setSelectedTableId(newTbl.id);
-    setSelectedRelationshipId(null);
-  };
+      updateSchema((prev) => ({
+        ...prev,
+        tables: [...prev.tables, newTbl],
+      }));
+      setSelectedTableId(newTbl.id);
+      setSelectedNoteId(null);
+      setSelectedRelationshipId(null);
+      notify('Nueva tabla creada.');
+    },
+    [notify, updateSchema]
+  );
 
   const handleSaveEditedTable = () => {
     if (!editingTable) return;
@@ -1312,27 +2065,58 @@ function RelationalDatabaseEngineInner() {
     }));
     setActiveModal(null);
     setEditingTable(null);
-  };
-
-  const handleDeleteRelationship = (relId: string) => {
-    const rel = schemaRef.current.relationships.find((r) => r.id === relId);
-    if (!rel) return;
-    const src = schemaRef.current.tables.find((t) => t.id === rel.sourceTableId);
-    const tgt = schemaRef.current.tables.find((t) => t.id === rel.targetTableId);
-    if (src?.locked || tgt?.locked) {
-      notify('Una de las tablas involucradas está bloqueada.', 'err');
-      return;
-    }
-    updateSchema((prev) => ({
-      ...prev,
-      relationships: prev.relationships.filter((r) => r.id !== relId),
-    }));
-    setSelectedRelationshipId(null);
+    notify('Tabla actualizada.');
   };
 
   const handleResetViewport = () => {
     setViewport({ x: 0, y: 0, zoom: 1 });
   };
+
+  const handleClearCanvas = useCallback(() => {
+    if (confirm('¿Estás seguro de que deseas limpiar el lienzo? Se borrarán todas las tablas y notas del modelo actual.')) {
+      const emptySchema: CycSchemaFile = {
+        format: 'CYC_RELATIONAL_SCHEMA_V1',
+        metadata: {
+          id: `schema-${Date.now()}`,
+          name: 'Nuevo Modelo Relacional',
+          version: '1.0.0',
+          author: 'Usuario',
+          createdAt: new Date().toISOString(),
+        },
+        tables: [],
+        relationships: [],
+        notes: [],
+        canvas: { bgPattern: 'grid', zoom: 1, panX: 0, panY: 0 },
+      };
+      setSchema(emptySchema);
+      saveToLocalStorage(emptySchema);
+      setSelectedTableId(null);
+      setSelectedNoteId(null);
+      setSelectedRelationshipId(null);
+      notify('Lienzo limpiado. Modelo en blanco listo.');
+    }
+  }, [notify, saveToLocalStorage]);
+
+  const handleToggleLockAll = useCallback((lock: boolean) => {
+    updateSchema((prev) => ({
+      ...prev,
+      tables: prev.tables.map((t) => ({ ...t, locked: lock })),
+      notes: (prev.notes || []).map((n) => ({ ...n, locked: lock })),
+    }));
+    notify(lock ? '🔒 Todas las tablas y notas bloqueadas.' : '🔓 Todas las tablas y notas desbloqueadas.');
+  }, [notify, updateSchema]);
+
+  const handleDeleteSelected = useCallback(() => {
+    if (selectedTableId) {
+      requestDeleteTable(selectedTableId);
+    } else if (selectedNoteId) {
+      requestDeleteNote(selectedNoteId);
+    } else if (selectedRelationshipId) {
+      requestDeleteRelationship(selectedRelationshipId);
+    } else {
+      notify('Selecciona primero una tabla, nota o relación para eliminar.', 'err');
+    }
+  }, [selectedTableId, selectedNoteId, selectedRelationshipId, requestDeleteTable, requestDeleteNote, requestDeleteRelationship, notify]);
 
   const bgConf = useMemo(() => {
     switch (bgPattern) {
@@ -1361,8 +2145,12 @@ function RelationalDatabaseEngineInner() {
     [initialDraft]
   );
 
-  const ctxLocked = ctxMenu
-    ? !!schema.tables.find((t) => t.id === ctxMenu.tableId)?.locked
+  const tableCtxLocked = tableCtxMenu
+    ? !!schema.tables.find((t) => t.id === tableCtxMenu.tableId)?.locked
+    : false;
+
+  const noteCtxLocked = noteCtxMenu
+    ? !!(schema.notes || []).find((n) => n.id === noteCtxMenu.noteId)?.locked
     : false;
 
   return (
@@ -1376,123 +2164,429 @@ function RelationalDatabaseEngineInner() {
       />
 
       {/* =======================================================
-          BARRA DE HERRAMIENTAS PRINCIPAL (STUDIO TOOLBAR)
+          BARRA DE MENÚ ESTILO APLICACIÓN (MENU BAR)
           ======================================================= */}
-      <header className="engine-header bg-white border-b-2 border-slate-300 px-3 sm:px-4 py-2 flex items-center justify-between gap-3 shrink-0 shadow-sm z-20 flex-wrap">
-        <div className="flex items-center gap-2.5">
-          <span className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#003366] to-[#0284c7] text-white flex items-center justify-center text-base border border-[#1E1210] shadow-sm shrink-0">
-            🗄️
-          </span>
-          <div className="flex items-center gap-2">
-            <h1 className="m-0 text-sm sm:text-base font-black text-[#1E1210] tracking-tight">
-              {schema.metadata.name || 'Diseñador Relacional'}
-            </h1>
-            <span className="text-[0.62rem] font-mono font-black bg-blue-100 text-blue-900 border border-blue-300 px-1.5 py-0.5 rounded">
-              .CYC
-            </span>
-            <span className="hidden xl:inline text-[0.7rem] font-mono text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200">
-              {schema.tables.length} Tablas · {schema.relationships.length} Relaciones
-            </span>
-          </div>
-        </div>
+      <header className="engine-header bg-white border-b-2 border-slate-300 px-3 py-1 flex items-center justify-between gap-3 shrink-0 shadow-sm z-40 relative">
+        <div className="flex items-center gap-1">
+          {/* BARRA DE MENÚS (DROPDOWNS) */}
+          <nav ref={menuBarRef} className="flex items-center gap-0.5 relative text-xs font-bold text-slate-700">
+            {/* MENÚ: ARCHIVO */}
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setActiveTopMenu(activeTopMenu === 'archivo' ? null : 'archivo')}
+                onMouseEnter={() => activeTopMenu && setActiveTopMenu('archivo')}
+                className={`px-2.5 py-1 rounded-md text-xs font-bold transition-all flex items-center gap-1 cursor-pointer ${
+                  activeTopMenu === 'archivo' ? 'bg-slate-800 text-white' : 'hover:bg-slate-100 text-slate-700'
+                }`}
+              >
+                <span>Archivo</span>
+                <span className="text-[0.6rem] opacity-60">▾</span>
+              </button>
 
-        <div className="flex items-center gap-1.5 flex-wrap">
-          <button
-            type="button"
-            onClick={handleAddNewTable}
-            className="px-2.5 py-1.5 bg-[#003366] hover:bg-[#002244] text-white text-xs font-black rounded-lg border-2 border-[#1E1210] shadow-[1.5px_1.5px_0px_#1E1210] flex items-center gap-1 cursor-pointer transition-all hover:scale-[1.02]"
-            title="Crear nueva tabla en el canvas"
-          >
-            <span>➕</span>
-            <span>Tabla</span>
-          </button>
+              {activeTopMenu === 'archivo' && (
+                <div className="absolute top-full left-0 mt-1 w-64 bg-white border-2 border-[#1E1210] rounded-xl shadow-[4px_4px_0px_#1E1210] py-1.5 z-50 flex flex-col">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      handleAddNewTable();
+                      setActiveTopMenu(null);
+                    }}
+                    className="px-3 py-1.5 hover:bg-slate-100 text-left text-xs font-bold text-slate-800 flex items-center justify-between cursor-pointer"
+                  >
+                    <span className="flex items-center gap-2"><span>➕</span> Nueva Tabla</span>
+                    <span className="text-[0.65rem] font-mono text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">Alt+T</span>
+                  </button>
 
-          <button
-            type="button"
-            onClick={() => setActiveModal('templates')}
-            className="px-2.5 py-1.5 bg-amber-400 hover:bg-amber-300 text-amber-950 text-xs font-black rounded-lg border-2 border-[#1E1210] shadow-[1.5px_1.5px_0px_#1E1210] flex items-center gap-1 cursor-pointer transition-all hover:scale-[1.02]"
-            title="Cargar plantillas predefinidas (Ecommerce, Escuelas, Redes)"
-          >
-            <span>📦</span>
-            <span className="hidden sm:inline">Plantillas</span>
-          </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      handleAddNewNote();
+                      setActiveTopMenu(null);
+                    }}
+                    className="px-3 py-1.5 hover:bg-slate-100 text-left text-xs font-bold text-slate-800 flex items-center justify-between cursor-pointer"
+                  >
+                    <span className="flex items-center gap-2"><span>📝</span> Nueva Nota de Texto</span>
+                    <span className="text-[0.65rem] font-mono text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">Alt+N</span>
+                  </button>
 
-          <button
-            type="button"
-            onClick={() => setActiveModal('sql')}
-            className="px-2.5 py-1.5 bg-emerald-500 hover:bg-emerald-400 text-emerald-950 text-xs font-black rounded-lg border-2 border-[#1E1210] shadow-[1.5px_1.5px_0px_#1E1210] flex items-center gap-1 cursor-pointer transition-all hover:scale-[1.02]"
-            title="Generar SQL DDL para PostgreSQL, MySQL, SQLite, Oracle"
-          >
-            <span>⚡</span>
-            <span>SQL DDL</span>
-          </button>
+                  <div className="h-px bg-slate-200 my-1 mx-2" />
 
-          <div className="h-5 w-[1px] bg-slate-300 mx-1 hidden sm:block" />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      fileInputRef.current?.click();
+                      setActiveTopMenu(null);
+                    }}
+                    className="px-3 py-1.5 hover:bg-slate-100 text-left text-xs font-bold text-slate-800 flex items-center justify-between cursor-pointer"
+                  >
+                    <span className="flex items-center gap-2"><span>📂</span> Abrir Archivo .cyc / JSON...</span>
+                  </button>
 
-          <button
-            type="button"
-            onClick={handleDownloadCyc}
-            className="px-2.5 py-1.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-black rounded-lg border-2 border-[#1E1210] shadow-[1.5px_1.5px_0px_#1E1210] flex items-center gap-1 cursor-pointer transition-all hover:scale-[1.02]"
-            title="Guardar archivo .cyc en tu computadora"
-          >
-            <span>💾</span>
-            <span className="hidden md:inline">Guardar .cyc</span>
-          </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      handleDownloadCyc();
+                      setActiveTopMenu(null);
+                    }}
+                    className="px-3 py-1.5 hover:bg-slate-100 text-left text-xs font-bold text-blue-900 flex items-center justify-between cursor-pointer"
+                  >
+                    <span className="flex items-center gap-2"><span>💾</span> Guardar como .cyc</span>
+                    <span className="text-[0.65rem] font-mono text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">.CYC</span>
+                  </button>
 
-          <button
-            type="button"
-            onClick={() => fileInputRef.current?.click()}
-            className="px-2.5 py-1.5 bg-white hover:bg-slate-100 text-[#1E1210] text-xs font-black rounded-lg border-2 border-[#1E1210] shadow-[1.5px_1.5px_0px_#1E1210] flex items-center gap-1 cursor-pointer transition-all hover:scale-[1.02]"
-            title="Abrir archivo .cyc o JSON existente"
-          >
-            <span>📂</span>
-            <span className="hidden md:inline">Abrir .cyc</span>
-          </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setJsonText(JSON.stringify(schema, null, 2));
+                      setActiveModal('json');
+                      setActiveTopMenu(null);
+                    }}
+                    className="px-3 py-1.5 hover:bg-slate-100 text-left text-xs font-bold text-slate-800 flex items-center justify-between cursor-pointer"
+                  >
+                    <span className="flex items-center gap-2"><span>📋</span> Ver / Editar Esquema JSON</span>
+                  </button>
 
-          <button
-            type="button"
-            onClick={() => {
-              setJsonText(JSON.stringify(schema, null, 2));
-              setActiveModal('json');
-            }}
-            className="px-2 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-black rounded-lg border border-slate-300 cursor-pointer"
-            title="Ver / Pegar código JSON directo"
-          >
-            📋 JSON
-          </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      handleExportImagePng();
+                      setActiveTopMenu(null);
+                    }}
+                    className="px-3 py-1.5 hover:bg-slate-100 text-left text-xs font-bold text-slate-800 flex items-center justify-between cursor-pointer"
+                  >
+                    <span className="flex items-center gap-2"><span>🖼️</span> Exportar como Imagen PNG</span>
+                    <span className="text-[0.65rem] font-mono text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">PNG</span>
+                  </button>
 
-          <button
-            type="button"
-            onClick={handleExportImagePng}
-            className="px-2 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-black rounded-lg border border-slate-300 cursor-pointer"
-            title="Exportar como Imagen PNG"
-          >
-            🖼️ PNG
-          </button>
+                  <div className="h-px bg-slate-200 my-1 mx-2" />
 
-          <button
-            type="button"
-            onClick={() => setActiveModal('guide')}
-            className="px-2 py-1.5 bg-sky-50 hover:bg-sky-100 text-sky-800 text-xs font-black rounded-lg border border-sky-300 cursor-pointer flex items-center gap-1"
-            title="Ver documentación del formato .cyc y reglas de diseño"
-          >
-            <span>📖</span>
-            <span className="hidden lg:inline">Guía</span>
-          </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setActiveModal('templates');
+                      setActiveTopMenu(null);
+                    }}
+                    className="px-3 py-1.5 hover:bg-slate-100 text-left text-xs font-bold text-slate-800 flex items-center justify-between cursor-pointer"
+                  >
+                    <span className="flex items-center gap-2"><span>📦</span> Cargar Plantilla Predefinida...</span>
+                  </button>
 
-          <button
-            type="button"
-            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-            className={`px-2.5 py-1.5 text-xs font-black rounded-lg border-2 border-[#1E1210] transition-all flex items-center gap-1 cursor-pointer ${
-              isSidebarOpen
-                ? 'bg-indigo-600 text-white shadow-[1.5px_1.5px_0px_#1E1210]'
-                : 'bg-white text-slate-700 shadow-sm'
-            }`}
-            title="Mostrar / Ocultar panel inspector de propiedades"
-          >
-            <span>⚙️</span>
-            <span className="hidden sm:inline">Inspector</span>
-          </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      handleClearCanvas();
+                      setActiveTopMenu(null);
+                    }}
+                    className="px-3 py-1.5 hover:bg-red-50 text-left text-xs font-bold text-red-700 flex items-center justify-between cursor-pointer"
+                  >
+                    <span className="flex items-center gap-2"><span>🗑️</span> Limpiar Lienzo (Nuevo Modelo)</span>
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* MENÚ: EDITAR */}
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setActiveTopMenu(activeTopMenu === 'editar' ? null : 'editar')}
+                onMouseEnter={() => activeTopMenu && setActiveTopMenu('editar')}
+                className={`px-2.5 py-1 rounded-md text-xs font-bold transition-all flex items-center gap-1 cursor-pointer ${
+                  activeTopMenu === 'editar' ? 'bg-slate-800 text-white' : 'hover:bg-slate-100 text-slate-700'
+                }`}
+              >
+                <span>Editar</span>
+                <span className="text-[0.6rem] opacity-60">▾</span>
+              </button>
+
+              {activeTopMenu === 'editar' && (
+                <div className="absolute top-full left-0 mt-1 w-64 bg-white border-2 border-[#1E1210] rounded-xl shadow-[4px_4px_0px_#1E1210] py-1.5 z-50 flex flex-col">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      handleToggleLockAll(true);
+                      setActiveTopMenu(null);
+                    }}
+                    className="px-3 py-1.5 hover:bg-slate-100 text-left text-xs font-bold text-slate-800 flex items-center justify-between cursor-pointer"
+                  >
+                    <span className="flex items-center gap-2"><span>🔒</span> Bloquear Todas las Tablas</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      handleToggleLockAll(false);
+                      setActiveTopMenu(null);
+                    }}
+                    className="px-3 py-1.5 hover:bg-slate-100 text-left text-xs font-bold text-slate-800 flex items-center justify-between cursor-pointer"
+                  >
+                    <span className="flex items-center gap-2"><span>🔓</span> Desbloquear Todas</span>
+                  </button>
+
+                  <div className="h-px bg-slate-200 my-1 mx-2" />
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      handleDeleteSelected();
+                      setActiveTopMenu(null);
+                    }}
+                    className="px-3 py-1.5 hover:bg-red-50 text-left text-xs font-bold text-red-700 flex items-center justify-between cursor-pointer"
+                  >
+                    <span className="flex items-center gap-2"><span>🗑️</span> Eliminar Elemento Seleccionado</span>
+                    <span className="text-[0.65rem] font-mono text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">Supr</span>
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* MENÚ: VER */}
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setActiveTopMenu(activeTopMenu === 'ver' ? null : 'ver')}
+                onMouseEnter={() => activeTopMenu && setActiveTopMenu('ver')}
+                className={`px-2.5 py-1 rounded-md text-xs font-bold transition-all flex items-center gap-1 cursor-pointer ${
+                  activeTopMenu === 'ver' ? 'bg-slate-800 text-white' : 'hover:bg-slate-100 text-slate-700'
+                }`}
+              >
+                <span>Ver</span>
+                <span className="text-[0.6rem] opacity-60">▾</span>
+              </button>
+
+              {activeTopMenu === 'ver' && (
+                <div className="absolute top-full left-0 mt-1 w-64 bg-white border-2 border-[#1E1210] rounded-xl shadow-[4px_4px_0px_#1E1210] py-1.5 z-50 flex flex-col">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsSidebarOpen(!isSidebarOpen);
+                      setActiveTopMenu(null);
+                    }}
+                    className="px-3 py-1.5 hover:bg-slate-100 text-left text-xs font-bold text-slate-800 flex items-center justify-between cursor-pointer"
+                  >
+                    <span className="flex items-center gap-2"><span>⚙️</span> Panel Inspector</span>
+                    <span className="text-xs">{isSidebarOpen ? '✓' : ''}</span>
+                  </button>
+
+                  <div className="h-px bg-slate-200 my-1 mx-2" />
+                  <div className="px-3 py-1 text-[0.65rem] font-black text-slate-400 uppercase tracking-wider">Fondo del Lienzo</div>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setBgPattern('grid');
+                      setActiveTopMenu(null);
+                    }}
+                    className="px-3 py-1.5 hover:bg-slate-100 text-left text-xs font-bold text-slate-800 flex items-center justify-between cursor-pointer"
+                  >
+                    <span className="flex items-center gap-2"><span>📐</span> Cuadrícula Clásica</span>
+                    <span className="text-xs">{bgPattern === 'grid' ? '✓' : ''}</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setBgPattern('dots');
+                      setActiveTopMenu(null);
+                    }}
+                    className="px-3 py-1.5 hover:bg-slate-100 text-left text-xs font-bold text-slate-800 flex items-center justify-between cursor-pointer"
+                  >
+                    <span className="flex items-center gap-2"><span>⚪</span> Puntos Modernos</span>
+                    <span className="text-xs">{bgPattern === 'dots' ? '✓' : ''}</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setBgPattern('blueprint');
+                      setActiveTopMenu(null);
+                    }}
+                    className="px-3 py-1.5 hover:bg-slate-100 text-left text-xs font-bold text-slate-800 flex items-center justify-between cursor-pointer"
+                  >
+                    <span className="flex items-center gap-2"><span>🟦</span> Blueprint Técnico</span>
+                    <span className="text-xs">{bgPattern === 'blueprint' ? '✓' : ''}</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setBgPattern('dark');
+                      setActiveTopMenu(null);
+                    }}
+                    className="px-3 py-1.5 hover:bg-slate-100 text-left text-xs font-bold text-slate-800 flex items-center justify-between cursor-pointer"
+                  >
+                    <span className="flex items-center gap-2"><span>🌙</span> Modo Oscuro Slate</span>
+                    <span className="text-xs">{bgPattern === 'dark' ? '✓' : ''}</span>
+                  </button>
+
+                  <div className="h-px bg-slate-200 my-1 mx-2" />
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      handleResetViewport();
+                      setActiveTopMenu(null);
+                    }}
+                    className="px-3 py-1.5 hover:bg-slate-100 text-left text-xs font-bold text-slate-800 flex items-center justify-between cursor-pointer"
+                  >
+                    <span className="flex items-center gap-2"><span>🎯</span> Centrar Lienzo</span>
+                    <span className="text-[0.65rem] font-mono text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">Reset</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      zoomIn({ duration: 150 });
+                      setActiveTopMenu(null);
+                    }}
+                    className="px-3 py-1.5 hover:bg-slate-100 text-left text-xs font-bold text-slate-800 flex items-center justify-between cursor-pointer"
+                  >
+                    <span className="flex items-center gap-2"><span>🔍</span> Acercar (Zoom In)</span>
+                    <span className="text-[0.65rem] font-mono text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">+</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      zoomOut({ duration: 150 });
+                      setActiveTopMenu(null);
+                    }}
+                    className="px-3 py-1.5 hover:bg-slate-100 text-left text-xs font-bold text-slate-800 flex items-center justify-between cursor-pointer"
+                  >
+                    <span className="flex items-center gap-2"><span>🔍</span> Alejar (Zoom Out)</span>
+                    <span className="text-[0.65rem] font-mono text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">−</span>
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* MENÚ: SQL DDL */}
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setActiveTopMenu(activeTopMenu === 'sql' ? null : 'sql')}
+                onMouseEnter={() => activeTopMenu && setActiveTopMenu('sql')}
+                className={`px-2.5 py-1 rounded-md text-xs font-bold transition-all flex items-center gap-1 cursor-pointer ${
+                  activeTopMenu === 'sql' ? 'bg-slate-800 text-white' : 'hover:bg-slate-100 text-slate-700'
+                }`}
+              >
+                <span>SQL DDL</span>
+                <span className="text-[0.6rem] opacity-60">▾</span>
+              </button>
+
+              {activeTopMenu === 'sql' && (
+                <div className="absolute top-full left-0 mt-1 w-64 bg-white border-2 border-[#1E1210] rounded-xl shadow-[4px_4px_0px_#1E1210] py-1.5 z-50 flex flex-col">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setActiveModal('sql');
+                      setActiveTopMenu(null);
+                    }}
+                    className="px-3 py-1.5 hover:bg-emerald-50 text-left text-xs font-bold text-emerald-900 flex items-center justify-between cursor-pointer"
+                  >
+                    <span className="flex items-center gap-2"><span>⚡</span> Ver Script SQL DDL Completo...</span>
+                  </button>
+
+                  <div className="h-px bg-slate-200 my-1 mx-2" />
+                  <div className="px-3 py-1 text-[0.65rem] font-black text-slate-400 uppercase tracking-wider">Dialecto de Exportación</div>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSqlDialect('postgresql');
+                      setActiveModal('sql');
+                      setActiveTopMenu(null);
+                    }}
+                    className="px-3 py-1.5 hover:bg-slate-100 text-left text-xs font-bold text-slate-800 flex items-center justify-between cursor-pointer"
+                  >
+                    <span className="flex items-center gap-2"><span>🐘</span> PostgreSQL</span>
+                    <span className="text-xs">{sqlDialect === 'postgresql' ? '✓' : ''}</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSqlDialect('mysql');
+                      setActiveModal('sql');
+                      setActiveTopMenu(null);
+                    }}
+                    className="px-3 py-1.5 hover:bg-slate-100 text-left text-xs font-bold text-slate-800 flex items-center justify-between cursor-pointer"
+                  >
+                    <span className="flex items-center gap-2"><span>🐬</span> MySQL / MariaDB</span>
+                    <span className="text-xs">{sqlDialect === 'mysql' ? '✓' : ''}</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSqlDialect('sqlite');
+                      setActiveModal('sql');
+                      setActiveTopMenu(null);
+                    }}
+                    className="px-3 py-1.5 hover:bg-slate-100 text-left text-xs font-bold text-slate-800 flex items-center justify-between cursor-pointer"
+                  >
+                    <span className="flex items-center gap-2"><span>🪶</span> SQLite</span>
+                    <span className="text-xs">{sqlDialect === 'sqlite' ? '✓' : ''}</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSqlDialect('oracle');
+                      setActiveModal('sql');
+                      setActiveTopMenu(null);
+                    }}
+                    className="px-3 py-1.5 hover:bg-slate-100 text-left text-xs font-bold text-slate-800 flex items-center justify-between cursor-pointer"
+                  >
+                    <span className="flex items-center gap-2"><span>🏛️</span> Oracle SQL</span>
+                    <span className="text-xs">{sqlDialect === 'oracle' ? '✓' : ''}</span>
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* MENÚ: AYUDA */}
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setActiveTopMenu(activeTopMenu === 'ayuda' ? null : 'ayuda')}
+                onMouseEnter={() => activeTopMenu && setActiveTopMenu('ayuda')}
+                className={`px-2.5 py-1 rounded-md text-xs font-bold transition-all flex items-center gap-1 cursor-pointer ${
+                  activeTopMenu === 'ayuda' ? 'bg-slate-800 text-white' : 'hover:bg-slate-100 text-slate-700'
+                }`}
+              >
+                <span>Ayuda</span>
+                <span className="text-[0.6rem] opacity-60">▾</span>
+              </button>
+
+              {activeTopMenu === 'ayuda' && (
+                <div className="absolute top-full left-0 mt-1 w-64 bg-white border-2 border-[#1E1210] rounded-xl shadow-[4px_4px_0px_#1E1210] py-1.5 z-50 flex flex-col">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setActiveModal('guide');
+                      setActiveTopMenu(null);
+                    }}
+                    className="px-3 py-1.5 hover:bg-slate-100 text-left text-xs font-bold text-slate-800 flex items-center justify-between cursor-pointer"
+                  >
+                    <span className="flex items-center gap-2"><span>📖</span> Guía de Uso y Formato .CYC</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setActiveModal('guide');
+                      setActiveTopMenu(null);
+                    }}
+                    className="px-3 py-1.5 hover:bg-slate-100 text-left text-xs font-bold text-slate-800 flex items-center justify-between cursor-pointer"
+                  >
+                    <span className="flex items-center gap-2"><span>⌨️</span> Atajos de Teclado</span>
+                  </button>
+                </div>
+              )}
+            </div>
+          </nav>
         </div>
       </header>
 
@@ -1504,7 +2598,7 @@ function RelationalDatabaseEngineInner() {
           <div className="canvas-toolbar bg-slate-100 px-4 py-2 border-b-2 border-[#1E1210] flex items-center justify-between flex-wrap gap-2">
             <div className="flex items-center gap-3">
               <span className="text-xs font-mono font-black text-slate-700">
-                Lienzo: {schema.tables.length} Tablas · {schema.relationships.length} Relaciones
+                Lienzo: {schema.tables.length} Tablas · {schema.relationships.length} Relaciones · {(schema.notes || []).length} Notas
               </span>
               <div className="flex items-center gap-1">
                 <button
@@ -1606,20 +2700,36 @@ function RelationalDatabaseEngineInner() {
               onConnect={onConnect}
               isValidConnection={isValidConnection}
               onNodeClick={(_e, node) => {
-                setSelectedTableId(node.id);
-                setSelectedRelationshipId(null);
-                setCtxMenu(null);
+                if (node.type === 'table') {
+                  setSelectedTableId(node.id);
+                  setSelectedNoteId(null);
+                  setSelectedRelationshipId(null);
+                } else if (node.type === 'note') {
+                  setSelectedNoteId(node.id);
+                  setSelectedTableId(null);
+                  setSelectedRelationshipId(null);
+                }
+                setTableCtxMenu(null);
+                setNoteCtxMenu(null);
+                setPaneCtxMenu(null);
               }}
               onEdgeClick={(_e, edge) => {
                 setSelectedRelationshipId(edge.id);
                 setSelectedTableId(null);
-                setCtxMenu(null);
+                setSelectedNoteId(null);
+                setTableCtxMenu(null);
+                setNoteCtxMenu(null);
+                setPaneCtxMenu(null);
               }}
               onPaneClick={() => {
                 setSelectedTableId(null);
+                setSelectedNoteId(null);
                 setSelectedRelationshipId(null);
-                setCtxMenu(null);
+                setTableCtxMenu(null);
+                setNoteCtxMenu(null);
+                setPaneCtxMenu(null);
               }}
+              onPaneContextMenu={handlePaneContextMenu}
               onMoveEnd={(_e, viewport) => {
                 setSchema((prev) => ({
                   ...prev,
@@ -1689,7 +2799,7 @@ function RelationalDatabaseEngineInner() {
               </h2>
               <div className="flex items-center gap-1.5">
                 <span className="text-[0.65rem] font-bold bg-slate-100 text-slate-600 px-2 py-0.5 rounded-md">
-                  {selectedTableId ? 'Tabla' : selectedRelationshipId ? 'Relación' : 'Modelo'}
+                  {selectedTableId ? 'Tabla' : selectedNoteId ? 'Nota' : selectedRelationshipId ? 'Relación' : 'Modelo'}
                 </span>
                 <button
                   type="button"
@@ -1702,6 +2812,7 @@ function RelationalDatabaseEngineInner() {
               </div>
             </div>
 
+            {/* INSPECTOR DE TABLA */}
             {selectedTableId &&
               (() => {
                 const tbl = schema.tables.find((t) => t.id === selectedTableId);
@@ -1747,7 +2858,7 @@ function RelationalDatabaseEngineInner() {
                                 ),
                               }));
                             }}
-                            className={`px-2 py-1 rounded-lg text-[0.68rem] font-bold border flex items-center gap-1.5 disabled:opacity-50 ${
+                            className={`px-2 py-1 rounded-lg text-[0.68rem] font-bold border flex items-center gap-1.5 disabled:opacity-50 cursor-pointer ${
                               tbl.theme === th.id
                                 ? 'border-2 border-black ring-2 ring-blue-500'
                                 : 'border-slate-300'
@@ -1769,15 +2880,15 @@ function RelationalDatabaseEngineInner() {
                         type="button"
                         disabled={locked}
                         onClick={() => handleOpenEditTable(tbl)}
-                        className="flex-1 py-1.5 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl border-2 border-[#1E1210] shadow-[2px_2px_0px_#1E1210] text-xs disabled:opacity-40 disabled:cursor-not-allowed"
+                        className="flex-1 py-1.5 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl border-2 border-[#1E1210] shadow-[2px_2px_0px_#1E1210] text-xs disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
                       >
                         ✏️ Editar Columnas ({tbl.columns.length})
                       </button>
                       <button
                         type="button"
                         disabled={locked}
-                        onClick={() => handleDeleteTable(tbl.id)}
-                        className="py-1.5 px-3 bg-red-100 hover:bg-red-200 text-red-700 font-bold rounded-xl border-2 border-red-300 text-xs disabled:opacity-40 disabled:cursor-not-allowed"
+                        onClick={() => requestDeleteTable(tbl.id)}
+                        className="py-1.5 px-3 bg-red-100 hover:bg-red-200 text-red-700 font-bold rounded-xl border-2 border-red-300 text-xs disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
                         title="Eliminar tabla"
                       >
                         🗑️
@@ -1785,7 +2896,7 @@ function RelationalDatabaseEngineInner() {
                       <button
                         type="button"
                         onClick={() => handleToggleLock(tbl.id)}
-                        className="py-1.5 px-3 bg-amber-100 hover:bg-amber-200 text-amber-800 font-bold rounded-xl border-2 border-amber-300 text-xs"
+                        className="py-1.5 px-3 bg-amber-100 hover:bg-amber-200 text-amber-800 font-bold rounded-xl border-2 border-amber-300 text-xs cursor-pointer"
                         title={locked ? 'Desbloquear tabla' : 'Bloquear tabla'}
                       >
                         {locked ? '🔓' : '🔒'}
@@ -1795,6 +2906,220 @@ function RelationalDatabaseEngineInner() {
                 );
               })()}
 
+            {/* INSPECTOR DE NOTA / TEXTO */}
+            {selectedNoteId &&
+              (() => {
+                const note = (schema.notes || []).find((n) => n.id === selectedNoteId);
+                if (!note) return null;
+                const locked = !!note.locked;
+
+                return (
+                  <div className="flex flex-col gap-3 text-xs">
+                    {locked && (
+                      <div className="bg-amber-50 border border-amber-300 text-amber-900 px-2.5 py-1.5 rounded-xl font-bold text-[0.7rem]">
+                        🔒 Nota bloqueada: no se puede editar, mover ni eliminar.
+                      </div>
+                    )}
+
+                    <div>
+                      <label className="font-bold text-slate-700 block mb-1">Título de la Nota (opcional):</label>
+                      <input
+                        type="text"
+                        value={note.title || ''}
+                        disabled={locked}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          updateSchema((prev) => ({
+                            ...prev,
+                            notes: (prev.notes || []).map((n) => (n.id === note.id ? { ...n, title: val } : n)),
+                          }));
+                        }}
+                        placeholder="Ej. Regla de negocio / Requisitos"
+                        className="w-full px-3 py-1.5 rounded-xl border-2 border-[#1E1210] font-bold text-xs bg-slate-50 disabled:opacity-50"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="font-bold text-slate-700 block mb-1">Contenido del Texto:</label>
+                      <textarea
+                        value={note.text}
+                        disabled={locked}
+                        rows={4}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          updateSchema((prev) => ({
+                            ...prev,
+                            notes: (prev.notes || []).map((n) => (n.id === note.id ? { ...n, text: val } : n)),
+                          }));
+                        }}
+                        placeholder="Escribe aquí notas, comentarios de arquitectura o detalles..."
+                        className="w-full px-3 py-2 rounded-xl border-2 border-[#1E1210] text-xs bg-slate-50 disabled:opacity-50 resize-y"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="font-bold text-slate-700 block mb-1">Color de Fondo / Tema:</label>
+                      <div className="grid grid-cols-2 gap-1.5">
+                        {Object.values(NOTE_THEMES).map((th) => (
+                          <button
+                            key={th.id}
+                            type="button"
+                            disabled={locked}
+                            onClick={() => {
+                              updateSchema((prev) => ({
+                                ...prev,
+                                notes: (prev.notes || []).map((n) =>
+                                  n.id === note.id ? { ...n, theme: th.id } : n
+                                ),
+                              }));
+                            }}
+                            className={`px-2 py-1 rounded-lg text-[0.68rem] font-bold border flex items-center gap-1.5 disabled:opacity-50 cursor-pointer ${
+                              note.theme === th.id
+                                ? 'border-2 border-black ring-2 ring-amber-500'
+                                : 'border-slate-300'
+                            }`}
+                            style={{ backgroundColor: th.bg, color: th.textColor }}
+                          >
+                            <span
+                              className="w-3 h-3 rounded-full border border-black/20"
+                              style={{ backgroundColor: th.border }}
+                            />
+                            <span className="truncate">{th.name.split(' ')[0]}</span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="font-bold text-slate-700 block mb-1">Tipografía / Estilo de Fuente:</label>
+                      <div className="grid grid-cols-2 gap-1.5">
+                        {[
+                          { id: 'sans', label: '🔤 Sans', fontCls: 'font-sans' },
+                          { id: 'handwriting', label: '✍️ Manuscrita', fontCls: 'font-["Caveat",_cursive] font-bold' },
+                          { id: 'mono', label: '💻 Mono', fontCls: 'font-mono' },
+                          { id: 'serif', label: '📖 Serif', fontCls: 'font-serif' },
+                        ].map((f) => (
+                          <button
+                            key={f.id}
+                            type="button"
+                            disabled={locked}
+                            onClick={() => {
+                              updateSchema((prev) => ({
+                                ...prev,
+                                notes: (prev.notes || []).map((n) =>
+                                  n.id === note.id ? { ...n, fontFamily: f.id as NoteFontFamily } : n
+                                ),
+                              }));
+                            }}
+                            className={`px-2 py-1.5 rounded-lg text-[0.68rem] font-bold border text-left truncate disabled:opacity-50 cursor-pointer ${
+                              (note.fontFamily || 'sans') === f.id
+                                ? 'bg-amber-100 border-2 border-amber-600 text-amber-950 font-black'
+                                : 'bg-white border-slate-300 text-slate-700'
+                            } ${f.fontCls}`}
+                          >
+                            {f.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="font-bold text-slate-700 block mb-1">Tamaño de Letra:</label>
+                      <div className="grid grid-cols-5 gap-1">
+                        {(['xs', 'sm', 'base', 'lg', 'xl'] as NoteFontSize[]).map((sz) => (
+                          <button
+                            key={sz}
+                            type="button"
+                            disabled={locked}
+                            onClick={() => {
+                              updateSchema((prev) => ({
+                                ...prev,
+                                notes: (prev.notes || []).map((n) =>
+                                  n.id === note.id ? { ...n, fontSize: sz } : n
+                                ),
+                              }));
+                            }}
+                            className={`py-1 rounded-lg text-[0.65rem] font-bold border text-center uppercase disabled:opacity-50 cursor-pointer ${
+                              (note.fontSize || 'sm') === sz
+                                ? 'bg-[#1E1210] text-white border-[#1E1210]'
+                                : 'bg-white border-slate-300 text-slate-700'
+                            }`}
+                          >
+                            {sz}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="font-bold text-slate-700 block mb-1">Ancho de Tarjeta:</label>
+                      <div className="grid grid-cols-4 gap-1">
+                        {[200, 260, 320, 380].map((w) => (
+                          <button
+                            key={w}
+                            type="button"
+                            disabled={locked}
+                            onClick={() => {
+                              updateSchema((prev) => ({
+                                ...prev,
+                                notes: (prev.notes || []).map((n) =>
+                                  n.id === note.id ? { ...n, width: w } : n
+                                ),
+                              }));
+                            }}
+                            className={`py-1 rounded-lg text-[0.65rem] font-bold border text-center disabled:opacity-50 cursor-pointer ${
+                              (note.width || 260) === w
+                                ? 'bg-[#1E1210] text-white border-[#1E1210]'
+                                : 'bg-white border-slate-300 text-slate-700'
+                            }`}
+                          >
+                            {w}px
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2 pt-2 border-t">
+                      <button
+                        type="button"
+                        disabled={locked}
+                        onClick={() => handleOpenEditNote(note)}
+                        className="flex-1 py-1.5 bg-amber-500 hover:bg-amber-400 text-amber-950 font-black rounded-xl border-2 border-[#1E1210] shadow-[2px_2px_0px_#1E1210] text-xs disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                      >
+                        ✏️ Modal Edición
+                      </button>
+                      <button
+                        type="button"
+                        disabled={locked}
+                        onClick={() => handleDuplicateNote(note.id)}
+                        className="py-1.5 px-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl border-2 border-slate-300 text-xs disabled:opacity-40 cursor-pointer"
+                        title="Duplicar nota"
+                      >
+                        📋
+                      </button>
+                      <button
+                        type="button"
+                        disabled={locked}
+                        onClick={() => requestDeleteNote(note.id)}
+                        className="py-1.5 px-3 bg-red-100 hover:bg-red-200 text-red-700 font-bold rounded-xl border-2 border-red-300 text-xs disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                        title="Eliminar nota"
+                      >
+                        🗑️
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleToggleLockNote(note.id)}
+                        className="py-1.5 px-3 bg-amber-100 hover:bg-amber-200 text-amber-800 font-bold rounded-xl border-2 border-amber-300 text-xs cursor-pointer"
+                        title={locked ? 'Desbloquear nota' : 'Bloquear nota'}
+                      >
+                        {locked ? '🔓' : '🔒'}
+                      </button>
+                    </div>
+                  </div>
+                );
+              })()}
+
+            {/* INSPECTOR DE RELACIÓN */}
             {selectedRelationshipId &&
               (() => {
                 const rel = schema.relationships.find((r) => r.id === selectedRelationshipId);
@@ -1884,8 +3209,8 @@ function RelationalDatabaseEngineInner() {
                     <button
                       type="button"
                       disabled={relLocked}
-                      onClick={() => handleDeleteRelationship(rel.id)}
-                      className="w-full py-1.5 bg-red-600 hover:bg-red-500 text-white font-bold rounded-xl border-2 border-[#1E1210] text-xs disabled:opacity-40 disabled:cursor-not-allowed"
+                      onClick={() => requestDeleteRelationship(rel.id)}
+                      className="w-full py-1.5 bg-red-600 hover:bg-red-500 text-white font-bold rounded-xl border-2 border-[#1E1210] text-xs disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
                     >
                       🗑️ Eliminar Relación
                     </button>
@@ -1893,24 +3218,25 @@ function RelationalDatabaseEngineInner() {
                 );
               })()}
 
-            {!selectedTableId && !selectedRelationshipId && (
+            {!selectedTableId && !selectedNoteId && !selectedRelationshipId && (
               <div className="flex flex-col gap-3 text-xs text-slate-600">
                 <p className="m-0 leading-relaxed">
-                  Selecciona una tabla o haz clic en una línea de relación para ver y editar sus
-                  atributos.
+                  Selecciona una tabla, nota o línea de relación para ver y editar sus propiedades.
                 </p>
                 <div className="bg-slate-50 p-3 rounded-xl border border-slate-200">
                   <span className="font-black text-slate-800 block mb-1">💡 Consejos Rápidos:</span>
-                  <ul className="list-disc pl-4 space-y-1 text-[0.72rem]">
+                  <ul className="list-disc pl-4 space-y-1.5 text-[0.72rem]">
+                    <li>
+                      <strong>Clic derecho en el lienzo:</strong> crea una <strong>Nota</strong> o <strong>Tabla</strong> donde apuntes con el cursor.
+                    </li>
+                    <li>
+                      <strong>Notas de Texto:</strong> personaliza fondo (post-it, menta, lavanda...), tipografía manuscrita, mono o sans, sin afectar la BD.
+                    </li>
                     <li>
                       Arrastra desde los círculos de la derecha para <strong>conectar tablas</strong>.
                     </li>
                     <li>
-                      <strong>Doble click</strong> en una tabla para editarla.
-                    </li>
-                    <li>
-                      <strong>Clic derecho</strong> en una tabla: editar, duplicar, bloquear o
-                      eliminar.
+                      <strong>Doble click</strong> en una tabla o nota para editarla.
                     </li>
                     <li>Guarda en formato <code>.cyc</code> para continuar tu diseño cuando quieras.</li>
                   </ul>
@@ -1925,6 +3251,96 @@ function RelationalDatabaseEngineInner() {
           MODALES
           ======================================================= */}
 
+      {/* MODAL DE CONFIRMACIÓN DE ELIMINACIÓN */}
+      {deleteTarget && (
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm animate-in fade-in duration-150">
+          <div className="bg-white border-[3px] border-[#1E1210] rounded-2xl p-6 max-w-md w-full shadow-[8px_8px_0px_#1E1210] flex flex-col gap-4">
+            <div className="flex items-start gap-3.5">
+              <div className="w-12 h-12 rounded-2xl bg-red-100 border-2 border-red-500 text-red-600 flex items-center justify-center text-2xl shrink-0 shadow-sm">
+                🗑️
+              </div>
+              <div className="flex-1 min-w-0">
+                <h3 className="m-0 text-base font-black text-[#1E1210]">
+                  {deleteTarget.type === 'table'
+                    ? '¿Eliminar Tabla?'
+                    : deleteTarget.type === 'note'
+                    ? '¿Eliminar Nota de Texto?'
+                    : '¿Eliminar Relación?'}
+                </h3>
+                <div className="mt-1.5 text-xs text-slate-600 leading-relaxed">
+                  {deleteTarget.type === 'table' && (
+                    <>
+                      Estás a punto de eliminar la tabla{' '}
+                      <span className="font-mono font-black text-slate-900 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-300 inline-block">
+                        {deleteTarget.name}
+                      </span>
+                      {deleteTarget.relCount > 0 ? (
+                        <>
+                          {' '}
+                          y sus{' '}
+                          <strong className="text-red-700 font-black">
+                            {deleteTarget.relCount} relación(es)
+                          </strong>{' '}
+                          asociadas.
+                        </>
+                      ) : (
+                        '.'
+                      )}
+                    </>
+                  )}
+
+                  {deleteTarget.type === 'note' && (
+                    <>
+                      Se eliminará la nota{' '}
+                      <span className="font-bold text-slate-900 italic">
+                        "{deleteTarget.title}"
+                      </span>{' '}
+                      del lienzo.
+                    </>
+                  )}
+
+                  {deleteTarget.type === 'relationship' && (
+                    <>
+                      Se eliminará la conexión de clave foránea entre{' '}
+                      <span className="font-mono font-bold text-blue-900 bg-blue-50 px-1.5 py-0.5 rounded border border-blue-200 inline-block">
+                        {deleteTarget.desc}
+                      </span>
+                      .
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <div className="p-3 bg-red-50 rounded-xl border border-red-200 text-[0.72rem] text-red-900 flex items-center gap-2">
+              <span className="text-sm shrink-0">⚠️</span>
+              <span className="font-semibold">
+                Esta acción es permanente y no se puede deshacer.
+              </span>
+            </div>
+
+            <div className="flex items-center justify-end gap-2.5 pt-2 border-t border-slate-200">
+              <button
+                type="button"
+                onClick={() => setDeleteTarget(null)}
+                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs cursor-pointer transition-colors"
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmDelete}
+                className="px-5 py-2 bg-red-600 hover:bg-red-500 text-white font-black rounded-xl border-2 border-[#1E1210] shadow-[2px_2px_0px_#1E1210] text-xs cursor-pointer flex items-center gap-1.5 transition-all hover:scale-[1.02]"
+              >
+                <span>🗑️</span>
+                <span>Sí, Eliminar</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL DE EDICIÓN DE TABLA */}
       {activeModal === 'table' && editingTable && (
         <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
           <div className="bg-white border-[3px] border-[#1E1210] rounded-2xl p-5 max-w-2xl w-full shadow-[8px_8px_0px_#1E1210] max-h-[90vh] flex flex-col">
@@ -1988,7 +3404,7 @@ function RelationalDatabaseEngineInner() {
                         ],
                       });
                     }}
-                    className="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-lg border border-[#1E1210]"
+                    className="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-lg border border-[#1E1210] cursor-pointer"
                   >
                     ➕ Añadir Columna
                   </button>
@@ -2133,14 +3549,14 @@ function RelationalDatabaseEngineInner() {
               <button
                 type="button"
                 onClick={() => setActiveModal(null)}
-                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs"
+                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs cursor-pointer"
               >
                 Cancelar
               </button>
               <button
                 type="button"
                 onClick={handleSaveEditedTable}
-                className="px-5 py-2 bg-blue-600 hover:bg-blue-500 text-white font-black rounded-xl border-2 border-[#1E1210] shadow-[2px_2px_0px_#1E1210] text-xs"
+                className="px-5 py-2 bg-blue-600 hover:bg-blue-500 text-white font-black rounded-xl border-2 border-[#1E1210] shadow-[2px_2px_0px_#1E1210] text-xs cursor-pointer"
               >
                 Guardar Cambios
               </button>
@@ -2149,6 +3565,185 @@ function RelationalDatabaseEngineInner() {
         </div>
       )}
 
+      {/* MODAL DE EDICIÓN DE NOTA */}
+      {activeModal === 'note' && editingNote && (
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+          <div className="bg-white border-[3px] border-[#1E1210] rounded-2xl p-5 max-w-xl w-full shadow-[8px_8px_0px_#1E1210] max-h-[90vh] flex flex-col">
+            <div className="flex items-center justify-between border-b-2 border-slate-200 pb-3 mb-4">
+              <h3 className="m-0 text-base font-black text-[#1E1210] flex items-center gap-2">
+                <span>📝</span> Editar Nota / Detalle de Texto
+              </h3>
+              <button
+                type="button"
+                onClick={() => setActiveModal(null)}
+                className="w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-black text-sm cursor-pointer"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto pr-1 flex flex-col gap-4">
+              <div>
+                <label className="text-xs font-bold text-slate-700 block mb-1">Título de la Nota (opcional):</label>
+                <input
+                  type="text"
+                  value={editingNote.title || ''}
+                  onChange={(e) => setEditingNote({ ...editingNote, title: e.target.value })}
+                  placeholder="Ej. Regla de Negocio / Módulo de Pagos"
+                  className="w-full px-3 py-2 rounded-xl border-2 border-[#1E1210] font-bold text-xs"
+                />
+              </div>
+
+              <div>
+                <label className="text-xs font-bold text-slate-700 block mb-1">Contenido de la Nota:</label>
+                <textarea
+                  value={editingNote.text}
+                  onChange={(e) => setEditingNote({ ...editingNote, text: e.target.value })}
+                  rows={5}
+                  placeholder="Escribe aquí los detalles, notas de arquitectura o requerimientos..."
+                  className="w-full px-3 py-2 rounded-xl border-2 border-[#1E1210] text-xs resize-y"
+                />
+              </div>
+
+              <div>
+                <label className="text-xs font-bold text-slate-700 block mb-1.5">Color de Fondo / Tema:</label>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                  {Object.values(NOTE_THEMES).map((th) => (
+                    <button
+                      key={th.id}
+                      type="button"
+                      onClick={() => setEditingNote({ ...editingNote, theme: th.id })}
+                      className={`px-2.5 py-1.5 rounded-xl text-xs font-bold border flex items-center gap-2 transition-all cursor-pointer ${
+                        editingNote.theme === th.id
+                          ? 'border-2 border-black ring-2 ring-amber-500 shadow-sm scale-[1.02]'
+                          : 'border-slate-300 hover:scale-[1.01]'
+                      }`}
+                      style={{ backgroundColor: th.bg, color: th.textColor }}
+                    >
+                      <span
+                        className="w-3.5 h-3.5 rounded-full border border-black/20 shrink-0"
+                        style={{ backgroundColor: th.border }}
+                      />
+                      <span className="truncate">{th.name.split(' ')[0]}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs font-bold text-slate-700 block mb-1.5">Tipografía / Estilo de Fuente:</label>
+                  <div className="grid grid-cols-2 gap-1.5">
+                    {[
+                      { id: 'sans', label: '🔤 Sans', fontCls: 'font-sans' },
+                      { id: 'handwriting', label: '✍️ Manuscrita', fontCls: 'font-["Caveat",_cursive] font-bold text-sm' },
+                      { id: 'mono', label: '💻 Mono', fontCls: 'font-mono' },
+                      { id: 'serif', label: '📖 Serif', fontCls: 'font-serif' },
+                    ].map((f) => (
+                      <button
+                        key={f.id}
+                        type="button"
+                        onClick={() => setEditingNote({ ...editingNote, fontFamily: f.id as NoteFontFamily })}
+                        className={`px-2 py-1.5 rounded-lg text-xs font-bold border text-center transition-all cursor-pointer ${
+                          (editingNote.fontFamily || 'sans') === f.id
+                            ? 'bg-amber-100 border-2 border-amber-600 text-amber-950 font-black'
+                            : 'bg-white border-slate-300 text-slate-700 hover:bg-slate-50'
+                        } ${f.fontCls}`}
+                      >
+                        {f.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-xs font-bold text-slate-700 block mb-1.5">Tamaño de Letra:</label>
+                  <div className="grid grid-cols-5 gap-1">
+                    {(['xs', 'sm', 'base', 'lg', 'xl'] as NoteFontSize[]).map((sz) => (
+                      <button
+                        key={sz}
+                        type="button"
+                        onClick={() => setEditingNote({ ...editingNote, fontSize: sz })}
+                        className={`py-1.5 rounded-lg text-xs font-bold border text-center uppercase transition-all cursor-pointer ${
+                          (editingNote.fontSize || 'sm') === sz
+                            ? 'bg-[#1E1210] text-white border-[#1E1210]'
+                            : 'bg-white border-slate-300 text-slate-700 hover:bg-slate-50'
+                        }`}
+                      >
+                        {sz}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Vista previa en tiempo real */}
+              <div>
+                <label className="text-[0.7rem] font-bold text-slate-500 uppercase tracking-wider block mb-1">
+                  Vista Previa de la Nota:
+                </label>
+                <div
+                  className="p-3.5 rounded-xl border-2 shadow-sm transition-all whitespace-pre-wrap break-words"
+                  style={{
+                    backgroundColor: (NOTE_THEMES[editingNote.theme] || NOTE_THEMES.yellow).bg,
+                    borderColor: (NOTE_THEMES[editingNote.theme] || NOTE_THEMES.yellow).border,
+                    color: (NOTE_THEMES[editingNote.theme] || NOTE_THEMES.yellow).textColor,
+                    fontFamily:
+                      editingNote.fontFamily === 'handwriting'
+                        ? '"Caveat", cursive'
+                        : editingNote.fontFamily === 'mono'
+                        ? 'monospace'
+                        : editingNote.fontFamily === 'serif'
+                        ? 'Merriweather, serif'
+                        : 'inherit',
+                  }}
+                >
+                  {editingNote.title && (
+                    <div className="font-bold text-xs mb-1 opacity-90 border-b border-black/10 pb-1 flex items-center gap-1">
+                      <span>📝</span>
+                      <span>{editingNote.title}</span>
+                    </div>
+                  )}
+                  <div
+                    className={
+                      editingNote.fontSize === 'xs'
+                        ? 'text-[0.75rem]'
+                        : editingNote.fontSize === 'base'
+                        ? 'text-[0.92rem]'
+                        : editingNote.fontSize === 'lg'
+                        ? 'text-base'
+                        : editingNote.fontSize === 'xl'
+                        ? 'text-lg'
+                        : 'text-xs'
+                    }
+                  >
+                    {editingNote.text || 'Vista previa del texto de la nota...'}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="border-t-2 border-slate-200 pt-3 mt-4 flex items-center justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => setActiveModal(null)}
+                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs cursor-pointer"
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                onClick={handleSaveEditedNote}
+                className="px-5 py-2 bg-amber-500 hover:bg-amber-400 text-amber-950 font-black rounded-xl border-2 border-[#1E1210] shadow-[2px_2px_0px_#1E1210] text-xs cursor-pointer"
+              >
+                Guardar Nota
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL DE SQL DDL */}
       {activeModal === 'sql' && (
         <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
           <div className="bg-[#0f172a] text-slate-100 border-[3px] border-[#1E1210] rounded-2xl p-5 max-w-3xl w-full shadow-[8px_8px_0px_#1E1210] max-h-[90vh] flex flex-col">
@@ -2176,7 +3771,7 @@ function RelationalDatabaseEngineInner() {
                     navigator.clipboard.writeText(generatedSql);
                     notify('¡Script SQL copiado al portapapeles!');
                   }}
-                  className="px-3 py-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-lg text-xs flex items-center gap-1"
+                  className="px-3 py-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-lg text-xs flex items-center gap-1 cursor-pointer"
                 >
                   📋 Copiar SQL
                 </button>
@@ -2184,7 +3779,7 @@ function RelationalDatabaseEngineInner() {
                 <button
                   type="button"
                   onClick={() => setActiveModal(null)}
-                  className="w-8 h-8 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-black text-sm"
+                  className="w-8 h-8 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-black text-sm cursor-pointer"
                 >
                   ✕
                 </button>
@@ -2202,7 +3797,7 @@ function RelationalDatabaseEngineInner() {
               <button
                 type="button"
                 onClick={() => setActiveModal(null)}
-                className="px-4 py-1.5 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-lg"
+                className="px-4 py-1.5 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-lg cursor-pointer"
               >
                 Cerrar
               </button>
@@ -2211,6 +3806,7 @@ function RelationalDatabaseEngineInner() {
         </div>
       )}
 
+      {/* MODAL DE JSON */}
       {activeModal === 'json' && (
         <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
           <div className="bg-white border-[3px] border-[#1E1210] rounded-2xl p-5 max-w-3xl w-full shadow-[8px_8px_0px_#1E1210] max-h-[90vh] flex flex-col">
@@ -2221,7 +3817,7 @@ function RelationalDatabaseEngineInner() {
               <button
                 type="button"
                 onClick={() => setActiveModal(null)}
-                className="w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-black text-sm"
+                className="w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-black text-sm cursor-pointer"
               >
                 ✕
               </button>
@@ -2245,7 +3841,7 @@ function RelationalDatabaseEngineInner() {
                   navigator.clipboard.writeText(jsonText);
                   notify('¡JSON copiado!');
                 }}
-                className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-xl text-xs"
+                className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-xl text-xs cursor-pointer"
               >
                 📋 Copiar al Portapapeles
               </button>
@@ -2253,14 +3849,14 @@ function RelationalDatabaseEngineInner() {
                 <button
                   type="button"
                   onClick={() => setActiveModal(null)}
-                  className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs"
+                  className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs cursor-pointer"
                 >
                   Cancelar
                 </button>
                 <button
                   type="button"
                   onClick={handleApplyJson}
-                  className="px-5 py-2 bg-blue-600 hover:bg-blue-500 text-white font-black rounded-xl border-2 border-[#1E1210] shadow-[2px_2px_0px_#1E1210] text-xs"
+                  className="px-5 py-2 bg-blue-600 hover:bg-blue-500 text-white font-black rounded-xl border-2 border-[#1E1210] shadow-[2px_2px_0px_#1E1210] text-xs cursor-pointer"
                 >
                   Aplicar y Cargar JSON
                 </button>
@@ -2270,6 +3866,7 @@ function RelationalDatabaseEngineInner() {
         </div>
       )}
 
+      {/* MODAL DE PLANTILLAS */}
       {activeModal === 'templates' && (
         <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
           <div className="bg-white border-[3px] border-[#1E1210] rounded-2xl p-5 max-w-xl w-full shadow-[8px_8px_0px_#1E1210]">
@@ -2280,7 +3877,7 @@ function RelationalDatabaseEngineInner() {
               <button
                 type="button"
                 onClick={() => setActiveModal(null)}
-                className="w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-black text-sm"
+                className="w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-black text-sm cursor-pointer"
               >
                 ✕
               </button>
@@ -2317,7 +3914,7 @@ function RelationalDatabaseEngineInner() {
               <button
                 type="button"
                 onClick={() => setActiveModal(null)}
-                className="px-4 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs"
+                className="px-4 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs cursor-pointer"
               >
                 Cerrar
               </button>
@@ -2326,6 +3923,7 @@ function RelationalDatabaseEngineInner() {
         </div>
       )}
 
+      {/* MODAL DE GUÍA */}
       {activeModal === 'guide' && (
         <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
           <div className="bg-white border-[3px] border-[#1E1210] rounded-2xl p-5 max-w-3xl w-full shadow-[8px_8px_0px_#1E1210] max-h-[85vh] flex flex-col">
@@ -2350,31 +3948,25 @@ function RelationalDatabaseEngineInner() {
                   </h4>
                   <p className="m-0 leading-relaxed font-medium">
                     Los archivos <code>.cyc</code> son esquemas JSON estructurados que guardan
-                    metadatos, tablas, columnas, claves primarias (PK), claves foráneas (FK), reglas
-                    de negocio y coordenadas <code>(x, y)</code> en el lienzo.
-                  </p>
-                </div>
-
-                <div className="bg-emerald-50/70 p-4 rounded-xl border border-emerald-200 flex flex-col gap-1.5">
-                  <h4 className="font-black text-emerald-950 text-xs uppercase tracking-wider m-0 flex items-center gap-1">
-                    <span>🔀</span> Relaciones y Reglas
-                  </h4>
-                  <p className="m-0 leading-relaxed font-medium">
-                    Conecta tablas arrastrando desde el puerto circular derecho de una columna origen
-                    hacia el puerto izquierdo de la columna destino. Configura cardinalidad{' '}
-                    <code>1:1</code>, <code>1:N</code>, <code>N:M</code> y cláusulas{' '}
-                    <code>ON DELETE CASCADE / SET NULL / RESTRICT</code>.
+                    metadatos, tablas, columnas, claves primarias (PK), claves foráneas (FK), notas de texto y coordenadas <code>(x, y)</code> en el lienzo.
                   </p>
                 </div>
 
                 <div className="bg-amber-50/70 p-4 rounded-xl border border-amber-200 flex flex-col gap-1.5">
                   <h4 className="font-black text-amber-950 text-xs uppercase tracking-wider m-0 flex items-center gap-1">
+                    <span>📝</span> Notas y Documentación
+                  </h4>
+                  <p className="m-0 leading-relaxed font-medium">
+                    Haz <strong>clic derecho en cualquier parte libre del lienzo</strong> o usa el botón <code>📝 Nota</code> para colocar notas con colores personalizables (post-it, menta, lavanda...) y tipografías (manuscrita, mono, serif, sans).
+                  </p>
+                </div>
+
+                <div className="bg-emerald-50/70 p-4 rounded-xl border border-emerald-200 flex flex-col gap-1.5">
+                  <h4 className="font-black text-emerald-950 text-xs uppercase tracking-wider m-0 flex items-center gap-1">
                     <span>⚡</span> SQL DDL e Imágenes
                   </h4>
                   <p className="m-0 leading-relaxed font-medium">
-                    Genera el código SQL DDL correspondiente en tiempo real con sintaxis compatible
-                    con <strong>PostgreSQL, MySQL, SQLite y Oracle SQL Developer</strong>, o exporta
-                    como imagen PNG de alta resolución.
+                    Genera el código SQL DDL en tiempo real con sintaxis compatible con <strong>PostgreSQL, MySQL, SQLite y Oracle SQL Developer</strong>, o exporta como imagen PNG de alta resolución.
                   </p>
                 </div>
               </div>
@@ -2386,41 +3978,39 @@ function RelationalDatabaseEngineInner() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[0.75rem]">
                   <div className="flex items-center gap-2">
                     <kbd className="px-1.5 py-0.5 rounded bg-white border border-slate-300 font-mono text-[0.7rem] shadow-sm">
+                      Clic derecho en lienzo
+                    </kbd>
+                    <span>Crea una Nota de Texto o Tabla en ese punto</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <kbd className="px-1.5 py-0.5 rounded bg-white border border-slate-300 font-mono text-[0.7rem] shadow-sm">
+                      Doble click
+                    </kbd>
+                    <span>Edita la tabla o nota bajo el cursor</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <kbd className="px-1.5 py-0.5 rounded bg-white border border-slate-300 font-mono text-[0.7rem] shadow-sm">
+                      Zoom
+                    </kbd>
+                    <span>Botones <code>+</code> y <code>−</code> o rueda del ratón</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <kbd className="px-1.5 py-0.5 rounded bg-white border border-slate-300 font-mono text-[0.7rem] shadow-sm">
                       Arrastrar lienzo
                     </kbd>
                     <span>Haz clic y arrastra sobre el fondo del lienzo</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <kbd className="px-1.5 py-0.5 rounded bg-white border border-slate-300 font-mono text-[0.7rem] shadow-sm">
-                      Zoom
+                      Personalizar Nota
                     </kbd>
-                    <span>
-                      Botones <code>+</code> y <code>−</code> o rueda del ratón
-                    </span>
+                    <span>Elige colores de fondo, fuente manuscrita y tamaño</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <kbd className="px-1.5 py-0.5 rounded bg-white border border-slate-300 font-mono text-[0.7rem] shadow-sm">
-                      Doble click
+                      Inspector
                     </kbd>
-                    <span>Edita la tabla bajo el cursor</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <kbd className="px-1.5 py-0.5 rounded bg-white border border-slate-300 font-mono text-[0.7rem] shadow-sm">
-                      Clic derecho
-                    </kbd>
-                    <span>Menú: editar, duplicar, bloquear, eliminar</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <kbd className="px-1.5 py-0.5 rounded bg-white border border-slate-300 font-mono text-[0.7rem] shadow-sm">
-                      Personalizar Color
-                    </kbd>
-                    <span>Selecciona una tabla y elige entre 7 temas visuales</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <kbd className="px-1.5 py-0.5 rounded bg-white border border-slate-300 font-mono text-[0.7rem] shadow-sm">
-                      Maximizar Pantalla
-                    </kbd>
-                    <span>Oculta el inspector o activa el botón de pantalla completa</span>
+                    <span>Panel lateral para ajustar propiedades avanzadas</span>
                   </div>
                 </div>
               </div>
@@ -2450,18 +4040,46 @@ function RelationalDatabaseEngineInner() {
         </div>
       )}
 
-      {ctxMenu && (
+      {/* MENÚ CONTEXTUAL DE TABLA */}
+      {tableCtxMenu && (
         <TableContextMenu
-          menu={ctxMenu}
-          locked={ctxLocked}
+          menu={tableCtxMenu}
+          locked={tableCtxLocked}
           onEdit={() => {
-            const tbl = schemaRef.current.tables.find((t) => t.id === ctxMenu.tableId);
+            const tbl = schemaRef.current.tables.find((t) => t.id === tableCtxMenu.tableId);
             if (tbl) handleOpenEditTable(tbl);
           }}
-          onDuplicate={() => handleDuplicateTable(ctxMenu.tableId)}
-          onToggleLock={() => handleToggleLock(ctxMenu.tableId)}
-          onDelete={() => handleDeleteTable(ctxMenu.tableId)}
-          onClose={() => setCtxMenu(null)}
+          onDuplicate={() => handleDuplicateTable(tableCtxMenu.tableId)}
+          onToggleLock={() => handleToggleLock(tableCtxMenu.tableId)}
+          onDelete={() => requestDeleteTable(tableCtxMenu.tableId)}
+          onClose={() => setTableCtxMenu(null)}
+        />
+      )}
+
+      {/* MENÚ CONTEXTUAL DE NOTA */}
+      {noteCtxMenu && (
+        <NoteContextMenu
+          menu={noteCtxMenu}
+          locked={noteCtxLocked}
+          onEdit={() => {
+            const note = (schemaRef.current.notes || []).find((n) => n.id === noteCtxMenu.noteId);
+            if (note) handleOpenEditNote(note);
+          }}
+          onDuplicate={() => handleDuplicateNote(noteCtxMenu.noteId)}
+          onToggleLock={() => handleToggleLockNote(noteCtxMenu.noteId)}
+          onDelete={() => requestDeleteNote(noteCtxMenu.noteId)}
+          onClose={() => setNoteCtxMenu(null)}
+        />
+      )}
+
+      {/* MENÚ CONTEXTUAL DEL LIENZO (PANE / CLIC DERECHO AFUERA) */}
+      {paneCtxMenu && (
+        <PaneContextMenu
+          menu={paneCtxMenu}
+          onAddNote={(x, y) => handleAddNewNote(x, y)}
+          onAddTable={(x, y) => handleAddNewTable(x, y)}
+          onCenter={handleResetViewport}
+          onClose={() => setPaneCtxMenu(null)}
         />
       )}
     </div>

@@ -529,7 +529,7 @@ export default function DjangoFieldSqlExplorer() {
               <label className="flex items-center gap-2 cursor-pointer text-slate-200 select-none">
                 <input
                   type="checkbox"
-                  checked={config.null}
+                  checked={config.isNull}
                   onChange={(e) => update({ isNull: e.target.checked })}
                   className="rounded border-slate-700 text-emerald-600 focus:ring-emerald-500"
                 />
