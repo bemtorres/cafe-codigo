@@ -165,7 +165,7 @@ const payload = JSON.stringify(
   }
 </div>
 
-<script define:vars={{ rootId }}>
+<script is:inline define:vars={{ rootId }}>
   function initMulti(root) {
     const payloadRaw = root.getAttribute('data-cbm-payload');
     if (!payloadRaw) return;

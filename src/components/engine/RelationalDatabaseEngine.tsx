@@ -1278,7 +1278,6 @@ function RelationalDatabaseEngineInner() {
 
   // Estado para la barra de menú superior de la aplicación
   const [activeTopMenu, setActiveTopMenu] = useState<'archivo' | 'editar' | 'ver' | 'sql' | 'ayuda' | null>(null);
-  const [isEditingTitle, setIsEditingTitle] = useState<boolean>(false);
   const menuBarRef = useRef<HTMLDivElement>(null);
 
   const [tableCtxMenu, setTableCtxMenu] = useState<TableCtxMenuState>(null);
@@ -1298,7 +1297,7 @@ function RelationalDatabaseEngineInner() {
   const schemaRef = useRef(schema);
   schemaRef.current = schema;
 
-  const { zoomIn, zoomOut, setViewport, screenToFlowPosition, fitView } = useReactFlow();
+  const { zoomIn, zoomOut, setViewport, screenToFlowPosition } = useReactFlow();
   const { zoom } = useViewport();
 
   // Cerrar menús contextuales y menús de barra al hacer clic fuera o presionar Escape
@@ -1318,7 +1317,6 @@ function RelationalDatabaseEngineInner() {
         setTableCtxMenu(null);
         setNoteCtxMenu(null);
         setPaneCtxMenu(null);
-        setIsEditingTitle(false);
       }
     };
 

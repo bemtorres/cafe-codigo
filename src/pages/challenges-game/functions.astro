@@ -790,7 +790,7 @@ const exercises = [
                 <button type="button" data-modal-trigger data-ex-id={ex.id} data-ex-title={ex.title} class="open-solution-modal-btn px-3 py-1 bg-cyan-950/80 hover:bg-cyan-900 text-cyan-300 font-nunito font-black text-xs rounded-xl border border-cyan-500/40 shadow-sm transition-all cursor-pointer flex items-center gap-1">
                   Ver solución
                 </button>
-                <label class="flex items-center gap-1.5 text-xs font-extrabold bg-slate-950 hover:bg-slate-800 text-cyan-300 px-2.5 py-1 rounded-lg border border-slate-700 cursor-pointer" onclick="event.stopPropagation()">
+                <label class="flex items-center gap-1.5 text-xs font-extrabold bg-slate-950 hover:bg-slate-800 text-cyan-300 px-2.5 py-1 rounded-lg border border-slate-700 cursor-pointer">
                   <input type="checkbox" data-complete-id={`fn-${ex.id}`} class="w-4 h-4 accent-cyan-500 rounded cursor-pointer" />
                   <span>Completada</span>
                 </label>
@@ -1035,6 +1035,7 @@ const exercises = [
       });
 
       document.querySelectorAll('input[data-complete-id]').forEach((chk) => {
+        chk.closest('label')?.addEventListener('click', (e) => e.stopPropagation());
         chk.addEventListener('change', () => {
           const exId = chk.getAttribute('data-complete-id');
           const isDone = chk.checked;
@@ -1121,7 +1122,7 @@ const exercises = [
         const errorMsg = document.getElementById('mathErrorMessage');
 
         let currentExpectedAnswer = 0;
-        let activeExId = 1;
+
 
         const generateMathChallenge = () => {
           const ops = ['+', '-', '*', '/'];

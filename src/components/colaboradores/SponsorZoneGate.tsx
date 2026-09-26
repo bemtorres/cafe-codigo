@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getSupabaseBrowser, type ProfileRow } from '../../lib/supabase/client';
+import type { ProfileRow } from '../../lib/supabase/client';
 import { useSupabaseAuth } from '../../lib/supabase/useSupabaseAuth';
 
 const KO_FI = 'https://ko-fi.com/cafeycodigo';

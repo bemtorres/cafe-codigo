@@ -337,10 +337,7 @@ ${ch.children.map(c => `            new ${c.name}()`).join(',\n')}
       const solModalTitle = document.getElementById('solModalTitle');
       const btnCloseSolModal = document.getElementById('btnCloseSolModal');
       const closeSolModalBackdrop = document.getElementById('closeSolModalBackdrop');
-      let currentChId = null;
-
-      function openSolModal(chId, title) {
-        currentChId = chId;
+      function openSolModal(_chId, title) {
         if (solModalTitle) solModalTitle.textContent = '💡 Solución del Contrato: ' + title;
         
         // Cargar código de los 5 lenguajes

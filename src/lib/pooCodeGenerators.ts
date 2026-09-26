@@ -122,7 +122,7 @@ export function generatePythonCode(ch: PooCompletedChallenge): string {
     .map(parseMethodUml)
     .filter(pm => pm.isAbstract);
 
-  const pyAbsOverrides = (className: string) => {
+  const pyAbsOverrides = (_className?: string) => {
     return parentAbsMethods.map(pm => {
       return `    def ${pm.name}(self${pm.params ? ', ' + pm.params : ''}):\n        print(f"Implementación de ${pm.name} en {self.__class__.__name__}")`;
     }).join('\n\n');

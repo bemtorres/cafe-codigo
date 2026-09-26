@@ -145,7 +145,7 @@ const exercises = [
                 </h3>
               </div>
               <div class="flex items-center gap-2 shrink-0">
-                <label class="flex items-center gap-1.5 text-xs font-extrabold bg-emerald-50 hover:bg-emerald-100 text-emerald-900 px-2.5 py-1 rounded-lg border border-emerald-200 cursor-pointer" onclick="event.stopPropagation()">
+                <label class="flex items-center gap-1.5 text-xs font-extrabold bg-emerald-50 hover:bg-emerald-100 text-emerald-900 px-2.5 py-1 rounded-lg border border-emerald-200 cursor-pointer">
                   <input type="checkbox" data-complete-id={`u2-${ex.id}`} class="w-4 h-4 accent-emerald-600 rounded cursor-pointer" />
                   <span>Completado</span>
                 </label>
@@ -294,7 +294,8 @@ const exercises = [
 
       // Listener para checkboxes de completado directo (en el listado rápido y en el header de la tarjeta)
       document.querySelectorAll('input[data-complete-id]').forEach((chk) => {
-        chk.addEventListener('change', (e) => {
+        chk.closest('label')?.addEventListener('click', (e) => e.stopPropagation());
+        chk.addEventListener('change', () => {
           const exId = chk.getAttribute('data-complete-id');
           const isDone = chk.checked;
           const s = readStore();

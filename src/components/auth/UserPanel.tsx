@@ -6,7 +6,6 @@ import type { LessonBookmarkRow, ProfileRow } from '../../lib/supabase/client';
 import { quizPercent, type QuizProgressRow } from '../../lib/supabase/quizProgress';
 import { useSupabaseAuth } from '../../lib/supabase/useSupabaseAuth';
 import { passwordProtectedSlugs, tryUnlockWithSecret } from '../../lib/courseUnlock';
-import UserLevelCard from './UserLevelCard';
 import { UserBadgesCard } from '../badges/UserBadgesCard';
 
 const categoryOrder: CourseCategory[] = [

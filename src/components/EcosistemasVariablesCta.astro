@@ -3,7 +3,7 @@ interface Props {
   compact?: boolean;
   code?: string;
 }
-const { compact = false, code } = Astro.props;
+const { compact: _compact = false, code } = Astro.props;
 const href = code ? `/course/ecosistemas/variables-convenciones/?code=${encodeURIComponent(code)}` : '/course/ecosistemas/variables-convenciones/';
 ---
 

@@ -2,7 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import CodeBlock from '../../components/CodeBlock.astro';
 import { functionSolutions } from '../../data/functionSolutions';
-import { highlightLine, idePalettes, langColors } from '../../lib/codeHighlight';
+
 
 
 const exercises = [
@@ -770,7 +770,7 @@ const exercises = [
                 <button type="button" data-modal-trigger data-ex-id={ex.id} data-ex-title={ex.title} class="open-solution-modal-btn px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-800 font-nunito font-black text-xs rounded-xl border-2 border-[#1E1210] shadow-[2px_2px_0px_#1E1210] transition-all cursor-pointer flex items-center gap-1">
                   Ver solución
                 </button>
-                <label class="flex items-center gap-1.5 text-xs font-extrabold bg-sky-50 hover:bg-sky-100 text-sky-900 px-2.5 py-1 rounded-lg border border-sky-200 cursor-pointer" onclick="event.stopPropagation()">
+                <label class="flex items-center gap-1.5 text-xs font-extrabold bg-sky-50 hover:bg-sky-100 text-sky-900 px-2.5 py-1 rounded-lg border border-sky-200 cursor-pointer">
                   <input type="checkbox" data-complete-id={`fn-${ex.id}`} class="w-4 h-4 accent-sky-600 rounded cursor-pointer" />
                   <span>Completado</span>
                 </label>
@@ -1066,6 +1066,7 @@ FinAlgoritmo`}
       });
 
       document.querySelectorAll('input[data-complete-id]').forEach((chk) => {
+        chk.closest('label')?.addEventListener('click', (e) => e.stopPropagation());
         chk.addEventListener('change', () => {
           const exId = chk.getAttribute('data-complete-id');
           const isDone = chk.checked;
@@ -1142,7 +1143,7 @@ FinAlgoritmo`}
         const errorMsg = document.getElementById('mathErrorMessage');
 
         let currentExpectedAnswer = 0;
-        let activeExId = 1;
+
 
         // Genera un ejercicio de matemáticas aleatorio: suma, resta, multiplicación o división
         const generateMathChallenge = () => {
@@ -1190,7 +1191,7 @@ FinAlgoritmo`}
           panels.forEach((p) => {
             const lang = p.getAttribute('data-lang-panel');
             const codeContent = sol[lang];
-            const codeEl = p.querySelector('.code-viewer span.whitespace-pre');
+
             const linesContainer = p.querySelector('.code-viewer');
             
             // Si el bloque CodeBlock ya se encuentra renderizado dinámicamente

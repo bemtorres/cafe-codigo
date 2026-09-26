@@ -120,7 +120,7 @@ const exercises = [
                 </h3>
               </div>
               <div class="flex items-center gap-2 shrink-0">
-                <label class="flex items-center gap-1.5 text-xs font-extrabold bg-indigo-50 hover:bg-indigo-100 text-indigo-900 px-2.5 py-1 rounded-lg border border-indigo-200 cursor-pointer" onclick="event.stopPropagation()">
+                <label class="flex items-center gap-1.5 text-xs font-extrabold bg-indigo-50 hover:bg-indigo-100 text-indigo-900 px-2.5 py-1 rounded-lg border border-indigo-200 cursor-pointer">
                   <input type="checkbox" data-complete-id={`arr-dict-${ex.id}`} class="w-4 h-4 accent-indigo-600 rounded cursor-pointer" />
                   <span>Completado</span>
                 </label>
@@ -247,6 +247,7 @@ const exercises = [
       });
 
       document.querySelectorAll('input[data-complete-id]').forEach((chk) => {
+        chk.closest('label')?.addEventListener('click', (e) => e.stopPropagation());
         chk.addEventListener('change', () => {
           const exId = chk.getAttribute('data-complete-id');
           const isDone = chk.checked;

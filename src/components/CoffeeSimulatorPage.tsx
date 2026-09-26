@@ -485,26 +485,6 @@ export default function CoffeeSimulatorPage() {
   const [preparing, setPreparing] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [secsLeft, setSecsLeft] = useState(0);
-  const [history, setHistory] = useState<(CoffeeHistoryRow | LocalHistoryEntry)[]>([]);
-  const [historyLoading, setHistoryLoading] = useState(false);
-
-  const loadHistory = useCallback(async () => {
-    setHistoryLoading(true);
-    const supabase = getSupabaseBrowser();
-    if (supabase && user?.id) {
-      const { data } = await supabase
-        .from('coffee_history')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('finished_at', { ascending: false })
-        .limit(30);
-      setHistory((data as CoffeeHistoryRow[]) ?? []);
-    } else {
-      setHistory(loadLocalHistory());
-    }
-    setHistoryLoading(false);
-  }, [user?.id]);
-
   // Al montar: leer localStorage
   useEffect(() => {
     setMounted(true);
@@ -523,11 +503,6 @@ export default function CoffeeSimulatorPage() {
       }
     }
   }, []);
-
-  // Cargar historial cuando se monta y cuando cambia el usuario
-  useEffect(() => {
-    if (mounted) void loadHistory();
-  }, [mounted, loadHistory]);
 
   // Cuenta regresiva: tick cada segundo mientras hay café preparado
   useEffect(() => {
@@ -606,7 +581,7 @@ export default function CoffeeSimulatorPage() {
     setSelectedCoffee('cappuccino');
     setSelectedMilk('entera');
     setTempMode('hot');
-    void loadHistory();
+    window.dispatchEvent(new CustomEvent('cafe-del-dia-update'));
   }
 
   if (!mounted) {

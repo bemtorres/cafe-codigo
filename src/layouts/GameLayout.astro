@@ -17,24 +17,12 @@ const {
   activeModule,
 } = Astro.props;
 
-const currentPath = Astro.url.pathname;
-const normalizedPath = currentPath.replace(/\/$/, "");
-
 const CANONICAL_SITE = 'https://cafeycodigo.org';
 const rawPath = Astro.url.pathname;
 const normalizedCanonicalPath = rawPath === '' || rawPath === '/'
   ? '/'
   : (rawPath.endsWith('/') || rawPath.includes('.') ? rawPath : `${rawPath}/`);
 const computedCanonicalUrl = `${CANONICAL_SITE}${normalizedCanonicalPath}`;
-
-const navLinks = [
-  // { href: '/challenges-game/', label: 'Hub Principal', icon: '🏠', id: 'hub' },
-  // { href: '/challenges-game/functions/', label: '01. Funciones', icon: '⚡', id: 'functions', count: 50 },
-  // { href: '/challenges-game/conditionals-rpg/', label: '02. Combate RPG', icon: '⚔️', id: 'conditionals', count: 20 },
-  // { href: '/challenges-game/inventory-arrays/', label: '03. Inventarios', icon: '🎒', id: 'inventory', count: 20 },
-  // { href: '/challenges-game/dungeon-matrices/', label: '04. Mazmorras 2D', icon: '🗺️', id: 'dungeons', count: 20 },
-  // { href: '/challenges-game/hero-classes-poo/', label: '05. Héroes POO', icon: '🧙‍♂️', id: 'poo', count: 20 },
-];
 ---
 
 <!doctype html>
@@ -65,7 +53,7 @@ const navLinks = [
 
     <title>{title} | Zona Gamer · Café y Código</title>
 
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-CSJTCX1FHC"
+    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-CSJTCX1FHC"
     ></script>
     <script is:inline>
       window.dataLayer = window.dataLayer || [];

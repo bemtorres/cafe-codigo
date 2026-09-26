@@ -368,7 +368,7 @@ const exercises = [
                   <button type="button" data-modal-trigger data-ex-id={ex.id} data-ex-title={ex.title} class="open-solution-modal-btn px-3 py-1 bg-emerald-950/80 hover:bg-emerald-900 text-emerald-300 font-nunito font-black text-xs rounded-xl border border-emerald-500/40 shadow-sm transition-all cursor-pointer">
                     Ver solución
                   </button>
-                  <label class="flex items-center gap-1.5 text-xs font-extrabold bg-slate-950 hover:bg-slate-800 text-emerald-300 px-2.5 py-1 rounded-lg border border-slate-700 cursor-pointer" onclick="event.stopPropagation()">
+                  <label class="flex items-center gap-1.5 text-xs font-extrabold bg-slate-950 hover:bg-slate-800 text-emerald-300 px-2.5 py-1 rounded-lg border border-slate-700 cursor-pointer">
                     <input type="checkbox" data-complete-id={`dng-${ex.id}`} class="w-4 h-4 accent-emerald-500 rounded cursor-pointer" />
                     <span>Completada</span>
                   </label>
@@ -527,6 +527,7 @@ const exercises = [
       });
 
       document.querySelectorAll('input[data-complete-id]').forEach((chk) => {
+        chk.closest('label')?.addEventListener('click', (e) => e.stopPropagation());
         chk.addEventListener('change', () => {
           const exId = chk.getAttribute('data-complete-id');
           const isDone = chk.checked;
