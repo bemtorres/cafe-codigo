@@ -321,6 +321,7 @@ export default function CourseSlideViewer({
   const [showOverview, setShowOverview] = useState(false);
   const [copiedCode, setCopiedCode] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [touchStartX, setTouchStartX] = useState<number | null>(null);
 
   // Estados de Plantillas de Diseño (5 Templates)
   const [templateId, setTemplateId] = useState<SlideTemplateId>('material');
