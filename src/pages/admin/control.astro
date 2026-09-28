@@ -1,6 +1,17 @@
 ---
-import AdminLayout from '../../layouts/AdminLayout.astro';
+import AdminShellLayout from '../../layouts/AdminShellLayout.astro';
 import { courses } from '../../data/courses';
+import {
+  ArrowRight,
+  BookOpen,
+  ChartColumn,
+  Check,
+  Presentation,
+  Search,
+  Trophy,
+  Users,
+  Zap,
+} from '@lucide/astro';
 
 // Métricas de cursos y diapositivas
 const totalCourses = courses.length;
@@ -26,294 +37,237 @@ const adminModules = [
   {
     title: 'Embed Cursos & Quizzes',
     badge: 'LMS & Contenido',
-    badgeColor: 'bg-sky-950/80 text-sky-400 border-sky-700/60',
-    icon: '📚',
-    gradient: 'from-sky-500/20 to-indigo-500/10',
-    borderHover: 'hover:border-sky-500',
+    Icon: BookOpen,
     description:
       'Generador de URLs e iframes para incrustar lecciones y cursos completos en Canvas, Moodle, Blackboard o páginas externas con personalización por parámetros GET.',
     href: '/admin/embed/',
     stats: `${totalCourses} cursos · ${totalLessons} lecciones`,
     features: ['Branding institucional', 'Opciones de quiz on/off', 'Generación de links seguros'],
-    ctaText: 'Abrir Generador de Cursos',
+    ctaText: 'Abrir generador',
   },
   {
     title: 'Embed Desafíos Express',
-    badge: 'Interactivos ⚡',
-    badgeColor: 'bg-amber-950/80 text-amber-400 border-amber-700/60',
-    icon: '⚡',
-    gradient: 'from-amber-500/20 to-orange-500/10',
-    borderHover: 'hover:border-amber-500',
+    badge: 'Interactivos',
+    Icon: Zap,
     description:
       'Crea minijuegos de programación interactivos con temporizador, vidas limitadas, niveles de dificultad y selección de lenguaje (C++, Python, JavaScript, Java).',
     href: '/admin/embed-challenges-express/',
-    stats: '11 Módulos temáticos · 90+ Ejercicios',
-    features: ['Vidas / Intentos configurables', 'Filtro por dificultad (E/M/A)', 'Modo examen cronometrado'],
-    ctaText: 'Configurar Desafíos Express',
+    stats: '11 módulos · 90+ ejercicios',
+    features: ['Vidas / intentos configurables', 'Filtro por dificultad (E/M/A)', 'Modo examen cronometrado'],
+    ctaText: 'Configurar desafíos',
   },
   {
     title: 'Embed PPT / Slides',
-    badge: '5 Estilos Visuales 🎨',
-    badgeColor: 'bg-indigo-950/80 text-indigo-400 border-indigo-700/60',
-    icon: '📊',
-    gradient: 'from-indigo-500/20 to-purple-500/10',
-    borderHover: 'hover:border-indigo-500',
+    badge: '5 estilos visuales',
+    Icon: Presentation,
     description:
       'Presentaciones interactivas en diapositivas con soporte dinámico de 5 sistemas de diseño (Google, Apple, Microsoft, AWS, Vercel) y parámetro &style= en URL.',
     href: '/admin/embed-ppt/',
     stats: `${pptCourses.length} cursos activos (${totalPptLessons} lecciones)`,
-    features: ['Parámetro &style= en tiempo real', 'Temporizador flotante movible', 'Evaluación evaluativa 10 preguntas'],
-    ctaText: 'Crear Presentación Diapositiva',
+    features: ['Parámetro &style= en tiempo real', 'Temporizador flotante movible', 'Evaluación de 10 preguntas'],
+    ctaText: 'Crear presentación',
   },
   {
     title: 'Dashboard de Rendimiento',
     badge: 'Analítica',
-    badgeColor: 'bg-emerald-950/80 text-emerald-400 border-emerald-700/60',
-    icon: '📈',
-    gradient: 'from-emerald-500/20 to-teal-500/10',
-    borderHover: 'hover:border-emerald-500',
+    Icon: ChartColumn,
     description:
       'Métricas globales de actividad, tasa de finalización de ejercicios, visitas a lecciones y datos agregados de rendimiento de los estudiantes.',
     href: '/admin/dashboard/',
     stats: 'Monitoreo en tiempo real',
     features: ['Progreso por estudiante', 'Tasas de acierto en quizzes', 'Historial de actividad'],
-    ctaText: 'Ver Métricas del Sistema',
+    ctaText: 'Ver métricas',
   },
   {
     title: 'Gestión de Usuarios',
     badge: 'Comunidad & Roles',
-    badgeColor: 'bg-violet-950/80 text-violet-400 border-violet-700/60',
-    icon: '👥',
-    gradient: 'from-violet-500/20 to-fuchsia-500/10',
-    borderHover: 'hover:border-violet-500',
+    Icon: Users,
     description:
       'Administración de perfiles de usuario, asignación de permisos docentes, supervisión de cuentas registradas y control de accesos.',
     href: '/admin/users/',
     stats: 'Control de accesos y roles',
-    features: ['Roles (Admin, Docente, Alumno)', 'Edición de perfiles', 'Historial de sesiones'],
-    ctaText: 'Gestionar Usuarios',
+    features: ['Roles (admin, docente, alumno)', 'Edición de perfiles', 'Historial de sesiones'],
+    ctaText: 'Gestionar usuarios',
   },
   {
     title: 'Gestor de Insignias',
     badge: 'Gamificación',
-    badgeColor: 'bg-rose-950/80 text-rose-400 border-rose-700/60',
-    icon: '🎖️',
-    gradient: 'from-rose-500/20 to-red-500/10',
-    borderHover: 'hover:border-rose-500',
+    Icon: Trophy,
     description:
       'Configuración de insignias de logro, medallas por resolución de retos de código y reglas de desbloqueo automático para motivar el aprendizaje.',
     href: '/admin/badges/',
     stats: 'Catálogo de reconocimientos',
-    features: ['Niveles bronce, plata, oro', 'Criterios de desbloqueo', 'Diseño de badges'],
-    ctaText: 'Administrar Insignias',
+    features: ['Niveles bronce, plata, oro', 'Criterios de desbloqueo', 'Diseño de insignias'],
+    ctaText: 'Administrar insignias',
   },
+];
+
+const stats = [
+  { label: 'Cursos activos', value: String(totalCourses), hint: 'Catálogo total' },
+  { label: 'Lecciones', value: String(totalLessons), hint: 'En todos los cursos' },
+  {
+    label: 'Presentaciones PPT',
+    value: String(totalPptLessons),
+    hint: `${pptCourses.length} cursos con slides`,
+  },
+  { label: 'Desafíos Express', value: '90+', hint: '11 módulos temáticos' },
+];
+
+const quickLinks = [
+  {
+    href: '/course-slides/django/modelo-bd/?style=cupertino',
+    label: 'PPT: Django · modelo-bd',
+    meta: '?style=cupertino',
+  },
+  {
+    href: '/challenges-express/',
+    label: 'Desafíos Express en vivo',
+    meta: '11 módulos',
+  },
+  { href: '/cursos/', label: 'Catálogo público', meta: 'Portal de cursos' },
+  { href: '/admin/embed/?preset=clean', label: 'Embed limpio', meta: 'Sin quiz ni branding' },
 ];
 ---
 
-<AdminLayout
+<AdminShellLayout
   title="Admin · Centro de Control"
   description="Panel centralizado de administración, generadores de embeds y herramientas de Café y Código."
   activeSection="control"
 >
-  <article class="w-full max-w-7xl mx-auto pb-16 px-1">
-    <!-- HERO HEADER DEL CENTRO DE CONTROL -->
-    <header class="relative overflow-hidden rounded-3xl border-2 border-slate-700/80 bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-950/40 p-6 sm:p-8 shadow-2xl mb-8">
-      <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-        <div class="max-w-3xl">
-          <div class="flex items-center gap-2 mb-3 flex-wrap">
-            <span class="text-xs font-black uppercase tracking-wider px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 flex items-center gap-1.5 shadow-xs">
-              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span>Centro de Control Operativo</span>
-            </span>
-            <span class="text-xs font-mono font-bold text-slate-400 bg-slate-800/80 px-2 py-0.5 rounded-md border border-slate-700">
-              /admin/control
-            </span>
-          </div>
+  <div class="mx-auto w-full max-w-7xl pb-8">
+    <!-- HEADER DE PÁGINA -->
+    <header>
+      <span
+        class="inline-flex items-center gap-1.5 rounded-full border border-zinc-200 bg-white px-2.5 py-1 text-[11px] font-medium text-zinc-600 shadow-sm"
+      >
+        <span class="size-1.5 rounded-full bg-emerald-500"></span>
+        Centro de Control Operativo
+      </span>
 
-          <h1 class="text-2xl sm:text-4xl font-black text-white tracking-tight leading-tight m-0">
-            Panel de Control y Herramientas <span class="bg-gradient-to-r from-sky-400 via-indigo-300 to-amber-300 bg-clip-text text-transparent">Admin</span>
-          </h1>
-
-          <p class="text-slate-300 text-sm sm:text-base font-medium mt-2 leading-relaxed m-0 max-w-2xl">
-            Bienvenido al centro neurálgico de <strong>Café y Código</strong>. Accede a los generadores de embeds de cursos, desafíos interactivos, presentaciones en diapositivas con múltiples temas y herramientas analíticas.
-          </p>
-        </div>
-
-        <!-- TARJETAS DE ESTADÍSTICAS RÁPIDAS -->
-        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 shrink-0">
-          <div class="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-3.5 flex flex-col justify-between shadow-lg">
-            <span class="text-[10px] font-black uppercase text-slate-400 tracking-wider">Cursos Activos</span>
-            <div class="flex items-baseline gap-1.5 mt-1">
-              <span class="text-2xl font-black text-white">{totalCourses}</span>
-              <span class="text-xs font-mono text-slate-400">totales</span>
-            </div>
-            <span class="text-[10px] text-emerald-400 font-bold mt-1">✓ {totalLessons} Lecciones</span>
-          </div>
-
-          <div class="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-3.5 flex flex-col justify-between shadow-lg">
-            <span class="text-[10px] font-black uppercase text-slate-400 tracking-wider">Presentaciones PPT</span>
-            <div class="flex items-baseline gap-1.5 mt-1">
-              <span class="text-2xl font-black text-indigo-400">{totalPptLessons}</span>
-              <span class="text-xs font-mono text-slate-400">slides</span>
-            </div>
-            <span class="text-[10px] text-indigo-300 font-bold mt-1">🎨 5 Estilos activos</span>
-          </div>
-
-          <div class="col-span-2 sm:col-span-1 bg-slate-800/80 border border-slate-700/80 rounded-2xl p-3.5 flex flex-col justify-between shadow-lg">
-            <span class="text-[10px] font-black uppercase text-slate-400 tracking-wider">Desafíos Express</span>
-            <div class="flex items-baseline gap-1.5 mt-1">
-              <span class="text-2xl font-black text-amber-400">90+</span>
-              <span class="text-xs font-mono text-slate-400">ejercicios</span>
-            </div>
-            <span class="text-[10px] text-amber-300 font-bold mt-1">⚡ 11 Módulos</span>
-          </div>
-        </div>
-      </div>
+      <h1 class="mt-3 text-2xl tracking-tight text-zinc-950">
+        Panel de Control y Herramientas
+      </h1>
+      <p class="mt-1 max-w-2xl text-sm leading-relaxed text-zinc-500">
+        Centro neurálgico de <strong>Café y Código</strong>. Accede a los generadores de embeds de
+        cursos, desafíos interactivos, presentaciones con múltiples temas y herramientas analíticas.
+      </p>
     </header>
 
-    <!-- BARRA DE BÚSQUEDA Y FILTRADO DE MÓDULOS -->
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
-      <div>
-        <h2 class="text-lg font-black text-white m-0 flex items-center gap-2">
-          <span>🛠️ Módulos de Administración y Generación</span>
-        </h2>
-        <p class="text-xs text-slate-400 m-0 mt-0.5 font-medium">
+    <!-- TARJETAS DE ESTADÍSTICAS -->
+    <div class="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      {
+        stats.map((stat) => (
+          <div class="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm">
+            <p class="m-0 text-[11px] font-medium uppercase tracking-wider text-zinc-500">
+              {stat.label}
+            </p>
+            <p class="m-0 mt-1 text-2xl font-semibold tabular-nums text-zinc-950">{stat.value}</p>
+            <p class="m-0 mt-1 text-xs text-zinc-500">{stat.hint}</p>
+          </div>
+        ))
+      }
+    </div>
+
+    <!-- BARRA DE HERRAMIENTAS -->
+    <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+      <div class="min-w-0">
+        <h2 class="m-0 text-base text-zinc-950">Módulos de administración</h2>
+        <p class="m-0 mt-0.5 text-xs text-zinc-500">
           Selecciona un módulo para abrir sus herramientas de configuración o generación de embeds.
         </p>
       </div>
 
-      <div class="relative">
+      <div class="relative w-full sm:w-64">
+        <Search
+          class="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-zinc-400"
+        />
         <input
           id="moduleSearch"
           type="text"
           placeholder="Filtrar herramientas..."
-          class="w-full sm:w-64 rounded-xl border-2 border-slate-700 bg-slate-900 px-3.5 py-2 text-xs font-bold text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none transition-all shadow-inner"
+          aria-label="Filtrar herramientas"
+          class="h-9 w-full rounded-md border border-zinc-200 bg-white pl-8 pr-3 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-900/10"
         />
       </div>
     </div>
 
-    <!-- CUADRÍCULA DE MÓDULOS ADMINISTRATIVOS -->
-    <div id="modulesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-      {adminModules.map((mod) => (
-        <div
-          class={`admin-module-card group rounded-2xl border-2 border-slate-700/70 bg-slate-800/80 p-5 flex flex-col justify-between transition-all duration-200 hover:-translate-y-1 hover:shadow-2xl ${mod.borderHover} relative overflow-hidden`}
-          data-title={mod.title.toLowerCase()}
-          data-desc={mod.description.toLowerCase()}
-        >
-          <!-- Gradiente de fondo decorativo al hover -->
-          <div class={`absolute inset-0 bg-gradient-to-br ${mod.gradient} opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none`}></div>
-
-          <div class="relative z-10">
-            <!-- Header de tarjeta -->
-            <div class="flex items-center justify-between gap-2 mb-3">
-              <span class="text-3xl p-2.5 rounded-2xl bg-slate-900/80 border border-slate-700/60 shadow-inner inline-block">
-                {mod.icon}
-              </span>
-              <span class={`text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-md border ${mod.badgeColor}`}>
-                {mod.badge}
-              </span>
-            </div>
-
-            <!-- Título y descripción -->
-            <h3 class="text-base sm:text-lg font-black text-white group-hover:text-indigo-300 transition-colors m-0 mb-2">
-              {mod.title}
-            </h3>
-
-            <p class="text-xs text-slate-300 font-medium leading-relaxed m-0 mb-4">
-              {mod.description}
-            </p>
-
-            <!-- Lista de características -->
-            <div class="space-y-1 mb-4 pt-3 border-t border-slate-700/60">
-              {mod.features.map((feat) => (
-                <div class="flex items-center gap-1.5 text-[11px] text-slate-400 font-medium">
-                  <span class="text-emerald-400">✓</span>
-                  <span>{feat}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <!-- Footer con acción -->
-          <div class="relative z-10 pt-3 border-t border-slate-700/60 flex items-center justify-between gap-2 mt-auto">
-            <span class="text-[10px] font-mono font-bold text-slate-400">
-              {mod.stats}
-            </span>
-
-            <a
-              href={mod.href}
-              class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-slate-700 group-hover:bg-indigo-600 text-white font-black text-xs transition-all shadow-md group-hover:scale-105"
+    <!-- CUADRÍCULA DE MÓDULOS -->
+    <div id="modulesGrid" class="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+      {
+        adminModules.map((mod) => {
+          const { Icon } = mod;
+          return (
+            <div
+              class="admin-module-card group relative flex flex-col rounded-xl border border-zinc-200 bg-white p-5 shadow-sm transition-all hover:border-zinc-300 hover:shadow-md"
+              data-title={mod.title.toLowerCase()}
+              data-desc={mod.description.toLowerCase()}
             >
-              <span>{mod.ctaText}</span>
-              <span>→</span>
-            </a>
-          </div>
-        </div>
-      ))}
+              <div class="flex items-start justify-between gap-3">
+                <span class="flex size-10 shrink-0 items-center justify-center rounded-lg border border-zinc-200 bg-zinc-100 text-zinc-700">
+                  <Icon class="size-5" />
+                </span>
+                <span class="rounded-full border border-zinc-200 bg-zinc-50 px-2 py-0.5 text-[11px] font-medium text-zinc-600">
+                  {mod.badge}
+                </span>
+              </div>
+
+              <h3 class="m-0 mt-4 text-base text-zinc-950">{mod.title}</h3>
+              <p class="m-0 mt-1 text-xs leading-relaxed text-zinc-500">{mod.description}</p>
+
+              <ul class="m-0 mt-4 list-none space-y-1.5 border-t border-zinc-100 p-0 pt-4">
+                {mod.features.map((feat) => (
+                  <li class="flex items-center gap-2 text-xs text-zinc-600">
+                    <Check class="size-3.5 shrink-0 text-emerald-600" />
+                    <span>{feat}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <div class="mt-auto flex items-center justify-between gap-3 border-t border-zinc-100 pt-4">
+                <span class="truncate font-mono text-[11px] text-zinc-400">{mod.stats}</span>
+                <a
+                  href={mod.href}
+                  class="inline-flex h-8 shrink-0 items-center gap-1.5 rounded-md bg-zinc-900 px-3 text-xs font-medium text-white no-underline transition-colors hover:bg-zinc-800"
+                >
+                  <span>{mod.ctaText}</span>
+                  <ArrowRight class="size-3.5" />
+                </a>
+              </div>
+            </div>
+          );
+        })
+      }
     </div>
 
-    <!-- ACCESOS RÁPIDOS Y ENLACES DIRECTOS -->
-    <section class="mt-10 rounded-2xl border-2 border-slate-700/80 bg-slate-900/70 p-5 shadow-xl">
-      <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
-        <div class="flex items-center gap-2">
-          <span class="text-base">🚀</span>
-          <h3 class="text-xs sm:text-sm font-black uppercase text-slate-300 tracking-wider m-0">
-            Accesos Rápidos a Recursos en Vivo
-          </h3>
-        </div>
-        <span class="text-[11px] font-mono text-slate-500">URLs directas para verificación</span>
+    <!-- ACCESOS RÁPIDOS -->
+    <section class="mt-8 rounded-xl border border-zinc-200 bg-white p-5 shadow-sm">
+      <div class="mb-4 flex flex-wrap items-center justify-between gap-2">
+        <h3 class="m-0 text-sm text-zinc-950">Accesos rápidos a recursos en vivo</h3>
+        <span class="font-mono text-[11px] text-zinc-400">URLs directas para verificación</span>
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-        <a
-          href="/course-slides/django/modelo-bd/?style=cupertino"
-          target="_blank"
-          class="p-3 rounded-xl bg-slate-800/80 border border-slate-700 hover:border-indigo-400 transition-all flex flex-col justify-between group"
-        >
-          <div class="flex items-center justify-between text-xs font-bold text-slate-300 mb-1">
-            <span>📊 PPT: Django modelo-bd</span>
-            <span class="text-indigo-400 group-hover:translate-x-0.5 transition-transform">↗</span>
-          </div>
-          <span class="text-[10px] font-mono text-indigo-300 truncate">?style=cupertino</span>
-        </a>
-
-        <a
-          href="/challenges-express/"
-          target="_blank"
-          class="p-3 rounded-xl bg-slate-800/80 border border-slate-700 hover:border-amber-400 transition-all flex flex-col justify-between group"
-        >
-          <div class="flex items-center justify-between text-xs font-bold text-slate-300 mb-1">
-            <span>⚡ Desafíos Express Live</span>
-            <span class="text-amber-400 group-hover:translate-x-0.5 transition-transform">↗</span>
-          </div>
-          <span class="text-[10px] font-mono text-amber-300 truncate">11 módulos express</span>
-        </a>
-
-        <a
-          href="/cursos/"
-          target="_blank"
-          class="p-3 rounded-xl bg-slate-800/80 border border-slate-700 hover:border-sky-400 transition-all flex flex-col justify-between group"
-        >
-          <div class="flex items-center justify-between text-xs font-bold text-slate-300 mb-1">
-            <span>📖 Catálogo Público</span>
-            <span class="text-sky-400 group-hover:translate-x-0.5 transition-transform">↗</span>
-          </div>
-          <span class="text-[10px] font-mono text-sky-300 truncate">Portal de Cursos</span>
-        </a>
-
-        <a
-          href="/admin/embed/?preset=clean"
-          class="p-3 rounded-xl bg-slate-800/80 border border-slate-700 hover:border-emerald-400 transition-all flex flex-col justify-between group"
-        >
-          <div class="flex items-center justify-between text-xs font-bold text-slate-300 mb-1">
-            <span>🎯 Embed Limpio</span>
-            <span class="text-emerald-400 group-hover:translate-x-0.5 transition-transform">→</span>
-          </div>
-          <span class="text-[10px] font-mono text-emerald-300 truncate">Preset sin quiz ni branding</span>
-        </a>
+      <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        {
+          quickLinks.map((link) => (
+            <a
+              href={link.href}
+              target={link.href.startsWith('/admin') ? undefined : '_blank'}
+              rel="noopener"
+              class="flex items-center justify-between gap-3 rounded-lg border border-zinc-200 bg-zinc-50 p-3 no-underline transition-colors hover:border-zinc-300 hover:bg-white"
+            >
+              <span class="min-w-0">
+                <span class="block truncate text-xs font-medium text-zinc-800">{link.label}</span>
+                <span class="mt-0.5 block truncate font-mono text-[11px] text-zinc-400">
+                  {link.meta}
+                </span>
+              </span>
+              <ArrowRight class="size-4 shrink-0 text-zinc-400" />
+            </a>
+          ))
+        }
       </div>
     </section>
-  </article>
+  </div>
 
   <script is:inline>
     (function () {
@@ -334,4 +288,4 @@ const adminModules = [
       });
     })();
   </script>
-</AdminLayout>
+</AdminShellLayout>

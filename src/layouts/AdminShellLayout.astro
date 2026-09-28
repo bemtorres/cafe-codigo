@@ -1,0 +1,348 @@
+---
+import "../styles/global.css";
+import logoCafeycodigo from "../assets/images/cafeycodigo.png";
+import {
+  Award,
+  BookOpen,
+  ChartColumn,
+  ChevronRight,
+  ExternalLink,
+  Menu,
+  Presentation,
+  ShieldCheck,
+  SlidersHorizontal,
+  Users,
+  Zap,
+} from "@lucide/astro";
+
+type SectionKey =
+  | "control"
+  | "courses"
+  | "express"
+  | "ppt"
+  | "dashboard"
+  | "users"
+  | "badges";
+
+interface Props {
+  title: string;
+  description?: string;
+  activeSection?: SectionKey;
+}
+
+const {
+  title,
+  description = "Panel de Administración · Café y Código",
+  activeSection = "control",
+} = Astro.props;
+
+const navGroups = [
+  {
+    label: "General",
+    items: [
+      {
+        href: "/admin/control/",
+        key: "control",
+        label: "Centro de Control",
+        Icon: SlidersHorizontal,
+      },
+      {
+        href: "/admin/dashboard/",
+        key: "dashboard",
+        label: "Dashboard",
+        Icon: ChartColumn,
+      },
+    ],
+  },
+  {
+    label: "Contenido",
+    items: [
+      { href: "/admin/embed/", key: "courses", label: "Embed Cursos", Icon: BookOpen },
+      {
+        href: "/admin/embed-challenges-express/",
+        key: "express",
+        label: "Embed Express",
+        Icon: Zap,
+      },
+      { href: "/admin/embed-ppt/", key: "ppt", label: "Embed PPT", Icon: Presentation },
+    ],
+  },
+  {
+    label: "Comunidad",
+    items: [
+      { href: "/admin/users/", key: "users", label: "Usuarios", Icon: Users },
+      { href: "/admin/badges/", key: "badges", label: "Insignias", Icon: Award },
+    ],
+  },
+];
+
+const allItems = navGroups.flatMap((group) => group.items);
+const activeItem = allItems.find((item) => item.key === activeSection);
+const activeLabel = activeItem?.label ?? "Centro de Control";
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/png" href={logoCafeycodigo.src} />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>{title} | Admin Café y Código</title>
+
+    <style is:global>
+      #adminSidebar {
+        transform: translateX(-100%);
+        transition: transform 0.2s ease;
+      }
+      #adminSidebar.is-open {
+        transform: translateX(0);
+      }
+      @media (min-width: 768px) {
+        #adminSidebar {
+          transform: translateX(0);
+        }
+      }
+
+      /* Look shadcn: tipografía neutral dentro del shell de administración */
+      .admin-shell,
+      .admin-shell input,
+      .admin-shell select,
+      .admin-shell textarea,
+      .admin-shell button {
+        font-family:
+          ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial,
+          sans-serif;
+      }
+      .admin-shell h1,
+      .admin-shell h2,
+      .admin-shell h3,
+      .admin-shell h4 {
+        font-family: inherit;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+      }
+
+      .admin-shell ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      .admin-shell ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .admin-shell ::-webkit-scrollbar-thumb {
+        background: #d4d4d8;
+        border-radius: 4px;
+      }
+      .admin-shell ::-webkit-scrollbar-thumb:hover {
+        background: #a1a1aa;
+      }
+    </style>
+  </head>
+
+  <body class="min-h-screen">
+    <div
+      class="admin-shell relative flex min-h-screen w-full bg-zinc-100 text-zinc-950"
+    >
+      <!-- ============ SIDEBAR ============ -->
+      <aside
+        id="adminSidebar"
+        aria-label="Navegación de administración"
+        class="fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-r border-zinc-800 bg-zinc-950 text-zinc-300"
+      >
+        <!-- Brand -->
+        <a
+          href="/admin/control/"
+          class="flex h-14 shrink-0 items-center gap-2.5 border-b border-zinc-800 px-4 no-underline"
+        >
+          <img
+            src={logoCafeycodigo.src}
+            alt=""
+            class="size-8 shrink-0 rounded-md object-cover"
+          />
+          <span class="min-w-0 leading-tight">
+            <span class="block truncate text-sm font-semibold text-white">
+              Café y Código <span class="text-sky-400">Admin</span>
+            </span>
+            <span class="block truncate text-[11px] text-zinc-500">
+              Portal de gestión
+            </span>
+          </span>
+        </a>
+
+        <!-- Navegación -->
+        <nav class="min-h-0 flex-1 overflow-y-auto px-3 py-4">
+          {
+            navGroups.map((group) => (
+              <div class="mb-5 last:mb-0">
+                <p class="mb-1.5 px-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">
+                  {group.label}
+                </p>
+                <ul class="m-0 list-none space-y-0.5 p-0">
+                  {group.items.map((item) => {
+                    const { Icon } = item;
+                    const isActive = activeSection === item.key;
+                    return (
+                      <li>
+                        <a
+                          href={item.href}
+                          aria-current={isActive ? "page" : undefined}
+                          class:list={[
+                            "flex h-8 items-center gap-2 rounded-md px-2 text-sm font-medium no-underline transition-colors",
+                            isActive
+                              ? "bg-zinc-800 text-white"
+                              : "text-zinc-400 hover:bg-zinc-900 hover:text-zinc-100",
+                          ]}
+                        >
+                          <Icon class="size-4 shrink-0" />
+                          <span class="truncate">{item.label}</span>
+                        </a>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            ))
+          }
+        </nav>
+
+        <!-- Footer sidebar -->
+        <div class="shrink-0 space-y-0.5 border-t border-zinc-800 p-3">
+          <a
+            href="/challenges-express/"
+            target="_blank"
+            rel="noopener"
+            class="flex h-8 items-center gap-2 rounded-md px-2 text-xs font-medium text-zinc-400 no-underline transition-colors hover:bg-zinc-900 hover:text-zinc-100"
+          >
+            <Zap class="size-3.5 shrink-0 text-amber-400" />
+            <span class="truncate">Desafíos Express</span>
+            <ExternalLink class="ml-auto size-3.5 shrink-0" />
+          </a>
+          <a
+            href="/"
+            target="_blank"
+            rel="noopener"
+            class="flex h-8 items-center gap-2 rounded-md px-2 text-xs font-medium text-zinc-400 no-underline transition-colors hover:bg-zinc-900 hover:text-zinc-100"
+          >
+            <ExternalLink class="size-3.5 shrink-0" />
+            <span class="truncate">Sitio web</span>
+          </a>
+
+          <div class="mt-2 flex items-center gap-2 rounded-md bg-zinc-900 px-2 py-2">
+            <span
+              class="flex size-6 shrink-0 items-center justify-center rounded-full bg-emerald-500/15 text-emerald-400"
+            >
+              <ShieldCheck class="size-3.5" />
+            </span>
+            <span class="min-w-0 leading-tight">
+              <span class="block truncate text-xs font-semibold text-zinc-200">
+                Super admin
+              </span>
+              <span class="block truncate text-[10px] text-zinc-500">
+                Sesión protegida
+              </span>
+            </span>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Overlay móvil -->
+      <div id="adminOverlay" class="fixed inset-0 z-40 hidden bg-black/50 md:hidden">
+      </div>
+
+      <!-- ============ CONTENIDO ============ -->
+      <div class="flex min-w-0 flex-1 flex-col md:pl-64">
+        <header
+          class="sticky top-0 z-30 flex h-14 shrink-0 items-center gap-3 border-b border-zinc-200 bg-white/80 px-4 backdrop-blur"
+        >
+          <button
+            id="adminMenuBtn"
+            type="button"
+            aria-label="Abrir menú de navegación"
+            aria-expanded="false"
+            aria-controls="adminSidebar"
+            class="inline-flex size-9 shrink-0 items-center justify-center rounded-md border border-zinc-200 bg-white text-zinc-700 transition-colors hover:bg-zinc-50 md:hidden"
+          >
+            <Menu class="size-4" />
+          </button>
+
+          <div class="min-w-0">
+            <div class="flex items-center gap-1 text-[11px] font-medium text-zinc-500">
+              <span>Admin</span>
+              <ChevronRight class="size-3" />
+              <span class="truncate text-zinc-800">{activeLabel}</span>
+            </div>
+            <p class="truncate text-sm font-semibold text-zinc-950">{title}</p>
+          </div>
+
+          <div class="ml-auto flex shrink-0 items-center gap-2">
+            <slot name="actions" />
+            <a
+              href="/challenges-express/"
+              target="_blank"
+              rel="noopener"
+              class="hidden h-8 items-center gap-1.5 rounded-md border border-zinc-200 bg-white px-2.5 text-xs font-medium text-zinc-700 no-underline transition-colors hover:bg-zinc-50 sm:inline-flex"
+            >
+              <Zap class="size-3.5 text-amber-500" />
+              <span>Express</span>
+            </a>
+            <a
+              href="/"
+              target="_blank"
+              rel="noopener"
+              class="hidden h-8 items-center gap-1.5 rounded-md bg-zinc-900 px-2.5 text-xs font-medium text-white no-underline transition-colors hover:bg-zinc-800 sm:inline-flex"
+            >
+              <span>Sitio web</span>
+              <ExternalLink class="size-3.5" />
+            </a>
+          </div>
+        </header>
+
+        <main class="min-w-0 flex-1 p-4 sm:p-6 lg:p-8">
+          <slot />
+        </main>
+      </div>
+    </div>
+
+    <script is:inline>
+      (function () {
+        var sidebar = document.getElementById("adminSidebar");
+        var overlay = document.getElementById("adminOverlay");
+        var btn = document.getElementById("adminMenuBtn");
+        if (!sidebar || !overlay || !btn) return;
+
+        function setOpen(open) {
+          sidebar.classList.toggle("is-open", open);
+          overlay.classList.toggle("hidden", !open);
+          btn.setAttribute("aria-expanded", open ? "true" : "false");
+          document.body.style.overflow = open ? "hidden" : "";
+        }
+
+        function isMobile() {
+          return window.matchMedia("(max-width: 767px)").matches;
+        }
+
+        btn.addEventListener("click", function () {
+          setOpen(!sidebar.classList.contains("is-open"));
+        });
+        overlay.addEventListener("click", function () {
+          setOpen(false);
+        });
+        sidebar.querySelectorAll("a").forEach(function (link) {
+          link.addEventListener("click", function () {
+            if (isMobile()) setOpen(false);
+          });
+        });
+        document.addEventListener("keydown", function (event) {
+          if (event.key === "Escape") setOpen(false);
+        });
+        window.addEventListener("resize", function () {
+          if (!isMobile()) setOpen(false);
+        });
+      })();
+    </script>
+  </body>
+</html>

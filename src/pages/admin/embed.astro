@@ -1,36 +1,31 @@
 ---
-import AdminLayout from '../../layouts/AdminLayout.astro';
+import AdminShellLayout from '../../layouts/AdminShellLayout.astro';
 import { COURSES_CANONICAL_FILE, getCoursesForEmbed } from '../../lib/courseRegistry';
 
 const embedCoursesData = getCoursesForEmbed();
 ---
 
-<AdminLayout title="Admin · Embed Cursos & Quizzes" description="Generador interno de URLs de embed para cursos." activeSection="courses">
-  <article class="content-section admin-embed w-full max-w-full min-w-0">
-    <header class="admin-embed-head mb-3">
-      <div class="flex items-center gap-2 mb-1 flex-wrap">
-        <a href="/admin/control/" class="text-xs font-bold text-slate-700 bg-slate-100 border border-slate-300 px-2 py-0.5 rounded-md hover:bg-slate-200 transition-all">
-          ← 🎛️ Centro de Control
-        </a>
-        <span class="text-slate-300">•</span>
-        <a href="/admin/embed-challenges-express/" class="text-xs font-black text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-md hover:bg-amber-100 transition-all">
-          ⚡ Ir a Embed Desafíos Express →
-        </a>
-        <a href="/admin/embed-ppt/" class="text-xs font-black text-indigo-700 bg-indigo-50 border border-indigo-200 px-2 py-0.5 rounded-md hover:bg-indigo-100 transition-all">
-          📊 Ir a Embed PPT / Slides →
-        </a>
+<AdminShellLayout title="Admin · Embed Cursos & Quizzes" description="Generador interno de URLs de embed para cursos." activeSection="courses">
+  <article class="admin-embed mx-auto w-full max-w-7xl min-w-0 pb-8">
+    <header class="mb-5">
+      <div class="flex flex-wrap items-center gap-2 mb-2">
+        <span class="rounded-full border border-zinc-200 bg-white px-2.5 py-1 text-[11px] font-medium text-zinc-600 shadow-sm">
+          LMS & Contenido
+        </span>
+        <span class="font-mono text-[11px] text-zinc-400">{COURSES_CANONICAL_FILE}</span>
       </div>
-      <h1 class="!mb-0 !text-xl sm:!text-2xl">/admin/embed</h1>
-      <p class="!mb-0 !mt-1 !text-xs sm:!text-sm !leading-snug text-textSecondary font-[650]">
-        Parámetros GET + tabla de URLs por lección (ancho completo abajo). Cursos y lecciones:{' '}
-        <code class="rounded bg-black/5 px-1">{COURSES_CANONICAL_FILE}</code> (array <code class="rounded bg-black/5 px-1">courses</code>
-        ); no dupliques listas en otros archivos.
+      <h1 class="!mb-0 !text-xl sm:!text-2xl text-zinc-950">Embed Cursos & Quizzes</h1>
+      <p class="!mb-0 !mt-1 !text-xs sm:!text-sm !leading-snug text-zinc-500 max-w-3xl">
+        Parámetros GET + tabla de URLs por lección (ancho completo abajo). Cursos y lecciones se
+        leen del array <code class="rounded bg-zinc-100 px-1 text-zinc-700">courses</code> de{' '}
+        <code class="rounded bg-zinc-100 px-1 text-zinc-700">{COURSES_CANONICAL_FILE}</code>; no
+        dupliques listas en otros archivos.
       </p>
     </header>
 
     <!-- Formulario compacto (una sola tarjeta) -->
     <div
-      class="admin-embed-form rounded-xl border-2 border-border bg-primary/15 p-2 sm:p-3 shadow-[3px_3px_0_var(--border)] space-y-2"
+      class="admin-embed-form rounded-xl border border-zinc-200 bg-white p-3 sm:p-4 shadow-sm space-y-3"
     >
       <!-- Filtros + presets -->
       <div class="flex flex-col gap-2 lg:flex-row lg:items-end lg:gap-3">
@@ -152,26 +147,26 @@ const embedCoursesData = getCoursesForEmbed();
       <div class="ae-divider grid grid-cols-1 gap-2 pt-1 sm:grid-cols-3">
         <div>
           <span class="ae-lbl mb-1 block">Preview logo</span>
-          <div class="flex items-center gap-2 rounded-lg border border-border bg-white px-2 py-1.5">
-            <div class="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-border bg-primary/30">
+          <div class="flex items-center gap-2 rounded-lg border border-zinc-200 bg-white px-2 py-1.5">
+            <div class="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-zinc-200 bg-zinc-100">
               <img id="logoPrev" alt="" class="hidden h-full w-full object-contain p-0.5" />
               <span id="logoPrevFallback" class="text-sm">🏫</span>
             </div>
             <div class="min-w-0 text-[11px] leading-tight">
-              <div class="truncate font-black">Institución</div>
-              <div class="truncate font-bold text-textMuted">Lección</div>
+              <div class="truncate font-semibold text-zinc-900">Institución</div>
+              <div class="truncate font-medium text-zinc-500">Lección</div>
             </div>
           </div>
         </div>
         <div>
           <span class="ae-lbl mb-1 block">Preview cabecera</span>
-          <div id="headerPrev" class="rounded-lg border border-border px-3 py-2 text-[11px] font-black shadow-neo bg-[#2b1d1b]" style="color:#fdf6e9">
+          <div id="headerPrev" class="rounded-lg border border-zinc-200 px-3 py-2 text-[11px] font-semibold shadow-sm bg-[#2b1d1b]" style="color:#fdf6e9">
             Cabecera embed
           </div>
         </div>
         <div>
           <span class="ae-lbl mb-1 block">Preview fondo página</span>
-          <div id="pageBgPrev" class="rounded-lg border border-border px-3 py-2 text-[11px] font-black text-textPrimary shadow-neo bg-white">
+          <div id="pageBgPrev" class="rounded-lg border border-zinc-200 px-3 py-2 text-[11px] font-semibold text-zinc-900 shadow-sm bg-white">
             Fondo de página
           </div>
         </div>
@@ -181,10 +176,10 @@ const embedCoursesData = getCoursesForEmbed();
     <!-- Listado col-12: ancho completo del contenedor -->
     <section class="admin-embed-table-section mt-4 w-full min-w-0" aria-label="Tabla de URLs">
       <div class="mb-2 flex flex-wrap items-baseline justify-between gap-2">
-        <h2 class="!m-0 !text-sm font-nunito font-black text-textPrimary">URLs por lección</h2>
-        <span id="listMeta" class="font-nunito text-[11px] font-bold text-textMuted"></span>
+        <h2 class="!m-0 !text-sm text-zinc-950">URLs por lección</h2>
+        <span id="listMeta" class="text-[11px] font-medium text-zinc-500"></span>
       </div>
-      <div class="w-full min-w-0 overflow-x-auto rounded-lg border-2 border-border bg-white">
+      <div class="w-full min-w-0 overflow-x-auto rounded-lg border border-zinc-200 bg-white">
         <table class="admin-embed-table w-full min-w-0 table-fixed border-collapse text-left">
           <colgroup>
             <col class="w-[14%]" />
@@ -192,7 +187,7 @@ const embedCoursesData = getCoursesForEmbed();
             <col />
             <col class="w-[5.5rem]" />
           </colgroup>
-          <thead class="bg-primary/40">
+          <thead class="bg-zinc-50">
             <tr>
               <th class="ae-th">Curso</th>
               <th class="ae-th">Lección</th>
@@ -203,7 +198,7 @@ const embedCoursesData = getCoursesForEmbed();
           <tbody id="lessonsList"></tbody>
         </table>
       </div>
-      <p class="!mb-0 !mt-2 !text-[10px] font-bold text-textMuted">
+      <p class="!mb-0 !mt-2 !text-[10px] font-medium text-zinc-500">
         Ruta interna; no es autenticación real.
       </p>
     </section>
@@ -239,29 +234,37 @@ const embedCoursesData = getCoursesForEmbed();
     .admin-embed .ae-lbl {
       display: block;
       font-size: 0.65rem;
-      font-weight: 800;
+      font-weight: 700;
       letter-spacing: 0.06em;
       text-transform: uppercase;
-      color: var(--text-muted, #6b7280);
+      color: #71717a;
       margin-bottom: 0.2rem;
     }
     .admin-embed .ae-input,
     .admin-embed .ae-field select {
       width: 100%;
-      border-radius: 0.5rem;
-      border: 2px solid var(--border);
+      border-radius: 0.375rem;
+      border: 1px solid #e4e4e7;
       background: #fff;
-      padding: 0.28rem 0.45rem;
+      padding: 0.35rem 0.55rem;
       font-size: 0.75rem;
-      font-weight: 700;
-      font-family: ui-sans-serif, system-ui, sans-serif;
+      font-weight: 500;
+      font-family: inherit;
+      color: #18181b;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .admin-embed .ae-input:focus,
+    .admin-embed .ae-field select:focus {
+      outline: none;
+      border-color: #a1a1aa;
+      box-shadow: 0 0 0 2px rgba(24, 24, 27, 0.08);
     }
     .admin-embed input[type='color'].ae-color {
       height: 2rem;
       width: 2.75rem;
       padding: 0.15rem;
-      border-radius: 0.5rem;
-      border: 2px solid var(--border);
+      border-radius: 0.375rem;
+      border: 1px solid #e4e4e7;
       background: #fff;
       cursor: pointer;
     }
@@ -273,44 +276,49 @@ const embedCoursesData = getCoursesForEmbed();
       border: none;
     }
     .admin-embed .ae-chip {
-      border-radius: 0.5rem;
-      border: 2px solid var(--border);
-      background: #fff;
-      padding: 0.2rem 0.45rem;
+      border-radius: 0.375rem;
+      border: 1px solid #e4e4e7;
+      background: #fafafa;
+      padding: 0.25rem 0.55rem;
       font-size: 0.65rem;
-      font-weight: 900;
+      font-weight: 600;
       line-height: 1.2;
-      box-shadow: 2px 2px 0 var(--border);
+      color: #3f3f46;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
     }
     .admin-embed .ae-chip:hover {
-      transform: translateY(-1px);
+      background: #f4f4f5;
+      border-color: #d4d4d8;
     }
     .admin-embed .ae-divider {
-      border-top: 1px solid rgba(30, 18, 16, 0.12);
+      border-top: 1px solid #f4f4f5;
     }
     .admin-embed .ae-inline {
       display: inline-flex;
       align-items: center;
       gap: 0.35rem;
       font-size: 0.7rem;
-      font-weight: 800;
+      font-weight: 600;
+      color: #3f3f46;
     }
     .admin-embed .ae-cb {
       height: 0.95rem;
       width: 0.95rem;
+      accent-color: #18181b;
     }
     .admin-embed .ae-th {
-      padding: 0.35rem 0.5rem;
+      padding: 0.5rem;
       font-size: 0.65rem;
-      font-weight: 900;
+      font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.04em;
-      color: var(--text-muted, #6b7280);
-      border-bottom: 2px solid var(--border);
+      color: #71717a;
+      border-bottom: 1px solid #e4e4e7;
     }
     .admin-embed-table-section {
       grid-column: 1 / -1;
     }
   </style>
 
-</AdminLayout>
+</AdminShellLayout>

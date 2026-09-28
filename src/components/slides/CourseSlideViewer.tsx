@@ -720,6 +720,40 @@ export default function CourseSlideViewer({
   const totalSlides = slides.length;
   const progressPercent = Math.round(((currentIndex + 1) / totalSlides) * 100);
 
+  // Normalizador ultra-seguro de snippets de código para evitar caídas si faltan propiedades
+  const activeSnippet = useMemo(() => {
+    if (!currentSlide) return null;
+    const anySlide = currentSlide as any;
+    if (anySlide.codeSnippet && typeof anySlide.codeSnippet === 'object' && typeof anySlide.codeSnippet.code === 'string') {
+      return anySlide.codeSnippet as { filename: string; lang: string; code: string; explanation?: string };
+    }
+    if (typeof anySlide.codeSnippet === 'string' && anySlide.codeSnippet.trim()) {
+      return {
+        filename: anySlide.codeSnippetFilename || anySlide.filename || 'codigo.py',
+        lang: anySlide.lang || 'python',
+        code: anySlide.codeSnippet,
+        explanation: anySlide.codeSnippetExplanation || anySlide.explanation || ''
+      };
+    }
+    if (typeof anySlide.code === 'string' && anySlide.code.trim()) {
+      return {
+        filename: anySlide.filename || 'models.py',
+        lang: anySlide.lang || 'python',
+        code: anySlide.code,
+        explanation: anySlide.explanation || ''
+      };
+    }
+    if (typeof anySlide.terminalCommand === 'string' && anySlide.terminalCommand.trim()) {
+      return {
+        filename: 'terminal.sh',
+        lang: 'bash',
+        code: anySlide.terminalCommand,
+        explanation: anySlide.terminalOutput || ''
+      };
+    }
+    return null;
+  }, [currentSlide]);
+
   // Navegación
   const goToNext = useCallback(() => {
     setCurrentIndex((prev) => (prev < totalSlides - 1 ? prev + 1 : prev));
@@ -2415,7 +2449,7 @@ export default function CourseSlideViewer({
               )}
 
               {/* Contenedor de contenidos: Código + Bullets (2 columnas) o Vista Completa */}
-              <div className={`grid grid-cols-1 ${currentSlide.codeSnippet && currentSlide.bulletPoints?.length && !currentSlide.visualChart ? 'lg:grid-cols-2' : ''} gap-5 items-start w-full`}>
+              <div className={`grid grid-cols-1 ${activeSnippet && currentSlide.bulletPoints?.length && !currentSlide.visualChart ? 'lg:grid-cols-2' : ''} gap-5 items-start w-full`}>
 
                 {currentSlide.bulletPoints && currentSlide.bulletPoints.length > 0 && (
                   <div className={`flex flex-col gap-3 ${currentSlide.visualChart ? 'w-full' : ''}`}>
@@ -2440,7 +2474,7 @@ export default function CourseSlideViewer({
                   </div>
                 )}
 
-                {currentSlide.codeSnippet && (
+                {activeSnippet && (
                   <div className="flex flex-col gap-2 w-full">
                     <div
                       className="rounded-xl overflow-hidden border shadow-xl transition-all code-themed-container"
@@ -2473,7 +2507,7 @@ export default function CourseSlideViewer({
                             <span className="w-2.5 h-2.5 rounded-full bg-green-500 inline-block" />
                           </span>
                           <span className="ml-1 font-bold truncate" style={{ color: activeCodeTheme.txt }}>
-                            {currentSlide.codeSnippet.filename}
+                            {activeSnippet.filename}
                           </span>
                         </div>
 
@@ -2482,13 +2516,13 @@ export default function CourseSlideViewer({
                             className="uppercase text-[10px] px-2 py-0.5 rounded text-white font-bold"
                             style={{ backgroundColor: activeCodeTheme.accent || activeAccent }}
                           >
-                            {currentSlide.codeSnippet.lang}
+                            {activeSnippet.lang}
                           </span>
 
                           {/* BOTÓN SOLO ICONO: COPIAR CÓDIGO */}
                           <button
                             type="button"
-                            onClick={() => copyCode(currentSlide.codeSnippet!.code)}
+                            onClick={() => copyCode(activeSnippet.code)}
                             className={`p-1.5 rounded-lg text-xs font-bold border transition-all cursor-pointer shadow-xs flex items-center justify-center ${
                               copiedCode
                                 ? 'bg-emerald-600 text-white border-emerald-500 scale-105'
@@ -2531,7 +2565,7 @@ export default function CourseSlideViewer({
                         }}
                       >
                         <code>
-                          {currentSlide.codeSnippet.code.split('\n').map((line: string, idx: number) => (
+                          {activeSnippet.code.split('\n').map((line: string, idx: number) => (
                             <div key={idx} className="flex leading-relaxed hover:bg-white/5 px-1 rounded transition-colors">
                               <span
                                 className="select-none pr-3 mr-3 text-right min-w-[1.8rem] border-r shrink-0 opacity-45 font-bold"
@@ -2542,7 +2576,7 @@ export default function CourseSlideViewer({
                               <span
                                 className="whitespace-pre"
                                 dangerouslySetInnerHTML={{
-                                  __html: highlightLine(line === '' ? ' ' : line, currentSlide.codeSnippet?.lang || 'python'),
+                                  __html: highlightLine(line === '' ? ' ' : line, activeSnippet?.lang || 'python'),
                                 }}
                               />
                             </div>
@@ -2550,10 +2584,10 @@ export default function CourseSlideViewer({
                         </code>
                       </pre>
                     </div>
-                    {currentSlide.codeSnippet.explanation && (
+                    {activeSnippet.explanation && (
                       <p className={`text-xs font-medium italic m-0 px-1 ${isDark ? 'text-slate-400' : 'text-slate-500'
                         }`}>
-                        💬 {currentSlide.codeSnippet.explanation}
+                        💬 {activeSnippet.explanation}
                       </p>
                     )}
                   </div>
