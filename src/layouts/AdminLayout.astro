@@ -5,16 +5,23 @@ import logoCafeycodigo from "../assets/images/cafeycodigo.png";
 interface Props {
   title: string;
   description?: string;
-  activeSection?: "courses" | "express" | "dashboard" | "users" | "badges";
+  activeSection?: "control" | "courses" | "express" | "ppt" | "dashboard" | "users" | "badges";
 }
 
 const {
   title,
   description = "Panel de Administración y Generación de Embeds · Café y Código",
-  activeSection = "courses",
+  activeSection = "control",
 } = Astro.props;
 
 const navItems = [
+  {
+    href: "/admin/control/",
+    key: "control",
+    label: "Centro de Control",
+    icon: "🎛️",
+    badge: "Inicio",
+  },
   {
     href: "/admin/embed/",
     key: "courses",
@@ -28,6 +35,13 @@ const navItems = [
     label: "Embed Desafíos Express",
     icon: "⚡",
     badge: "Interactivos",
+  },
+  {
+    href: "/admin/embed-ppt/",
+    key: "ppt",
+    label: "Embed PPT / Slides",
+    icon: "📊",
+    badge: "Diapositivas",
   },
   {
     href: "/admin/dashboard/",
@@ -91,7 +105,7 @@ const navItems = [
       <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
         <!-- BRAND -->
         <div class="flex items-center gap-3">
-          <a href="/admin/embed/" class="flex items-center gap-2.5 no-underline group">
+          <a href="/admin/control/" class="flex items-center gap-2.5 no-underline group" title="Ir al Centro de Control">
             <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-sky-600 to-indigo-600 flex items-center justify-center text-white font-black text-sm shadow-sm group-hover:scale-105 transition-transform">
               ⚙️
             </div>

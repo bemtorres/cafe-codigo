@@ -1,11 +1,15 @@
 ---
-import Layout from '../../../../layouts/Layout.astro';
-import CodeBlock from '../../../../components/CodeBlock.astro';
-import DjangoQuizModal from '../../../../components/quizzes/DjangoQuizModal.astro';
-import DjangoCrudSimulator from '../../../../components/django/DjangoCrudSimulator';
+import Layout from "../../../../layouts/Layout.astro";
+import CodeBlock from "../../../../components/CodeBlock.astro";
+import DjangoQuizModal from "../../../../components/quizzes/DjangoQuizModal.astro";
+import DjangoCrudSimulator from "../../../../components/django/DjangoCrudSimulator";
 ---
 
-<Layout title="Django Admin y Vistas CRUD" description="Domina el panel administrativo de Django y la implementación completa de cada vista CRUD (Create, Read, Update, Delete) con formularios y validaciones avanzadas." courseSlug="django">
+<Layout
+  title="Django Admin y Vistas CRUD"
+  description="Domina el panel administrativo de Django y la implementación completa de cada vista CRUD (Create, Read, Update, Delete) con formularios y validaciones avanzadas."
+  courseSlug="django"
+>
   <article class="content-section">
     <h1>8. Django Admin y Vistas CRUD ⚙️</h1>
 
@@ -13,12 +17,18 @@ import DjangoCrudSimulator from '../../../../components/django/DjangoCrudSimulat
     <section class="mb-10">
       <h2>1. El Panel Administrativo de Django (Django Admin)</h2>
       <p>
-        Uno de los mayores superpoderes de Django frente a otros frameworks backend es su <strong>panel de administración automático</strong> (<code>django.contrib.admin</code>). Lee los metadatos de tus modelos y genera al instante una interfaz web completa para crear, buscar, filtrar y editar registros.
+        Uno de los mayores superpoderes de Django frente a otros frameworks
+        backend es su <strong>panel de administración automático</strong> (<code
+          >django.contrib.admin</code
+        >). Lee los metadatos de tus modelos y genera al instante una interfaz
+        web completa para crear, buscar, filtrar y editar registros.
       </p>
 
       <h3>1.1 Creación del Superusuario</h3>
       <p>
-        Para ingresar al panel de administración necesitas una cuenta con privilegios de superusuario (<code>is_superuser = True</code>). Ejecuta en tu terminal con el entorno virtual <code>(venv)</code> activo:
+        Para ingresar al panel de administración necesitas una cuenta con
+        privilegios de superusuario (<code>is_superuser = True</code>). Ejecuta
+        en tu terminal con el entorno virtual <code>(venv)</code> activo:
       </p>
       <CodeBlock
         lang="cmd"
@@ -33,7 +43,12 @@ Superuser created successfully.`}
 
       <h3>1.2 Registro Profesional de Modelos en admin.py</h3>
       <p>
-        Registrar un modelo con <code>admin.site.register(Libro)</code> solo ofrece una vista básica. En proyectos reales configuramos clases <code>ModelAdmin</code> con tablas interactivas, filtros laterales, búsquedas optimizadas e <strong>inlines</strong> para editar registros relacionados en la misma pantalla:
+        Registrar un modelo con <code>admin.site.register(Libro)</code> solo ofrece
+        una vista básica. En proyectos reales configuramos clases <code
+          >ModelAdmin</code
+        > con tablas interactivas, filtros laterales, búsquedas optimizadas e <strong
+          >inlines</strong
+        > para editar registros relacionados en la misma pantalla:
       </p>
       <CodeBlock
         lang="python"
@@ -85,39 +100,61 @@ class LibroAdmin(admin.ModelAdmin):
     <section class="mb-10">
       <h2>2. Arquitectura de Cada Vista CRUD (Create, Read, Update, Delete)</h2>
       <p>
-        El acrónimo <strong>CRUD</strong> define las cuatro operaciones fundamentales sobre cualquier base de datos:
+        El acrónimo <strong>CRUD</strong> define las cuatro operaciones fundamentales
+        sobre cualquier base de datos:
       </p>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-        <div class="p-4 rounded-xl border border-slate-700 bg-slate-900/40">
-          <strong class="text-emerald-400 font-bold block mb-1">C — Create (Crear):</strong>
-          <span class="text-xs text-slate-300 leading-relaxed">
-            Presenta un formulario vacío mediante <code>GET</code> y procesa la carga de datos en base de datos mediante <code>POST</code> con validaciones de tipo e integridad.
+        <div class="p-4 rounded-xl border border-slate-700 bg-slate-100/40">
+          <strong class="text-emerald-400 font-bold block mb-1"
+            >C — Create (Crear):</strong
+          >
+          <span class="text-xs text-slate-800 leading-relaxed">
+            Presenta un formulario vacío mediante <code>GET</code> y procesa la carga
+            de datos en base de datos mediante <code>POST</code> con validaciones
+            de tipo e integridad.
           </span>
         </div>
-        <div class="p-4 rounded-xl border border-slate-700 bg-slate-900/40">
-          <strong class="text-cyan-400 font-bold block mb-1">R — Read (Leer / Listar):</strong>
-          <span class="text-xs text-slate-300 leading-relaxed">
-            Consulta registros en base de datos para presentarlos en catálogos paginados (<code>ListView</code>) o en fichas individuales (<code>DetailView</code>).
+        <div class="p-4 rounded-xl border border-slate-700 bg-slate-100/40">
+          <strong class="text-cyan-400 font-bold block mb-1"
+            >R — Read (Leer / Listar):</strong
+          >
+          <span class="text-xs text-slate-800 leading-relaxed">
+            Consulta registros en base de datos para presentarlos en catálogos
+            paginados (<code>ListView</code>) o en fichas individuales (<code
+              >DetailView</code
+            >).
           </span>
         </div>
-        <div class="p-4 rounded-xl border border-slate-700 bg-slate-900/40">
-          <strong class="text-amber-400 font-bold block mb-1">U — Update (Actualizar / Editar):</strong>
-          <span class="text-xs text-slate-300 leading-relaxed">
-            Carga la instancia existente en el formulario (<code>instance=obj</code>), permite modificar sus atributos y aplica validaciones antes de guardar.
+        <div class="p-4 rounded-xl border border-slate-700 bg-slate-100/40">
+          <strong class="text-amber-400 font-bold block mb-1"
+            >U — Update (Actualizar / Editar):</strong
+          >
+          <span class="text-xs text-slate-800 leading-relaxed">
+            Carga la instancia existente en el formulario (<code
+              >instance=obj</code
+            >), permite modificar sus atributos y aplica validaciones antes de
+            guardar.
           </span>
         </div>
-        <div class="p-4 rounded-xl border border-slate-700 bg-slate-900/40">
-          <strong class="text-rose-400 font-bold block mb-1">D — Delete (Eliminar):</strong>
-          <span class="text-xs text-slate-300 leading-relaxed">
-            Solicita confirmación mediante <code>POST</code> para prevenir borrados accidentales y ejecuta <code>obj.delete()</code> con chequeo de integridad referencial.
+        <div class="p-4 rounded-xl border border-slate-700 bg-slate-100/40">
+          <strong class="text-rose-400 font-bold block mb-1"
+            >D — Delete (Eliminar):</strong
+          >
+          <span class="text-xs text-slate-800 leading-relaxed">
+            Solicita confirmación mediante <code>POST</code> para prevenir borrados
+            accidentales y ejecuta <code>obj.delete()</code> con chequeo de integridad
+            referencial.
           </span>
         </div>
       </div>
 
       <h3>2.1 Formularios Basados en Modelos (ModelForm)</h3>
       <p>
-        En Django, no escribes formularios HTML a mano. Utilizas <code>forms.ModelForm</code>, que genera los campos, etiquetas y validaciones directamente a partir de la definición de tu modelo:
+        En Django, no escribes formularios HTML a mano. Utilizas <code
+          >forms.ModelForm</code
+        >, que genera los campos, etiquetas y validaciones directamente a partir
+        de la definición de tu modelo:
       </p>
       <CodeBlock
         lang="python"
@@ -163,7 +200,8 @@ class LibroForm(forms.ModelForm):
 
       <h3>2.2 Implementación de Cada Vista CRUD (FBV vs CBV)</h3>
       <p>
-        A continuación comparamos cómo se implementan las 4 operaciones mediante funciones (FBV) y mediante clases genéricas (CBV):
+        A continuación comparamos cómo se implementan las 4 operaciones mediante
+        funciones (FBV) y mediante clases genéricas (CBV):
       </p>
       <CodeBlock
         lang="python"
@@ -254,7 +292,10 @@ class LibroDeleteView(DeleteView):
     <section class="mb-10">
       <h2>⚡ Laboratorio Interactivo: Simulador de Django Admin y CRUD</h2>
       <p>
-        Experimenta el ciclo de vida completo de un CRUD en tiempo real: crea registros pasando por las validaciones de <code>clean()</code>, busca y filtra como en Django Admin, edita instancias existentes y elimina elementos con confirmación.
+        Experimenta el ciclo de vida completo de un CRUD en tiempo real: crea
+        registros pasando por las validaciones de <code>clean()</code>, busca y
+        filtra como en Django Admin, edita instancias existentes y elimina
+        elementos con confirmación.
       </p>
       <DjangoCrudSimulator client:load />
     </section>
@@ -262,7 +303,10 @@ class LibroDeleteView(DeleteView):
     <!-- 4. EJERCICIOS DIDÁCTICOS PROYECTO 1 -->
     <section class="mb-10">
       <h2>3. Ejercicios Didácticos: Proyecto 1 (Biblioteca)</h2>
-      <p>Aplica las técnicas de administración y formularios sobre el dominio de la biblioteca.</p>
+      <p>
+        Aplica las técnicas de administración y formularios sobre el dominio de
+        la biblioteca.
+      </p>
 
       <div class="space-y-4">
         <article class="p-5 rounded-2xl border-2 border-slate-800 bg-slate-50">
@@ -270,10 +314,15 @@ class LibroDeleteView(DeleteView):
             Ejercicio 3.1: Formulario con Validación de Préstamos
           </h3>
           <p class="text-sm text-slate-600 mb-3">
-            Crea un <code>ModelForm</code> para <code>SolicitudPrestamo</code> que impida fijar una fecha de devolución superior a 30 días en el futuro.
+            Crea un <code>ModelForm</code> para <code>SolicitudPrestamo</code> que
+            impida fijar una fecha de devolución superior a 30 días en el futuro.
           </p>
-          <details class="cursor-pointer bg-white p-3 rounded-xl border border-slate-300">
-            <summary class="font-bold text-xs text-[#0c4a3f] font-mono">Ver Solución Explicada</summary>
+          <details
+            class="cursor-pointer bg-white p-3 rounded-xl border border-slate-300"
+          >
+            <summary class="font-bold text-xs text-[#0c4a3f] font-mono"
+              >Ver Solución Explicada</summary
+            >
             <div class="mt-3 text-xs">
               <CodeBlock
                 lang="python"
@@ -308,10 +357,16 @@ class SolicitudPrestamoForm(forms.ModelForm):
             Ejercicio 3.2: Acción Personalizada en Django Admin con Mensajes
           </h3>
           <p class="text-sm text-slate-600 mb-3">
-            Escribe una acción en <code>SolicitudPrestamoAdmin</code> que permita seleccionar múltiples solicitudes atrasadas y condonar sus multas acumuladas poniéndolas en $0.00.
+            Escribe una acción en <code>SolicitudPrestamoAdmin</code> que permita
+            seleccionar múltiples solicitudes atrasadas y condonar sus multas acumuladas
+            poniéndolas en $0.00.
           </p>
-          <details class="cursor-pointer bg-white p-3 rounded-xl border border-slate-300">
-            <summary class="font-bold text-xs text-[#0c4a3f] font-mono">Ver Solución Explicada</summary>
+          <details
+            class="cursor-pointer bg-white p-3 rounded-xl border border-slate-300"
+          >
+            <summary class="font-bold text-xs text-[#0c4a3f] font-mono"
+              >Ver Solución Explicada</summary
+            >
             <div class="mt-3 text-xs">
               <CodeBlock
                 lang="python"
@@ -338,21 +393,34 @@ class SolicitudPrestamoAdmin(admin.ModelAdmin):
 
     <!-- 5. DESAFÍO SEGUNDO PROYECTO TIENDA -->
     <section class="mb-10">
-      <h2>4. Desafío Práctico: Segundo Proyecto — Tienda Online (`tienda`) 🛒</h2>
+      <h2>
+        4. Desafío Práctico: Segundo Proyecto — Tienda Online (`tienda`) 🛒
+      </h2>
       <p>
-        Implementa el panel administrativo y los formularios CRUD del segundo proyecto ubicado en <code>C:\proyectos\django\tienda</code>.
+        Implementa el panel administrativo y los formularios CRUD del segundo
+        proyecto ubicado en <code>C:\proyectos\django\tienda</code>.
       </p>
 
       <div class="space-y-4">
-        <article class="p-5 rounded-2xl border-2 border-cyan-900/40 bg-cyan-50/40">
+        <article
+          class="p-5 rounded-2xl border-2 border-cyan-900/40 bg-cyan-50/40"
+        >
           <h3 class="text-base font-black text-slate-900 mb-2">
-            Reto 4.1: PedidoAdmin con TabularInline de Ítems y Acción de Despacho
+            Reto 4.1: PedidoAdmin con TabularInline de Ítems y Acción de
+            Despacho
           </h3>
           <p class="text-sm text-slate-600 mb-3">
-            En <code>pedidos/admin.py</code>, registra <code>Pedido</code> con una relación tabular de <code>ItemPedidoInline</code> para ver los productos comprados, cantidades y subtotales en la misma vista de administración. Añade una acción para marcar los pedidos seleccionados como 'ENVIADO'.
+            En <code>pedidos/admin.py</code>, registra <code>Pedido</code> con una
+            relación tabular de <code>ItemPedidoInline</code> para ver los productos
+            comprados, cantidades y subtotales en la misma vista de administración.
+            Añade una acción para marcar los pedidos seleccionados como 'ENVIADO'.
           </p>
-          <details class="cursor-pointer bg-white p-3 rounded-xl border border-slate-300">
-            <summary class="font-bold text-xs text-cyan-800 font-mono">Ver Solución Explicada</summary>
+          <details
+            class="cursor-pointer bg-white p-3 rounded-xl border border-slate-300"
+          >
+            <summary class="font-bold text-xs text-cyan-800 font-mono"
+              >Ver Solución Explicada</summary
+            >
             <div class="mt-3 text-xs">
               <CodeBlock
                 lang="python"
@@ -384,17 +452,23 @@ class PedidoAdmin(admin.ModelAdmin):
           </details>
         </article>
 
-        <article class="p-5 rounded-2xl border-2 border-cyan-900/40 bg-cyan-50/40">
+        <article
+          class="p-5 rounded-2xl border-2 border-cyan-900/40 bg-cyan-50/40"
+        >
           <h3 class="text-base font-black text-slate-900 mb-2">
             Reto 4.2: ModelForm con Validación Cruzada (Precio vs Costo)
           </h3>
           <p class="text-sm text-slate-600 mb-3">
-            En <code>catalogo/forms.py</code>, crea <code>ProductoForm</code> garantizando que:
-            1. El SKU se guarde siempre en mayúsculas y tenga al menos 4 caracteres.
+            En <code>catalogo/forms.py</code>, crea <code>ProductoForm</code> garantizando
+            que: 1. El SKU se guarde siempre en mayúsculas y tenga al menos 4 caracteres.
             2. El precio de venta nunca sea inferior al costo de adquisición.
           </p>
-          <details class="cursor-pointer bg-white p-3 rounded-xl border border-slate-300">
-            <summary class="font-bold text-xs text-cyan-800 font-mono">Ver Solución Explicada</summary>
+          <details
+            class="cursor-pointer bg-white p-3 rounded-xl border border-slate-300"
+          >
+            <summary class="font-bold text-xs text-cyan-800 font-mono"
+              >Ver Solución Explicada</summary
+            >
             <div class="mt-3 text-xs">
               <CodeBlock
                 lang="python"
@@ -430,15 +504,26 @@ class ProductoForm(forms.ModelForm):
           </details>
         </article>
 
-        <article class="p-5 rounded-2xl border-2 border-cyan-900/40 bg-cyan-50/40">
+        <article
+          class="p-5 rounded-2xl border-2 border-cyan-900/40 bg-cyan-50/40"
+        >
           <h3 class="text-base font-black text-slate-900 mb-2">
             Reto 4.3: Vista de Eliminación Suave (Soft Delete)
           </h3>
           <p class="text-sm text-slate-600 mb-3">
-            En comercio electrónico nunca se borra físicamente un producto si ya forma parte del historial de compras de clientes pasados (provocaría error de integridad referencial). Escribe una vista FBV <code>desactivar_producto(request, pk)</code> que al recibir un POST cambie <code>disponible = False</code> en vez de ejecutar <code>delete()</code>.
+            En comercio electrónico nunca se borra físicamente un producto si ya
+            forma parte del historial de compras de clientes pasados (provocaría
+            error de integridad referencial). Escribe una vista FBV <code
+              >desactivar_producto(request, pk)</code
+            > que al recibir un POST cambie <code>disponible = False</code> en vez
+            de ejecutar <code>delete()</code>.
           </p>
-          <details class="cursor-pointer bg-white p-3 rounded-xl border border-slate-300">
-            <summary class="font-bold text-xs text-cyan-800 font-mono">Ver Solución Explicada</summary>
+          <details
+            class="cursor-pointer bg-white p-3 rounded-xl border border-slate-300"
+          >
+            <summary class="font-bold text-xs text-cyan-800 font-mono"
+              >Ver Solución Explicada</summary
+            >
             <div class="mt-3 text-xs">
               <CodeBlock
                 lang="python"
@@ -469,14 +554,21 @@ def desactivar_producto_view(request, pk):
     <!-- 6. QUIZ -->
     <section class="mb-10">
       <h2>Ponte a prueba</h2>
-      <p>Comprueba que dominas el panel de administración, la arquitectura CRUD y la validación de formularios en Django.</p>
+      <p>
+        Comprueba que dominas el panel de administración, la arquitectura CRUD y
+        la validación de formularios en Django.
+      </p>
       <DjangoQuizModal quizKey="admin-crud" />
     </section>
 
     <!-- FOOTER NAV -->
     <nav class="nav-bottom">
-      <a href="/course/django/modelo-bd-library/" class="prev">← 7. Caso Práctico: Biblioteca y ORM</a>
-      <a href="/course/django/seguridad/" class="next">Autenticación y Seguridad →</a>
+      <a href="/course/django/modelo-bd-vehiculos/" class="prev"
+        >← 5.3 Flota: Migraciones y Faker</a
+      >
+      <a href="/course/django/seguridad/" class="next"
+        >Autenticación y Seguridad →</a
+      >
     </nav>
   </article>
 </Layout>

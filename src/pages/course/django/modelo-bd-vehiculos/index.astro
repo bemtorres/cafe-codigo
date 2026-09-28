@@ -1,0 +1,498 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import DjangoQuizModal from '../../../../components/quizzes/DjangoQuizModal.astro';
+import DjangoFlotaFakerSimulator from '../../../../components/django/DjangoFlotaFakerSimulator';
+import DjangoFlotaErDiagram from '../../../../components/django/DjangoFlotaErDiagram';
+---
+
+<Layout
+  title="Flota y Pilotos: Migraciones Evolutivas y Faker en Django"
+  description="Aprende a modelar un sistema de transporte con Vehículos y Pilotos en Django, gestionar cada migración paso a paso auditando SQL real y crear un controlador con Faker para generar datos de prueba masivos."
+  courseSlug="django"
+>
+  <article class="content-section">
+    <h1>5.3 Flota y Pilotos: Migraciones Evolutivas y Faker 🚛</h1>
+
+    <!-- BANNER PRESENTACIÓN DIAPOSITIVAS -->
+    <aside class="my-6 p-4 sm:p-5 rounded-2xl border-2 border-amber-400/40 bg-gradient-to-r from-amber-500/10 via-amber-400/5 to-transparent flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm">
+      <div class="flex items-center gap-3">
+        <span class="text-3xl sm:text-4xl p-2 rounded-xl bg-amber-400/20 text-amber-500 shrink-0">📊</span>
+        <div>
+          <h3 class="text-base font-black text-slate-900 dark:text-amber-300 mb-0.5">
+            Presentación Guiada en Diapositivas Disponible
+          </h3>
+          <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300">
+            Avanza paso a paso por las migraciones, la auditoría SQL y el controlador Faker con terminales y modo interactivo.
+          </p>
+        </div>
+      </div>
+      <a
+        href="/course-slides/django/modelo-bd-vehiculos/"
+        class="shrink-0 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-nunito font-black text-sm shadow-md hover:shadow-lg transition-all no-underline"
+      >
+        <span>Ver Diapositivas</span>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+        </svg>
+      </a>
+    </aside>
+
+    <!-- 1. INTRODUCCIÓN AL PROBLEMA -->
+    <section class="mb-10">
+      <h2>1. El Reto: Gestión de Flota y Poblado de Datos Realistas</h2>
+      <p>
+        En el desarrollo backend, tarde o temprano te enfrentarás a dos desafíos cruciales:
+      </p>
+      <ol class="space-y-2 my-3">
+        <li>
+          <strong>Diseñar modelos que protejan los activos de la empresa:</strong> Si modelas un sistema de transporte o logística y utilizas <code>models.CASCADE</code> de forma descuidada, dar de baja a un conductor podría borrar camiones de decenas de miles de dólares de tu base de datos.
+        </li>
+        <li>
+          <strong>Probar el sistema con volumen y datos creíbles:</strong> Ingresar 50 vehículos y 50 pilotos a mano desde el panel administrativo de Django consume horas de trabajo manual y produce registros artificiales como <em>"test1"</em> o <em>"prueba"</em>, los cuales no permiten evaluar búsquedas por RUT, nombres reales, patentes o distribución de estados operativos.
+        </li>
+      </ol>
+      <p>
+        En este laboratorio práctico construiremos la aplicación <code>flota</code> a lo largo de <strong>3 fases de migración auditadas con SQL real</strong> y programaremos un <strong>Controlador Web (View) con la librería Faker</strong> para sembrar datos en milisegundos con transacciones atómicas.
+      </p>
+    </section>
+
+    <!-- 2. DIAGRAMA DE RELACIÓN ENTIDAD-RELACIÓN -->
+    <section class="mb-10">
+      <h2>2. Diagrama Entidad-Relación (ER): Arquitectura del Modelo</h2>
+      <p>
+        Antes de escribir una sola línea de código en Python o ejecutar <code>makemigrations</code>, es fundamental visualizar cómo interactúan nuestras entidades en la base de datos relacional.
+      </p>
+      <p>
+        Explora el siguiente diagrama interactivo: haz clic en cualquier columna para inspeccionar su equivalente en Django ORM y sus restricciones SQL:
+      </p>
+      <DjangoFlotaErDiagram client:load />
+    </section>
+
+    <!-- 3. SIMULADOR INTERACTIVO -->
+    <section class="mb-10">
+      <h2>3. Laboratorio Interactivo: Migraciones y Controlador Faker</h2>
+      <p>
+        Interactúa con el simulador a continuación para explorar cada paso de la migración en código Python y SQL, ejecutar el controlador de Faker en vivo y consultar la flota resultante:
+      </p>
+      <DjangoFlotaFakerSimulator client:load />
+    </section>
+
+    <!-- 4. MIGRACIÓN 1: MODELO PILOTO -->
+    <section class="mb-10">
+      <h2>4. Fase 1: Creación del Modelo Piloto (`0001_initial.py`)</h2>
+      <p>
+        Iniciamos nuestra aplicación <code>flota</code> modelando a los conductores. Cada piloto posee una identificación fiscal única (RUT/DNI), licencia de conducir, teléfono y años de experiencia:
+      </p>
+
+      <CodeBlock
+        lang="python"
+        code={`# flota/models.py
+from django.db import models
+
+class Piloto(models.Model):
+    nombre = models.CharField(max_length=100, verbose_name="Nombre Completo")
+    rut = models.CharField(max_length=15, unique=True, verbose_name="RUT o DNI")
+    licencia = models.CharField(max_length=50, verbose_name="Tipo de Licencia") # Ej: A1, A2, B
+    telefono = models.CharField(max_length=20, blank=True, verbose_name="Teléfono de Contacto")
+    experiencia_anios = models.PositiveIntegerField(default=1, verbose_name="Años de Experiencia")
+    activo = models.BooleanField(default=True, verbose_name="¿En Servicio Activo?")
+    fecha_ingreso = models.DateField(auto_now_add=True, verbose_name="Fecha de Contratación")
+
+    class Meta:
+        verbose_name = "Piloto"
+        verbose_name_plural = "Pilotos"
+        ordering = ['nombre']
+
+    def __str__(self):
+        return f"{self.nombre} ({self.licencia})"`}
+      />
+
+      <h3 class="text-base font-bold text-slate-800 dark:text-slate-200 mt-6 mb-2">
+        Terminal y Auditoría con `sqlmigrate`
+      </h3>
+      <p>
+        Generamos la primera migración con <code>makemigrations</code> y auditamos qué sentencia SQL recibirá PostgreSQL antes de ejecutarla:
+      </p>
+
+      <CodeBlock
+        lang="bash"
+        code={`# 1. Crear el archivo de migración
+(env) $ python manage.py makemigrations flota --name initial_piloto
+Migrations for 'flota':
+  flota/migrations/0001_initial_piloto.py
+    - Create model Piloto
+
+# 2. Auditar la sentencia SQL real que ejecutará el motor
+(env) $ python manage.py sqlmigrate flota 0001`}
+      />
+
+      <CodeBlock
+        lang="sql"
+        code={`-- Salida de sqlmigrate flota 0001:
+CREATE TABLE "flota_piloto" (
+    "id" bigint NOT NULL PRIMARY KEY GENERATED BY DEFAULT AS IDENTITY,
+    "nombre" varchar(100) NOT NULL,
+    "rut" varchar(15) NOT NULL UNIQUE,
+    "licencia" varchar(50) NOT NULL,
+    "telefono" varchar(20) NOT NULL,
+    "experiencia_anios" integer NOT NULL CHECK ("experiencia_anios" >= 0),
+    "activo" boolean NOT NULL,
+    "fecha_ingreso" date NOT NULL
+);`}
+      />
+
+      <p class="text-sm text-slate-600 dark:text-slate-400 mt-2">
+        Nota cómo Django traduce automáticamente <code>unique=True</code> a una restricción <code>UNIQUE</code> y <code>PositiveIntegerField</code> a un <code>CHECK ("experiencia_anios" &gt;= 0)</code> a nivel del motor relacional.
+      </p>
+    </section>
+
+    <!-- 5. MIGRACIÓN 2: VEHÍCULO Y FOREIGN KEY -->
+    <section class="mb-10">
+      <h2>5. Fase 2: Modelo Vehículo y Foreign Key (`0002_vehiculo_relacion.py`)</h2>
+      <p>
+        Ahora definimos la entidad <code>Vehiculo</code>. Un vehículo de la empresa puede estar asignado a un conductor o encontrarse estacionado en patio listo para ser despachado.
+      </p>
+
+      <div class="my-4 p-4 rounded-xl border-l-4 border-amber-500 bg-amber-50 dark:bg-amber-950/20 text-slate-800 dark:text-amber-200 text-sm">
+        <strong>⚠️ Decisión Arquitectónica Crucial: ¿CASCADE o SET_NULL?</strong>
+        <p class="mt-1 mb-0">
+          En relaciones donde la entidad secundaria representa un <strong>activo patrimonial de la empresa</strong> (camiones, vehículos, maquinaria), <strong>jamás debes usar <code>CASCADE</code></strong>. Si un piloto renuncia o es eliminado del sistema, el camión no debe borrarse. Usamos <code>on_delete=models.SET_NULL</code> junto a <code>null=True, blank=True</code> para que el vehículo simplemente quede libre (<code>NULL</code>).
+        </p>
+      </div>
+
+      <CodeBlock
+        lang="python"
+        code={`# flota/models.py (Añadir al final)
+class Vehiculo(models.Model):
+    patente = models.CharField(max_length=10, unique=True, verbose_name="Patente o Placa")
+    marca = models.CharField(max_length=50, verbose_name="Marca")
+    modelo = models.CharField(max_length=50, verbose_name="Modelo")
+    anio = models.PositiveIntegerField(verbose_name="Año de Fabricación")
+    kilometraje = models.PositiveIntegerField(default=0, verbose_name="Kilometraje Actual")
+
+    # RELACIÓN 1:N CON PILOTO (Un piloto puede tener un vehículo asignado)
+    piloto_asignado = models.ForeignKey(
+        Piloto,
+        on_delete=models.SET_NULL, # 🛡️ Preserva el camión si despiden al piloto
+        null=True,                 # Requerido por SET_NULL a nivel de BD
+        blank=True,                # Permite dejar vacío el campo en el Admin/Formulario
+        related_name='vehiculos',
+        verbose_name="Piloto Conductor"
+    )
+
+    class Meta:
+        verbose_name = "Vehículo"
+        verbose_name_plural = "Vehículos"
+
+    def __str__(self):
+        return f"{self.patente} - {self.marca} {self.modelo}"`}
+      />
+
+      <h3 class="text-base font-bold text-slate-800 dark:text-slate-200 mt-6 mb-2">
+        Terminal y Foreign Key en SQL
+      </h3>
+      <CodeBlock
+        lang="bash"
+        code={`(env) $ python manage.py makemigrations flota --name vehiculo_relacion
+Migrations for 'flota':
+  flota/migrations/0002_vehiculo_relacion.py
+    - Create model Vehiculo
+
+(env) $ python manage.py sqlmigrate flota 0002`}
+      />
+
+      <CodeBlock
+        lang="sql"
+        code={`-- SQL de la Foreign Key:
+CREATE TABLE "flota_vehiculo" (
+    "id" bigint NOT NULL PRIMARY KEY GENERATED BY DEFAULT AS IDENTITY,
+    "patente" varchar(10) NOT NULL UNIQUE,
+    "marca" varchar(50) NOT NULL,
+    "modelo" varchar(50) NOT NULL,
+    "anio" integer NOT NULL,
+    "kilometraje" integer NOT NULL,
+    "piloto_asignado_id" bigint NULL
+);
+
+ALTER TABLE "flota_vehiculo"
+    ADD CONSTRAINT "flota_vehiculo_piloto_asignado_id_fk"
+    FOREIGN KEY ("piloto_asignado_id")
+    REFERENCES "flota_piloto" ("id")
+    ON DELETE SET NULL; -- 🛡️ Cascada segura a nivel SQL`}
+      />
+    </section>
+
+    <!-- 6. MIGRACIÓN 3: CHOICES Y CONSTRAINTS -->
+    <section class="mb-10">
+      <h2>6. Fase 3: Evolución con Choices y CheckConstraints (`0003_estado_y_constraints.py`)</h2>
+      <p>
+        El sistema entra en producción y surgen nuevas reglas de negocio:
+      </p>
+      <ul class="space-y-1 my-2">
+        <li>Cada vehículo debe tener un estado operativo: <code>DISPONIBLE</code>, <code>EN_RUTA</code> o <code>MANTENIMIENTO</code>.</li>
+        <li>El motor de base de datos debe impedir que cualquier desarrollador o consulta guarde kilometrajes negativos o vehículos de antes del año 1990.</li>
+      </ul>
+
+      <CodeBlock
+        lang="python"
+        code={`# flota/models.py (Actualización del modelo Vehiculo)
+from django.db.models import Q, CheckConstraint
+
+class Vehiculo(models.Model):
+    # ... campos anteriores ...
+
+    class Estado(models.TextChoices):
+        DISPONIBLE = 'DISPONIBLE', 'Disponible en patio'
+        EN_RUTA = 'EN_RUTA', 'En ruta de transporte'
+        MANTENIMIENTO = 'MANTENIMIENTO', 'En taller de mantenimiento'
+
+    # Campo nuevo: default='DISPONIBLE' permite migrar tablas con registros antiguos sin error
+    estado = models.CharField(
+        max_length=20,
+        choices=Estado.choices,
+        default=Estado.DISPONIBLE,
+        verbose_name="Estado Operativo"
+    )
+
+    class Meta:
+        verbose_name = "Vehículo"
+        verbose_name_plural = "Vehículos"
+        constraints = [
+            CheckConstraint(
+                check=Q(kilometraje__gte=0),
+                name='flota_vehiculo_km_no_negativo'
+            ),
+            CheckConstraint(
+                check=Q(anio__gte=1990),
+                name='flota_vehiculo_anio_valido'
+            )
+        ]`}
+      />
+
+      <h3 class="text-base font-bold text-slate-800 dark:text-slate-200 mt-6 mb-2">
+        Inspección del `ALTER TABLE`
+      </h3>
+      <CodeBlock
+        lang="sql"
+        code={`-- Salida de sqlmigrate flota 0003:
+ALTER TABLE "flota_vehiculo"
+    ADD COLUMN "estado" varchar(20) DEFAULT 'DISPONIBLE' NOT NULL;
+
+ALTER TABLE "flota_vehiculo"
+    ADD CONSTRAINT "flota_vehiculo_km_no_negativo"
+    CHECK ("kilometraje" >= 0);
+
+ALTER TABLE "flota_vehiculo"
+    ADD CONSTRAINT "flota_vehiculo_anio_valido"
+    CHECK ("anio" >= 1990);`}
+      />
+    </section>
+
+    <!-- 7. EL CONTROLADOR CON FAKER -->
+    <section class="mb-10">
+      <h2>7. El Controlador en Django: Generación Masiva con Faker</h2>
+      <p>
+        Para probar la aplicación en el navegador sin registrar 100 vehículos a mano, crearemos un <strong>Controlador Web (Vista en Django)</strong> que procesa una petición HTTP, inicializa la librería <code>faker</code> y ejecuta una inserción masiva protegida con <code>transaction.atomic()</code>.
+      </p>
+
+      <h3 class="text-base font-bold text-slate-800 dark:text-slate-200 mt-4 mb-2">
+        7.1 Instalación de Faker
+      </h3>
+      <p>Instala la librería en tu entorno virtual activo:</p>
+      <CodeBlock
+        lang="bash"
+        code={`(env) $ pip install faker`}
+      />
+
+      <h3 class="text-base font-bold text-slate-800 dark:text-slate-200 mt-6 mb-2">
+        7.2 Creación del Controlador (`flota/views.py`)
+      </h3>
+      <p>
+        Implementamos la vista que atiende peticiones <code>GET</code> (muestra el formulario) y <code>POST</code> (ejecuta la generación masiva):
+      </p>
+
+      <CodeBlock
+        lang="python"
+        code={`# flota/views.py
+import random
+from faker import Faker
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.db import transaction
+from django.conf import settings
+from django.core.exceptions import PermissionDenied
+from django.contrib.admin.views.decorators import staff_member_required
+
+from .models import Piloto, Vehiculo
+
+
+@staff_member_required
+def generar_flota_fake_view(request):
+    """
+    Controlador que genera pilotos y vehículos falsos usando Faker.
+    Solo accesible para usuarios staff y cuando DEBUG=True.
+    """
+    if not settings.DEBUG:
+        raise PermissionDenied("Este controlador está deshabilitado en producción.")
+
+    if request.method == "POST":
+        cantidad = int(request.POST.get("cantidad", 10))
+        fake = Faker(['es_ES']) # Nombres y datos localizados en español
+
+        # 🛡️ Transacción atómica: si algo falla, no se guarda nada corrupto
+        with transaction.atomic():
+            # 1. Crear Pilotos
+            pilotos_creados = []
+            for _ in range(cantidad):
+                rut_num = fake.unique.random_number(digits=8)
+                piloto = Piloto.objects.create(
+                    nombre=fake.name(),
+                    rut=f"{rut_num}-{random.randint(0, 9)}",
+                    licencia=random.choice(['Clase A1', 'Clase A2', 'Clase B', 'Clase A4']),
+                    telefono=fake.phone_number()[:20],
+                    experiencia_anios=random.randint(1, 20),
+                    activo=True
+                )
+                pilotos_creados.append(piloto)
+
+            # 2. Catálogo de marcas y modelos realistas
+            catalogo = {
+                'Toyota': ['Hilux 4x4', 'RAV4', 'Corolla'],
+                'Hyundai': ['Tucson', 'Accent Prime', 'H-1 Van'],
+                'Volvo': ['FH16 750', 'FM Electric', 'VM 330'],
+                'Mercedes-Benz': ['Sprinter 516', 'Actros 2645', 'Vito Tourer'],
+                'Scania': ['R500 Super', 'P320 XT', 'G410']
+            }
+            marcas = list(catalogo.keys())
+
+            # 3. Crear Vehículos y vincular aleatoriamente
+            for i in range(cantidad):
+                marca = random.choice(marcas)
+                modelo = random.choice(catalogo[marca])
+                letras = fake.lexify(text='????').upper()
+                numeros = random.randint(10, 99)
+                patente = f"{letras[:2]}{letras[2:]}-{numeros}"
+
+                # 80% de vehículos tienen chofer asignado, 20% quedan en patio (NULL)
+                piloto_asignado = random.choice(pilotos_creados) if random.random() > 0.2 else None
+                estado = 'EN_RUTA' if piloto_asignado else random.choice(['DISPONIBLE', 'MANTENIMIENTO'])
+
+                Vehiculo.objects.create(
+                    patente=patente,
+                    marca=marca,
+                    modelo=modelo,
+                    anio=random.randint(2018, 2025),
+                    kilometraje=random.randint(2000, 180000),
+                    estado=estado,
+                    piloto_asignado=piloto_asignado
+                )
+
+        messages.success(request, f"¡Éxito! Se generaron {cantidad} pilotos y {cantidad} vehículos correctamente.")
+        return redirect('flota:listar_vehiculos')
+
+    return render(request, 'flota/generar_fake.html')`}
+      />
+
+      <h3 class="text-base font-bold text-slate-800 dark:text-slate-200 mt-6 mb-2">
+        7.3 Rutas (`flota/urls.py`)
+      </h3>
+      <CodeBlock
+        lang="python"
+        code={`# flota/urls.py
+from django.urls import path
+from . import views
+
+app_name = 'flota'
+
+urlpatterns = [
+    path('vehiculos/', views.listar_vehiculos_view, name='listar_vehiculos'),
+    path('fake-data/', views.generar_flota_fake_view, name='generar_fake'),
+]`}
+      />
+
+      <h3 class="text-base font-bold text-slate-800 dark:text-slate-200 mt-6 mb-2">
+        7.4 Plantilla HTML (`templates/flota/generar_fake.html`)
+      </h3>
+      <CodeBlock
+        lang="html"
+        code={`<!-- templates/flota/generar_fake.html -->
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container my-5 max-w-lg mx-auto">
+  <div class="card p-4 shadow-lg border-0 rounded-4">
+    <h2 class="h4 font-bold mb-3">⚡ Generador de Flota con Faker</h2>
+    <p class="text-muted text-sm mb-4">
+      Esta herramienta puebla automáticamente la base de datos con conductores, patentes y vehículos realistas.
+    </p>
+
+    <form method="POST">
+      {% csrf_token %}
+      <div class="mb-3">
+        <label for="cantidad" class="form-label font-semibold">Cantidad de registros:</label>
+        <select name="cantidad" id="cantidad" class="form-select">
+          <option value="5">5 vehículos y pilotos</option>
+          <option value="15" selected>15 vehículos y pilotos (Recomendado)</option>
+          <option value="50">50 vehículos y pilotos (Carga masiva)</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn btn-warning w-100 font-bold py-2">
+        🚀 Ejecutar Controlador y Sembrar Flota
+      </button>
+    </form>
+  </div>
+</div>
+{% endblock %}`}
+      />
+    </section>
+
+    <!-- 8. CONSULTAS ORM -->
+    <section class="mb-10">
+      <h2>8. Consultas ORM Sobre la Flota Generada</h2>
+      <p>
+        Una vez poblada la base de datos con Faker, puedes aprovechar el ORM de Django para realizar consultas eficientes sin incurrir en el problema N+1:
+      </p>
+
+      <CodeBlock
+        lang="python"
+        code={`# 1. Traer vehículos y sus pilotos con INNER/LEFT JOIN en una sola consulta SQL
+vehiculos = Vehiculo.objects.select_related('piloto_asignado').all()
+
+# 2. Filtrar camiones disponibles en patio sin chofer asignado
+camiones_libres = Vehiculo.objects.filter(
+    estado=Vehiculo.Estado.DISPONIBLE,
+    piloto_asignado__isnull=True
+).order_by('-anio')
+
+# 3. Métricas agregadas de toda la flota
+from django.db.models import Avg, Max, Count
+stats = Vehiculo.objects.aggregate(
+    promedio_km=Avg('kilometraje'),
+    maximo_km=Max('kilometraje'),
+    total=Count('id')
+)`}
+      />
+    </section>
+
+    <!-- 9. PONTE A PRUEBA -->
+    <section class="mb-10">
+      <h2>9. Ponte a Prueba</h2>
+      <p>
+        Comprueba que comprendes el flujo de migraciones, la política <code>SET_NULL</code> y la implementación de controladores con <code>Faker</code> y transacciones atómicas.
+      </p>
+      <DjangoQuizModal quizKey="modelo-bd-vehiculos" />
+    </section>
+
+    <!-- FOOTER NAV -->
+    <nav class="nav-bottom">
+      <a href="/course/django/modelo-bd-library/" class="prev">
+        ← 5.2 Caso Práctico: Biblioteca y ORM
+      </a>
+      <a href="/course/django/admin-crud/" class="next">
+        6. Django Admin y CRUD →
+      </a>
+    </nav>
+  </article>
+</Layout>

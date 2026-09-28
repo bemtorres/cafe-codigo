@@ -8,9 +8,16 @@ const embedCoursesData = getCoursesForEmbed();
 <AdminLayout title="Admin · Embed Cursos & Quizzes" description="Generador interno de URLs de embed para cursos." activeSection="courses">
   <article class="content-section admin-embed w-full max-w-full min-w-0">
     <header class="admin-embed-head mb-3">
-      <div class="flex items-center gap-2 mb-1">
+      <div class="flex items-center gap-2 mb-1 flex-wrap">
+        <a href="/admin/control/" class="text-xs font-bold text-slate-700 bg-slate-100 border border-slate-300 px-2 py-0.5 rounded-md hover:bg-slate-200 transition-all">
+          ← 🎛️ Centro de Control
+        </a>
+        <span class="text-slate-300">•</span>
         <a href="/admin/embed-challenges-express/" class="text-xs font-black text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-md hover:bg-amber-100 transition-all">
           ⚡ Ir a Embed Desafíos Express →
+        </a>
+        <a href="/admin/embed-ppt/" class="text-xs font-black text-indigo-700 bg-indigo-50 border border-indigo-200 px-2 py-0.5 rounded-md hover:bg-indigo-100 transition-all">
+          📊 Ir a Embed PPT / Slides →
         </a>
       </div>
       <h1 class="!mb-0 !text-xl sm:!text-2xl">/admin/embed</h1>

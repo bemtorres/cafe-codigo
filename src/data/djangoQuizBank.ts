@@ -248,6 +248,62 @@ export const djangoQuizBank: Record<string, DjangoQuizDefinition> = {
       },
     ],
   },
+  'modelo-bd-vehiculos': {
+    key: 'modelo-bd-vehiculos',
+    title: 'Quiz: Flota, Vehículos, Migraciones y Faker',
+    questions: [
+      {
+        prompt: 'Al relacionar un Vehiculo con su Piloto, ¿por qué se recomienda on_delete=models.SET_NULL (con null=True) en vez de models.CASCADE?',
+        options: [
+          'Porque si el piloto se desvincula o se elimina, el vehículo de la empresa debe conservarse y quedar sin asignar',
+          'Porque CASCADE no funciona en claves foráneas de Django',
+          'Porque SET_NULL es obligatorio cuando el vehículo tiene patente única',
+          'Para evitar que se creen índices en la tabla de vehículos',
+        ],
+        correctIndex: 0,
+      },
+      {
+        prompt: '¿Qué comando de Django permite inspeccionar las sentencias SQL reales (CREATE TABLE, ALTER TABLE) de una migración antes de aplicarla?',
+        options: [
+          'python manage.py makemigrations --dry-run',
+          'python manage.py sqlmigrate <app> <numero_migracion>',
+          'python manage.py showmigrations --sql',
+          'python manage.py inspectdb',
+        ],
+        correctIndex: 1,
+      },
+      {
+        prompt: 'Al agregar un campo nuevo con estado (choices) en una tabla que ya tiene vehículos en producción, ¿cómo se evita que la migración falle o pregunte en terminal?',
+        options: [
+          'Configurando primary_key=True',
+          'Definiendo default="DISPONIBLE" o permitiendo null=True',
+          'Eliminando los datos antiguos antes de migrar',
+          'Usando unique_together',
+        ],
+        correctIndex: 1,
+      },
+      {
+        prompt: '¿Por qué se envuelve el bucle de generación de datos con Faker dentro de "with transaction.atomic():" en el controlador?',
+        options: [
+          'Para que Faker genere nombres en español automáticamente',
+          'Para asegurar atomicidad: si ocurre un fallo a mitad de camino, se hace rollback y no quedan registros huérfanos o corruptos',
+          'Porque transaction.atomic() es obligatorio para usar Faker en Python',
+          'Para desactivar las validaciones del modelo temporalmente',
+        ],
+        correctIndex: 1,
+      },
+      {
+        prompt: '¿Cuál es la mejor práctica de seguridad para un controlador que expone la generación de datos de prueba con Faker?',
+        options: [
+          'Dejarlo público para que los clientes finales puedan probar el sistema',
+          'Protegerlo verificando if not settings.DEBUG o requiriendo permisos de superusuario (@staff_member_required)',
+          'Cambiar el nombre del controlador en cada despliegue',
+          'Desactivar el middleware de CSRF en producción',
+        ],
+        correctIndex: 1,
+      },
+    ],
+  },
   'admin-crud': {
     key: 'admin-crud',
     title: 'Quiz: Django Admin y CRUD',

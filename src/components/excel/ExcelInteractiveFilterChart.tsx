@@ -65,30 +65,30 @@ type BaseProps = {
 export type ExcelInteractiveFilterChartProps = BaseProps &
   (
     | {
-        chartKind: 'bar' | 'horizontalBar' | 'line' | 'pie' | 'histogram';
-        rows: SimpleRow[];
-        valueColumnLabel: string;
-        valueFormat: ValueFormat;
-      }
+      chartKind: 'bar' | 'horizontalBar' | 'line' | 'pie' | 'histogram';
+      rows: SimpleRow[];
+      valueColumnLabel: string;
+      valueFormat: ValueFormat;
+    }
     | {
-        chartKind: 'area';
-        rows: AreaRow[];
-        valueColumnLabel: string;
-        seriesLabels: [string, string];
-        valueFormat: ValueFormat;
-      }
+      chartKind: 'area';
+      rows: AreaRow[];
+      valueColumnLabel: string;
+      seriesLabels: [string, string];
+      valueFormat: ValueFormat;
+    }
     | {
-        chartKind: 'scatter';
-        rows: ScatterRow[];
-        xLabel: string;
-        yLabel: string;
-        valueFormat: ValueFormat;
-      }
+      chartKind: 'scatter';
+      rows: ScatterRow[];
+      xLabel: string;
+      yLabel: string;
+      valueFormat: ValueFormat;
+    }
     | {
-        chartKind: 'mixed';
-        rows: MixedRow[];
-        valueColumnLabel: string;
-      }
+      chartKind: 'mixed';
+      rows: MixedRow[];
+      valueColumnLabel: string;
+    }
   );
 
 function histogramBins(values: number[], binWidth: number) {
@@ -668,7 +668,6 @@ export function ExcelInteractiveFilterChart(props: ExcelInteractiveFilterChartPr
     if (chartKind === 'area') {
       if (visibleArea.length === 0) return emptyChart();
       const p = props as Extract<ExcelInteractiveFilterChartProps, { chartKind: 'area' }>;
-      const fmt = p.valueFormat;
       return (
         <Line
           data={{
@@ -911,18 +910,16 @@ export function ExcelInteractiveFilterChart(props: ExcelInteractiveFilterChartPr
                       </p>
                       <button
                         type="button"
-                        className={`mb-1 flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-xs hover:bg-white/10 ${
-                          draftSortOrder === 'asc' ? 'bg-[#107c41]/40' : ''
-                        }`}
+                        className={`mb-1 flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-xs hover:bg-white/10 ${draftSortOrder === 'asc' ? 'bg-[#107c41]/40' : ''
+                          }`}
                         onClick={() => setDraftSortOrder('asc')}
                       >
                         Ordenar A → Z
                       </button>
                       <button
                         type="button"
-                        className={`mb-2 flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-xs hover:bg-white/10 ${
-                          draftSortOrder === 'desc' ? 'bg-[#107c41]/40' : ''
-                        }`}
+                        className={`mb-2 flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-xs hover:bg-white/10 ${draftSortOrder === 'desc' ? 'bg-[#107c41]/40' : ''
+                          }`}
                         onClick={() => setDraftSortOrder('desc')}
                       >
                         Ordenar Z → A
@@ -981,18 +978,16 @@ export function ExcelInteractiveFilterChart(props: ExcelInteractiveFilterChartPr
                           </p>
                           <button
                             type="button"
-                            className={`mb-1 flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-xs hover:bg-white/10 ${
-                              draftSortOrder === 'asc' ? 'bg-[#107c41]/40' : ''
-                            }`}
+                            className={`mb-1 flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-xs hover:bg-white/10 ${draftSortOrder === 'asc' ? 'bg-[#107c41]/40' : ''
+                              }`}
                             onClick={() => setDraftSortOrder('asc')}
                           >
                             Ordenar de menor a mayor
                           </button>
                           <button
                             type="button"
-                            className={`mb-2 flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-xs hover:bg-white/10 ${
-                              draftSortOrder === 'desc' ? 'bg-[#107c41]/40' : ''
-                            }`}
+                            className={`mb-2 flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-xs hover:bg-white/10 ${draftSortOrder === 'desc' ? 'bg-[#107c41]/40' : ''
+                              }`}
                             onClick={() => setDraftSortOrder('desc')}
                           >
                             Ordenar de mayor a menor
@@ -1047,18 +1042,16 @@ export function ExcelInteractiveFilterChart(props: ExcelInteractiveFilterChartPr
                           </p>
                           <button
                             type="button"
-                            className={`mb-1 flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-xs hover:bg-white/10 ${
-                              draftSortOrder === 'asc' ? 'bg-[#107c41]/40' : ''
-                            }`}
+                            className={`mb-1 flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-xs hover:bg-white/10 ${draftSortOrder === 'asc' ? 'bg-[#107c41]/40' : ''
+                              }`}
                             onClick={() => setDraftSortOrder('asc')}
                           >
                             Ordenar de menor a mayor
                           </button>
                           <button
                             type="button"
-                            className={`mb-2 flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-xs hover:bg-white/10 ${
-                              draftSortOrder === 'desc' ? 'bg-[#107c41]/40' : ''
-                            }`}
+                            className={`mb-2 flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-xs hover:bg-white/10 ${draftSortOrder === 'desc' ? 'bg-[#107c41]/40' : ''
+                              }`}
                             onClick={() => setDraftSortOrder('desc')}
                           >
                             Ordenar de mayor a menor
@@ -1116,18 +1109,16 @@ export function ExcelInteractiveFilterChart(props: ExcelInteractiveFilterChartPr
                           </p>
                           <button
                             type="button"
-                            className={`mb-1 flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-xs hover:bg-white/10 ${
-                              draftSortOrder === 'asc' ? 'bg-[#107c41]/40' : ''
-                            }`}
+                            className={`mb-1 flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-xs hover:bg-white/10 ${draftSortOrder === 'asc' ? 'bg-[#107c41]/40' : ''
+                              }`}
                             onClick={() => setDraftSortOrder('asc')}
                           >
                             Ordenar de menor a mayor
                           </button>
                           <button
                             type="button"
-                            className={`mb-2 flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-xs hover:bg-white/10 ${
-                              draftSortOrder === 'desc' ? 'bg-[#107c41]/40' : ''
-                            }`}
+                            className={`mb-2 flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-xs hover:bg-white/10 ${draftSortOrder === 'desc' ? 'bg-[#107c41]/40' : ''
+                              }`}
                             onClick={() => setDraftSortOrder('desc')}
                           >
                             Ordenar de mayor a menor
@@ -1182,18 +1173,16 @@ export function ExcelInteractiveFilterChart(props: ExcelInteractiveFilterChartPr
                           </p>
                           <button
                             type="button"
-                            className={`mb-1 flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-xs hover:bg-white/10 ${
-                              draftSortOrder === 'asc' ? 'bg-[#107c41]/40' : ''
-                            }`}
+                            className={`mb-1 flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-xs hover:bg-white/10 ${draftSortOrder === 'asc' ? 'bg-[#107c41]/40' : ''
+                              }`}
                             onClick={() => setDraftSortOrder('asc')}
                           >
                             Ordenar de menor a mayor
                           </button>
                           <button
                             type="button"
-                            className={`mb-2 flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-xs hover:bg-white/10 ${
-                              draftSortOrder === 'desc' ? 'bg-[#107c41]/40' : ''
-                            }`}
+                            className={`mb-2 flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-xs hover:bg-white/10 ${draftSortOrder === 'desc' ? 'bg-[#107c41]/40' : ''
+                              }`}
                             onClick={() => setDraftSortOrder('desc')}
                           >
                             Ordenar de mayor a menor
@@ -1251,18 +1240,16 @@ export function ExcelInteractiveFilterChart(props: ExcelInteractiveFilterChartPr
                           </p>
                           <button
                             type="button"
-                            className={`mb-1 flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-xs hover:bg-white/10 ${
-                              draftSortOrder === 'asc' ? 'bg-[#107c41]/40' : ''
-                            }`}
+                            className={`mb-1 flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-xs hover:bg-white/10 ${draftSortOrder === 'asc' ? 'bg-[#107c41]/40' : ''
+                              }`}
                             onClick={() => setDraftSortOrder('asc')}
                           >
                             Ordenar de menor a mayor
                           </button>
                           <button
                             type="button"
-                            className={`mb-2 flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-xs hover:bg-white/10 ${
-                              draftSortOrder === 'desc' ? 'bg-[#107c41]/40' : ''
-                            }`}
+                            className={`mb-2 flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-xs hover:bg-white/10 ${draftSortOrder === 'desc' ? 'bg-[#107c41]/40' : ''
+                              }`}
                             onClick={() => setDraftSortOrder('desc')}
                           >
                             Ordenar de mayor a menor
@@ -1317,18 +1304,16 @@ export function ExcelInteractiveFilterChart(props: ExcelInteractiveFilterChartPr
                           </p>
                           <button
                             type="button"
-                            className={`mb-1 flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-xs hover:bg-white/10 ${
-                              draftSortOrder === 'asc' ? 'bg-[#107c41]/40' : ''
-                            }`}
+                            className={`mb-1 flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-xs hover:bg-white/10 ${draftSortOrder === 'asc' ? 'bg-[#107c41]/40' : ''
+                              }`}
                             onClick={() => setDraftSortOrder('asc')}
                           >
                             Ordenar de menor a mayor
                           </button>
                           <button
                             type="button"
-                            className={`mb-2 flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-xs hover:bg-white/10 ${
-                              draftSortOrder === 'desc' ? 'bg-[#107c41]/40' : ''
-                            }`}
+                            className={`mb-2 flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-xs hover:bg-white/10 ${draftSortOrder === 'desc' ? 'bg-[#107c41]/40' : ''
+                              }`}
                             onClick={() => setDraftSortOrder('desc')}
                           >
                             Ordenar de mayor a menor
@@ -1385,18 +1370,16 @@ export function ExcelInteractiveFilterChart(props: ExcelInteractiveFilterChartPr
                         </p>
                         <button
                           type="button"
-                          className={`mb-1 flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-xs hover:bg-white/10 ${
-                            draftSortOrder === 'asc' ? 'bg-[#107c41]/40' : ''
-                          }`}
+                          className={`mb-1 flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-xs hover:bg-white/10 ${draftSortOrder === 'asc' ? 'bg-[#107c41]/40' : ''
+                            }`}
                           onClick={() => setDraftSortOrder('asc')}
                         >
                           Ordenar de menor a mayor
                         </button>
                         <button
                           type="button"
-                          className={`mb-2 flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-xs hover:bg-white/10 ${
-                            draftSortOrder === 'desc' ? 'bg-[#107c41]/40' : ''
-                          }`}
+                          className={`mb-2 flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-xs hover:bg-white/10 ${draftSortOrder === 'desc' ? 'bg-[#107c41]/40' : ''
+                            }`}
                           onClick={() => setDraftSortOrder('desc')}
                         >
                           Ordenar de mayor a menor

@@ -1,11 +1,15 @@
 ---
-import Layout from '../../../../layouts/Layout.astro';
-import CodeBlock from '../../../../components/CodeBlock.astro';
-import DjangoQuizModal from '../../../../components/quizzes/DjangoQuizModal.astro';
-import DjangoFieldSqlExplorer from '../../../../components/django/DjangoFieldSqlExplorer';
+import Layout from "../../../../layouts/Layout.astro";
+import CodeBlock from "../../../../components/CodeBlock.astro";
+import DjangoQuizModal from "../../../../components/quizzes/DjangoQuizModal.astro";
+import DjangoFieldSqlExplorer from "../../../../components/django/DjangoFieldSqlExplorer";
 ---
 
-<Layout title="Modelos y Tipos de Datos: De Python a SQL" description="Aprende cómo funcionan los modelos en Django desde cero: desglose exhaustivo de CharField, catálogo completo de campos y su traducción exacta a tablas y columnas SQL con sqlmigrate." courseSlug="django">
+<Layout
+  title="Modelos y Tipos de Datos: De Python a SQL"
+  description="Aprende cómo funcionan los modelos en Django desde cero: desglose exhaustivo de CharField, catálogo completo de campos y su traducción exacta a tablas y columnas SQL con sqlmigrate."
+  courseSlug="django"
+>
   <article class="content-section">
     <h1>5. Modelos y Tipos de Datos: De Python a SQL 🧱</h1>
 
@@ -13,38 +17,78 @@ import DjangoFieldSqlExplorer from '../../../../components/django/DjangoFieldSql
     <section class="mb-10">
       <h2>1. ¿Qué es un Modelo en Django y cómo se conecta a SQL?</h2>
       <p>
-        En el desarrollo web moderno casi nunca escribes sentencias SQL a mano como <code>CREATE TABLE</code> o <code>INSERT INTO</code> para tus operaciones cotidianas. En su lugar, Django utiliza un <strong>ORM (Object-Relational Mapper)</strong>, una capa que traduce clases y atributos de Python en tablas y columnas de base de datos relacionales (PostgreSQL, SQLite, MySQL o MariaDB).
+        En el desarrollo web moderno casi nunca escribes sentencias SQL a mano
+        como <code>CREATE TABLE</code> o <code>INSERT INTO</code> para tus operaciones
+        cotidianas. En su lugar, Django utiliza un <strong
+          >ORM (Object-Relational Mapper)</strong
+        >, una capa que traduce clases y atributos de Python en tablas y
+        columnas de base de datos relacionales (PostgreSQL, SQLite, MySQL o
+        MariaDB).
       </p>
 
-      <div class="my-6 overflow-x-auto">
-        <table class="w-full text-left border-collapse border border-slate-200 rounded-xl overflow-hidden text-sm">
-          <thead class="bg-slate-100 text-slate-800 font-bold border-b border-slate-200">
+      <div
+        class="my-6 overflow-x-auto rounded-xl border border-slate-300 shadow-sm"
+      >
+        <table
+          class="w-full text-left border-collapse border border-slate-300 text-sm"
+        >
+          <thead class="bg-slate-100 text-slate-800 font-bold">
             <tr>
-              <th class="p-3">Concepto en Python (Django)</th>
-              <th class="p-3">Equivalente en Base de Datos (SQL)</th>
-              <th class="p-3">Ejemplo Práctico</th>
+              <th class="border border-slate-300 p-3"
+                >Concepto en Python (Django)</th
+              >
+              <th class="border border-slate-300 p-3"
+                >Equivalente en Base de Datos (SQL)</th
+              >
+              <th class="border border-slate-300 p-3">Ejemplo Práctico</th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-slate-200">
-            <tr class="hover:bg-slate-50">
-              <td class="p-3 font-mono text-emerald-700 font-semibold">class Articulo(models.Model)</td>
-              <td class="p-3">Tabla en la base de datos</td>
-              <td class="p-3 font-mono text-xs">CREATE TABLE "blog_articulo" (...)</td>
+          <tbody class="divide-y divide-slate-300 bg-white">
+            <tr class="hover:bg-slate-50 transition-colors">
+              <td
+                class="border border-slate-300 p-3 font-mono text-emerald-700 font-semibold"
+                >class Articulo(models.Model)</td
+              >
+              <td class="border border-slate-300 p-3"
+                >Tabla en la base de datos</td
+              >
+              <td class="border border-slate-300 p-3 font-mono text-xs"
+                >CREATE TABLE "blog_articulo" (...)</td
+              >
             </tr>
-            <tr class="hover:bg-slate-50">
-              <td class="p-3 font-mono text-emerald-700 font-semibold">titulo = models.CharField(...)</td>
-              <td class="p-3">Columna con tipo y restricciones</td>
-              <td class="p-3 font-mono text-xs">"titulo" varchar(150) NOT NULL</td>
+            <tr class="hover:bg-slate-50 transition-colors">
+              <td
+                class="border border-slate-300 p-3 font-mono text-emerald-700 font-semibold"
+                >titulo = models.CharField(...)</td
+              >
+              <td class="border border-slate-300 p-3"
+                >Columna con tipo y restricciones</td
+              >
+              <td class="border border-slate-300 p-3 font-mono text-xs"
+                >"titulo" varchar(150) NOT NULL</td
+              >
             </tr>
-            <tr class="hover:bg-slate-50">
-              <td class="p-3 font-mono text-emerald-700 font-semibold">art = Articulo(titulo="Django")</td>
-              <td class="p-3">Fila / Registro (Row)</td>
-              <td class="p-3 font-mono text-xs">INSERT INTO "blog_articulo" VALUES (...)</td>
+            <tr class="hover:bg-slate-50 transition-colors">
+              <td
+                class="border border-slate-300 p-3 font-mono text-emerald-700 font-semibold"
+                >art = Articulo(titulo="Django")</td
+              >
+              <td class="border border-slate-300 p-3">Fila / Registro (Row)</td>
+              <td class="border border-slate-300 p-3 font-mono text-xs"
+                >INSERT INTO "blog_articulo" VALUES (...)</td
+              >
             </tr>
-            <tr class="hover:bg-slate-50">
-              <td class="p-3 font-mono text-emerald-700 font-semibold">id (automático)</td>
-              <td class="p-3">Clave Primaria (Primary Key)</td>
-              <td class="p-3 font-mono text-xs">"id" bigint NOT NULL PRIMARY KEY</td>
+            <tr class="hover:bg-slate-50 transition-colors">
+              <td
+                class="border border-slate-300 p-3 font-mono text-emerald-700 font-semibold"
+                >id (automático)</td
+              >
+              <td class="border border-slate-300 p-3"
+                >Clave Primaria (Primary Key)</td
+              >
+              <td class="border border-slate-300 p-3 font-mono text-xs"
+                >"id" bigint NOT NULL PRIMARY KEY</td
+              >
             </tr>
           </tbody>
         </table>
@@ -52,17 +96,27 @@ import DjangoFieldSqlExplorer from '../../../../components/django/DjangoFieldSql
 
       <h3>El Puente de las Migraciones: `makemigrations` y `sqlmigrate`</h3>
       <p>
-        Cuando defines un modelo en <code>models.py</code>, la base de datos aún no sabe nada al respecto. El flujo para materializar tus cambios consta de 3 comandos:
+        Cuando defines un modelo en <code>models.py</code>, la base de datos aún
+        no sabe nada al respecto. El flujo para materializar tus cambios consta
+        de 3 comandos:
       </p>
       <ol class="space-y-2 mb-4">
         <li>
-          <strong><code>python manage.py makemigrations</code>:</strong> Compara tus modelos actuales con el historial previo y genera un archivo de migración en Python (ej: <code>0001_initial.py</code>).
+          <strong><code>python manage.py makemigrations</code>:</strong> Compara tus
+          modelos actuales con el historial previo y genera un archivo de migración
+          en Python (ej: <code>0001_initial.py</code>).
         </li>
         <li>
-          <strong><code>python manage.py sqlmigrate &lt;app&gt; &lt;numero&gt;</code>:</strong> <em>El comando más educativo de Django.</em> Te muestra el código SQL puro y exacto que Django va a enviar a tu motor de base de datos.
+          <strong
+            ><code>python manage.py sqlmigrate &lt;app&gt; &lt;numero&gt;</code
+            >:</strong
+          >
+          <em>El comando más educativo de Django.</em> Te muestra el código SQL puro
+          y exacto que Django va a enviar a tu motor de base de datos.
         </li>
         <li>
-          <strong><code>python manage.py migrate</code>:</strong> Ejecuta las sentencias SQL en la base de datos física para crear o alterar las tablas.
+          <strong><code>python manage.py migrate</code>:</strong> Ejecuta las sentencias
+          SQL en la base de datos física para crear o alterar las tablas.
         </li>
       </ol>
 
@@ -89,94 +143,174 @@ CREATE TABLE "blog_articulo" (
     <section class="mb-10">
       <h2>2. El Campo Fundamental: `models.CharField` a Fondo</h2>
       <p>
-        <code>models.CharField</code> es el campo más utilizado en cualquier proyecto de backend. Representa cadenas de texto de longitud limitada (nombres, títulos, códigos, slugs, emails, etc.).
+        <code>models.CharField</code> es el campo más utilizado en cualquier proyecto
+        de backend. Representa cadenas de texto de longitud limitada (nombres, títulos,
+        códigos, slugs, emails, etc.).
       </p>
 
       <h3>2.1 El Parámetro Obligatorio: `max_length`</h3>
       <p>
-        A diferencia de otros campos, <code>CharField</code> <strong>exige obligatoriamente</strong> definir el argumento <code>max_length</code>. Si lo omites, Django arrojará un error <code>system check</code> antes de arrancar.
+        A diferencia de otros campos, <code>CharField</code>
+        <strong>exige obligatoriamente</strong> definir el argumento <code
+          >max_length</code
+        >. Si lo omites, Django arrojará un error <code>system check</code> antes
+        de arrancar.
       </p>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-4">
-        <div class="p-4 rounded-xl bg-slate-900 text-slate-100 font-mono text-xs">
+        <div
+          class="p-4 rounded-xl bg-slate-900 text-slate-100 font-mono text-xs"
+        >
           <span class="text-slate-400"># En Python (models.py):</span><br />
-          nombre = models.CharField(<span class="text-emerald-400">max_length=100</span>)
+          nombre = models.CharField(<span class="text-emerald-400"
+            >max_length=100</span
+          >)
         </div>
-        <div class="p-4 rounded-xl bg-slate-900 text-slate-100 font-mono text-xs">
+        <div
+          class="p-4 rounded-xl bg-slate-900 text-slate-100 font-mono text-xs"
+        >
           <span class="text-slate-400"># En SQL generado:</span><br />
           <span class="text-amber-300">"nombre" varchar(100) NOT NULL</span>
         </div>
       </div>
       <p class="text-sm text-slate-600">
-        <strong>¿Por qué se exige?</strong> Los motores relacionales como PostgreSQL y MySQL optimizan el almacenamiento y los índices en disco reservando espacio en base a la longitud máxima <code>VARCHAR(n)</code>.
+        <strong>¿Por qué se exige?</strong> Los motores relacionales como PostgreSQL
+        y MySQL optimizan el almacenamiento y los índices en disco reservando espacio
+        en base a la longitud máxima <code>VARCHAR(n)</code>.
       </p>
 
-      <h3>2.2 Opciones Clave de `CharField` y su Impacto en la Base de Datos</h3>
+      <h3>
+        2.2 Opciones Clave de `CharField` y su Impacto en la Base de Datos
+      </h3>
 
       <div class="space-y-6 my-6">
         <article class="p-4 rounded-xl border border-slate-200 bg-slate-50">
-          <h4 class="font-bold text-slate-900 text-base mb-1">A. `null=False` (Por Defecto) vs `null=True`</h4>
+          <h4 class="font-bold text-slate-900 text-base mb-1">
+            A. `null=False` (Por Defecto) vs `null=True`
+          </h4>
           <p class="text-sm text-slate-700 mb-2">
-            Controla si la base de datos permite guardar valores <code>NULL</code> en esa columna:
+            Controla si la base de datos permite guardar valores <code
+              >NULL</code
+            > en esa columna:
           </p>
           <ul class="text-xs list-disc pl-5 space-y-1 text-slate-600">
-            <li><code>null=False</code> (comportamiento predeterminado): Genera la restricción SQL <code>NOT NULL</code>. Cualquier intento de insertar una fila sin valor fallará a nivel de motor.</li>
-            <li><code>null=True</code>: Permite que la columna contenga <code>NULL</code> en la base de datos.</li>
+            <li>
+              <code>null=False</code> (comportamiento predeterminado): Genera la restricción
+              SQL <code>NOT NULL</code>. Cualquier intento de insertar una fila
+              sin valor fallará a nivel de motor.
+            </li>
+            <li>
+              <code>null=True</code>: Permite que la columna contenga <code
+                >NULL</code
+              > en la base de datos.
+            </li>
           </ul>
         </article>
 
         <article class="p-4 rounded-xl border border-slate-200 bg-slate-50">
-          <h4 class="font-bold text-slate-900 text-base mb-1">B. `blank=False` (Por Defecto) vs `blank=True`</h4>
+          <h4 class="font-bold text-slate-900 text-base mb-1">
+            B. `blank=False` (Por Defecto) vs `blank=True`
+          </h4>
           <p class="text-sm text-slate-700 mb-2">
-            <strong>Diferencia crucial:</strong> <code>blank</code> no tiene ningún efecto en la base de datos SQL. Es una validación exclusiva a nivel de <strong>formularios y del panel de administración de Django</strong>:
+            <strong>Diferencia crucial:</strong>
+            <code>blank</code> no tiene ningún efecto en la base de datos SQL. Es
+            una validación exclusiva a nivel de <strong
+              >formularios y del panel de administración de Django</strong
+            >:
           </p>
           <ul class="text-xs list-disc pl-5 space-y-1 text-slate-600">
-            <li><code>blank=False</code>: Django exigirá que el usuario rellene el campo en el formulario HTML antes de enviarlo.</li>
-            <li><code>blank=True</code>: Django permite que el campo quede en blanco (se guardará una cadena vacía <code>""</code> en la BD).</li>
+            <li>
+              <code>blank=False</code>: Django exigirá que el usuario rellene el
+              campo en el formulario HTML antes de enviarlo.
+            </li>
+            <li>
+              <code>blank=True</code>: Django permite que el campo quede en
+              blanco (se guardará una cadena vacía <code>""</code> en la BD).
+            </li>
           </ul>
         </article>
 
-        <div class="p-4 rounded-xl bg-amber-50 border-l-4 border-amber-500 text-amber-900">
-          <h4 class="font-black text-sm uppercase tracking-wider mb-1 flex items-center gap-2">
-            <span>⚠️</span> La Regla de Oro en Django: Evita `null=True` en campos de texto
+        <div
+          class="p-4 rounded-xl bg-amber-50 border-l-4 border-amber-500 text-amber-900"
+        >
+          <h4
+            class="font-black text-sm uppercase tracking-wider mb-1 flex items-center gap-2"
+          >
+            <span>⚠️</span> La Regla de Oro en Django: Evita `null=True` en campos
+            de texto
           </h4>
           <p class="text-xs leading-relaxed">
-            La documentación oficial de Django recomienda tajantemente: <strong>no utilices <code>null=True</code> en campos basados en texto (<code>CharField</code> y <code>TextField</code>)</strong>.
+            La documentación oficial de Django recomienda tajantemente: <strong
+              >no utilices <code>null=True</code> en campos basados en texto (<code
+                >CharField</code
+              > y <code>TextField</code>)</strong
+            >.
           </p>
           <p class="text-xs leading-relaxed mt-2">
-            Si lo haces, tu base de datos tendrá <strong>dos formas distintas de representar la ausencia de datos</strong>: el valor <code>NULL</code> y la cadena vacía <code>""</code>. Esto provoca bugs silenciosos en búsquedas y filtros. La convención recomendada es usar simplemente <code>blank=True, default=""</code>.
+            Si lo haces, tu base de datos tendrá <strong
+              >dos formas distintas de representar la ausencia de datos</strong
+            >: el valor <code>NULL</code> y la cadena vacía <code>""</code>.
+            Esto provoca bugs silenciosos en búsquedas y filtros. La convención
+            recomendada es usar simplemente <code>blank=True, default=""</code>.
           </p>
           <p class="text-xs leading-relaxed mt-1 text-slate-600 italic">
-            *Única excepción:* cuando el campo de texto tiene <code>unique=True</code> y además es opcional (como un código de socio o ISBN que puede no existir, pero si existe debe ser único).
+            *Única excepción:* cuando el campo de texto tiene <code
+              >unique=True</code
+            > y además es opcional (como un código de socio o ISBN que puede no existir,
+            pero si existe debe ser único).
           </p>
         </div>
 
         <article class="p-4 rounded-xl border border-slate-200 bg-slate-50">
-          <h4 class="font-bold text-slate-900 text-base mb-1">C. `unique=True` (Restricción de Unicidad)</h4>
+          <h4 class="font-bold text-slate-900 text-base mb-1">
+            C. `unique=True` (Restricción de Unicidad)
+          </h4>
           <p class="text-sm text-slate-700 mb-2">
-            Garantiza que no existan dos registros con el mismo valor (ej: nombres de usuario, correos o códigos SKU):
+            Garantiza que no existan dos registros con el mismo valor (ej:
+            nombres de usuario, correos o códigos SKU):
           </p>
-          <div class="p-3 bg-slate-900 text-slate-100 rounded-lg font-mono text-xs">
-            <span class="text-purple-400">sku</span> = models.CharField(max_length=30, <span class="text-yellow-400">unique=True</span>)<br />
+          <div
+            class="p-3 bg-slate-900 text-slate-100 rounded-lg font-mono text-xs"
+          >
+            <span class="text-purple-400">sku</span> = models.CharField(max_length=30,
+            <span class="text-yellow-400">unique=True</span>)<br />
             <span class="text-slate-400">-- SQL resultante:</span><br />
-            <span class="text-emerald-400">"sku" varchar(30) NOT NULL CONSTRAINT "app_sku_key" UNIQUE</span>
+            <span class="text-emerald-400"
+              >"sku" varchar(30) NOT NULL CONSTRAINT "app_sku_key" UNIQUE</span
+            >
           </div>
         </article>
 
         <article class="p-4 rounded-xl border border-slate-200 bg-slate-50">
-          <h4 class="font-bold text-slate-900 text-base mb-1">D. `db_index=True` (Índices para Búsqueda Rápida)</h4>
+          <h4 class="font-bold text-slate-900 text-base mb-1">
+            D. `db_index=True` (Índices para Búsqueda Rápida)
+          </h4>
           <p class="text-sm text-slate-700 mb-2">
-            Si planeas filtrar constantemente por ese campo (ej: <code>Articulo.objects.filter(slug=...)</code> o <code>titulo__icontains=...</code>), agrega <code>db_index=True</code>. Django creará un índice B-Tree en la base de datos:
+            Si planeas filtrar constantemente por ese campo (ej: <code
+              >Articulo.objects.filter(slug=...)</code
+            > o <code>titulo__icontains=...</code>), agrega <code
+              >db_index=True</code
+            >. Django creará un índice B-Tree en la base de datos:
           </p>
-          <div class="p-3 bg-slate-900 text-slate-100 rounded-lg font-mono text-xs">
-            <span class="text-slate-400">-- SQL ejecutado automáticamente tras crear la tabla:</span><br />
-            <span class="text-cyan-300">CREATE INDEX "blog_articulo_slug_idx" ON "blog_articulo" ("slug");</span>
+          <div
+            class="p-3 bg-slate-900 text-slate-100 rounded-lg font-mono text-xs"
+          >
+            <span class="text-slate-400"
+              >-- SQL ejecutado automáticamente tras crear la tabla:</span
+            ><br />
+            <span class="text-cyan-300"
+              >CREATE INDEX "blog_articulo_slug_idx" ON "blog_articulo"
+              ("slug");</span
+            >
           </div>
         </article>
 
         <article class="p-4 rounded-xl border border-slate-200 bg-slate-50">
-          <h4 class="font-bold text-slate-900 text-base mb-1">E. `choices` y `models.TextChoices` (Enums Elegantes)</h4>
+          <h4 class="font-bold text-slate-900 text-base mb-1">
+            E. `choices` y `models.TextChoices` (Enums Elegantes)
+          </h4>
           <p class="text-sm text-slate-700 mb-2">
-            Permite restringir las opciones seleccionables en formularios y en el Admin, sin requerir tipos ENUM propietarios en la base de datos:
+            Permite restringir las opciones seleccionables en formularios y en
+            el Admin, sin requerir tipos ENUM propietarios en la base de datos:
           </p>
           <CodeBlock
             lang="python"
@@ -207,101 +341,198 @@ CREATE TABLE "blog_articulo" (
     <section class="mb-10">
       <h2>3. Catálogo Completo de Campos de Django y su Traducción a SQL</h2>
       <p>
-        Django provee una amplia variedad de campos especializados. A continuación se analiza cada grupo, cómo se define en Python y qué columna genera en el motor relacional.
+        Django provee una amplia variedad de campos especializados. A
+        continuación se analiza cada grupo, cómo se define en Python y qué
+        columna genera en el motor relacional.
       </p>
 
       <!-- TABLA RESUMEN -->
-      <div class="my-6 overflow-x-auto">
-        <table class="w-full text-left border-collapse border border-slate-200 rounded-xl overflow-hidden text-xs">
+      <div
+        class="my-6 overflow-x-auto rounded-xl border border-slate-300 shadow-sm"
+      >
+        <table
+          class="w-full text-left border-collapse border border-slate-300 text-xs"
+        >
           <thead class="bg-slate-900 text-slate-100 font-bold">
             <tr>
-              <th class="p-3">Campo Django</th>
-              <th class="p-3">Tipo en PostgreSQL</th>
-              <th class="p-3">Tipo en SQLite</th>
-              <th class="p-3">Uso Recomendado</th>
+              <th class="border border-slate-700 p-3">Campo Django</th>
+              <th class="border border-slate-700 p-3">Tipo en PostgreSQL</th>
+              <th class="border border-slate-700 p-3">Tipo en SQLite</th>
+              <th class="border border-slate-700 p-3">Uso Recomendado</th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-slate-200 text-slate-700">
-            <tr class="hover:bg-slate-50">
-              <td class="p-2.5 font-mono font-bold text-emerald-700">CharField(max_length=n)</td>
-              <td class="p-2.5 font-mono">varchar(n)</td>
-              <td class="p-2.5 font-mono">varchar(n)</td>
-              <td class="p-2.5">Textos cortos (nombres, títulos, códigos)</td>
+          <tbody class="divide-y divide-slate-300 text-slate-700 bg-white">
+            <tr class="hover:bg-slate-50 transition-colors">
+              <td
+                class="border border-slate-300 p-2.5 font-mono font-bold text-emerald-700"
+                >CharField(max_length=n)</td
+              >
+              <td class="border border-slate-300 p-2.5 font-mono">varchar(n)</td
+              >
+              <td class="border border-slate-300 p-2.5 font-mono">varchar(n)</td
+              >
+              <td class="border border-slate-300 p-2.5"
+                >Textos cortos (nombres, títulos, códigos)</td
+              >
             </tr>
-            <tr class="hover:bg-slate-50">
-              <td class="p-2.5 font-mono font-bold text-emerald-700">TextField()</td>
-              <td class="p-2.5 font-mono">text</td>
-              <td class="p-2.5 font-mono">text</td>
-              <td class="p-2.5">Contenido largo, párrafos, notas sin límite</td>
+            <tr class="hover:bg-slate-50 transition-colors">
+              <td
+                class="border border-slate-300 p-2.5 font-mono font-bold text-emerald-700"
+                >TextField()</td
+              >
+              <td class="border border-slate-300 p-2.5 font-mono">text</td>
+              <td class="border border-slate-300 p-2.5 font-mono">text</td>
+              <td class="border border-slate-300 p-2.5"
+                >Contenido largo, párrafos, notas sin límite</td
+              >
             </tr>
-            <tr class="hover:bg-slate-50">
-              <td class="p-2.5 font-mono font-bold text-emerald-700">IntegerField()</td>
-              <td class="p-2.5 font-mono">integer</td>
-              <td class="p-2.5 font-mono">integer</td>
-              <td class="p-2.5">Números enteros (-2.147M a +2.147M)</td>
+            <tr class="hover:bg-slate-50 transition-colors">
+              <td
+                class="border border-slate-300 p-2.5 font-mono font-bold text-emerald-700"
+                >IntegerField()</td
+              >
+              <td class="border border-slate-300 p-2.5 font-mono">integer</td>
+              <td class="border border-slate-300 p-2.5 font-mono">integer</td>
+              <td class="border border-slate-300 p-2.5"
+                >Números enteros (-2.147M a +2.147M)</td
+              >
             </tr>
-            <tr class="hover:bg-slate-50">
-              <td class="p-2.5 font-mono font-bold text-emerald-700">PositiveIntegerField()</td>
-              <td class="p-2.5 font-mono">integer CHECK &ge; 0</td>
-              <td class="p-2.5 font-mono">integer unsigned</td>
-              <td class="p-2.5">Cantidades, stocks, edades (nunca negativos)</td>
+            <tr class="hover:bg-slate-50 transition-colors">
+              <td
+                class="border border-slate-300 p-2.5 font-mono font-bold text-emerald-700"
+                >PositiveIntegerField()</td
+              >
+              <td class="border border-slate-300 p-2.5 font-mono"
+                >integer CHECK &ge; 0</td
+              >
+              <td class="border border-slate-300 p-2.5 font-mono"
+                >integer unsigned</td
+              >
+              <td class="border border-slate-300 p-2.5"
+                >Cantidades, stocks, edades (nunca negativos)</td
+              >
             </tr>
-            <tr class="hover:bg-slate-50">
-              <td class="p-2.5 font-mono font-bold text-emerald-700">DecimalField(max_digits, decimal_places)</td>
-              <td class="p-2.5 font-mono">numeric(p, s)</td>
-              <td class="p-2.5 font-mono">decimal(p, s)</td>
-              <td class="p-2.5"><strong>Precios y dinero</strong> (precisión exacta sin redondeo)</td>
+            <tr class="hover:bg-slate-50 transition-colors">
+              <td
+                class="border border-slate-300 p-2.5 font-mono font-bold text-emerald-700"
+                >DecimalField(max_digits, decimal_places)</td
+              >
+              <td class="border border-slate-300 p-2.5 font-mono"
+                >numeric(p, s)</td
+              >
+              <td class="border border-slate-300 p-2.5 font-mono"
+                >decimal(p, s)</td
+              >
+              <td class="border border-slate-300 p-2.5"
+                ><strong>Precios y dinero</strong> (precisión exacta sin redondeo)</td
+              >
             </tr>
-            <tr class="hover:bg-slate-50">
-              <td class="p-2.5 font-mono font-bold text-emerald-700">FloatField()</td>
-              <td class="p-2.5 font-mono">double precision</td>
-              <td class="p-2.5 font-mono">real</td>
-              <td class="p-2.5">Cálculos científicos aproximados (no usar para dinero)</td>
+            <tr class="hover:bg-slate-50 transition-colors">
+              <td
+                class="border border-slate-300 p-2.5 font-mono font-bold text-emerald-700"
+                >FloatField()</td
+              >
+              <td class="border border-slate-300 p-2.5 font-mono"
+                >double precision</td
+              >
+              <td class="border border-slate-300 p-2.5 font-mono">real</td>
+              <td class="border border-slate-300 p-2.5"
+                >Cálculos científicos aproximados (no usar para dinero)</td
+              >
             </tr>
-            <tr class="hover:bg-slate-50">
-              <td class="p-2.5 font-mono font-bold text-emerald-700">BooleanField(default=False)</td>
-              <td class="p-2.5 font-mono">boolean</td>
-              <td class="p-2.5 font-mono">bool (0 o 1)</td>
-              <td class="p-2.5">Banderas lógicas (activo, verificado, publicado)</td>
+            <tr class="hover:bg-slate-50 transition-colors">
+              <td
+                class="border border-slate-300 p-2.5 font-mono font-bold text-emerald-700"
+                >BooleanField(default=False)</td
+              >
+              <td class="border border-slate-300 p-2.5 font-mono">boolean</td>
+              <td class="border border-slate-300 p-2.5 font-mono"
+                >bool (0 o 1)</td
+              >
+              <td class="border border-slate-300 p-2.5"
+                >Banderas lógicas (activo, verificado, publicado)</td
+              >
             </tr>
-            <tr class="hover:bg-slate-50">
-              <td class="p-2.5 font-mono font-bold text-emerald-700">DateField()</td>
-              <td class="p-2.5 font-mono">date</td>
-              <td class="p-2.5 font-mono">date</td>
-              <td class="p-2.5">Fechas sin hora (cumpleaños, vencimiento)</td>
+            <tr class="hover:bg-slate-50 transition-colors">
+              <td
+                class="border border-slate-300 p-2.5 font-mono font-bold text-emerald-700"
+                >DateField()</td
+              >
+              <td class="border border-slate-300 p-2.5 font-mono">date</td>
+              <td class="border border-slate-300 p-2.5 font-mono">date</td>
+              <td class="border border-slate-300 p-2.5"
+                >Fechas sin hora (cumpleaños, vencimiento)</td
+              >
             </tr>
-            <tr class="hover:bg-slate-50">
-              <td class="p-2.5 font-mono font-bold text-emerald-700">DateTimeField()</td>
-              <td class="p-2.5 font-mono">timestamp with time zone</td>
-              <td class="p-2.5 font-mono">datetime</td>
-              <td class="p-2.5">Marcas de tiempo exactas (created_at, updated_at)</td>
+            <tr class="hover:bg-slate-50 transition-colors">
+              <td
+                class="border border-slate-300 p-2.5 font-mono font-bold text-emerald-700"
+                >DateTimeField()</td
+              >
+              <td class="border border-slate-300 p-2.5 font-mono"
+                >timestamp with time zone</td
+              >
+              <td class="border border-slate-300 p-2.5 font-mono">datetime</td>
+              <td class="border border-slate-300 p-2.5"
+                >Marcas de tiempo exactas (created_at, updated_at)</td
+              >
             </tr>
-            <tr class="hover:bg-slate-50">
-              <td class="p-2.5 font-mono font-bold text-emerald-700">UUIDField(default=uuid.uuid4)</td>
-              <td class="p-2.5 font-mono">uuid</td>
-              <td class="p-2.5 font-mono">char(32)</td>
-              <td class="p-2.5">Identificadores únicos no adivinables</td>
+            <tr class="hover:bg-slate-50 transition-colors">
+              <td
+                class="border border-slate-300 p-2.5 font-mono font-bold text-emerald-700"
+                >UUIDField(default=uuid.uuid4)</td
+              >
+              <td class="border border-slate-300 p-2.5 font-mono">uuid</td>
+              <td class="border border-slate-300 p-2.5 font-mono">char(32)</td>
+              <td class="border border-slate-300 p-2.5"
+                >Identificadores únicos no adivinables</td
+              >
             </tr>
-            <tr class="hover:bg-slate-50">
-              <td class="p-2.5 font-mono font-bold text-emerald-700">FileField() / ImageField()</td>
-              <td class="p-2.5 font-mono">varchar(100)</td>
-              <td class="p-2.5 font-mono">varchar(100)</td>
-              <td class="p-2.5">Ruta del archivo en el servidor (no el archivo binario)</td>
+            <tr class="hover:bg-slate-50 transition-colors">
+              <td
+                class="border border-slate-300 p-2.5 font-mono font-bold text-emerald-700"
+                >FileField() / ImageField()</td
+              >
+              <td class="border border-slate-300 p-2.5 font-mono"
+                >varchar(100)</td
+              >
+              <td class="border border-slate-300 p-2.5 font-mono"
+                >varchar(100)</td
+              >
+              <td class="border border-slate-300 p-2.5"
+                >Ruta del archivo en el servidor (no el archivo binario)</td
+              >
             </tr>
-            <tr class="hover:bg-slate-50">
-              <td class="p-2.5 font-mono font-bold text-emerald-700">ForeignKey(Target, on_delete=...)</td>
-              <td class="p-2.5 font-mono">bigint REFERENCES ...</td>
-              <td class="p-2.5 font-mono">integer REFERENCES ...</td>
-              <td class="p-2.5">Relaciones 1 a Muchos (crea columna <code>_id</code>)</td>
+            <tr class="hover:bg-slate-50 transition-colors">
+              <td
+                class="border border-slate-300 p-2.5 font-mono font-bold text-emerald-700"
+                >ForeignKey(Target, on_delete=...)</td
+              >
+              <td class="border border-slate-300 p-2.5 font-mono"
+                >bigint REFERENCES ...</td
+              >
+              <td class="border border-slate-300 p-2.5 font-mono"
+                >integer REFERENCES ...</td
+              >
+              <td class="border border-slate-300 p-2.5"
+                >Relaciones 1 a Muchos (crea columna <code>_id</code>)</td
+              >
             </tr>
           </tbody>
         </table>
       </div>
 
       <!-- DESGLOSE DETALLADO POR CATEGORÍAS -->
-      <h3>3.1 Campos Numéricos: ¿Por qué DecimalField y no FloatField para Dinero?</h3>
+      <h3>
+        3.1 Campos Numéricos: ¿Por qué DecimalField y no FloatField para Dinero?
+      </h3>
       <p>
-        Uno de los errores más peligrosos en desarrollo backend es usar <code>FloatField</code> para almacenar monedas o saldos. Los números de coma flotante en computación utilizan el estándar IEEE 754 de base 2, produciendo micro-errores como <code>0.1 + 0.2 = 0.30000000000000004</code>.
+        Uno de los errores más peligrosos en desarrollo backend es usar <code
+          >FloatField</code
+        > para almacenar monedas o saldos. Los números de coma flotante en computación
+        utilizan el estándar IEEE 754 de base 2, produciendo micro-errores como <code
+          >0.1 + 0.2 = 0.30000000000000004</code
+        >.
       </p>
       <CodeBlock
         lang="python"
@@ -321,7 +552,8 @@ precio = models.DecimalField(
 
       <h3>3.2 Campos de Fecha y Hora: `auto_now_add` vs `auto_now`</h3>
       <p>
-        Casi todo modelo en producción requiere dos columnas de auditoría temporal:
+        Casi todo modelo en producción requiere dos columnas de auditoría
+        temporal:
       </p>
       <CodeBlock
         lang="python"
@@ -339,10 +571,15 @@ precio = models.DecimalField(
 
       <h3>3.3 Archivos e Imágenes: `FileField` e `ImageField`</h3>
       <p>
-        Una duda muy común de los principiantes es pensar que la imagen o el PDF se almacenan en una columna binaria (BLOB) dentro de la base de datos. <strong>Esto es una pésima práctica de arquitectura</strong>.
+        Una duda muy común de los principiantes es pensar que la imagen o el PDF
+        se almacenan en una columna binaria (BLOB) dentro de la base de datos. <strong
+          >Esto es una pésima práctica de arquitectura</strong
+        >.
       </p>
       <p>
-        Django únicamente guarda en la base de datos una <strong>cadena de texto</strong> con la ruta relativa del archivo:
+        Django únicamente guarda en la base de datos una <strong
+          >cadena de texto</strong
+        > con la ruta relativa del archivo:
       </p>
       <CodeBlock
         lang="python"
@@ -354,18 +591,34 @@ precio = models.DecimalField(
 
       <h3>3.4 Relaciones entre Modelos: Las 3 Grandes Conexiones SQL</h3>
       <p>
-        En bases de datos relacionales, casi nunca trabajamos con tablas aisladas. La fuerza de Django ORM radica en cómo modela las <strong>3 relaciones cardinales</strong> de SQL a través de Python, garantizando integridad referencial mediante claves foráneas y tablas intermedias.
+        En bases de datos relacionales, casi nunca trabajamos con tablas
+        aisladas. La fuerza de Django ORM radica en cómo modela las <strong
+          >3 relaciones cardinales</strong
+        > de SQL a través de Python, garantizando integridad referencial mediante
+        claves foráneas y tablas intermedias.
       </p>
 
       <!-- 1. UNO A MUCHOS (ForeignKey) -->
-      <div class="my-6 rounded-2xl border-2 border-emerald-500/30 bg-emerald-50/40 p-5 dark:bg-emerald-950/20">
+      <div
+        class="my-6 rounded-2xl border-2 border-emerald-500/30 bg-emerald-50/40 p-5 dark:bg-emerald-950/20"
+      >
         <div class="flex items-center gap-2 mb-3">
-          <span class="rounded-lg bg-emerald-600 px-2.5 py-1 text-xs font-black text-white uppercase tracking-wider font-mono">1 a N</span>
-          <h4 class="m-0 text-lg font-black text-slate-900">Uno a Muchos — <code>models.ForeignKey</code></h4>
+          <span
+            class="rounded-lg bg-emerald-600 px-2.5 py-1 text-xs font-black text-white uppercase tracking-wider font-mono"
+            >1 a N</span
+          >
+          <h4 class="m-0 text-lg font-black text-slate-900">
+            Uno a Muchos — <code>models.ForeignKey</code>
+          </h4>
         </div>
         <p class="text-sm text-slate-700 leading-relaxed mb-3">
-          <strong>Regla:</strong> Un registro de la Tabla A puede estar vinculado con múltiples registros de la Tabla B, pero cada registro de la Tabla B pertenece a un único registro de la Tabla A.
-          <em>Ejemplo: Una Categoría tiene muchos Productos, pero cada Producto pertenece a una sola Categoría.</em>
+          <strong>Regla:</strong> Un registro de la Tabla A puede estar vinculado
+          con múltiples registros de la Tabla B, pero cada registro de la Tabla B
+          pertenece a un único registro de la Tabla A.
+          <em
+            >Ejemplo: Una Categoría tiene muchos Productos, pero cada Producto
+            pertenece a una sola Categoría.</em
+          >
         </p>
 
         <CodeBlock
@@ -396,9 +649,9 @@ class Producto(models.Model):
           title="tienda/models.py (1 a N)"
         />
 
-        <div class="mt-4 rounded-xl bg-slate-900 p-4 text-xs font-mono text-slate-200">
-          <p class="text-emerald-400 font-bold mb-2">⚡ ¿Qué genera Django físicamente en la Base de Datos SQL?</p>
-          <pre class="overflow-x-auto text-[0.8rem] leading-relaxed"><code>-- Tabla Padre
+        <CodeBlock
+          lang="sql"
+          code={`-- Tabla Padre
 CREATE TABLE "tienda_categoria" (
     "id" bigint NOT NULL PRIMARY KEY GENERATED BY DEFAULT AS IDENTITY,
     "nombre" varchar(50) NOT NULL
@@ -413,23 +666,53 @@ CREATE TABLE "tienda_producto" (
 );
 
 -- Django crea un índice para búsquedas ultra rápidas por FK
-CREATE INDEX "tienda_producto_categoria_id_idx" ON "tienda_producto" ("categoria_id");</code></pre>
-        </div>
+CREATE INDEX "tienda_producto_categoria_id_idx" ON "tienda_producto" ("categoria_id");`}
+          title="⚡ SQL generado físicamente en la Base de Datos (1 a N)"
+        />
 
         <div class="mt-4 space-y-2">
-          <p class="text-xs font-bold uppercase tracking-wider text-slate-600">Políticas de Eliminación obligatorias (<code>on_delete</code>):</p>
+          <p class="text-xs font-bold uppercase tracking-wider text-slate-600">
+            Políticas de Eliminación obligatorias (<code>on_delete</code>):
+          </p>
           <ul class="text-xs text-slate-700 space-y-1.5 pl-4 list-disc">
-            <li><code>models.CASCADE</code>: Si se elimina la categoría, <strong>se borran automáticamente</strong> todos sus productos vinculados (peligroso para ventas o facturas).</li>
-            <li><code>models.PROTECT</code>: <strong>Impide eliminar</strong> la categoría si todavía tiene productos asociados. Lanza la excepción <code>ProtectedError</code>. Ideal para catálogos y clientes con facturas.</li>
-            <li><code>models.SET_NULL</code>: Si se elimina la categoría, el producto queda con <code>categoria_id = NULL</code> (requiere obligatoriamente <code>null=True</code> en el campo).</li>
-            <li><code>models.SET_DEFAULT</code>: Reasigna el producto a una categoría por defecto predefinida (requiere <code>default=...</code>).</li>
-            <li><code>models.DO_NOTHING</code>: Django no ejecuta nada; delega la integridad exclusivamente al motor de base de datos SQL.</li>
+            <li>
+              <code>models.CASCADE</code>: Si se elimina la categoría, <strong
+                >se borran automáticamente</strong
+              > todos sus productos vinculados (peligroso para ventas o facturas).
+            </li>
+            <li>
+              <code>models.PROTECT</code>: <strong>Impide eliminar</strong> la categoría
+              si todavía tiene productos asociados. Lanza la excepción <code
+                >ProtectedError</code
+              >. Ideal para catálogos y clientes con facturas.
+            </li>
+            <li>
+              <code>models.SET_NULL</code>: Si se elimina la categoría, el
+              producto queda con <code>categoria_id = NULL</code> (requiere obligatoriamente
+              <code>null=True</code> en el campo).
+            </li>
+            <li>
+              <code>models.SET_DEFAULT</code>: Reasigna el producto a una
+              categoría por defecto predefinida (requiere <code
+                >default=...</code
+              >).
+            </li>
+            <li>
+              <code>models.DO_NOTHING</code>: Django no ejecuta nada; delega la
+              integridad exclusivamente al motor de base de datos SQL.
+            </li>
           </ul>
         </div>
 
-        <div class="mt-4 rounded-xl bg-white p-3 border border-slate-200 text-xs">
-          <strong class="text-slate-900">¿Cómo se navega en Python gracias a <code>related_name</code>?</strong>
-          <pre class="bg-slate-100 p-2 rounded mt-1 font-mono text-[0.78rem]"><code># Navegación hacia adelante (Producto -> Categoría)
+        <div
+          class="mt-4 rounded-xl bg-white p-3 border border-slate-200 text-xs"
+        >
+          <strong class="text-slate-900"
+            >¿Cómo se navega en Python gracias a <code>related_name</code
+            >?</strong
+          >
+          <pre
+            class="bg-slate-100 p-2 rounded mt-1 font-mono text-[0.78rem]"><code># Navegación hacia adelante (Producto -> Categoría)
 producto = Producto.objects.get(id=1)
 print(producto.categoria.nombre)        # "Electrónica"
 
@@ -440,14 +723,26 @@ todos_los_prods = cat.productos.all()   # QuerySet de todos los productos de esa
       </div>
 
       <!-- 2. UNO A UNO (OneToOneField) -->
-      <div class="my-6 rounded-2xl border-2 border-blue-500/30 bg-blue-50/40 p-5 dark:bg-blue-950/20">
+      <div
+        class="my-6 rounded-2xl border-2 border-blue-500/30 bg-blue-50/40 p-5 dark:bg-blue-950/20"
+      >
         <div class="flex items-center gap-2 mb-3">
-          <span class="rounded-lg bg-blue-600 px-2.5 py-1 text-xs font-black text-white uppercase tracking-wider font-mono">1 a 1</span>
-          <h4 class="m-0 text-lg font-black text-slate-900">Uno a Uno — <code>models.OneToOneField</code></h4>
+          <span
+            class="rounded-lg bg-blue-600 px-2.5 py-1 text-xs font-black text-white uppercase tracking-wider font-mono"
+            >1 a 1</span
+          >
+          <h4 class="m-0 text-lg font-black text-slate-900">
+            Uno a Uno — <code>models.OneToOneField</code>
+          </h4>
         </div>
         <p class="text-sm text-slate-700 leading-relaxed mb-3">
-          <strong>Regla:</strong> Un registro de la Tabla A se corresponde con <strong>exactamente un registro</strong> de la Tabla B, y viceversa.
-          <em>Ejemplo: El modelo de usuario oficial de Django y su Perfil extendido con teléfono y biografía.</em>
+          <strong>Regla:</strong> Un registro de la Tabla A se corresponde con <strong
+            >exactamente un registro</strong
+          > de la Tabla B, y viceversa.
+          <em
+            >Ejemplo: El modelo de usuario oficial de Django y su Perfil
+            extendido con teléfono y biografía.</em
+          >
         </p>
 
         <CodeBlock
@@ -471,38 +766,61 @@ class PerfilUsuario(models.Model):
           title="usuarios/models.py (1 a 1)"
         />
 
-        <div class="mt-4 rounded-xl bg-slate-900 p-4 text-xs font-mono text-slate-200">
-          <p class="text-blue-400 font-bold mb-2">⚡ ¿Cuál es la diferencia física en SQL frente a una ForeignKey?</p>
-          <pre class="overflow-x-auto text-[0.8rem] leading-relaxed"><code>-- Django crea exactamente una clave foránea, pero le agrega la restricción UNIQUE:
+        <CodeBlock
+          lang="sql"
+          code={`-- Django crea exactamente una clave foránea, pero le agrega la restricción UNIQUE:
 CREATE TABLE "usuarios_perfilusuario" (
     "id" bigint NOT NULL PRIMARY KEY GENERATED BY DEFAULT AS IDENTITY,
     "biografia" text NOT NULL,
     "telefono" varchar(20) NOT NULL,
     "avatar" varchar(100) NOT NULL,
     "user_id" integer NOT NULL UNIQUE REFERENCES "auth_user" ("id") ON DELETE CASCADE
-);</code></pre>
-        </div>
+);`}
+          title="⚡ SQL generado en BD: Diferencia frente a ForeignKey (1 a 1)"
+        />
 
-        <div class="mt-4 rounded-xl bg-white p-3 border border-slate-200 text-xs">
-          <strong class="text-slate-900">Diferencia fundamental de acceso en Python:</strong>
+        <div
+          class="mt-4 rounded-xl bg-white p-3 border border-slate-200 text-xs"
+        >
+          <strong class="text-slate-900"
+            >Diferencia fundamental de acceso en Python:</strong
+          >
           <p class="mt-1 text-slate-600">
-            A diferencia de <code>ForeignKey</code> donde el inverso entrega una lista o QuerySet (<code>user.pedidos.all()</code>), en <code>OneToOneField</code> el inverso retorna <strong>directamente la instancia única del modelo</strong> (o lanza <code>DoesNotExist</code>):
+            A diferencia de <code>ForeignKey</code> donde el inverso entrega una lista
+            o QuerySet (<code>user.pedidos.all()</code>), en <code
+              >OneToOneField</code
+            > el inverso retorna <strong
+              >directamente la instancia única del modelo</strong
+            > (o lanza <code>DoesNotExist</code>):
           </p>
-          <pre class="bg-slate-100 p-2 rounded mt-1 font-mono text-[0.78rem]"><code>usuario = User.objects.get(username="ada_lovelace")
+          <pre
+            class="bg-slate-100 p-2 rounded mt-1 font-mono text-[0.78rem]"><code>usuario = User.objects.get(username="ada_lovelace")
 # Acceso directo al objeto único, ¡no requiere .all() ni .first()!
 print(usuario.perfil.biografia)</code></pre>
         </div>
       </div>
 
       <!-- 3. MUCHOS A MUCHOS (ManyToManyField) -->
-      <div class="my-6 rounded-2xl border-2 border-purple-500/30 bg-purple-50/40 p-5 dark:bg-purple-950/20">
+      <div
+        class="my-6 rounded-2xl border-2 border-purple-500/30 bg-purple-50/40 p-5 dark:bg-purple-950/20"
+      >
         <div class="flex items-center gap-2 mb-3">
-          <span class="rounded-lg bg-purple-600 px-2.5 py-1 text-xs font-black text-white uppercase tracking-wider font-mono">N a M</span>
-          <h4 class="m-0 text-lg font-black text-slate-900">Muchos a Muchos — <code>models.ManyToManyField</code></h4>
+          <span
+            class="rounded-lg bg-purple-600 px-2.5 py-1 text-xs font-black text-white uppercase tracking-wider font-mono"
+            >N a M</span
+          >
+          <h4 class="m-0 text-lg font-black text-slate-900">
+            Muchos a Muchos — <code>models.ManyToManyField</code>
+          </h4>
         </div>
         <p class="text-sm text-slate-700 leading-relaxed mb-3">
-          <strong>Regla:</strong> Un registro de la Tabla A puede asociarse a varios registros de la Tabla B, y a su vez cada registro de la Tabla B puede vincularse a varios de la Tabla A.
-          <em>Ejemplo: Un Artículo de blog tiene múltiples Etiquetas (Tags), y cada Etiqueta clasifica a múltiples Artículos.</em>
+          <strong>Regla:</strong> Un registro de la Tabla A puede asociarse a varios
+          registros de la Tabla B, y a su vez cada registro de la Tabla B puede vincularse
+          a varios de la Tabla A.
+          <em
+            >Ejemplo: Un Artículo de blog tiene múltiples Etiquetas (Tags), y
+            cada Etiqueta clasifica a múltiples Artículos.</em
+          >
         </p>
 
         <CodeBlock
@@ -533,23 +851,31 @@ class Articulo(models.Model):
           title="blog/models.py (N a M)"
         />
 
-        <div class="mt-4 rounded-xl bg-slate-900 p-4 text-xs font-mono text-slate-200">
-          <p class="text-purple-400 font-bold mb-2">⚡ El secreto SQL: ¡Ni la tabla Articulo ni la tabla Etiqueta sufren cambios!</p>
-          <p class="text-slate-300 text-[0.8rem] mb-2">
-            Los motores relacionales no pueden almacenar múltiples claves en una sola celda. Por tanto, Django crea silenciosamente una <strong>tercera tabla intermedia (Join Table o Tabla Puente)</strong>:
-          </p>
-          <pre class="overflow-x-auto text-[0.8rem] leading-relaxed"><code>-- Tabla intermedia generada automáticamente: "blog_articulo_etiquetas"
+        <p class="text-sm text-slate-700 leading-relaxed mt-4 mb-2">
+          ⚡ <strong>El secreto SQL:</strong> ¡Ni la tabla <code>Articulo</code> ni la tabla <code>Etiqueta</code> sufren cambios!
+          Los motores relacionales no pueden almacenar múltiples claves en una sola celda. Por tanto, Django crea silenciosamente una <strong>tercera tabla intermedia (Join Table o Tabla Puente)</strong>:
+        </p>
+
+        <CodeBlock
+          lang="sql"
+          code={`-- Tabla intermedia generada automáticamente: "blog_articulo_etiquetas"
 CREATE TABLE "blog_articulo_etiquetas" (
     "id" bigint NOT NULL PRIMARY KEY GENERATED BY DEFAULT AS IDENTITY,
     "articulo_id" bigint NOT NULL REFERENCES "blog_articulo" ("id") ON DELETE CASCADE,
     "etiqueta_id" bigint NOT NULL REFERENCES "blog_etiqueta" ("id") ON DELETE CASCADE,
     CONSTRAINT "blog_articulo_etiquetas_uniq" UNIQUE ("articulo_id", "etiqueta_id")
-);</code></pre>
-        </div>
+);`}
+          title="⚡ SQL generado: Tabla Intermedia (ManyToMany N a M)"
+        />
 
-        <div class="mt-4 rounded-xl bg-white p-3 border border-slate-200 text-xs">
-          <strong class="text-slate-900">Operaciones ORM especiales para Muchos a Muchos:</strong>
-          <pre class="bg-slate-100 p-2 rounded mt-1 font-mono text-[0.78rem]"><code>articulo = Articulo.objects.get(id=1)
+        <div
+          class="mt-4 rounded-xl bg-white p-3 border border-slate-200 text-xs"
+        >
+          <strong class="text-slate-900"
+            >Operaciones ORM especiales para Muchos a Muchos:</strong
+          >
+          <pre
+            class="bg-slate-100 p-2 rounded mt-1 font-mono text-[0.78rem]"><code>articulo = Articulo.objects.get(id=1)
 tag_python = Etiqueta.objects.get(nombre="Python")
 tag_django = Etiqueta.objects.get(nombre="Django")
 
@@ -570,10 +896,19 @@ articulo.etiquetas.clear()</code></pre>
         </div>
 
         <!-- THROUGH MODEL: CUANDO LA RELACIÓN TIENE ATRIBUTOS PROPIOS -->
-        <div class="mt-4 rounded-xl border border-amber-300 bg-amber-50 p-4 text-xs">
-          <p class="font-bold text-amber-900 mb-1">💡 ¿Qué pasa si la relación Muchos a Muchos requiere datos extra? (Argumento <code>through</code>)</p>
+        <div
+          class="mt-4 rounded-xl border border-amber-300 bg-amber-50 p-4 text-xs"
+        >
+          <p class="font-bold text-amber-900 mb-1">
+            💡 ¿Qué pasa si la relación Muchos a Muchos requiere datos extra?
+            (Argumento <code>through</code>)
+          </p>
           <p class="text-amber-800 leading-relaxed mb-2">
-            Imagina alumnos inscribiéndose en cursos. No basta con saber qué alumno está en qué curso; también necesitas registrar la <strong>fecha de inscripción</strong> y su <strong>calificación final</strong>. Para esto, creas tú mismo el modelo intermedio con <code>through</code>:
+            Imagina alumnos inscribiéndose en cursos. No basta con saber qué
+            alumno está en qué curso; también necesitas registrar la <strong
+              >fecha de inscripción</strong
+            > y su <strong>calificación final</strong>. Para esto, creas tú
+            mismo el modelo intermedio con <code>through</code>:
           </p>
           <CodeBlock
             lang="python"
@@ -599,38 +934,74 @@ class Inscripcion(models.Model):
       </div>
 
       <!-- TABLA RESUMEN DE RELACIONES -->
-      <div class="overflow-x-auto my-6">
-        <table class="w-full text-left text-xs border-collapse rounded-xl overflow-hidden shadow-sm">
+      <div
+        class="overflow-x-auto my-6 rounded-xl border border-slate-300 shadow-sm"
+      >
+        <table
+          class="w-full text-left text-xs border-collapse border border-slate-300"
+        >
           <thead>
-            <tr class="bg-slate-900 text-white">
-              <th class="p-3">Relación</th>
-              <th class="p-3">Campo Django</th>
-              <th class="p-3">¿Qué crea en la BD SQL?</th>
-              <th class="p-3">Navegación Directa</th>
-              <th class="p-3">Navegación Inversa</th>
+            <tr class="bg-slate-900 text-white font-bold">
+              <th class="border border-slate-700 p-3">Relación</th>
+              <th class="border border-slate-700 p-3">Campo Django</th>
+              <th class="border border-slate-700 p-3"
+                >¿Qué crea en la BD SQL?</th
+              >
+              <th class="border border-slate-700 p-3">Navegación Directa</th>
+              <th class="border border-slate-700 p-3">Navegación Inversa</th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-slate-200 bg-white">
-            <tr class="hover:bg-slate-50">
-              <td class="p-3 font-bold text-emerald-600">1 a N (Uno a Muchos)</td>
-              <td class="p-3 font-mono">models.ForeignKey(B, on_delete=...)</td>
-              <td class="p-3">Columna física <code>b_id</code> en tabla A + Índice</td>
-              <td class="p-3 font-mono">a.b (objeto)</td>
-              <td class="p-3 font-mono">b.as.all() (QuerySet)</td>
+          <tbody class="divide-y divide-slate-300 bg-white">
+            <tr class="hover:bg-slate-50 transition-colors">
+              <td class="border border-slate-300 p-3 font-bold text-emerald-600"
+                >1 a N (Uno a Muchos)</td
+              >
+              <td class="border border-slate-300 p-3 font-mono"
+                >models.ForeignKey(B, on_delete=...)</td
+              >
+              <td class="border border-slate-300 p-3"
+                >Columna física <code>b_id</code> en tabla A + Índice</td
+              >
+              <td class="border border-slate-300 p-3 font-mono">a.b (objeto)</td
+              >
+              <td class="border border-slate-300 p-3 font-mono"
+                >b.as.all() (QuerySet)</td
+              >
             </tr>
-            <tr class="hover:bg-slate-50">
-              <td class="p-3 font-bold text-blue-600">1 a 1 (Uno a Uno)</td>
-              <td class="p-3 font-mono">models.OneToOneField(B, on_delete=...)</td>
-              <td class="p-3">Columna física <code>b_id</code> en tabla A + Restricción <code>UNIQUE</code></td>
-              <td class="p-3 font-mono">a.b (objeto)</td>
-              <td class="p-3 font-mono">b.a (objeto único)</td>
+            <tr class="hover:bg-slate-50 transition-colors">
+              <td class="border border-slate-300 p-3 font-bold text-blue-600"
+                >1 a 1 (Uno a Uno)</td
+              >
+              <td class="border border-slate-300 p-3 font-mono"
+                >models.OneToOneField(B, on_delete=...)</td
+              >
+              <td class="border border-slate-300 p-3"
+                >Columna física <code>b_id</code> en tabla A + Restricción <code
+                  >UNIQUE</code
+                ></td
+              >
+              <td class="border border-slate-300 p-3 font-mono">a.b (objeto)</td
+              >
+              <td class="border border-slate-300 p-3 font-mono"
+                >b.a (objeto único)</td
+              >
             </tr>
-            <tr class="hover:bg-slate-50">
-              <td class="p-3 font-bold text-purple-600">N a M (Muchos a Muchos)</td>
-              <td class="p-3 font-mono">models.ManyToManyField(B)</td>
-              <td class="p-3"><strong>Tercera tabla intermedia</strong> puente con las dos FKs</td>
-              <td class="p-3 font-mono">a.bs.all() (.add, .remove)</td>
-              <td class="p-3 font-mono">b.as.all() (.add, .remove)</td>
+            <tr class="hover:bg-slate-50 transition-colors">
+              <td class="border border-slate-300 p-3 font-bold text-purple-600"
+                >N a M (Muchos a Muchos)</td
+              >
+              <td class="border border-slate-300 p-3 font-mono"
+                >models.ManyToManyField(B)</td
+              >
+              <td class="border border-slate-300 p-3"
+                ><strong>Tercera tabla intermedia</strong> puente con las dos FKs</td
+              >
+              <td class="border border-slate-300 p-3 font-mono"
+                >a.bs.all() (.add, .remove)</td
+              >
+              <td class="border border-slate-300 p-3 font-mono"
+                >b.as.all() (.add, .remove)</td
+              >
             </tr>
           </tbody>
         </table>
@@ -641,7 +1012,9 @@ class Inscripcion(models.Model):
     <section class="mb-10">
       <h2>4. Laboratorio Interactivo: Simulador de Campos a SQL</h2>
       <p>
-        Experimenta ajustando los nombres, tipos y opciones de cada campo para comprobar en tiempo real cómo cambia la sentencia SQL y qué restricciones aplica el motor:
+        Experimenta ajustando los nombres, tipos y opciones de cada campo para
+        comprobar en tiempo real cómo cambia la sentencia SQL y qué
+        restricciones aplica el motor:
       </p>
       <DjangoFieldSqlExplorer client:load />
     </section>
@@ -650,7 +1023,9 @@ class Inscripcion(models.Model):
     <section class="mb-10">
       <h2>5. Práctica Guiada: De `models.py` a la Base de Datos Física</h2>
       <p>
-        Veamos un ejemplo completo paso a paso creando el modelo <code>Articulo</code> para un blog de tecnología.
+        Veamos un ejemplo completo paso a paso creando el modelo <code
+          >Articulo</code
+        > para un blog de tecnología.
       </p>
 
       <h3>Paso 1: Definir el Modelo en `blog/models.py`</h3>
@@ -757,14 +1132,21 @@ Running migrations:
     <!-- 6. QUIZ -->
     <section class="mb-10">
       <h2>Ponte a prueba</h2>
-      <p>Comprueba que dominas los tipos de campos de Django, las opciones `null` vs `blank`, y su traducción a SQL.</p>
+      <p>
+        Comprueba que dominas los tipos de campos de Django, las opciones `null`
+        vs `blank`, y su traducción a SQL.
+      </p>
       <DjangoQuizModal quizKey="modelo-bd" />
     </section>
 
     <!-- 7. NAV -->
     <nav class="nav-bottom">
-      <a href="/course/django/arquitectura-django/" class="prev">← 4. Arquitectura Django</a>
-      <a href="/course/django/modelo-bd-step/" class="next">6. Paso a Paso: Boletas y Migraciones →</a>
+      <a href="/course/django/arquitectura-django/" class="prev"
+        >← 4. Arquitectura Django</a
+      >
+      <a href="/course/django/modelo-bd-step/" class="next"
+        >6. Paso a Paso: Boletas y Migraciones →</a
+      >
     </nav>
   </article>
 </Layout>

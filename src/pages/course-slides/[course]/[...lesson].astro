@@ -23,6 +23,23 @@ export async function getStaticPaths() {
             lessonTitle: lesson.title,
           },
         });
+
+        // Also register href-based slug if different (e.g. 'modelo-bd/step' vs 'modelo-bd-step')
+        if (lesson.href) {
+          const hrefSlug = lesson.href.replace(new RegExp(`^/course/${course.slug}/`), '').replace(/\/$/, '');
+          if (hrefSlug && hrefSlug !== lesson.slug) {
+            paths.push({
+              params: {
+                course: course.slug,
+                lesson: hrefSlug,
+              },
+              props: {
+                courseName: course.name,
+                lessonTitle: lesson.title,
+              },
+            });
+          }
+        }
       }
     }
   }

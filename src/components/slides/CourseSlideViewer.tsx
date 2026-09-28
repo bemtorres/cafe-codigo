@@ -5,13 +5,289 @@ import type {
   EmbedParams,
   Slide,
   QuizQuestion,
+  MetaReflectionQuestion,
 } from '../../types/slides';
-import {
-  getSlidesForLesson,
-  getQuizForLesson,
-  getMetaQuestionsForLesson,
-} from '../../data/slides/python/registry';
+import * as pythonRegistry from '../../data/slides/python/registry';
+import * as djangoRegistry from '../../data/slides/django/registry';
 import { highlightLine } from '../../lib/codeHighlight';
+import {
+  SLIDE_TEMPLATES,
+  TEMPLATE_LIST,
+  getSlideTemplate,
+  type SlideTemplateId,
+  type SlideTemplate,
+} from '../../data/slides/templates';
+
+export interface CodeTheme {
+  id: string;
+  name: string;
+  badge: string;
+  bg: string;
+  header: string;
+  border: string;
+  txt: string;
+  kw: string;
+  str: string;
+  func: string;
+  type: string;
+  num: string;
+  comment: string;
+  ann: string;
+  accent: string;
+  isDark: boolean;
+}
+
+export const CODE_THEMES: CodeTheme[] = [
+  {
+    id: 'onedark',
+    name: 'One Dark Pro',
+    badge: 'Atom',
+    bg: '#0d1117',
+    header: '#161b22',
+    border: '#30363d',
+    txt: '#abb2bf',
+    kw: '#c678dd',
+    str: '#98c379',
+    func: '#61afef',
+    type: '#e5c07b',
+    num: '#d19a66',
+    comment: '#7f8c8d',
+    ann: '#e06c75',
+    accent: '#61afef',
+    isDark: true,
+  },
+  {
+    id: 'dracula',
+    name: 'Dracula',
+    badge: 'Vampire',
+    bg: '#282a36',
+    header: '#21222c',
+    border: '#44475a',
+    txt: '#f8f8f2',
+    kw: '#ff79c6',
+    str: '#f1fa8c',
+    func: '#50fa7b',
+    type: '#8be9fd',
+    num: '#bd93f9',
+    comment: '#6272a4',
+    ann: '#ffb86c',
+    accent: '#bd93f9',
+    isDark: true,
+  },
+  {
+    id: 'monokai',
+    name: 'Monokai Pro',
+    badge: 'Sublime',
+    bg: '#272822',
+    header: '#1e1f1c',
+    border: '#49483e',
+    txt: '#f8f8f2',
+    kw: '#f92672',
+    str: '#e6db74',
+    func: '#a6e22e',
+    type: '#66d9ef',
+    num: '#ae81ff',
+    comment: '#75715e',
+    ann: '#fd971f',
+    accent: '#a6e22e',
+    isDark: true,
+  },
+  {
+    id: 'vscode',
+    name: 'VS Code Dark+',
+    badge: 'Modern',
+    bg: '#1e1e1e',
+    header: '#252526',
+    border: '#3c3c3c',
+    txt: '#d4d4d4',
+    kw: '#569cd6',
+    str: '#ce9178',
+    func: '#dcdcaa',
+    type: '#4ec9b0',
+    num: '#b5cea8',
+    comment: '#6a9955',
+    ann: '#c586c0',
+    accent: '#007acc',
+    isDark: true,
+  },
+  {
+    id: 'synthwave',
+    name: 'Cyberpunk Neon',
+    badge: 'Neón',
+    bg: '#1a102f',
+    header: '#24173d',
+    border: '#ff2a85',
+    txt: '#f3e5f5',
+    kw: '#ff7edb',
+    str: '#72f1b8',
+    func: '#36f9f6',
+    type: '#fe4450',
+    num: '#fede5d',
+    comment: '#8468b3',
+    ann: '#ff007f',
+    accent: '#ff7edb',
+    isDark: true,
+  },
+  {
+    id: 'python_blue',
+    name: 'Python Azul & Oro',
+    badge: 'Python',
+    bg: '#14202b',
+    header: '#1e2c3a',
+    border: '#386c99',
+    txt: '#e6f1f8',
+    kw: '#ffd343',
+    str: '#4ade80',
+    func: '#38bdf8',
+    type: '#818cf8',
+    num: '#fb923c',
+    comment: '#94a3b8',
+    ann: '#f43f5e',
+    accent: '#386c99',
+    isDark: true,
+  },
+  {
+    id: 'light_clean',
+    name: 'GitHub Claro',
+    badge: 'Claro',
+    bg: '#ffffff',
+    header: '#f6f8fa',
+    border: '#d0d7de',
+    txt: '#24292f',
+    kw: '#cf222e',
+    str: '#0a3069',
+    func: '#8250df',
+    type: '#953800',
+    num: '#0550ae',
+    comment: '#6e7781',
+    ann: '#116329',
+    accent: '#0969da',
+    isDark: false,
+  },
+];
+
+const getSlidesForCourseLesson = (courseSlug: string, lessonSlug: string): Slide[] => {
+  if (courseSlug === 'django') return djangoRegistry.getSlidesForLesson(lessonSlug);
+  return pythonRegistry.getSlidesForLesson(lessonSlug);
+};
+
+const getQuizForCourseLesson = (courseSlug: string, lessonSlug: string): QuizQuestion[] => {
+  if (courseSlug === 'django') return djangoRegistry.getQuizForLesson(lessonSlug);
+  return pythonRegistry.getQuizForLesson(lessonSlug);
+};
+
+const getMetaQuestionsForCourseLesson = (courseSlug: string, lessonSlug: string) => {
+  if (courseSlug === 'django') return djangoRegistry.getMetaQuestionsForLesson(lessonSlug);
+  return pythonRegistry.getMetaQuestionsForLesson(lessonSlug);
+};
+
+const renderCellContent = (content: any, isDark: boolean, isFirstCol: boolean) => {
+  if (typeof content !== 'string') return content;
+
+  const renderCodeBadge = (code: string, isDarkTheme: boolean, key: string | number) => {
+    // Detect SQL expressions
+    const isSql = /^(CREATE|INSERT|SELECT|UPDATE|DELETE|DROP|ALTER|"titulo"|"id"|NOT NULL|PRIMARY KEY|GENERATED|bigint|varchar|numeric)/i.test(code) ||
+      code.includes('CREATE TABLE') ||
+      code.includes('NOT NULL') ||
+      code.includes('PRIMARY KEY') ||
+      code.includes('varchar(') ||
+      code.includes('bigint');
+
+    // Detect warnings / critical flags (e.g. null=True, CASCADE)
+    const isWarning = code.includes('null=True') || code.includes('CASCADE') || code.includes('FLOAT');
+    // Detect recommended / safe flags (e.g. null=False, PROTECT)
+    const isSuccess = code.includes('null=False') || code.includes('PROTECT') || code.includes('DecimalField');
+    // Detect boolean / form flags (e.g. blank=True, blank=False)
+    const isForm = code.includes('blank=');
+
+    let badgeClass = '';
+    if (isSql) {
+      badgeClass = isDarkTheme
+        ? 'bg-sky-950/80 text-sky-300 border-sky-600/50 shadow-xs'
+        : 'bg-sky-50 text-sky-800 border-sky-300 shadow-xs';
+    } else if (isWarning) {
+      badgeClass = isDarkTheme
+        ? 'bg-amber-950/80 text-amber-300 border-amber-500/50 shadow-xs'
+        : 'bg-amber-50 text-amber-900 border-amber-300 shadow-xs';
+    } else if (isSuccess) {
+      badgeClass = isDarkTheme
+        ? 'bg-emerald-950/80 text-emerald-300 border-emerald-500/50 shadow-xs'
+        : 'bg-emerald-50 text-emerald-900 border-emerald-300 shadow-xs';
+    } else if (isForm) {
+      badgeClass = isDarkTheme
+        ? 'bg-indigo-950/80 text-indigo-300 border-indigo-500/50 shadow-xs'
+        : 'bg-indigo-50 text-indigo-900 border-indigo-300 shadow-xs';
+    } else {
+      // Default Python / Django badge
+      badgeClass = isDarkTheme
+        ? 'bg-slate-800/90 text-emerald-300 border-emerald-500/40 shadow-xs'
+        : 'bg-emerald-50 text-emerald-800 border-emerald-300 shadow-xs';
+    }
+
+    return (
+      <span
+        key={key}
+        role="code"
+        className={`px-2 py-0.5 rounded-md font-mono text-[11px] sm:text-xs font-bold inline-block my-0.5 border shadow-2xs transition-all ${badgeClass}`}
+      >
+        {code}
+      </span>
+    );
+  };
+
+  const renderFormattedText = (text: string) => {
+    // Split by both `code` and **bold**
+    const parts = text.split(/(`[^`]+`|\*\*[^*]+\*\*)/g);
+    if (parts.length === 1 && !text.startsWith('`') && !text.startsWith('**')) {
+      return text;
+    }
+    return (
+      <span className="inline-flex flex-wrap items-center gap-1.5">
+        {parts.map((part, i) => {
+          if (part.startsWith('`') && part.endsWith('`')) {
+            const code = part.slice(1, -1);
+            return renderCodeBadge(code, isDark, `code-${i}`);
+          }
+          if (part.startsWith('**') && part.endsWith('**')) {
+            const boldText = part.slice(2, -2);
+            return (
+              <strong
+                key={`bold-${i}`}
+                className={`font-black tracking-tight ${isDark ? 'text-amber-300' : 'text-indigo-700'}`}
+              >
+                {boldText}
+              </strong>
+            );
+          }
+          if (!part) return null;
+          return <span key={`text-${i}`} className="text-inherit">{part}</span>;
+        })}
+      </span>
+    );
+  };
+
+  // If text contains markdown backticks or bold
+  if (content.includes('`') || content.includes('**')) {
+    return renderFormattedText(content);
+  }
+
+  // Auto-detect code lines if no backticks were written
+  if (
+    content.startsWith('CREATE TABLE') ||
+    content.startsWith('INSERT INTO') ||
+    content.startsWith('"titulo"') ||
+    content.startsWith('"id"') ||
+    content.startsWith('class ') ||
+    content.startsWith('models.') ||
+    content.startsWith('null=') ||
+    content.startsWith('blank=')
+  ) {
+    return renderCodeBadge(content, isDark, 'auto-0');
+  }
+
+  return content;
+};
+
 
 
 export default function CourseSlideViewer({
@@ -46,6 +322,99 @@ export default function CourseSlideViewer({
   const [copiedCode, setCopiedCode] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
+  // Estados de Plantillas de Diseño (5 Templates)
+  const [templateId, setTemplateId] = useState<SlideTemplateId>('material');
+  const [showTemplateModal, setShowTemplateModal] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    // 1. Leer parámetro URL ?style= o &style= (o alias ?template=)
+    const sp = new URLSearchParams(window.location.search);
+    const styleParam = sp.get('style')?.toLowerCase() || sp.get('template')?.toLowerCase();
+
+    let chosenStyle: SlideTemplateId = 'material';
+
+    if (styleParam && styleParam in SLIDE_TEMPLATES) {
+      chosenStyle = styleParam as SlideTemplateId;
+      try {
+        localStorage.setItem('antigravity_slide_template', chosenStyle);
+      } catch { }
+    } else {
+      // 2. Si no viene en URL, revisar localStorage
+      try {
+        const saved = localStorage.getItem('antigravity_slide_template');
+        if (saved && saved in SLIDE_TEMPLATES) {
+          chosenStyle = saved as SlideTemplateId;
+        }
+      } catch { }
+
+      // 3. Dejar siempre el parámetro style arriba en la URL (?style= / &style=)
+      try {
+        const url = new URL(window.location.href);
+        url.searchParams.set('style', chosenStyle);
+        window.history.replaceState({}, '', url.toString());
+      } catch { }
+    }
+
+    setTemplateId(chosenStyle);
+
+    // Escuchar navegación adelante/atrás para sincronizar
+    const handlePopState = () => {
+      const currentSp = new URLSearchParams(window.location.search);
+      const popStyle = currentSp.get('style')?.toLowerCase() || currentSp.get('template')?.toLowerCase();
+      if (popStyle && popStyle in SLIDE_TEMPLATES) {
+        setTemplateId(popStyle as SlideTemplateId);
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  const handleSelectTemplate = (id: SlideTemplateId) => {
+    setTemplateId(id);
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.setItem('antigravity_slide_template', id);
+        const url = new URL(window.location.href);
+        url.searchParams.set('style', id);
+        window.history.replaceState({}, '', url.toString());
+      } catch { }
+    }
+  };
+
+  // Estados de Personalización y Visualización de Código
+  const [codeThemeId, setCodeThemeId] = useState<string>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const sp = new URLSearchParams(window.location.search);
+        const urlThm = sp.get('codetheme') || sp.get('code_theme');
+        if (urlThm && CODE_THEMES.some(t => t.id === urlThm)) return urlThm;
+        const saved = localStorage.getItem('antigravity_slide_codetheme');
+        if (saved && CODE_THEMES.some(t => t.id === saved)) return saved;
+      } catch { }
+    }
+    return 'onedark';
+  });
+  const [isCodeModalOpen, setIsCodeModalOpen] = useState(false);
+  const [codeModalFontSize, setCodeModalFontSize] = useState<number>(15);
+
+  const activeCodeTheme = useMemo(() => {
+    return CODE_THEMES.find(t => t.id === codeThemeId) || CODE_THEMES[0];
+  }, [codeThemeId]);
+
+  const handleSelectCodeTheme = (id: string) => {
+    setCodeThemeId(id);
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.setItem('antigravity_slide_codetheme', id);
+        const url = new URL(window.location.href);
+        url.searchParams.set('codetheme', id);
+        window.history.replaceState({}, '', url.toString());
+      } catch { }
+    }
+  };
+
   // Estados del Menú de Herramientas y Temporizador FLOTANTE Y MOVIBLE
   const [showToolsMenu, setShowToolsMenu] = useState(false);
   const [isTimerActive, setIsTimerActive] = useState(false);
@@ -57,11 +426,16 @@ export default function CourseSlideViewer({
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [isSpeaking, setIsSpeaking] = useState(false);
 
-  // Estado del Swipe táctil en móviles
-  const [touchStartX, setTouchStartX] = useState<number | null>(null);
+  // Estado de Metacognición: modal emergente con información de ayuda y checks de completado
+  const [selectedMetaQuestion, setSelectedMetaQuestion] = useState<MetaReflectionQuestion | null>(null);
+  const [checkedMetaIds, setCheckedMetaIds] = useState<Record<number, boolean>>({});
 
-  // Estado hover para la pauta de reflexión en la diapositiva de metacognición
-  const [hoveredMetaId, setHoveredMetaId] = useState<number | null>(null);
+  const toggleCheckMeta = useCallback((id: number) => {
+    setCheckedMetaIds(prev => ({
+      ...prev,
+      [id]: !prev[id]
+    }));
+  }, []);
 
   // Respuestas del quiz evaluativo
   const [tfAnswers, setTfAnswers] = useState<Record<number, boolean>>({});
@@ -116,6 +490,11 @@ export default function CourseSlideViewer({
     const thm = sp.get('theme')?.toLowerCase();
     if (thm === 'light') setTheme('light');
     if (thm === 'dark') setTheme('dark');
+
+    const codeThmParam = sp.get('codetheme') || sp.get('code_theme');
+    if (codeThmParam && CODE_THEMES.some(t => t.id === codeThmParam)) {
+      setCodeThemeId(codeThmParam);
+    }
 
     setEmbedParams({
       isEmbed: isE,
@@ -264,18 +643,18 @@ export default function CourseSlideViewer({
 
   // Cargar diapositivas base según la lección actual
   const baseSlides: Slide[] = useMemo(() => {
-    return getSlidesForLesson(lessonSlug);
-  }, [lessonSlug]);
+    return getSlidesForCourseLesson(courseSlug, lessonSlug);
+  }, [courseSlug, lessonSlug]);
 
   // Cargar banco de preguntas del Quiz según la lección actual
   const activeQuizQuestions = useMemo(() => {
-    return getQuizForLesson(lessonSlug);
-  }, [lessonSlug]);
+    return getQuizForCourseLesson(courseSlug, lessonSlug);
+  }, [courseSlug, lessonSlug]);
 
   // Cargar banco de Metacognición según la lección actual
   const activeMetaQuestions = useMemo(() => {
-    return getMetaQuestionsForLesson(lessonSlug);
-  }, [lessonSlug]);
+    return getMetaQuestionsForCourseLesson(courseSlug, lessonSlug);
+  }, [courseSlug, lessonSlug]);
 
   // Construir mazo final con 1 sola diapositiva de Metacognición (8 preguntas)
   const slides = useMemo(() => {
@@ -382,6 +761,23 @@ export default function CourseSlideViewer({
   // Teclado
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      if (isCodeModalOpen) {
+        if (e.key === 'Escape') {
+          setIsCodeModalOpen(false);
+          return;
+        }
+        if (e.key === 'ArrowRight' || e.key === 'ArrowLeft' || e.key === ' ') {
+          return;
+        }
+      }
+
+      if (selectedMetaQuestion) {
+        if (e.key === 'Escape') {
+          setSelectedMetaQuestion(null);
+          return;
+        }
+      }
+
       if (showOverview) {
         if (e.key === 'Escape') setShowOverview(false);
         return;
@@ -404,15 +800,15 @@ export default function CourseSlideViewer({
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [goToNext, goToPrev, showOverview, totalSlides]);
+  }, [goToNext, goToPrev, showOverview, totalSlides, isCodeModalOpen, selectedMetaQuestion]);
 
   // Pantalla completa
   const toggleFullscreen = () => {
     if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen().catch(() => {});
+      document.documentElement.requestFullscreen().catch(() => { });
       setIsFullscreen(true);
     } else {
-      document.exitFullscreen().catch(() => {});
+      document.exitFullscreen().catch(() => { });
       setIsFullscreen(false);
     }
   };
@@ -422,7 +818,7 @@ export default function CourseSlideViewer({
     navigator.clipboard.writeText(codeText).then(() => {
       setCopiedCode(true);
       setTimeout(() => setCopiedCode(false), 2000);
-    }).catch(() => {});
+    }).catch(() => { });
   };
 
   // 🔊 Lectura en voz alta (Text-to-Speech)
@@ -435,9 +831,8 @@ export default function CourseSlideViewer({
       return;
     }
 
-    const textToSpeak = `${currentSlide.title}. ${currentSlide.content || ''}. ${
-      currentSlide.bulletPoints ? currentSlide.bulletPoints.join('. ') : ''
-    }`;
+    const textToSpeak = `${currentSlide.title}. ${currentSlide.content || ''}. ${currentSlide.bulletPoints ? currentSlide.bulletPoints.join('. ') : ''
+      }`;
 
     const utterance = new SpeechSynthesisUtterance(textToSpeak);
     utterance.lang = 'es-ES';
@@ -487,9 +882,14 @@ export default function CourseSlideViewer({
     if (introQuizIdx !== -1) setCurrentIndex(introQuizIdx);
   };
 
-  // 🎨 CONFIGURACIÓN DE COLORES
-  const activeAccent = embedParams.accentColor || (isDark ? '#3776ab' : '#2563eb');
-  const activeTitleColor = embedParams.textColor || (isDark ? '#f59e0b' : '#0f172a');
+  // 🎨 CONFIGURACIÓN DE PLANTILLA Y COLORES
+  const currentTemplate = useMemo(() => getSlideTemplate(templateId), [templateId]);
+  const templateTokens = useMemo(() => {
+    return isDark ? currentTemplate.dark : currentTemplate.light;
+  }, [isDark, currentTemplate]);
+
+  const activeAccent = embedParams.accentColor || templateTokens.accentColor;
+  const activeTitleColor = embedParams.textColor || templateTokens.titleColor;
 
   // Estilos de Escala de Tamaño (S, M, L, XL) del reloj flotante
   const timerScaleClasses = {
@@ -505,21 +905,19 @@ export default function CourseSlideViewer({
 
   return (
     <div
-      className={`h-screen max-h-screen flex flex-col transition-colors duration-300 font-sans select-none relative overflow-hidden ${
-        isDark ? 'bg-[#0f172a] text-slate-100' : 'bg-slate-100 text-slate-900'
-      }`}
+      className={`h-screen max-h-screen flex flex-col transition-colors duration-500 font-sans select-none relative overflow-hidden ${templateTokens.bgPage
+        } ${templateTokens.textColor}`}
     >
       {/* ⏱️ WIDGET FLOTANTE MOVIBLE DE TEMPORIZADOR REGRESIVO */}
       {isTimerActive && (
         <div
           style={{ left: `${timerPos.x}px`, top: `${timerPos.y}px` }}
-          className={`fixed z-50 rounded-2xl border-2 shadow-2xl backdrop-blur-2xl flex flex-col transition-all cursor-move select-none ${
-            timerSeconds === 0
-              ? 'bg-rose-950/95 border-rose-500 text-rose-200 animate-bounce'
-              : isDark
+          className={`fixed z-50 rounded-2xl border-2 shadow-2xl backdrop-blur-2xl flex flex-col transition-all cursor-move select-none ${timerSeconds === 0
+            ? 'bg-rose-950/95 border-rose-500 text-rose-200 animate-bounce'
+            : isDark
               ? 'bg-slate-900/95 border-amber-400/80 text-amber-300 shadow-slate-950/80'
               : 'bg-slate-900/95 border-amber-400 text-white shadow-xl'
-          } ${timerScaleClasses[timerSize]}`}
+            } ${timerScaleClasses[timerSize]}`}
           onMouseDown={(e) => handleDragStart(e.clientX, e.clientY)}
           onTouchStart={(e) => {
             if (e.touches.length > 0) handleDragStart(e.touches[0].clientX, e.touches[0].clientY);
@@ -542,9 +940,8 @@ export default function CourseSlideViewer({
                     e.stopPropagation();
                     setTimerSize(sz);
                   }}
-                  className={`px-1 rounded text-[9px] font-extrabold uppercase transition-all ${
-                    timerSize === sz ? 'bg-amber-400 text-slate-950 font-black' : 'text-slate-400 hover:text-white'
-                  }`}
+                  className={`px-1 rounded text-[9px] font-extrabold uppercase transition-all ${timerSize === sz ? 'bg-amber-400 text-slate-950 font-black' : 'text-slate-400 hover:text-white'
+                    }`}
                 >
                   {sz}
                 </button>
@@ -608,11 +1005,8 @@ export default function CourseSlideViewer({
 
       {/* BARRA SUPERIOR DE LA PRESENTACIÓN */}
       <header
-        className={`px-4 sm:px-6 py-2.5 flex items-center justify-between border-b backdrop-blur-xl sticky top-0 z-30 transition-all shrink-0 ${
-          isDark
-            ? 'bg-[#0b1329]/90 border-slate-800/80 shadow-md'
-            : 'bg-white/95 border-slate-200/90 shadow-sm'
-        }`}
+        className={`px-4 sm:px-6 py-2.5 flex items-center justify-between border-b backdrop-blur-xl sticky top-0 z-30 transition-all shrink-0 ${templateTokens.headerBg
+          } ${templateTokens.headerBorder} shadow-sm`}
         style={{
           backgroundColor: embedParams.bgColor || undefined
         }}
@@ -628,11 +1022,10 @@ export default function CourseSlideViewer({
           ) : !embedParams.isEmbed ? (
             <a
               href={`/course/${courseSlug}/${lessonSlug}/`}
-              className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold transition-all border shrink-0 ${
-                isDark
-                  ? 'bg-slate-800/70 text-slate-300 border-slate-700/70 hover:bg-slate-700 hover:text-white'
-                  : 'bg-slate-100 text-slate-700 border-slate-300 hover:bg-slate-200'
-              }`}
+              className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold transition-all border shrink-0 ${isDark
+                ? 'bg-slate-800/70 text-slate-300 border-slate-700/70 hover:bg-slate-700 hover:text-white'
+                : 'bg-slate-100 text-slate-700 border-slate-300 hover:bg-slate-200'
+                }`}
               title="Volver al curso"
             >
               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -664,11 +1057,10 @@ export default function CourseSlideViewer({
         {/* BLOQUE DERECHO (HERRAMIENTAS + PERFIL) */}
         <div className="flex items-center gap-2 shrink-0">
           {(embedParams.institution || embedParams.studentName || embedParams.customLogo) && (
-            <div className={`hidden lg:flex items-center gap-2 px-3 py-1 rounded-full border text-xs font-medium backdrop-blur-md ${
-              isDark
-                ? 'border-slate-700/60 bg-slate-900/60 text-slate-300'
-                : 'border-slate-300 bg-white/80 text-slate-700 shadow-sm'
-            }`}>
+            <div className={`hidden lg:flex items-center gap-2 px-3 py-1 rounded-full border text-xs font-medium backdrop-blur-md ${isDark
+              ? 'border-slate-700/60 bg-slate-900/60 text-slate-300'
+              : 'border-slate-300 bg-white/80 text-slate-700 shadow-sm'
+              }`}>
               {(embedParams.institution || embedParams.customLogo) && (
                 <span className="flex items-center gap-1.5 font-semibold">
                   {embedParams.customLogo ? (
@@ -700,11 +1092,10 @@ export default function CourseSlideViewer({
             </div>
           )}
 
-          <div className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-mono font-bold border shadow-inner ${
-            isDark
-              ? 'bg-slate-900/80 text-amber-400 border-slate-700/80'
-              : 'bg-white text-indigo-600 border-slate-300'
-          }`}>
+          <div className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-mono font-bold border shadow-inner ${isDark
+            ? 'bg-slate-900/80 text-amber-400 border-slate-700/80'
+            : 'bg-white text-indigo-600 border-slate-300'
+            }`}>
             <span className={isDark ? 'text-slate-100' : 'text-slate-900'}>{currentIndex + 1}</span>
             <span className="opacity-50 font-normal">/</span>
             <span className="opacity-70 font-normal">{totalSlides}</span>
@@ -712,18 +1103,116 @@ export default function CourseSlideViewer({
 
           <div className="h-4 w-[1px] bg-slate-700/50 hidden sm:block" />
 
+          {/* SELECTOR DE PLANTILLAS DE DISEÑO (5 TEMPLATES) */}
+          <div className="relative hidden">
+            <button
+              type="button"
+              onClick={() => setShowTemplateModal(!showTemplateModal)}
+              className={`px-2.5 py-1 rounded-lg border text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${showTemplateModal
+                ? 'bg-indigo-600 text-white border-indigo-500 ring-2 ring-indigo-400/30'
+                : isDark
+                  ? 'bg-slate-800/60 text-slate-200 border-slate-700/60 hover:bg-slate-700/70 hover:text-white'
+                  : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-100'
+                }`}
+              title="Cambiar Plantilla de Diseño (5 estilos)"
+            >
+              <span>{currentTemplate.icon}</span>
+              <span className="hidden md:inline font-mono">{currentTemplate.shortName}</span>
+              <span className="text-[9px] opacity-70">▼</span>
+            </button>
+
+            {/* POPUP DROPDOWN DE 5 PLANTILLAS */}
+            {showTemplateModal && (
+              <div className={`absolute right-0 mt-2 w-80 sm:w-96 rounded-2xl border-2 p-3.5 shadow-2xl backdrop-blur-2xl z-50 animate-fade-in ${isDark
+                ? 'bg-slate-900/95 border-slate-700/90 text-slate-100 shadow-black/80'
+                : 'bg-white/95 border-slate-300 text-slate-900 shadow-slate-300/80'
+                }`}>
+                <div className="flex items-center justify-between pb-2 mb-2.5 border-b border-slate-700/40">
+                  <div className="flex items-center gap-2">
+                    <span className="text-base">🎨</span>
+                    <div>
+                      <span className="text-xs font-black uppercase tracking-wider font-mono block">Plantillas de Interfaz</span>
+                      <span className="text-[10px] opacity-70 block font-medium">5 Sistemas de Diseño Tecnológicos</span>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setShowTemplateModal(false)}
+                    className="p-1 rounded-md text-xs opacity-60 hover:opacity-100 cursor-pointer"
+                  >
+                    ✕
+                  </button>
+                </div>
+
+                <div className="flex flex-col gap-2 max-h-[380px] overflow-y-auto custom-scrollbar pr-1">
+                  {TEMPLATE_LIST.map((tmpl) => {
+                    const isSelected = tmpl.id === templateId;
+                    return (
+                      <button
+                        key={tmpl.id}
+                        type="button"
+                        onClick={() => {
+                          handleSelectTemplate(tmpl.id);
+                          setShowTemplateModal(false);
+                        }}
+                        className={`p-2.5 rounded-xl border text-left flex items-start justify-between gap-3 transition-all cursor-pointer ${isSelected
+                          ? isDark
+                            ? 'bg-slate-800 border-indigo-400 ring-2 ring-indigo-500/40 shadow-lg'
+                            : 'bg-indigo-50/80 border-indigo-500 ring-2 ring-indigo-400/40 shadow-md'
+                          : isDark
+                            ? 'bg-slate-800/40 border-slate-700/50 hover:bg-slate-800/80'
+                            : 'bg-slate-50 border-slate-200 hover:bg-slate-100'
+                          }`}
+                      >
+                        <div className="flex items-start gap-2.5">
+                          <span className="text-xl shrink-0 p-1.5 rounded-lg bg-black/10 dark:bg-white/10">{tmpl.icon}</span>
+                          <div>
+                            <div className="flex items-center gap-1.5 flex-wrap">
+                              <span className="text-xs font-black tracking-tight">{tmpl.name}</span>
+                              <span className={`text-[10px] font-mono px-1.5 py-0.2 rounded-full font-bold ${isDark ? 'bg-slate-700 text-slate-300' : 'bg-slate-200 text-slate-700'
+                                }`}>
+                                {tmpl.shortName}
+                              </span>
+                            </div>
+                            <p className="text-[11px] opacity-75 mt-0.5 leading-snug m-0">
+                              {tmpl.tagline}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-1 shrink-0 mt-1">
+                          {tmpl.palette.map((color, cI) => (
+                            <span
+                              key={cI}
+                              className="w-2.5 h-2.5 rounded-full border border-black/20 shadow-xs inline-block"
+                              style={{ backgroundColor: color }}
+                            />
+                          ))}
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <div className={`mt-2.5 pt-2 text-center text-[10px] font-medium border-t opacity-70 ${isDark ? 'border-slate-800' : 'border-slate-200'
+                  }`}>
+                  Modo actual: {isDark ? '🌙 Oscuro' : '☀️ Claro'} (adaptación automática)
+                </div>
+              </div>
+            )}
+          </div>
+
           {/* BOTÓN DE MENÚ DE HERRAMIENTAS 🛠️ */}
           <div className="relative">
             <button
               type="button"
               onClick={() => setShowToolsMenu(!showToolsMenu)}
-              className={`px-2.5 py-1 rounded-lg border transition-all cursor-pointer flex items-center gap-1 text-xs font-bold ${
-                showToolsMenu
-                  ? 'bg-amber-400/20 text-amber-500 border-amber-400/40 ring-2 ring-amber-400/30'
-                  : isDark
+              className={`px-2.5 py-1 rounded-lg border transition-all cursor-pointer flex items-center gap-1 text-xs font-bold ${showToolsMenu
+                ? 'bg-amber-400/20 text-amber-500 border-amber-400/40 ring-2 ring-amber-400/30'
+                : isDark
                   ? 'bg-slate-800/50 text-slate-300 border-slate-700/60 hover:bg-slate-700/70 hover:text-white'
                   : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-100'
-              }`}
+                }`}
               title="Menú de Herramientas de Estudio"
             >
               <span>🛠️</span>
@@ -732,7 +1221,7 @@ export default function CourseSlideViewer({
 
             {/* POPUP DROPDOWN DE HERRAMIENTAS 🛠️ */}
             {showToolsMenu && (
-              <div className="absolute right-0 mt-2 w-72 rounded-2xl bg-slate-900/95 border border-slate-700 text-slate-100 shadow-2xl backdrop-blur-xl p-4 z-50 flex flex-col gap-3 animate-fade-in">
+              <div className="absolute right-0 mt-2 w-80 sm:w-88 max-h-[88vh] overflow-y-auto rounded-2xl bg-slate-900/95 border border-slate-700 text-slate-100 shadow-2xl backdrop-blur-xl p-4 z-50 flex flex-col gap-3 animate-fade-in custom-scrollbar">
                 <div className="flex items-center justify-between border-b pb-2 border-slate-800">
                   <span className="text-xs font-black uppercase tracking-wider text-amber-400 flex items-center gap-1">
                     <span>🛠️</span>
@@ -784,11 +1273,10 @@ export default function CourseSlideViewer({
                       <button
                         type="button"
                         onClick={() => setIsTimerRunning(!isTimerRunning)}
-                        className={`flex-1 py-1.5 rounded text-xs font-bold transition-all cursor-pointer ${
-                          isTimerRunning
-                            ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
-                            : 'bg-emerald-600 text-white hover:bg-emerald-500'
-                        }`}
+                        className={`flex-1 py-1.5 rounded text-xs font-bold transition-all cursor-pointer ${isTimerRunning
+                          ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                          : 'bg-emerald-600 text-white hover:bg-emerald-500'
+                          }`}
                       >
                         {isTimerRunning ? '⏸️ Pausar' : '▶️ Iniciar'}
                       </button>
@@ -810,11 +1298,10 @@ export default function CourseSlideViewer({
                 <button
                   type="button"
                   onClick={speakCurrentSlide}
-                  className={`p-2.5 rounded-xl border text-xs font-bold flex items-center justify-between transition-all cursor-pointer ${
-                    isSpeaking
-                      ? 'bg-rose-500/20 text-rose-300 border-rose-500/40 animate-pulse'
-                      : 'bg-slate-800 text-slate-200 border-slate-700 hover:bg-slate-700'
-                  }`}
+                  className={`p-2.5 rounded-xl border text-xs font-bold flex items-center justify-between transition-all cursor-pointer ${isSpeaking
+                    ? 'bg-rose-500/20 text-rose-300 border-rose-500/40 animate-pulse'
+                    : 'bg-slate-800 text-slate-200 border-slate-700 hover:bg-slate-700'
+                    }`}
                 >
                   <span className="flex items-center gap-2">
                     <span>{isSpeaking ? '🔊' : '🗣️'}</span>
@@ -822,6 +1309,77 @@ export default function CourseSlideViewer({
                   </span>
                   <span>{isSpeaking ? '⏹️' : '▶️'}</span>
                 </button>
+
+                {/* 3. SECCIÓN PLANTILLAS DE DISEÑO */}
+                <div className="flex flex-col gap-2 bg-slate-800/60 p-3 rounded-xl border border-slate-700/60">
+                  <span className="text-[11px] font-bold text-slate-300 flex items-center justify-between">
+                    <span>🎨 Plantilla de Interfaz</span>
+                    <span className="font-mono text-xs text-indigo-400 font-bold">{currentTemplate.name}</span>
+                  </span>
+                  <div className="grid grid-cols-5 gap-1">
+                    {TEMPLATE_LIST.map(tmpl => (
+                      <button
+                        key={tmpl.id}
+                        type="button"
+                        onClick={() => handleSelectTemplate(tmpl.id)}
+                        className={`p-2 rounded-lg text-center flex flex-col items-center gap-1 transition-all cursor-pointer ${templateId === tmpl.id
+                          ? 'bg-indigo-600 text-white font-extrabold ring-2 ring-indigo-400/50'
+                          : 'bg-slate-700/70 text-slate-300 hover:bg-slate-700 hover:text-white'
+                          }`}
+                        title={`${tmpl.name} (${tmpl.inspiration})`}
+                      >
+                        <span className="text-base">{tmpl.icon}</span>
+                        <span className="text-[9px] font-mono leading-none truncate max-w-full">
+                          {tmpl.shortName.split(' ')[0]}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 4. SECCIÓN TEMA DE COLOR DE CÓDIGO (PYTHON) 🐍 */}
+                <div className="flex flex-col gap-2 bg-slate-800/60 p-3 rounded-xl border border-slate-700/60">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-bold text-slate-300 flex items-center gap-1.5">
+                      <span>🐍</span>
+                      <span>Color de Código (Python)</span>
+                    </span>
+                    <span className="font-mono text-xs text-amber-400 font-bold">
+                      {activeCodeTheme.name}
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-1.5 max-h-48 overflow-y-auto pr-1 custom-scrollbar">
+                    {CODE_THEMES.map(thm => (
+                      <button
+                        key={thm.id}
+                        type="button"
+                        onClick={() => handleSelectCodeTheme(thm.id)}
+                        className={`p-2 rounded-lg text-left flex flex-col gap-1 border transition-all cursor-pointer ${
+                          codeThemeId === thm.id
+                            ? 'border-amber-400/80 bg-amber-400/15 ring-2 ring-amber-400/30 text-white font-bold'
+                            : 'border-slate-700 bg-slate-800/80 text-slate-300 hover:bg-slate-700/80 hover:text-white'
+                        }`}
+                        title={thm.name}
+                      >
+                        <div className="flex items-center justify-between text-xs">
+                          <span className="truncate text-[11px] font-semibold">{thm.name}</span>
+                          <span className="text-[9px] px-1 py-0.2 rounded bg-black/40 opacity-75 font-mono">
+                            {thm.badge}
+                          </span>
+                        </div>
+                        {/* Muestras de color de la sintaxis */}
+                        <div className="flex items-center gap-1 pt-0.5">
+                          <span className="w-3.5 h-3.5 rounded border border-white/20 shrink-0" style={{ backgroundColor: thm.bg }} title="Fondo" />
+                          <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: thm.kw }} title="Keywords (def, if, class)" />
+                          <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: thm.str }} title="Strings" />
+                          <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: thm.func }} title="Funciones" />
+                          <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: thm.num }} title="Números" />
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
               </div>
             )}
           </div>
@@ -829,13 +1387,12 @@ export default function CourseSlideViewer({
           <button
             type="button"
             onClick={() => setShowOverview(!showOverview)}
-            className={`p-1.5 rounded-lg border transition-all cursor-pointer ${
-              showOverview
-                ? 'bg-amber-400/20 text-amber-500 border-amber-400/40'
-                : isDark
+            className={`p-1.5 rounded-lg border transition-all cursor-pointer ${showOverview
+              ? 'bg-amber-400/20 text-amber-500 border-amber-400/40'
+              : isDark
                 ? 'bg-slate-800/50 text-slate-300 border-slate-700/60 hover:bg-slate-700/70 hover:text-white'
                 : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-100'
-            }`}
+              }`}
             title="Vista en cuadrícula (Grid)"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -846,11 +1403,10 @@ export default function CourseSlideViewer({
           <button
             type="button"
             onClick={() => setTheme(isDark ? 'light' : 'dark')}
-            className={`p-1.5 rounded-lg border transition-all cursor-pointer ${
-              isDark
-                ? 'bg-slate-800/50 text-slate-300 border-slate-700/60 hover:bg-slate-700/70 hover:text-amber-300'
-                : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-100'
-            }`}
+            className={`p-1.5 rounded-lg border transition-all cursor-pointer ${isDark
+              ? 'bg-slate-800/50 text-slate-300 border-slate-700/60 hover:bg-slate-700/70 hover:text-amber-300'
+              : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-100'
+              }`}
             title="Cambiar tema"
           >
             {isDark ? '☀️' : '🌙'}
@@ -859,11 +1415,10 @@ export default function CourseSlideViewer({
           <button
             type="button"
             onClick={toggleFullscreen}
-            className={`p-1.5 rounded-lg border hidden sm:flex transition-all cursor-pointer ${
-              isDark
-                ? 'bg-slate-800/50 text-slate-300 border-slate-700/60 hover:bg-slate-700/70 hover:text-white'
-                : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-100'
-            }`}
+            className={`p-1.5 rounded-lg border hidden sm:flex transition-all cursor-pointer ${isDark
+              ? 'bg-slate-800/50 text-slate-300 border-slate-700/60 hover:bg-slate-700/70 hover:text-white'
+              : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-100'
+              }`}
             title={isFullscreen ? 'Salir de pantalla completa' : 'Pantalla completa'}
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -888,17 +1443,17 @@ export default function CourseSlideViewer({
       <main
         onTouchStart={handleTouchStartSlide}
         onTouchEnd={handleTouchEndSlide}
-        className={`flex-1 flex flex-col items-center justify-center p-2 sm:p-6 max-w-6xl w-full mx-auto relative overflow-hidden ${
-          shouldShowNavFooter ? 'pb-20' : 'pb-2'
-        }`}
+        className={`flex-1 min-h-0 w-full flex flex-col items-center justify-center p-2 sm:p-4 md:p-5 ${
+          currentSlide.visualChart ? 'max-w-7xl' : 'max-w-6xl'
+        } mx-auto relative overflow-hidden`}
       >
         <div
           key={currentSlide.id}
-          className={`w-full h-full max-h-full rounded-2xl p-4 sm:p-8 border transition-all duration-300 transform shadow-2xl flex flex-col justify-between overflow-y-auto custom-scrollbar ${
-            isDark
-              ? 'bg-slate-800/90 border-slate-700/80 backdrop-blur-xl text-slate-100 shadow-slate-950/50'
-              : 'bg-white/95 border-slate-200/90 backdrop-blur-xl text-slate-900 shadow-slate-300/50'
-          }`}
+          className={`w-full h-full max-h-full min-h-0 ${currentTemplate.cardRadius} ${
+            currentSlide.visualChart ? 'p-3 sm:p-5 sm:px-7' : 'p-3.5 sm:p-6'
+          } border transition-all duration-300 transform shadow-2xl flex flex-col justify-between overflow-y-auto custom-scrollbar ${
+            templateTokens.bgCard
+          } ${templateTokens.borderCard} ${templateTokens.shadowCard}`}
         >
           {/* SLIDE TYPE: COVER */}
           {currentSlide.type === 'cover' && (
@@ -931,11 +1486,10 @@ export default function CourseSlideViewer({
                   {currentSlide.bulletPoints.map((point: string, idx: number) => (
                     <div
                       key={idx}
-                      className={`p-3 rounded-xl border text-sm font-semibold flex items-center gap-3 ${
-                        isDark
-                          ? 'bg-slate-900/60 border-slate-700/80 text-slate-200'
-                          : 'bg-slate-50 border-slate-200 text-slate-800'
-                      }`}
+                      className={`p-3 rounded-xl border text-sm font-semibold flex items-center gap-3 ${isDark
+                        ? 'bg-slate-900/60 border-slate-700/80 text-slate-200'
+                        : 'bg-slate-50 border-slate-200 text-slate-800'
+                        }`}
                     >
                       <span>{point}</span>
                     </div>
@@ -972,144 +1526,327 @@ export default function CourseSlideViewer({
             </div>
           )}
 
-          {/* SLIDE TYPE: METACOGNICIÓN COMPLETA EN 1 DIAPOSITIVA (CON POPUP HOVER Y SCROLL RESPONSIVO) */}
-          {currentSlide.type === 'metacognition_overview' && (
-            <div className="flex flex-col gap-4 my-auto h-full justify-between relative overflow-y-auto custom-scrollbar pr-1">
-              {/* Header */}
-              <div className="border-b pb-2 border-slate-700/40 shrink-0">
-                <div className="flex items-center justify-between">
-                  <span className="px-2.5 py-0.5 rounded-md text-[11px] font-black uppercase tracking-wider bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">
-                    🧠 Metacognición (8 Preguntas)
-                  </span>
-                  <span className={`text-xs font-bold ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-                    Pasa el cursor por cada pregunta para ver la pauta de reflexión 💡
-                  </span>
-                </div>
-                <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight m-0 mt-1" style={{ color: activeTitleColor }}>
-                  Reflexión sobre lo Aprendido
-                </h2>
-              </div>
+          {/* SLIDE TYPE: METACOGNICIÓN CON CHECKS Y MODAL INFORMATIVO */}
+          {currentSlide.type === 'metacognition_overview' && (() => {
+            const checkedCount = Object.values(checkedMetaIds).filter(Boolean).length;
+            const totalMetaCount = activeMetaQuestions.length;
 
-              {/* 2 Columnas de 4 preguntas (Genéricas vs Específicas) */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 flex-1 overflow-y-auto custom-scrollbar">
-                {/* Columna Izquierda: 4 Preguntas Genéricas */}
-                <div className="flex flex-col gap-2">
-                  <span className="text-[11px] font-extrabold uppercase tracking-wider text-indigo-500 flex items-center gap-1">
-                    <span>🌐</span>
-                    <span>Preguntas Genéricas del Curso (1 - 4)</span>
-                  </span>
-                  <div className="flex flex-col gap-2 flex-1 justify-between">
-                    {activeMetaQuestions.filter(q => q.category === 'Generic').map(q => {
-                      const isHovered = hoveredMetaId === q.id;
-                      return (
-                        <div
-                          key={q.id}
-                          onMouseEnter={() => setHoveredMetaId(q.id)}
-                          onMouseLeave={() => setHoveredMetaId(null)}
-                          className={`p-3 rounded-xl border transition-all cursor-pointer relative ${
-                            isHovered
-                              ? 'bg-indigo-600/30 border-indigo-400 shadow-lg scale-[1.01]'
-                              : isDark
-                              ? 'bg-slate-900/80 border-slate-700/70 hover:bg-slate-800'
-                              : 'bg-slate-50 border-slate-200 hover:bg-slate-100'
-                          }`}
-                        >
-                          <div className="flex items-start gap-2">
-                            <span className="font-extrabold text-xs text-indigo-500 shrink-0">#{q.id}</span>
-                            <div className="flex flex-col">
-                              <span className="text-[11px] font-bold text-indigo-400">{q.title}</span>
-                              <p className={`text-xs font-medium leading-snug m-0 ${isDark ? 'text-slate-200' : 'text-slate-800'}`}>
-                                {q.questionText}
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })}
+            return (
+              <div className="flex flex-col gap-3 sm:gap-4 my-auto h-full justify-between relative overflow-y-auto custom-scrollbar pr-1">
+                {/* Header */}
+                <div className="border-b pb-2 border-slate-700/40 shrink-0">
+                  <div className="flex items-center justify-between flex-wrap gap-2">
+                    <span className="px-2.5 py-0.5 rounded-md text-[11px] font-black uppercase tracking-wider bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 flex items-center gap-1.5">
+                      <span>🧠</span>
+                      <span>Metacognición y Autoevaluación</span>
+                    </span>
+                    <div className="flex items-center gap-2">
+                      <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full border ${checkedCount === totalMetaCount
+                        ? 'bg-emerald-950/80 text-emerald-400 border-emerald-500/50'
+                        : isDark
+                          ? 'bg-slate-800 text-slate-300 border-slate-700'
+                          : 'bg-slate-100 text-slate-700 border-slate-300'
+                        }`}>
+                        {checkedCount} de {totalMetaCount} completadas {checkedCount === totalMetaCount ? '🎉' : '✓'}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mt-1">
+                    <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight m-0" style={{ color: activeTitleColor }}>
+                      Reflexión sobre lo Aprendido
+                    </h2>
+                    <p className={`text-xs font-medium m-0 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                      Haz clic en cualquier pregunta para ver la pauta y guía de ayuda 💡
+                    </p>
                   </div>
                 </div>
 
-                {/* Columna Derecha: 4 Preguntas Específicas */}
-                <div className="flex flex-col gap-2">
-                  <span className="text-[11px] font-extrabold uppercase tracking-wider text-amber-500 flex items-center gap-1">
-                    <span>🐍</span>
-                    <span>Específicas de esta Lección (5 - 8)</span>
-                  </span>
-                  <div className="flex flex-col gap-2 flex-1 justify-between">
-                    {activeMetaQuestions.filter(q => q.category === 'CourseSpecific').map(q => {
-                      const isHovered = hoveredMetaId === q.id;
-                      return (
-                        <div
-                          key={q.id}
-                          onMouseEnter={() => setHoveredMetaId(q.id)}
-                          onMouseLeave={() => setHoveredMetaId(null)}
-                          className={`p-3 rounded-xl border transition-all cursor-pointer relative ${
-                            isHovered
-                              ? 'bg-amber-500/30 border-amber-400 shadow-lg scale-[1.01]'
+                {/* 2 Columnas de 4 preguntas (Genéricas vs Específicas) */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 flex-1 overflow-y-auto custom-scrollbar">
+                  {/* Columna Izquierda: Preguntas Genéricas */}
+                  <div className="flex flex-col gap-2">
+                    <div className="flex items-center justify-between px-1">
+                      <span className="text-[11px] font-extrabold uppercase tracking-wider text-indigo-400 flex items-center gap-1">
+                        <span>🌐</span>
+                        <span>Estrategia y Aprendizaje General (1 - 4)</span>
+                      </span>
+                      <span className="text-[10px] font-mono text-slate-500">Genéricas</span>
+                    </div>
+
+                    <div className="flex flex-col gap-2 flex-1 justify-between">
+                      {activeMetaQuestions.filter(q => q.category === 'Generic').map(q => {
+                        const isChecked = Boolean(checkedMetaIds[q.id]);
+                        return (
+                          <div
+                            key={q.id}
+                            onClick={() => setSelectedMetaQuestion(q)}
+                            className={`p-3 rounded-xl border transition-all cursor-pointer relative group flex items-start justify-between gap-3 ${isChecked
+                              ? isDark
+                                ? 'bg-emerald-950/25 border-emerald-500/50 hover:border-emerald-400 ring-1 ring-emerald-500/30'
+                                : 'bg-emerald-50/80 border-emerald-400 hover:border-emerald-500'
                               : isDark
-                              ? 'bg-slate-900/80 border-slate-700/70 hover:bg-slate-800'
-                              : 'bg-slate-50 border-slate-200 hover:bg-slate-100'
-                          }`}
-                        >
-                          <div className="flex items-start gap-2">
-                            <span className="font-extrabold text-xs text-amber-500 shrink-0">#{q.id}</span>
-                            <div className="flex flex-col">
-                              <span className="text-[11px] font-bold text-amber-500">{q.title}</span>
-                              <p className={`text-xs font-medium leading-snug m-0 ${isDark ? 'text-slate-200' : 'text-slate-800'}`}>
+                                ? 'bg-slate-900/80 border-slate-700/70 hover:bg-slate-800 hover:border-indigo-400 shadow-sm'
+                                : 'bg-slate-50 border-slate-200 hover:bg-slate-100 hover:border-indigo-400 shadow-sm'
+                              }`}
+                          >
+                            {/* Botón de Checkbox */}
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                toggleCheckMeta(q.id);
+                              }}
+                              className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center shrink-0 mt-0.5 transition-all cursor-pointer ${isChecked
+                                ? 'bg-emerald-500 border-emerald-400 text-white shadow-xs'
+                                : isDark
+                                  ? 'border-slate-600 bg-slate-800/80 hover:border-emerald-400 text-transparent'
+                                  : 'border-slate-300 bg-white hover:border-emerald-500 text-transparent'
+                                }`}
+                              title={isChecked ? 'Desmarcar reflexión' : 'Marcar como reflexionado'}
+                            >
+                              <svg className="w-3.5 h-3.5 stroke-[3]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                              </svg>
+                            </button>
+
+                            {/* Contenido de la Pregunta */}
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2 mb-1 flex-wrap">
+                                <span className="font-mono text-xs font-black text-indigo-400">#{q.id}</span>
+                                <span className="text-xs font-bold text-slate-300">{q.title}</span>
+                                {isChecked && (
+                                  <span className="text-[10px] font-black uppercase text-emerald-400 bg-emerald-950/60 border border-emerald-500/40 px-1.5 py-0.2 rounded">
+                                    ✓ Reflexionado
+                                  </span>
+                                )}
+                              </div>
+                              <p className={`text-xs font-medium leading-snug m-0 ${isChecked ? 'opacity-80' : isDark ? 'text-slate-200' : 'text-slate-800'
+                                }`}>
                                 {q.questionText}
                               </p>
                             </div>
+
+                            {/* Botón Info / Pauta */}
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedMetaQuestion(q);
+                              }}
+                              className="px-2 py-1 rounded-lg border text-[11px] font-bold shrink-0 flex items-center gap-1 opacity-70 group-hover:opacity-100 transition-all cursor-pointer bg-slate-800/60 border-slate-700 hover:border-indigo-400 hover:text-indigo-300 text-slate-300"
+                              title="Abrir información y pauta de ayuda"
+                            >
+                              <span>ℹ️</span>
+                              <span className="hidden sm:inline">Pauta</span>
+                            </button>
                           </div>
-                        </div>
-                      );
-                    })}
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Columna Derecha: Preguntas Específicas */}
+                  <div className="flex flex-col gap-2">
+                    <div className="flex items-center justify-between px-1">
+                      <span className="text-[11px] font-extrabold uppercase tracking-wider text-amber-400 flex items-center gap-1">
+                        <span>🐍</span>
+                        <span>Específicas de esta Lección (5 - 8)</span>
+                      </span>
+                      <span className="text-[10px] font-mono text-slate-500">Técnicas</span>
+                    </div>
+
+                    <div className="flex flex-col gap-2 flex-1 justify-between">
+                      {activeMetaQuestions.filter(q => q.category === 'CourseSpecific').map(q => {
+                        const isChecked = Boolean(checkedMetaIds[q.id]);
+                        return (
+                          <div
+                            key={q.id}
+                            onClick={() => setSelectedMetaQuestion(q)}
+                            className={`p-3 rounded-xl border transition-all cursor-pointer relative group flex items-start justify-between gap-3 ${isChecked
+                              ? isDark
+                                ? 'bg-emerald-950/25 border-emerald-500/50 hover:border-emerald-400 ring-1 ring-emerald-500/30'
+                                : 'bg-emerald-50/80 border-emerald-400 hover:border-emerald-500'
+                              : isDark
+                                ? 'bg-slate-900/80 border-slate-700/70 hover:bg-slate-800 hover:border-amber-400 shadow-sm'
+                                : 'bg-slate-50 border-slate-200 hover:bg-slate-100 hover:border-amber-400 shadow-sm'
+                              }`}
+                          >
+                            {/* Botón de Checkbox */}
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                toggleCheckMeta(q.id);
+                              }}
+                              className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center shrink-0 mt-0.5 transition-all cursor-pointer ${isChecked
+                                ? 'bg-emerald-500 border-emerald-400 text-white shadow-xs'
+                                : isDark
+                                  ? 'border-slate-600 bg-slate-800/80 hover:border-emerald-400 text-transparent'
+                                  : 'border-slate-300 bg-white hover:border-emerald-500 text-transparent'
+                                }`}
+                              title={isChecked ? 'Desmarcar reflexión' : 'Marcar como reflexionado'}
+                            >
+                              <svg className="w-3.5 h-3.5 stroke-[3]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                              </svg>
+                            </button>
+
+                            {/* Contenido de la Pregunta */}
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2 mb-1 flex-wrap">
+                                <span className="font-mono text-xs font-black text-amber-400">#{q.id}</span>
+                                <span className="text-xs font-bold text-slate-300">{q.title}</span>
+                                {isChecked && (
+                                  <span className="text-[10px] font-black uppercase text-emerald-400 bg-emerald-950/60 border border-emerald-500/40 px-1.5 py-0.2 rounded">
+                                    ✓ Reflexionado
+                                  </span>
+                                )}
+                              </div>
+                              <p className={`text-xs font-medium leading-snug m-0 ${isChecked ? 'opacity-80' : isDark ? 'text-slate-200' : 'text-slate-800'
+                                }`}>
+                                {q.questionText}
+                              </p>
+                            </div>
+
+                            {/* Botón Info / Pauta */}
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedMetaQuestion(q);
+                              }}
+                              className="px-2 py-1 rounded-lg border text-[11px] font-bold shrink-0 flex items-center gap-1 opacity-70 group-hover:opacity-100 transition-all cursor-pointer bg-slate-800/60 border-slate-700 hover:border-amber-400 hover:text-amber-300 text-slate-300"
+                              title="Abrir información y pauta de ayuda"
+                            >
+                              <span>ℹ️</span>
+                              <span className="hidden sm:inline">Pauta</span>
+                            </button>
+                          </div>
+                        );
+                      })}
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {/* POPUP HOVER / MODAL DE PAUTA DE REFLEXIÓN EN LA PARTE INFERIOR */}
-              <div className="min-h-[70px] shrink-0 transition-all">
-                {hoveredMetaId ? (() => {
-                  const q = activeMetaQuestions.find(item => item.id === hoveredMetaId)!;
-                  return (
-                    <div className={`p-3.5 rounded-xl border shadow-2xl backdrop-blur-xl animate-fade-in flex items-center justify-between gap-4 ${
-                      isDark
-                        ? 'bg-slate-900/95 border-amber-400/80 text-slate-100'
-                        : 'bg-slate-900 text-white border-amber-400/90 shadow-xl'
-                    }`}>
-                      <div className="flex items-center gap-3">
-                        <span className="text-2xl shrink-0">💡</span>
-                        <div>
-                          <span className="block text-xs font-black text-amber-300 uppercase tracking-wider">
-                            Pauta de Reflexión #{q.id}:
+                {/* MODAL EMERGENTE CON LA INFORMACIÓN Y PAUTA DE AYUDA AL LECTOR */}
+                {selectedMetaQuestion && (
+                  <div
+                    className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 animate-fade-in"
+                    onClick={() => setSelectedMetaQuestion(null)}
+                  >
+                    <div
+                      className={`max-w-2xl w-full rounded-3xl border-2 shadow-2xl p-5 sm:p-7 relative overflow-hidden transition-all ${isDark
+                        ? 'bg-slate-900/98 border-amber-400/80 text-slate-100 shadow-black/80'
+                        : 'bg-white border-amber-400 text-slate-900 shadow-2xl'
+                        }`}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      {/* Modal Header */}
+                      <div className="flex items-center justify-between pb-3 mb-4 border-b border-slate-700/60">
+                        <div className="flex items-center gap-2.5">
+                          <span className="text-2xl p-2 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 shrink-0">
+                            🧠
                           </span>
-                          <p className="text-xs font-medium text-slate-200 m-0">
-                            {q.promptHint}
-                          </p>
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <span className="text-[10px] font-mono font-black uppercase px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">
+                                {selectedMetaQuestion.category === 'Generic' ? '🌐 Estrategia Genérica' : '🐍 Específica de esta Lección'}
+                              </span>
+                              <span className="text-xs font-mono font-bold text-slate-400">
+                                Pregunta #{selectedMetaQuestion.id}
+                              </span>
+                            </div>
+                            <h3 className="text-base sm:text-lg font-black tracking-tight m-0 mt-0.5 text-amber-300">
+                              {selectedMetaQuestion.title}
+                            </h3>
+                          </div>
                         </div>
+
+                        <button
+                          type="button"
+                          onClick={() => setSelectedMetaQuestion(null)}
+                          className="p-1.5 rounded-xl bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-700 font-bold border border-slate-700 text-sm cursor-pointer transition-all"
+                          title="Cerrar modal (Esc)"
+                        >
+                          ✕
+                        </button>
                       </div>
-                      <div className="border-l border-slate-700 pl-4 shrink-0 hidden sm:block">
-                        <span className="block text-[10px] font-black text-emerald-400 uppercase tracking-wider">
-                          Valor Metacognitivo:
+
+                      {/* Pregunta Principal en Callout */}
+                      <div className={`p-4 rounded-2xl border mb-5 ${isDark ? 'bg-slate-950/60 border-slate-800 text-slate-100' : 'bg-slate-50 border-slate-200 text-slate-900'
+                        }`}>
+                        <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 block mb-1">
+                          Pregunta de Reflexión:
                         </span>
-                        <p className="text-[11px] font-semibold text-emerald-300 m-0 max-w-xs">
-                          {q.keyTakeaway}
+                        <p className="text-sm sm:text-base font-bold leading-relaxed m-0 text-amber-200">
+                          "{selectedMetaQuestion.questionText}"
                         </p>
                       </div>
+
+                      {/* Información y Pauta de Ayuda al Lector */}
+                      <div className="space-y-4">
+                        {/* 1. Pauta de Reflexión / Guía */}
+                        <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-start gap-3">
+                          <span className="text-2xl shrink-0 mt-0.5">💡</span>
+                          <div>
+                            <h4 className="text-xs font-black uppercase text-amber-300 tracking-wider m-0 mb-1">
+                              Pauta de Reflexión y Guía de Análisis:
+                            </h4>
+                            <p className="text-xs sm:text-sm text-slate-200 leading-relaxed m-0 font-medium">
+                              {selectedMetaQuestion.promptHint}
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* 2. Valor Metacognitivo / Conclusión Clave */}
+                        <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-start gap-3">
+                          <span className="text-2xl shrink-0 mt-0.5">🎯</span>
+                          <div>
+                            <h4 className="text-xs font-black uppercase text-emerald-400 tracking-wider m-0 mb-1">
+                              Conclusión y Valor Metacognitivo Clave:
+                            </h4>
+                            <p className="text-xs sm:text-sm text-emerald-200 leading-relaxed m-0 font-semibold">
+                              {selectedMetaQuestion.keyTakeaway}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Footer del Modal: Checkbox y Cerrar */}
+                      <div className="flex items-center justify-between pt-5 mt-6 border-t border-slate-700/60 flex-wrap gap-3">
+                        <button
+                          type="button"
+                          onClick={() => toggleCheckMeta(selectedMetaQuestion.id)}
+                          className={`px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm flex items-center gap-2 transition-all border cursor-pointer ${checkedMetaIds[selectedMetaQuestion.id]
+                            ? 'bg-emerald-600 border-emerald-500 text-white shadow-lg shadow-emerald-950/60'
+                            : 'bg-slate-800 border-slate-700 text-slate-300 hover:border-emerald-400 hover:text-white'
+                            }`}
+                        >
+                          <span className="text-base">
+                            {checkedMetaIds[selectedMetaQuestion.id] ? '✅' : '⬜'}
+                          </span>
+                          <span>
+                            {checkedMetaIds[selectedMetaQuestion.id]
+                              ? 'Reflexionado (Completado)'
+                              : 'Marcar como Reflexionado'}
+                          </span>
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => setSelectedMetaQuestion(null)}
+                          className="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs sm:text-sm border border-slate-700 transition-all cursor-pointer"
+                        >
+                          Entendido / Cerrar
+                        </button>
+                      </div>
                     </div>
-                  );
-                })() : (
-                  <div className={`p-3 rounded-xl border border-dashed text-center text-xs italic ${
-                    isDark
-                      ? 'border-slate-700/80 bg-slate-900/40 text-slate-400'
-                      : 'border-slate-300 bg-slate-50 text-slate-500'
-                  }`}>
-                    💡 Pasa el cursor por cualquiera de las 8 preguntas para descubrir la pauta de reflexión...
                   </div>
                 )}
               </div>
-            </div>
-          )}
+            );
+          })()}
 
           {/* SLIDE TYPE: INTERACCIONES DEL QUIZ EVALUATIVO */}
           {currentSlide.type === 'quiz_interaction' && (() => {
@@ -1125,19 +1862,17 @@ export default function CourseSlideViewer({
                       {qData.title}
                     </span>
                     <div className="flex items-center gap-2 shrink-0">
-                      <span className={`px-3 py-1 rounded-full text-xs font-black border ${
-                        isDark ? 'bg-slate-900 text-amber-400 border-slate-700' : 'bg-slate-100 text-amber-600 border-slate-300'
-                      }`}>
+                      <span className={`px-3 py-1 rounded-full text-xs font-black border ${isDark ? 'bg-slate-900 text-amber-400 border-slate-700' : 'bg-slate-100 text-amber-600 border-slate-300'
+                        }`}>
                         Puntaje: {totalQuizScore} / {activeQuizQuestions.length}
                       </span>
                       <button
                         type="button"
                         onClick={resetQuiz}
-                        className={`px-2.5 py-1 rounded-lg text-xs font-bold border transition-all cursor-pointer ${
-                          isDark
-                            ? 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700'
-                            : 'bg-slate-100 text-slate-700 border-slate-300 hover:bg-slate-200'
-                        }`}
+                        className={`px-2.5 py-1 rounded-lg text-xs font-bold border transition-all cursor-pointer ${isDark
+                          ? 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700'
+                          : 'bg-slate-100 text-slate-700 border-slate-300 hover:bg-slate-200'
+                          }`}
                         title="Reiniciar quiz"
                       >
                         🔄 Reiniciar
@@ -1212,25 +1947,22 @@ export default function CourseSlideViewer({
 
                       {/* FEEDBACK DRAWER ESTILO DUOLINGO FIXED BOTTOM */}
                       {hasAnswered && (
-                        <div className={`fixed bottom-0 left-0 right-0 z-50 p-4 sm:p-5 border-t-2 shadow-2xl backdrop-blur-2xl transition-all animate-slide-up flex flex-col sm:flex-row items-center justify-between gap-4 ${
-                          isCorrect
-                            ? isDark
-                              ? 'bg-slate-950/95 border-emerald-500 text-emerald-100 shadow-emerald-950/80'
-                              : 'bg-emerald-50 border-emerald-500 text-emerald-950 shadow-emerald-900/30'
-                            : isDark
+                        <div className={`fixed bottom-0 left-0 right-0 z-50 p-4 sm:p-5 border-t-2 shadow-2xl backdrop-blur-2xl transition-all animate-slide-up flex flex-col sm:flex-row items-center justify-between gap-4 ${isCorrect
+                          ? isDark
+                            ? 'bg-slate-950/95 border-emerald-500 text-emerald-100 shadow-emerald-950/80'
+                            : 'bg-emerald-50 border-emerald-500 text-emerald-950 shadow-emerald-900/30'
+                          : isDark
                             ? 'bg-slate-950/95 border-rose-500 text-rose-100 shadow-rose-950/80'
                             : 'bg-rose-50 border-rose-500 text-rose-950 shadow-rose-900/30'
-                        }`}>
+                          }`}>
                           <div className="flex items-center gap-3 sm:gap-4 w-full sm:w-auto">
-                            <div className={`w-11 h-11 sm:w-13 sm:h-13 rounded-2xl flex items-center justify-center text-xl sm:text-2xl font-black shrink-0 ${
-                              isCorrect ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/40' : 'bg-rose-500 text-white shadow-lg shadow-rose-500/40'
-                            }`}>
+                            <div className={`w-11 h-11 sm:w-13 sm:h-13 rounded-2xl flex items-center justify-center text-xl sm:text-2xl font-black shrink-0 ${isCorrect ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/40' : 'bg-rose-500 text-white shadow-lg shadow-rose-500/40'
+                              }`}>
                               {isCorrect ? '✓' : '✕'}
                             </div>
                             <div className="flex flex-col">
-                              <span className={`text-sm sm:text-base font-black tracking-wide ${
-                                isCorrect ? 'text-emerald-400' : 'text-rose-400'
-                              }`}>
+                              <span className={`text-sm sm:text-base font-black tracking-wide ${isCorrect ? 'text-emerald-400' : 'text-rose-400'
+                                }`}>
                                 {isCorrect ? '¡Excelente! Respuesta Correcta 🎉' : 'Respuesta Incorrecta 💡'}
                               </span>
                               <span className="text-xs sm:text-sm font-medium opacity-90 leading-tight max-w-2xl">
@@ -1242,11 +1974,10 @@ export default function CourseSlideViewer({
                           <button
                             type="button"
                             onClick={goToNext}
-                            className={`w-full sm:w-auto px-8 py-3.5 rounded-2xl font-black text-sm sm:text-base text-white shadow-xl transition-all cursor-pointer flex items-center justify-center gap-2 hover:scale-105 active:scale-95 shrink-0 ${
-                              isCorrect
-                                ? 'bg-emerald-500 hover:bg-emerald-400 shadow-emerald-500/40'
-                                : 'bg-rose-500 hover:bg-rose-400 shadow-rose-500/40'
-                            }`}
+                            className={`w-full sm:w-auto px-8 py-3.5 rounded-2xl font-black text-sm sm:text-base text-white shadow-xl transition-all cursor-pointer flex items-center justify-center gap-2 hover:scale-105 active:scale-95 shrink-0 ${isCorrect
+                              ? 'bg-emerald-500 hover:bg-emerald-400 shadow-emerald-500/40'
+                              : 'bg-rose-500 hover:bg-rose-400 shadow-rose-500/40'
+                              }`}
                           >
                             <span>CONTINUAR</span>
                             <span className="text-lg">→</span>
@@ -1265,12 +1996,34 @@ export default function CourseSlideViewer({
                   return (
                     <div className="flex flex-col gap-3">
                       {qData.code && (
-                        <div className="rounded-xl overflow-hidden border border-slate-700/80 bg-[#0d1117]">
-                          <pre className="p-3 m-0 text-xs sm:text-sm font-mono leading-relaxed bg-[#0d1117] text-[#abb2bf]">
+                        <div
+                          className="rounded-xl overflow-hidden border transition-all code-themed-container"
+                          style={{
+                            backgroundColor: activeCodeTheme.bg,
+                            borderColor: activeCodeTheme.border,
+                            ['--code-kw' as any]: activeCodeTheme.kw,
+                            ['--code-str' as any]: activeCodeTheme.str,
+                            ['--code-func' as any]: activeCodeTheme.func,
+                            ['--code-type' as any]: activeCodeTheme.type,
+                            ['--code-num' as any]: activeCodeTheme.num,
+                            ['--code-comment' as any]: activeCodeTheme.comment,
+                            ['--code-ann' as any]: activeCodeTheme.ann,
+                          }}
+                        >
+                          <pre
+                            className="p-3 m-0 text-xs sm:text-sm font-mono leading-relaxed custom-scrollbar transition-colors"
+                            style={{
+                              backgroundColor: activeCodeTheme.bg,
+                              color: activeCodeTheme.txt,
+                            }}
+                          >
                             <code>
                               {qData.code.split('\n').map((line: string, idx: number) => (
                                 <div key={idx} className="flex">
-                                  <span className="select-none pr-3 mr-3 text-slate-600 text-right min-w-[1.5rem] border-r border-slate-800 shrink-0">
+                                  <span
+                                    className="select-none pr-3 mr-3 text-right min-w-[1.5rem] border-r shrink-0 opacity-45 font-bold"
+                                    style={{ borderColor: activeCodeTheme.border }}
+                                  >
                                     {idx + 1}
                                   </span>
                                   <span dangerouslySetInnerHTML={{ __html: highlightLine(line, 'python') }} />
@@ -1317,25 +2070,22 @@ export default function CourseSlideViewer({
 
                       {/* FEEDBACK DRAWER ESTILO DUOLINGO FIXED BOTTOM */}
                       {hasAnswered && (
-                        <div className={`fixed bottom-0 left-0 right-0 z-50 p-4 sm:p-5 border-t-2 shadow-2xl backdrop-blur-2xl transition-all animate-slide-up flex flex-col sm:flex-row items-center justify-between gap-4 ${
-                          isCorrect
-                            ? isDark
-                              ? 'bg-slate-950/95 border-emerald-500 text-emerald-100 shadow-emerald-950/80'
-                              : 'bg-emerald-50 border-emerald-500 text-emerald-950 shadow-emerald-900/30'
-                            : isDark
+                        <div className={`fixed bottom-0 left-0 right-0 z-50 p-4 sm:p-5 border-t-2 shadow-2xl backdrop-blur-2xl transition-all animate-slide-up flex flex-col sm:flex-row items-center justify-between gap-4 ${isCorrect
+                          ? isDark
+                            ? 'bg-slate-950/95 border-emerald-500 text-emerald-100 shadow-emerald-950/80'
+                            : 'bg-emerald-50 border-emerald-500 text-emerald-950 shadow-emerald-900/30'
+                          : isDark
                             ? 'bg-slate-950/95 border-rose-500 text-rose-100 shadow-rose-950/80'
                             : 'bg-rose-50 border-rose-500 text-rose-950 shadow-rose-900/30'
-                        }`}>
+                          }`}>
                           <div className="flex items-center gap-3 sm:gap-4 w-full sm:w-auto">
-                            <div className={`w-11 h-11 sm:w-13 sm:h-13 rounded-2xl flex items-center justify-center text-xl sm:text-2xl font-black shrink-0 ${
-                              isCorrect ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/40' : 'bg-rose-500 text-white shadow-lg shadow-rose-500/40'
-                            }`}>
+                            <div className={`w-11 h-11 sm:w-13 sm:h-13 rounded-2xl flex items-center justify-center text-xl sm:text-2xl font-black shrink-0 ${isCorrect ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/40' : 'bg-rose-500 text-white shadow-lg shadow-rose-500/40'
+                              }`}>
                               {isCorrect ? '✓' : '✕'}
                             </div>
                             <div className="flex flex-col">
-                              <span className={`text-sm sm:text-base font-black tracking-wide ${
-                                isCorrect ? 'text-emerald-400' : 'text-rose-400'
-                              }`}>
+                              <span className={`text-sm sm:text-base font-black tracking-wide ${isCorrect ? 'text-emerald-400' : 'text-rose-400'
+                                }`}>
                                 {isCorrect ? '¡Excelente! Respuesta Correcta 🎉' : 'Respuesta Incorrecta 💡'}
                               </span>
                               <span className="text-xs sm:text-sm font-medium opacity-90 leading-tight max-w-2xl">
@@ -1347,11 +2097,10 @@ export default function CourseSlideViewer({
                           <button
                             type="button"
                             onClick={goToNext}
-                            className={`w-full sm:w-auto px-8 py-3.5 rounded-2xl font-black text-sm sm:text-base text-white shadow-xl transition-all cursor-pointer flex items-center justify-center gap-2 hover:scale-105 active:scale-95 shrink-0 ${
-                              isCorrect
-                                ? 'bg-emerald-500 hover:bg-emerald-400 shadow-emerald-500/40'
-                                : 'bg-rose-500 hover:bg-rose-400 shadow-rose-500/40'
-                            }`}
+                            className={`w-full sm:w-auto px-8 py-3.5 rounded-2xl font-black text-sm sm:text-base text-white shadow-xl transition-all cursor-pointer flex items-center justify-center gap-2 hover:scale-105 active:scale-95 shrink-0 ${isCorrect
+                              ? 'bg-emerald-500 hover:bg-emerald-400 shadow-emerald-500/40'
+                              : 'bg-rose-500 hover:bg-rose-400 shadow-rose-500/40'
+                              }`}
                           >
                             <span>CONTINUAR</span>
                             <span className="text-lg">→</span>
@@ -1385,9 +2134,8 @@ export default function CourseSlideViewer({
 
                   return (
                     <div className="flex flex-col gap-3">
-                      <div className={`p-3.5 rounded-xl border-2 border-dashed min-h-[60px] flex items-center gap-2 flex-wrap ${
-                        isDark ? 'border-slate-700 bg-slate-900/90' : 'border-slate-300 bg-slate-100'
-                      }`}>
+                      <div className={`p-3.5 rounded-xl border-2 border-dashed min-h-[60px] flex items-center gap-2 flex-wrap ${isDark ? 'border-slate-700 bg-slate-900/90' : 'border-slate-300 bg-slate-100'
+                        }`}>
                         {currentSelected.length === 0 ? (
                           <span className="text-slate-500 text-xs italic">
                             Toca las fichas de abajo para construir la instrucción aquí...
@@ -1416,13 +2164,12 @@ export default function CourseSlideViewer({
                               type="button"
                               disabled={isUsed}
                               onClick={() => handleAddToken(token)}
-                              className={`px-3.5 py-2 rounded-xl font-mono text-xs sm:text-sm font-bold border transition-all cursor-pointer ${
-                                isUsed
-                                  ? 'opacity-30 bg-slate-800 text-slate-500 border-slate-800'
-                                  : isDark
+                              className={`px-3.5 py-2 rounded-xl font-mono text-xs sm:text-sm font-bold border transition-all cursor-pointer ${isUsed
+                                ? 'opacity-30 bg-slate-800 text-slate-500 border-slate-800'
+                                : isDark
                                   ? 'bg-slate-800 text-amber-400 border-slate-700 hover:bg-slate-700 hover:scale-105'
                                   : 'bg-white text-indigo-700 border-slate-300 hover:bg-slate-100 hover:scale-105 shadow-sm'
-                              }`}
+                                }`}
                             >
                               {token}
                             </button>
@@ -1432,25 +2179,22 @@ export default function CourseSlideViewer({
 
                       {/* FEEDBACK DRAWER ESTILO DUOLINGO FIXED BOTTOM */}
                       {isSubmitted && (
-                        <div className={`fixed bottom-0 left-0 right-0 z-50 p-4 sm:p-5 border-t-2 shadow-2xl backdrop-blur-2xl transition-all animate-slide-up flex flex-col sm:flex-row items-center justify-between gap-4 ${
-                          isCorrectOrder
-                            ? isDark
-                              ? 'bg-slate-950/95 border-emerald-500 text-emerald-100 shadow-emerald-950/80'
-                              : 'bg-emerald-50 border-emerald-500 text-emerald-950 shadow-emerald-900/30'
-                            : isDark
+                        <div className={`fixed bottom-0 left-0 right-0 z-50 p-4 sm:p-5 border-t-2 shadow-2xl backdrop-blur-2xl transition-all animate-slide-up flex flex-col sm:flex-row items-center justify-between gap-4 ${isCorrectOrder
+                          ? isDark
+                            ? 'bg-slate-950/95 border-emerald-500 text-emerald-100 shadow-emerald-950/80'
+                            : 'bg-emerald-50 border-emerald-500 text-emerald-950 shadow-emerald-900/30'
+                          : isDark
                             ? 'bg-slate-950/95 border-rose-500 text-rose-100 shadow-rose-950/80'
                             : 'bg-rose-50 border-rose-500 text-rose-950 shadow-rose-900/30'
-                        }`}>
+                          }`}>
                           <div className="flex items-center gap-3 sm:gap-4 w-full sm:w-auto">
-                            <div className={`w-11 h-11 sm:w-13 sm:h-13 rounded-2xl flex items-center justify-center text-xl sm:text-2xl font-black shrink-0 ${
-                              isCorrectOrder ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/40' : 'bg-rose-500 text-white shadow-lg shadow-rose-500/40'
-                            }`}>
+                            <div className={`w-11 h-11 sm:w-13 sm:h-13 rounded-2xl flex items-center justify-center text-xl sm:text-2xl font-black shrink-0 ${isCorrectOrder ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/40' : 'bg-rose-500 text-white shadow-lg shadow-rose-500/40'
+                              }`}>
                               {isCorrectOrder ? '✓' : '✕'}
                             </div>
                             <div className="flex flex-col">
-                              <span className={`text-sm sm:text-base font-black tracking-wide ${
-                                isCorrectOrder ? 'text-emerald-400' : 'text-rose-400'
-                              }`}>
+                              <span className={`text-sm sm:text-base font-black tracking-wide ${isCorrectOrder ? 'text-emerald-400' : 'text-rose-400'
+                                }`}>
                                 {isCorrectOrder ? '¡Fantástico! Secuencia Ordenada 🎉' : 'Secuencia Incorrecta 💡'}
                               </span>
                               <span className="text-xs sm:text-sm font-medium opacity-90 leading-tight max-w-2xl">
@@ -1462,11 +2206,10 @@ export default function CourseSlideViewer({
                           <button
                             type="button"
                             onClick={goToNext}
-                            className={`w-full sm:w-auto px-8 py-3.5 rounded-2xl font-black text-sm sm:text-base text-white shadow-xl transition-all cursor-pointer flex items-center justify-center gap-2 hover:scale-105 active:scale-95 shrink-0 ${
-                              isCorrectOrder
-                                ? 'bg-emerald-500 hover:bg-emerald-400 shadow-emerald-500/40'
-                                : 'bg-rose-500 hover:bg-rose-400 shadow-rose-500/40'
-                            }`}
+                            className={`w-full sm:w-auto px-8 py-3.5 rounded-2xl font-black text-sm sm:text-base text-white shadow-xl transition-all cursor-pointer flex items-center justify-center gap-2 hover:scale-105 active:scale-95 shrink-0 ${isCorrectOrder
+                              ? 'bg-emerald-500 hover:bg-emerald-400 shadow-emerald-500/40'
+                              : 'bg-rose-500 hover:bg-rose-400 shadow-rose-500/40'
+                              }`}
                           >
                             <span>CONTINUAR</span>
                             <span className="text-lg">→</span>
@@ -1571,11 +2314,10 @@ export default function CourseSlideViewer({
 
                       {/* FEEDBACK DRAWER ESTILO DUOLINGO FIXED BOTTOM */}
                       {isComplete && (
-                        <div className={`fixed bottom-0 left-0 right-0 z-50 p-4 sm:p-5 border-t-2 shadow-2xl backdrop-blur-2xl transition-all animate-slide-up flex flex-col sm:flex-row items-center justify-between gap-4 ${
-                          isDark
-                            ? 'bg-slate-950/95 border-emerald-500 text-emerald-100 shadow-emerald-950/80'
-                            : 'bg-emerald-50 border-emerald-500 text-emerald-950 shadow-emerald-900/30'
-                        }`}>
+                        <div className={`fixed bottom-0 left-0 right-0 z-50 p-4 sm:p-5 border-t-2 shadow-2xl backdrop-blur-2xl transition-all animate-slide-up flex flex-col sm:flex-row items-center justify-between gap-4 ${isDark
+                          ? 'bg-slate-950/95 border-emerald-500 text-emerald-100 shadow-emerald-950/80'
+                          : 'bg-emerald-50 border-emerald-500 text-emerald-950 shadow-emerald-900/30'
+                          }`}>
                           <div className="flex items-center gap-3 sm:gap-4 w-full sm:w-auto">
                             <div className="w-11 h-11 sm:w-13 sm:h-13 rounded-2xl bg-emerald-500 text-white flex items-center justify-center text-xl sm:text-2xl font-black shrink-0 shadow-lg shadow-emerald-500/40">
                               ✓
@@ -1622,8 +2364,8 @@ export default function CourseSlideViewer({
                 {totalQuizScore === activeQuizQuestions.length
                   ? '🥇 ¡Puntaje Perfecto! Dominas al 100% las estructuras condicionales en Python.'
                   : totalQuizScore >= 7
-                  ? '🥈 ¡Excelente trabajo! Demuestras una gran comprensión de la lógica condicional.'
-                  : '🥉 ¡Buen intento! Repasa las diapositivas anteriores para consolidar tus conocimientos.'}
+                    ? '🥈 ¡Excelente trabajo! Demuestras una gran comprensión de la lógica condicional.'
+                    : '🥉 ¡Buen intento! Repasa las diapositivas anteriores para consolidar tus conocimientos.'}
               </p>
 
               <div className="flex gap-4 mt-2">
@@ -1641,13 +2383,13 @@ export default function CourseSlideViewer({
 
           {/* SLIDE TYPES: CONCEPT, CODE, DIAGRAM, PROJECT, SUMMARY */}
           {currentSlide.type !== 'cover' && currentSlide.type !== 'quiz_intro' && currentSlide.type !== 'quiz_interaction' && currentSlide.type !== 'metacognition_overview' && currentSlide.type !== 'quiz_results' && (
-            <div className="flex flex-col gap-6 overflow-y-auto custom-scrollbar pr-1">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b pb-4 border-slate-700/40 shrink-0">
+            <div className="flex flex-col gap-4 sm:gap-5 flex-1 justify-between min-h-0">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b pb-3 border-slate-700/40 shrink-0">
                 <div>
                   <div className="flex items-center gap-2 mb-1">
                     <span
-                      className="px-2.5 py-0.5 rounded-md text-[11px] font-black uppercase tracking-wider text-white"
-                      style={{ backgroundColor: activeAccent }}
+                      className={`px-2.5 py-0.5 rounded-full text-[11px] font-black uppercase tracking-wider ${templateTokens.badgeBg
+                        } ${templateTokens.badgeText}`}
                     >
                       {embedParams.customIcon ? <span>{embedParams.customIcon} </span> : null}
                       {currentSlide.badge || 'Lección'}
@@ -1663,50 +2405,32 @@ export default function CourseSlideViewer({
                     {currentSlide.title}
                   </h2>
                 </div>
-
-                {currentSlide.codeSnippet && (
-                  <button
-                    type="button"
-                    onClick={() => copyCode(currentSlide.codeSnippet!.code)}
-                    className={`self-start sm:self-center px-3 py-1.5 rounded-lg text-xs font-bold border flex items-center gap-1.5 transition-all ${
-                      copiedCode
-                        ? 'bg-emerald-600 text-white border-emerald-500'
-                        : isDark
-                        ? 'bg-slate-900 text-slate-300 border-slate-700 hover:bg-slate-700'
-                        : 'bg-slate-100 text-slate-700 border-slate-300 hover:bg-slate-200'
-                    }`}
-                  >
-                    {copiedCode ? '✓ Copiado' : '📋 Copiar Código'}
-                  </button>
-                )}
               </div>
 
               {currentSlide.content && (
-                <p className={`text-base sm:text-lg leading-relaxed font-medium m-0 ${
-                  isDark ? 'text-slate-200' : 'text-slate-800'
-                }`}>
+                <p className={`text-base sm:text-lg leading-relaxed font-medium m-0 ${isDark ? 'text-slate-200' : 'text-slate-800'
+                  }`}>
                   {currentSlide.content}
                 </p>
               )}
 
-              <div className={`grid grid-cols-1 ${currentSlide.codeSnippet || currentSlide.visualChart ? 'lg:grid-cols-2' : ''} gap-6 items-start`}>
-                
+              {/* Contenedor de contenidos: Código + Bullets (2 columnas) o Vista Completa */}
+              <div className={`grid grid-cols-1 ${currentSlide.codeSnippet && currentSlide.bulletPoints?.length && !currentSlide.visualChart ? 'lg:grid-cols-2' : ''} gap-5 items-start w-full`}>
+
                 {currentSlide.bulletPoints && currentSlide.bulletPoints.length > 0 && (
-                  <div className="flex flex-col gap-3">
-                    <h3 className={`text-xs font-extrabold uppercase tracking-wider m-0 ${
-                      isDark ? 'text-slate-400' : 'text-slate-500'
-                    }`}>
+                  <div className={`flex flex-col gap-3 ${currentSlide.visualChart ? 'w-full' : ''}`}>
+                    <h3 className={`text-xs font-extrabold uppercase tracking-wider m-0 ${isDark ? 'text-slate-400' : 'text-slate-500'
+                      }`}>
                       Puntos Clave:
                     </h3>
-                    <ul className="space-y-2.5 m-0 p-0 list-none">
+                    <ul className={`grid gap-2.5 m-0 p-0 list-none ${currentSlide.visualChart ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1'}`}>
                       {currentSlide.bulletPoints.map((bullet: string, idx: number) => (
                         <li
                           key={idx}
-                          className={`p-3 rounded-xl border text-sm font-semibold flex items-start gap-3 transition-all ${
-                            isDark
-                              ? 'bg-slate-900/70 border-slate-700/60 text-slate-200'
-                              : 'bg-slate-50 border-slate-200 text-slate-800'
-                          }`}
+                          className={`p-3 rounded-xl border text-sm font-semibold flex items-start gap-3 transition-all ${isDark
+                            ? 'bg-slate-900/70 border-slate-700/60 text-slate-200'
+                            : 'bg-slate-50 border-slate-200 text-slate-800'
+                            }`}
                         >
                           <span className="font-extrabold shrink-0 mt-0.5" style={{ color: activeAccent }}>🔹</span>
                           <span className="leading-snug">{bullet}</span>
@@ -1718,26 +2442,101 @@ export default function CourseSlideViewer({
 
                 {currentSlide.codeSnippet && (
                   <div className="flex flex-col gap-2 w-full">
-                    <div className="rounded-xl overflow-hidden border border-slate-700/80 bg-[#0d1117] shadow-xl">
-                      <div className="bg-[#161b22] px-4 py-2 flex items-center justify-between border-b border-slate-800 text-xs font-mono text-slate-400">
-                        <span className="flex items-center gap-2">
-                          <span className="w-2.5 h-2.5 rounded-full bg-red-500 inline-block" />
-                          <span className="w-2.5 h-2.5 rounded-full bg-yellow-500 inline-block" />
-                          <span className="w-2.5 h-2.5 rounded-full bg-green-500 inline-block" />
-                          <span className="ml-2 font-bold text-slate-300">{currentSlide.codeSnippet.filename}</span>
-                        </span>
-                        <span
-                          className="uppercase text-[10px] px-2 py-0.5 rounded text-white font-bold"
-                          style={{ backgroundColor: activeAccent }}
-                        >
-                          {currentSlide.codeSnippet.lang}
-                        </span>
+                    <div
+                      className="rounded-xl overflow-hidden border shadow-xl transition-all code-themed-container"
+                      style={{
+                        backgroundColor: activeCodeTheme.bg,
+                        borderColor: activeCodeTheme.border,
+                        boxShadow: `0 10px 25px -5px ${activeCodeTheme.border}40`,
+                        ['--code-kw' as any]: activeCodeTheme.kw,
+                        ['--code-str' as any]: activeCodeTheme.str,
+                        ['--code-func' as any]: activeCodeTheme.func,
+                        ['--code-type' as any]: activeCodeTheme.type,
+                        ['--code-num' as any]: activeCodeTheme.num,
+                        ['--code-comment' as any]: activeCodeTheme.comment,
+                        ['--code-ann' as any]: activeCodeTheme.ann,
+                      }}
+                    >
+                      {/* BARRA SUPERIOR DENTRO DEL COMPONENTE DE CÓDIGO: ICONOS DE COPIAR Y AGRANDAR */}
+                      <div
+                        className="px-3.5 py-2 flex items-center justify-between border-b text-xs font-mono transition-colors"
+                        style={{
+                          backgroundColor: activeCodeTheme.header,
+                          borderColor: activeCodeTheme.border,
+                          color: activeCodeTheme.txt,
+                        }}
+                      >
+                        <div className="flex items-center gap-2 min-w-0">
+                          <span className="flex items-center gap-1.5 shrink-0">
+                            <span className="w-2.5 h-2.5 rounded-full bg-red-500 inline-block" />
+                            <span className="w-2.5 h-2.5 rounded-full bg-yellow-500 inline-block" />
+                            <span className="w-2.5 h-2.5 rounded-full bg-green-500 inline-block" />
+                          </span>
+                          <span className="ml-1 font-bold truncate" style={{ color: activeCodeTheme.txt }}>
+                            {currentSlide.codeSnippet.filename}
+                          </span>
+                        </div>
+
+                        <div className="flex items-center gap-1.5 shrink-0">
+                          <span
+                            className="uppercase text-[10px] px-2 py-0.5 rounded text-white font-bold"
+                            style={{ backgroundColor: activeCodeTheme.accent || activeAccent }}
+                          >
+                            {currentSlide.codeSnippet.lang}
+                          </span>
+
+                          {/* BOTÓN SOLO ICONO: COPIAR CÓDIGO */}
+                          <button
+                            type="button"
+                            onClick={() => copyCode(currentSlide.codeSnippet!.code)}
+                            className={`p-1.5 rounded-lg text-xs font-bold border transition-all cursor-pointer shadow-xs flex items-center justify-center ${
+                              copiedCode
+                                ? 'bg-emerald-600 text-white border-emerald-500 scale-105'
+                                : 'bg-white/10 hover:bg-white/20 border-white/20 text-slate-200 hover:text-white'
+                            }`}
+                            title={copiedCode ? '¡Copiado con éxito!' : 'Copiar código'}
+                            aria-label="Copiar código"
+                          >
+                            {copiedCode ? (
+                              <svg className="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
+                              </svg>
+                            ) : (
+                              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                              </svg>
+                            )}
+                          </button>
+
+                          {/* BOTÓN SOLO ICONO: AGRANDAR COMO MODAL */}
+                          <button
+                            type="button"
+                            onClick={() => setIsCodeModalOpen(true)}
+                            className="p-1.5 rounded-lg text-xs font-bold border bg-indigo-600/90 hover:bg-indigo-500 text-white border-indigo-400/60 transition-all cursor-pointer shadow-xs hover:scale-105 flex items-center justify-center"
+                            title="Agrandar código (Modal pantalla completa)"
+                            aria-label="Agrandar código en modal"
+                          >
+                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                            </svg>
+                          </button>
+                        </div>
                       </div>
-                      <pre className="p-4 m-0 overflow-x-auto overflow-y-auto max-h-[220px] sm:max-h-[260px] text-xs sm:text-sm font-mono leading-relaxed bg-[#0d1117] text-[#abb2bf]">
+
+                      <pre
+                        className="p-4 m-0 overflow-x-auto overflow-y-auto max-h-[220px] sm:max-h-[260px] text-xs sm:text-sm font-mono leading-relaxed transition-colors custom-scrollbar"
+                        style={{
+                          backgroundColor: activeCodeTheme.bg,
+                          color: activeCodeTheme.txt,
+                        }}
+                      >
                         <code>
                           {currentSlide.codeSnippet.code.split('\n').map((line: string, idx: number) => (
-                            <div key={idx} className="flex leading-relaxed">
-                              <span className="select-none pr-3 mr-3 text-slate-600 text-right min-w-[1.8rem] border-r border-slate-800 shrink-0">
+                            <div key={idx} className="flex leading-relaxed hover:bg-white/5 px-1 rounded transition-colors">
+                              <span
+                                className="select-none pr-3 mr-3 text-right min-w-[1.8rem] border-r shrink-0 opacity-45 font-bold"
+                                style={{ borderColor: activeCodeTheme.border }}
+                              >
                                 {idx + 1}
                               </span>
                               <span
@@ -1752,48 +2551,83 @@ export default function CourseSlideViewer({
                       </pre>
                     </div>
                     {currentSlide.codeSnippet.explanation && (
-                      <p className={`text-xs font-medium italic m-0 px-1 ${
-                        isDark ? 'text-slate-400' : 'text-slate-500'
-                      }`}>
+                      <p className={`text-xs font-medium italic m-0 px-1 ${isDark ? 'text-slate-400' : 'text-slate-500'
+                        }`}>
                         💬 {currentSlide.codeSnippet.explanation}
                       </p>
                     )}
                   </div>
                 )}
 
+                {/* TABLA COMPARATIVA A FULL WIDTH */}
                 {currentSlide.visualChart && (
-                  <div className="flex flex-col gap-2 w-full">
-                    <h3 className={`text-xs font-extrabold uppercase tracking-wider m-0 ${
-                      isDark ? 'text-slate-400' : 'text-slate-500'
-                    }`}>
-                      Diagrama de Memoria e Índices:
-                    </h3>
-                    <div className={`overflow-x-auto rounded-xl border p-4 ${
-                      isDark ? 'border-slate-700/80 bg-slate-900/90' : 'border-slate-200 bg-slate-50'
-                    }`}>
-                      <table className="w-full text-center border-collapse text-xs sm:text-sm font-mono">
+                  <div className="flex flex-col gap-2.5 w-full col-span-full my-1">
+                    <div className="flex flex-wrap items-center justify-between gap-2 px-1">
+                      <div className="flex items-center gap-2">
+                        <span
+                          className="w-2.5 h-2.5 rounded-full inline-block animate-pulse shadow-sm"
+                          style={{ backgroundColor: activeAccent }}
+                        />
+                        <h3 className={`text-xs sm:text-sm font-extrabold uppercase tracking-wider font-mono m-0 ${isDark ? 'text-slate-200' : 'text-slate-800'
+                          }`}>
+                          📊 {currentSlide.title ? `Estructura y Especificaciones Técnicas` : 'Tabla Comparativa y Especificaciones'}
+                        </h3>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className={`text-[11px] font-mono font-bold px-2.5 py-0.5 rounded-md border shadow-xs ${isDark
+                          ? 'bg-slate-800/90 text-slate-300 border-slate-700/80'
+                          : 'bg-slate-100 text-slate-700 border-slate-300'
+                          }`}>
+                          {currentSlide.visualChart.rows.length} registros
+                        </span>
+                        <span className={`text-[11px] font-mono font-bold px-2.5 py-0.5 rounded-md border shadow-xs ${isDark
+                          ? 'bg-slate-800/90 text-slate-300 border-slate-700/80'
+                          : 'bg-slate-100 text-slate-700 border-slate-300'
+                          }`}>
+                          {currentSlide.visualChart.headers.length} columnas
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className={`w-full overflow-x-auto ${currentTemplate.cardRadius} border-2 shadow-xl transition-all ${templateTokens.tableBorder
+                      } ${templateTokens.bgCard}`}>
+                      <table className="w-full text-left border-collapse text-xs sm:text-sm">
                         <thead>
-                          <tr className="border-b border-slate-700/60" style={{ color: activeAccent }}>
+                          <tr className={`border-b-2 ${templateTokens.tableHeaderBg}`}>
                             {currentSlide.visualChart.headers.map((h: string, i: number) => (
-                              <th key={i} className="p-2 font-bold">{h}</th>
+                              <th
+                                key={i}
+                                className={`px-4 py-2.5 sm:px-5 sm:py-3 font-black font-mono tracking-wider text-xs uppercase text-left border-r ${isDark ? 'border-slate-700/60' : 'border-slate-200'
+                                  } last:border-r-0`}
+                                style={i === 0 ? { color: activeAccent } : undefined}
+                              >
+                                {h}
+                              </th>
                             ))}
                           </tr>
                         </thead>
-                        <tbody>
+                        <tbody className={`divide-y ${isDark ? 'divide-slate-800' : 'divide-slate-200'}`}>
                           {currentSlide.visualChart.rows.map((row: any[], rIdx: number) => (
-                            <tr key={rIdx} className="border-b border-slate-700/40 last:border-0">
+                            <tr
+                              key={rIdx}
+                              className={`transition-colors ${isDark
+                                ? 'hover:bg-slate-800/60 even:bg-slate-800/25'
+                                : 'hover:bg-indigo-50/50 even:bg-slate-50/70'
+                                }`}
+                            >
                               {row.map((cell: any, cIdx: number) => (
                                 <td
                                   key={cIdx}
-                                  className={`p-2 ${
-                                    cIdx === 0
-                                      ? 'font-bold text-indigo-500 text-left'
+                                  className={`px-4 py-2.5 sm:px-5 sm:py-3 align-middle leading-relaxed text-xs sm:text-sm border-r ${isDark ? 'border-slate-800/60' : 'border-slate-200'
+                                    } last:border-r-0 ${cIdx === 0
+                                      ? 'font-bold'
                                       : isDark
-                                      ? 'bg-slate-800/50 rounded font-bold text-slate-200'
-                                      : 'bg-white rounded font-bold text-slate-800 shadow-xs'
-                                  }`}
+                                        ? 'text-slate-200'
+                                        : 'text-slate-800'
+                                    }`}
+                                  style={cIdx === 0 ? { color: isDark ? '#34d399' : '#059669' } : undefined}
                                 >
-                                  {cell}
+                                  {renderCellContent(cell, isDark, cIdx === 0)}
                                 </td>
                               ))}
                             </tr>
@@ -1807,11 +2641,8 @@ export default function CourseSlideViewer({
               </div>
 
               {currentSlide.keyTakeaway && (
-                <div className={`p-4 rounded-xl border font-bold text-sm flex items-center gap-3 mt-auto ${
-                  isDark
-                    ? 'bg-amber-400/10 border-amber-400/30 text-amber-300'
-                    : 'bg-amber-500/10 border-amber-500/30 text-amber-900'
-                }`}>
+                <div className={`p-4 ${currentTemplate.cardRadius} border font-bold text-sm flex items-center gap-3 mt-auto ${templateTokens.keyTakeawayBg
+                  } ${templateTokens.keyTakeawayBorder} ${templateTokens.keyTakeawayText}`}>
                   <span className="text-lg">💡</span>
                   <span>{currentSlide.keyTakeaway}</span>
                 </div>
@@ -1821,24 +2652,24 @@ export default function CourseSlideViewer({
         </div>
       </main>
 
-      {/* BARRA INFERIOR DE NAVEGACIÓN */}
+      {/* BARRA INFERIOR DE NAVEGACIÓN COMPACTA (FLUJO NORMAL, NUNCA QUEDA ENCIMA DEL CONTENIDO) */}
       {shouldShowNavFooter && (
         <footer
-          className={`px-4 sm:px-6 py-3 flex items-center justify-between border-t backdrop-blur-md fixed bottom-0 left-0 right-0 z-30 transition-all duration-500 ease-in-out ${
+          className={`shrink-0 w-full px-3 sm:px-6 py-1.5 sm:py-2 flex items-center justify-between border-t backdrop-blur-md z-20 transition-all duration-300 ease-in-out ${
             isDark
-              ? 'bg-[#1e293b]/90 border-slate-700/60'
-              : 'bg-white/90 border-slate-200 shadow-lg'
+              ? 'bg-[#1e293b]/95 border-slate-700/60'
+              : 'bg-white/95 border-slate-200 shadow-md'
           } ${
             barMode === 'autohide' && !isBarVisible && !isMobile
-              ? 'opacity-0 translate-y-full pointer-events-none'
-              : 'opacity-100 translate-y-0'
+              ? 'max-h-0 py-0 opacity-0 overflow-hidden border-transparent pointer-events-none'
+              : 'max-h-16 opacity-100'
           }`}
         >
           <button
             type="button"
             onClick={goToPrev}
             disabled={currentIndex === 0}
-            className={`px-4 sm:px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm flex items-center gap-1.5 transition-all border cursor-pointer ${
+            className={`px-3 sm:px-4 py-1.5 rounded-xl font-bold text-xs sm:text-sm flex items-center gap-1.5 transition-all border cursor-pointer ${
               currentIndex === 0
                 ? 'opacity-40 cursor-not-allowed border-slate-700 text-slate-500'
                 : isDark
@@ -1846,25 +2677,26 @@ export default function CourseSlideViewer({
                 : 'bg-slate-100 text-slate-800 border-slate-300 hover:bg-slate-200 active:scale-95'
             }`}
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
             </svg>
             <span>Anterior</span>
           </button>
 
-          <div className="hidden md:flex items-center gap-1.5">
+          <div className="hidden md:flex items-center gap-1 max-w-sm lg:max-w-md overflow-x-auto py-0.5 custom-scrollbar">
             {slides.map((_, idx) => (
               <button
                 key={idx}
                 type="button"
                 onClick={() => goToSlide(idx)}
-                className={`h-2.5 rounded-full transition-all ${
+                className={`h-2 rounded-full transition-all cursor-pointer ${
                   idx === currentIndex
-                    ? 'w-7 bg-amber-400 shadow-sm'
+                    ? 'w-6 shadow-xs'
                     : isDark
-                    ? 'w-2.5 bg-slate-700 hover:bg-slate-600'
-                    : 'w-2.5 bg-slate-300 hover:bg-slate-400'
+                    ? 'w-2 bg-slate-700 hover:bg-slate-600'
+                    : 'w-2 bg-slate-300 hover:bg-slate-400'
                 }`}
+                style={idx === currentIndex ? { backgroundColor: activeAccent } : undefined}
                 title={`Diapositiva ${idx + 1}`}
               />
             ))}
@@ -1874,18 +2706,193 @@ export default function CourseSlideViewer({
             <button
               type="button"
               onClick={goToNext}
-              className="px-5 sm:px-6 py-2.5 rounded-xl font-bold text-xs sm:text-sm flex items-center gap-1.5 transition-all border text-white shadow-lg active:scale-95 cursor-pointer"
-              style={{ backgroundColor: activeAccent, borderColor: activeAccent }}
+              className={`px-4 sm:px-5 py-1.5 ${currentTemplate.cardRadius} font-bold text-xs sm:text-sm flex items-center gap-1.5 transition-all border shadow-md active:scale-95 cursor-pointer ${
+                templateTokens.navBtnClass
+              }`}
             >
               <span>Siguiente</span>
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
               </svg>
             </button>
           ) : (
-            <div />
+            <div className="w-16" />
           )}
         </footer>
+      )}
+
+      {/* MODAL: VISTA DE CÓDIGO EN PANTALLA COMPLETA / AGRANDADO ⤢ */}
+      {isCodeModalOpen && currentSlide.codeSnippet && (
+        <div
+          className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-2 sm:p-6 animate-fade-in"
+          onClick={() => setIsCodeModalOpen(false)}
+        >
+          <div
+            className={`relative w-full max-w-5xl max-h-[92vh] flex flex-col rounded-2xl border shadow-2xl overflow-hidden code-themed-container ${
+              activeCodeTheme.isDark ? 'text-slate-100' : 'text-slate-900'
+            }`}
+            style={{
+              backgroundColor: activeCodeTheme.bg,
+              borderColor: activeCodeTheme.border,
+              boxShadow: `0 25px 50px -12px ${activeCodeTheme.border}50`,
+              ['--code-kw' as any]: activeCodeTheme.kw,
+              ['--code-str' as any]: activeCodeTheme.str,
+              ['--code-func' as any]: activeCodeTheme.func,
+              ['--code-type' as any]: activeCodeTheme.type,
+              ['--code-num' as any]: activeCodeTheme.num,
+              ['--code-comment' as any]: activeCodeTheme.comment,
+              ['--code-ann' as any]: activeCodeTheme.ann,
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* BARRA SUPERIOR DEL MODAL */}
+            <div
+              className="px-4 py-3 flex flex-wrap items-center justify-between gap-3 border-b shrink-0 transition-colors"
+              style={{
+                backgroundColor: activeCodeTheme.header,
+                borderColor: activeCodeTheme.border,
+              }}
+            >
+              {/* Izquierda: Info archivo + badge */}
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-1.5">
+                  <span className="w-3 h-3 rounded-full bg-red-500 inline-block" />
+                  <span className="w-3 h-3 rounded-full bg-yellow-500 inline-block" />
+                  <span className="w-3 h-3 rounded-full bg-green-500 inline-block" />
+                </div>
+                <span className="font-mono font-bold text-sm sm:text-base flex items-center gap-2" style={{ color: activeCodeTheme.txt }}>
+                  📄 {currentSlide.codeSnippet.filename}
+                </span>
+                <span
+                  className="uppercase text-[11px] px-2.5 py-0.5 rounded font-black tracking-wider text-white shadow-xs"
+                  style={{ backgroundColor: activeCodeTheme.accent || activeAccent }}
+                >
+                  {currentSlide.codeSnippet.lang}
+                </span>
+                <span className="text-xs font-medium opacity-60 hidden md:inline" style={{ color: activeCodeTheme.txt }}>
+                  • {currentSlide.codeSnippet.code.split('\n').length} líneas
+                </span>
+              </div>
+
+              {/* Derecha: Selector de tamaño fuente + Selector de Tema rápido + Copiar + Cerrar */}
+              <div className="flex items-center gap-2 flex-wrap">
+                {/* Zoom font size: A- / A+ */}
+                <div className="flex items-center rounded-lg border border-slate-700/60 bg-black/25 p-0.5 text-xs font-bold text-slate-200">
+                  <button
+                    type="button"
+                    onClick={() => setCodeModalFontSize(prev => Math.max(12, prev - 2))}
+                    className="px-2 py-1 hover:bg-white/10 rounded transition-all cursor-pointer"
+                    title="Reducir tamaño de fuente"
+                  >
+                    A-
+                  </button>
+                  <span className="px-2 font-mono text-[11px] opacity-75">{codeModalFontSize}px</span>
+                  <button
+                    type="button"
+                    onClick={() => setCodeModalFontSize(prev => Math.min(28, prev + 2))}
+                    className="px-2 py-1 hover:bg-white/10 rounded transition-all cursor-pointer"
+                    title="Aumentar tamaño de fuente"
+                  >
+                    A+
+                  </button>
+                </div>
+
+                {/* Selector rápido de tema de color */}
+                <div className="relative">
+                  <select
+                    value={codeThemeId}
+                    onChange={(e) => handleSelectCodeTheme(e.target.value)}
+                    className="px-2.5 py-1.5 rounded-lg text-xs font-bold border border-slate-700/60 bg-black/35 hover:bg-black/50 transition-all cursor-pointer focus:outline-none"
+                    style={{ color: activeCodeTheme.txt }}
+                    title="Cambiar paleta de colores del código"
+                  >
+                    {CODE_THEMES.map(th => (
+                      <option key={th.id} value={th.id} className="bg-slate-900 text-white">
+                        🎨 {th.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Copiar en modal */}
+                <button
+                  type="button"
+                  onClick={() => copyCode(currentSlide.codeSnippet!.code)}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold border flex items-center gap-1.5 transition-all cursor-pointer shadow-xs ${copiedCode
+                    ? 'bg-emerald-600 text-white border-emerald-500'
+                    : 'bg-white/10 hover:bg-white/20 border-white/20 text-slate-200 hover:text-white'
+                  }`}
+                  title="Copiar código al portapapeles"
+                >
+                  {copiedCode ? (
+                    <svg className="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
+                    </svg>
+                  ) : (
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                  )}
+                  <span>{copiedCode ? 'Copiado' : 'Copiar Código'}</span>
+                </button>
+
+                {/* Cerrar modal */}
+                <button
+                  type="button"
+                  onClick={() => setIsCodeModalOpen(false)}
+                  className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-rose-600 text-slate-200 hover:text-white transition-all text-xs font-bold cursor-pointer border border-white/10 flex items-center gap-1"
+                  title="Cerrar vista ampliada (Esc)"
+                >
+                  ✕ Cerrar
+                </button>
+              </div>
+            </div>
+
+            {/* ÁREA DE CÓDIGO */}
+            <pre
+              className="p-4 sm:p-6 m-0 flex-1 overflow-x-auto overflow-y-auto font-mono leading-relaxed custom-scrollbar"
+              style={{
+                fontSize: `${codeModalFontSize}px`,
+                backgroundColor: activeCodeTheme.bg,
+                color: activeCodeTheme.txt,
+              }}
+            >
+              <code>
+                {currentSlide.codeSnippet.code.split('\n').map((line: string, idx: number) => (
+                  <div key={idx} className="flex leading-relaxed hover:bg-white/5 px-1 rounded transition-colors">
+                    <span
+                      className="select-none pr-4 mr-4 text-right min-w-[2.2rem] border-r shrink-0 opacity-40 font-bold"
+                      style={{ borderColor: activeCodeTheme.border }}
+                    >
+                      {idx + 1}
+                    </span>
+                    <span
+                      className="whitespace-pre"
+                      dangerouslySetInnerHTML={{
+                        __html: highlightLine(line === '' ? ' ' : line, currentSlide.codeSnippet?.lang || 'python'),
+                      }}
+                    />
+                  </div>
+                ))}
+              </code>
+            </pre>
+
+            {/* EXPLICACIÓN INFERIOR SI EXISTE */}
+            {currentSlide.codeSnippet.explanation && (
+              <div
+                className="px-4 py-3 border-t flex items-center gap-2 text-xs sm:text-sm font-medium italic shrink-0"
+                style={{
+                  backgroundColor: activeCodeTheme.header,
+                  borderColor: activeCodeTheme.border,
+                  color: activeCodeTheme.txt,
+                }}
+              >
+                <span className="text-base not-italic">💬</span>
+                <span>{currentSlide.codeSnippet.explanation}</span>
+              </div>
+            )}
+          </div>
+        </div>
       )}
 
       {/* MODAL: VISTA DE DIAPOSITIVAS (OVERVIEW GRID) */}
@@ -1915,11 +2922,10 @@ export default function CourseSlideViewer({
                 key={slide.id}
                 type="button"
                 onClick={() => goToSlide(idx)}
-                className={`p-4 rounded-xl border text-left flex flex-col justify-between transition-all hover:scale-102 cursor-pointer ${
-                  idx === currentIndex
-                    ? 'bg-slate-800 border-amber-400 ring-2 ring-amber-400/50 shadow-xl'
-                    : 'bg-slate-900/80 border-slate-800 hover:border-slate-700 text-slate-300'
-                }`}
+                className={`p-4 rounded-xl border text-left flex flex-col justify-between transition-all hover:scale-102 cursor-pointer ${idx === currentIndex
+                  ? 'bg-slate-800 border-amber-400 ring-2 ring-amber-400/50 shadow-xl'
+                  : 'bg-slate-900/80 border-slate-800 hover:border-slate-700 text-slate-300'
+                  }`}
                 style={{ minHeight: '140px' }}
               >
                 <div>

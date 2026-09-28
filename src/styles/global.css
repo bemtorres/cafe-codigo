@@ -570,6 +570,16 @@ body[data-course="arch"] ::-webkit-scrollbar-thumb { background: #C5A059; border
 .hl-annotation, .hl-attr { color: #e06c75; }
 .hl-tag { color: #e06c75; }
 
+/* Soporte dinámico de temas de código (Python / Code Themes) */
+.code-themed-container .hl-kw { color: var(--code-kw, #c678dd) !important; font-weight: 700; }
+.code-themed-container .hl-str { color: var(--code-str, #98c379) !important; }
+.code-themed-container .hl-func, .code-themed-container .hl-func-call { color: var(--code-func, #61afef) !important; }
+.code-themed-container .hl-type { color: var(--code-type, #e5c07b) !important; }
+.code-themed-container .hl-num { color: var(--code-num, #d19a66) !important; }
+.code-themed-container .hl-comment { color: var(--code-comment, #7f8c8d) !important; font-style: italic; }
+.code-themed-container .hl-annotation, .code-themed-container .hl-attr { color: var(--code-ann, #e06c75) !important; }
+.code-themed-container .hl-tag { color: var(--code-ann, #e06c75) !important; }
+
 /* Custom Scrollbar elegante para presentaciones responsivas */
 .custom-scrollbar::-webkit-scrollbar {
   width: 6px;

@@ -1,7 +1,7 @@
 ---
 import Layout from './Layout.astro';
 
-type NavKey = 'dashboard' | 'users' | 'badges' | 'embed_courses' | 'embed_express';
+type NavKey = 'control' | 'dashboard' | 'users' | 'badges' | 'embed_courses' | 'embed_express' | 'embed_ppt';
 
 type Props = {
   title: string;
@@ -12,11 +12,13 @@ type Props = {
 const { title, description, current } = Astro.props;
 
 const items: { href: string; key: NavKey; label: string }[] = [
+  { href: '/admin/control', key: 'control', label: '🎛️ Centro de Control' },
   { href: '/admin/dashboard', key: 'dashboard', label: 'Panel' },
   { href: '/admin/users', key: 'users', label: 'Usuarios' },
   { href: '/admin/badges', key: 'badges', label: 'Insignias' },
   { href: '/admin/embed', key: 'embed_courses', label: 'Embed Cursos' },
   { href: '/admin/embed-challenges-express', key: 'embed_express', label: 'Embed Express ⚡' },
+  { href: '/admin/embed-ppt', key: 'embed_ppt', label: 'Embed PPT 📊' },
 ];
 ---
 
