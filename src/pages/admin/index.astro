@@ -1,21 +1,42 @@
 ---
-import AdminLayout from '../../layouts/AdminLayout.astro';
+import AdminShellLayout from '../../layouts/AdminShellLayout.astro';
 
 return Astro.redirect('/admin/control/');
 ---
 
-<AdminLayout title="Redireccionando al Centro de Control..." activeSection="control">
-  <div class="flex flex-col items-center justify-center min-h-[50vh] text-center p-6">
-    <div class="w-14 h-14 rounded-2xl bg-indigo-600/20 border-2 border-indigo-500/40 text-indigo-400 flex items-center justify-center text-3xl animate-pulse mb-4 shadow-xl">
-      ⚙️
+<AdminShellLayout title="Redireccionando al Centro de Control..." activeSection="control">
+  <div class="flex min-h-[50vh] flex-col items-center justify-center p-6 text-center">
+    <div
+      class="mb-4 flex size-14 items-center justify-center rounded-xl border border-zinc-200 bg-white text-indigo-500 shadow-sm"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="animate-pulse size-6"
+      >
+        <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z">
+        </path>
+        <circle cx="12" cy="12" r="3"></circle>
+      </svg>
     </div>
-    <h1 class="text-xl sm:text-2xl font-black text-white mb-2">Redireccionando al Centro de Control...</h1>
-    <p class="m-0 text-sm font-medium text-slate-400">
-      Si tu navegador no te redirige de inmediato, accede haciendo clic en{' '}
-      <a href="/admin/control/" class="font-bold text-sky-400 underline hover:text-sky-300">/admin/control/</a>.
+    <h1 class="mb-2 text-xl text-zinc-950 sm:text-2xl">
+      Redireccionando al Centro de Control...
+    </h1>
+    <p class="m-0 text-sm text-zinc-500">
+      Si tu navegador no te redirige de inmediato, accede haciendo clic en
+      <a href="/admin/control/" class="font-medium text-indigo-600 underline hover:text-indigo-700"
+        >/admin/control/</a
+      >.
     </p>
   </div>
   <script is:inline>
     if (typeof window !== 'undefined') window.location.replace('/admin/control/');
   </script>
-</AdminLayout>
+</AdminShellLayout>

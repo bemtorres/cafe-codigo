@@ -1,7 +1,8 @@
 ---
-import AdminLayout from '../../layouts/AdminLayout.astro';
+import AdminShellLayout from '../../layouts/AdminShellLayout.astro';
 import { courses } from '../../data/courses';
 import { SLIDE_TEMPLATES, TEMPLATE_LIST } from '../../data/slides/templates';
+import { Presentation } from '@lucide/astro';
 
 // Filtrar estrictamente solo los cursos que tienen activada la PPT
 // Un curso tiene PPT si tiene hasSlides: true o si alguna de sus lecciones tiene hasSlides: true
@@ -26,68 +27,60 @@ const pptCourses = courses
 const totalPptLessons = pptCourses.reduce((acc, c) => acc + c.lessons.length, 0);
 ---
 
-<AdminLayout
+<AdminShellLayout
   title="Admin · Embed Presentaciones (PPT / Slides)"
   description="Generador interactivo de URLs y etiquetas iframe para diapositivas con soporte de estilos y parámetros."
   activeSection="ppt"
 >
-  <article class="content-section admin-embed w-full max-w-7xl mx-auto min-w-0 pb-12">
+  <article class="admin-embed mx-auto w-full max-w-7xl min-w-0 pb-8">
     <!-- CABECERA -->
-    <header class="admin-embed-head mb-5">
-      <div class="flex items-center gap-2 mb-2 flex-wrap">
-        <a
-          href="/admin/control/"
-          class="text-xs font-bold text-slate-300 hover:text-white bg-slate-800/90 border border-slate-700 px-2 py-0.5 rounded-md transition-colors"
+    <header class="mb-5">
+      <div class="mb-2 flex flex-wrap items-center gap-2">
+        <span
+          class="rounded-full border border-indigo-200 bg-indigo-50 px-2.5 py-1 text-[11px] font-medium text-indigo-700"
         >
-          ← 🎛️ Centro de Control
-        </a>
-        <span class="text-slate-600">•</span>
-        <a
-          href="/admin/embed/"
-          class="text-xs font-bold text-sky-400 hover:text-sky-300 transition-colors"
-        >
-          Embed Cursos
-        </a>
-        <span class="text-slate-600">•</span>
-        <a
-          href="/admin/embed-challenges-express/"
-          class="text-xs font-bold text-amber-400 hover:text-amber-300 transition-colors"
-        >
-          ⚡ Desafíos Express
-        </a>
-        <span class="text-slate-600">•</span>
-        <span class="text-xs font-black uppercase text-indigo-300 bg-indigo-950/80 border border-indigo-700/60 px-2.5 py-0.5 rounded-md flex items-center gap-1 shadow-xs">
-          <span>📊</span>
-          <span>Presentaciones PPT Activas</span>
+          5 estilos visuales
         </span>
+        <span class="font-mono text-[11px] text-zinc-400">/admin/embed-ppt</span>
       </div>
 
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
-        <div>
-          <h1 class="!mb-1 !text-2xl sm:!text-3xl font-black text-white tracking-tight">
-            /admin/embed-ppt
+      <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+        <div class="min-w-0">
+          <h1 class="!mb-1 !text-2xl tracking-tight text-zinc-950 sm:!text-3xl">
+            Embed PPT / Slides
           </h1>
-          <p class="!mb-0 !text-xs sm:!text-sm text-slate-300 font-medium max-w-3xl leading-relaxed">
-            Generador exclusivo de URLs y etiquetas <code>&lt;iframe&gt;</code> para diapositivas y presentaciones interactivas.
-            Solo se listan los cursos que tienen activada la PPT (ejemplo: 
-            <a href="/course-slides/django/modelo-bd/" target="_blank" class="text-sky-400 underline font-mono hover:text-sky-300">
+          <p class="!mb-0 !text-xs leading-relaxed max-w-3xl !text-sm text-zinc-500">
+            Generador exclusivo de URLs y etiquetas <code>&lt;iframe&gt;</code> para diapositivas
+            y presentaciones interactivas. Solo se listan los cursos que tienen activada la PPT
+            (ejemplo:
+            <a
+              href="/course-slides/django/modelo-bd/"
+              target="_blank"
+              class="font-mono text-indigo-600 underline hover:text-indigo-700"
+            >
               Django · modelo-bd
             </a>).
           </p>
         </div>
 
-        <div class="flex items-center gap-2 shrink-0 bg-slate-800/90 border border-slate-700/80 px-3.5 py-2 rounded-xl">
+        <div
+          class="flex shrink-0 items-center gap-3 rounded-xl border border-zinc-200 bg-white px-3.5 py-2 shadow-sm"
+        >
           <div class="text-right">
-            <span class="text-[10px] font-black uppercase tracking-wider text-slate-400 block">Cursos con PPT</span>
-            <span class="text-lg font-black text-indigo-400 leading-none">{pptCourses.length} cursos ({totalPptLessons} lecciones)</span>
+            <span class="block text-[10px] font-semibold uppercase tracking-wider text-zinc-500">
+              Cursos con PPT
+            </span>
+            <span class="block text-lg font-semibold leading-none text-zinc-950"
+              >{pptCourses.length} cursos ({totalPptLessons} lecciones)</span
+            >
           </div>
-          <span class="text-2xl">📽️</span>
+          <Presentation class="size-5 text-indigo-500" />
         </div>
       </div>
     </header>
 
     <!-- FORMULARIO GENERADOR DE EMBED PPT -->
-    <div class="rounded-2xl border-2 border-slate-700/80 bg-slate-800/90 p-4 sm:p-6 shadow-xl space-y-5">
+    <div class="rounded-xl border border-zinc-200 bg-white p-4 sm:p-6 shadow-sm space-y-5">
       <!-- SELECTORES PRINCIPALES: CURSO, LECCIÓN, ESTILO, TEMA -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <!-- CURSO -->
@@ -139,21 +132,21 @@ const totalPptLessons = pptCourses.reduce((acc, c) => acc + c.lessons.length, 0)
           {TEMPLATE_LIST.map((tmpl) => (
             <button
               type="button"
-              class="ppt-style-card p-2.5 rounded-xl border text-left flex flex-col justify-between transition-all cursor-pointer bg-slate-900/60 border-slate-700/70 hover:border-indigo-400 hover:bg-slate-800/80"
+              class="ppt-style-card p-2.5 rounded-xl border text-left flex flex-col justify-between transition-all cursor-pointer bg-white border-zinc-200 hover:border-indigo-400 hover:bg-zinc-50"
               data-style-btn={tmpl.id}
             >
               <div class="flex items-center justify-between mb-1">
                 <span class="text-lg">{tmpl.icon}</span>
-                <span class="text-[9px] font-mono font-bold uppercase text-slate-400 bg-slate-800 px-1.5 py-0.5 rounded">
+                <span class="text-[9px] font-mono font-semibold uppercase text-zinc-500 bg-zinc-100 px-1.5 py-0.5 rounded">
                   {tmpl.id}
                 </span>
               </div>
-              <div class="font-extrabold text-xs text-white leading-tight">{tmpl.shortName}</div>
-              <div class="text-[10px] text-slate-400 line-clamp-1 mt-0.5">{tmpl.tagline}</div>
+              <div class="font-semibold text-xs text-zinc-900 leading-tight">{tmpl.shortName}</div>
+              <div class="text-[10px] text-zinc-500 line-clamp-1 mt-0.5">{tmpl.tagline}</div>
               <div class="flex items-center gap-1 mt-2">
                 {tmpl.palette.map((color) => (
                   <span
-                    class="w-2.5 h-2.5 rounded-full inline-block border border-black/40"
+                    class="w-2.5 h-2.5 rounded-full inline-block border border-zinc-200"
                     style={`background-color: ${color};`}
                   />
                 ))}
@@ -164,7 +157,7 @@ const totalPptLessons = pptCourses.reduce((acc, c) => acc + c.lessons.length, 0)
       </div>
 
       <!-- FLAGS Y OPCIONES DE VISUALIZACIÓN -->
-      <div class="pt-3 border-t border-slate-700/60 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div class="pt-3 border-t border-zinc-100 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <!-- BARRA INFERIOR (bar=) -->
         <label class="ppt-field">
           <span class="ppt-lbl">Barra de Navegación Inferior (bar=)</span>
@@ -191,15 +184,15 @@ const totalPptLessons = pptCourses.reduce((acc, c) => acc + c.lessons.length, 0)
         <div class="ppt-field">
           <span class="ppt-lbl">Flags de Interacción</span>
           <div class="flex flex-col gap-2 mt-1">
-            <label class="flex items-center gap-2 text-xs font-bold text-slate-200 cursor-pointer">
+            <label class="flex items-center gap-2 text-xs font-medium text-zinc-700 cursor-pointer">
               <input id="pptFlagEmbed" type="checkbox" class="ppt-cb" checked />
               <span>embed=true (Optimizar para iframe)</span>
             </label>
-            <label class="flex items-center gap-2 text-xs font-bold text-slate-200 cursor-pointer">
+            <label class="flex items-center gap-2 text-xs font-medium text-zinc-700 cursor-pointer">
               <input id="pptFlagQuiz" type="checkbox" class="ppt-cb" checked />
               <span>quiz=true (Mostrar evaluación 10 preguntas)</span>
             </label>
-            <label class="flex items-center gap-2 text-xs font-bold text-slate-200 cursor-pointer">
+            <label class="flex items-center gap-2 text-xs font-medium text-zinc-700 cursor-pointer">
               <input id="pptFlagMeta" type="checkbox" class="ppt-cb" />
               <span>metaquestions=true (Diapositiva Metacognitiva)</span>
             </label>
@@ -208,7 +201,7 @@ const totalPptLessons = pptCourses.reduce((acc, c) => acc + c.lessons.length, 0)
       </div>
 
       <!-- BRANDING INSTITUCIONAL Y ESTUDIANTE -->
-      <div class="pt-3 border-t border-slate-700/60">
+      <div class="pt-3 border-t border-zinc-100">
         <span class="ppt-lbl mb-2 block">Personalización Institucional y Estudiante (Opcional):</span>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           <label class="ppt-field">
@@ -231,8 +224,8 @@ const totalPptLessons = pptCourses.reduce((acc, c) => acc + c.lessons.length, 0)
       </div>
 
       <!-- PRESETS RÁPIDOS -->
-      <div class="flex flex-wrap items-center justify-between gap-2 pt-3 border-t border-slate-700/60">
-        <span class="text-xs font-black text-slate-400 uppercase tracking-wider">Presets de Configuración:</span>
+      <div class="flex flex-wrap items-center justify-between gap-2 pt-3 border-t border-zinc-100">
+        <span class="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Presets de Configuración:</span>
         <div class="flex flex-wrap gap-1.5">
           <button type="button" class="ppt-chip" data-preset="standard">✨ Estándar (Material)</button>
           <button type="button" class="ppt-chip" data-preset="apple">🍎 Apple Cupertino</button>
@@ -248,16 +241,16 @@ const totalPptLessons = pptCourses.reduce((acc, c) => acc + c.lessons.length, 0)
 
     <!-- RESULTADO: URL GENERADA E IFRAME -->
     <section class="mt-6 space-y-4">
-      <div class="bg-slate-800/90 border-2 border-slate-700/80 rounded-2xl p-4 sm:p-5 shadow-xl">
+      <div class="bg-white border border-zinc-200 rounded-xl p-4 sm:p-5 shadow-sm">
         <div class="flex items-center justify-between mb-2">
           <div class="flex items-center gap-2">
-            <span class="text-xs font-black uppercase text-indigo-400 tracking-wider">URL Generada</span>
-            <span class="text-[11px] font-mono text-slate-400">(Parámetro &style= incluido)</span>
+            <span class="text-xs font-semibold uppercase text-indigo-600 tracking-wider">URL Generada</span>
+            <span class="text-[11px] font-mono text-zinc-400">(Parámetro &style= incluido)</span>
           </div>
           <button
             id="btnCopyUrl"
             type="button"
-            class="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-black rounded-lg transition-all cursor-pointer shadow-sm active:scale-95"
+            class="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold rounded-lg transition-all cursor-pointer shadow-sm active:scale-95"
           >
             📋 Copiar URL
           </button>
@@ -274,7 +267,7 @@ const totalPptLessons = pptCourses.reduce((acc, c) => acc + c.lessons.length, 0)
             href="#"
             target="_blank"
             rel="noopener noreferrer"
-            class="px-4 py-3 bg-slate-700 hover:bg-slate-600 text-white font-extrabold text-xs sm:text-sm rounded-xl shadow-xs shrink-0 flex items-center gap-1.5 transition-all"
+            class="px-4 py-3 bg-zinc-100 hover:bg-zinc-200 text-zinc-800 font-semibold text-xs sm:text-sm rounded-lg shrink-0 flex items-center gap-1.5 transition-all"
             title="Abrir presentación en nueva pestaña"
           >
             <span>Probar</span>
@@ -284,13 +277,13 @@ const totalPptLessons = pptCourses.reduce((acc, c) => acc + c.lessons.length, 0)
       </div>
 
       <!-- CÓDIGO IFRAME EMBED -->
-      <div class="bg-slate-800/90 border-2 border-slate-700/80 rounded-2xl p-4 sm:p-5 shadow-xl">
+      <div class="bg-white border border-zinc-200 rounded-xl p-4 sm:p-5 shadow-sm">
         <div class="flex items-center justify-between mb-2">
-          <span class="text-xs font-black uppercase text-slate-400 tracking-wider">Código de Inserción &lt;iframe&gt;</span>
+          <span class="text-xs font-semibold uppercase text-zinc-500 tracking-wider">Código de Inserción &lt;iframe&gt;</span>
           <button
             id="btnCopyIframe"
             type="button"
-            class="px-3.5 py-1.5 bg-sky-600 hover:bg-sky-500 text-white text-xs font-black rounded-lg transition-all cursor-pointer shadow-sm active:scale-95"
+            class="px-3.5 py-1.5 bg-sky-600 hover:bg-sky-500 text-white text-xs font-semibold rounded-lg transition-all cursor-pointer shadow-sm active:scale-95"
           >
             📋 Copiar Iframe
           </button>
@@ -305,31 +298,31 @@ const totalPptLessons = pptCourses.reduce((acc, c) => acc + c.lessons.length, 0)
       </div>
 
       <!-- VISTA PREVIA INTERACTIVA -->
-      <div class="bg-slate-800/90 border-2 border-slate-700/80 rounded-2xl p-4 sm:p-5 shadow-xl">
+      <div class="bg-white border border-zinc-200 rounded-xl p-4 sm:p-5 shadow-sm">
         <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
           <div class="flex items-center gap-2">
-            <span class="text-xs font-black uppercase text-amber-400 tracking-wider">Vista Previa Interactiva en Vivo</span>
-            <span class="text-[10px] text-slate-400 font-medium">(Iframe embebido)</span>
+            <span class="text-xs font-semibold uppercase text-amber-600 tracking-wider">Vista Previa Interactiva en Vivo</span>
+            <span class="text-[10px] text-zinc-500 font-medium">(Iframe embebido)</span>
           </div>
           <div class="flex items-center gap-2">
             <button
               id="btnReloadPreview"
               type="button"
-              class="px-3 py-1 bg-slate-700 hover:bg-slate-600 text-slate-200 text-xs font-bold rounded-lg transition-all cursor-pointer"
+              class="px-3 py-1 bg-zinc-100 hover:bg-zinc-200 text-zinc-700 text-xs font-medium rounded-lg transition-all cursor-pointer"
             >
               🔄 Recargar Vista Previa
             </button>
             <button
               id="btnTogglePreview"
               type="button"
-              class="px-3 py-1 bg-slate-700 hover:bg-slate-600 text-slate-200 text-xs font-bold rounded-lg transition-all cursor-pointer"
+              class="px-3 py-1 bg-zinc-100 hover:bg-zinc-200 text-zinc-700 text-xs font-medium rounded-lg transition-all cursor-pointer"
             >
               👁️ Ocultar Preview
             </button>
           </div>
         </div>
 
-        <div id="previewContainer" class="rounded-xl overflow-hidden border border-slate-700 bg-black aspect-[16/9] max-h-[640px] w-full">
+        <div id="previewContainer" class="rounded-xl overflow-hidden border border-zinc-200 bg-black aspect-[16/9] max-h-[640px] w-full">
           <iframe
             id="previewIframe"
             src="about:blank"
@@ -345,13 +338,13 @@ const totalPptLessons = pptCourses.reduce((acc, c) => acc + c.lessons.length, 0)
     <section class="mt-8">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
         <div>
-          <h2 class="text-base sm:text-lg font-black text-white m-0 flex items-center gap-2">
+          <h2 class="text-base sm:text-lg text-zinc-950 m-0 flex items-center gap-2">
             <span>📚 Cursos y Lecciones con PPT Habilitada</span>
-            <span class="text-xs font-mono px-2 py-0.5 rounded-full bg-indigo-900/60 text-indigo-300 border border-indigo-700/50">
+            <span class="text-xs font-mono px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-600 border border-indigo-200">
               {totalPptLessons} disponibles
             </span>
           </h2>
-          <p class="text-xs text-slate-400 m-0 mt-0.5">
+          <p class="text-xs text-zinc-500 m-0 mt-0.5">
             Solo aparecen lecciones con diapositivas oficiales. Haz clic en cualquier botón para cargar la lección en el generador.
           </p>
         </div>
@@ -364,10 +357,10 @@ const totalPptLessons = pptCourses.reduce((acc, c) => acc + c.lessons.length, 0)
         />
       </div>
 
-      <div class="overflow-x-auto rounded-2xl border-2 border-slate-700/80 bg-slate-800/90 shadow-xl">
+      <div class="overflow-x-auto rounded-xl border border-zinc-200 bg-white shadow-sm">
         <table class="w-full text-left border-collapse text-xs sm:text-sm">
           <thead>
-            <tr class="bg-slate-900/90 border-b border-slate-700 text-slate-400 text-[11px] font-black uppercase tracking-wider">
+            <tr class="bg-zinc-50 border-b border-zinc-200 text-zinc-500 text-[11px] font-semibold uppercase tracking-wider">
               <th class="p-3.5">Curso</th>
               <th class="p-3.5">Lección</th>
               <th class="p-3.5">Slug PPT</th>
@@ -375,36 +368,36 @@ const totalPptLessons = pptCourses.reduce((acc, c) => acc + c.lessons.length, 0)
               <th class="p-3.5 text-right">Acciones</th>
             </tr>
           </thead>
-          <tbody id="pptTableBody" class="divide-y divide-slate-700/60">
+          <tbody id="pptTableBody" class="divide-y divide-zinc-100">
             {pptCourses.map((c) =>
               c.lessons.map((l) => (
                 <tr
-                  class="hover:bg-slate-700/40 transition-colors ppt-table-row"
+                  class="hover:bg-zinc-50 transition-colors ppt-table-row"
                   data-course-slug={c.slug}
                   data-lesson-slug={l.slug}
                   data-search-text={`${c.name} ${l.title} ${l.slug}`.toLowerCase()}
                 >
                   <td class="p-3.5 align-middle">
                     <span
-                      class="px-2.5 py-1 rounded-md text-[11px] font-black uppercase text-white shadow-xs inline-block"
+                      class="px-2.5 py-1 rounded-md text-[11px] font-semibold uppercase text-white inline-block"
                       style={`background-color: ${c.color};`}
                     >
                       {c.name}
                     </span>
                   </td>
-                  <td class="p-3.5 font-bold text-white align-middle">
+                  <td class="p-3.5 font-medium text-zinc-900 align-middle">
                     {l.title}
                   </td>
-                  <td class="p-3.5 font-mono text-slate-400 text-xs align-middle">
-                    <code class="bg-slate-900 px-2 py-0.5 rounded border border-slate-700 text-indigo-300">
+                  <td class="p-3.5 font-mono text-zinc-500 text-xs align-middle">
+                    <code class="bg-zinc-100 px-2 py-0.5 rounded border border-zinc-200 text-indigo-600">
                       {l.slug}
                     </code>
                   </td>
-                  <td class="p-3.5 font-mono text-xs text-slate-300 align-middle">
+                  <td class="p-3.5 font-mono text-xs text-zinc-500 align-middle">
                     <a
                       href={`/course-slides/${c.slug}/${l.slug}/`}
                       target="_blank"
-                      class="text-sky-400 hover:underline hover:text-sky-300"
+                      class="text-sky-600 hover:underline hover:text-sky-700"
                     >
                       /course-slides/{c.slug}/{l.slug}/
                     </a>
@@ -413,7 +406,7 @@ const totalPptLessons = pptCourses.reduce((acc, c) => acc + c.lessons.length, 0)
                     <div class="flex items-center justify-end gap-1.5">
                       <button
                         type="button"
-                        class="px-2.5 py-1 rounded-lg bg-indigo-600/80 hover:bg-indigo-500 text-white font-bold text-xs transition-all cursor-pointer btn-select-ppt"
+                        class="px-2.5 py-1 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-xs transition-all cursor-pointer btn-select-ppt"
                         data-cslug={c.slug}
                         data-lslug={l.slug}
                       >
@@ -423,7 +416,7 @@ const totalPptLessons = pptCourses.reduce((acc, c) => acc + c.lessons.length, 0)
                         href={`/course-slides/${c.slug}/${l.slug}/`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        class="p-1 rounded-lg bg-slate-700 hover:bg-slate-600 text-slate-200 text-xs font-bold"
+                        class="p-1 rounded-md bg-zinc-100 hover:bg-zinc-200 text-zinc-700 text-xs font-medium"
                         title="Abrir directamente"
                       >
                         ↗
@@ -510,11 +503,11 @@ const totalPptLessons = pptCourses.reduce((acc, c) => acc + c.lessons.length, 0)
           document.querySelectorAll('[data-style-btn]').forEach((btn) => {
             const sId = btn.getAttribute('data-style-btn');
             if (sId === activeStyleId) {
-              btn.classList.add('ring-2', 'ring-indigo-400', 'bg-indigo-950/60', 'border-indigo-500');
-              btn.classList.remove('bg-slate-900/60', 'border-slate-700/70');
+              btn.classList.add('ring-2', 'ring-indigo-400', 'bg-indigo-50', 'border-indigo-500');
+              btn.classList.remove('bg-white', 'border-zinc-200');
             } else {
-              btn.classList.remove('ring-2', 'ring-indigo-400', 'bg-indigo-950/60', 'border-indigo-500');
-              btn.classList.add('bg-slate-900/60', 'border-slate-700/70');
+              btn.classList.remove('ring-2', 'ring-indigo-400', 'bg-indigo-50', 'border-indigo-500');
+              btn.classList.add('bg-white', 'border-zinc-200');
             }
           });
         }
@@ -749,59 +742,61 @@ const totalPptLessons = pptCourses.reduce((acc, c) => acc + c.lessons.length, 0)
     .ppt-lbl {
       display: block;
       font-size: 0.68rem;
-      font-weight: 800;
+      font-weight: 700;
       letter-spacing: 0.05em;
       text-transform: uppercase;
-      color: #94a3b8;
+      color: #71717a;
       margin-bottom: 0.3rem;
     }
     .ppt-input,
     select.ppt-input {
       width: 100%;
-      border-radius: 0.65rem;
-      border: 2px solid #334155;
-      background: #0f172a;
-      padding: 0.45rem 0.65rem;
+      border-radius: 0.375rem;
+      border: 1px solid #e4e4e7;
+      background: #fff;
+      padding: 0.4rem 0.6rem;
       font-size: 0.78rem;
-      font-weight: 700;
+      font-weight: 500;
       font-family: inherit;
-      color: #f8fafc;
+      color: #18181b;
       outline: none;
-      transition: all 0.2s;
+      transition: border-color 0.15s, box-shadow 0.15s;
     }
     .ppt-input:focus,
     select.ppt-input:focus {
-      border-color: #6366f1;
-      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+      border-color: #a1a1aa;
+      box-shadow: 0 0 0 2px rgba(24, 24, 27, 0.08);
     }
     .ppt-cb {
       width: 1rem;
       height: 1rem;
-      border-radius: 0.3rem;
-      border: 2px solid #475569;
-      background: #0f172a;
-      accent-color: #6366f1;
+      border-radius: 0.25rem;
+      border: 1px solid #d4d4d8;
+      background: #fff;
+      accent-color: #18181b;
       cursor: pointer;
     }
     .ppt-chip {
       font-size: 0.68rem;
-      font-weight: 800;
-      padding: 0.25rem 0.6rem;
-      border-radius: 0.55rem;
-      background: #1e293b;
-      border: 1px solid #334155;
-      color: #cbd5e1;
+      font-weight: 600;
+      padding: 0.3rem 0.6rem;
+      border-radius: 0.375rem;
+      background: #fafafa;
+      border: 1px solid #e4e4e7;
+      color: #3f3f46;
       cursor: pointer;
       transition: all 0.15s;
     }
     .ppt-chip:hover {
-      background: #334155;
-      color: #ffffff;
-      border-color: #6366f1;
-      transform: translateY(-1px);
+      background: #f4f4f5;
+      border-color: #d4d4d8;
+      color: #18181b;
     }
     .ppt-chip:active {
       transform: translateY(0);
     }
+    .ppt-field .ppt-input::placeholder {
+      color: #a1a1aa;
+    }
   </style>
-</AdminLayout>
+</AdminShellLayout>

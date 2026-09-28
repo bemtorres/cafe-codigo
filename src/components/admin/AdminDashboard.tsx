@@ -20,12 +20,12 @@ function StatCard({
   hint?: string;
 }) {
   return (
-    <div className="rounded-2xl border-[3px] border-border bg-white p-5 shadow-neo">
-      <p className="m-0 text-[10px] font-black uppercase tracking-widest text-textMuted">{label}</p>
-      <p className="mt-2 mb-0 font-nunito text-3xl font-black text-textPrimary tabular-nums">
+    <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm">
+      <p className="m-0 text-[10px] font-semibold uppercase tracking-widest text-zinc-500">{label}</p>
+      <p className="mt-2 mb-0 font-nunito text-3xl font-semibold text-zinc-950 tabular-nums">
         {value === null ? '—' : value.toLocaleString('es')}
       </p>
-      {hint ? <p className="mb-0 mt-1 text-xs font-[650] text-textSecondary">{hint}</p> : null}
+      {hint ? <p className="mb-0 mt-1 text-xs font-[650] text-zinc-600">{hint}</p> : null}
     </div>
   );
 }
@@ -95,8 +95,8 @@ function AdminDashboardContent() {
   return (
     <div className="space-y-8">
       <header>
-        <h1 className="mb-2 text-2xl font-black text-textPrimary">Panel · Super admin</h1>
-        <p className="m-0 text-sm font-[650] text-textSecondary">
+        <h1 className="mb-2 text-2xl font-semibold text-zinc-950">Panel · Super admin</h1>
+        <p className="m-0 text-sm font-[650] text-zinc-600">
           Resumen de la plataforma. Las cifras requieren la migración SQL{' '}
           <code className="rounded bg-black/5 px-1">20260501_04_super_admin_scope.sql</code> aplicada en Supabase.
         </p>
@@ -113,13 +113,13 @@ function AdminDashboardContent() {
           type="button"
           onClick={() => void load()}
           disabled={loading}
-          className="rounded-xl border-[3px] border-border bg-white px-4 py-2 text-xs font-black shadow-neo hover:bg-gray-50 disabled:opacity-50"
+          className="rounded-xl border border-zinc-200 bg-white px-4 py-2 text-xs font-semibold shadow-sm hover:bg-gray-50 disabled:opacity-50"
         >
           {loading ? 'Actualizando…' : 'Actualizar datos'}
         </button>
         <a
           href="/admin/embed"
-          className="rounded-xl border-[3px] border-border bg-primary/20 px-4 py-2 text-xs font-black text-textPrimary no-underline shadow-neo hover:bg-primary/30"
+          className="rounded-xl border border-zinc-200 bg-zinc-100 px-4 py-2 text-xs font-semibold text-zinc-950 no-underline shadow-sm hover:bg-zinc-200"
         >
           Generador embed
         </a>
@@ -133,16 +133,16 @@ function AdminDashboardContent() {
         <StatCard label="Filas de progreso quiz" value={counts.quizProgressRows} hint="Intentos / lecciones registradas" />
       </div>
 
-      <section className="rounded-2xl border-[3px] border-border bg-white p-6 shadow-neo">
-        <h2 className="mt-0 text-lg font-black text-textPrimary">Accesos rápidos</h2>
-        <ul className="m-0 list-none space-y-2 p-0 text-sm font-[650] text-textSecondary">
+      <section className="rounded-xl border border-zinc-200 bg-white p-6 shadow-sm">
+        <h2 className="mt-0 text-lg font-semibold text-zinc-950">Accesos rápidos</h2>
+        <ul className="m-0 list-none space-y-2 p-0 text-sm font-[650] text-zinc-600">
           <li>
-            <a href="/admin/users" className="font-black text-[#b45309] underline-offset-2 hover:underline">
+            <a href="/admin/users" className="font-semibold text-[#b45309] underline-offset-2 hover:underline">
               Gestionar usuarios y roles
             </a>
           </li>
           <li>
-            <a href="/admin/badges" className="font-black text-[#b45309] underline-offset-2 hover:underline">
+            <a href="/admin/badges" className="font-semibold text-[#b45309] underline-offset-2 hover:underline">
               Insignias y diseñador SVG
             </a>
           </li>

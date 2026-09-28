@@ -213,9 +213,9 @@ function AdminBadgesPanel({ initialCourses }: { initialCourses: AdminCourseLite[
 
   return (
     <article className="admin-badges w-full max-w-full min-w-0 font-nunito">
-      <div id="badgeMessage" className="mb-4 hidden rounded-lg border-2 border-gray-900 p-4 text-sm font-bold" role="alert" />
+      <div id="badgeMessage" className="mb-4 hidden rounded-lg border border-zinc-200 p-4 text-sm font-bold" role="alert" />
 
-      <section className="mb-8 rounded-lg border-2 border-gray-900 bg-white p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+      <section className="mb-8 rounded-lg border border-zinc-200 bg-white p-6 shadow-sm">
         <h2 className="mb-4 border-b border-gray-900 pb-2 text-lg font-bold">Diseñador de insignia (SVG)</h2>
         <p className="mb-4 text-xs font-[650] text-gray-600">
           Generá un SVG con el estilo de la plataforma y usalo como imagen (se guarda como URL de datos en la base). También
@@ -229,7 +229,7 @@ function AdminBadgesPanel({ initialCourses }: { initialCourses: AdminCourseLite[
                 <input
                   value={designLine1}
                   onChange={(e) => setDesignLine1(e.target.value)}
-                  className="w-full rounded-lg border-2 border-gray-900 bg-white px-3 py-2 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                  className="w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-zinc-900/20"
                   maxLength={18}
                 />
               </div>
@@ -238,7 +238,7 @@ function AdminBadgesPanel({ initialCourses }: { initialCourses: AdminCourseLite[
                 <input
                   value={designLine2}
                   onChange={(e) => setDesignLine2(e.target.value)}
-                  className="w-full rounded-lg border-2 border-gray-900 bg-white px-3 py-2 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                  className="w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-zinc-900/20"
                   maxLength={18}
                 />
               </div>
@@ -258,7 +258,7 @@ function AdminBadgesPanel({ initialCourses }: { initialCourses: AdminCourseLite[
                     type="color"
                     value={val}
                     onChange={(e) => setVal(e.target.value)}
-                    className="h-10 w-full cursor-pointer rounded border-2 border-gray-900 bg-white"
+                    className="h-10 w-full cursor-pointer rounded border border-zinc-200 bg-white"
                   />
                 </label>
               ))}
@@ -267,14 +267,14 @@ function AdminBadgesPanel({ initialCourses }: { initialCourses: AdminCourseLite[
               <button
                 type="button"
                 onClick={applyDesignerToUrl}
-                className="rounded-lg border-2 border-gray-900 bg-yellow-400 px-4 py-2 text-xs font-bold shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all hover:bg-yellow-500"
+                className="rounded-lg border border-zinc-200 bg-yellow-400 px-4 py-2 text-xs font-bold shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all hover:bg-yellow-500"
               >
                 Aplicar al campo imagen
               </button>
               <button
                 type="button"
                 onClick={downloadDesignerSvg}
-                className="rounded-lg border-2 border-gray-900 bg-gray-200 px-4 py-2 text-xs font-bold shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all hover:bg-gray-300"
+                className="rounded-lg border border-zinc-200 bg-gray-200 px-4 py-2 text-xs font-bold shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all hover:bg-gray-300"
               >
                 Descargar .svg
               </button>
@@ -287,7 +287,7 @@ function AdminBadgesPanel({ initialCourses }: { initialCourses: AdminCourseLite[
         </div>
       </section>
 
-      <section className="mb-8 rounded-lg border-2 border-gray-900 bg-white p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+      <section className="mb-8 rounded-lg border border-zinc-200 bg-white p-6 shadow-sm">
         <h2 className="mb-4 border-b border-gray-900 pb-2 text-lg font-bold">Nueva insignia</h2>
         <form onSubmit={onSubmit} className="space-y-4">
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -302,7 +302,7 @@ function AdminBadgesPanel({ initialCourses }: { initialCourses: AdminCourseLite[
                 required
                 pattern="^[a-z0-9-]+$"
                 placeholder="ej: fullstack-web"
-                className="w-full rounded-lg border-2 border-gray-900 bg-white px-3 py-2 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                className="w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-zinc-900/20"
               />
               <p className="mt-1 text-[10px] text-gray-500">Solo minúsculas, números y guiones</p>
             </div>
@@ -316,7 +316,7 @@ function AdminBadgesPanel({ initialCourses }: { initialCourses: AdminCourseLite[
                 onChange={(e) => setName(e.target.value)}
                 required
                 placeholder="ej: Fullstack Web Developer"
-                className="w-full rounded-lg border-2 border-gray-900 bg-white px-3 py-2 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                className="w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-zinc-900/20"
               />
             </div>
           </div>
@@ -331,7 +331,7 @@ function AdminBadgesPanel({ initialCourses }: { initialCourses: AdminCourseLite[
               rows={2}
               required
               placeholder="Describe qué logra el usuario al obtener esta insignia..."
-              className="w-full resize-none rounded-lg border-2 border-gray-900 bg-white px-3 py-2 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-yellow-400"
+              className="w-full resize-none rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-zinc-900/20"
             />
           </div>
           <div>
@@ -344,7 +344,7 @@ function AdminBadgesPanel({ initialCourses }: { initialCourses: AdminCourseLite[
               onChange={(e) => setImageUrl(e.target.value)}
               required
               placeholder="/badges/fullstack-web.svg o SVG embebido desde el diseñador"
-              className="w-full rounded-lg border-2 border-gray-900 bg-white px-3 py-2 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-yellow-400"
+              className="w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-zinc-900/20"
             />
             {imageUrl ? (
               <div className="mt-2">
@@ -374,7 +374,7 @@ function AdminBadgesPanel({ initialCourses }: { initialCourses: AdminCourseLite[
                     type="checkbox"
                     checked={selectedCourses.has(course.slug)}
                     onChange={() => toggleCourse(course.slug)}
-                    className="h-4 w-4 rounded border-gray-300 text-yellow-500 focus:ring-yellow-400"
+                    className="h-4 w-4 rounded border-gray-300 text-yellow-500 focus:ring-zinc-900/20"
                   />
                   <span className="text-xs font-bold">{course.name}</span>
                 </label>
@@ -405,7 +405,7 @@ function AdminBadgesPanel({ initialCourses }: { initialCourses: AdminCourseLite[
                               type="checkbox"
                               checked={selectedModules.has(key)}
                               onChange={() => toggleModule(key)}
-                              className="h-3 w-3 rounded border-gray-300 text-yellow-500 focus:ring-yellow-400"
+                              className="h-3 w-3 rounded border-gray-300 text-yellow-500 focus:ring-zinc-900/20"
                             />
                             <span className="text-[11px]">{lesson.title}</span>
                           </label>
@@ -421,7 +421,7 @@ function AdminBadgesPanel({ initialCourses }: { initialCourses: AdminCourseLite[
           <div className="flex gap-3 border-t border-gray-200 pt-2">
             <button
               type="submit"
-              className="rounded-lg border-2 border-gray-900 bg-yellow-400 px-6 py-2 text-sm font-bold shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all hover:bg-yellow-500"
+              className="rounded-lg border border-zinc-200 bg-yellow-400 px-6 py-2 text-sm font-bold shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all hover:bg-yellow-500"
             >
               Crear insignia
             </button>
@@ -435,7 +435,7 @@ function AdminBadgesPanel({ initialCourses }: { initialCourses: AdminCourseLite[
                 setSelectedCourses(new Set());
                 setSelectedModules(new Set());
               }}
-              className="rounded-lg border-2 border-gray-900 bg-gray-200 px-6 py-2 text-sm font-bold shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all hover:bg-gray-300"
+              className="rounded-lg border border-zinc-200 bg-gray-200 px-6 py-2 text-sm font-bold shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all hover:bg-gray-300"
             >
               Limpiar
             </button>
@@ -443,13 +443,13 @@ function AdminBadgesPanel({ initialCourses }: { initialCourses: AdminCourseLite[
         </form>
       </section>
 
-      <section className="rounded-lg border-2 border-gray-900 bg-white p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+      <section className="rounded-lg border border-zinc-200 bg-white p-6 shadow-sm">
         <div className="mb-4 flex items-center justify-between border-b border-gray-900 pb-2">
           <h2 className="text-lg font-bold">Insignias existentes</h2>
           <button
             type="button"
             onClick={() => void loadBadges()}
-            className="rounded-lg border-2 border-gray-900 bg-gray-100 px-4 py-1.5 text-xs font-bold transition-all hover:bg-gray-200"
+            className="rounded-lg border border-zinc-200 bg-gray-100 px-4 py-1.5 text-xs font-bold transition-all hover:bg-gray-200"
           >
             Actualizar
           </button>
@@ -465,7 +465,7 @@ function AdminBadgesPanel({ initialCourses }: { initialCourses: AdminCourseLite[
             {badges.map((badge) => (
               <div
                 key={badge.code}
-                className={`rounded-lg border-2 border-gray-900 bg-gray-50 p-4 ${!badge.is_active ? 'opacity-50' : ''}`}
+                className={`rounded-lg border border-zinc-200 bg-gray-50 p-4 ${!badge.is_active ? 'opacity-50' : ''}`}
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex min-w-0 flex-1 items-start gap-3">
@@ -496,7 +496,7 @@ function AdminBadgesPanel({ initialCourses }: { initialCourses: AdminCourseLite[
                   <button
                     type="button"
                     onClick={() => void toggleBadgeActive(badge.code, badge.is_active)}
-                    className="flex-shrink-0 rounded border-2 border-gray-900 px-3 py-1 text-xs font-bold transition-all hover:bg-gray-200"
+                    className="flex-shrink-0 rounded border border-zinc-200 px-3 py-1 text-xs font-bold transition-all hover:bg-gray-200"
                   >
                     {badge.is_active ? 'Desactivar' : 'Activar'}
                   </button>

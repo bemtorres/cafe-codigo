@@ -1,5 +1,5 @@
 ---
-import AdminSuperLayout from '../../layouts/AdminSuperLayout.astro';
+import AdminShellLayout from '../../layouts/AdminShellLayout.astro';
 import AdminBadgesManager from '../../components/admin/AdminBadgesManager';
 import { courses } from '../../data/courses';
 
@@ -12,13 +12,15 @@ const coursesData = courses
   }));
 ---
 
-<AdminSuperLayout title="Admin · Insignias" description="Insignias y diseñador SVG" current="badges">
-  <header class="mb-6">
-    <h1 class="mb-2 text-2xl font-black">Insignias</h1>
-    <p class="m-0 text-sm text-gray-600">
-      Crear definiciones, requisitos por curso/módulo y diseño SVG. Solo <strong>super admin</strong>.
-    </p>
-  </header>
+<AdminShellLayout title="Admin · Insignias" description="Insignias y diseñador SVG" activeSection="badges">
+  <div class="mx-auto w-full max-w-7xl pb-8">
+    <header class="mb-6">
+      <h1 class="mb-2 text-2xl text-zinc-950">Insignias</h1>
+      <p class="m-0 text-sm text-zinc-500">
+        Crear definiciones, requisitos por curso/módulo y diseño SVG. Solo <strong>super admin</strong>.
+      </p>
+    </header>
 
-  <AdminBadgesManager client:load initialCourses={coursesData} />
-</AdminSuperLayout>
+    <AdminBadgesManager client:load initialCourses={coursesData} />
+  </div>
+</AdminShellLayout>

@@ -124,8 +124,8 @@ function AdminUsersContent() {
   return (
     <div className="space-y-6">
       <header>
-        <h1 className="mb-2 text-2xl font-black text-textPrimary">Usuarios · Super admin</h1>
-        <p className="m-0 text-sm font-[650] text-textSecondary">
+        <h1 className="mb-2 text-2xl font-semibold text-zinc-950">Usuarios · Super admin</h1>
+        <p className="m-0 text-sm font-[650] text-zinc-600">
           Listado de <code className="rounded bg-black/5 px-1">profiles</code>. Los cambios aplican políticas RLS (
           <code className="rounded bg-black/5 px-1">20260501_04_super_admin_scope.sql</code>).
         </p>
@@ -139,7 +139,7 @@ function AdminUsersContent() {
 
       <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end">
         <label className="block min-w-[200px] flex-1">
-          <span className="mb-1 block text-[10px] font-black uppercase text-textMuted">Buscar por nombre</span>
+          <span className="mb-1 block text-[10px] font-semibold uppercase text-zinc-500">Buscar por nombre</span>
           <input
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
@@ -147,7 +147,7 @@ function AdminUsersContent() {
               if (e.key === 'Enter') runSearch();
             }}
             placeholder="Mínimo 2 caracteres · Enter o botón"
-            className="w-full rounded-xl border-[3px] border-border bg-white px-3 py-2 text-sm font-bold"
+            className="w-full rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm font-bold"
           />
         </label>
         <div className="flex gap-2">
@@ -155,14 +155,14 @@ function AdminUsersContent() {
             type="button"
             onClick={() => runSearch()}
             disabled={loading}
-            className="rounded-xl border-[3px] border-border bg-[#fde68a] px-4 py-2 text-xs font-black shadow-neo hover:bg-[#fcd34d] disabled:opacity-50"
+            className="rounded-xl border border-zinc-200 bg-zinc-900 text-white px-4 py-2 text-xs font-semibold shadow-sm hover:bg-zinc-800 disabled:opacity-50"
           >
             Buscar / refrescar
           </button>
         </div>
       </div>
 
-      <div className="flex items-center justify-between text-xs font-bold text-textMuted">
+      <div className="flex items-center justify-between text-xs font-bold text-zinc-500">
         <span>
           Página {page + 1} · hasta {PAGE_SIZE} filas
         </span>
@@ -171,7 +171,7 @@ function AdminUsersContent() {
             type="button"
             disabled={page === 0 || loading}
             onClick={() => setPage((p) => Math.max(0, p - 1))}
-            className="rounded-lg border-2 border-border bg-white px-3 py-1 disabled:opacity-40"
+            className="rounded-lg border border-zinc-200 bg-white px-3 py-1 disabled:opacity-40"
           >
             Anterior
           </button>
@@ -179,40 +179,40 @@ function AdminUsersContent() {
             type="button"
             disabled={rows.length < PAGE_SIZE || loading}
             onClick={() => setPage((p) => p + 1)}
-            className="rounded-lg border-2 border-border bg-white px-3 py-1 disabled:opacity-40"
+            className="rounded-lg border border-zinc-200 bg-white px-3 py-1 disabled:opacity-40"
           >
             Siguiente
           </button>
         </div>
       </div>
 
-      <div className="overflow-x-auto rounded-2xl border-[3px] border-border bg-white shadow-neo">
+      <div className="overflow-x-auto rounded-xl border border-zinc-200 bg-white shadow-sm">
         {loading ? (
-          <p className="p-8 text-center font-bold text-textMuted">Cargando…</p>
+          <p className="p-8 text-center font-bold text-zinc-500">Cargando…</p>
         ) : rows.length === 0 ? (
-          <p className="p-8 text-center font-bold text-textMuted">No hay resultados</p>
+          <p className="p-8 text-center font-bold text-zinc-500">No hay resultados</p>
         ) : (
           <table className="w-full min-w-[720px] border-collapse text-left text-sm">
             <thead>
-              <tr className="border-b-2 border-border bg-gray-50">
-                <th className="p-3 font-black">Nombre</th>
-                <th className="p-3 font-black">ID</th>
-                <th className="p-3 font-black text-center">Academy</th>
-                <th className="p-3 font-black text-center">Super</th>
-                <th className="p-3 font-black text-center">Sponsor</th>
-                <th className="p-3 font-black">Puntos</th>
-                <th className="p-3 font-black" />
+              <tr className="border-b border-zinc-200 bg-gray-50">
+                <th className="p-3 font-semibold">Nombre</th>
+                <th className="p-3 font-semibold">ID</th>
+                <th className="p-3 font-semibold text-center">Academy</th>
+                <th className="p-3 font-semibold text-center">Super</th>
+                <th className="p-3 font-semibold text-center">Sponsor</th>
+                <th className="p-3 font-semibold">Puntos</th>
+                <th className="p-3 font-semibold" />
               </tr>
             </thead>
             <tbody>
               {rows.map((row) => (
-                <tr key={row.id} className="border-b border-border/60 hover:bg-gray-50/80">
-                  <td className="max-w-[180px] p-3 font-[650] text-textPrimary">
+                <tr key={row.id} className="border-b border-zinc-100 hover:bg-gray-50/80">
+                  <td className="max-w-[180px] p-3 font-[650] text-zinc-950">
                     {row.display_name ?? (
-                      <span className="text-textMuted italic">sin nombre</span>
+                      <span className="text-zinc-500 italic">sin nombre</span>
                     )}
                   </td>
-                  <td className="p-3 font-mono text-[11px] text-textSecondary" title={row.id}>
+                  <td className="p-3 font-mono text-[11px] text-zinc-600" title={row.id}>
                     {shortId(row.id)}…
                   </td>
                   <td className="p-3 text-center">
@@ -254,19 +254,19 @@ function AdminUsersContent() {
                             [row.id]: e.target.value,
                           }))
                         }
-                        className="w-20 rounded-lg border-2 border-border px-2 py-1 text-xs font-bold"
+                        className="w-20 rounded-lg border border-zinc-200 px-2 py-1 text-xs font-bold"
                       />
                       <button
                         type="button"
                         disabled={savingId === row.id}
                         onClick={() => savePoints(row)}
-                        className="rounded-lg border-2 border-border bg-white px-2 py-1 text-[10px] font-black hover:bg-gray-100"
+                        className="rounded-lg border border-zinc-200 bg-white px-2 py-1 text-[10px] font-semibold hover:bg-gray-100"
                       >
                         OK
                       </button>
                     </div>
                   </td>
-                  <td className="p-3 text-right text-[10px] text-textMuted">
+                  <td className="p-3 text-right text-[10px] text-zinc-500">
                     {savingId === row.id ? 'Guardando…' : ''}
                   </td>
                 </tr>

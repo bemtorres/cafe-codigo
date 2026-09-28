@@ -1,8 +1,14 @@
 ---
-import AdminSuperLayout from '../../layouts/AdminSuperLayout.astro';
+import AdminShellLayout from '../../layouts/AdminShellLayout.astro';
 import AdminUsersManager from '../../components/admin/AdminUsersManager';
 ---
 
-<AdminSuperLayout title="Admin · Usuarios" description="Gestión de usuarios y roles" current="users">
-  <AdminUsersManager client:load />
-</AdminSuperLayout>
+<AdminShellLayout
+  title="Admin · Usuarios"
+  description="Gestión de usuarios y roles"
+  activeSection="users"
+>
+  <div class="mx-auto w-full max-w-7xl pb-8">
+    <AdminUsersManager client:load />
+  </div>
+</AdminShellLayout>

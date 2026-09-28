@@ -1,8 +1,14 @@
 ---
-import AdminSuperLayout from '../../layouts/AdminSuperLayout.astro';
+import AdminShellLayout from '../../layouts/AdminShellLayout.astro';
 import AdminDashboard from '../../components/admin/AdminDashboard';
 ---
 
-<AdminSuperLayout title="Admin · Panel" description="Panel super administrador" current="dashboard">
-  <AdminDashboard client:load />
-</AdminSuperLayout>
+<AdminShellLayout
+  title="Admin · Panel"
+  description="Panel super administrador"
+  activeSection="dashboard"
+>
+  <div class="mx-auto w-full max-w-7xl pb-8">
+    <AdminDashboard client:load />
+  </div>
+</AdminShellLayout>
