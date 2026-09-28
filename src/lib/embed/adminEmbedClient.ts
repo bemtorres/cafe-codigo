@@ -234,7 +234,11 @@ export function initAdminEmbed(courses: EmbedCoursePayload[]) {
     const text = btn.getAttribute('data-copy') || '';
     if (!text) return;
     try {
-      await navigator.clipboard.writeText(text);
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(text);
+      } else {
+        throw new Error('Clipboard no disponible');
+      }
       btn.textContent = 'Copiado';
     } catch {
       const ta = document.createElement('textarea');
@@ -242,8 +246,13 @@ export function initAdminEmbed(courses: EmbedCoursePayload[]) {
       ta.style.position = 'fixed';
       ta.style.opacity = '0';
       document.body.appendChild(ta);
+      ta.focus();
       ta.select();
-      document.execCommand('copy');
+      try {
+        (document as any).execCommand?.('copy');
+      } catch {
+        // Fallback silencioso
+      }
       ta.remove();
       btn.textContent = 'Copiado';
     }

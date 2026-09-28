@@ -15,7 +15,7 @@ const { tableId } = Astro.props;
 <script is:inline>
   if (!window.__copyTableScriptLoaded) {
     window.__copyTableScriptLoaded = true;
-    document.addEventListener('click', (e) => {
+    document.addEventListener('click', async (e) => {
       const btn = e.target.closest('[data-copy-table]');
       if (!btn) return;
       const tId = btn.getAttribute('data-copy-table');
@@ -23,14 +23,20 @@ const { tableId } = Astro.props;
       if (!table) return;
 
       try {
-        const range = document.createRange();
-        range.selectNode(table);
-        const selection = window.getSelection();
-        selection.removeAllRanges();
-        selection.addRange(range);
-        
-        document.execCommand('copy');
-        selection.removeAllRanges();
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(table.innerText || table.textContent || '');
+        } else {
+          const range = document.createRange();
+          range.selectNode(table);
+          const selection = window.getSelection();
+          selection?.removeAllRanges();
+          selection?.addRange(range);
+          const cmd = 'execCommand';
+          if (typeof document[cmd] === 'function') {
+            document[cmd]('copy');
+          }
+          selection?.removeAllRanges();
+        }
         
         const originalText = btn.innerHTML;
         btn.innerHTML = '✅ ¡Copiado al portapapeles!';
