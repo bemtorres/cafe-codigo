@@ -3,26 +3,38 @@ import Layout from "../../../../layouts/Layout.astro";
 import CodeBlock from "../../../../components/CodeBlock.astro";
 import DjangoQuizModal from "../../../../components/quizzes/DjangoQuizModal.astro";
 import DjangoCrudSimulator from "../../../../components/django/DjangoCrudSimulator";
+import DjangoAdminStudio from "../../../../components/django/DjangoAdminStudio";
 ---
 
 <Layout
   title="Django Admin y Vistas CRUD"
-  description="Domina el panel administrativo de Django y la implementación completa de cada vista CRUD (Create, Read, Update, Delete) con formularios y validaciones avanzadas."
+  description="Domina el panel administrativo de Django, su rediseño completo con Django Unfold (Tailwind CSS) y la implementación de cada vista CRUD profesional."
   courseSlug="django"
 >
   <article class="content-section">
-    <h1>8. Django Admin y Vistas CRUD ⚙️</h1>
+    <h1>6. Django Admin Profesional y Vistas CRUD ⚙️</h1>
 
-    <!-- 1. INTRODUCCIÓN Y CREACIÓN DE SUPERUSUARIO -->
+    <!-- 1. INTRODUCCIÓN PEDAGÓGICA Y CREACIÓN DE SUPERUSUARIO -->
     <section class="mb-10">
-      <h2>1. El Panel Administrativo de Django (Django Admin)</h2>
+      <h2>1. La Metodología Pedagógica: De "Admin Ciego" a Panel SaaS</h2>
       <p>
-        Uno de los mayores superpoderes de Django frente a otros frameworks
-        backend es su <strong>panel de administración automático</strong> (<code
-          >django.contrib.admin</code
-        >). Lee los metadatos de tus modelos y genera al instante una interfaz
-        web completa para crear, buscar, filtrar y editar registros.
+        Uno de los mayores superpoderes de Django frente a otros frameworks backend es su 
+        <strong>panel de administración automático</strong> (<code>django.contrib.admin</code>).
+        Lee los metadatos del ORM y genera al instante una interfaz web completa para crear,
+        buscar, filtrar y auditar registros.
       </p>
+
+      <div class="p-5 rounded-2xl border border-amber-500/30 bg-amber-500/10 mb-6">
+        <h4 class="text-sm font-black text-amber-300 uppercase tracking-wider mb-2 flex items-center gap-2">
+          <span>⚠️ El Problema de la Enseñanza Clásica: "El Admin Ciego"</span>
+        </h4>
+        <p class="text-xs text-slate-200 leading-relaxed mb-0">
+          La mayoría de cursos enseñan únicamente: <code>admin.site.register(Vehiculo)</code>. 
+          El resultado es desastroso para el estudiante: ve una lista gris con nombres como 
+          <code>Vehiculo object (1)</code>, sin buscador, sin filtros, y sin poder distinguir qué auto está 
+          disponible o en reparación. Esto hace que muchos piensen erróneamente que Django Admin es un "juguete obsoleto".
+        </p>
+      </div>
 
       <h3>1.1 Creación del Superusuario</h3>
       <p>
@@ -32,67 +44,247 @@ import DjangoCrudSimulator from "../../../../components/django/DjangoCrudSimulat
       </p>
       <CodeBlock
         lang="cmd"
-        code={`(venv) C:\\proyectos\\django\\biblioteca> python manage.py createsuperuser
-Username: admin_biblioteca
-Email address: admin@biblioteca.local
+        code={`(venv) C:\\proyectos\\django\\flota> python manage.py createsuperuser
+Username: admin_flota
+Email address: admin@flotaexpress.cl
 Password: **********
 Password (again): **********
 Superuser created successfully.`}
         title="Creación de Superusuario en CMD"
       />
 
-      <h3>1.2 Registro Profesional de Modelos en admin.py</h3>
+      <h3>1.2 Las 6 Palancas de ModelAdmin: La Escalera de Producción</h3>
       <p>
-        Registrar un modelo con <code>admin.site.register(Libro)</code> solo ofrece
-        una vista básica. En proyectos reales configuramos clases <code
-          >ModelAdmin</code
-        > con tablas interactivas, filtros laterales, búsquedas optimizadas e <strong
-          >inlines</strong
-        > para editar registros relacionados en la misma pantalla:
+        Para transformar el admin en una herramienta empresarial que cualquier departamento de operaciones 
+        pueda usar para gestionar miles de registros, aplicamos <strong>las 6 palancas de <code>ModelAdmin</code></strong>:
       </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+        <div class="p-4 rounded-xl border border-slate-700 bg-slate-900/60">
+          <span class="text-xs font-mono text-emerald-400 font-bold block mb-1">1. list_display</span>
+          <p class="text-xs text-slate-300 m-0 leading-relaxed">
+            Reemplaza los objetos crudos por tablas con columnas claras: Patente, Marca, Modelo y datos formateados.
+          </p>
+        </div>
+        <div class="p-4 rounded-xl border border-slate-700 bg-slate-900/60">
+          <span class="text-xs font-mono text-teal-400 font-bold block mb-1">2. format_html (Badges)</span>
+          <p class="text-xs text-slate-300 m-0 leading-relaxed">
+            Convierte estados de texto en etiquetas visuales con colores (Verde = Disponible, Rojo = En Taller).
+          </p>
+        </div>
+        <div class="p-4 rounded-xl border border-slate-700 bg-slate-900/60">
+          <span class="text-xs font-mono text-cyan-400 font-bold block mb-1">3. search_fields</span>
+          <p class="text-xs text-slate-300 m-0 leading-relaxed">
+            Habilita búsqueda instantánea en campos directos y relaciones con claves foráneas (<code>piloto__nombre</code>).
+          </p>
+        </div>
+        <div class="p-4 rounded-xl border border-slate-700 bg-slate-900/60">
+          <span class="text-xs font-mono text-amber-400 font-bold block mb-1">4. list_filter</span>
+          <p class="text-xs text-slate-300 m-0 leading-relaxed">
+            Crea un panel lateral facetado con conteos automáticos por estado, tipo de vehículo o rangos de fecha.
+          </p>
+        </div>
+        <div class="p-4 rounded-xl border border-slate-700 bg-slate-900/60">
+          <span class="text-xs font-mono text-violet-400 font-bold block mb-1">5. list_editable</span>
+          <p class="text-xs text-slate-300 m-0 leading-relaxed">
+            Convierte celdas en inputs interactivos (estilo Excel/Google Sheets) para editar stock o estado sin entrar a cada ficha.
+          </p>
+        </div>
+        <div class="p-4 rounded-xl border border-slate-700 bg-slate-900/60">
+          <span class="text-xs font-mono text-rose-400 font-bold block mb-1">6. TabularInline & Actions</span>
+          <p class="text-xs text-slate-300 m-0 leading-relaxed">
+            Patrón Maestro-Detalle (editar vehículo y sus revisiones técnicas en 1 sola pantalla) y acciones masivas en lote.
+          </p>
+        </div>
+      </div>
+
+      <!-- SIMULADOR INTERACTIVO DJANGO ADMIN STUDIO -->
+      <div class="my-8">
+        <h3 class="text-base font-bold text-slate-200 mb-2">
+          🧪 Laboratorio Interactivo: Prueba las 6 Palancas y el Rediseño con Unfold
+        </h3>
+        <p class="text-xs text-slate-400 mb-4">
+          Interactúa con los controles inferiores: activa cada nivel para observar cómo evoluciona la interfaz 
+          y pulsa el botón superior para alternar entre el diseño <strong>Django Clásico (2005)</strong> y 
+          <strong>Django Unfold (Tailwind CSS 2026)</strong>:
+        </p>
+        <DjangoAdminStudio client:load />
+      </div>
+
+      <h3>1.3 Rediseño Visual Radical: De Django 2005 a Django Unfold (Tailwind CSS 2026)</h3>
+      <p>
+        Aunque <code>ModelAdmin</code> otorga funcionalidad completa, la estética por defecto de Django 
+        (diseñada a inicios de los 2000) luce anticuada para entregar a clientes o gerencias. 
+        En el ecosistema Python moderno existe un proyecto de código abierto que se ha convertido en el estándar indiscutible:
+        <strong><code>django-unfold</code></strong>.
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        <div class="p-5 rounded-2xl border border-teal-500/40 bg-teal-500/10">
+          <div className="flex items-center justify-between mb-2">
+            <strong className="text-sm font-bold text-teal-300">🚀 django-unfold (Recomendado)</strong>
+            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-teal-500/20 text-teal-300">Tailwind CSS</span>
+          </div>
+          <p class="text-xs text-slate-300 leading-relaxed mb-3">
+            El tema más moderno del ecosistema: Soporte nativo de Modo Oscuro/Claro, tarjetas KPI de métricas en el Dashboard,
+            gráficos con Chart.js, responsive real para celulares, y componentes visuales ricos (badges, progress bars, tabs).
+          </p>
+          <div class="text-[11px] font-mono text-teal-200 bg-slate-950/70 p-2 rounded-lg border border-teal-500/20">
+            pip install django-unfold
+          </div>
+        </div>
+
+        <div class="p-5 rounded-2xl border border-slate-700 bg-slate-900/60">
+          <div className="flex items-center justify-between mb-2">
+            <strong className="text-sm font-bold text-slate-200">🏛️ django-jazzmin (Alternativa Clásica)</strong>
+            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-400">Bootstrap 4</span>
+          </div>
+          <p class="text-xs text-slate-400 leading-relaxed mb-3">
+            Tema clásico basado en Bootstrap 4 y AdminLTE. Muy popular durante la última década con menú horizontal 
+            o lateral tradicional. Ideal si el resto de tu sitio ya utiliza Bootstrap.
+          </p>
+          <div class="text-[11px] font-mono text-slate-300 bg-slate-950/70 p-2 rounded-lg border border-slate-800">
+            pip install django-jazzmin
+          </div>
+        </div>
+      </div>
+
+      <h4>Paso 1: Instalación y la "Regla de Oro" de settings.py</h4>
+      <p>
+        Para que Django cargue las plantillas modernas de Unfold antes que las plantillas por defecto del framework, 
+        <strong><code>"unfold"</code> debe colocarse ANTES de <code>"django.contrib.admin"</code></strong> en 
+        la lista <code>INSTALLED_APPS</code>:
+      </p>
+
       <CodeBlock
         lang="python"
-        code={`# biblioteca/admin.py
+        code={`# config/settings.py
+
+INSTALLED_APPS = [
+    # ⚠️ REGLA DE ORO: 'unfold' debe ir ANTES de 'django.contrib.admin'
+    "unfold",
+    "unfold.contrib.filters",   # Filtros facetados con estilo Tailwind
+    "unfold.contrib.forms",     # Widgets modernos y selects estilizados
+    "unfold.contrib.inlines",   # Inlines colapsables y ordenables
+
+    # Apps del núcleo de Django
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+
+    # Tus aplicaciones
+    "flota.apps.FlotaConfig",
+]
+
+# Configuración Visual de Marca con Unfold
+UNFOLD = {
+    "SITE_TITLE": "Flota Express Control",
+    "SITE_HEADER": "Flota Express SaaS",
+    "SITE_SUBHEADER": "Panel de Operaciones de Flota",
+    "SITE_URL": "/admin/",
+    "THEME": "dark", # 'light', 'dark', o 'auto' según preferencia del sistema
+    "COLORS": {
+        "primary": {
+            "500": "20 184 166",  # Teal moderno (#14b8a6)
+            "600": "13 148 136",
+            "700": "15 118 110",
+        },
+    },
+    "SIDEBAR": {
+        "show_search": True,
+        "show_all_applications": True,
+    },
+}`}
+        title="config/settings.py (Configuración de Unfold)"
+      />
+
+      <h4>Paso 2: Escribir admin.py con Unfold y Componentes Ricos</h4>
+      <p>
+        En tus archivos <code>admin.py</code>, en vez de heredar de <code>admin.ModelAdmin</code>, heredas de 
+        <code>unfold.admin.ModelAdmin</code>. Esto desbloquea decoradores visuales como <code>@display(label=True)</code> 
+        para badges automáticos y acciones estilizadas:
+      </p>
+
+      <CodeBlock
+        lang="python"
+        code={`# flota/admin.py
 from django.contrib import admin
 from django.utils.html import format_html
-from .models import Autor, Categoria, Libro, SolicitudPrestamo, Tag
+from unfold.admin import ModelAdmin, TabularInline
+from unfold.decorators import action, display
+from .models import Vehiculo, Mantenimiento, Piloto
 
 
-class SolicitudPrestamoInline(admin.TabularInline):
-    """Permite ver y gestionar los préstamos directamente dentro de la ficha del Libro."""
-    model = SolicitudPrestamo
+class MantenimientoInline(TabularInline):
+    """Permite registrar revisiones mecánicas directamente dentro del Vehículo."""
+    model = Mantenimiento
     extra = 0
-    raw_id_fields = ['usuario']
-    readonly_fields = ['fecha_solicitud', 'multa_acumulada']
-    fields = ['usuario', 'fecha_solicitud', 'fecha_devolucion_limite', 'estado', 'multa_acumulada']
+    fields = ["fecha", "tipo_servicio", "costo", "completado"]
+    readonly_fields = ["fecha"]
 
 
-@admin.action(description="Marcar libros seleccionados como DISPONIBLES")
-def marcar_disponible(modeladmin, request, queryset):
-    actualizados = queryset.update(disponible_para_prestamo=True)
-    modeladmin.message_user(
-        request,
-        f"Se han actualizado {actualizados} libro(s) a estado disponible."
-    )
+@action(description="🛠️ Enviar seleccionados a Mantenimiento", permissions=["change"])
+def enviar_a_taller(modeladmin, request, queryset):
+    afectados = queryset.update(estado="MANTENIMIENTO")
+    modeladmin.message_user(request, f"{afectados} vehículo(s) han sido derivados al taller técnico.")
 
 
-@admin.register(Libro)
-class LibroAdmin(admin.ModelAdmin):
-    list_display = ['titulo', 'autor', 'categoria', 'precio_reposicion', 'stock_disponible', 'disponible_badge', 'fecha_publicacion']
-    list_filter = ['disponible_para_prestamo', 'categoria', 'idioma', 'fecha_publicacion']
-    search_fields = ['titulo', 'isbn', 'autor__nombre_completo']
-    prepopulated_fields = {'slug': ('titulo',)}
-    filter_horizontal = ['tags'] # Interfaz de doble caja para relaciones ManyToMany
-    inlines = [SolicitudPrestamoInline]
-    actions = [marcar_disponible]
+@action(description="✅ Liberar seleccionados como Disponibles", permissions=["change"])
+def liberar_disponible(modeladmin, request, queryset):
+    afectados = queryset.update(estado="DISPONIBLE")
+    modeladmin.message_user(request, f"{afectados} vehículo(s) marcados como listos para salida.")
+
+
+@admin.register(Vehiculo)
+class VehiculoAdmin(ModelAdmin):
+    # Opciones exclusivas de Unfold para productividad UX
+    warn_unsaved_form = True      # Alerta si sales de la página sin guardar cambios
+    list_filter_submit = True     # Añade botón "Filtrar" para evitar recargas constantes
     list_per_page = 20
 
-    def disponible_badge(self, obj):
-        if obj.disponible_para_prestamo and obj.stock_disponible > 0:
-            return format_html('<span style="color: #10B981; font-weight: bold;">● Disponible ({})</span>', obj.stock_disponible)
-        return format_html('<span style="color: #EF4444; font-weight: bold;">○ Agotado / No disp.</span>')
-    disponible_badge.short_description = "Disponibilidad"`}
-        title="biblioteca/admin.py"
+    # 1. Columnas organizadas
+    list_display = ["patente", "vehiculo_info", "piloto_badge", "estado_badge", "kilometraje_fmt"]
+    
+    # 2. Edición rápida directa en tabla (Excel-like)
+    list_editable = ["estado"]
+
+    # 3. Búsqueda directa y a través de relaciones
+    search_fields = ["patente", "marca", "modelo", "piloto__nombre", "piloto__rut"]
+
+    # 4. Filtros laterales facetados
+    list_filter = ["estado", "tipo", "anio"]
+
+    # 5. Inlines (Maestro-Detalle) y Acciones Masivas
+    inlines = [MantenimientoInline]
+    actions = [enviar_a_taller, liberar_disponible]
+
+    @display(description="Vehículo")
+    def vehiculo_info(self, obj):
+        return f"{obj.marca} {obj.modelo} ({obj.anio})"
+
+    @display(description="Piloto Responsable")
+    def piloto_badge(self, obj):
+        if not obj.piloto:
+            return format_html('<span style="color: #94a3b8; font-style: italic;">Sin asignar</span>')
+        return obj.piloto.nombre
+
+    @display(description="Estado Operativo", label=True)
+    def estado_badge(self, obj):
+        """label=True renderiza automáticamente badges con colores vivos de Tailwind"""
+        colores = {
+            "DISPONIBLE": "emerald",
+            "EN_RUTA": "blue",
+            "MANTENIMIENTO": "rose",
+        }
+        return obj.estado, colores.get(obj.estado, "gray")
+
+    @display(description="Kilometraje", ordering="kilometraje")
+    def kilometraje_fmt(self, obj):
+        return f"{obj.kilometraje:,} km".replace(",", ".")`}
+        title="flota/admin.py (ModelAdmin Profesional con Django Unfold)"
       />
     </section>
 
