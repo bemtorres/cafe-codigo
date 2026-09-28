@@ -181,6 +181,94 @@ const getMetaQuestionsForCourseLesson = (courseSlug: string, lessonSlug: string)
   return pythonRegistry.getMetaQuestionsForLesson(lessonSlug);
 };
 
+/**
+ * Baraja aleatoriamente el orden de las opciones de respuesta de cada pregunta del quiz
+ * para que la respuesta correcta no aparezca siempre en la primera posición (índice 0).
+ * Actualiza 'correctOption' al nuevo índice correspondiente.
+ * También baraja la columna derecha en MatchPairs y los tokens en ReorderSequence.
+ */
+function randomizeQuizQuestions(questions: QuizQuestion[]): QuizQuestion[] {
+  return questions.map((q) => {
+    if (
+      q.kind === 'MultipleChoice' ||
+      q.kind === 'FillInTheBlank' ||
+      q.kind === 'PredictOutput' ||
+      q.kind === 'FindTheBug'
+    ) {
+      const items = q.options.map((opt, idx) => ({
+        opt,
+        isCorrect: idx === q.correctOption,
+      }));
+
+      // Algoritmo Fisher-Yates para barajar las opciones
+      for (let i = items.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        const temp = items[i];
+        items[i] = items[j];
+        items[j] = temp;
+      }
+
+      const shuffledOptions = items.map((it) => it.opt);
+      const newCorrectOption = items.findIndex((it) => it.isCorrect);
+
+      return {
+        ...q,
+        options: shuffledOptions,
+        correctOption: newCorrectOption >= 0 ? newCorrectOption : 0,
+      };
+    }
+
+    if (q.kind === 'MatchPairs') {
+      const rightItems = q.pairs.map((p) => ({ id: p.id, text: p.right }));
+      const shuffledRight = [...rightItems];
+      for (let i = shuffledRight.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        const temp = shuffledRight[i];
+        shuffledRight[i] = shuffledRight[j];
+        shuffledRight[j] = temp;
+      }
+      // Si hay más de un elemento y coincidió en el orden inicial, alteramos los dos primeros
+      if (
+        shuffledRight.length > 1 &&
+        shuffledRight.every((item, idx) => item.id === q.pairs[idx].id)
+      ) {
+        const temp = shuffledRight[0];
+        shuffledRight[0] = shuffledRight[1];
+        shuffledRight[1] = temp;
+      }
+
+      return {
+        ...q,
+        shuffledRight,
+      };
+    }
+
+    if (q.kind === 'ReorderSequence') {
+      const shuffledTokens = [...q.tokens];
+      for (let i = shuffledTokens.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        const temp = shuffledTokens[i];
+        shuffledTokens[i] = shuffledTokens[j];
+        shuffledTokens[j] = temp;
+      }
+      if (
+        shuffledTokens.length > 1 &&
+        shuffledTokens.join(' ') === q.correctOrder.join(' ')
+      ) {
+        const temp = shuffledTokens[0];
+        shuffledTokens[0] = shuffledTokens[1];
+        shuffledTokens[1] = temp;
+      }
+      return {
+        ...q,
+        tokens: shuffledTokens,
+      };
+    }
+
+    return { ...q };
+  });
+}
+
 const renderCellContent = (content: any, isDark: boolean, isFirstCol: boolean) => {
   if (typeof content !== 'string') return content;
 
@@ -444,6 +532,7 @@ export default function CourseSlideViewer({
   const [reorderSelected, setReorderSelected] = useState<Record<number, string[]>>({});
   const [matchSelectedLeft, setMatchSelectedLeft] = useState<string | null>(null);
   const [matchedPairs, setMatchedPairs] = useState<Record<number, Record<string, string>>>({});
+  const [quizSeed, setQuizSeed] = useState(0);
 
   // Detección dinámica de pantalla móvil
   useEffect(() => {
@@ -647,10 +736,11 @@ export default function CourseSlideViewer({
     return getSlidesForCourseLesson(courseSlug, lessonSlug);
   }, [courseSlug, lessonSlug]);
 
-  // Cargar banco de preguntas del Quiz según la lección actual
+  // Cargar banco de preguntas del Quiz según la lección actual con opciones mezcladas
   const activeQuizQuestions = useMemo(() => {
-    return getQuizForCourseLesson(courseSlug, lessonSlug);
-  }, [courseSlug, lessonSlug]);
+    const rawQuestions = getQuizForCourseLesson(courseSlug, lessonSlug);
+    return randomizeQuizQuestions(rawQuestions);
+  }, [courseSlug, lessonSlug, quizSeed]);
 
   // Cargar banco de Metacognición según la lección actual
   const activeMetaQuestions = useMemo(() => {
@@ -906,13 +996,14 @@ export default function CourseSlideViewer({
     return score;
   }, [tfAnswers, mcAnswers, reorderSelected, matchedPairs, activeQuizQuestions]);
 
-  // Reiniciar todo el quiz
+  // Reiniciar todo el quiz y volver a mezclar las opciones para un nuevo intento
   const resetQuiz = () => {
     setTfAnswers({});
     setMcAnswers({});
     setReorderSelected({});
     setMatchSelectedLeft(null);
     setMatchedPairs({});
+    setQuizSeed(prev => prev + 1);
     const introQuizIdx = slides.findIndex((s: any) => s.type === 'quiz_intro' || s.type === 'quiz_interaction');
     if (introQuizIdx !== -1) setCurrentIndex(introQuizIdx);
   };
@@ -2258,7 +2349,7 @@ export default function CourseSlideViewer({
                 {/* 4, 10. MatchPairs */}
                 {qData.kind === 'MatchPairs' && (() => {
                   const leftItems = qData.pairs.map(p => ({ id: p.id, text: p.left }));
-                  const rightItems = qData.pairs.map(p => ({ id: p.id, text: p.right }));
+                  const rightItems = qData.shuffledRight || qData.pairs.map(p => ({ id: p.id, text: p.right }));
                   const currentMatched = matchedPairs[qIdx] || {};
 
                   const handleLeftClick = (id: string) => {

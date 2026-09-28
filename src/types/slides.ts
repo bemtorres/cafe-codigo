@@ -115,6 +115,7 @@ export type QuizQuestion =
       title: string;
       questionText: string;
       pairs: { id: string; left: string; right: string }[];
+      shuffledRight?: { id: string; text: string }[];
       explanation: string;
     }
   | {
