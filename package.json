@@ -6,7 +6,6 @@
     "node": ">=22.12.0"
   },
   "scripts": {
-    "postinstall": "patch-package",
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
@@ -18,7 +17,7 @@
   },
   "dependencies": {
     "@astrojs/check": "^0.9.10",
-    "@astrojs/react": "^6.0.4",
+    "@astrojs/react": "^7.0.0",
     "@codemirror/lang-cpp": "^6.0.3",
     "@codemirror/lang-java": "^6.0.2",
     "@codemirror/lang-javascript": "^6.2.5",
@@ -45,7 +44,6 @@
   },
   "devDependencies": {
     "dotenv": "^16.4.7",
-    "patch-package": "^8.0.1",
     "pg": "^8.14.1"
   }
 }
