@@ -1,14 +1,13 @@
 diff --git a/node_modules/react/cjs/react-jsx-dev-runtime.production.js b/node_modules/react/cjs/react-jsx-dev-runtime.production.js
-index 9b9ef5e..5f73d82 100644
+index 22ad886..2302240 100644
 --- a/node_modules/react/cjs/react-jsx-dev-runtime.production.js
 +++ b/node_modules/react/cjs/react-jsx-dev-runtime.production.js
-@@ -10,6 +10,34 @@
+@@ -9,6 +9,38 @@
   */
  
  "use strict";
--var REACT_FRAGMENT_TYPE = Symbol.for("react.fragment");
 +var REACT_ELEMENT_TYPE = Symbol.for("react.transitional.element");
-+var REACT_FRAGMENT_TYPE = Symbol.for("react.fragment");
+ var REACT_FRAGMENT_TYPE = Symbol.for("react.fragment");
 +
 +function jsxDEV(type, config, maybeKey) {
 +  var key = null;
@@ -44,10 +43,10 @@ index 9b9ef5e..5f73d82 100644
 -exports.jsxDEV = void 0;
 +exports.jsxDEV = jsxDEV;
 diff --git a/node_modules/react/jsx-dev-runtime.js b/node_modules/react/jsx-dev-runtime.js
-index e8e58a2..087b28f 100644
+index 0a80857..b643ebc 100644
 --- a/node_modules/react/jsx-dev-runtime.js
 +++ b/node_modules/react/jsx-dev-runtime.js
-@@ -1,7 +1,11 @@
+@@ -1,7 +1,12 @@
  'use strict';
  
 -if (process.env.NODE_ENV === 'production') {
