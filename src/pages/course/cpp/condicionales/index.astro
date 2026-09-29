@@ -1,57 +1,170 @@
 ---
 import Layout from '../../../../layouts/Layout.astro';
 import CodeBlock from '../../../../components/CodeBlock.astro';
+import CppQuizModal from '../../../../components/quizzes/CppQuizModal.astro';
 ---
 
-<Layout title="Condicionales en C++" description="if, else y switch" courseSlug="cpp">
+<Layout
+  title="5. Condicionales en C++: La Toma de Decisiones"
+  description="Domina if, else if, else, switch-case y el operador ternario en C++ con ejemplos claros."
+  courseSlug="cpp"
+>
   <article class="content-section">
-    <h1>5. Condicionales</h1>
+    <!-- HERO / BANNER PPT -->
+    <div class="mb-8 p-6 rounded-2xl bg-gradient-to-r from-blue-900/40 via-emerald-900/30 to-slate-900/60 border border-blue-500/30 shadow-xl">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold bg-blue-500/20 text-blue-300 border border-blue-500/30 mb-2">
+            <span>⚡ C++ Básico</span>
+            <span>· Lección 5</span>
+          </span>
+          <h1 class="text-3xl font-black text-white m-0 tracking-tight">5. Condicionales: Bifurcaciones y Menús 🚦</h1>
+          <p class="text-sm text-slate-300 m-0 mt-2 leading-relaxed">
+            Permite que tus programas reaccionen inteligentemente ante las decisiones del usuario: estructuras if/else, menús con switch y el operador ternario.
+          </p>
+        </div>
+        <div class="flex-shrink-0">
+          <a
+            href="/course-slides/cpp/condicionales/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-lg shadow-blue-500/30 transition-all hover:scale-105"
+          >
+            <span>📺</span>
+            <span>Ver Presentación Interactiva (PPT)</span>
+          </a>
+        </div>
+      </div>
+    </div>
 
+    <!-- 1. IF / ELSE IF / ELSE -->
     <section class="mb-10">
-      <h2><code>if</code> / <code>else</code></h2>
-      <p>Equivalente a <strong>Si</strong> / <strong>Sino</strong> en PSeInt.</p>
+      <h2>1. Estructura <code>if</code> / <code>else if</code> / <code>else</code></h2>
+      <p>
+        Es el equivalente directo al <strong>Si - Sino Si - Sino</strong> de PSeInt. Las condiciones siempre van entre paréntesis y las instrucciones entre llaves:
+      </p>
+
       <CodeBlock
         lang="cpp"
         code={`#include <iostream>
 
 int main() {
-    int x;
-    std::cin >> x;
-    if (x > 0) {
-        std::cout << "positivo\\n";
-    } else if (x < 0) {
-        std::cout << "negativo\\n";
+    double calificacion = 8.5;
+
+    if (calificacion >= 9.0) {
+        std::cout << "Excelente (Sobresaliente)\\n";
+    } else if (calificacion >= 6.0) {
+        std::cout << "Aprobado con buen desempeño\\n";
+    } else if (calificacion >= 4.0) {
+        std::cout << "Aprobado regular\\n";
     } else {
-        std::cout << "cero\\n";
+        std::cout << "Reprobado. Toca estudiar más.\\n";
     }
     return 0;
 }`}
-        title="if / else if / else"
+        title="calificaciones.cpp"
       />
+
+      <div class="p-4 rounded-xl border border-amber-500/30 bg-amber-500/10 mt-4">
+        <strong class="text-xs text-amber-300 block mb-1">⚠️ El Peligro de Escribir = en vez de ==</strong>
+        <p class="text-xs text-slate-300 m-0">
+          Si escribes <code>if (x = 5)</code>, C++ asignará el valor 5 a x. Y como 5 es diferente de cero, <strong>¡la condición siempre evaluará como verdadera!</strong> Usa siempre doble igual (<code>==</code>) para comparar.
+        </p>
+      </div>
     </section>
 
+    <!-- 2. SWITCH-CASE -->
     <section class="mb-10">
-      <h2><code>switch</code></h2>
-      <p>Útil cuando comparás una expresión entera contra constantes. No olvides <code>break</code> (salvo que quieras “caída” a la siguiente rama).</p>
+      <h2>2. Menús Rápidos con <code>switch-case</code></h2>
+      <p>
+        Cuando tienes una variable con opciones fijas (enteros o caracteres), <code>switch</code> es mucho más limpio que múltiples <code>if</code> encadenados:
+      </p>
+
       <CodeBlock
         lang="cpp"
-        code={`switch (opcion) {
-    case 1:
-        std::cout << "Uno\\n";
-        break;
-    case 2:
-        std::cout << "Dos\\n";
-        break;
-    default:
-        std::cout << "Otro\\n";
+        code={`#include <iostream>
+
+int main() {
+    int opcion = 2;
+
+    switch (opcion) {
+        case 1:
+            std::cout << "Creando nuevo archivo...\\n";
+            break; // ¡Vital para no caer al siguiente case!
+        case 2:
+            std::cout << "Abriendo archivo existente...\\n";
+            break;
+        case 3:
+            std::cout << "Guardando cambios...\\n";
+            break;
+        default:
+            std::cout << "Opción desconocida.\\n";
+            break;
+    }
+    return 0;
 }`}
-        title="switch"
+        title="menu_switch.cpp"
       />
     </section>
 
-    <div class="ejercicio">
-      <h3>Ejercicio</h3>
-      <p class="enunciado">Leer una nota de 0 a 10 e imprimir: Insuficiente (&lt;4), Regular, Bueno o Excelente (≥9).</p>
+    <!-- 3. OPERADOR TERNARIO -->
+    <section class="mb-10">
+      <h2>3. El Operador Ternario (<code>? :</code>)</h2>
+      <p>
+        Para asignar un valor a una variable según una condición en una sola línea elegante:
+      </p>
+      <CodeBlock
+        lang="cpp"
+        code={`int edad = 20;
+// condicion ? valor_si_verdadero : valor_si_falso
+std::string pase = (edad >= 18) ? "Permitido" : "Denegado";
+
+int mayor = (a > b) ? a : b;`}
+        title="ternario.cpp"
+      />
+    </section>
+
+    <!-- EJERCICIO PRÁCTICO -->
+    <div class="ejercicio mb-10">
+      <h3>Ejercicio: Clasificador de Rango de Notas</h3>
+      <p class="enunciado">
+        Pide al usuario su nota de 0 a 10. Si es menor que 4 imprime <strong>"Insuficiente"</strong>, de 4 a 6.9 <strong>"Regular"</strong>, de 7 a 8.9 <strong>"Bueno"</strong> y 9 o más <strong>"Excelente"</strong>.
+      </p>
+      <details>
+        <summary>Ver solución</summary>
+        <CodeBlock
+          lang="cpp"
+          code={`#include <iostream>
+
+int main() {
+    double nota;
+    std::cout << "Ingresa la nota (0 a 10): ";
+    std::cin >> nota;
+
+    if (nota < 4.0) {
+        std::cout << "Insuficiente\\n";
+    } else if (nota < 7.0) {
+        std::cout << "Regular\\n";
+    } else if (nota < 9.0) {
+        std::cout << "Bueno\\n";
+    } else {
+        std::cout << "Excelente\\n";
+    }
+    return 0;
+}`}
+        />
+      </details>
     </div>
+
+    <!-- QUIZ INTERACTIVO FORMATIVO -->
+    <section class="mt-12 pt-8 border-t border-slate-800">
+      <div class="text-center mb-6">
+        <span class="text-xs font-mono font-bold text-blue-400 uppercase tracking-widest block mb-1">Autoevaluación Formativa</span>
+        <h2 class="text-2xl font-black text-white m-0">Comprueba lo que Has Aprendido 🧠</h2>
+        <p class="text-xs text-slate-400 mt-1">Valida tu comprensión de estructuras if/else, switch-case y operador ternario.</p>
+      </div>
+
+      <CppQuizModal quizKey="condicionales" />
+    </section>
   </article>
 </Layout>

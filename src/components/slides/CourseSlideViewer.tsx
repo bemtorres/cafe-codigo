@@ -9,6 +9,7 @@ import type {
 } from '../../types/slides';
 import * as pythonRegistry from '../../data/slides/python/registry';
 import * as djangoRegistry from '../../data/slides/django/registry';
+import * as cppRegistry from '../../data/slides/cpp/registry';
 import { highlightLine } from '../../lib/codeHighlight';
 import {
   SLIDE_TEMPLATES,
@@ -168,16 +169,19 @@ export const CODE_THEMES: CodeTheme[] = [
 
 const getSlidesForCourseLesson = (courseSlug: string, lessonSlug: string): Slide[] => {
   if (courseSlug === 'django') return djangoRegistry.getSlidesForLesson(lessonSlug);
+  if (courseSlug === 'cpp') return cppRegistry.getSlidesForLesson(lessonSlug);
   return pythonRegistry.getSlidesForLesson(lessonSlug);
 };
 
 const getQuizForCourseLesson = (courseSlug: string, lessonSlug: string): QuizQuestion[] => {
   if (courseSlug === 'django') return djangoRegistry.getQuizForLesson(lessonSlug);
+  if (courseSlug === 'cpp') return cppRegistry.getQuizForLesson(lessonSlug);
   return pythonRegistry.getQuizForLesson(lessonSlug);
 };
 
 const getMetaQuestionsForCourseLesson = (courseSlug: string, lessonSlug: string) => {
   if (courseSlug === 'django') return djangoRegistry.getMetaQuestionsForLesson(lessonSlug);
+  if (courseSlug === 'cpp') return cppRegistry.getMetaQuestionsForLesson(lessonSlug);
   return pythonRegistry.getMetaQuestionsForLesson(lessonSlug);
 };
 

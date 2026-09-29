@@ -2,11 +2,37 @@
 import Layout from '../../../../layouts/Layout.astro';
 import CodeBlock from '../../../../components/CodeBlock.astro';
 import PooChallengesCta from '../../../../components/challenges/PooChallengesCta.astro';
+import CppQuizModal from '../../../../components/quizzes/CppQuizModal.astro';
 ---
 
 <Layout title="POO básico en C++" description="Clases, objetos, encapsulamiento y asociación con Espada y Player" courseSlug="cpp">
   <article class="content-section">
-    <h1>9. POO básico</h1>
+    <!-- HERO / BANNER PPT -->
+    <div class="mb-8 p-6 rounded-2xl bg-gradient-to-r from-blue-900/40 via-indigo-900/30 to-slate-900/60 border border-blue-500/30 shadow-xl">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold bg-blue-500/20 text-blue-300 border border-blue-500/30 mb-2">
+            <span>⚡ C++ Básico</span>
+            <span>· Lección 9</span>
+          </span>
+          <h1 class="text-3xl font-black text-white m-0 tracking-tight">9. Programación Orientada a Objetos: Clases y Objetos 🏛️</h1>
+          <p class="text-sm text-slate-300 m-0 mt-2 leading-relaxed">
+            Pasa del código lineal al modelado del mundo real: aprende clases, objetos, encapsulamiento con public/private y constructores.
+          </p>
+        </div>
+        <div class="flex-shrink-0">
+          <a
+            href="/course-slides/cpp/poo-basico/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-lg shadow-blue-500/30 transition-all hover:scale-105"
+          >
+            <span>📺</span>
+            <span>Ver Presentación Interactiva (PPT)</span>
+          </a>
+        </div>
+      </div>
+    </div>
 
     <p>
       La <strong>Programación Orientada a Objetos (POO)</strong> nos permite estructurar el código pensando en entidades del mundo real o de un videojuego.
@@ -204,6 +230,17 @@ int main() {
         Agregá a la clase <code>Espada</code> una comprobación para que si <code>durability == 0</code>, la espada ya no cause daño en <code>getDamage()</code> o devuelva 0 de daño. Luego probá realizar varios ataques en <code>main()</code> hasta romper la espada.
       </p>
     </div>
+
+    <!-- QUIZ INTERACTIVO FORMATIVO -->
+    <section class="mt-12 pt-8 border-t border-slate-800">
+      <div class="text-center mb-6">
+        <span class="text-xs font-mono font-bold text-blue-400 uppercase tracking-widest block mb-1">Autoevaluación Formativa</span>
+        <h2 class="text-2xl font-black text-white m-0">Comprueba lo que Has Aprendido 🧠</h2>
+        <p class="text-xs text-slate-400 mt-1">Valida tu comprensión de clases, objetos, constructores y encapsulamiento en C++.</p>
+      </div>
+
+      <CppQuizModal quizKey="poo-basico" />
+    </section>
 
     <PooChallengesCta />
   </article>

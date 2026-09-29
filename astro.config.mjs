@@ -1,5 +1,6 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
+import { fileURLToPath } from 'node:url';
 
 import tailwindcss from '@tailwindcss/vite';
 
@@ -11,6 +12,11 @@ export default defineConfig({
 
   vite: {
     plugins: [tailwindcss()],
+    resolve: {
+      alias: {
+        'react/jsx-dev-runtime': fileURLToPath(new URL('./src/lib/jsx-dev-runtime.js', import.meta.url)),
+      },
+    },
   },
 
   integrations: [react()],

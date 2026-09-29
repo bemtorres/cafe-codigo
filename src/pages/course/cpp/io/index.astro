@@ -1,72 +1,206 @@
 ---
 import Layout from '../../../../layouts/Layout.astro';
 import CodeBlock from '../../../../components/CodeBlock.astro';
+import CppQuizModal from '../../../../components/quizzes/CppQuizModal.astro';
 ---
 
-<Layout title="Entrada y salida en C++" description="cin, cout y getline" courseSlug="cpp">
+<Layout
+  title="3. Entrada y Salida en C++: Conversando con el Usuario"
+  description="Domina std::cout, std::cin, el temido bug del buffer, cin.ignore() y std::getline() en C++."
+  courseSlug="cpp"
+>
   <article class="content-section">
-    <h1>3. Entrada y salida</h1>
+    <!-- HERO / BANNER PPT -->
+    <div class="mb-8 p-6 rounded-2xl bg-gradient-to-r from-blue-900/40 via-teal-900/30 to-slate-900/60 border border-blue-500/30 shadow-xl">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold bg-blue-500/20 text-blue-300 border border-blue-500/30 mb-2">
+            <span>⚡ C++ Básico</span>
+            <span>· Lección 3</span>
+          </span>
+          <h1 class="text-3xl font-black text-white m-0 tracking-tight">3. Entrada y Salida: Flujos y Buffer en Consola 💬</h1>
+          <p class="text-sm text-slate-300 m-0 mt-2 leading-relaxed">
+            Aprende cómo fluyen los datos entre el teclado y la pantalla: operadores de inserción (&lt;&lt;), extracción (&gt;&gt;) y la solución definitiva al bug del buffer.
+          </p>
+        </div>
+        <div class="flex-shrink-0">
+          <a
+            href="/course-slides/cpp/io/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-lg shadow-blue-500/30 transition-all hover:scale-105"
+          >
+            <span>📺</span>
+            <span>Ver Presentación Interactiva (PPT)</span>
+          </a>
+        </div>
+      </div>
+    </div>
 
+    <!-- 1. EL MODELO DE FLUJOS (STREAMS) -->
     <section class="mb-10">
-      <h2><code>std::cout</code> y <code>std::endl</code></h2>
-      <p>Salida estándar. <code>\\n</code> o <code>std::endl</code> (este último además vacía el buffer).</p>
+      <h2>1. El Concepto de "Flujo" (Stream) en C++</h2>
+      <p>
+        En C++, la comunicación con el usuario se modela como un <strong>río continuo de caracteres</strong> (un flujo o <em>stream</em>):
+      </p>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 my-6">
+        <div class="p-4 rounded-xl border border-blue-500/30 bg-blue-950/20">
+          <span class="text-xs font-mono text-cyan-400 font-bold block mb-1">std::cout &lt;&lt; (Salida Estándar)</span>
+          <p class="text-xs text-slate-300 m-0 leading-relaxed">
+            Las flechas <code>&lt;&lt;</code> apuntan hacia la izquierda: estás <strong>empujando</strong> caracteres desde tus variables hacia el objeto <code>cout</code> para que aparezcan en pantalla.
+          </p>
+        </div>
+        <div class="p-4 rounded-xl border border-teal-500/30 bg-teal-950/20">
+          <span class="text-xs font-mono text-teal-400 font-bold block mb-1">std::cin &gt;&gt; (Entrada Estándar)</span>
+          <p class="text-xs text-slate-300 m-0 leading-relaxed">
+            Las flechas <code>&gt;&gt;</code> apuntan hacia la derecha: estás <strong>extrayendo</strong> los caracteres tecleados por el usuario desde <code>cin</code> para guardarlos dentro de tu casillero de memoria.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. LECTURA SIMPLE -->
+    <section class="mb-10">
+      <h2>2. Lectura Básica con <code>std::cin</code></h2>
+      <p>
+        <code>std::cin</code> detecta automáticamente el tipo de dato que espera la variable:
+      </p>
+
       <CodeBlock
         lang="cpp"
         code={`#include <iostream>
 
 int main() {
-    std::cout << "Línea 1\\n";
-    std::cout << "Línea 2" << std::endl;
+    int edad;
+    double estatura;
+
+    std::cout << "Ingresa tu edad: ";
+    std::cin >> edad;
+
+    std::cout << "Ingresa tu estatura en metros (ej. 1.75): ";
+    std::cin >> estatura;
+
+    std::cout << "Tienes " << edad << " años y mides " << estatura << " m.\\n";
     return 0;
 }`}
-        title="Salida"
+        title="lectura_basica.cpp"
       />
+
+      <div class="p-4 rounded-xl border border-amber-500/30 bg-amber-500/10 mt-4">
+        <strong class="text-xs text-amber-300 block mb-1">⚠️ El Límite de `cin &gt;&gt;` con Palabras</strong>
+        <p class="text-xs text-slate-300 m-0">
+          <code>std::cin &gt;&gt;</code> se detiene al encontrar el <strong>primer espacio en blanco</strong> o tabulación. Si ingresas <code>"Juan Pérez"</code> en una variable de texto con <code>cin &gt;&gt;</code>, ¡solo guardará <code>"Juan"</code> y dejará <code>"Pérez"</code> flotando en el buffer!
+        </p>
+      </div>
     </section>
 
+    <!-- 3. EL BUG DEL BUFFER Y GETLINE -->
     <section class="mb-10">
-      <h2><code>std::cin</code></h2>
+      <h2>3. 🚨 El "Bug Fantasma" del Buffer y cómo Resolverlo</h2>
       <p>
-        Equivale a “Leer” en PSeInt para números y palabras simples. Ojo: <code>cin &gt;&gt;</code> deja el salto de línea en el buffer; si después lees una línea completa, conviene usar <code>std::getline</code> con cuidado (a veces hace falta un <code>cin.ignore()</code> antes).
+        Para leer frases completas con espacios usamos <code>std::getline(std::cin, texto)</code>. Pero si antes usaste un <code>cin &gt;&gt;</code>, ocurrirá el error más común de los estudiantes: <strong>el programa parece saltarse el getline sin dejarte escribir</strong>.
       </p>
+
+      <div class="overflow-x-auto my-4">
+        <table class="w-full text-left text-xs border-collapse">
+          <thead>
+            <tr class="border-b border-slate-700 bg-slate-900/80 text-blue-300 font-mono">
+              <th class="p-3">Momento</th>
+              <th class="p-3">Lo que teclea el usuario</th>
+              <th class="p-3">Lo que lee C++</th>
+              <th class="p-3">Lo que queda atrapado en el Buffer</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-800 text-slate-200">
+            <tr>
+              <td class="p-3 font-mono">cin &gt;&gt; id;</td>
+              <td class="p-3 font-mono text-emerald-400">101 + [ENTER]</td>
+              <td class="p-3">Lee el 101</td>
+              <td class="p-3 font-mono text-rose-400">El carácter salto de línea '\n'</td>
+            </tr>
+            <tr>
+              <td class="p-3 font-mono">getline(cin, nombre);</td>
+              <td class="p-3 font-mono text-slate-400">(Esperando escribir...)</td>
+              <td class="p-3 text-rose-300">Ve el '\n' rezagado de inmediato</td>
+              <td class="p-3">¡Cree que el usuario ingresó un texto vacío y avanza!</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>La Solución Profesional: <code>std::cin.ignore()</code></h3>
+      <p>
+        Basta con colocar <code>std::cin.ignore();</code> justo después del <code>cin &gt;&gt;</code> para descartar ese salto de línea residual:
+      </p>
+
       <CodeBlock
         lang="cpp"
         code={`#include <iostream>
 #include <string>
 
 int main() {
-    int n;
-    std::cout << "Ingresá un entero: ";
-    std::cin >> n;
+    int id;
+    std::string nombreCompleto;
 
-    std::cin.ignore(10000, '\\n'); // limpiar hasta el fin de línea
-    std::string linea;
-    std::cout << "Ingresá una frase: ";
-    std::getline(std::cin, linea);
+    std::cout << "Ingresa tu ID numérico: ";
+    std::cin >> id;
 
-    std::cout << "n=" << n << " frase=" << linea << "\\n";
+    // 🧹 Limpiamos el buffer del teclado:
+    std::cin.ignore();
+
+    std::cout << "Ingresa tu nombre y apellido: ";
+    std::getline(std::cin, nombreCompleto);
+
+    std::cout << "Registro exitoso: [" << id << "] " << nombreCompleto << "\\n";
     return 0;
 }`}
-        title="Entrada básica"
+        title="lectura_limpia.cpp"
       />
     </section>
 
-    <div class="ejercicio">
-      <h3>Ejercicio</h3>
-      <p class="enunciado">Pedí dos enteros y mostrá su suma.</p>
+    <!-- EJERCICIO PRÁCTICO -->
+    <div class="ejercicio mb-10">
+      <h3>Ejercicio: Ficha de Contacto</h3>
+      <p class="enunciado">
+        Crea un programa que solicite el número de teléfono (<code>int</code>) y luego el nombre completo con apellido (<code>std::string</code>). 
+        Asegúrate de limpiar el buffer correctamente e imprime ambos datos en una sola línea de confirmación.
+      </p>
       <details>
-        <summary>Ver idea</summary>
+        <summary>Ver solución</summary>
         <CodeBlock
           lang="cpp"
           code={`#include <iostream>
+#include <string>
 
 int main() {
-    int a, b;
-    std::cin >> a >> b;
-    std::cout << a + b << "\\n";
+    int telefono;
+    std::string nombre;
+
+    std::cout << "Teléfono: ";
+    std::cin >> telefono;
+
+    std::cin.ignore(); // Limpiar el buffer
+
+    std::cout << "Nombre completo: ";
+    std::getline(std::cin, nombre);
+
+    std::cout << "Contacto guardado: " << nombre << " -> Tel: " << telefono << "\\n";
     return 0;
 }`}
         />
       </details>
     </div>
+
+    <!-- QUIZ INTERACTIVO FORMATIVO -->
+    <section class="mt-12 pt-8 border-t border-slate-800">
+      <div class="text-center mb-6">
+        <span class="text-xs font-mono font-bold text-blue-400 uppercase tracking-widest block mb-1">Autoevaluación Formativa</span>
+        <h2 class="text-2xl font-black text-white m-0">Comprueba lo que Has Aprendido 🧠</h2>
+        <p class="text-xs text-slate-400 mt-1">Valida tu comprensión de flujos de entrada/salida y limpieza del buffer en C++.</p>
+      </div>
+
+      <CppQuizModal quizKey="io" />
+    </section>
   </article>
 </Layout>

@@ -1,34 +1,103 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
 import MermaidDiagram from '../../../components/challenges/MermaidDiagram.astro';
-import { pooGameChallenges, toMermaidGame } from '../../../data/pooGameChallenges';
+import { pooGameChallenges, toMermaidGame, pooGameLevelMeta, pooGameLevelOf } from '../../../data/pooGameChallenges';
+import type { PooGameChallenge, PooGameLevel } from '../../../data/pooGameChallenges';
 
 const totalChallenges = pooGameChallenges.length;
+const levelOrder: PooGameLevel[] = ['basico', 'intermedio', 'avanzado', 'experto'];
+
+const levelSummary = levelOrder.map((level) => {
+  const ids = pooGameChallenges.filter((ch) => pooGameLevelOf(ch) === level).map((ch) => ch.id);
+  return {
+    level,
+    meta: pooGameLevelMeta[level],
+    count: ids.length,
+    from: String(ids[0] ?? 0).padStart(2, '0'),
+    to: String(ids[ids.length - 1] ?? 0).padStart(2, '0'),
+  };
+});
+
+const battleChecks = [
+  'Analicé las clases del combate y sus asociaciones',
+  'Modelé la asociación y composición en constructores y atributos',
+  'Implementé las acciones del combate (ataque, defensa, daño, curación)',
+  'Simulé la batalla por turnos 1v1 en el método Main',
+];
+
+const checksFor = (ch: PooGameChallenge): string[] => {
+  const level = pooGameLevelOf(ch);
+  if (level === 'experto') return battleChecks;
+
+  const names = ch.associatedClasses.map((c) => c.name).join(', ');
+  const classCount = ch.associatedClasses.length + 1;
+  const checks = [
+    `Analicé ${ch.mainClass.name} y su asociación con ${names}`,
+    'Creé los constructores y conecté los objetos de una clase con otra',
+  ];
+
+  if (level === 'basico') {
+    checks.push('Implementé los métodos indicados en las 2 clases');
+  } else if (level === 'intermedio') {
+    checks.push(`Implementé los métodos de las ${classCount} clases sin usar List`);
+  } else {
+    checks.push(`Implementé los métodos de las ${classCount} clases y encadené la asociación`);
+  }
+
+  checks.push('Probé la asociación completa en el método Main');
+  return checks;
+};
 ---
 
 <Layout
-  title="Desafíos de POO Game — Asociación y Combate por Turnos (20 Desafíos)"
-  description="20 desafíos de POO enfocados exclusivamente en Clases y Asociación (sin herencia) con mecánicas de combate por turnos inspirados en Pokémon, Yu-Gi-Oh, Minecraft, Fortnite, RPGs y más."
+  title="Desafíos de POO Game — Asociación y Combate por Turnos (40 Desafíos)"
+  description="40 desafíos de POO con temática de videojuegos: 20 retos nuevos de asociación simple (2, 3 y 4 clases) y 20 combates por turnos avanzados con Pokémon, Yu-Gi-Oh, Minecraft, Fortnite, RPGs y más."
 >
   <article class="content-section">
     <div class="header-badge-row">
       <p class="kicker">POO Gamer · Clases & Asociación</p>
-      <span class="game-pill">🎮 20 Batallas por Turnos</span>
+      <span class="game-pill">🎮 40 Desafíos · Ruta Guiada</span>
     </div>
-    <h1>Desafíos de POO Game — Batallas por Turnos</h1>
+    <h1>Desafíos de POO Game — Asociación y Combate por Turnos</h1>
     <p class="hero-desc">
-      Aprende a modelar <strong>asociación y composición pura entre clases</strong> (sin herencia) mediante simulaciones de 
-      <strong>combate por turnos 1v1</strong>. Cada entidad principal equipa armas, escudos, habilidades o listas de ítems/pociones consumibles 
-      para enfrentarse a su oponente en el campo de batalla.
+      Aprende a modelar <strong>asociación y composición pura entre clases</strong> (sin herencia) con temática de videojuegos. 
+      Empieza por los <strong>20 retos nuevos</strong> ordenados por dificultad: asociación de <strong>2 clases</strong> (1–10), 
+      <strong>3 clases sin usar listas</strong> (11–15) y <strong>4 clases</strong> (16–20); después salta a los 
+      <strong>20 combates por turnos 1v1</strong> (21–40) con armas, escudos, habilidades y listas de ítems consumibles.
     </p>
     <p class="muted">
       Ruta canónica: <code>/challenges/poo-game</code> · Módulos relacionados: <a href="/challenges/poo/">/challenges/poo</a> (clases básicas), <a href="/challenges/inheritance/">/challenges/inheritance</a> (herencia) y <a href="/challenges/interface/">/challenges/interface</a> (interfaces).
     </p>
 
+    <!-- Ruta por niveles (filtro + guía) -->
+    <div class="level-ruta" id="levelRuta">
+      <p class="level-ruta-title">🗺️ Ruta de aprendizaje — elige un nivel para filtrar</p>
+      <div class="level-chips" role="group" aria-label="Filtrar desafíos por nivel">
+        <button type="button" class="level-filter-btn is-active" data-level-filter="todos">🎯 Todos ({totalChallenges})</button>
+        {levelSummary.map((item) => (
+          <button type="button" class="level-filter-btn" data-level-filter={item.level}>
+            {item.meta.icon} {item.meta.short} ({item.count})
+          </button>
+        ))}
+      </div>
+      <ul class="level-cards">
+        {levelSummary.map((item) => (
+          <li class="level-card" data-level-card={item.level}>
+            <span class="level-card-head">
+              <strong>{item.meta.icon} {item.meta.label}</strong>
+              <span class="level-card-count">{item.count} retos</span>
+            </span>
+            <span class="level-card-detail">{item.meta.detail}</span>
+            <span class="level-card-range">Desafíos {item.from} – {item.to}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+
     <!-- Barra de herramientas superior -->
     <div class="exercise-toolbar">
       <p class="exercise-toolbar-hint">
-        <strong>{totalChallenges} combates</strong> · Selecciona o expande para ver el diagrama de asociación UML y probar la lógica:
+        <strong>{totalChallenges} desafíos</strong> · Selecciona o expande para ver el diagrama de asociación UML y probar la lógica:
       </p>
       <div class="exercise-toolbar-actions">
         <div class="global-uml-switch" role="group" aria-label="Notación UML global">
@@ -42,17 +111,22 @@ const totalChallenges = pooGameChallenges.length;
 
     <!-- Lista de Desafíos Gamer -->
     <div id="exerciseList" class="exercise-list">
-      {pooGameChallenges.map((ch) => (
-        <details class="ex-card" id={ch.slug} data-ex-id={`poo-game-${ch.id}`}>
+      {pooGameChallenges.map((ch) => {
+        const level = pooGameLevelOf(ch);
+        const levelMeta = pooGameLevelMeta[level];
+        const totalClasses = ch.associatedClasses.length + 1;
+        return (
+        <details class="ex-card" id={ch.slug} data-ex-id={`poo-game-${ch.id}`} data-level={level}>
           <summary class="ex-summary">
             <span class="ex-num" aria-hidden="true">{String(ch.id).padStart(2, '0')}</span>
             <div class="ex-summary-main">
               <div class="ex-title-row">
                 <h3>{ch.id}. {ch.title}</h3>
                 <span class="theme-tag">{ch.icon} {ch.gameTheme}</span>
+                <span class={`level-tag level-tag--${level}`}>{levelMeta.icon} {levelMeta.short}</span>
               </div>
               <span class="ex-summary-meta">
-                Clase Principal: <strong>{ch.mainClass.name}</strong> · {ch.associatedClasses.length} clases asociadas · {ch.relations.length} conexiones (o-- / *--)
+                Clase Principal: <strong>{ch.mainClass.name}</strong> · {totalClasses} clases en total · {ch.relations.length} conexiones (o-- / *--)
               </span>
             </div>
             <span class="ex-progress" data-progress-for={`poo-game-${ch.id}`}>0 / 4</span>
@@ -64,7 +138,7 @@ const totalChallenges = pooGameChallenges.length;
             <div class="battle-scenario-banner">
               <span class="scenario-icon">{ch.icon}</span>
               <div class="scenario-text">
-                <strong>Escenario de Batalla:</strong>
+                <strong>{level === 'experto' ? 'Escenario de Batalla' : 'Escenario de Juego'}:</strong>
                 <p>{ch.context}</p>
               </div>
             </div>
@@ -73,16 +147,26 @@ const totalChallenges = pooGameChallenges.length;
               <strong>🎯 Misión POO:</strong> {ch.task}
             </p>
 
+            {ch.methodHints && ch.methodHints.length > 0 && (
+              <div class="method-hints">
+                <p class="method-hints-title">💡 Métodos que puedes implementar</p>
+                <ul>
+                  {ch.methodHints.map((hint) => (
+                    <li><code>{hint}</code></li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
             <!-- Diagrama UML en Mermaid con relaciones de Asociación y Composición -->
             <div class="diagram-wrapper">
               <MermaidDiagram title={`Diagrama de Asociación — ${ch.title}`} code={toMermaidGame(ch)} />
             </div>
 
             <div class="ex-checks">
-              <label class="chk"><input type="checkbox" data-check-id="diagrama" /> Analicé las clases ({ch.mainClass.name} y asociadas: {ch.associatedClasses.map(c => c.name).join(', ')})</label>
-              <label class="chk"><input type="checkbox" data-check-id="asociacion" /> Modelé la asociación y composición en constructores y atributos</label>
-              <label class="chk"><input type="checkbox" data-check-id="metodos" /> Implementé las acciones del combate (ataque, defensa, daño, curación)</label>
-              <label class="chk"><input type="checkbox" data-check-id="pelea_turnos" /> Simulé la batalla por turnos 1v1 en el método Main</label>
+              {checksFor(ch).map((label, i) => (
+                <label class="chk"><input type="checkbox" data-check-id={`paso_${i + 1}`} /> {label}</label>
+              ))}
             </div>
 
             <!-- Botón de Solución Protegido -->
@@ -96,11 +180,11 @@ const totalChallenges = pooGameChallenges.length;
               <div class="sol-header">
                 <h4>
                   <span>💡 Simulación Java Completa:</span>
-                  <span class="sol-badge">{ch.mainClass.name} (Batalla por Turnos)</span>
+                  <span class="sol-badge">{ch.mainClass.name} ({levelMeta.label.split('·')[1]?.trim()})</span>
                 </h4>
               </div>
               <p class="sol-desc">
-                Código Java funcional listo para compilar y ejecutar con simulación de combate en consola:
+                Código Java funcional listo para compilar y ejecutar con la simulación en consola:
               </p>
               <div class="code-block-wrap">
                 <pre><code>{ch.solutionCodeJava}</code></pre>
@@ -108,7 +192,8 @@ const totalChallenges = pooGameChallenges.length;
             </div>
           </div>
         </details>
-      ))}
+      );
+      })}
     </div>
 
     <!-- Modal de Contraseña para Soluciones -->
@@ -163,7 +248,7 @@ const totalChallenges = pooGameChallenges.length;
 
   <script is:inline>
     (function () {
-      const KEY = 'aprende_poo_game_v1';
+      const KEY = 'aprende_poo_game_v2';
       const readStore = () => {
         try { return JSON.parse(localStorage.getItem(KEY) || '{}'); } catch { return {}; }
       };
@@ -200,11 +285,32 @@ const totalChallenges = pooGameChallenges.length;
       });
 
       document.getElementById('expandAll')?.addEventListener('click', () => {
-        document.querySelectorAll('.ex-card[id]').forEach((d) => (d.open = true));
+        document.querySelectorAll('.ex-card[id]').forEach((d) => { if (!d.hidden) d.open = true; });
       });
       document.getElementById('collapseAll')?.addEventListener('click', () => {
         document.querySelectorAll('.ex-card[id]').forEach((d) => (d.open = false));
       });
+
+      // Filtro por nivel de la ruta de aprendizaje
+      const levelButtons = Array.from(document.querySelectorAll('[data-level-filter]'));
+      const applyLevelFilter = (level) => {
+        document.querySelectorAll('.ex-card[data-level]').forEach((card) => {
+          card.hidden = !(level === 'todos' || card.getAttribute('data-level') === level);
+        });
+        document.querySelectorAll('[data-level-card]').forEach((card) => {
+          card.classList.toggle('is-highlight', level !== 'todos' && card.getAttribute('data-level-card') === level);
+        });
+        levelButtons.forEach((btn) => {
+          btn.classList.toggle('is-active', btn.getAttribute('data-level-filter') === level);
+        });
+      };
+      levelButtons.forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          applyLevelFilter(btn.getAttribute('data-level-filter'));
+        });
+      });
+      applyLevelFilter('todos');
 
       // Lógica de contraseña para soluciones inline
       let targetSolId = null;
@@ -289,6 +395,7 @@ const totalChallenges = pooGameChallenges.length;
         if (!hash) return;
         const target = document.getElementById(hash);
         if (target && target.classList.contains('ex-card') && 'open' in target) {
+          if (target.hidden) applyLevelFilter('todos');
           target.open = true;
           target.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
@@ -336,6 +443,147 @@ const totalChallenges = pooGameChallenges.length;
       color: var(--text-muted);
       font-weight: 650;
       line-height: 1.6;
+    }
+    /* Ruta por niveles */
+    .level-ruta {
+      margin: 1.25rem 0 1rem;
+      padding: 1rem 1.1rem;
+      background: linear-gradient(135deg, #fffbeb, #ffffff);
+      border: 3px solid #1e1210;
+      border-radius: 18px;
+      box-shadow: 5px 5px 0 #1e1210;
+    }
+    .level-ruta-title {
+      margin: 0 0 0.7rem;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      font-size: 0.95rem;
+      color: #7c2d12;
+    }
+    .level-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+    }
+    .level-filter-btn {
+      appearance: none;
+      border: 2px solid #1e1210;
+      background: #ffffff;
+      color: #1e1210;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      font-size: 0.8rem;
+      padding: 0.35rem 0.8rem;
+      border-radius: 999px;
+      cursor: pointer;
+      box-shadow: 2px 2px 0 rgba(30, 18, 16, 0.18);
+      transition: transform 0.1s, background 0.12s, color 0.12s;
+    }
+    .level-filter-btn:hover {
+      transform: translateY(-1px);
+    }
+    .level-filter-btn.is-active {
+      background: #1e1210;
+      color: #fff8ee;
+    }
+    .level-cards {
+      list-style: none;
+      margin: 0.9rem 0 0;
+      padding: 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 0.7rem;
+    }
+    .level-card {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+      background: #ffffff;
+      border: 2px dashed rgba(30, 18, 16, 0.3);
+      border-radius: 14px;
+      padding: 0.7rem 0.8rem;
+    }
+    .level-card.is-highlight {
+      border-style: solid;
+      border-color: #d97706;
+      background: #fffbeb;
+      box-shadow: 3px 3px 0 rgba(217, 119, 6, 0.35);
+    }
+    .level-card-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 0.4rem;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.83rem;
+      color: #1e1210;
+    }
+    .level-card-count {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #b45309;
+      white-space: nowrap;
+    }
+    .level-card-detail {
+      font-size: 0.8rem;
+      line-height: 1.45;
+      color: var(--text-secondary);
+      font-weight: 650;
+    }
+    .level-card-range {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #7c2d12;
+    }
+    .level-tag {
+      border: 1.5px solid #1e1210;
+      border-radius: 999px;
+      padding: 0.14rem 0.55rem;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      font-size: 0.7rem;
+      white-space: nowrap;
+    }
+    .level-tag--basico { background: #dcfce7; color: #166534; }
+    .level-tag--intermedio { background: #fef9c3; color: #854d0e; }
+    .level-tag--avanzado { background: #ffedd5; color: #9a3412; }
+    .level-tag--experto { background: #fee2e2; color: #991b1b; }
+    .method-hints {
+      margin: 0 0 0.9rem;
+      padding: 0.8rem 0.95rem;
+      background: #f0fdf4;
+      border: 2px solid #16a34a;
+      border-left-width: 5px;
+      border-radius: 12px;
+    }
+    .method-hints-title {
+      margin: 0 0 0.45rem;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      font-size: 0.86rem;
+      color: #166534;
+    }
+    .method-hints ul {
+      margin: 0;
+      padding-left: 1.1rem;
+      display: grid;
+      gap: 0.3rem;
+    }
+    .method-hints li {
+      font-size: 0.84rem;
+      line-height: 1.45;
+      color: var(--text-secondary);
+    }
+    .method-hints code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      background: #dcfce7;
+      color: #14532d;
+      border: 1px solid #86efac;
+      border-radius: 6px;
+      padding: 0.05rem 0.35rem;
     }
     .exercise-toolbar {
       display: flex;

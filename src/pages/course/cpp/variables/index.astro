@@ -2,70 +2,222 @@
 import Layout from '../../../../layouts/Layout.astro';
 import CodeBlock from '../../../../components/CodeBlock.astro';
 import EcosistemasVariablesCta from '../../../../components/EcosistemasVariablesCta.astro';
+import CppQuizModal from '../../../../components/quizzes/CppQuizModal.astro';
+import CppMemoryStudio from '../../../../components/cpp/CppMemoryStudio';
 ---
 
-<Layout title="Variables en C++" description="Tipos básicos y declaración en C++" courseSlug="cpp">
+<Layout
+  title="2. Variables y la Memoria RAM en C++"
+  description="Domina los tipos primitivos, el modelo de casilleros de la memoria RAM, sizeof, const y auto en C++."
+  courseSlug="cpp"
+>
   <article class="content-section">
-    <h1>2. Variables y tipos</h1>
+    <!-- HERO / BANNER PPT -->
+    <div class="mb-8 p-6 rounded-2xl bg-gradient-to-r from-blue-900/40 via-cyan-900/30 to-slate-900/60 border border-blue-500/30 shadow-xl">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold bg-blue-500/20 text-blue-300 border border-blue-500/30 mb-2">
+            <span>⚡ C++ Básico</span>
+            <span>· Lección 2</span>
+          </span>
+          <h1 class="text-3xl font-black text-white m-0 tracking-tight">2. Variables, Tipos y la Memoria RAM 🧱</h1>
+          <p class="text-sm text-slate-300 m-0 mt-2 leading-relaxed">
+            Aprende cómo C++ interactúa directamente con el hardware: cada variable es un casillero físico de bytes con una dirección hexadecimal en la memoria RAM.
+          </p>
+        </div>
+        <div class="flex-shrink-0">
+          <a
+            href="/course-slides/cpp/variables/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-lg shadow-blue-500/30 transition-all hover:scale-105"
+          >
+            <span>📺</span>
+            <span>Ver Presentación Interactiva (PPT)</span>
+          </a>
+        </div>
+      </div>
+    </div>
 
+    <!-- 1. MODELO MENTAL DE CASILLEROS -->
     <section class="mb-10">
-      <h2>Declaración</h2>
+      <h2>1. El Modelo Mental: La Memoria RAM como Casilleros Numerados</h2>
       <p>
-        En C++ el tipo va <strong>antes</strong> del nombre (como en muchos lenguajes compilados). Algunos tipos viven en cabeceras aparte; para texto cómodo usamos <code>std::string</code> con <code>#include &lt;string&gt;</code>.
+        En lenguajes como Python o JavaScript, sueles ver una variable como un nombre que almacena cualquier cosa mágica. 
+        En <strong>C++</strong>, una variable es una <strong>reserva física de espacio contiguo en la memoria RAM</strong>.
       </p>
+      <p>
+        Toda variable tiene tres propiedades inseparables:
+      </p>
+      <ul class="space-y-1 my-3 text-slate-300 text-sm">
+        <li><strong>1. Tipo:</strong> Le dice al compilador cuántos casilleros de bytes reservar (ej. 4 bytes para <code>int</code>).</li>
+        <li><strong>2. Nombre (Identificador):</strong> La etiqueta que tú usas en el código para referirte a ella.</li>
+        <li><strong>3. Dirección de Memoria:</strong> El número hexadecimal exacto donde vive en la RAM (ej. <code>0x7ffee400</code>).</li>
+      </ul>
+
+      <!-- SIMULADOR INTERACTIVO -->
+      <div class="my-6">
+        <CppMemoryStudio client:load />
+      </div>
+    </section>
+
+    <!-- 2. TIPOS DE DATOS PRIMITIVOS -->
+    <section class="mb-10">
+      <h2>2. Tabla de Tipos Primitivos en C++</h2>
+      <p>
+        Conocer el tamaño de los tipos es indispensable para entender por qué C++ es tan eficiente:
+      </p>
+
+      <div class="overflow-x-auto my-6">
+        <table class="w-full text-left text-xs border-collapse">
+          <thead>
+            <tr class="border-b border-slate-700 bg-slate-900/80 text-blue-300 font-mono">
+              <th class="p-3">Tipo</th>
+              <th class="p-3">Tamaño (Bytes)</th>
+              <th class="p-3">Rango Aprox. / Propósito</th>
+              <th class="p-3">Ejemplo</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-800 text-slate-200">
+            <tr>
+              <td class="p-3 font-mono text-cyan-400 font-bold">bool</td>
+              <td class="p-3 font-mono">1 byte</td>
+              <td class="p-3">Booleano: <code>true</code> (1) o <code>false</code> (0)</td>
+              <td class="p-3 font-mono text-emerald-400">bool activo = true;</td>
+            </tr>
+            <tr>
+              <td class="p-3 font-mono text-cyan-400 font-bold">char</td>
+              <td class="p-3 font-mono">1 byte</td>
+              <td class="p-3">Un único carácter ASCII entre comillas simples</td>
+              <td class="p-3 font-mono text-emerald-400">char letra = 'A';</td>
+            </tr>
+            <tr>
+              <td class="p-3 font-mono text-cyan-400 font-bold">int</td>
+              <td class="p-3 font-mono">4 bytes</td>
+              <td class="p-3">Entero de 32 bits (-2 mil millones a +2 mil millones)</td>
+              <td class="p-3 font-mono text-emerald-400">int vidas = 3;</td>
+            </tr>
+            <tr>
+              <td class="p-3 font-mono text-cyan-400 font-bold">double</td>
+              <td class="p-3 font-mono">8 bytes</td>
+              <td class="p-3">Decimal de doble precisión (15 dígitos decimales)</td>
+              <td class="p-3 font-mono text-emerald-400">double precio = 19.99;</td>
+            </tr>
+            <tr>
+              <td class="p-3 font-mono text-cyan-400 font-bold">std::string</td>
+              <td class="p-3 font-mono">Dinámico</td>
+              <td class="p-3">Cadenas de texto completas (requiere <code>#include &lt;string&gt;</code>)</td>
+              <td class="p-3 font-mono text-emerald-400">std::string nombre = "Ana";</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
       <CodeBlock
         lang="cpp"
         code={`#include <iostream>
 #include <string>
 
 int main() {
-    int edad = 20;
-    double pi = 3.14159;
-    bool activo = true;
-    char inicial = 'A';
-    std::string nombre = "Ana";
+    int nivel = 1;
+    double energia = 99.5;
+    char clase = 'M'; // Mago
+    bool enCombate = false;
+    std::string jugador = "Gandalf";
 
-    std::cout << nombre << " tiene " << edad << " años\\n";
+    std::cout << jugador << " [Nivel " << nivel << "] Energía: " << energia << "\\n";
     return 0;
 }`}
-        title="Tipos comunes"
+        title="declaracion_tipos.cpp"
       />
     </section>
 
+    <!-- 3. PELIGRO DE VARIABLES NO INICIALIZADAS -->
     <section class="mb-10">
-      <h2><code>const</code> y literales</h2>
-      <p>Los valores que no deben cambiar se marcan con <code>const</code> (ayuda al compilador y a ti).</p>
-      <CodeBlock lang="cpp" code={`const int MESES = 12;
-const double IVA = 0.21;`} title="Constantes" />
+      <h2>3. ⚠️ El Gran Peligro: "Basura de Memoria"</h2>
+      <div class="p-5 rounded-2xl border border-rose-500/30 bg-rose-950/20">
+        <h4 class="text-xs font-black text-rose-300 uppercase tracking-wider mb-2 flex items-center gap-2">
+          <span>🚨 ¿Qué pasa si escribes `int puntaje;` sin darle valor?</span>
+        </h4>
+        <p class="text-xs text-slate-300 leading-relaxed mb-3">
+          A diferencia de Java o C# que ponen <code>0</code> por defecto, en C++ las variables locales quedan con 
+          <strong>"basura"</strong>: sea lo que sea que estuviese grabado en ese casillero de la memoria RAM antes de que tu programa iniciara 
+          (un número al azar como <code>-148392019</code>).
+        </p>
+        <p class="text-xs text-emerald-300 font-bold m-0">
+          ✅ Regla de Oro: Inicializa SIEMPRE tus variables al momento de declararlas (<code>int puntaje = 0;</code>).
+        </p>
+      </div>
     </section>
 
+    <!-- 4. CONST Y AUTO -->
     <section class="mb-10">
-      <h2><code>auto</code> (C++11+)</h2>
-      <p>El compilador deduce el tipo a partir del valor inicial (tiene que haber inicialización).</p>
-      <CodeBlock lang="cpp" code={`auto x = 42;        // int
-auto z = 3.14;      // double
-auto ok = false;    // bool`} title="auto" />
+      <h2>4. Constantes (<code>const</code>) y Deducción Automática (<code>auto</code>)</h2>
+      <p>
+        En C++ moderno, dos palabras clave hacen tu código mucho más seguro y limpio:
+      </p>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 my-4">
+        <div class="p-4 rounded-xl border border-slate-700 bg-slate-900/60">
+          <strong class="text-xs font-mono text-cyan-400 block mb-1">const (Inmutabilidad)</strong>
+          <p class="text-xs text-slate-300 m-0">
+            Protege el valor para que nadie pueda cambiarlo accidentalmente más adelante. Si alguien intenta hacer <code>PI = 4.0;</code>, el compilador bloquea el código con error.
+          </p>
+          <div class="mt-2 text-xs font-mono text-emerald-400">const double PI = 3.141592;</div>
+        </div>
+
+        <div class="p-4 rounded-xl border border-slate-700 bg-slate-900/60">
+          <strong class="text-xs font-mono text-indigo-400 block mb-1">auto (C++11+)</strong>
+          <p class="text-xs text-slate-300 m-0">
+            Le pide al compilador que deduzca automáticamente el tipo en base al valor inicial. Ideal para tipos largos o iteradores.
+          </p>
+          <div class="mt-2 text-xs font-mono text-emerald-400">auto velocidad = 120; // int</div>
+        </div>
+      </div>
     </section>
 
-    <div class="ejercicio">
-      <h3>Ejercicio</h3>
-      <p class="enunciado">Declará variables para el precio de un producto (<code>double</code>), la cantidad (<code>int</code>) y mostrá el total.</p>
+    <!-- EJERCICIO PRÁCTICO -->
+    <div class="ejercicio mb-10">
+      <h3>Ejercicio Práctico: Boleta de Venta</h3>
+      <p class="enunciado">
+        Declara una constante con el impuesto <code>IVA = 0.19</code>, variables para el <code>precioUnitario = 1500.0</code> y la <code>cantidad = 4</code>.
+        Calcula el subtotal, el monto de IVA y el precio final a pagar, imprimiéndolos con formato en la consola.
+      </p>
       <details>
-        <summary>Ver idea</summary>
+        <summary>Ver solución completa</summary>
         <CodeBlock
           lang="cpp"
           code={`#include <iostream>
 
 int main() {
-    double precio = 9.99;
-    int cantidad = 3;
-    double total = precio * cantidad;
-    std::cout << "Total: " << total << "\\n";
+    const double IVA = 0.19;
+    double precioUnitario = 1500.0;
+    int cantidad = 4;
+
+    double subtotal = precioUnitario * cantidad;
+    double impuesto = subtotal * IVA;
+    double totalPagar = subtotal + impuesto;
+
+    std::cout << "Subtotal: $" << subtotal << "\\n";
+    std::cout << "IVA (19%): $" << impuesto << "\\n";
+    std::cout << "Total a pagar: $" << totalPagar << "\\n";
     return 0;
 }`}
         />
       </details>
     </div>
-      <EcosistemasVariablesCta code="c++" />
+
+    <EcosistemasVariablesCta code="c++" />
+
+    <!-- QUIZ INTERACTIVO FORMATIVO -->
+    <section class="mt-12 pt-8 border-t border-slate-800">
+      <div class="text-center mb-6">
+        <span class="text-xs font-mono font-bold text-blue-400 uppercase tracking-widest block mb-1">Autoevaluación Formativa</span>
+        <h2 class="text-2xl font-black text-white m-0">Comprueba lo que Has Aprendido 🧠</h2>
+        <p class="text-xs text-slate-400 mt-1">Valida tu comprensión de variables, tipos primitivos y gestión de memoria en C++.</p>
+      </div>
+
+      <CppQuizModal quizKey="variables" />
+    </section>
   </article>
 </Layout>

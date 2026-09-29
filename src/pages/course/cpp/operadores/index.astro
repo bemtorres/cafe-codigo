@@ -1,46 +1,216 @@
 ---
 import Layout from '../../../../layouts/Layout.astro';
 import CodeBlock from '../../../../components/CodeBlock.astro';
+import CppQuizModal from '../../../../components/quizzes/CppQuizModal.astro';
 ---
 
-<Layout title="Operadores en C++" description="Aritmética, comparación y lógica en C++" courseSlug="cpp">
+<Layout
+  title="4. Operadores en C++: Cálculo y Lógica"
+  description="Domina los operadores aritméticos, la trampa de la división entera, módulo, incremento y cortocircuito lógico en C++."
+  courseSlug="cpp"
+>
   <article class="content-section">
-    <h1>4. Operadores</h1>
-
-    <section class="mb-10">
-      <h2>Aritméticos</h2>
-      <p><code>+</code> <code>-</code> <code>*</code> <code>/</code> <code>%</code> (módulo solo con enteros).</p>
-      <CodeBlock lang="cpp" code={`int r = 17 % 5;  // 2
-double x = 7.0 / 2.0;  // 3.5`} title="Ejemplos" />
-    </section>
-
-    <section class="mb-10">
-      <h2>Incremento</h2>
-      <CodeBlock
-        lang="cpp"
-        code={`int i = 0;
-i++;      // post-incremento
-++i;      // pre-incremento
-i += 2;   // i = i + 2`}
-        title="++ y +="
-      />
-    </section>
-
-    <section class="mb-10">
-      <h2>Relacionales y lógicos</h2>
-      <p><code>==</code> <code>!=</code> <code>&lt;</code> <code>&gt;</code> <code>&lt;=</code> <code>&gt;=</code></p>
-      <p><code>&&</code> AND · <code>||</code> OR · <code>!</code> NOT</p>
-      <CodeBlock
-        lang="cpp"
-        code={`bool ok = (a >= 0 && a <= 100);
-bool fuera = (x < 0 || x > 10);`}
-        title="Condiciones compuestas"
-      />
-    </section>
-
-    <div class="ejercicio">
-      <h3>Ejercicio</h3>
-      <p class="enunciado">Dado un entero <code>n</code>, decidir si es par (usar <code>%</code>).</p>
+    <!-- HERO / BANNER PPT -->
+    <div class="mb-8 p-6 rounded-2xl bg-gradient-to-r from-blue-900/40 via-amber-900/30 to-slate-900/60 border border-blue-500/30 shadow-xl">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold bg-blue-500/20 text-blue-300 border border-blue-500/30 mb-2">
+            <span>⚡ C++ Básico</span>
+            <span>· Lección 4</span>
+          </span>
+          <h1 class="text-3xl font-black text-white m-0 tracking-tight">4. Operadores, Aritmética y Trampas Ocultas ⚙️</h1>
+          <p class="text-sm text-slate-300 m-0 mt-2 leading-relaxed">
+            Aprende a calcular y comparar con precisión en C++: evita la trampa de la división entera y domina el módulo y la lógica booleana.
+          </p>
+        </div>
+        <div class="flex-shrink-0">
+          <a
+            href="/course-slides/cpp/operadores/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-lg shadow-blue-500/30 transition-all hover:scale-105"
+          >
+            <span>📺</span>
+            <span>Ver Presentación Interactiva (PPT)</span>
+          </a>
+        </div>
+      </div>
     </div>
+
+    <!-- 1. LA TRAMPA DE LA DIVISIÓN -->
+    <section class="mb-10">
+      <h2>1. ⚠️ La Trampa Mayor: División Entera vs Decimal</h2>
+      <p>
+        En C++, el operador de división <code>/</code> se comporta según el tipo de sus operandos:
+      </p>
+
+      <div class="overflow-x-auto my-4">
+        <table class="w-full text-left text-xs border-collapse">
+          <thead>
+            <tr class="border-b border-slate-700 bg-slate-900/80 text-blue-300 font-mono">
+              <th class="p-3">Expresión</th>
+              <th class="p-3">Resultado en C++</th>
+              <th class="p-3">¿Por qué?</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-800 text-slate-200">
+            <tr>
+              <td class="p-3 font-mono text-rose-400">7 / 2</td>
+              <td class="p-3 font-mono font-bold text-white">3</td>
+              <td class="p-3">Entero entre entero: se descartan los decimales (truncado a cero).</td>
+            </tr>
+            <tr>
+              <td class="p-3 font-mono text-emerald-400">7.0 / 2</td>
+              <td class="p-3 font-mono font-bold text-white">3.5</td>
+              <td class="p-3">Al haber un double (7.0), el cálculo se promueve a decimal.</td>
+            </tr>
+            <tr>
+              <td class="p-3 font-mono text-emerald-400">7 / 2.0</td>
+              <td class="p-3 font-mono font-bold text-white">3.5</td>
+              <td class="p-3">Exactamente igual: basta con que un operando sea flotante.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <CodeBlock
+        lang="cpp"
+        code={`#include <iostream>
+
+int main() {
+    int a = 7;
+    int b = 2;
+
+    // Peligro clásico:
+    double resultado1 = a / b;         // Guarda 3.0 (7/2 se truncó a 3 primero)
+    // Solución correcta con casting o decimal:
+    double resultado2 = (double)a / b; // Guarda 3.5
+
+    std::cout << "Truncado: " << resultado1 << " | Correcto: " << resultado2 << "\\n";
+    return 0;
+}`}
+        title="division_correcta.cpp"
+      />
+    </section>
+
+    <!-- 2. EL OPERADOR MÓDULO -->
+    <section class="mb-10">
+      <h2>2. El Operador Módulo (<code>%</code>): Resto de la División</h2>
+      <p>
+        El operador <code>%</code> devuelve el residuo exacto tras una división de enteros:
+      </p>
+      <CodeBlock
+        lang="cpp"
+        code={`#include <iostream>
+
+int main() {
+    int numero = 17;
+
+    // Verificar paridad:
+    if (numero % 2 == 0) {
+        std::cout << numero << " es PAR\\n";
+    } else {
+        std::cout << numero << " es IMPAR\\n";
+    }
+
+    // Aritmética circular (reloj 12h):
+    int horasPasadas = 26;
+    std::cout << "Hora actual: " << (horasPasadas % 12) << " hrs\\n"; // 2 hrs
+    return 0;
+}`}
+        title="modulo_paridad.cpp"
+      />
+    </section>
+
+    <!-- 3. PRE-INCREMENTO VS POST-INCREMENTO -->
+    <section class="mb-10">
+      <h2>3. Pre-incremento (<code>++i</code>) vs Post-incremento (<code>i++</code>)</h2>
+      <p>
+        Ambos suman 1 a la variable, pero difieren en el instante exacto en que devuelven el valor a la expresión:
+      </p>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 my-4">
+        <div class="p-4 rounded-xl border border-slate-700 bg-slate-900/60">
+          <strong class="text-xs font-mono text-cyan-400 block mb-1">++i (Pre-incremento)</strong>
+          <p class="text-xs text-slate-300 m-0">
+            Suma 1 <strong>primero</strong>, y luego devuelve el nuevo valor:
+          </p>
+          <div class="mt-2 text-xs font-mono text-emerald-400">int a = 5; int b = ++a; // a=6, b=6</div>
+        </div>
+        <div class="p-4 rounded-xl border border-slate-700 bg-slate-900/60">
+          <strong class="text-xs font-mono text-indigo-400 block mb-1">i++ (Post-incremento)</strong>
+          <p class="text-xs text-slate-300 m-0">
+            Entrega el valor actual <strong>primero</strong>, y luego suma 1:
+          </p>
+          <div class="mt-2 text-xs font-mono text-emerald-400">int a = 5; int b = a++; // a=6, b=5</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. LÓGICA Y CORTOCIRCUITO -->
+    <section class="mb-10">
+      <h2>4. Operadores Lógicos y Cortocircuito (Short-Circuit)</h2>
+      <p>
+        C++ optimiza las evaluaciones booleanas con <strong>cortocircuito</strong>:
+      </p>
+      <ul class="space-y-1 text-slate-300 text-sm">
+        <li><code>&&</code> (AND): Si el primer término es <code>false</code>, no evalúa el segundo.</li>
+        <li><code>||</code> (OR): Si el primer término es <code>true</code>, no evalúa el segundo.</li>
+        <li><code>!</code> (NOT): Invierte el valor booleano.</li>
+      </ul>
+      <div class="p-4 rounded-xl border border-blue-500/30 bg-blue-950/20 mt-4">
+        <strong class="text-xs text-cyan-300 block mb-1">🛡️ Código Defensivo con Cortocircuito</strong>
+        <p class="text-xs text-slate-300 m-0">
+          Puedes evitar divisiones por cero en una sola línea gracias al cortocircuito:
+          <code class="text-emerald-400 font-mono block mt-1">if (divisor != 0 && (total / divisor &gt; 10)) &#123; ... &#125;</code>
+          Si divisor es 0, la segunda condición nunca se ejecuta, evitando el colapso del programa.
+        </p>
+      </div>
+    </section>
+
+    <!-- EJERCICIO PRÁCTICO -->
+    <div class="ejercicio mb-10">
+      <h3>Ejercicio: Desglose de Monedas</h3>
+      <p class="enunciado">
+        Dado un monto en dinero entero (ej. <code>2750</code>), calcula cuántos billetes de <code>1000</code> y cuántas monedas de <code>500</code> y <code>100</code> se necesitan usando división entera <code>/</code> y residuo <code>%</code>.
+      </p>
+      <details>
+        <summary>Ver solución</summary>
+        <CodeBlock
+          lang="cpp"
+          code={`#include <iostream>
+
+int main() {
+    int total = 2750;
+
+    int billetes1000 = total / 1000;
+    int resto = total % 1000;
+
+    int monedas500 = resto / 500;
+    resto = resto % 500;
+
+    int monedas100 = resto / 100;
+    resto = resto % 100;
+
+    std::cout << "Billetes de 1000: " << billetes1000 << "\\n";
+    std::cout << "Monedas de 500: " << monedas500 << "\\n";
+    std::cout << "Monedas de 100: " << monedas100 << "\\n";
+    std::cout << "Sobrante final: " << resto << "\\n";
+    return 0;
+}`}
+        />
+      </details>
+    </div>
+
+    <!-- QUIZ INTERACTIVO FORMATIVO -->
+    <section class="mt-12 pt-8 border-t border-slate-800">
+      <div class="text-center mb-6">
+        <span class="text-xs font-mono font-bold text-blue-400 uppercase tracking-widest block mb-1">Autoevaluación Formativa</span>
+        <h2 class="text-2xl font-black text-white m-0">Comprueba lo que Has Aprendido 🧠</h2>
+        <p class="text-xs text-slate-400 mt-1">Valida tu comprensión de operadores aritméticos, módulo y lógica booleana.</p>
+      </div>
+
+      <CppQuizModal quizKey="operadores" />
+    </section>
   </article>
 </Layout>

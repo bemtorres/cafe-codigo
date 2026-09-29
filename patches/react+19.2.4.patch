@@ -1,0 +1,67 @@
+diff --git a/node_modules/react/cjs/react-jsx-dev-runtime.production.js b/node_modules/react/cjs/react-jsx-dev-runtime.production.js
+index 9b9ef5e..5f73d82 100644
+--- a/node_modules/react/cjs/react-jsx-dev-runtime.production.js
++++ b/node_modules/react/cjs/react-jsx-dev-runtime.production.js
+@@ -10,6 +10,34 @@
+  */
+ 
+ "use strict";
+-var REACT_FRAGMENT_TYPE = Symbol.for("react.fragment");
++var REACT_ELEMENT_TYPE = Symbol.for("react.transitional.element");
++var REACT_FRAGMENT_TYPE = Symbol.for("react.fragment");
++
++function jsxDEV(type, config, maybeKey) {
++  var key = null;
++  if (maybeKey !== void 0) {
++    key = "" + maybeKey;
++  }
++  if (config && config.key !== void 0) {
++    key = "" + config.key;
++  }
++  var props = {};
++  if (config) {
++    for (var propName in config) {
++      if (
++        Object.prototype.hasOwnProperty.call(config, propName) &&
++        propName !== "key" &&
++        propName !== "ref"
++      ) {
++        props[propName] = config[propName];
++      }
++    }
++  }
++  var ref = config && config.ref !== void 0 ? config.ref : null;
++  return {
++    $$typeof: REACT_ELEMENT_TYPE,
++    type: type,
++    key: key,
++    ref: ref,
++    props: props
++  };
++}
++
+ exports.Fragment = REACT_FRAGMENT_TYPE;
+-exports.jsxDEV = void 0;
++exports.jsxDEV = jsxDEV;
+diff --git a/node_modules/react/jsx-dev-runtime.js b/node_modules/react/jsx-dev-runtime.js
+index e8e58a2..087b28f 100644
+--- a/node_modules/react/jsx-dev-runtime.js
++++ b/node_modules/react/jsx-dev-runtime.js
+@@ -1,7 +1,11 @@
+ 'use strict';
+ 
+-if (process.env.NODE_ENV === 'production') {
+-  module.exports = require('./cjs/react-jsx-dev-runtime.production.js');
+-} else {
+-  module.exports = require('./cjs/react-jsx-dev-runtime.development.js');
+-}
++var devRuntime = require('./cjs/react-jsx-dev-runtime.development.js');
++var prodRuntime = require('./cjs/react-jsx-dev-runtime.production.js');
++
++var runtime = (process.env.NODE_ENV === 'production')
++  ? (prodRuntime.jsxDEV ? prodRuntime : devRuntime)
++  : (devRuntime.jsxDEV ? devRuntime : prodRuntime);
++
++module.exports = runtime;
++module.exports.Fragment = runtime.Fragment || prodRuntime.Fragment;
++module.exports.jsxDEV = runtime.jsxDEV || prodRuntime.jsxDEV;

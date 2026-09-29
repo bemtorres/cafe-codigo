@@ -1,11 +1,37 @@
 ---
 import Layout from '../../../../layouts/Layout.astro';
 import CodeBlock from '../../../../components/CodeBlock.astro';
+import CppQuizModal from '../../../../components/quizzes/CppQuizModal.astro';
 ---
 
 <Layout title="Funciones y Tipos de Retorno en C++" description="Aprende funciones en C++ desde cero con ejemplos sencillos (calculadora, concatenación de nombre, validación de estado) hasta retornos avanzados (std::pair, std::tuple, std::optional, vectores y objetos)." courseSlug="cpp">
   <article class="content-section">
-    <h1>8. Funciones y Tipos de Retorno</h1>
+    <!-- HERO / BANNER PPT -->
+    <div class="mb-8 p-6 rounded-2xl bg-gradient-to-r from-blue-900/40 via-indigo-900/30 to-slate-900/60 border border-blue-500/30 shadow-xl">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold bg-blue-500/20 text-blue-300 border border-blue-500/30 mb-2">
+            <span>⚡ C++ Básico</span>
+            <span>· Lección 8</span>
+          </span>
+          <h1 class="text-3xl font-black text-white m-0 tracking-tight">8. Funciones, Memoria y Paso por Referencia (&) 🧩</h1>
+          <p class="text-sm text-slate-300 m-0 mt-2 leading-relaxed">
+            De código espagueti a modularización profesional: comprende la diferencia entre fotocopias (valor) y llaves originales (referencia &).
+          </p>
+        </div>
+        <div class="flex-shrink-0">
+          <a
+            href="/course-slides/cpp/funciones/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-lg shadow-blue-500/30 transition-all hover:scale-105"
+          >
+            <span>📺</span>
+            <span>Ver Presentación Interactiva (PPT)</span>
+          </a>
+        </div>
+      </div>
+    </div>
 
     <p class="intro-text">
       Una función es un bloque de código reutilizable diseñado para realizar una tarea específica. En C++, cada función declara explícitamente su <strong>tipo de retorno</strong> (qué valor devuelve al terminar) y sus <strong>parámetros</strong> (qué datos necesita para trabajar).
@@ -409,6 +435,17 @@ int main() {
         </a>
       </div>
     </div>
+
+    <!-- QUIZ INTERACTIVO FORMATIVO -->
+    <section class="mt-12 pt-8 border-t border-slate-800">
+      <div class="text-center mb-6">
+        <span class="text-xs font-mono font-bold text-blue-400 uppercase tracking-widest block mb-1">Autoevaluación Formativa</span>
+        <h2 class="text-2xl font-black text-white m-0">Comprueba lo que Has Aprendido 🧠</h2>
+        <p class="text-xs text-slate-400 mt-1">Valida tu comprensión de funciones, valor vs referencia y punteros en C++.</p>
+      </div>
+
+      <CppQuizModal quizKey="funciones" />
+    </section>
 
     <nav class="nav-bottom">
       <a href="/course/cpp/colecciones/" class="prev">← Arreglos y vector</a>

@@ -1,24 +1,13 @@
-export type UmlClassSpec = {
-  name: string;
-  attrs: string[];
-  methods: string[];
-};
+import { pooGameSimpleChallenges } from './pooGameSimpleChallenges';
+import type { PooGameChallenge, PooGameLevel, UmlClassSpec } from './pooGameSimpleChallenges';
+import { pooGameLevelMeta } from './pooGameSimpleChallenges';
 
-export type PooGameChallenge = {
-  id: number;
-  slug: string;
-  title: string;
-  gameTheme: string;
-  icon: string;
-  context: string;
-  task: string;
-  mainClass: UmlClassSpec;
-  associatedClasses: UmlClassSpec[];
-  relations: { from: string; to: string; type: 'aggregation' | 'composition'; label: string }[];
-  solutionCodeJava: string;
-};
+export type { UmlClassSpec, PooGameChallenge, PooGameLevel } from './pooGameSimpleChallenges';
+export { pooGameLevelMeta } from './pooGameSimpleChallenges';
 
-export const pooGameChallenges: PooGameChallenge[] = [
+// Desafíos avanzados (combate por turnos). Se exponen a partir del ID 21
+// porque los IDs 1-20 están reservados para los retos de asociación por niveles.
+const pooGameAdvancedChallenges: PooGameChallenge[] = [
   {
     id: 1,
     slug: 'luchador-medieval',
@@ -3016,6 +3005,25 @@ public class Main {
 }`,
   },
 ];
+
+const pooGameExpertChallenges: PooGameChallenge[] = pooGameAdvancedChallenges.map((ch, index) => ({
+  ...ch,
+  id: index + 21,
+  level: 'experto' as PooGameLevel,
+}));
+
+export const pooGameChallenges: PooGameChallenge[] = [
+  ...pooGameSimpleChallenges,
+  ...pooGameExpertChallenges,
+];
+
+export function pooGameLevelOf(ch: PooGameChallenge): PooGameLevel {
+  return ch.level ?? 'experto';
+}
+
+export function pooGameLevelLabel(level: PooGameLevel): string {
+  return pooGameLevelMeta[level].label;
+}
 
 export function toMermaidGame(ch: PooGameChallenge): string {
   const clean = (s: string) => s.trim().replace(/^([+\-#~])\s*/, '$1');

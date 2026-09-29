@@ -1,6 +1,7 @@
 ---
 import Layout from "../../../../layouts/Layout.astro";
 import CodeBlock from "../../../../components/CodeBlock.astro";
+import CppQuizModal from "../../../../components/quizzes/CppQuizModal.astro";
 ---
 
 <Layout
@@ -24,6 +25,23 @@ import CodeBlock from "../../../../components/CodeBlock.astro";
       <span>/</span>
       <span class="text-amber-700">7.3 Arreglos 2D: Pac-Man</span>
     </nav>
+
+    <!-- BANNER PPT -->
+    <div class="mb-6 p-4 rounded-2xl bg-gradient-to-r from-amber-900/40 via-yellow-900/30 to-slate-900/60 border border-amber-500/30 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div>
+        <span class="text-xs font-mono font-bold text-amber-400 block mb-1">Presentación Lección 7.3</span>
+        <h3 class="text-base font-black text-white m-0">Diapositivas: Matrices 2D y Pac-Man en C++</h3>
+      </div>
+      <a
+        href="/course-slides/cpp/array-game/"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs shadow-md shadow-amber-500/20 transition-all no-underline flex items-center gap-2"
+      >
+        <span>📺</span>
+        <span>Ver PPT</span>
+      </a>
+    </div>
 
     <!-- Header Principal -->
     <div class="mb-10 border-b border-slate-200 pb-6">
@@ -572,6 +590,17 @@ int main() {
         />
       </section>
     </div>
+
+    <!-- QUIZ INTERACTIVO FORMATIVO -->
+    <section class="mt-12 pt-8 border-t border-slate-200">
+      <div class="text-center mb-6">
+        <span class="text-xs font-mono font-bold text-amber-700 uppercase tracking-widest block mb-1">Autoevaluación Formativa</span>
+        <h2 class="text-2xl font-black text-slate-900 m-0">Comprueba lo que Has Aprendido 🧠</h2>
+        <p class="text-xs text-slate-600 mt-1">Valida tu comprensión de matrices 2D, coordenadas [y][x] y detección de colisiones.</p>
+      </div>
+
+      <CppQuizModal quizKey="array-game" />
+    </section>
 
     <!-- Navegación Inferior -->
     <div

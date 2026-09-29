@@ -1,0 +1,19 @@
+---
+import QuizModal from './QuizModal.astro';
+
+type Props = {
+  quizKey: string;
+};
+
+const { quizKey } = Astro.props as Props;
+---
+
+<QuizModal
+  courseSlug="cpp"
+  quizKey={quizKey}
+  title="C++ Quiz"
+  brandingColor="#00599C"
+  brandingBg="#dbeafe"
+  brandingText="#0f172a"
+  logo="⚡"
+/>

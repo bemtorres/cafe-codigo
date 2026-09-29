@@ -294,6 +294,41 @@ function convertMember(raw: string, className?: string) {
 const interfaceClass = parsed.interfaceClass || (parsed.isThreeTier ? parsed.allClasses.find((c) => c.stereotype === '<<interface>>') : null);
 const abstractParent = parsed.abstractParent || (parsed.isThreeTier ? parsed.allClasses.find((c) => c.stereotype === '<<abstract>>') : null);
 const concreteChildren = parsed.concreteChildren.length > 0 ? parsed.concreteChildren : (parsed.isThreeTier ? parsed.allClasses.filter((c) => c.stereotype !== '<<abstract>>' && c.stereotype !== '<<interface>>') : []);
+
+// ── Diagrama de conexiones: cada clase se dibuja UNA sola vez ──
+// Las clases "raíz" son las que no son destino de ninguna relación. El resto se
+// dibuja una única vez como nodo conectado, respetando la cadena de relaciones
+// (hasta 2 niveles) mediante el orden y la indentación.
+interface ConnItem {
+  cls: UmlClass;
+  rel: UmlRel;
+  depth: number;
+  owner: string;
+}
+
+const connTargetNames = new Set(parsed.relations.map((r) => r.to));
+const connRoots = parsed.allClasses.filter((c) => !connTargetNames.has(c.name));
+const connRootList: UmlClass[] = connRoots.length > 0 ? [...connRoots] : parsed.allClasses.slice(0, 1);
+
+const connItems: ConnItem[] = [];
+const connSeen = new Set<string>(connRootList.map((c) => c.name));
+
+const walkConnections = (cls: UmlClass, depth: number, path: Set<string>) => {
+  if (depth > 2) return;
+  const outgoing = parsed.relations.filter((r) => r.from === cls.name);
+  for (const rel of outgoing) {
+    if (path.has(rel.to) || connSeen.has(rel.to)) continue;
+    const target = parsed.allClasses.find((c) => c.name === rel.to);
+    if (!target) continue;
+    connSeen.add(target.name);
+    connItems.push({ cls: target, rel, depth, owner: cls.name });
+    walkConnections(target, depth + 1, new Set([...path, target.name]));
+  }
+};
+for (const root of connRootList) walkConnections(root, 1, new Set([root.name]));
+
+// Clases sueltas sin ninguna relación con las raíces → columna principal
+const connMainClasses: UmlClass[] = [...connRootList, ...parsed.allClasses.filter((c) => !connSeen.has(c.name))];
 ---
 
 <figure class="uml-card" data-diagram-id={diagramId} data-format={defaultFormat} aria-label={title || 'Diagrama UML'}>
@@ -644,7 +679,7 @@ const concreteChildren = parsed.concreteChildren.length > 0 ? parsed.concreteChi
       {!parsed.isInheritanceTree && parsed.isConnectionDiagram && (
         <div class="uml-connections-layout">
           <div class="uml-conn-main">
-            {parsed.allClasses.filter((c) => c.name === 'Libro' || c.attrs.length > 1 || c.methods.length > 1).map((mainCls) => (
+            {connMainClasses.map((mainCls) => (
               <div class="uml-box uml-box-main">
                 <div class="uml-box-head">
                   <span class="uml-class-name">{mainCls.name}</span>
@@ -686,18 +721,20 @@ const concreteChildren = parsed.concreteChildren.length > 0 ? parsed.concreteChi
           </div>
 
           <div class="uml-conn-side">
-            {parsed.relations.map((rel) => {
-              const targetCls = parsed.allClasses.find((c) => c.name === rel.to);
-              if (!targetCls) return null;
+            {connItems.map((item) => {
+              const targetCls = item.cls;
+              const rel = item.rel;
               const isComp = rel.type === 'composition';
               return (
-                <div class="uml-conn-item">
+                <div class="uml-conn-item" data-depth={item.depth}>
                   <div class="uml-conn-bridge">
+                    {item.depth > 1 && <span class="uml-conn-owner">{item.owner} →</span>}
                     <span class={`uml-conn-diamond ${isComp ? 'is-comp' : 'is-assoc'}`}>
                       {isComp ? '◆' : '◇'}
                     </span>
                     <span class="uml-conn-line"></span>
                     <span class="uml-conn-tag">{isComp ? 'Composición (◆)' : 'Asociación (◇)'}</span>
+                    {rel.label && <span class="uml-conn-relname">{rel.label}</span>}
                   </div>
                   <div class="uml-box uml-box-connected">
                     <div class="uml-box-head">
@@ -1623,6 +1660,41 @@ const concreteChildren = parsed.concreteChildren.length > 0 ? parsed.concreteChi
     display: flex;
     flex-direction: column;
     gap: 0.35rem;
+  }
+  /* Jerarquía: los nodos de 2º nivel se indentan para no repetir la clase raíz */
+  .uml-conn-item[data-depth='2'] {
+    margin-left: 0.9rem;
+  }
+  .uml-conn-item[data-depth='3'] {
+    margin-left: 1.8rem;
+  }
+  .uml-conn-item[data-depth='2'] .uml-conn-bridge,
+  .uml-conn-item[data-depth='3'] .uml-conn-bridge {
+    font-size: 0.68rem;
+  }
+  .uml-conn-item[data-depth='2'] .uml-conn-tag,
+  .uml-conn-item[data-depth='3'] .uml-conn-tag {
+    font-size: 0.62rem;
+    padding: 0.05rem 0.35rem;
+  }
+  .uml-conn-relname,
+  .uml-conn-owner {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 0.68rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .uml-conn-relname {
+    color: #1E1210;
+  }
+  :global(.dark) .uml-conn-relname {
+    color: #f8fafc;
+  }
+  .uml-conn-owner {
+    color: #b45309;
+  }
+  :global(.dark) .uml-conn-owner {
+    color: #fbbf24;
   }
   .uml-conn-bridge {
     display: flex;

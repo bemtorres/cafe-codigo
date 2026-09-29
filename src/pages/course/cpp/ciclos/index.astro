@@ -1,64 +1,183 @@
 ---
 import Layout from '../../../../layouts/Layout.astro';
 import CodeBlock from '../../../../components/CodeBlock.astro';
+import CppQuizModal from '../../../../components/quizzes/CppQuizModal.astro';
 ---
 
-<Layout title="Bucles en C++" description="while, for y do-while" courseSlug="cpp">
+<Layout
+  title="6. Bucles y Repetición en C++"
+  description="Domina while, do-while, for clásico, range-based for, break y continue en C++ con ejemplos claros."
+  courseSlug="cpp"
+>
   <article class="content-section">
-    <h1>6. Bucles</h1>
-
-    <section class="mb-10">
-      <h2>Equivalencias con PSeInt</h2>
-      <ul class="mb-4">
-        <li><strong>Mientras</strong> → <code>while</code></li>
-        <li><strong>Repetir / Hasta</strong> → <code>do { } while</code></li>
-        <li><strong>Para</strong> → <code>for</code></li>
-      </ul>
-    </section>
-
-    <section class="mb-10">
-      <h2>while</h2>
-      <CodeBlock
-        lang="cpp"
-        code={`int i = 0;
-while (i < 5) {
-    std::cout << i << "\\n";
-    i++;
-}`}
-        title="while"
-      />
-    </section>
-
-    <section class="mb-10">
-      <h2>for</h2>
-      <CodeBlock
-        lang="cpp"
-        code={`for (int i = 0; i < 5; i++) {
-    std::cout << i << "\\n";
-}`}
-        title="for clásico"
-      />
-    </section>
-
-    <section class="mb-10">
-      <h2>Rango for (C++11)</h2>
-      <p>Muy útil con arreglos y <code>vector</code> (lo profundizamos en la siguiente lección).</p>
-      <CodeBlock
-        lang="cpp"
-        code={`#include <vector>
-// ...
-std::vector<int> v = {1, 2, 3};
-for (int x : v) {
-    std::cout << x << " ";
-}`}
-        title="for-each (rango)"
-      />
-
-    </section>
-
-    <div class="ejercicio">
-      <h3>Ejercicio</h3>
-      <p class="enunciado">Imprimir los números del 1 al 100 que sean múltiplos de 7.</p>
+    <!-- HERO / BANNER PPT -->
+    <div class="mb-8 p-6 rounded-2xl bg-gradient-to-r from-blue-900/40 via-cyan-900/30 to-slate-900/60 border border-blue-500/30 shadow-xl">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold bg-blue-500/20 text-blue-300 border border-blue-500/30 mb-2">
+            <span>⚡ C++ Básico</span>
+            <span>· Lección 6</span>
+          </span>
+          <h1 class="text-3xl font-black text-white m-0 tracking-tight">6. Bucles: Automatización y Control 🔁</h1>
+          <p class="text-sm text-slate-300 m-0 mt-2 leading-relaxed">
+            Aprende a ejecutar instrucciones repetidas millones de veces por segundo: while, do-while para menús, for estructurado y control con break / continue.
+          </p>
+        </div>
+        <div class="flex-shrink-0">
+          <a
+            href="/course-slides/cpp/ciclos/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-lg shadow-blue-500/30 transition-all hover:scale-105"
+          >
+            <span>📺</span>
+            <span>Ver Presentación Interactiva (PPT)</span>
+          </a>
+        </div>
+      </div>
     </div>
+
+    <!-- 1. COMPARATIVA DE BUCLES -->
+    <section class="mb-10">
+      <h2>1. ¿Qué Bucle Usar según la Situación?</h2>
+      <div class="overflow-x-auto my-4">
+        <table class="w-full text-left text-xs border-collapse">
+          <thead>
+            <tr class="border-b border-slate-700 bg-slate-900/80 text-blue-300 font-mono">
+              <th class="p-3">Bucle</th>
+              <th class="p-3">Evaluación</th>
+              <th class="p-3">Mínimo de Pasos</th>
+              <th class="p-3">Mejor Caso de Uso</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-800 text-slate-200">
+            <tr>
+              <td class="p-3 font-mono text-cyan-400 font-bold">while (cond)</td>
+              <td class="p-3">Antes de entrar</td>
+              <td class="p-3 font-mono">0 veces</td>
+              <td class="p-3">Esperar eventos, procesar colas o leer hasta fin de archivo.</td>
+            </tr>
+            <tr>
+              <td class="p-3 font-mono text-cyan-400 font-bold">do &#123; &#125; while</td>
+              <td class="p-3">Al final del bloque</td>
+              <td class="p-3 font-mono text-emerald-400 font-bold">1 vez garantizada</td>
+              <td class="p-3">Menús de consola interactivos (mostrar primero, preguntar después).</td>
+            </tr>
+            <tr>
+              <td class="p-3 font-mono text-cyan-400 font-bold">for (ini; cond; paso)</td>
+              <td class="p-3">Antes de iterar</td>
+              <td class="p-3 font-mono">0 veces</td>
+              <td class="p-3">Recorrer rangos numéricos con límites conocidos (ej. 0 a N).</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 2. FOR CLÁSICO -->
+    <section class="mb-10">
+      <h2>2. El Bucle <code>for</code> Clásico</h2>
+      <p>
+        Diseñado para cuando conoces la cantidad exacta de repeticiones:
+      </p>
+      <CodeBlock
+        lang="cpp"
+        code={`#include <iostream>
+
+int main() {
+    // for (1. inicio; 2. condicion; 4. paso)
+    for (int i = 1; i <= 5; ++i) {
+        // 3. cuerpo
+        std::cout << "Iteración #" << i << "\\n";
+    }
+    return 0;
+}`}
+        title="bucle_for.cpp"
+      />
+    </section>
+
+    <!-- 3. DO-WHILE -->
+    <section class="mb-10">
+      <h2>3. <code>do-while</code>: El Patrón Dorado para Menús</h2>
+      <p>
+        Garantiza que el usuario vea las opciones antes de evaluar si desea salir del programa:
+      </p>
+      <CodeBlock
+        lang="cpp"
+        code={`#include <iostream>
+
+int main() {
+    int opcion;
+
+    do {
+        std::cout << "\\n--- TIENDA DIGITAL ---\\n";
+        std::cout << "1. Comprar poción\\n";
+        std::cout << "2. Ver inventario\\n";
+        std::cout << "0. Salir\\n";
+        std::cout << "Opción: ";
+        std::cin >> opcion;
+    } while (opcion != 0);
+
+    std::cout << "¡Hasta luego!\\n";
+    return 0;
+}`}
+        title="menu_dowhile.cpp"
+      />
+    </section>
+
+    <!-- 4. BREAK Y CONTINUE -->
+    <section class="mb-10">
+      <h2>4. Control de Flujo: <code>break</code> y <code>continue</code></h2>
+      <ul class="space-y-2 text-slate-300 text-sm">
+        <li><strong>🛑 break:</strong> Interrumpe el bucle por completo y sale de él inmediatamente.</li>
+        <li><strong>⏩ continue:</strong> Salta el resto de la iteración actual y avanza a la siguiente.</li>
+      </ul>
+      <CodeBlock
+        lang="cpp"
+        code={`for (int i = 1; i <= 10; ++i) {
+    if (i % 2 == 0) continue; // Salta los números pares
+    if (i == 7) break;        // Se detiene al llegar al 7
+    std::cout << i << " ";    // Imprime: 1 3 5
+}`}
+        title="break_continue.cpp"
+      />
+    </section>
+
+    <!-- EJERCICIO PRÁCTICO -->
+    <div class="ejercicio mb-10">
+      <h3>Ejercicio: Tabla de Multiplicar</h3>
+      <p class="enunciado">
+        Solicita un número entero positivo al usuario e imprime su tabla de multiplicar del 1 al 10 usando un bucle <code>for</code>.
+      </p>
+      <details>
+        <summary>Ver solución</summary>
+        <CodeBlock
+          lang="cpp"
+          code={`#include <iostream>
+
+int main() {
+    int tabla;
+    std::cout << "Ingresa la tabla a calcular: ";
+    std::cin >> tabla;
+
+    for (int i = 1; i <= 10; ++i) {
+        std::cout << tabla << " x " << i << " = " << (tabla * i) << "\\n";
+    }
+    return 0;
+}`}
+        />
+      </details>
+    </div>
+
+    <!-- QUIZ INTERACTIVO FORMATIVO -->
+    <section class="mt-12 pt-8 border-t border-slate-800">
+      <div class="text-center mb-6">
+        <span class="text-xs font-mono font-bold text-blue-400 uppercase tracking-widest block mb-1">Autoevaluación Formativa</span>
+        <h2 class="text-2xl font-black text-white m-0">Comprueba lo que Has Aprendido 🧠</h2>
+        <p class="text-xs text-slate-400 mt-1">Valida tu comprensión de bucles while, do-while, for y control con break/continue.</p>
+      </div>
+
+      <CppQuizModal quizKey="ciclos" />
+    </section>
   </article>
 </Layout>

@@ -2,69 +2,230 @@
 import Layout from '../../../../layouts/Layout.astro';
 import CodeBlock from '../../../../components/CodeBlock.astro';
 import InheritanceChallengesCta from '../../../../components/challenges/InheritanceChallengesCta.astro';
+import CppQuizModal from '../../../../components/quizzes/CppQuizModal.astro';
 ---
 
-<Layout title="Herencia y polimorfismo en C++" description="Clases derivadas y métodos virtuales" courseSlug="cpp">
+<Layout
+  title="10. Herencia y Polimorfismo en C++"
+  description="Domina la herencia, métodos virtuales (virtual), override, clases abstractas y destructores virtuales en C++."
+  courseSlug="cpp"
+>
   <article class="content-section">
-    <h1>10. Herencia y polimorfismo</h1>
+    <!-- HERO / BANNER PPT -->
+    <div class="mb-8 p-6 rounded-2xl bg-gradient-to-r from-blue-900/40 via-purple-900/30 to-slate-900/60 border border-blue-500/30 shadow-xl">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold bg-blue-500/20 text-blue-300 border border-blue-500/30 mb-2">
+            <span>⚡ C++ Avanzado</span>
+            <span>· Lección 10</span>
+          </span>
+          <h1 class="text-3xl font-black text-white m-0 tracking-tight">10. Pilares de POO: Herencia y Polimorfismo Dinámico 🏛️⚡</h1>
+          <p class="text-sm text-slate-300 m-0 mt-2 leading-relaxed">
+            Descubre los superpoderes arquitectónicos de C++: cómo videojuegos como World of Warcraft o Cyberpunk gestionan cientos de entidades distintas con una interfaz común.
+          </p>
+        </div>
+        <div class="flex-shrink-0">
+          <a
+            href="/course-slides/cpp/poo-pilares/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-lg shadow-blue-500/30 transition-all hover:scale-105"
+          >
+            <span>📺</span>
+            <span>Ver Presentación Interactiva (PPT)</span>
+          </a>
+        </div>
+      </div>
+    </div>
 
+    <!-- 1. HERENCIA -->
     <section class="mb-10">
-      <h2>Herencia</h2>
-      <p>Una clase <strong>derivada</strong> extiende una <strong>base</strong>, reutilizando y especializando comportamiento.</p>
+      <h2>1. Herencia: Reutilizar sin Duplicar Código</h2>
+      <p>
+        La <strong>herencia</strong> permite crear una clase derivada (hija) que absorbe todos los atributos y métodos de una clase base (padre), añadiendo sus propias especializaciones.
+      </p>
+
       <CodeBlock
         lang="cpp"
         code={`#include <iostream>
+#include <string>
 
-class Animal {
+// Clase Base
+class Personaje {
+protected:
+    std::string nombre;
+    int salud;
+
 public:
-    virtual void sonido() const {
-        std::cout << "...\\n";
+    Personaje(std::string n, int s) : nombre(n), salud(s) {}
+
+    void recibirDanio(int danio) {
+        salud -= danio;
+        std::cout << nombre << " recibió " << danio << " de daño. Salud restante: " << salud << "\\n";
     }
-    virtual ~Animal() = default;
 };
 
-class Perro : public Animal {
+// Clase Derivada (Hereda de Personaje)
+class Mago : public Personaje {
+private:
+    int mana;
+
 public:
-    void sonido() const override {
-        std::cout << "Guau\\n";
+    Mago(std::string n, int s, int m) : Personaje(n, s), mana(m) {}
+
+    void lanzarHechizo() {
+        std::cout << nombre << " lanza Bola de Fuego consumiendo 20 de mana!\\n";
+        mana -= 20;
     }
 };`}
-        title="Herencia básica"
+        title="herencia_personajes.cpp"
       />
+
+      <div class="p-4 rounded-xl border border-slate-700 bg-slate-900/60 my-4">
+        <strong class="text-xs font-mono text-cyan-400 block mb-1">💡 ¿Por qué usamos protected?</strong>
+        <p class="text-xs text-slate-300 m-0">
+          Si los atributos fueran <code>private</code> en <code>Personaje</code>, ni siquiera la clase hija <code>Mago</code> podría acceder a <code>nombre</code>. Con <code>protected</code>, quedan protegidos del mundo exterior pero accesibles para sus clases hijas.
+        </p>
+      </div>
     </section>
 
+    <!-- 2. POLIMORFISMO Y VIRTUAL -->
     <section class="mb-10">
-      <h2>Polimorfismo</h2>
+      <h2>2. Polimorfismo Dinámico: La Magia de <code>virtual</code> y <code>override</code></h2>
       <p>
-        Con <code>virtual</code> en la base, una referencia o puntero a <code>Animal</code> puede llamar a la versión correcta de <code>sonido()</code> según el objeto real (<code>Perro</code>, etc.).
+        El <strong>polimorfismo</strong> te permite tratar a objetos diferentes a través de un mismo puntero a la clase base, ejecutando la versión especializada de cada uno en tiempo de ejecución.
       </p>
+
+      <div class="p-5 rounded-2xl border border-purple-500/30 bg-purple-950/20 mb-6">
+        <h4 class="text-xs font-black text-purple-300 uppercase tracking-wider mb-2">
+          🔮 ¿Por qué es obligatoria la palabra clave virtual?
+        </h4>
+        <p class="text-xs text-slate-300 leading-relaxed m-0">
+          Por defecto, C++ enlaza las llamadas a métodos en tiempo de compilación según el tipo del puntero. Al marcar una función como <code>virtual</code>, C++ activa la <strong>vtable (tabla de métodos virtuales)</strong>, averiguando el tipo real del objeto en tiempo de ejecución.
+        </p>
+      </div>
+
       <CodeBlock
         lang="cpp"
         code={`#include <iostream>
-// (mismas clases Animal / Perro que arriba)
+#include <vector>
 
-void escuchar(const Animal& a) {
-    a.sonido();
-}
+class Enemigo {
+public:
+    virtual void atacar() const {
+        std::cout << "Ataque genérico del enemigo.\\n";
+    }
+    // Destructor virtual obligatorio para liberar memoria limpia:
+    virtual ~Enemigo() = default;
+};
+
+class Dragon : public Enemigo {
+public:
+    void atacar() const override {
+        std::cout << "¡El Dragón escupe fuego devastador! 🔥\\n";
+    }
+};
+
+class Zombie : public Enemigo {
+public:
+    void atacar() const override {
+        std::cout << "El Zombie muerde al jugador... 🧟\\n";
+    }
+};
 
 int main() {
-    Perro p;
-    escuchar(p);  // Guau
+    // Vector polimórfico de punteros a la base:
+    std::vector<Enemigo*> horda;
+    horda.push_back(new Dragon());
+    horda.push_back(new Zombie());
+
+    // El bucle principal no sabe qué criatura es, solo sabe que puede atacar:
+    for (Enemigo* e : horda) {
+        e->atacar(); // Ejecuta el ataque correcto de cada criatura
+    }
+
+    // Limpieza de memoria:
+    for (Enemigo* e : horda) delete e;
     return 0;
 }`}
-        title="Enlace dinámico"
+        title="polimorfismo_videojuego.cpp"
       />
     </section>
 
+    <!-- 3. DESTRUCTOR VIRTUAL -->
     <section class="mb-10">
-      <h2>Destructor virtual</h2>
-      <p>Si borras objetos a través de puntero a base, el destructor de la base debe ser <code>virtual</code> para que se destruya bien la parte derivada.</p>
+      <h2>3. ⚠️ El Destructor Virtual: Previniendo Fugas de Memoria</h2>
+      <p>
+        Si eliminas un objeto derivado a través de un puntero a la clase base (<code>delete e;</code>), y la clase base <strong>no</strong> tiene un destructor virtual, ¡solo se ejecutará el destructor de la base y la memoria de la clase hija quedará filtrada en la RAM!
+      </p>
+      <div class="text-xs font-mono text-emerald-400 p-3 rounded-xl bg-slate-950 border border-slate-800">
+        virtual ~ClaseBase() = default; // Agrega esto siempre a tus clases base
+      </div>
     </section>
 
-    <div class="ejercicio">
-      <h3>Ejercicio</h3>
-      <p class="enunciado">Modelá <code>Figura</code> con <code>area()</code> virtual y dos clases <code>Circulo</code> y <code>Cuadrado</code> que la implementen.</p>
+    <!-- EJERCICIO PRÁCTICO -->
+    <div class="ejercicio mb-10">
+      <h3>Ejercicio de Cierre del Curso</h3>
+      <p class="enunciado">
+        Diseña una clase base abstracta <code>Figura</code> con un método virtual puro <code>virtual double calcularArea() const = 0;</code>.
+        Implementa dos clases derivadas: <code>Rectangulo</code> (ancho, alto) y <code>Circulo</code> (radio).
+        Crea un vector de punteros a <code>Figura</code> y muestra el área de cada figura en un bucle polimórfico.
+      </p>
+      <details>
+        <summary>Ver solución completa</summary>
+        <CodeBlock
+          lang="cpp"
+          code={`#include <iostream>
+#include <vector>
+
+class Figura {
+public:
+    virtual double calcularArea() const = 0; // Virtual pura
+    virtual ~Figura() = default;
+};
+
+class Rectangulo : public Figura {
+private:
+    double ancho, alto;
+public:
+    Rectangulo(double a, double h) : ancho(a), alto(h) {}
+    double calcularArea() const override { return ancho * alto; }
+};
+
+class Circulo : public Figura {
+private:
+    double radio;
+public:
+    Circulo(double r) : radio(r) {}
+    double calcularArea() const override { return 3.14159 * radio * radio; }
+};
+
+int main() {
+    std::vector<Figura*> figuras = {
+        new Rectangulo(4.0, 5.0),
+        new Circulo(3.0)
+    };
+
+    for (Figura* f : figuras) {
+        std::cout << "Área de figura: " << f->calcularArea() << "\\n";
+        delete f;
+    }
+    return 0;
+}`}
+        />
+      </details>
     </div>
+
+    <!-- QUIZ INTERACTIVO FORMATIVO -->
+    <section class="mt-12 pt-8 border-t border-slate-800">
+      <div class="text-center mb-6">
+        <span class="text-xs font-mono font-bold text-blue-400 uppercase tracking-widest block mb-1">Evaluación Final del Curso</span>
+        <h2 class="text-2xl font-black text-white m-0">Comprueba lo que Has Aprendido 🧠</h2>
+        <p class="text-xs text-slate-400 mt-1">Valida tu dominio de herencia, polimorfismo dinámico, virtual y destructores.</p>
+      </div>
+
+      <CppQuizModal quizKey="poo-pilares" />
+    </section>
 
     <InheritanceChallengesCta />
   </article>

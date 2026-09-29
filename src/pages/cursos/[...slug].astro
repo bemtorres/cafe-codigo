@@ -1,0 +1,47 @@
+---
+import { courses } from '../../data/courses';
+
+export async function getStaticPaths() {
+  const paths: Array<{
+    params: { slug: string };
+    props: { target: string };
+  }> = [];
+
+  for (const course of courses) {
+    // 1. Portada del curso: /cursos/cpp -> /course/cpp/
+    paths.push({
+      params: { slug: course.slug },
+      props: { target: `/course/${course.slug}/` },
+    });
+
+    // 2. Cada lección del curso: /cursos/cpp/variables -> /course/cpp/variables/
+    if (course.lessons && Array.isArray(course.lessons)) {
+      for (const lesson of course.lessons) {
+        const lessonTarget = lesson.href || `/course/${course.slug}/${lesson.slug}/`;
+        paths.push({
+          params: { slug: `${course.slug}/${lesson.slug}` },
+          props: { target: lessonTarget },
+        });
+
+        // Si la URL de la lección difiere del slug básico (ej. subrutas)
+        if (lesson.href) {
+          const customRel = lesson.href
+            .replace(new RegExp(`^/course/${course.slug}/`), '')
+            .replace(/\/$/, '');
+          if (customRel && customRel !== lesson.slug) {
+            paths.push({
+              params: { slug: `${course.slug}/${customRel}` },
+              props: { target: lesson.href },
+            });
+          }
+        }
+      }
+    }
+  }
+
+  return paths;
+}
+
+const { target } = Astro.props;
+return Astro.redirect(target, 301);
+---

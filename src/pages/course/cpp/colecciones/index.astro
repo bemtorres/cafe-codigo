@@ -1,5 +1,6 @@
 ---
 import Layout from "../../../../layouts/Layout.astro";
+import CppQuizModal from "../../../../components/quizzes/CppQuizModal.astro";
 ---
 
 <Layout
@@ -18,6 +19,23 @@ import Layout from "../../../../layouts/Layout.astro";
       <span>/</span>
       <span class="text-sky-700">7. Colecciones en C++</span>
     </nav>
+
+    <!-- BANNER PPT -->
+    <div class="mb-6 p-4 rounded-2xl bg-gradient-to-r from-blue-900/40 via-indigo-900/30 to-slate-900/60 border border-blue-500/30 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div>
+        <span class="text-xs font-mono font-bold text-blue-400 block mb-1">Presentación del Módulo 7</span>
+        <h3 class="text-base font-black text-white m-0">Diapositivas Interactivas de Colecciones</h3>
+      </div>
+      <a
+        href="/course-slides/cpp/colecciones/"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-md shadow-blue-500/20 transition-all no-underline flex items-center gap-2"
+      >
+        <span>📺</span>
+        <span>Ver PPT</span>
+      </a>
+    </div>
 
     <!-- Header Principal -->
     <div class="mb-8 border-b border-slate-200 pb-6">
@@ -311,6 +329,17 @@ import Layout from "../../../../layouts/Layout.astro";
           </tbody>
         </table>
       </div>
+    </section>
+
+    <!-- QUIZ INTERACTIVO FORMATIVO -->
+    <section class="mt-12 pt-8 border-t border-slate-200">
+      <div class="text-center mb-6">
+        <span class="text-xs font-mono font-bold text-sky-700 uppercase tracking-widest block mb-1">Autoevaluación Formativa</span>
+        <h2 class="text-2xl font-black text-slate-900 m-0">Comprueba lo que Has Aprendido 🧠</h2>
+        <p class="text-xs text-slate-600 mt-1">Valida tu comprensión de colecciones, memoria contigua e indexación en base 0.</p>
+      </div>
+
+      <CppQuizModal quizKey="colecciones" />
     </section>
 
     <!-- ACCESOS DIRECTOS INFERIORES -->
