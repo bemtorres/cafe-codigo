@@ -196,8 +196,34 @@ export function getMetaQuestionsForLesson(lessonSlug: string): MetaReflectionQue
           category: 'CourseSpecific',
           title: '5. El Principio de Encapsulamiento',
           questionText: '¿Por qué blindar los atributos como private y exponer métodos public es una práctica de ingeniería superior a dejar todo público?',
-          promptHint: 'Piensa en qué pasaría si un usuario asignara un saldo bancario negativo o una velocidad imposible directamente.',
+          promptHint: 'Piensa en qué pasaría si un usuario asignara un daño o durabilidad negativos directamente en la espada.',
           keyTakeaway: 'El encapsulamiento protege la integridad de tu aplicación evitando estados corruptos en memoria.'
+        }
+      ];
+      break;
+
+    case 'poo-asociado':
+      specific = [
+        {
+          id: 5,
+          category: 'CourseSpecific',
+          title: '5. La Fuerza de la Composición ("Tiene-un")',
+          questionText: '¿Por qué es más flexible que un Jugador "tenga una" Espada en lugar de que "herede de" Espada?',
+          promptHint: 'Piensa en qué ocurre si el personaje quiere cambiar de arma, luchar desarmado o equipar un arco más adelante.',
+          keyTakeaway: 'La composición te permite cambiar el comportamiento de un objeto en tiempo de ejecución sin alterar su tipo base.'
+        }
+      ];
+      break;
+
+    case 'poo-asociado-list':
+      specific = [
+        {
+          id: 5,
+          category: 'CourseSpecific',
+          title: '5. Objetos en Colecciones Dinámicas',
+          questionText: '¿Cómo cambia la capacidad de modelar videojuegos al permitir que una sola clase gestione una lista dinámica de otros objetos en memoria?',
+          promptHint: 'Piensa en inventarios, oleadas de enemigos, proyectiles en pantalla y carritos de compra.',
+          keyTakeaway: 'Combinar clases con std::vector te permite representar cualquier sistema escalable del mundo real en C++.'
         }
       ];
       break;

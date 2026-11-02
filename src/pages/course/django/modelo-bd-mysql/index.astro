@@ -1,0 +1,357 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import DjangoQuizModal from '../../../../components/quizzes/DjangoQuizModal.astro';
+---
+
+<Layout
+  title="Conexión de Django con MySQL: PyMySQL y Diagnóstico de Compatibilidad"
+  description="Guía técnica completa para diagnosticar versiones de Django, Python y MySQL/MariaDB, resolver problemas de drivers mediante PyMySQL y configurar la conexión de base de datos paso a paso."
+  courseSlug="django"
+>
+  <article class="content-section">
+    <h1>5.4 Conexión de Django con MySQL y PyMySQL 🐬</h1>
+
+    <!-- BANNER PRESENTACIÓN DIAPOSITIVAS -->
+    <aside class="my-6 p-4 sm:p-5 rounded-2xl border-2 border-emerald-500/40 bg-gradient-to-r from-emerald-500/10 via-teal-500/5 to-transparent flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm">
+      <div class="flex items-center gap-3">
+        <span class="text-3xl sm:text-4xl p-2 rounded-xl bg-emerald-500/20 text-emerald-600 shrink-0">📊</span>
+        <div>
+          <h3 class="text-base font-black text-slate-900 dark:text-emerald-300 mb-0.5">
+            Presentación Guiada en Diapositivas Disponible
+          </h3>
+          <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300">
+            Avanza paso a paso por el diagnóstico de versiones, tablas de compatibilidad, inyección de PyMySQL y depuración de errores.
+          </p>
+        </div>
+      </div>
+      <a
+        href="/course-slides/django/modelo-bd-mysql/"
+        class="shrink-0 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-nunito font-black text-sm shadow-md hover:shadow-lg transition-all no-underline"
+      >
+        <span>Ver Diapositivas</span>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+        </svg>
+      </a>
+    </aside>
+
+    <!-- INTRODUCCIÓN -->
+    <section class="mb-10">
+      <h2>Objetivo y Diagnóstico Inicial</h2>
+      <p>
+        Al conectar un proyecto Django a un motor <strong>MySQL</strong> o <strong>MariaDB</strong> en entornos locales (como Laragon, XAMPP, Docker) o servidores de producción, es muy común encontrar errores de arranque.
+      </p>
+      <p>
+        El objetivo de esta guía técnica es <strong>identificar con precisión si el error de conexión se debe a las versiones de Django/MySQL o al controlador de Python</strong>, y aplicar la solución apropiada evitando pasos en falso como borrar migraciones.
+      </p>
+
+      <div class="my-6 p-5 rounded-xl bg-amber-50 dark:bg-amber-950/30 border-l-4 border-amber-500 text-amber-950 dark:text-amber-200 text-sm">
+        <strong class="font-bold text-base block mb-1">💡 Regla de oro antes de actuar:</strong>
+        Primero se verifican las versiones y después se decide si es necesario actualizar Django/MySQL o probar un controlador alternativo. <strong>PyMySQL no convierte en compatibles versiones de servidor que Django no admite.</strong>
+      </div>
+    </section>
+
+    <!-- PASO 1 -->
+    <section class="mb-10">
+      <h2>Paso 1. Comprobar la Versión de Django y Python</h2>
+      <p>
+        Abre una terminal dentro de la carpeta raíz de tu proyecto y asegúrate de tener el entorno virtual (<code>venv</code>) activado:
+      </p>
+
+      <CodeBlock
+        lang="bash"
+        code={`# 1. Comprobar la versión exacta de Django
+python -m django --version
+
+# 2. Comprobar la versión de Python del entorno
+python --version
+
+# 3. Inspeccionar los detalles del paquete instalado
+python -m pip show Django`}
+        title="Terminal: Verificación de Django y Python"
+      />
+
+      <p class="mt-3 text-sm text-slate-600 dark:text-slate-300">
+        Registra la versión obtenida (por ejemplo, <em>Django 5.2.1</em> y <em>Python 3.12</em>). Si el comando falla, comprueba que el entorno virtual correcto esté activo.
+      </p>
+    </section>
+
+    <!-- PASO 2 -->
+    <section class="mb-10">
+      <h2>Paso 2. Comprobar la Versión del Servidor MySQL o MariaDB</h2>
+      <p>
+        Es crucial conocer la versión <strong>del servidor</strong> que está ejecutándose y escuchando peticiones, no simplemente la de la herramienta cliente:
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-4">
+        <div class="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm">
+          <h4 class="font-bold text-slate-800 dark:text-slate-200 mb-2">Opción A: Desde Consola SQL, Workbench o phpMyAdmin</h4>
+          <CodeBlock
+            lang="sql"
+            code={`SELECT VERSION();`}
+            title="SQL: Versión real del servidor"
+          />
+          <p class="text-xs text-slate-500 mt-2">
+            Devuelve la versión exacta del daemon MySQL o MariaDB al que estás conectado.
+          </p>
+        </div>
+
+        <div class="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm">
+          <h4 class="font-bold text-slate-800 dark:text-slate-200 mb-2">Opción B: Desde la Terminal del Servidor</h4>
+          <CodeBlock
+            lang="bash"
+            code={`mysql --version`}
+            title="CLI: Versión de la utilidad cliente"
+          />
+          <p class="text-xs text-amber-600 dark:text-amber-400 mt-2">
+            ⚠️ Atención: <code>mysql --version</code> puede mostrar la versión del cliente local; <code>SELECT VERSION()</code> identifica con certeza la versión del servidor.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PASO 3 -->
+    <section class="mb-10">
+      <h2>Paso 3. Verificar la Compatibilidad Oficial</h2>
+      <p>
+        Compara ambas versiones con la documentación oficial correspondiente a la versión instalada de Django. <strong>No basta con instalar un controlador si Django no admite la versión del motor de base de datos.</strong>
+      </p>
+
+      <div class="overflow-x-auto my-6 rounded-xl border border-slate-300 dark:border-slate-700 shadow-sm">
+        <table class="w-full text-left border-collapse text-sm">
+          <thead class="bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-bold">
+            <tr>
+              <th class="border border-slate-300 dark:border-slate-700 p-3">Versión de Django</th>
+              <th class="border border-slate-300 dark:border-slate-700 p-3">MySQL Mínimo Oficial</th>
+              <th class="border border-slate-300 dark:border-slate-700 p-3">MariaDB Mínimo Oficial</th>
+              <th class="border border-slate-300 dark:border-slate-700 p-3">Observaciones</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-300 dark:divide-slate-700 bg-white dark:bg-slate-900">
+            <tr>
+              <td class="border border-slate-300 dark:border-slate-700 p-3 font-mono font-bold text-emerald-600">4.2 LTS</td>
+              <td class="border border-slate-300 dark:border-slate-700 p-3 font-mono">8.0.11</td>
+              <td class="border border-slate-300 dark:border-slate-700 p-3 font-mono">10.4</td>
+              <td class="border border-slate-300 dark:border-slate-700 p-3 text-xs">Soporte extendido LTS previo</td>
+            </tr>
+            <tr>
+              <td class="border border-slate-300 dark:border-slate-700 p-3 font-mono font-bold text-emerald-600">5.2 LTS</td>
+              <td class="border border-slate-300 dark:border-slate-700 p-3 font-mono">8.0.11</td>
+              <td class="border border-slate-300 dark:border-slate-700 p-3 font-mono">10.5</td>
+              <td class="border border-slate-300 dark:border-slate-700 p-3 text-xs">Versión recomendada de estabilidad empresarial</td>
+            </tr>
+            <tr>
+              <td class="border border-slate-300 dark:border-slate-700 p-3 font-mono font-bold text-emerald-600">6.0+</td>
+              <td class="border border-slate-300 dark:border-slate-700 p-3 font-mono">8.0.11</td>
+              <td class="border border-slate-300 dark:border-slate-700 p-3 font-mono">10.6</td>
+              <td class="border border-slate-300 dark:border-slate-700 p-3 text-xs">Requisitos modernos de ventanas y CTEs</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="text-sm text-slate-600 dark:text-slate-300">
+        Para versiones específicas, consulta siempre las <a href="https://docs.djangoproject.com/en/stable/ref/databases/#mysql-notes" target="_blank" rel="noopener noreferrer" class="text-emerald-600 hover:underline font-bold">Notas Oficiales de MySQL en Django</a>.
+      </p>
+    </section>
+
+    <!-- PASO 4 -->
+    <section class="mb-10">
+      <h2>Paso 4. Instalar PyMySQL (Alternativa al Controlador mysqlclient)</h2>
+      <p>
+        El controlador recomendado por Django es <code>mysqlclient</code>, pero al estar escrito en C suele requerir dependencias de compilación y librerías C++ que fallan con frecuencia en Windows.
+      </p>
+      <p>
+        Si el servidor MySQL es compatible con Django y el inconveniente es la instalación o carga de <code>mysqlclient</code>, podemos usar <strong>PyMySQL</strong> (escrito 100% en Python puro).
+      </p>
+
+      <CodeBlock
+        lang="bash"
+        code={`python -m pip install pymysql`}
+        title="1. Instalación en el entorno virtual"
+      />
+
+      <p class="mt-4">
+        En el archivo <code>__init__.py</code> del paquete principal del proyecto (la misma carpeta donde se encuentra <code>settings.py</code>), agrega:
+      </p>
+
+      <CodeBlock
+        lang="python"
+        code={`import pymysql
+
+# Le indica a Django que use PyMySQL emulando la interfaz de MySQLdb
+pymysql.install_as_MySQLdb()`}
+        title="mi_proyecto/__init__.py"
+      />
+
+      <div class="my-4 p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50">
+        <h4 class="font-bold text-sm text-slate-700 dark:text-slate-300 mb-2">Estructura del Proyecto:</h4>
+        <pre class="text-xs font-mono text-slate-800 dark:text-slate-200 leading-relaxed">
+mi_proyecto/
+│
+├── manage.py
+└── mi_proyecto/
+    ├── __init__.py    <-- AQUÍ se agregan las líneas de pymysql
+    ├── asgi.py
+    ├── settings.py
+    ├── urls.py
+    └── wsgi.py</pre>
+      </div>
+    </section>
+
+    <!-- PASO 5 -->
+    <section class="mb-10">
+      <h2>Paso 5. Configurar la Conexión en settings.py</h2>
+      <p>
+        Configura el bloque <code>DATABASES</code> utilizando el motor nativo de Django para MySQL:
+      </p>
+
+      <CodeBlock
+        lang="python"
+        code={`DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'eventos_db',
+        'USER': 'usuario_mysql',
+        'PASSWORD': 'tu_clave_segura',
+        'HOST': '127.0.0.1',
+        'PORT': '3306',
+        'OPTIONS': {
+            'charset': 'utf8mb4',
+        },
+    }
+}`}
+        title="settings.py: Configuración de MySQL"
+      />
+
+      <div class="my-4 p-4 rounded-xl bg-red-50 dark:bg-red-950/30 border-l-4 border-red-500 text-red-900 dark:text-red-200 text-sm">
+        <strong>⚠️ Nota de Seguridad:</strong> Reemplaza los valores de ejemplo por los de tu instalación local o servidor. <strong>No publiques contraseñas reales en repositorios Git</strong>; utiliza variables de entorno (como <code>python-decouple</code> o <code>os.environ</code>) en proyectos compartidos o productivos.
+      </div>
+    </section>
+
+    <!-- PASO 6 -->
+    <section class="mb-10">
+      <h2>Paso 6. Comprobar el Funcionamiento</h2>
+      <p>
+        Ejecuta las siguientes instrucciones en tu terminal para validar el estado de la conexión:
+      </p>
+
+      <CodeBlock
+        lang="bash"
+        code={`# 1. Comprobación del sistema sin alterar tablas
+python manage.py check
+
+# 2. Aplicar migraciones al servidor MySQL
+python manage.py migrate
+
+# 3. Iniciar el servidor de desarrollo
+python manage.py runserver`}
+        title="Comandos de validación"
+      />
+
+      <p class="mt-3 text-sm text-slate-600 dark:text-slate-300">
+        Si <code>python manage.py check</code> responde <em>"System check identified no issues (0 silenced)"</em>, la conexión física y lógica está completamente validada.
+      </p>
+    </section>
+
+    <!-- GUÍA DE RESOLUCIÓN DE ERRORES -->
+    <section class="mb-10">
+      <h2>¿Qué hacer si sigue sin funcionar? (Troubleshooting)</h2>
+      <p>Revisa esta guía rápida de diagnóstico según el síntoma exacto que reporte la consola:</p>
+
+      <div class="space-y-4 my-6">
+        <div class="p-4 rounded-xl border border-red-200 dark:border-red-900/40 bg-red-50/50 dark:bg-red-950/20">
+          <h4 class="font-bold text-red-700 dark:text-red-300">1. Error de versión mínima de MySQL / MariaDB</h4>
+          <p class="text-xs text-slate-700 dark:text-slate-300 mt-1">
+            <strong>Causa:</strong> El servidor tiene una versión antigua (ej. MySQL 5.7).<br />
+            <strong>Solución:</strong> Actualizar el motor MySQL a una versión admitida por Django (8.0.11+), o utilizar una versión anterior de Django que sí soporte el servidor existente. PyMySQL no elimina esta restricción del ORM.
+          </p>
+        </div>
+
+        <div class="p-4 rounded-xl border border-amber-200 dark:border-amber-900/40 bg-amber-50/50 dark:bg-amber-950/20">
+          <h4 class="font-bold text-amber-700 dark:text-amber-300">2. Error de mysqlclient / MySQLdb</h4>
+          <p class="text-xs text-slate-700 dark:text-slate-300 mt-1">
+            <strong>Causa:</strong> Falta el driver o <code>__init__.py</code> no se está ejecutando.<br />
+            <strong>Solución:</strong> Comprobar que PyMySQL esté instalado en el mismo entorno virtual (<code>pip list</code>) y que <code>pymysql.install_as_MySQLdb()</code> esté en el <code>__init__.py</code> correcto.
+          </p>
+        </div>
+
+        <div class="p-4 rounded-xl border border-blue-200 dark:border-blue-900/40 bg-blue-50/50 dark:bg-blue-950/20">
+          <h4 class="font-bold text-blue-700 dark:text-blue-300">3. Access denied for user '...'@'...'</h4>
+          <p class="text-xs text-slate-700 dark:text-slate-300 mt-1">
+            <strong>Causa:</strong> Credenciales incorrectas o usuario sin permisos.<br />
+            <strong>Solución:</strong> Verificar usuario, contraseña, nombre de la base de datos y otorgar permisos con <code>GRANT ALL PRIVILEGES ON nombre_bd.* TO 'usuario'@'localhost';</code>.
+          </p>
+        </div>
+
+        <div class="p-4 rounded-xl border border-purple-200 dark:border-purple-900/40 bg-purple-50/50 dark:bg-purple-950/20">
+          <h4 class="font-bold text-purple-700 dark:text-purple-300">4. Can't connect to MySQL server (2003 / 10061)</h4>
+          <p class="text-xs text-slate-700 dark:text-slate-300 mt-1">
+            <strong>Causa:</strong> El servicio MySQL está detenido o el puerto está bloqueado.<br />
+            <strong>Solución:</strong> Verificar que MySQL esté iniciado (en Laragon, XAMPP, Docker o Servicios de Windows), y que el host (<code>127.0.0.1</code>) y puerto (<code>3306</code>) coincidan.
+          </p>
+        </div>
+
+        <div class="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-100/70 dark:bg-slate-900/60">
+          <h4 class="font-bold text-slate-800 dark:text-slate-200">5. ¿Qué pasa con las migraciones existentes?</h4>
+          <p class="text-xs text-slate-700 dark:text-slate-300 mt-1">
+            Realiza una copia de seguridad antes de cambiar de versión de Django o del servidor. <strong>Nunca elimines los archivos de migraciones</strong> para intentar corregir un problema de conexión a la base de datos.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CHECKLIST ESTUDIANTE -->
+    <section class="mb-10">
+      <h2>Actividad de Comprobación Técnica</h2>
+      <p>Completa este checklist de auditoría antes de dar por finalizada la configuración de tu entorno:</p>
+
+      <div class="p-5 rounded-xl border-2 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-sm space-y-3 font-mono text-xs sm:text-sm">
+        <div class="flex items-center gap-2">
+          <span>[ ]</span>
+          <span>Versión de Python: __________________</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span>[ ]</span>
+          <span>Versión de Django: __________________</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span>[ ]</span>
+          <span>Versión del servidor MySQL/MariaDB: __________________</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span>[ ]</span>
+          <span>¿Son compatibles según la documentación?: [ Sí / No ]</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span>[ ]</span>
+          <span>¿Se instaló PyMySQL y se registró en __init__.py?: [ Sí / No ]</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span>[ ]</span>
+          <span>Resultado de python manage.py check: [ 0 issues / Falló ]</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- PONTE A PRUEBA -->
+    <section class="mb-10">
+      <h2>Ponte a Prueba</h2>
+      <p>
+        Comprueba que dominas el diagnóstico de compatibilidad de MySQL, la sustitución con PyMySQL y la resolución de incidentes de conexión en Django.
+      </p>
+      <DjangoQuizModal quizKey="modelo-bd-mysql" />
+    </section>
+
+    <!-- FOOTER NAV -->
+    <nav class="nav-bottom">
+      <a href="/course/django/modelo-bd-vehiculos/" class="prev">
+        ← 5.3 Flota y Pilotos: Migraciones y Faker
+      </a>
+      <a href="/course/django/admin-crud/" class="next">
+        6. Django Admin y CRUD →
+      </a>
+    </nav>
+  </article>
+</Layout>

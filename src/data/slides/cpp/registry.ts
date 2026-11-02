@@ -16,6 +16,8 @@ import { arrayGameSlides } from './array-game';
 import { arrayExamenSlides } from './array-examen';
 import { funcionesSlides } from './funciones';
 import { pooBasicoSlides } from './poo-basico';
+import { pooAsociadoSlides } from './poo-asociado';
+import { pooAsociadoListSlides } from './poo-asociado-list';
 import { pooPilaresSlides } from './poo-pilares';
 
 export { getQuizForLesson, type QuizQuestion };
@@ -35,6 +37,8 @@ export {
   arrayExamenSlides,
   funcionesSlides,
   pooBasicoSlides,
+  pooAsociadoSlides,
+  pooAsociadoListSlides,
   pooPilaresSlides,
 };
 
@@ -105,6 +109,12 @@ export function getSlidesForLesson(lessonSlug: string): Slide[] {
 
     case 'poo-basico':
       return pooBasicoSlides;
+
+    case 'poo-asociado':
+      return pooAsociadoSlides;
+
+    case 'poo-asociado-list':
+      return pooAsociadoListSlides;
 
     case 'poo-pilares':
       return pooPilaresSlides;

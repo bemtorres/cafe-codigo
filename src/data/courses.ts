@@ -60,6 +60,7 @@ export const courses: Course[] = [
   },
   {
     slug: 'pseint',
+    image: '/images/pseint.webp',
     name: 'PSeInt',
     description: 'Aprende la lógica de programación con pseudocódigo en español. Ideal para principiantes.',
     category: 'foundations',
@@ -103,6 +104,8 @@ export const courses: Course[] = [
       { slug: 'array-examen', title: '7.4 Vector CRUD - Evaluación', href: '/course/cpp/array-examen/', isSubItem: true, hasSlides: true },
       { slug: 'funciones', title: '8. Funciones', href: '/course/cpp/funciones/', hasSlides: true },
       { slug: 'poo-basico', title: '9. POO básico', href: '/course/cpp/poo-basico/', hasSlides: true },
+      { slug: 'poo-asociado', title: '9.1 Asociación (Jugador y Espada)', href: '/course/cpp/poo-asociado/', isSubItem: true, hasSlides: true },
+      { slug: 'poo-asociado-list', title: '9.2 Colecciones de Objetos (Inventario)', href: '/course/cpp/poo-asociado-list/', isSubItem: true, hasSlides: true },
       { slug: 'poo-pilares', title: '10. Herencia y polimorfismo', href: '/course/cpp/poo-pilares/', hasSlides: true },
     ],
     image: '/images/cplusplus.jpg',
@@ -189,6 +192,7 @@ export const courses: Course[] = [
   },
   {
     slug: 'django',
+    image: '/images/django.webp',
     name: 'Django',
     description: 'Desarrollo backend con Python y Django: modelos, CRUD, APIs REST y seguridad.',
     category: 'advanced',
@@ -208,6 +212,7 @@ export const courses: Course[] = [
       { slug: 'modelo-bd-step', title: '5.1 Paso a Paso: Boletas y Migraciones', href: '/course/django/modelo-bd-step/', hasSlides: true },
       { slug: 'modelo-bd-library', title: '5.2 Caso Práctico: Biblioteca y ORM', href: '/course/django/modelo-bd-library/', hasSlides: true },
       { slug: 'modelo-bd-vehiculos', title: '5.3 Flota y Pilotos: Migraciones y Faker', href: '/course/django/modelo-bd-vehiculos/', hasSlides: true },
+      { slug: 'modelo-bd-mysql', title: '5.4 Conexión de Django con MySQL (PyMySQL)', href: '/course/django/modelo-bd-mysql/', hasSlides: true },
       { slug: 'admin-crud', title: '6. Django Admin y CRUD', href: '/course/django/admin-crud/', hasSlides: true },
       { slug: 'seguridad', title: '7. Autenticación y Seguridad', href: '/course/django/seguridad/', hasSlides: true },
       { slug: 'apis-restful', title: '8. APIs RESTful', href: '/course/django/apis-restful/', hasSlides: true },
@@ -217,6 +222,7 @@ export const courses: Course[] = [
   },
   {
     slug: 'flask',
+    image: '/images/flask.webp',
     name: 'Flask',
     description: 'Desarrollo web ligero con Python: rutas, plantillas Jinja2, formularios, ORM SQLAlchemy y APIs RESTful.',
     category: 'advanced',
@@ -424,6 +430,7 @@ export const courses: Course[] = [
   },
   {
     slug: 'scrum-prototipado',
+    image: '/images/scrum-prototipado.webp',
     name: 'Scrum y Prototipado',
     description: 'Aplica el marco de trabajo Scrum en acción, diseña Sprints y crea maquetas funcionales.',
     category: 'engineering',
@@ -471,6 +478,7 @@ export const courses: Course[] = [
   },
   {
     slug: 'git',
+    image: '/images/git.webp',
     name: 'Git & Control de Versiones',
     description: 'Domina el control de versiones con Git y aprende a colaborar en GitHub, GitLab y Bitbucket.',
     category: 'tools',
@@ -654,6 +662,7 @@ export const courses: Course[] = [
   },
   {
     slug: 'nosql',
+    image: '/images/nosql.webp',
     name: 'NoSQL: MongoDB y Firebase',
     description:
       'Qué diferencia a las bases NoSQL del modelo relacional, cómo trabajar con documentos en MongoDB y cómo guardar datos en Cloud Firestore con Firebase.',
@@ -672,6 +681,7 @@ export const courses: Course[] = [
   },
   {
     slug: 'excel',
+    image: '/images/excel.webp',
     name: 'Excel Básico',
     description: 'Excel desde cero: interfaz, fórmulas, funciones, referencias, condicionales, búsquedas, fechas, análisis y tablas dinámicas, con tablas tipo hoja y práctica guiada en cada lección.',
     category: 'tools',
@@ -697,6 +707,7 @@ export const courses: Course[] = [
   },
   {
     slug: 'excel-intermedio',
+    image: '/images/excel-intermedio.webp',
     name: 'Excel Intermedio: Programación VBA',
     description: 'Aprende a automatizar Excel con VBA: macros, variables, condicionales, bucles, manejo de rangos, eventos y un proyecto integrador real.',
     category: 'tools',
@@ -747,6 +758,7 @@ export const courses: Course[] = [
   },
   {
     slug: 'desarrollo-ia',
+    image: '/images/desarrollo-ia.webp',
     name: 'Desarrollo con IA',
     description: 'Aprende a programar de forma ética, segura y eficiente con asistentes de Inteligencia Artificial.',
     category: 'tools',

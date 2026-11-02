@@ -849,6 +849,133 @@ int main() {
 ];
 
 // ============================================================================
+// 9.1 ASOCIACIÓN DE CLASES (1 A 1)
+// ============================================================================
+export const pooAsociadoQuiz: QuizQuestion[] = [
+  {
+    id: 1,
+    kind: 'MultipleChoice',
+    title: '🧪 Desafío (1/5) · MultipleChoice',
+    questionText: '¿Qué tipo de relación modela la Asociación/Composición entre `Jugador` y `Espada`?',
+    options: ['Relación "Tiene-un" (Has-a)', 'Relación "Es-un" (Is-a)', 'Herencia múltiple', 'Polimorfismo estático'],
+    correctOption: 0,
+    explanation: '¡CORRECTO! Un Jugador TIENE UNA Espada como atributo. Es una relación de posesión y colaboración (Composición).'
+  },
+  {
+    id: 2,
+    kind: 'TrueFalse',
+    title: '🧪 Desafío (2/5) · TrueFalse',
+    questionText: 'Al implementar `void atacar(Jugador &enemigo)`, ¿es indispensable el paso por referencia (`&`) para que la salud del enemigo original realmente disminuya en memoria?',
+    correctAnswer: true,
+    labels: { trueText: 'VERDADERO', falseText: 'FALSO' },
+    explanation: '¡CORRECTO! Sin el `&`, C++ copiaría el objeto y los cambios de salud se perderían al salir de la función.'
+  },
+  {
+    id: 3,
+    kind: 'FillInTheBlank',
+    title: '🧪 Desafío (3/5) · FillInTheBlank',
+    questionText: 'Para asignar el arma inicial recibida por parámetro dentro del constructor de Jugador, se recomienda usar la lista de ______ de miembros.',
+    code: `Jugador(...) : espadaEquipada(espadaInicial) { }`,
+    options: ['Inicialización', 'Destrucción', 'Sobrecarga', 'Polimorfismo'],
+    correctOption: 0,
+    explanation: '¡CORRECTO! La Member Initializer List (`: espadaEquipada(...)`) inicializa directamente el objeto asociado evitando una copia innecesaria.'
+  },
+  {
+    id: 4,
+    kind: 'MatchPairs',
+    title: '🧪 Desafío (4/5) · MatchPairs',
+    questionText: 'Empareja cada concepto de asociación con su propósito:',
+    pairs: [
+      { id: 'p1', left: 'equiparEspada(nueva)', right: 'Cambiar el arma asociada en tiempo de ejecución' },
+      { id: 'p2', left: 'espada.getDanio()', right: 'Delegar el cálculo de daño al objeto componente' },
+      { id: 'p3', left: 'Jugador &objetivo', right: 'Acceder directamente a la instancia real del enemigo' }
+    ],
+    explanation: '¡EXCELENTE! La delegación y el paso por referencia son los pilares del diseño desacoplado.'
+  },
+  {
+    id: 5,
+    kind: 'FindTheBug',
+    title: '🧪 Desafío (5/5) · FindTheBug',
+    questionText: '¿Por qué este método no reduce la vida del enemigo en el juego principal?',
+    code: `void atacar(Jugador enemigo) {
+    enemigo.recibirDanio(25);
+}`,
+    options: [
+      'Falta el ampersand (&) en el parámetro; C++ crea una copia efímera y el original no cambia',
+      'No se puede llamar a recibirDanio dentro de un método',
+      'El número 25 debe ser de tipo double',
+      'enemigo debe ser declarado como static'
+    ],
+    correctOption: 0,
+    explanation: '¡CORRECTO! Al omitir el `&`, se pasa por valor (copia). Para modificar el adversario real, debe ser `Jugador &enemigo`.'
+  }
+];
+
+// ============================================================================
+// 9.2 COLECCIONES DE OBJETOS (1 A N CON STD::VECTOR)
+// ============================================================================
+export const pooAsociadoListQuiz: QuizQuestion[] = [
+  {
+    id: 1,
+    kind: 'MultipleChoice',
+    title: '🧪 Desafío (1/5) · MultipleChoice',
+    questionText: '¿Qué contenedor estándar de C++ es el más recomendado para gestionar una lista dinámica de objetos como el inventario de pociones?',
+    options: ['std::vector<Pocion>', 'std::string', 'char[]', 'int[][]'],
+    correctOption: 0,
+    explanation: '¡CORRECTO! `std::vector` de `<vector>` administra automáticamente la memoria y crece según las necesidades del juego.'
+  },
+  {
+    id: 2,
+    kind: 'FillInTheBlank',
+    title: '🧪 Desafío (2/5) · FillInTheBlank',
+    questionText: 'Para guardar una nueva poción al final del inventario del Jugador, utilizamos el método ______ del vector.',
+    code: `inventario.____(pocion);`,
+    options: ['push_back', 'insert_last', 'append_item', 'add_element'],
+    correctOption: 0,
+    explanation: '¡CORRECTO! `.push_back(elemento)` añade el objeto al final del contenedor dinámico.'
+  },
+  {
+    id: 3,
+    kind: 'TrueFalse',
+    title: '🧪 Desafío (3/5) · TrueFalse',
+    questionText: 'Al ejecutar `inventario.erase(inventario.begin() + idx);`, el vector no solo elimina la poción usada sino que reorganiza los elementos restantes en memoria.',
+    correctAnswer: true,
+    labels: { trueText: 'VERDADERO', falseText: 'FALSO' },
+    explanation: '¡CORRECTO! `.erase()` destruye el elemento en la posición dada y compacta el vector reduciendo `.size()` en 1.'
+  },
+  {
+    id: 4,
+    kind: 'MatchPairs',
+    title: '🧪 Desafío (4/5) · MatchPairs',
+    questionText: 'Empareja el tipo de poción con el impacto en los atributos del Jugador:',
+    pairs: [
+      { id: 'p1', left: 'Poción de CURACION', right: 'Sube la salud respetando el tope de saludMaxima' },
+      { id: 'p2', left: 'Poción de VENENO', right: 'Baja la salud y puede provocar la derrota en 0 HP' },
+      { id: 'p3', left: 'Poción de FUERZA', right: 'Incrementa permanentemente el poder de ataque' }
+    ],
+    explanation: '¡EXCELENTE! Cada ítem puede alterar diferentes campos internos de la clase Jugador.'
+  },
+  {
+    id: 5,
+    kind: 'FindTheBug',
+    title: '🧪 Desafío (5/5) · FindTheBug',
+    questionText: '¿Qué riesgo crítico ocurre si se accede a inventario[idx] sin verificar antes su tamaño?',
+    code: `void beber(int slot) {
+    int idx = slot - 1;
+    Pocion p = inventario[idx];
+}`,
+    options: [
+      'Acceso fuera de rango (Out-of-bounds) que puede corromper memoria o provocar un crash',
+      'La poción se transforma en veneno automáticamente',
+      'El compilador genera un bucle infinito',
+      'Se borran todas las pociones del juego'
+    ],
+    correctOption: 0,
+    explanation: '¡CORRECTO! Siempre se debe validar `idx >= 0 && idx < inventario.size()` antes de consultar el vector.'
+  }
+];
+
+// ============================================================================
 // 10. POO PILARES (HERENCIA Y POLIMORFISMO)
 // ============================================================================
 export const pooPilaresQuiz: QuizQuestion[] = [
@@ -925,6 +1052,8 @@ const QUIZZES_BY_LESSON: Record<string, QuizQuestion[]> = {
   'array-examen': arrayExamenQuiz,
   'funciones': funcionesQuiz,
   'poo-basico': pooBasicoQuiz,
+  'poo-asociado': pooAsociadoQuiz,
+  'poo-asociado-list': pooAsociadoListQuiz,
   'poo-pilares': pooPilaresQuiz,
 };
 

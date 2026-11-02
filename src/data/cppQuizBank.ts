@@ -549,6 +549,98 @@ export const cppQuizBank: Record<string, CppQuizDefinition> = {
       },
     ],
   },
+  'poo-asociado': {
+    key: 'poo-asociado',
+    title: 'Quiz: Asociación de Clases y Composición (1 a 1)',
+    questions: [
+      {
+        prompt: '¿Qué caracteriza a la relación de "Asociación / Composición" entre clases?',
+        options: [
+          'Un objeto almacena una instancia de otro objeto como atributo ("Tiene-un")',
+          'Una clase hereda los métodos protegidos de otra clase ("Es-un")',
+          'Las dos clases deben estar en el mismo archivo sin excepción',
+          'Un puntero void se convierte en entero automáticamente',
+        ],
+        correctIndex: 0,
+      },
+      {
+        prompt: '¿Por qué el método `void atacar(Jugador &enemigo)` recibe al enemigo por referencia (`&`)?',
+        options: [
+          'Para modificar la salud del objeto enemigo real en memoria sin crear una copia temporal',
+          'Porque en C++ las clases nunca pueden pasarse por valor',
+          'Para acelerar la velocidad del disco duro',
+          'Porque los métodos void obligan a usar punteros',
+        ],
+        correctIndex: 0,
+      },
+      {
+        prompt: '¿Cómo se inicializa comúnmente un objeto asociado dentro del constructor de la clase contenedora?',
+        options: [
+          'En la lista de inicialización de miembros: `Jugador(...) : espada(espadaInicial) { }`',
+          'Creando una variable global fuera del archivo',
+          'Mediante la palabra reservada new obligatoria en el stack',
+          'Con la instrucción import espada',
+        ],
+        correctIndex: 0,
+      },
+      {
+        prompt: '¿Qué es la "delegación" en el contexto de `jugador.atacar(enemigo)` y su espada?',
+        options: [
+          'El Jugador le pide a la Espada su daño (`espada.getDanio()`) y desgaste en lugar de recalcularlo él mismo',
+          'El Jugador borra la memoria RAM del sistema',
+          'La Espada hereda todos los métodos del Jugador',
+          'El sistema operativo pausa el hilo de ejecución',
+        ],
+        correctIndex: 0,
+      },
+    ],
+  },
+  'poo-asociado-list': {
+    key: 'poo-asociado-list',
+    title: 'Quiz: Colecciones de Objetos (std::vector 1 a N)',
+    questions: [
+      {
+        prompt: '¿Qué contenedor estándar de C++ es ideal para implementar una lista dinámica de objetos como el inventario (`std::vector<Pocion>`)?',
+        options: [
+          'std::vector de la librería <vector>',
+          'Un arreglo estático de tamaño fijo int[]',
+          'Una variable std::string',
+          'La función printf',
+        ],
+        correctIndex: 0,
+      },
+      {
+        prompt: '¿Qué método de `std::vector` se utiliza para agregar un nuevo objeto al final de la colección?',
+        options: [
+          '.push_back(objeto)',
+          '.append_item(objeto)',
+          '.add_last(objeto)',
+          '.insert_end(objeto)',
+        ],
+        correctIndex: 0,
+      },
+      {
+        prompt: '¿Qué método de `std::vector` elimina un elemento en una posición específica dada por un iterador tras consumir un ítem?',
+        options: [
+          '.erase(inventario.begin() + indice)',
+          '.delete(indice)',
+          '.removeAt(indice)',
+          '.pop_index(indice)',
+        ],
+        correctIndex: 0,
+      },
+      {
+        prompt: 'Antes de acceder a `inventario[idx]`, ¿qué validación defensiva fundamental debe realizarse?',
+        options: [
+          'Verificar que idx >= 0 && idx < inventario.size() para evitar acceso a memoria inválida',
+          'Comprobar que el nombre del jugador no esté vacío',
+          'Asegurar que la consola esté limpia',
+          'Multiplicar el índice por 2',
+        ],
+        correctIndex: 0,
+      },
+    ],
+  },
   'poo-pilares': {
     key: 'poo-pilares',
     title: 'Quiz: Herencia y Polimorfismo',

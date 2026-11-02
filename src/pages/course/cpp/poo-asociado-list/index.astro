@@ -1,0 +1,395 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import PooChallengesCta from '../../../../components/challenges/PooChallengesCta.astro';
+import CppQuizModal from '../../../../components/quizzes/CppQuizModal.astro';
+---
+
+<Layout title="Colecciones de Objetos en C++: Inventario y std::vector" description="Aprende composición 1 a N en C++: cómo un Jugador administra un vector de objetos Pocion para modificar sus atributos de salud y fuerza en tiempo real." courseSlug="cpp">
+  <article class="content-section">
+    <!-- HERO / BANNER -->
+    <div class="mb-8 p-6 rounded-2xl bg-gradient-to-r from-emerald-900/40 via-teal-900/30 to-slate-900/60 border border-emerald-500/30 shadow-xl">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 mb-2">
+            <span>⚡ C++ POO</span>
+            <span>· Lección 9.2</span>
+          </span>
+          <h1 class="text-3xl font-black text-white m-0 tracking-tight">9.2 Colecciones de Objetos: Inventario con std::vector (1 a N) 🎒</h1>
+          <p class="text-sm text-slate-300 m-0 mt-2 leading-relaxed">
+            Evoluciona tu arquitectura: haz que un objeto contenga una lista dinámica de otros objetos. Aprende a crear un inventario de pociones que alteran atributos (subir vida, veneno y mejoras de poder).
+          </p>
+        </div>
+        <div class="flex-shrink-0 flex items-center gap-2">
+          <a
+            href="/course-slides/cpp/poo-asociado-list/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-lg shadow-emerald-500/30 transition-all hover:scale-105"
+          >
+            <span>📺</span>
+            <span>Ver Presentación Interactiva (PPT)</span>
+          </a>
+          <a
+            href="/course/cpp/poo-asociado/"
+            class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs border border-slate-700 transition-all"
+          >
+            <span>←</span>
+            <span>Volver</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <p class="text-base leading-relaxed">
+      En la lección anterior vimos cómo un <code>Jugador</code> se vincula con un único objeto (su <code>Espada</code>). Sin embargo, en sistemas reales casi siempre necesitamos manejar <strong>colecciones dinámicas de objetos</strong>: un carrito de compras con múltiples productos, una biblioteca con cientos de libros, o un <strong>Jugador con un inventario de múltiples ítems consumibles</strong>.
+    </p>
+
+    <!-- SECCIÓN 1: EL CONCEPTO 1 A N -->
+    <section class="mb-10">
+      <h2>1. Composición de Uno a Muchos (1 a N)</h2>
+      <p>
+        Para almacenar un número variable de objetos en C++ moderno, utilizamos el contenedor canónico de la STL: <code>std::vector&lt;Tipo&gt;</code>.
+      </p>
+
+      <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-700/60 my-4">
+        <h3 class="text-base font-bold text-emerald-300 m-0 mb-1">📦 Relación de Pertenencia</h3>
+        <p class="text-xs text-slate-300 m-0">
+          El <code>Jugador</code> es el dueño del vector. Cuando el jugador recoge una poción, se añade al vector con <code>push_back()</code>. Al consumirla, sus efectos se aplican a los atributos del jugador (subiendo o bajando estadísticas) y el ítem se destruye de la lista con <code>erase()</code>.
+        </p>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 2: MODELADO DE LA CLASE POCION -->
+    <section class="mb-10">
+      <h2>2. Paso 1: La Clase Ítem (<code>Pocion</code>)</h2>
+      <p>
+        Definimos la clase de los objetos individuales que poblarán el inventario. Cada poción tendrá un <strong>nombre</strong>, un <strong>tipo de efecto</strong> y un <strong>valor numérico de impacto</strong>:
+      </p>
+
+      <CodeBlock
+        lang="cpp"
+        code={`class Pocion {
+private:
+    string nombre;
+    string tipo; // "CURACION", "VENENO", "FUERZA"
+    int valorEfecto;
+
+public:
+    Pocion(string nombre, string tipo, int valorEfecto)
+        : nombre(nombre), tipo(tipo), valorEfecto(valorEfecto) {}
+
+    // Getters para consultar propiedades desde el Jugador
+    string getNombre() const { return nombre; }
+    string getTipo() const { return tipo; }
+    int getValorEfecto() const { return valorEfecto; }
+
+    void mostrarInfo() const {
+        cout << "[" << tipo << "] " << nombre 
+             << " (" << (valorEfecto >= 0 ? "+" : "") << valorEfecto << " pts)\\n";
+    }
+};`}
+        title="Pocion.h - Clase del elemento individual"
+      />
+    </section>
+
+    <!-- SECCIÓN 3: LA CLASE JUGADOR CON INVENTARIO VECTOR -->
+    <section class="mb-10">
+      <h2>3. Paso 2: La Clase <code>Jugador</code> con <code>std::vector&lt;Pocion&gt;</code></h2>
+      <p>
+        Incluimos la librería <code>#include &lt;vector&gt;</code> y declaramos el vector como atributo privado dentro de <code>Jugador</code>:
+      </p>
+
+      <CodeBlock
+        lang="cpp"
+        code={`#include <vector>
+
+class Jugador {
+private:
+    string nombre;
+    int salud;
+    int saludMaxima;
+    int fuerza;
+    vector<Pocion> inventario; // <- Colección 1 a N de objetos
+
+public:
+    Jugador(string nombre, int saludMax, int fuerzaBase)
+        : nombre(nombre), salud(saludMax), saludMaxima(saludMax), fuerza(fuerzaBase) {}
+
+    // 1. Añadir un objeto a la colección
+    void recogerPocion(const Pocion &pocion) {
+        inventario.push_back(pocion);
+        cout << "🎒 " << nombre << " guardó en su mochila: " << pocion.getNombre() << "\\n";
+    }
+
+    // 2. Iterar sobre todos los objetos del vector
+    void mostrarInventario() const {
+        cout << "\\n--- 🎒 Mochila de " << nombre << " (" << inventario.size() << " ítems) ---\\n";
+        if (inventario.empty()) {
+            cout << "  (Tu mochila está vacía)\\n";
+            return;
+        }
+
+        for (size_t i = 0; i < inventario.size(); i++) {
+            cout << "  " << i + 1 << ". ";
+            inventario[i].mostrarInfo();
+        }
+    }
+};`}
+        title="Incorporación de vector<Pocion> como atributo interno"
+      />
+    </section>
+
+    <!-- SECCIÓN 4: CONSUMO Y MODIFICACIÓN DE ATRIBUTOS -->
+    <section class="mb-10">
+      <h2>4. Consumir Ítems: Modificando Atributos y Eliminando del Vector</h2>
+      <p>
+        Al usar una poción ocurren tres eventos fundamentales de POO:
+      </p>
+      <ol class="list-decimal pl-6 space-y-2 mb-4">
+        <li>
+          <strong>Validación de límites:</strong> Comprobamos que el índice solicitado por el usuario exista realmente en el vector (<code>indice &gt;= 0 && indice &lt; inventario.size()</code>).
+        </li>
+        <li>
+          <strong>Alteración del estado interno del Jugador:</strong> Según el tipo de poción, se modifican los atributos <code>salud</code> o <code>fuerza</code>:
+          <ul class="list-disc pl-6 mt-1 space-y-1 text-sm text-slate-300">
+            <li><strong>CURACIÓN (+Vida):</strong> Aumenta la salud sin exceder <code>saludMaxima</code>.</li>
+            <li><strong>VENENO (-Vida):</strong> Disminuye la salud; si llega a 0, el jugador queda derrotado.</li>
+            <li><strong>FUERZA (+Ataque):</strong> Aumenta permanentemente el atributo de fuerza física.</li>
+          </ul>
+        </li>
+        <li>
+          <strong>Eliminación del vector:</strong> Usamos <code>inventario.erase(inventario.begin() + indice)</code> para remover el ítem consumido y reorganizar el contenedor.
+        </li>
+      </ol>
+
+      <CodeBlock
+        lang="cpp"
+        code={`bool usarPocion(int slotUsuario) {
+    int idx = slotUsuario - 1; // Convertimos de 1-based (usuario) a 0-based (C++)
+
+    // 1. Verificación defensiva de rango
+    if (idx < 0 || idx >= static_cast<int>(inventario.size())) {
+        cout << "❌ No existe ningún ítem en la posición #" << slotUsuario << ".\\n";
+        return false;
+    }
+
+    Pocion consumida = inventario[idx];
+    cout << "\\n🧪 " << nombre << " consume " << consumida.getNombre() << "...\\n";
+
+    // 2. Modificación de atributos según el efecto
+    if (consumida.getTipo() == "CURACION") {
+        salud += consumida.getValorEfecto();
+        if (salud > saludMaxima) salud = saludMaxima;
+        cout << "💚 ¡Salud restaurada! Ahora tienes: " << salud << "/" << saludMaxima << " HP\\n";
+    } 
+    else if (consumida.getTipo() == "VENENO") {
+        salud -= consumida.getValorEfecto();
+        if (salud < 0) salud = 0;
+        cout << "🤢 ¡El frasco contenía veneno vil! Pierdes " << consumida.getValorEfecto() << " de vida.\\n";
+        cout << "   Salud actual: " << salud << "/" << saludMaxima << " HP\\n";
+        if (salud == 0) cout << "💀 ¡" << nombre << " ha caído derrotado por envenenamiento!\\n";
+    } 
+    else if (consumida.getTipo() == "FUERZA") {
+        fuerza += consumida.getValorEfecto();
+        cout << "💪 ¡Tus músculos arden de poder! Fuerza incrementada a: " << fuerza << "\\n";
+    }
+
+    // 3. Removemos la poción gastada del inventario
+    inventario.erase(inventario.begin() + idx);
+    return true;
+}`}
+        title="Lógica de consumo, modificación de atributos y eliminación con erase()"
+      />
+    </section>
+
+    <!-- SECCIÓN 5: CÓDIGO COMPLETO Y EJECUTABLE -->
+    <section class="mb-10">
+      <h2>5. Ejemplo Completo y Ejecutable</h2>
+      <p>
+        Este programa interactivo muestra la creación del jugador, la recolección de múltiples pociones con distintos efectos, y cómo sus atributos cambian dinámicamente al consumirlas:
+      </p>
+
+      <CodeBlock
+        lang="cpp"
+        code={`#include <iostream>
+#include <string>
+#include <vector>
+
+using namespace std;
+
+// --- CLASE POCION ---
+class Pocion {
+private:
+    string nombre;
+    string tipo; // "CURACION", "VENENO", "FUERZA"
+    int valorEfecto;
+
+public:
+    Pocion(string nombre, string tipo, int valorEfecto)
+        : nombre(nombre), tipo(tipo), valorEfecto(valorEfecto) {}
+
+    string getNombre() const { return nombre; }
+    string getTipo() const { return tipo; }
+    int getValorEfecto() const { return valorEfecto; }
+
+    void mostrarInfo() const {
+        cout << "[" << tipo << "] " << nombre 
+             << " (" << (valorEfecto >= 0 ? "+" : "") << valorEfecto << " pts)\\n";
+    }
+};
+
+// --- CLASE JUGADOR CON INVENTARIO ---
+class Jugador {
+private:
+    string nombre;
+    int salud;
+    int saludMaxima;
+    int fuerza;
+    vector<Pocion> inventario;
+
+public:
+    Jugador(string nombre, int saludMax, int fuerzaBase)
+        : nombre(nombre), salud(saludMax), saludMaxima(saludMax), fuerza(fuerzaBase) {}
+
+    string getNombre() const { return nombre; }
+    int getSalud() const { return salud; }
+    int getFuerza() const { return fuerza; }
+
+    void recogerPocion(const Pocion &pocion) {
+        inventario.push_back(pocion);
+        cout << "🎒 " << nombre << " recogió: " << pocion.getNombre() << "\\n";
+    }
+
+    void mostrarInventario() const {
+        cout << "\\n=== 🎒 INVENTARIO DE " << nombre << " (" << inventario.size() << " ítems) ===\\n";
+        if (inventario.empty()) {
+            cout << "  (Mochila vacía)\\n";
+            return;
+        }
+
+        for (size_t i = 0; i < inventario.size(); i++) {
+            cout << "  " << i + 1 << ". ";
+            inventario[i].mostrarInfo();
+        }
+    }
+
+    bool usarPocion(int slot) {
+        int idx = slot - 1;
+        if (idx < 0 || idx >= static_cast<int>(inventario.size())) {
+            cout << "❌ Número de ítem inválido: #" << slot << "\\n";
+            return false;
+        }
+
+        Pocion p = inventario[idx];
+        cout << "\\n🧪 " << nombre << " bebe " << p.getNombre() << "...\\n";
+
+        if (p.getTipo() == "CURACION") {
+            salud += p.getValorEfecto();
+            if (salud > saludMaxima) salud = saludMaxima;
+            cout << "💚 ¡Te has curado! HP actual: " << salud << "/" << saludMaxima << "\\n";
+        } 
+        else if (p.getTipo() == "VENENO") {
+            salud -= p.getValorEfecto();
+            if (salud < 0) salud = 0;
+            cout << "🤢 ¡Cuidado! Era veneno puro. Pierdes " << p.getValorEfecto() << " de vida.\\n";
+            cout << "   HP actual: " << salud << "/" << saludMaxima << "\\n";
+            if (salud == 0) cout << "💀 ¡" << nombre << " se desploma sin vida!\\n";
+        } 
+        else if (p.getTipo() == "FUERZA") {
+            fuerza += p.getValorEfecto();
+            cout << "💪 ¡Tu fuerza física aumenta en " << p.getValorEfecto() << " pts! Total: " << fuerza << "\\n";
+        }
+
+        // Se retira el ítem usado de la lista
+        inventario.erase(inventario.begin() + idx);
+        return true;
+    }
+
+    void mostrarFicha() const {
+        cout << "┌───────────────────────────────────────────────┐\\n";
+        cout << "  Héroe: " << nombre << " | HP: " << salud << "/" << saludMaxima 
+             << " | Fuerza: " << fuerza << " | Pociones: " << inventario.size() << "\\n";
+        cout << "└───────────────────────────────────────────────┘\\n";
+    }
+};
+
+// --- SIMULACIÓN EN MAIN ---
+int main() {
+    Jugador valiente("Link", 100, 20);
+
+    // Creamos pociones con diversos efectos
+    Pocion elixirVida("Elixir Rojo de Vida", "CURACION", 35);
+    Pocion pocionPoder("Extracto de Fuerza de Dragón", "FUERZA", 15);
+    Pocion frascoVeneno("Brebaje Sospechoso de la Bruja", "VENENO", 40);
+
+    // Llenamos el inventario
+    valiente.recogerPocion(elixirVida);
+    valiente.recogerPocion(pocionPoder);
+    valiente.recogerPocion(frascoVeneno);
+
+    valiente.mostrarFicha();
+    valiente.mostrarInventario();
+
+    // 1. Consumir la poción de Fuerza (slot 2)
+    valiente.usarPocion(2);
+
+    // 2. Beber por error el frasco de veneno (que ahora quedó en el slot 2)
+    valiente.usarPocion(2);
+
+    // 3. Beber la poción de curación para recuperarse del veneno (slot 1)
+    valiente.usarPocion(1);
+
+    // Estado final
+    cout << "\\n=== ESTADO FINAL DEL HÉROE ===\\n";
+    valiente.mostrarFicha();
+    valiente.mostrarInventario();
+
+    return 0;
+}
+`}
+        title="Inventario de objetos con std::vector y modificación de atributos"
+      />
+    </section>
+
+    <!-- TARJETA HACIA HERENCIA Y POLIMORFISMO -->
+    <div class="my-8 p-6 rounded-2xl bg-gradient-to-r from-blue-950/60 via-indigo-950/40 to-slate-900 border border-blue-500/30">
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+          <span class="text-xs font-mono font-bold text-blue-400 uppercase tracking-widest block mb-1">Continúa tu aprendizaje</span>
+          <h3 class="text-xl font-bold text-white m-0">10. Herencia y Polimorfismo ⚡</h3>
+          <p class="text-sm text-slate-300 m-0 mt-1">
+            Ahora que dominas la composición ("Tiene-un"), adéntrate en la herencia ("Es-un"): clases base, clases derivadas y métodos virtuales.
+          </p>
+        </div>
+        <a
+          href="/course/cpp/poo-pilares/"
+          class="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs whitespace-nowrap transition-all shadow-lg shadow-blue-600/30"
+        >
+          Ir a Herencia y Polimorfismo →
+        </a>
+      </div>
+    </div>
+
+    <div class="ejercicio">
+      <h3>Ejercicio de Práctica</h3>
+      <p class="enunciado">
+        1. Agrega a la clase <code>Jugador</code> un límite máximo de capacidad para la mochila (por ejemplo, máximo 4 pociones). Si el inventario ya está lleno, el método <code>recogerPocion()</code> debe mostrar un mensaje advirtiendo que no cabe más peso y no debe agregar la poción.<br />
+        2. Agrega un nuevo tipo de poción: <code>"MANA"</code> con su correspondiente atributo <code>mana</code> en la clase <code>Jugador</code>.
+      </p>
+    </div>
+
+    <!-- QUIZ INTERACTIVO FORMATIVO -->
+    <section class="mt-12 pt-8 border-t border-slate-800">
+      <div class="text-center mb-6">
+        <span class="text-xs font-mono font-bold text-emerald-400 uppercase tracking-widest block mb-1">Autoevaluación Formativa</span>
+        <h2 class="text-2xl font-black text-white m-0">Comprueba lo que Has Aprendido 🧠</h2>
+        <p class="text-xs text-slate-400 mt-1">Valida tu comprensión de colecciones dinámicas de objetos y gestión de estado en C++.</p>
+      </div>
+
+      <CppQuizModal quizKey="poo-asociado-list" />
+    </section>
+
+    <PooChallengesCta />
+  </article>
+</Layout>

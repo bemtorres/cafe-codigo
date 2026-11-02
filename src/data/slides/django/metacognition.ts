@@ -320,6 +320,28 @@ export function getMetaQuestionsForLesson(lessonSlug: string): MetaReflectionQue
       ];
       break;
 
+    case 'modelo-bd-mysql':
+    case 'modelo-bd/mysql':
+      specific = [
+        {
+          id: 5,
+          category: 'CourseSpecific',
+          title: '5. Diagnóstico de Compatibilidad vs Reemplazo de Driver',
+          questionText: '¿Por qué es fundamental auditar primero la versión exacta del servidor MySQL (SELECT VERSION()) antes de asumir que el problema es del driver de Python?',
+          promptHint: 'Considera que instalar PyMySQL solo provee la interfaz en Python, pero no puede obligar a Django a aceptar una base de datos MySQL obsoleta que no soporta las características SQL mínimas.',
+          keyTakeaway: 'Diferenciar entre errores de infraestructura (versión del motor) y de compilación local de Python (driver) previene modificaciones erróneas en el código del proyecto.'
+        },
+        {
+          id: 6,
+          category: 'CourseSpecific',
+          title: '6. Seguridad y Variables de Entorno en settings.py',
+          questionText: '¿Qué riesgos acarrea colocar contraseñas de bases de datos en texto plano en settings.py y qué alternativa profesional debe usarse?',
+          promptHint: 'Imagina subir por error el repositorio a GitHub público o desplegar en servidores compartidos.',
+          keyTakeaway: 'settings.py debe contener configuraciones agnósticas al entorno; las credenciales sensibles pertenecen exclusivamente a variables de entorno (.env) protegidas.'
+        }
+      ];
+      break;
+
     case 'admin-crud':
       specific = [
         {

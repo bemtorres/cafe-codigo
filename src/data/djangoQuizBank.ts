@@ -217,6 +217,62 @@ export const djangoQuizBank: Record<string, DjangoQuizDefinition> = {
       },
     ],
   },
+  'modelo-bd-mysql': {
+    key: 'modelo-bd-mysql',
+    title: 'Quiz: Conexión de Django con MySQL y PyMySQL',
+    questions: [
+      {
+        prompt: '¿Cuál es el primer paso recomendado antes de intentar instalar o configurar un conector para MySQL en Django?',
+        options: [
+          'Borrar la carpeta migrations para reiniciar el proyecto',
+          'Comprobar la versión de Django, Python y la versión del motor de MySQL/MariaDB',
+          'Instalar directamente mysqlclient con privilegios de administrador',
+          'Cambiar el motor a SQLite de inmediato',
+        ],
+        correctIndex: 1,
+      },
+      {
+        prompt: '¿Por qué comando SQL debes optar para conocer con certeza la versión del servidor de base de datos MySQL conectado?',
+        options: [
+          'mysql --version',
+          'SELECT VERSION();',
+          'SHOW DATABASES;',
+          'python manage.py version',
+        ],
+        correctIndex: 1,
+      },
+      {
+        prompt: '¿Cuál es la función de PyMySQL en proyectos Django cuando no es viable compilar mysqlclient?',
+        options: [
+          'Funciona como un reemplazo en Python puro mediante pymysql.install_as_MySQLdb()',
+          'Acelera las consultas Redis en memoria',
+          'Convierte versiones incompatibles de MySQL en compatibles',
+          'Elimina la necesidad de definir DATABASES en settings.py',
+        ],
+        correctIndex: 0,
+      },
+      {
+        prompt: '¿Dónde se debe ubicar la invocación "pymysql.install_as_MySQLdb()" en la estructura de un proyecto Django?',
+        options: [
+          'En el archivo models.py de cada aplicación',
+          'En el archivo __init__.py del paquete principal del proyecto (junto a settings.py)',
+          'Al final de urls.py',
+          'Dentro de views.py',
+        ],
+        correctIndex: 1,
+      },
+      {
+        prompt: 'Si Django arroja el error "NotSupportedError: MySQL 8.0.11 or later is required", ¿qué acción es la correcta?',
+        options: [
+          'Instalar PyMySQL pensando que evitará la comprobación de versión del servidor',
+          'Actualizar el servidor MySQL a una versión admitida o usar una versión compatible de Django',
+          'Borrar el archivo settings.py',
+          'Modificar el código fuente interno de Django para desactivar el chequeo',
+        ],
+        correctIndex: 1,
+      },
+    ],
+  },
   'modelo-bd-library': {
     key: 'modelo-bd-library',
     title: 'Quiz: Biblioteca Digital y Django ORM',

@@ -6,6 +6,7 @@ import { getMetaQuestionsForLesson, type MetaReflectionQuestion } from './metaco
 import { modeloBdSlides } from './modelo-bd';
 import { modeloBdStepSlides } from './modelo-bd-step';
 import { modeloBdVehiculosSlides } from './modelo-bd-vehiculos';
+import { modeloBdMysqlSlides } from './modelo-bd-mysql';
 
 // Nuevas diapositivas pedagógicas
 import { introduccionSlides } from './introduccion';
@@ -39,6 +40,7 @@ export {
   modeloBdStepSlides,
   modeloBdLibrarySlides,
   modeloBdVehiculosSlides,
+  modeloBdMysqlSlides,
   adminCrudSlides,
   seguridadSlides,
   apisRestfulSlides,
@@ -118,6 +120,10 @@ export function getSlidesForLesson(lessonSlug: string): Slide[] {
     case 'modelo-bd-vehiculos':
     case 'modelo-bd/vehiculos':
       return modeloBdVehiculosSlides;
+
+    case 'modelo-bd-mysql':
+    case 'modelo-bd/mysql':
+      return modeloBdMysqlSlides;
 
     case 'admin-crud':
       return adminCrudSlides;

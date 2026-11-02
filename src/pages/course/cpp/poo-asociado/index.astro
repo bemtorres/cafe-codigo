@@ -1,0 +1,372 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import PooChallengesCta from '../../../../components/challenges/PooChallengesCta.astro';
+import CppQuizModal from '../../../../components/quizzes/CppQuizModal.astro';
+---
+
+<Layout title="Asociación de Clases en C++: Jugador y Espada" description="Aprende composición y asociación 1 a 1 en C++: cómo un objeto Jugador contiene y delega acciones a un objeto Espada, paso por referencia y equipamiento dinámico." courseSlug="cpp">
+  <article class="content-section">
+    <!-- HERO / BANNER -->
+    <div class="mb-8 p-6 rounded-2xl bg-gradient-to-r from-purple-900/40 via-indigo-900/30 to-slate-900/60 border border-purple-500/30 shadow-xl">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30 mb-2">
+            <span>⚡ C++ POO</span>
+            <span>· Lección 9.1</span>
+          </span>
+          <h1 class="text-3xl font-black text-white m-0 tracking-tight">9.1 Asociación de Clases: Relación "Tiene-Un" (1 a 1) ⚔️</h1>
+          <p class="text-sm text-slate-300 m-0 mt-2 leading-relaxed">
+            Aprende cómo conectar dos entidades independientes en C++: haz que tu clase <code>Jugador</code> posea una <code>Espada</code> como atributo, delegue el combate e intercambie armas en caliente.
+          </p>
+        </div>
+        <div class="flex-shrink-0 flex items-center gap-2">
+          <a
+            href="/course-slides/cpp/poo-asociado/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs shadow-lg shadow-purple-500/30 transition-all hover:scale-105"
+          >
+            <span>📺</span>
+            <span>Ver Presentación Interactiva (PPT)</span>
+          </a>
+          <a
+            href="/course/cpp/poo-basico/"
+            class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs border border-slate-700 transition-all"
+          >
+            <span>←</span>
+            <span>Volver</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <p class="text-base leading-relaxed">
+      En el mundo real y en la arquitectura de software, los objetos rara vez existen de forma aislada. Un auto <em>tiene un</em> motor, una computadora <em>tiene un</em> procesador, y en un videojuego, un <strong>Jugador <em>tiene una</em> Espada</strong>.
+    </p>
+
+    <!-- SECCIÓN 1: CONCEPTO DE ASOCIACIÓN -->
+    <section class="mb-10">
+      <h2>1. ¿Qué es la Asociación y la Composición?</h2>
+      <p>
+        En POO existen dos formas principales de relacionar clases:
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-6">
+        <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-700/60">
+          <h3 class="text-base font-bold text-amber-300 m-0 mb-1">🔗 Composición / Asociación ("Tiene-Un")</h3>
+          <p class="text-xs text-slate-300 m-0">
+            Una clase almacena una instancia de otra clase dentro de sus atributos privados. <br />
+            <strong>Ejemplo:</strong> <code>Jugador</code> <em>tiene una</em> <code>Espada</code>. Es la técnica más flexible y recomendada para ensamblar sistemas modulares.
+          </p>
+        </div>
+        <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-700/60">
+          <h3 class="text-base font-bold text-blue-300 m-0 mb-1">🏛️ Herencia ("Es-Un")</h3>
+          <p class="text-xs text-slate-300 m-0">
+            Una clase deriva de otra más genérica. <br />
+            <strong>Ejemplo:</strong> <code>Guerrero</code> <em>es un</em> <code>Personaje</code>. Se utiliza cuando hay una jerarquía de tipos (lo veremos en la lección 10).
+          </p>
+        </div>
+      </div>
+
+      <p>
+        El lema clásico de la ingeniería de software es: <em>"Favorece la composición sobre la herencia"</em>. Al componer objetos, tus clases se mantienen desacopladas, testeables y fáciles de modificar.
+      </p>
+    </section>
+
+    <!-- SECCIÓN 2: LA CLASE COMPONENTE (ESPADA) -->
+    <section class="mb-10">
+      <h2>2. Paso 1: Definir la Clase Componente (<code>Espada</code>)</h2>
+      <p>
+        Antes de que el <code>Jugador</code> pueda tener una espada, necesitamos que la clase <code>Espada</code> esté claramente modelada con sus propios atributos y encapsulamiento:
+      </p>
+
+      <CodeBlock
+        lang="cpp"
+        code={`class Espada {
+private:
+    string nombre;
+    int danio;
+    int durabilidad; // 0 a 100
+
+public:
+    Espada() : nombre("Desarmado"), danio(2), durabilidad(100) {}
+
+    Espada(string nombre, int danio, int durabilidad)
+        : nombre(nombre), danio(danio), durabilidad(durabilidad) {}
+
+    // Getters
+    string getNombre() const { return nombre; }
+    int getDurabilidad() const { return durabilidad; }
+
+    // El daño efectivo depende del estado del arma
+    int getDanio() const {
+        return (durabilidad > 0) ? danio : 1; // Un arma rota apenas hace 1 de daño
+    }
+
+    // Comportamiento del arma
+    void desgastar() {
+        if (durabilidad > 0) {
+            durabilidad -= 10;
+            if (durabilidad < 0) durabilidad = 0;
+        }
+    }
+};`}
+        title="Espada como clase independiente"
+      />
+    </section>
+
+    <!-- SECCIÓN 3: LA CLASE CONTENEDORA (JUGADOR) -->
+    <section class="mb-10">
+      <h2>3. Paso 2: La Clase Contenedora (<code>Jugador</code>)</h2>
+      <p>
+        Ahora declaramos el atributo <code>Espada espadaEquipada;</code> dentro de la clase <code>Jugador</code>. Fíjate cómo la inicializamos en la lista de inicialización del constructor:
+      </p>
+
+      <CodeBlock
+        lang="cpp"
+        code={`class Jugador {
+private:
+    string nombre;
+    int salud;
+    int saludMaxima;
+    Espada espadaEquipada; // <- ASOCIACIÓN: Un objeto dentro de otro objeto
+
+public:
+    // El constructor recibe una Espada y la asigna a su atributo interno
+    Jugador(string nombre, int saludMax, Espada espadaInicial)
+        : nombre(nombre), salud(saludMax), saludMaxima(saludMax), espadaEquipada(espadaInicial) {
+    }
+
+    // Getter del arma asociada
+    Espada getEspada() const { return espadaEquipada; }
+
+    // Cambiar de arma dinámicamente en caliente
+    void equiparEspada(Espada nuevaEspada) {
+        espadaEquipada = nuevaEspada;
+        cout << "⚔️ " << nombre << " ahora empuña: " << espadaEquipada.getNombre() << "!\\n";
+    }
+};`}
+        title="Jugador integrando Espada como atributo de instancia"
+      />
+    </section>
+
+    <!-- SECCIÓN 4: DELEGACIÓN Y PASO POR REFERENCIA -->
+    <section class="mb-10">
+      <h2>4. Delegación y Paso por Referencia en Métodos</h2>
+      <p>
+        Cuando el jugador ejecuta la acción <code>atacar(Jugador &objetivo)</code>:
+      </p>
+      <ol class="list-decimal pl-6 space-y-2 mb-4">
+        <li>
+          <strong>Paso por referencia (<code>Jugador &objetivo</code>):</strong> Usamos el símbolo <code>&</code> para recibir la referencia directa del enemigo en memoria. Si no pusiéramos <code>&</code>, C++ crearía una copia efímera y los puntos de vida del enemigo original nunca bajarían.
+        </li>
+        <li>
+          <strong>Delegación de responsabilidades:</strong> El jugador no inventa el cálculo de daño; le pregunta a su arma: <code>int danio = espadaEquipada.getDanio();</code> y luego la desgasta con <code>espadaEquipada.desgastar();</code>.
+        </li>
+      </ol>
+
+      <CodeBlock
+        lang="cpp"
+        code={`void atacar(Jugador &objetivo) {
+    if (salud <= 0) {
+        cout << "💀 " << nombre << " no puede atacar porque está fuera de combate.\\n";
+        return;
+    }
+
+    cout << "\\n🗡️ " << nombre << " ataca a " << objetivo.getNombre() 
+         << " blandiendo su " << espadaEquipada.getNombre() << "!\\n";
+
+    // 1. Delegamos el daño en la espada
+    int danioInfligido = espadaEquipada.getDanio();
+
+    // 2. Aplicamos el daño al objetivo real mediante su referencia
+    objetivo.recibirDanio(danioInfligido);
+
+    // 3. Desgastamos el arma utilizada
+    espadaEquipada.desgastar();
+
+    if (espadaEquipada.getDurabilidad() == 0) {
+        cout << "⚠️ ¡CRAC! La " << espadaEquipada.getNombre() << " se ha roto por completo.\\n";
+    }
+}`}
+        title="Método de combate delegando en el objeto asociado"
+      />
+    </section>
+
+    <!-- SECCIÓN 5: CÓDIGO COMPLETO -->
+    <section class="mb-10">
+      <h2>5. Ejemplo Completo y Ejecutable</h2>
+      <p>
+        Copia este código en tu entorno de desarrollo para ver en acción el combate completo, la durabilidad y el cambio dinámico de arma:
+      </p>
+
+      <CodeBlock
+        lang="cpp"
+        code={`#include <iostream>
+#include <string>
+
+using namespace std;
+
+// --- 1. CLASE ASOCIADA: ESPADA ---
+class Espada {
+private:
+    string nombre;
+    int danio;
+    int durabilidad;
+
+public:
+    Espada() : nombre("Puños"), danio(5), durabilidad(100) {}
+
+    Espada(string nombre, int danio, int durabilidad)
+        : nombre(nombre), danio(danio), durabilidad(durabilidad) {}
+
+    string getNombre() const { return nombre; }
+    int getDurabilidad() const { return durabilidad; }
+
+    int getDanio() const {
+        return (durabilidad > 0) ? danio : 2; // Daño residual si está rota
+    }
+
+    void desgastar() {
+        if (durabilidad > 0) {
+            durabilidad -= 20;
+            if (durabilidad < 0) durabilidad = 0;
+        }
+    }
+};
+
+// --- 2. CLASE CONTENEDORA: JUGADOR ---
+class Jugador {
+private:
+    string nombre;
+    int salud;
+    int saludMaxima;
+    Espada espadaEquipada; // Atributo compuesto
+
+public:
+    Jugador(string nombre, int saludMax, Espada espadaInicial)
+        : nombre(nombre), salud(saludMax), saludMaxima(saludMax), espadaEquipada(espadaInicial) {}
+
+    string getNombre() const { return nombre; }
+    int getSalud() const { return salud; }
+    bool estaVivo() const { return salud > 0; }
+
+    void equiparEspada(Espada nuevaEspada) {
+        espadaEquipada = nuevaEspada;
+        cout << "✨ " << nombre << " ha equipado una nueva arma: " << espadaEquipada.getNombre() << "!\\n";
+    }
+
+    void recibirDanio(int cantidad) {
+        salud -= cantidad;
+        if (salud < 0) salud = 0;
+        cout << "   💥 " << nombre << " recibe " << cantidad << " de daño. (Vida restante: " << salud << "/" << saludMaxima << ")\\n";
+    }
+
+    void atacar(Jugador &objetivo) {
+        if (!estaVivo()) {
+            cout << "💀 " << nombre << " está inconsciente y no puede atacar.\\n";
+            return;
+        }
+
+        cout << "🗡️  " << nombre << " ataca a " << objetivo.getNombre() 
+             << " con " << espadaEquipada.getNombre() << "!\\n";
+
+        objetivo.recibirDanio(espadaEquipada.getDanio());
+        espadaEquipada.desgastar();
+
+        if (espadaEquipada.getDurabilidad() == 0) {
+            cout << "   ⚠️ ¡La " << espadaEquipada.getNombre() << " se ha roto!\\n";
+        }
+    }
+
+    void mostrarEstado() const {
+        cout << "┌──────────────────────────────────────────────┐\\n";
+        cout << "  Héroe: " << nombre << " | HP: " << salud << "/" << saludMaxima << "\\n";
+        cout << "  Arma: " << espadaEquipada.getNombre() 
+             << " (Daño: " << espadaEquipada.getDanio() 
+             << ", Durabilidad: " << espadaEquipada.getDurabilidad() << "%)\\n";
+        cout << "└──────────────────────────────────────────────┘\\n";
+    }
+};
+
+// --- 3. SIMULACIÓN EN MAIN ---
+int main() {
+    // Fabricamos espadas
+    Espada espadaOxidada("Espada Oxidada", 18, 40);
+    Espada mandobleFuego("Mandoble de Fuego", 45, 100);
+
+    // Creamos jugadores vinculando sus espadas iniciales
+    Jugador heroe("Sir Arthur", 100, espadaOxidada);
+    Jugador monstruo("Gólem de Roca", 90, Espada("Golpe Rocoso", 14, 100));
+
+    heroe.mostrarEstado();
+    monstruo.mostrarEstado();
+
+    cout << "\\n=== ⚔️ INICIO DEL COMBATE ===\\n\\n";
+
+    // Ronda 1
+    heroe.atacar(monstruo);
+    monstruo.atacar(heroe);
+
+    // Ronda 2: El arma del héroe se desgasta
+    heroe.atacar(monstruo);
+
+    // El héroe abre un cofre y equipa un arma superior en plena batalla
+    cout << "\\n🎁 ¡Sir Arthur encuentra un tesoro en el campo de batalla!\\n";
+    heroe.equiparEspada(mandobleFuego);
+
+    // Ronda 3 con nueva arma
+    heroe.atacar(monstruo);
+
+    cout << "\\n=== ESTADO FINAL TRAS LA BATALLA ===\\n";
+    heroe.mostrarEstado();
+    monstruo.mostrarEstado();
+
+    return 0;
+}
+`}
+        title="Asociación 1 a 1 entre Jugador y Espada en C++"
+      />
+    </section>
+
+    <!-- TARJETA HACIA LA SIGUIENTE LECCIÓN: ASOCIADO LIST -->
+    <div class="my-8 p-6 rounded-2xl bg-gradient-to-r from-emerald-950/60 via-teal-950/40 to-slate-900 border border-emerald-500/30">
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+          <span class="text-xs font-mono font-bold text-emerald-400 uppercase tracking-widest block mb-1">El Siguiente Paso Natural</span>
+          <h3 class="text-xl font-bold text-white m-0">9.2 Inventario de Objetos con std::vector (1 a N) 🎒</h3>
+          <p class="text-sm text-slate-300 m-0 mt-1">
+            Un guerrero no solo lleva una espada: ¡también lleva una mochila con pociones que suben vida, venenos y elixires de poder!
+          </p>
+        </div>
+        <a
+          href="/course/cpp/poo-asociado-list/"
+          class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs whitespace-nowrap transition-all shadow-lg shadow-emerald-600/30"
+        >
+          Ir a Inventario de Objetos →
+        </a>
+      </div>
+    </div>
+
+    <div class="ejercicio">
+      <h3>Ejercicio de Práctica</h3>
+      <p class="enunciado">
+        Crea una clase <code>Escudo</code> con atributos <code>nombre</code>, <code>defensa</code> y <code>durabilidad</code>. Luego agrégale al <code>Jugador</code> un atributo <code>Escudo escudoEquipado;</code>. En el método <code>recibirDanio()</code>, calcula el daño real restando la defensa del escudo antes de descontar vida.
+      </p>
+    </div>
+
+    <!-- QUIZ INTERACTIVO FORMATIVO -->
+    <section class="mt-12 pt-8 border-t border-slate-800">
+      <div class="text-center mb-6">
+        <span class="text-xs font-mono font-bold text-purple-400 uppercase tracking-widest block mb-1">Autoevaluación Formativa</span>
+        <h2 class="text-2xl font-black text-white m-0">Comprueba lo que Has Aprendido 🧠</h2>
+        <p class="text-xs text-slate-400 mt-1">Valida tu comprensión de composición, paso por referencia y delegación entre objetos en C++.</p>
+      </div>
+
+      <CppQuizModal quizKey="poo-asociado" />
+    </section>
+
+    <PooChallengesCta />
+  </article>
+</Layout>

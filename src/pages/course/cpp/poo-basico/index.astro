@@ -5,7 +5,7 @@ import PooChallengesCta from '../../../../components/challenges/PooChallengesCta
 import CppQuizModal from '../../../../components/quizzes/CppQuizModal.astro';
 ---
 
-<Layout title="POO básico en C++" description="Clases, objetos, encapsulamiento y asociación con Espada y Player" courseSlug="cpp">
+<Layout title="POO básico en C++: Clases y Encapsulamiento" description="Aprende la estructura formal de una clase en C++, atributos privados, constructores, getters y setters validados para cada atributo." courseSlug="cpp">
   <article class="content-section">
     <!-- HERO / BANNER PPT -->
     <div class="mb-8 p-6 rounded-2xl bg-gradient-to-r from-blue-900/40 via-indigo-900/30 to-slate-900/60 border border-blue-500/30 shadow-xl">
@@ -15,9 +15,9 @@ import CppQuizModal from '../../../../components/quizzes/CppQuizModal.astro';
             <span>⚡ C++ Básico</span>
             <span>· Lección 9</span>
           </span>
-          <h1 class="text-3xl font-black text-white m-0 tracking-tight">9. Programación Orientada a Objetos: Clases y Objetos 🏛️</h1>
+          <h1 class="text-3xl font-black text-white m-0 tracking-tight">9. POO Básico: Clases, Encapsulamiento y Getters/Setters 🏛️</h1>
           <p class="text-sm text-slate-300 m-0 mt-2 leading-relaxed">
-            Pasa del código lineal al modelado del mundo real: aprende clases, objetos, encapsulamiento con public/private y constructores.
+            Domina la estructura canónica de una clase en C++: atributos privados, constructores, y métodos get/set con validación para proteger el estado de tus objetos.
           </p>
         </div>
         <div class="flex-shrink-0">
@@ -34,113 +34,164 @@ import CppQuizModal from '../../../../components/quizzes/CppQuizModal.astro';
       </div>
     </div>
 
-    <p>
-      La <strong>Programación Orientada a Objetos (POO)</strong> nos permite estructurar el código pensando en entidades del mundo real o de un videojuego.
+    <p class="text-base leading-relaxed">
+      Hasta ahora hemos trabajado con variables sueltas y funciones independientes. La <strong>Programación Orientada a Objetos (POO)</strong> nos permite empaquetar <strong>datos (atributos)</strong> y <strong>comportamientos (métodos)</strong> dentro de una misma entidad cohesiva llamada <strong>Clase</strong>.
     </p>
 
+    <!-- SECCIÓN 1: CLASES VS OBJETOS -->
     <section class="mb-10">
-      <h2>1. Clases vs Objetos (La clase <code>Espada</code>)</h2>
+      <h2>1. El Molde y la Creación: Clases vs Objetos</h2>
       <p>
-        Una <strong>clase</strong> es como el plano o plantilla. Un <strong>objeto</strong> es una instancia concreta creada a partir de esa plantilla.
+        Una <strong>clase</strong> es el plano arquitectónico o molde conceptual. Un <strong>objeto</strong> (o instancia) es el elemento concreto y real que construyes en la memoria RAM utilizando esa plantilla.
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-6">
+        <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-700/60">
+          <h3 class="text-base font-bold text-blue-300 m-0 mb-1">📐 Clase (El Molde)</h3>
+          <p class="text-xs text-slate-300 m-0">
+            Define la estructura: qué datos tendrá cualquier espada (nombre, material, daño, durabilidad) y qué acciones sabrá hacer (atacar, afilar, reparar). No ocupa memoria para datos reales hasta instanciarse.
+          </p>
+        </div>
+        <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-700/60">
+          <h3 class="text-base font-bold text-emerald-300 m-0 mb-1">⚔️ Objeto (La Instancia en Memoria)</h3>
+          <p class="text-xs text-slate-300 m-0">
+            Cada espada específica que creas: <code>excalibur</code> (daño 100, acero) o <code>katana</code> (daño 70, templado). Cada una posee sus propias copias independientes de las variables en RAM.
+          </p>
+        </div>
+      </div>
+
+      <p>
+        En C++, la estructura básica de una clase se declara con la palabra clave <code>class</code> y <strong>siempre debe terminar con punto y coma (<code>;</code>)</strong> tras la llave de cierre:
       </p>
 
       <CodeBlock
         lang="cpp"
-        code={`#include <iostream>
-#include <string>
-
-using namespace std;
-
-class Espada {
+        code={`class Espada {
+    // Por defecto, en C++ todo dentro de class es 'private'
 private:
-    string name;
-    string type;
-    int damage;
-    int durability;
+    // Atributos (Variables que representan el estado interno)
+    string nombre;
+    string material;
+    int danio;
+    int durabilidad;
 
 public:
-    // Constructor
-    Espada(string name, string type, int damage, int durability) {
-        this->name = name;
-        this->type = type;
-        this->damage = damage;
-        this->durability = durability;
-    }
-
-    // Métodos
-    void atacar() {
-        cout << name << " ataca y causa " << damage << " de daño." << endl;
-        durability--;
-    }
-
-    void mostrarInfo() {
-        cout << "Nombre: " << name << "\\n"
-             << "Tipo: " << type << "\\n"
-             << "Daño: " << damage << "\\n"
-             << "Durabilidad: " << durability << endl;
-    }
-};
-
-int main() {
-    // Creación de objetos a partir de la clase Espada
-    Espada excalibur("Excalibur", "Legendaria", 100, 50);
-    Espada katana("Katana", "Samurai", 70, 80);
-    Espada espadaHierro("Espada de Hierro", "Medieval", 40, 100);
-
-    excalibur.mostrarInfo();
-    excalibur.atacar();
-
-    return 0;
-}`}
-        title="Clase Espada y creación de objetos"
+    // Métodos e interfaz accesible desde el exterior
+}; // <- ¡Punto y coma obligatorio!`}
+        title="Estructura formal de una clase en C++"
       />
     </section>
 
+    <!-- SECCIÓN 2: ENCAPSULAMIENTO -->
     <section class="mb-10">
-      <h2>2. Encapsulamiento: <code>private</code>, <code>public</code> y Getters/Setters</h2>
+      <h2>2. Encapsulamiento: La Regla de Oro</h2>
       <p>
-        Los atributos definidos como <code>private</code> solo se pueden acceder o modificar desde dentro de la propia clase.
+        El <strong>encapsulamiento</strong> consiste en ocultar los detalles internos de un objeto y permitir el acceso únicamente a través de una interfaz pública controlada.
       </p>
+      
+      <div class="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-200 text-sm mb-4">
+        <strong>⚠️ ¿Por qué nunca debemos dejar atributos como <code>public</code>?</strong><br />
+        Si los atributos fueran públicos, cualquier parte externa del programa podría asignar valores absurdos o destructivos sin control:
+        <code class="text-xs bg-slate-900 px-1 py-0.5 rounded text-amber-300">espada.durabilidad = -9999;</code> o <code class="text-xs bg-slate-900 px-1 py-0.5 rounded text-amber-300">espada.danio = -50;</code>. Al marcarlos como <code>private</code>, blindamos la integridad del objeto.
+      </div>
+    </section>
+
+    <!-- SECCIÓN 3: CONSTRUCTORES -->
+    <section class="mb-10">
+      <h2>3. Constructores y Lista de Inicialización</h2>
       <p>
-        <strong>¿Es obligatorio crear <code>get</code> y <code>set</code> para todos los atributos?</strong><br />
-        No. Solo debes crearlos cuando sea necesario acceder o modificar un atributo desde fuera de forma controlada (por ejemplo, para validar que el daño no sea negativo). Si un valor solo se usa internamente (como la durabilidad al usar la espada), no necesitas getters ni setters para él.
+        El <strong>constructor</strong> es un método especial que tiene exactamente el mismo nombre de la clase, no devuelve ningún tipo (ni siquiera <code>void</code>) y se invoca automáticamente en el instante exacto en que un objeto nace en memoria.
       </p>
 
       <CodeBlock
         lang="cpp"
         code={`class Espada {
 private:
-    string name;
-    int damage;
-    int durability;
+    string nombre;
+    string material;
+    int danio;
+    int durabilidad;
 
 public:
-    Espada(string name, int damage, int durability)
-        : name(name), damage(damage), durability(durability) {}
-
-    // Getter: Solo lectura para consultar el daño desde fuera
-    int getDamage() const {
-        return damage;
+    // 1. Constructor por defecto (Valores iniciales seguros)
+    Espada() : nombre("Espada de Madera"), material("Madera"), danio(10), durabilidad(100) {
+        // Lista de inicialización: más rápida y limpia que asignar dentro del cuerpo
     }
 
-    string getName() const {
-        return name;
-    }
-
-    // Método que modifica el estado interno sin requerir un setter
-    void usar() {
-        durability--;
-        if (durability < 0) durability = 0;
+    // 2. Constructor parametrizado con inicializadores
+    Espada(string n, string m, int d, int dur)
+        : nombre(n), material(m), danio(d >= 0 ? d : 0), durabilidad(dur >= 0 && dur <= 100 ? dur : 100) {
     }
 };`}
-        title="Uso práctico de Getters y Encapsulamiento"
+        title="Constructores con Member Initializer List"
       />
     </section>
 
+    <!-- SECCIÓN 4: GETTERS Y SETTERS VALIDADOS -->
     <section class="mb-10">
-      <h2>3. Asociación entre Clases (<code>Player</code> tiene una <code>Espada</code>)</h2>
+      <h2>4. Getters y Setters: Control Total de Cada Atributo</h2>
       <p>
-        Las clases pueden relacionarse entre sí. Por ejemplo, un <code>Player</code> puede contener una <code>Espada</code> como atributo y combatir contra otro <code>Player</code>.
+        Para interactuar con atributos privados, proveemos métodos públicos dedicados:
+      </p>
+      <ul class="list-disc pl-6 space-y-2 mb-4">
+        <li>
+          <strong>Getters (Métodos de Lectura):</strong> Devuelven el valor del atributo. En C++ es una excelente práctica marcarlos con <code>const</code> al final: esto le promete al compilador que la función jamás modificará el objeto.
+        </li>
+        <li>
+          <strong>Setters (Métodos de Escritura):</strong> Reciben un nuevo valor y <strong>validan las reglas de negocio</strong> antes de aplicarlo. Si el valor es inválido, lo corrigen o rechazan la asignación.
+        </li>
+      </ul>
+
+      <CodeBlock
+        lang="cpp"
+        code={`// === GETTERS (Lectura con const) ===
+string getNombre() const { return nombre; }
+string getMaterial() const { return material; }
+int getDanio() const { return danio; }
+int getDurabilidad() const { return durabilidad; }
+
+// === SETTERS (Escritura protegida con validaciones) ===
+void setNombre(string nuevoNombre) {
+    if (!nuevoNombre.empty()) {
+        nombre = nuevoNombre;
+    } else {
+        nombre = "Espada Genérica"; // Fallback defensivo
+    }
+}
+
+void setMaterial(string nuevoMaterial) {
+    material = nuevoMaterial;
+}
+
+void setDanio(int nuevoDanio) {
+    // Validación: El daño jamás puede ser negativo
+    if (nuevoDanio >= 0) {
+        danio = nuevoDanio;
+    } else {
+        cout << "[Aviso] Daño inválido (" << nuevoDanio << "). Asignando 0 por seguridad.\\n";
+        danio = 0;
+    }
+}
+
+void setDurabilidad(int nuevaDurabilidad) {
+    // Validación: La durabilidad siempre vive en el rango [0, 100]
+    if (nuevaDurabilidad < 0) {
+        durabilidad = 0;
+    } else if (nuevaDurabilidad > 100) {
+        durabilidad = 100;
+    } else {
+        durabilidad = nuevaDurabilidad;
+    }
+}`}
+        title="Getters con const y Setters con validación defensiva"
+      />
+    </section>
+
+    <!-- SECCIÓN 5: CÓDIGO COMPLETO INTEGRAL -->
+    <section class="mb-10">
+      <h2>5. Ejemplo Completo y Estructural en C++</h2>
+      <p>
+        Veamos la clase <code>Espada</code> completamente terminada, incluyendo constructores, getters, setters y métodos de comportamiento como <code>afilar()</code>, <code>reparar()</code> y <code>usar()</code>:
       </p>
 
       <CodeBlock
@@ -152,82 +203,146 @@ using namespace std;
 
 class Espada {
 private:
-    string name;
-    string type;
-    int damage;
-    int durability;
+    string nombre;
+    string material;
+    int danio;
+    int durabilidad; // Rango de 0 a 100
 
 public:
-    Espada(string name, string type, int damage, int durability)
-        : name(name), type(type), damage(damage), durability(durability) {}
+    // Constructor por defecto
+    Espada() {
+        setNombre("Espada de Madera");
+        setMaterial("Madera");
+        setDanio(10);
+        setDurabilidad(100);
+    }
 
-    int getDamage() const { return damage; }
-    string getName() const { return name; }
+    // Constructor con parámetros
+    Espada(string nombre, string material, int danio, int durabilidad) {
+        setNombre(nombre);
+        setMaterial(material);
+        setDanio(danio);
+        setDurabilidad(durabilidad);
+    }
 
+    // --- GETTERS (Lectura constante) ---
+    string getNombre() const { return nombre; }
+    string getMaterial() const { return material; }
+    int getDanio() const { return danio; }
+    int getDurabilidad() const { return durabilidad; }
+
+    // --- SETTERS (Escritura validada) ---
+    void setNombre(string nuevoNombre) {
+        nombre = (!nuevoNombre.empty()) ? nuevoNombre : "Espada Desconocida";
+    }
+
+    void setMaterial(string nuevoMaterial) {
+        material = nuevoMaterial;
+    }
+
+    void setDanio(int nuevoDanio) {
+        if (nuevoDanio >= 0) {
+            danio = nuevoDanio;
+        } else {
+            cout << "⚠️ Advertencia: El daño no puede ser negativo. Se fuerza a 0.\\n";
+            danio = 0;
+        }
+    }
+
+    void setDurabilidad(int nuevaDurabilidad) {
+        if (nuevaDurabilidad < 0) {
+            durabilidad = 0;
+        } else if (nuevaDurabilidad > 100) {
+            durabilidad = 100;
+        } else {
+            durabilidad = nuevaDurabilidad;
+        }
+    }
+
+    // --- MÉTODOS DE COMPORTAMIENTO / NEGOCIO ---
     void usar() {
-        durability--;
-        if (durability < 0) durability = 0;
-    }
-};
-
-class Player {
-private:
-    string name;
-    int health;
-    Espada espada;
-
-public:
-    Player(string name, int health, Espada espada)
-        : name(name), health(health), espada(espada) {}
-
-    // Recibe otro Player por referencia para aplicarle el ataque
-    void atacar(Player &enemigo) {
-        cout << name << " ataca a " << enemigo.name 
-             << " usando " << espada.getName() << "!" << endl;
-
-        enemigo.health -= espada.getDamage();
-        espada.usar();
-
-        if (enemigo.health < 0) enemigo.health = 0;
+        if (durabilidad > 0) {
+            setDurabilidad(durabilidad - 15);
+            cout << "⚔️ ¡Blandes la " << nombre << "! Causas " << danio << " de daño.\\n";
+            cout << "   Durabilidad restante: " << durabilidad << "%\\n";
+        } else {
+            cout << "❌ ¡La " << nombre << " está rota! Debes repararla antes de volver a usarla.\\n";
+        }
     }
 
-    void mostrarEstado() const {
-        cout << name << " | Vida: " << health << endl;
+    void afilar(int aumento) {
+        if (aumento > 0) {
+            setDanio(danio + aumento);
+            cout << "✨ Has afilado la " << nombre << ". Nuevo daño: " << danio << "\\n";
+        }
     }
 
-    bool estaVivo() const {
-        return health > 0;
+    void reparar(int cantidad) {
+        setDurabilidad(durabilidad + cantidad);
+        cout << "🔨 Espada reparada. Durabilidad actual: " << durabilidad << "%\\n";
+    }
+
+    void mostrarInfo() const {
+        cout << "╔════════════════════════════════════════════╗\\n";
+        cout << "  Espada: " << nombre << " (" << material << ")\\n";
+        cout << "  Daño: " << danio << " pts | Durabilidad: " << durabilidad << "%\\n";
+        cout << "╚════════════════════════════════════════════╝\\n";
     }
 };
 
 int main() {
-    Espada excalibur("Excalibur", "Legendaria", 30, 100);
-    Espada katana("Katana", "Samurai", 20, 100);
+    // 1. Instanciamos con constructor por defecto
+    Espada espadaInicial;
+    espadaInicial.mostrarInfo();
 
-    Player guerrero("Guerrero", 100, excalibur);
-    Player samurai("Samurai", 100, katana);
+    // 2. Instanciamos con constructor personalizado
+    Espada excalibur("Excalibur", "Acero Místico", 80, 100);
+    excalibur.mostrarInfo();
 
-    guerrero.mostrarEstado();
-    samurai.mostrarEstado();
+    // 3. Probamos el comportamiento y desgaste
+    excalibur.usar();
+    excalibur.afilar(15);
+    excalibur.mostrarInfo();
 
-    cout << "\\n--- COMBATE ---\\n" << endl;
-
-    guerrero.atacar(samurai);
-    samurai.mostrarEstado();
-
-    samurai.atacar(guerrero);
-    guerrero.mostrarEstado();
+    // 4. Intentamos ingresar datos erróneos para verificar el encapsulamiento
+    cout << "\\n--- Probando integridad de Setters ---\\n";
+    excalibur.setDanio(-45); // El setter interceptará el valor negativo
+    excalibur.setDurabilidad(250); // El setter lo topará en 100
+    cout << "Daño verificado: " << excalibur.getDanio() << "\\n";
+    cout << "Durabilidad verificada: " << excalibur.getDurabilidad() << "%\\n";
 
     return 0;
-}`}
-        title="Combate entre Players usando la clase Espada"
+}
+`}
+        title="Espada.cpp - Implementación estructural completa con Getters y Setters"
       />
     </section>
 
+    <!-- TARJETA DE NAVEGACIÓN HACIA EL SIGUIENTE NIVEL -->
+    <div class="my-8 p-6 rounded-2xl bg-gradient-to-r from-indigo-950/60 via-purple-950/40 to-slate-900 border border-indigo-500/30">
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+          <span class="text-xs font-mono font-bold text-indigo-400 uppercase tracking-widest block mb-1">Siguiente Nivel de POO</span>
+          <h3 class="text-xl font-bold text-white m-0">9.1 Asociación de Clases (1 a 1) ⚔️</h3>
+          <p class="text-sm text-slate-300 m-0 mt-1">
+            Ahora que sabes construir clases seguras, descubre cómo un <code>Jugador</code> puede contener y manipular una <code>Espada</code>.
+          </p>
+        </div>
+        <a
+          href="/course/cpp/poo-asociado/"
+          class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs whitespace-nowrap transition-all shadow-lg shadow-indigo-600/30"
+        >
+          Ir a Asociación de Clases →
+        </a>
+      </div>
+    </div>
+
     <div class="ejercicio">
-      <h3>Ejercicio</h3>
+      <h3>Ejercicio Práctico</h3>
       <p class="enunciado">
-        Agregá a la clase <code>Espada</code> una comprobación para que si <code>durability == 0</code>, la espada ya no cause daño en <code>getDamage()</code> o devuelva 0 de daño. Luego probá realizar varios ataques en <code>main()</code> hasta romper la espada.
+        1. Agrega a la clase <code>Espada</code> un atributo booleano privado llamado <code>estaEncantada</code>.<br />
+        2. Crea su respectivo getter <code>bool getEstaEncantada() const</code> y setter <code>void setEstaEncantada(bool encantada)</code>.<br />
+        3. Modifica el método <code>usar()</code> para que, si <code>estaEncantada == true</code>, inflija un <strong>50% de daño adicional</strong> y muestre un efecto visual en consola (por ejemplo, <em>"⚡ ¡Un rayo estalla al impactar!"</em>).
       </p>
     </div>
 
@@ -236,7 +351,7 @@ int main() {
       <div class="text-center mb-6">
         <span class="text-xs font-mono font-bold text-blue-400 uppercase tracking-widest block mb-1">Autoevaluación Formativa</span>
         <h2 class="text-2xl font-black text-white m-0">Comprueba lo que Has Aprendido 🧠</h2>
-        <p class="text-xs text-slate-400 mt-1">Valida tu comprensión de clases, objetos, constructores y encapsulamiento en C++.</p>
+        <p class="text-xs text-slate-400 mt-1">Valida tu comprensión de clases, objetos, modificadores de acceso y getters/setters en C++.</p>
       </div>
 
       <CppQuizModal quizKey="poo-basico" />

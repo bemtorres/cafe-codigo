@@ -1125,6 +1125,79 @@ def poblar_flota(request):
   }
 ];
 
+export const modeloBdMysqlQuiz: QuizQuestion[] = [
+  {
+    id: 1,
+    kind: 'TrueFalse',
+    title: '🧪 Desafío (1/5) · TrueFalse',
+    questionText: '¿Instalar PyMySQL soluciona automáticamente cualquier error de incompatibilidad si tu versión de MySQL es anterior a la mínima exigida por Django?',
+    correctAnswer: false,
+    labels: { trueText: 'VERDADERO', falseText: 'FALSO' },
+    explanation: '¡FALSO! PyMySQL solo reemplaza al conector mysqlclient en Python; si la versión del motor MySQL no cumple los requisitos mínimos de Django, la conexión fallará igualmente.'
+  },
+  {
+    id: 2,
+    kind: 'MultipleChoice',
+    title: '🧪 Desafío (2/5) · MultipleChoice',
+    questionText: '¿Qué comando SQL permite verificar con certeza la versión del servidor MySQL al que estás conectado?',
+    options: [
+      'SELECT VERSION();',
+      'mysql --version',
+      'SHOW SERVER VERSION;',
+      'python manage.py version'
+    ],
+    correctOption: 0,
+    explanation: '¡CORRECTO! SELECT VERSION() consulta directamente al servidor MySQL activo. mysql --version en terminal puede indicar solo la versión de la herramienta cliente.'
+  },
+  {
+    id: 3,
+    kind: 'FillInTheBlank',
+    title: '🧪 Desafío (3/5) · FillInTheBlank',
+    questionText: 'Para registrar PyMySQL como el controlador estándar que Django espera internamente, se invoca pymysql.___________().',
+    code: `import pymysql
+pymysql.___________()`,
+    options: ['install_as_MySQLdb', 'connect_django', 'as_default_driver', 'use_mysqlclient'],
+    correctOption: 0,
+    explanation: '¡CORRECTO! install_as_MySQLdb() realiza monkey-patching sobre sys.modules para que Django use PyMySQL simulando la API de MySQLdb.'
+  },
+  {
+    id: 4,
+    kind: 'MatchPairs',
+    title: '🧪 Desafío (4/5) · MatchPairs',
+    questionText: 'Empareja cada error típico de conexión con su causa raíz:',
+    pairs: [
+      { id: 'p1', left: 'Can\'t connect to MySQL server', right: 'Servidor MySQL apagado, host incorrecto o puerto bloqueado' },
+      { id: 'p2', left: 'Access denied for user', right: 'Usuario, clave o permisos insuficientes en la base de datos' },
+      { id: 'p3', left: 'Error loading MySQLdb module', right: 'Falta instalar el driver o inyectar PyMySQL en __init__.py' }
+    ],
+    explanation: '¡EXCELENTE! Saber distinguir entre fallo de red, autenticación y driver ahorra tiempo crítico de depuración.'
+  },
+  {
+    id: 5,
+    kind: 'FindTheBug',
+    title: '🧪 Desafío (5/5) · FindTheBug',
+    questionText: '¿Qué error arquitectónico o de seguridad existe en esta configuración de DATABASES?',
+    code: `DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'produccion_db',
+        'USER': 'root',
+        'PASSWORD': 'passwordSuperSecreta123',
+        'HOST': '127.0.0.1',
+        'PORT': '3306',
+    }
+}`,
+    options: [
+      'Tiene credenciales y contraseñas expuestas en texto plano en settings.py en lugar de usar variables de entorno',
+      'No se puede usar el puerto 3306 en Django',
+      'El motor de base de datos debe ser django.db.backends.pymysql',
+      'Django no soporta direcciones IP en HOST'
+    ],
+    correctOption: 0,
+    explanation: '¡CORRECTO! Las credenciales sensibles nunca deben commitearse en repositorios; deben cargarse mediante variables de entorno (ej. python-decouple o os.environ).'
+  }
+];
+
 export function getQuizForLesson(lessonSlug: string): QuizQuestion[] {
   const normalized = lessonSlug.replace(/^\/+|\/+$/g, '');
 
@@ -1171,6 +1244,10 @@ export function getQuizForLesson(lessonSlug: string): QuizQuestion[] {
     case 'modelo-bd-vehiculos':
     case 'modelo-bd/vehiculos':
       return modeloBdVehiculosQuiz;
+
+    case 'modelo-bd-mysql':
+    case 'modelo-bd/mysql':
+      return modeloBdMysqlQuiz;
 
     case 'admin-crud':
       return adminCrudQuiz;
