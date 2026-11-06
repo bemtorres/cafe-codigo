@@ -19,10 +19,10 @@ import DjangoFlotaErDiagram from '../../../../components/django/DjangoFlotaErDia
       <div class="flex items-center gap-3">
         <span class="text-3xl sm:text-4xl p-2 rounded-xl bg-amber-400/20 text-amber-500 shrink-0">📊</span>
         <div>
-          <h3 class="text-base font-black text-slate-900 dark:text-amber-300 mb-0.5">
+          <h3 class="text-base font-black text-slate-900 mb-0.5">
             Presentación Guiada en Diapositivas Disponible
           </h3>
-          <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300">
+          <p class="text-xs sm:text-sm text-slate-600">
             Avanza paso a paso por las migraciones, la auditoría SQL y el controlador Faker con terminales y modo interactivo.
           </p>
         </div>
@@ -108,7 +108,7 @@ class Piloto(models.Model):
         return f"{self.nombre} ({self.licencia})"`}
       />
 
-      <h3 class="text-base font-bold text-slate-800 dark:text-slate-200 mt-6 mb-2">
+      <h3 class="text-base font-bold text-slate-800 mt-6 mb-2">
         Terminal y Auditoría con `sqlmigrate`
       </h3>
       <p>
@@ -142,7 +142,7 @@ CREATE TABLE "flota_piloto" (
 );`}
       />
 
-      <p class="text-sm text-slate-600 dark:text-slate-400 mt-2">
+      <p class="text-sm text-slate-600 mt-2">
         Nota cómo Django traduce automáticamente <code>unique=True</code> a una restricción <code>UNIQUE</code> y <code>PositiveIntegerField</code> a un <code>CHECK ("experiencia_anios" &gt;= 0)</code> a nivel del motor relacional.
       </p>
     </section>
@@ -154,7 +154,7 @@ CREATE TABLE "flota_piloto" (
         Ahora definimos la entidad <code>Vehiculo</code>. Un vehículo de la empresa puede estar asignado a un conductor o encontrarse estacionado en patio listo para ser despachado.
       </p>
 
-      <div class="my-4 p-4 rounded-xl border-l-4 border-amber-500 bg-amber-50 dark:bg-amber-950/20 text-slate-800 dark:text-amber-200 text-sm">
+      <div class="my-4 p-4 rounded-xl border-l-4 border-amber-500 bg-amber-50 text-slate-800 text-sm">
         <strong>⚠️ Decisión Arquitectónica Crucial: ¿CASCADE o SET_NULL?</strong>
         <p class="mt-1 mb-0">
           En relaciones donde la entidad secundaria representa un <strong>activo patrimonial de la empresa</strong> (camiones, vehículos, maquinaria), <strong>jamás debes usar <code>CASCADE</code></strong>. Si un piloto renuncia o es eliminado del sistema, el camión no debe borrarse. Usamos <code>on_delete=models.SET_NULL</code> junto a <code>null=True, blank=True</code> para que el vehículo simplemente quede libre (<code>NULL</code>).
@@ -189,7 +189,7 @@ class Vehiculo(models.Model):
         return f"{self.patente} - {self.marca} {self.modelo}"`}
       />
 
-      <h3 class="text-base font-bold text-slate-800 dark:text-slate-200 mt-6 mb-2">
+      <h3 class="text-base font-bold text-slate-800 mt-6 mb-2">
         Terminal y Foreign Key en SQL
       </h3>
       <CodeBlock
@@ -270,7 +270,7 @@ class Vehiculo(models.Model):
         ]`}
       />
 
-      <h3 class="text-base font-bold text-slate-800 dark:text-slate-200 mt-6 mb-2">
+      <h3 class="text-base font-bold text-slate-800 mt-6 mb-2">
         Inspección del `ALTER TABLE`
       </h3>
       <CodeBlock
@@ -296,7 +296,7 @@ ALTER TABLE "flota_vehiculo"
         Para probar la aplicación en el navegador sin registrar 100 vehículos a mano, crearemos un <strong>Controlador Web (Vista en Django)</strong> que procesa una petición HTTP, inicializa la librería <code>faker</code> y ejecuta una inserción masiva protegida con <code>transaction.atomic()</code>.
       </p>
 
-      <h3 class="text-base font-bold text-slate-800 dark:text-slate-200 mt-4 mb-2">
+      <h3 class="text-base font-bold text-slate-800 mt-4 mb-2">
         7.1 Instalación de Faker
       </h3>
       <p>Instala la librería en tu entorno virtual activo:</p>
@@ -305,7 +305,7 @@ ALTER TABLE "flota_vehiculo"
         code={`(env) $ pip install faker`}
       />
 
-      <h3 class="text-base font-bold text-slate-800 dark:text-slate-200 mt-6 mb-2">
+      <h3 class="text-base font-bold text-slate-800 mt-6 mb-2">
         7.2 Creación del Controlador (`flota/views.py`)
       </h3>
       <p>
@@ -394,7 +394,7 @@ def generar_flota_fake_view(request):
     return render(request, 'flota/generar_fake.html')`}
       />
 
-      <h3 class="text-base font-bold text-slate-800 dark:text-slate-200 mt-6 mb-2">
+      <h3 class="text-base font-bold text-slate-800 mt-6 mb-2">
         7.3 Rutas (`flota/urls.py`)
       </h3>
       <CodeBlock
@@ -411,7 +411,7 @@ urlpatterns = [
 ]`}
       />
 
-      <h3 class="text-base font-bold text-slate-800 dark:text-slate-200 mt-6 mb-2">
+      <h3 class="text-base font-bold text-slate-800 mt-6 mb-2">
         7.4 Plantilla HTML (`templates/flota/generar_fake.html`)
       </h3>
       <CodeBlock

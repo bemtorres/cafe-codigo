@@ -1,0 +1,525 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import DjangoQuizModal from '../../../../components/quizzes/DjangoQuizModal.astro';
+---
+
+<Layout
+  title="7.2 Guía Práctica (Parte 2): Autenticación, Sesiones y Permisos"
+  description="Parte 2 del curso práctico de Django: login, logout, sesiones, @login_required, permisos por grupos y creación de decoradores personalizados (Lecciones 07–10)."
+  courseSlug="django"
+>
+  <article class="content-section">
+    <!-- HERO -->
+    <header class="rounded-3xl bg-gradient-to-br from-[#a7091b] to-[#e52d3e] text-white p-6 sm:p-10 mb-6 shadow-lg border-2 border-slate-900">
+      <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+        <span class="inline-block bg-white/20 text-white rounded-full px-3.5 py-1 font-black text-xs tracking-wider uppercase">
+          RUTA DE APRENDIZAJE · PARTE 2 DE 3
+        </span>
+        <span class="inline-block bg-slate-900/40 text-white rounded-xl px-3 py-1 font-mono font-bold text-xs">
+          LECCIONES 07–10
+        </span>
+      </div>
+      <h1 class="!text-3xl sm:!text-4xl font-black !text-white leading-tight !mb-3 !mt-0" style="text-shadow: none;">
+        7.2 Guía Práctica: Sesiones y Permisos 🔐
+      </h1>
+      <p class="!text-base sm:!text-lg !text-white/95 max-w-3xl font-semibold !mb-2">
+        Protección de rutas, inicio y cierre de sesión seguro, control de acceso con <code>@login_required</code>, grupos, permisos y decoradores propios.
+      </p>
+      <p class="!text-sm !text-white/85 !mb-0">
+        4 lecciones en video centradas en autenticación, autorización y seguridad en el servidor.
+      </p>
+    </header>
+
+    <!-- NAVEGACIÓN ENTRE LAS 3 PARTES -->
+    <nav class="grid grid-cols-1 sm:grid-cols-3 gap-3 my-6" aria-label="Partes de la guía práctica">
+      <a
+        href="/course/django/guia-practica/"
+        class="p-3.5 rounded-2xl bg-white text-slate-800 border-2 border-slate-300 hover:border-[#a7091b] font-black text-sm no-underline transition-colors flex items-center justify-between shadow-sm"
+      >
+        <span>← 7.1 Parte 1 · CRUD (01–06)</span>
+      </a>
+      <a
+        href="/course/django/guia-practica/seguridad/"
+        class="p-3.5 rounded-2xl bg-[#a7091b] text-white border-2 border-slate-900 font-black text-sm no-underline shadow-[4px_4px_0px_#0f172a] flex items-center justify-between"
+      >
+        <span>7.2 Parte 2 · Seguridad (07–10)</span>
+        <span class="text-xs bg-white/20 px-2 py-0.5 rounded-full">Actual</span>
+      </a>
+      <a
+        href="/course/django/guia-practica/proyecto/"
+        class="p-3.5 rounded-2xl bg-white text-slate-800 border-2 border-slate-300 hover:border-[#a7091b] font-black text-sm no-underline transition-colors flex items-center justify-between shadow-sm"
+      >
+        <span>7.3 Parte 3 · Desafío Final</span>
+        <span class="text-[#a7091b]">→</span>
+      </a>
+    </nav>
+
+    <!-- ENCABEZADO PARTE 2 -->
+    <section id="seguridad" class="mt-8 mb-6 border-l-[6px] border-[#c9182b] pl-4">
+      <span class="inline-block bg-rose-50 text-[#a7091b] rounded-full px-3 py-1 font-bold text-xs mb-2">
+        PARTE 2 · LECCIONES 07–10
+      </span>
+      <h2 class="text-2xl sm:text-3xl font-black text-[#a7091b] !mt-0 mb-2">
+        Autenticación, sesiones y permisos
+      </h2>
+      <p class="text-slate-600 mb-0">
+        Protege las rutas, administra la sesión y aplica reglas de acceso según el usuario.
+      </p>
+    </section>
+
+    <!-- LECCIÓN 07 -->
+    <article class="rounded-2xl border-2 border-slate-200 overflow-hidden my-6 bg-white shadow-sm">
+      <div class="p-5 sm:p-6 bg-slate-50 border-b border-slate-200">
+        <span class="inline-block bg-[#bd162a] text-white rounded-lg px-2.5 py-1 font-black text-xs">
+          LECCIÓN 07
+        </span>
+        <h3 class="text-xl sm:text-2xl font-black text-slate-900 my-2">
+          Autenticación: login, logout y sesiones
+        </h3>
+        <div class="border-l-4 border-[#cc1b2f] bg-rose-50/70 p-3 rounded-lg text-sm">
+          <strong>Objetivo:</strong> Comprender cómo Django identifica usuarios y mantiene una sesión autenticada.
+        </div>
+      </div>
+      <div class="p-5 sm:p-6">
+        <div class="relative aspect-video overflow-hidden bg-slate-950 rounded-xl my-4">
+          <iframe
+            src="https://www.youtube-nocookie.com/embed/Y1Jb0Dds5XE"
+            title="Lección 07: Autenticación: login, logout y sesiones"
+            loading="lazy"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen
+            class="absolute inset-0 w-full h-full border-0"
+          ></iframe>
+        </div>
+        <p class="text-sm mb-4">
+          <a
+            href="https://www.youtube.com/watch?v=Y1Jb0Dds5XE&list=PLr1Os35AYMZGDQz6bAsHATNtqwNyMoAB6&index=22"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-[#a7091b] font-bold hover:underline"
+          >
+            ▶ Abrir video en YouTube
+          </a>
+        </p>
+
+        <h4 class="text-lg font-bold text-slate-900 mt-4 mb-2">
+          ¿Qué aprenderás y por qué es importante?
+        </h4>
+        <p class="text-sm sm:text-base">
+          Autenticación significa verificar la identidad de quien intenta ingresar; autorización significa decidir qué puede hacer una vez identificado. Django incorpora un sistema de usuarios y sesiones. Tras un inicio de sesión correcto, el navegador recibe una cookie de sesión; el servidor utiliza esa referencia para asociar solicitudes posteriores con el usuario autenticado. La contraseña no se guarda directamente en la cookie.
+        </p>
+
+        <h4 class="text-lg font-bold text-slate-900 mt-4 mb-2">
+          Explicación técnica paso a paso
+        </h4>
+        <p class="text-sm sm:text-base">
+          <code>authenticate</code> comprueba las credenciales y <code>login</code> registra al usuario en la sesión. <code>logout</code> termina la sesión autenticada. El formulario de acceso utiliza <code>POST</code> y CSRF; las contraseñas deben tratarse con el sistema de hashing de Django, nunca guardarse como texto plano. Es recomendable cerrar sesión mediante <code>POST</code>.
+        </p>
+
+        <details open class="border border-slate-200 rounded-xl my-3 bg-white">
+          <summary class="cursor-pointer px-4 py-3 font-bold text-[#9c1021] bg-slate-50 rounded-t-xl">
+            Ejemplo práctico · Python / Django
+          </summary>
+          <div class="p-4">
+            <CodeBlock
+              lang="python"
+              title="cuentas/views.py"
+              code={`# cuentas/views.py
+from django.contrib.auth import authenticate, login, logout
+from django.shortcuts import render, redirect
+from django.views.decorators.http import require_POST
+
+def iniciar_sesion(request):
+    error = None
+    if request.method == 'POST':
+        usuario = request.POST.get('username', '')
+        clave = request.POST.get('password', '')
+        user = authenticate(request, username=usuario, password=clave)
+        if user is not None:
+            login(request, user)
+            return redirect('listado_productos')
+        error = 'Credenciales incorrectas.'
+    return render(request, 'cuentas/login.html', {'error': error})
+
+@require_POST
+def cerrar_sesion(request):
+    logout(request)
+    return redirect('iniciar_sesion')`}
+            />
+          </div>
+        </details>
+
+        <details class="border border-slate-200 rounded-xl my-3 bg-white">
+          <summary class="cursor-pointer px-4 py-3 font-bold text-[#9c1021] bg-slate-50 rounded-t-xl">
+            Ejemplo complementario · Comandos / HTML
+          </summary>
+          <div class="p-4">
+            <CodeBlock
+              lang="html"
+              title="templates/cuentas/login.html"
+              code={`<!-- cuentas/login.html -->
+<form method="post">
+  {% csrf_token %}
+  <input name="username" autocomplete="username" required>
+  <input name="password" type="password" autocomplete="current-password" required>
+  <button type="submit">Ingresar</button>
+</form>
+{% if error %}<p role="alert">{{ error }}</p>{% endif %}
+
+<!-- Botón de salida en una página autenticada -->
+<form method="post" action="{% url 'cerrar_sesion' %}">
+  {% csrf_token %}
+  <button type="submit">Cerrar sesión</button>
+</form>`}
+            />
+          </div>
+        </details>
+
+        <div class="p-4 rounded-xl bg-amber-50 border-l-4 border-amber-500 text-sm my-4">
+          <strong>Atención y buenas prácticas:</strong> Django necesita <code>SessionMiddleware</code> y <code>AuthenticationMiddleware</code>. En producción, usar HTTPS y revisar las opciones de seguridad de cookies.
+        </div>
+
+        <div class="p-4 rounded-xl bg-emerald-50 border-l-4 border-emerald-600 text-sm mt-4">
+          <strong>Actividad de aplicación:</strong> Probar credenciales válidas e inválidas, ingresar a una página y verificar que al cerrar sesión se pierde el acceso.
+        </div>
+      </div>
+    </article>
+
+    <!-- LECCIÓN 08 -->
+    <article class="rounded-2xl border-2 border-slate-200 overflow-hidden my-6 bg-white shadow-sm">
+      <div class="p-5 sm:p-6 bg-slate-50 border-b border-slate-200">
+        <span class="inline-block bg-[#bd162a] text-white rounded-lg px-2.5 py-1 font-black text-xs">
+          LECCIÓN 08
+        </span>
+        <h3 class="text-xl sm:text-2xl font-black text-slate-900 my-2">
+          Proteger vistas con <code>login_required</code>
+        </h3>
+        <div class="border-l-4 border-[#cc1b2f] bg-rose-50/70 p-3 rounded-lg text-sm">
+          <strong>Objetivo:</strong> Restringir páginas a usuarios que hayan iniciado sesión.
+        </div>
+      </div>
+      <div class="p-5 sm:p-6">
+        <div class="relative aspect-video overflow-hidden bg-slate-950 rounded-xl my-4">
+          <iframe
+            src="https://www.youtube-nocookie.com/embed/AiJ9u5ShdmI"
+            title="Lección 08: Proteger vistas con login_required"
+            loading="lazy"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen
+            class="absolute inset-0 w-full h-full border-0"
+          ></iframe>
+        </div>
+        <p class="text-sm mb-4">
+          <a
+            href="https://www.youtube.com/watch?v=AiJ9u5ShdmI&list=PLr1Os35AYMZGDQz6bAsHATNtqwNyMoAB6&index=23"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-[#a7091b] font-bold hover:underline"
+          >
+            ▶ Abrir video en YouTube
+          </a>
+        </p>
+
+        <h4 class="text-lg font-bold text-slate-900 mt-4 mb-2">
+          ¿Qué aprenderás y por qué es importante?
+        </h4>
+        <p class="text-sm sm:text-base">
+          Una página no queda protegida por ocultar su enlace en el menú. Un visitante podría escribir directamente su URL. El decorador <code>login_required</code> comprueba en el servidor si <code>request.user</code> está autenticado; si no lo está, redirige al acceso configurado. Esto permite proteger listados, formularios y operaciones de mantenimiento.
+        </p>
+
+        <h4 class="text-lg font-bold text-slate-900 mt-4 mb-2">
+          Explicación técnica paso a paso
+        </h4>
+        <p class="text-sm sm:text-base">
+          El decorador se coloca sobre la función que atiende la ruta. Debe aplicarse a todas las vistas que requieren autenticación, no solamente al index. <code>LOGIN_URL</code> indica a dónde redirigir a usuarios anónimos. Tras iniciar sesión se puede recuperar el destino original, pero debe validarse antes de redirigir a una URL proporcionada por el usuario.
+        </p>
+
+        <details open class="border border-slate-200 rounded-xl my-3 bg-white">
+          <summary class="cursor-pointer px-4 py-3 font-bold text-[#9c1021] bg-slate-50 rounded-t-xl">
+            Ejemplo práctico · Python / Django
+          </summary>
+          <div class="p-4">
+            <CodeBlock
+              lang="python"
+              title="settings.py y tienda/views.py"
+              code={`# settings.py
+LOGIN_URL = 'iniciar_sesion'
+
+# tienda/views.py
+from django.contrib.auth.decorators import login_required
+
+@login_required
+def listado_productos(request):
+    productos = Producto.objects.all()
+    return render(request, 'tienda/listado.html', {'productos': productos})
+
+@login_required
+def crear_producto(request):
+    # Mantener aquí el flujo GET / POST de la lección 04
+    ...`}
+            />
+          </div>
+        </details>
+
+        <details class="border border-slate-200 rounded-xl my-3 bg-white">
+          <summary class="cursor-pointer px-4 py-3 font-bold text-[#9c1021] bg-slate-50 rounded-t-xl">
+            Ejemplo complementario · Comandos / HTML
+          </summary>
+          <div class="p-4">
+            <CodeBlock
+              lang="html"
+              title="En una plantilla"
+              code={`<!-- En una plantilla -->
+{% if user.is_authenticated %}
+  <p>Bienvenido, {{ user.username }}</p>
+{% else %}
+  <a href="{% url 'iniciar_sesion' %}">Iniciar sesión</a>
+{% endif %}`}
+            />
+          </div>
+        </details>
+
+        <div class="p-4 rounded-xl bg-amber-50 border-l-4 border-amber-500 text-sm my-4">
+          <strong>Atención y buenas prácticas:</strong> <code>login_required</code> solo comprueba autenticación, no si el usuario tiene permiso para modificar o borrar registros. Para eso se requieren controles adicionales.
+        </div>
+
+        <div class="p-4 rounded-xl bg-emerald-50 border-l-4 border-emerald-600 text-sm mt-4">
+          <strong>Actividad de aplicación:</strong> Proteger las vistas de listado, creación, edición y eliminación. Probar la URL directa en una ventana privada.
+        </div>
+      </div>
+    </article>
+
+    <!-- LECCIÓN 09 -->
+    <article class="rounded-2xl border-2 border-slate-200 overflow-hidden my-6 bg-white shadow-sm">
+      <div class="p-5 sm:p-6 bg-slate-50 border-b border-slate-200">
+        <span class="inline-block bg-[#bd162a] text-white rounded-lg px-2.5 py-1 font-black text-xs">
+          LECCIÓN 09
+        </span>
+        <h3 class="text-xl sm:text-2xl font-black text-slate-900 my-2">
+          Autorización por perfiles y permisos
+        </h3>
+        <div class="border-l-4 border-[#cc1b2f] bg-rose-50/70 p-3 rounded-lg text-sm">
+          <strong>Objetivo:</strong> Distinguir perfiles y restringir funcionalidades según responsabilidades.
+        </div>
+      </div>
+      <div class="p-5 sm:p-6">
+        <div class="relative aspect-video overflow-hidden bg-slate-950 rounded-xl my-4">
+          <iframe
+            src="https://www.youtube-nocookie.com/embed/TshHIyPC9tA"
+            title="Lección 09: Autorización por perfiles y permisos"
+            loading="lazy"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen
+            class="absolute inset-0 w-full h-full border-0"
+          ></iframe>
+        </div>
+        <p class="text-sm mb-4">
+          <a
+            href="https://www.youtube.com/watch?v=TshHIyPC9tA&list=PLr1Os35AYMZGDQz6bAsHATNtqwNyMoAB6&index=24"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-[#a7091b] font-bold hover:underline"
+          >
+            ▶ Abrir video en YouTube
+          </a>
+        </p>
+
+        <h4 class="text-lg font-bold text-slate-900 mt-4 mb-2">
+          ¿Qué aprenderás y por qué es importante?
+        </h4>
+        <p class="text-sm sm:text-base">
+          Un sistema puede tener usuarios autenticados con funciones diferentes. Por ejemplo, un administrador mantiene productos y un operador solo consulta el inventario. Django proporciona usuarios, grupos y permisos. Los grupos pueden representar perfiles organizacionales, mientras que los permisos permiten expresar acciones concretas. Esto es más seguro que confiar únicamente en el nombre de un perfil mostrado en la interfaz.
+        </p>
+
+        <h4 class="text-lg font-bold text-slate-900 mt-4 mb-2">
+          Explicación técnica paso a paso
+        </h4>
+        <p class="text-sm sm:text-base">
+          La autenticación responde “¿quién eres?”; la autorización responde “¿puedes hacer esto?”. Para un ejemplo sencillo se puede asociar el usuario a un grupo y comprobarlo desde la vista. En proyectos más grandes conviene usar permisos de Django y asignarlos a grupos desde el panel de administración. La verificación debe hacerse en cada vista protegida.
+        </p>
+
+        <details open class="border border-slate-200 rounded-xl my-3 bg-white">
+          <summary class="cursor-pointer px-4 py-3 font-bold text-[#9c1021] bg-slate-50 rounded-t-xl">
+            Ejemplo práctico · Python / Django
+          </summary>
+          <div class="p-4">
+            <CodeBlock
+              lang="python"
+              title="tienda/views.py"
+              code={`# Ejemplo con permisos nativos de Django
+from django.contrib.auth.decorators import login_required, permission_required
+
+@login_required
+@permission_required('tienda.add_producto', raise_exception=True)
+def crear_producto(request):
+    # Procesar formulario HTML y request.POST
+    ...
+
+# Ejemplo de consulta de grupo:
+def es_administrador(user):
+    return user.is_authenticated and user.groups.filter(
+        name='Administradores'
+    ).exists()`}
+            />
+          </div>
+        </details>
+
+        <details class="border border-slate-200 rounded-xl my-3 bg-white">
+          <summary class="cursor-pointer px-4 py-3 font-bold text-[#9c1021] bg-slate-50 rounded-t-xl">
+            Ejemplo complementario · Comandos / HTML
+          </summary>
+          <div class="p-4">
+            <CodeBlock
+              lang="html"
+              title="templates/tienda/listado.html"
+              code={`<!-- Ocultar opciones según permisos (solo presentación) -->
+{% if perms.tienda.add_producto %}
+  <a href="{% url 'crear_producto' %}">Nuevo producto</a>
+{% endif %}`}
+            />
+          </div>
+        </details>
+
+        <div class="p-4 rounded-xl bg-amber-50 border-l-4 border-amber-500 text-sm my-4">
+          <strong>Atención y buenas prácticas:</strong> Ocultar botones no reemplaza la autorización del servidor. Los permisos <code>add</code>, <code>change</code>, <code>delete</code> y <code>view</code> se crean normalmente para los modelos de Django.
+        </div>
+
+        <div class="p-4 rounded-xl bg-emerald-50 border-l-4 border-emerald-600 text-sm mt-4">
+          <strong>Actividad de aplicación:</strong> Crear grupos <code>Administradores</code> y <code>Operadores</code>, asignar permisos diferentes y verificar el acceso real a las rutas.
+        </div>
+      </div>
+    </article>
+
+    <!-- LECCIÓN 10 -->
+    <article class="rounded-2xl border-2 border-slate-200 overflow-hidden my-6 bg-white shadow-sm">
+      <div class="p-5 sm:p-6 bg-slate-50 border-b border-slate-200">
+        <span class="inline-block bg-[#bd162a] text-white rounded-lg px-2.5 py-1 font-black text-xs">
+          LECCIÓN 10
+        </span>
+        <h3 class="text-xl sm:text-2xl font-black text-slate-900 my-2">
+          Crear decoradores personalizados
+        </h3>
+        <div class="border-l-4 border-[#cc1b2f] bg-rose-50/70 p-3 rounded-lg text-sm">
+          <strong>Objetivo:</strong> Centralizar reglas de autorización reutilizables.
+        </div>
+      </div>
+      <div class="p-5 sm:p-6">
+        <div class="relative aspect-video overflow-hidden bg-slate-950 rounded-xl my-4">
+          <iframe
+            src="https://www.youtube-nocookie.com/embed/HGeah1qX_sg"
+            title="Lección 10: Crear decoradores personalizados"
+            loading="lazy"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen
+            class="absolute inset-0 w-full h-full border-0"
+          ></iframe>
+        </div>
+        <p class="text-sm mb-4">
+          <a
+            href="https://www.youtube.com/watch?v=HGeah1qX_sg&list=PLr1Os35AYMZGDQz6bAsHATNtqwNyMoAB6&index=25"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-[#a7091b] font-bold hover:underline"
+          >
+            ▶ Abrir video en YouTube
+          </a>
+        </p>
+
+        <h4 class="text-lg font-bold text-slate-900 mt-4 mb-2">
+          ¿Qué aprenderás y por qué es importante?
+        </h4>
+        <p class="text-sm sm:text-base">
+          Cuando varias vistas necesitan la misma regla, repetir condiciones en cada función produce código duplicado y aumenta el riesgo de errores. Un decorador personalizado envuelve una vista, comprueba una condición antes de ejecutarla y permite o rechaza el acceso. Puede servir para comprobar grupos, estados de cuenta o reglas específicas del proyecto.
+        </p>
+
+        <h4 class="text-lg font-bold text-slate-900 mt-4 mb-2">
+          Explicación técnica paso a paso
+        </h4>
+        <p class="text-sm sm:text-base">
+          Un decorador recibe una función y devuelve otra función que la envuelve. <code>functools.wraps</code> conserva metadatos de la vista. En este ejemplo se exige autenticación y pertenencia a un grupo; si no se cumple la regla se devuelve HTTP 403, que significa acceso prohibido. Es importante diferenciarlo de 401 o de una redirección al login.
+        </p>
+
+        <details open class="border border-slate-200 rounded-xl my-3 bg-white">
+          <summary class="cursor-pointer px-4 py-3 font-bold text-[#9c1021] bg-slate-50 rounded-t-xl">
+            Ejemplo práctico · Python / Django
+          </summary>
+          <div class="p-4">
+            <CodeBlock
+              lang="python"
+              title="cuentas/decoradores.py y tienda/views.py"
+              code={`# cuentas/decoradores.py
+from functools import wraps
+from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
+
+def grupo_requerido(nombre_grupo):
+    def decorador(vista):
+        @wraps(vista)
+        @login_required
+        def envoltura(request, *args, **kwargs):
+            if not request.user.groups.filter(name=nombre_grupo).exists():
+                raise PermissionDenied
+            return vista(request, *args, **kwargs)
+        return envoltura
+    return decorador
+
+# Uso en tienda/views.py
+from cuentas.decoradores import grupo_requerido
+
+@grupo_requerido('Administradores')
+def eliminar_producto(request, pk):
+    # Recuperar objeto y confirmar borrado mediante POST
+    ...`}
+            />
+          </div>
+        </details>
+
+        <details class="border border-slate-200 rounded-xl my-3 bg-white">
+          <summary class="cursor-pointer px-4 py-3 font-bold text-[#9c1021] bg-slate-50 rounded-t-xl">
+            Ejemplo complementario · Comandos / HTML
+          </summary>
+          <div class="p-4">
+            <CodeBlock
+              lang="bash"
+              title="Pruebas sugeridas"
+              code={`# Pruebas sugeridas
+# 1. Usuario anónimo -> redirigido al login
+# 2. Usuario autenticado sin grupo -> 403
+# 3. Usuario del grupo -> accede a la vista
+# 4. Solicitud GET de eliminación -> solo confirma`}
+            />
+          </div>
+        </details>
+
+        <div class="p-4 rounded-xl bg-amber-50 border-l-4 border-amber-500 text-sm my-4">
+          <strong>Atención y buenas prácticas:</strong> En sistemas reales conviene priorizar permisos concretos frente a reglas rígidas por nombre de grupo cuando la organización tiene múltiples roles.
+        </div>
+
+        <div class="p-4 rounded-xl bg-emerald-50 border-l-4 border-emerald-600 text-sm mt-4">
+          <strong>Actividad de aplicación:</strong> Crear un decorador que permita editar productos solo a usuarios del grupo <code>Administradores</code> y comprobar tres escenarios de acceso.
+        </div>
+      </div>
+    </article>
+
+    <!-- PONTE A PRUEBA -->
+    <section class="mb-10">
+      <h2>Ponte a prueba — Parte 2 (Seguridad)</h2>
+      <p>
+        Comprueba tu dominio de las lecciones 07 a 10 sobre <code>authenticate</code>, <code>login</code>, <code>logout</code>, <code>@login_required</code>, permisos y decoradores personalizados.
+      </p>
+      <DjangoQuizModal quizKey="guia-practica" />
+    </section>
+
+    <!-- FOOTER NAV -->
+    <nav class="nav-bottom">
+      <a href="/course/django/guia-practica/" class="prev">
+        ← 7.1 Guía Práctica: CRUD y Persistencia
+      </a>
+      <a href="/course/django/guia-practica/proyecto/" class="next">
+        7.3 Guía Práctica: Desafío Integrador →
+      </a>
+    </nav>
+  </article>
+</Layout>
+

@@ -515,4 +515,35 @@ export const djangoQuizBank: Record<string, DjangoQuizDefinition> = {
       },
     ],
   },
+  'guia-practica': {
+    key: 'guia-practica',
+    title: 'Quiz: Curso Práctico de Django (CRUD y Seguridad)',
+    questions: [
+      {
+        prompt: 'Al procesar un formulario HTML puro sin ModelForm, ¿cómo se recupera un campo enviado por POST en la vista?',
+        options: ['request.GET.get("nombre")', 'request.POST.get("nombre", "").strip()', 'request.FORM["nombre"]', 'Producto.post("nombre")'],
+        correctIndex: 1,
+      },
+      {
+        prompt: '¿Qué función de django.shortcuts recupera un registro por su clave primaria o devuelve una respuesta HTTP 404 si no existe?',
+        options: ['find_or_fail()', 'get_object_or_404()', 'select_or_404()', 'filter_by_pk()'],
+        correctIndex: 1,
+      },
+      {
+        prompt: '¿Por qué la eliminación de un producto debe ejecutarse mediante una petición POST y no mediante un enlace GET?',
+        options: ['Porque GET no permite pasar el parámetro pk', 'Porque las peticiones GET no deben producir cambios destructivos en el servidor', 'Porque Django bloquea la función delete() en GET', 'Porque POST no requiere csrf_token'],
+        correctIndex: 1,
+      },
+      {
+        prompt: '¿Qué par de funciones de django.contrib.auth permiten verificar las credenciales de un usuario y luego iniciar su sesión?',
+        options: ['check_user() y start_session()', 'authenticate() y login()', 'verify() y auth_login()', 'login_user() y set_cookie()'],
+        correctIndex: 1,
+      },
+      {
+        prompt: 'En un decorador personalizado que verifica pertenencia a un grupo, ¿qué excepción devuelve una respuesta HTTP 403 (Acceso Prohibido)?',
+        options: ['Http404', 'PermissionDenied', 'ValidationError', 'ObjectDoesNotExist'],
+        correctIndex: 1,
+      },
+    ],
+  },
 };

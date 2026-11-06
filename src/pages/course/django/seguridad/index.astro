@@ -16,26 +16,26 @@ import DjangoAuthSimulator from '../../../../components/django/DjangoAuthSimulat
         El modelo <code>User</code> por defecto de Django incluye únicamente <code>username</code>, <code>email</code>, <code>first_name</code>, <code>last_name</code> y <code>password</code>. En aplicaciones profesionales casi siempre necesitamos datos adicionales: número de documento (RUT / DNI), teléfono, dirección, rol en el sistema o estado de cuenta.
       </p>
 
-      <div class="bg-amber-950/20 border-2 border-amber-500/60 rounded-2xl p-4 mb-6 text-xs text-slate-800">
-        <strong class="text-amber-900 font-bold block mb-1">⚠️ Regla de Oro en Django (Official Recommendation):</strong>
+      <div class="bg-amber-50 border-2 border-amber-500 rounded-2xl p-5 mb-6 text-sm text-amber-950 shadow-sm">
+        <strong class="text-amber-900 font-black text-base block mb-1">⚠️ Regla de Oro en Django (Official Recommendation):</strong>
         Configura un modelo de usuario personalizado <strong>al inicio del proyecto</strong> antes de ejecutar la primera migración. Cambiar <code>AUTH_USER_MODEL</code> a mitad de un proyecto en producción requiere migraciones manuales complejas para actualizar las claves foráneas existentes.
       </div>
 
       <h3>1.1 Estrategias de Extensión: AbstractUser vs OneToOneField</h3>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-        <div class="p-4 rounded-xl border border-slate-700 bg-slate-900 text-slate-200 text-xs">
-          <strong class="text-emerald-400 font-bold text-sm block mb-1.5">Opción A: AbstractUser (Recomendada)</strong>
-          <p class="text-slate-300 leading-relaxed mb-2">
+        <div class="p-5 rounded-2xl border-2 border-emerald-600 bg-emerald-50/70 text-slate-800 shadow-sm">
+          <strong class="text-emerald-900 font-black text-base block mb-2">Opción A: AbstractUser (Recomendada)</strong>
+          <p class="!text-slate-800 !text-sm leading-relaxed !mb-3">
             Hereda de <code>django.contrib.auth.models.AbstractUser</code>. Mantiene toda la lógica nativa (hash de contraseñas, reseteo de claves, grupos y permisos) y añade nuevas columnas directamente a la tabla del usuario.
           </p>
-          <span class="text-[11px] text-emerald-400 font-mono font-bold">✔ Sin JOINs extra en base de datos.</span>
+          <span class="inline-block text-xs text-emerald-900 bg-emerald-200/80 px-2.5 py-1 rounded-lg font-mono font-bold">✔ Sin JOINs extra en base de datos.</span>
         </div>
-        <div class="p-4 rounded-xl border border-slate-700 bg-slate-900 text-slate-200 text-xs">
-          <strong class="text-cyan-400 font-bold text-sm block mb-1.5">Opción B: Perfil OneToOneField</strong>
-          <p class="text-slate-300 leading-relaxed mb-2">
+        <div class="p-5 rounded-2xl border-2 border-cyan-600 bg-cyan-50/70 text-slate-800 shadow-sm">
+          <strong class="text-cyan-900 font-black text-base block mb-2">Opción B: Perfil OneToOneField</strong>
+          <p class="!text-slate-800 !text-sm leading-relaxed !mb-3">
             Crea un modelo satélite (ej: <code>PerfilUsuario</code>) enlazado mediante <code>OneToOneField(User)</code>. Útil cuando no puedes alterar la tabla de usuarios existente en un sistema legado.
           </p>
-          <span class="text-[11px] text-cyan-400 font-mono font-bold">Requiere JOIN extra para cada consulta.</span>
+          <span class="inline-block text-xs text-cyan-900 bg-cyan-200/80 px-2.5 py-1 rounded-lg font-mono font-bold">Requiere JOIN extra para cada consulta.</span>
         </div>
       </div>
 
@@ -514,7 +514,7 @@ def promover_cliente_vip(modeladmin, request, queryset):
     <!-- FOOTER NAV -->
     <nav class="nav-bottom">
       <a href="/course/django/admin-crud/" class="prev">← Django Admin y CRUD</a>
-      <a href="/course/django/apis-restful/" class="next">APIs RESTful →</a>
+      <a href="/course/django/guia-practica/" class="next">7.1 Guía Práctica: CRUD y Persistencia →</a>
     </nav>
   </article>
 </Layout>
