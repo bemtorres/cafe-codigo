@@ -96,40 +96,46 @@ import DjangoQuizModal from '../../../../components/quizzes/DjangoQuizModal.astr
         </div>
       </div>
       <div class="p-5 sm:p-6">
-        <div class="relative aspect-video overflow-hidden bg-slate-950 rounded-xl my-4">
-          <iframe
-            src="https://www.youtube-nocookie.com/embed/EASkmNop9wA"
-            title="Lección 01: Modelo y base de datos"
-            loading="lazy"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            allowfullscreen
-            class="absolute inset-0 w-full h-full border-0"
-          ></iframe>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start mb-4">
+          <div class="lg:col-span-7">
+            <h4 class="text-lg font-bold text-slate-900 !mt-0 mb-2">
+              ¿Qué aprenderás y por qué es importante?
+            </h4>
+            <p class="!text-sm sm:!text-base !mb-4">
+              El modelo constituye la estructura de información del sistema. Cada clase que hereda de <code>models.Model</code> representa una tabla; sus atributos representan columnas y cada objeto guardado corresponde a un registro. Django utiliza un ORM (mapeador objeto-relacional), que permite trabajar con Python en vez de escribir manualmente cada sentencia SQL.
+            </p>
+
+            <h4 class="text-lg font-bold text-slate-900 mt-4 mb-2">
+              Explicación técnica paso a paso
+            </h4>
+            <p class="!text-sm sm:!text-base !mb-0">
+              Antes de crear vistas o formularios, se deben definir los datos que necesita el negocio. En este ejemplo, cada producto tiene nombre, precio, stock y estado. Los tipos de campo determinan las validaciones básicas y el tipo de dato que se almacenará.
+            </p>
+          </div>
+
+          <div class="lg:col-span-5 lg:sticky lg:top-4">
+            <div class="p-3 rounded-2xl bg-slate-50 border-2 border-slate-200 shadow-sm">
+              <div class="relative aspect-video overflow-hidden bg-slate-950 rounded-xl border border-slate-800">
+                <iframe
+                  src="https://www.youtube-nocookie.com/embed/EASkmNop9wA"
+                  title="Lección 01: Modelo y base de datos"
+                  loading="lazy"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowfullscreen
+                  class="absolute inset-0 w-full h-full border-0"
+                ></iframe>
+              </div>
+              <a
+                href="https://www.youtube.com/watch?v=EASkmNop9wA&list=PLr1Os35AYMZGDQz6bAsHATNtqwNyMoAB6&index=16"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="mt-2.5 inline-flex items-center justify-center w-full py-2 px-3 rounded-xl bg-rose-50 hover:bg-rose-100 text-[#a7091b] font-bold text-xs no-underline transition-colors"
+              >
+                ▶ Abrir video en YouTube
+              </a>
+            </div>
+          </div>
         </div>
-        <p class="text-sm mb-4">
-          <a
-            href="https://www.youtube.com/watch?v=EASkmNop9wA&list=PLr1Os35AYMZGDQz6bAsHATNtqwNyMoAB6&index=16"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="text-[#a7091b] font-bold hover:underline"
-          >
-            ▶ Abrir video en YouTube
-          </a>
-        </p>
-
-        <h4 class="text-lg font-bold text-slate-900 mt-4 mb-2">
-          ¿Qué aprenderás y por qué es importante?
-        </h4>
-        <p class="text-sm sm:text-base">
-          El modelo constituye la estructura de información del sistema. Cada clase que hereda de <code>models.Model</code> representa una tabla; sus atributos representan columnas y cada objeto guardado corresponde a un registro. Django utiliza un ORM (mapeador objeto-relacional), que permite trabajar con Python en vez de escribir manualmente cada sentencia SQL.
-        </p>
-
-        <h4 class="text-lg font-bold text-slate-900 mt-4 mb-2">
-          Explicación técnica paso a paso
-        </h4>
-        <p class="text-sm sm:text-base">
-          Antes de crear vistas o formularios, se deben definir los datos que necesita el negocio. En este ejemplo, cada producto tiene nombre, precio, stock y estado. Los tipos de campo determinan las validaciones básicas y el tipo de dato que se almacenará.
-        </p>
 
         <details open class="border border-slate-200 rounded-xl my-3 bg-white">
           <summary class="cursor-pointer px-4 py-3 font-bold text-[#9c1021] bg-slate-50 rounded-t-xl">
@@ -168,12 +174,13 @@ python manage.py migrate`}
           </div>
         </details>
 
-        <div class="p-4 rounded-xl bg-amber-50 border-l-4 border-amber-500 text-sm my-4">
-          <strong>Atención y buenas prácticas:</strong> <code>makemigrations</code> prepara los cambios del esquema y <code>migrate</code> los aplica a la base de datos. Registrar la aplicación en <code>INSTALLED_APPS</code> antes de ejecutar las migraciones.
-        </div>
-
-        <div class="p-4 rounded-xl bg-emerald-50 border-l-4 border-emerald-600 text-sm mt-4">
-          <strong>Actividad de aplicación:</strong> Definir un modelo <code>Categoria</code> y relacionarlo con <code>Producto</code> mediante <code>ForeignKey</code>. Explicar por qué se usa <code>on_delete=models.PROTECT</code>.
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+          <div class="p-4 rounded-xl bg-amber-50 border-l-4 border-amber-500 text-sm">
+            <strong>Atención y buenas prácticas:</strong> <code>makemigrations</code> prepara los cambios del esquema y <code>migrate</code> los aplica a la base de datos. Registrar la aplicación en <code>INSTALLED_APPS</code> antes de ejecutar las migraciones.
+          </div>
+          <div class="p-4 rounded-xl bg-emerald-50 border-l-4 border-emerald-600 text-sm">
+            <strong>Actividad de aplicación:</strong> Definir un modelo <code>Categoria</code> y relacionarlo con <code>Producto</code> mediante <code>ForeignKey</code>. Explicar por qué se usa <code>on_delete=models.PROTECT</code>.
+          </div>
         </div>
       </div>
     </article>
@@ -192,40 +199,46 @@ python manage.py migrate`}
         </div>
       </div>
       <div class="p-5 sm:p-6">
-        <div class="relative aspect-video overflow-hidden bg-slate-950 rounded-xl my-4">
-          <iframe
-            src="https://www.youtube-nocookie.com/embed/HtDCOqxauc4"
-            title="Lección 02: Administración con Django Admin"
-            loading="lazy"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            allowfullscreen
-            class="absolute inset-0 w-full h-full border-0"
-          ></iframe>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start mb-4">
+          <div class="lg:col-span-7">
+            <h4 class="text-lg font-bold text-slate-900 !mt-0 mb-2">
+              ¿Qué aprenderás y por qué es importante?
+            </h4>
+            <p class="!text-sm sm:!text-base !mb-4">
+              Django Admin es una interfaz de gestión incluida con el framework. Permite consultar, crear, modificar y eliminar registros de modelos registrados, siempre que el usuario tenga permisos. Es una herramienta especialmente útil para pruebas, carga inicial y tareas administrativas internas. No reemplaza automáticamente la interfaz que utilizarán los usuarios finales.
+            </p>
+
+            <h4 class="text-lg font-bold text-slate-900 mt-4 mb-2">
+              Explicación técnica paso a paso
+            </h4>
+            <p class="!text-sm sm:!text-base !mb-0">
+              Para habilitar el modelo se registra en <code>admin.py</code>. Un <code>ModelAdmin</code> permite definir columnas, filtros y búsquedas. El administrador requiere que estén instaladas las aplicaciones de autenticación, sesiones y administración incluidas en la configuración estándar.
+            </p>
+          </div>
+
+          <div class="lg:col-span-5 lg:sticky lg:top-4">
+            <div class="p-3 rounded-2xl bg-slate-50 border-2 border-slate-200 shadow-sm">
+              <div class="relative aspect-video overflow-hidden bg-slate-950 rounded-xl border border-slate-800">
+                <iframe
+                  src="https://www.youtube-nocookie.com/embed/HtDCOqxauc4"
+                  title="Lección 02: Administración con Django Admin"
+                  loading="lazy"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowfullscreen
+                  class="absolute inset-0 w-full h-full border-0"
+                ></iframe>
+              </div>
+              <a
+                href="https://www.youtube.com/watch?v=HtDCOqxauc4&list=PLr1Os35AYMZGDQz6bAsHATNtqwNyMoAB6&index=17"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="mt-2.5 inline-flex items-center justify-center w-full py-2 px-3 rounded-xl bg-rose-50 hover:bg-rose-100 text-[#a7091b] font-bold text-xs no-underline transition-colors"
+              >
+                ▶ Abrir video en YouTube
+              </a>
+            </div>
+          </div>
         </div>
-        <p class="text-sm mb-4">
-          <a
-            href="https://www.youtube.com/watch?v=HtDCOqxauc4&list=PLr1Os35AYMZGDQz6bAsHATNtqwNyMoAB6&index=17"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="text-[#a7091b] font-bold hover:underline"
-          >
-            ▶ Abrir video en YouTube
-          </a>
-        </p>
-
-        <h4 class="text-lg font-bold text-slate-900 mt-4 mb-2">
-          ¿Qué aprenderás y por qué es importante?
-        </h4>
-        <p class="text-sm sm:text-base">
-          Django Admin es una interfaz de gestión incluida con el framework. Permite consultar, crear, modificar y eliminar registros de modelos registrados, siempre que el usuario tenga permisos. Es una herramienta especialmente útil para pruebas, carga inicial y tareas administrativas internas. No reemplaza automáticamente la interfaz que utilizarán los usuarios finales.
-        </p>
-
-        <h4 class="text-lg font-bold text-slate-900 mt-4 mb-2">
-          Explicación técnica paso a paso
-        </h4>
-        <p class="text-sm sm:text-base">
-          Para habilitar el modelo se registra en <code>admin.py</code>. Un <code>ModelAdmin</code> permite definir columnas, filtros y búsquedas. El administrador requiere que estén instaladas las aplicaciones de autenticación, sesiones y administración incluidas en la configuración estándar.
-        </p>
 
         <details open class="border border-slate-200 rounded-xl my-3 bg-white">
           <summary class="cursor-pointer px-4 py-3 font-bold text-[#9c1021] bg-slate-50 rounded-t-xl">
@@ -263,12 +276,13 @@ python manage.py runserver
           </div>
         </details>
 
-        <div class="p-4 rounded-xl bg-amber-50 border-l-4 border-amber-500 text-sm my-4">
-          <strong>Atención y buenas prácticas:</strong> El superusuario tiene acceso amplio. Para un entorno real se deben crear cuentas con permisos mínimos y evitar compartir credenciales.
-        </div>
-
-        <div class="p-4 rounded-xl bg-emerald-50 border-l-4 border-emerald-600 text-sm mt-4">
-          <strong>Actividad de aplicación:</strong> Registrar el modelo, ingresar tres productos y comprobar cómo funcionan la búsqueda y el filtro.
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+          <div class="p-4 rounded-xl bg-amber-50 border-l-4 border-amber-500 text-sm">
+            <strong>Atención y buenas prácticas:</strong> El superusuario tiene acceso amplio. Para un entorno real se deben crear cuentas con permisos mínimos y evitar compartir credenciales.
+          </div>
+          <div class="p-4 rounded-xl bg-emerald-50 border-l-4 border-emerald-600 text-sm">
+            <strong>Actividad de aplicación:</strong> Registrar el modelo, ingresar tres productos y comprobar cómo funcionan la búsqueda y el filtro.
+          </div>
         </div>
       </div>
     </article>
@@ -287,40 +301,46 @@ python manage.py runserver
         </div>
       </div>
       <div class="p-5 sm:p-6">
-        <div class="relative aspect-video overflow-hidden bg-slate-950 rounded-xl my-4">
-          <iframe
-            src="https://www.youtube-nocookie.com/embed/GtCAF5DhdJY"
-            title="Lección 03: Listar registros: SELECT, vista y tabla HTML"
-            loading="lazy"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            allowfullscreen
-            class="absolute inset-0 w-full h-full border-0"
-          ></iframe>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start mb-4">
+          <div class="lg:col-span-7">
+            <h4 class="text-lg font-bold text-slate-900 !mt-0 mb-2">
+              ¿Qué aprenderás y por qué es importante?
+            </h4>
+            <p class="!text-sm sm:!text-base !mb-4">
+              La vista recibe una solicitud HTTP, consulta el modelo y construye el contexto que se entrega a una plantilla HTML. La plantilla presenta los resultados al usuario. Esta separación ayuda a mantener el acceso a datos en Python y la presentación en HTML.
+            </p>
+
+            <h4 class="text-lg font-bold text-slate-900 mt-4 mb-2">
+              Explicación técnica paso a paso
+            </h4>
+            <p class="!text-sm sm:!text-base !mb-0">
+              <code>Producto.objects.all()</code> genera un QuerySet. Es posible ordenarlo, filtrarlo o limitarlo antes de mostrarlo. En el HTML, el lenguaje de plantillas de Django permite recorrer cada registro con <code>for</code> y acceder a sus atributos. No se deben escribir consultas SQL dentro de la plantilla.
+            </p>
+          </div>
+
+          <div class="lg:col-span-5 lg:sticky lg:top-4">
+            <div class="p-3 rounded-2xl bg-slate-50 border-2 border-slate-200 shadow-sm">
+              <div class="relative aspect-video overflow-hidden bg-slate-950 rounded-xl border border-slate-800">
+                <iframe
+                  src="https://www.youtube-nocookie.com/embed/GtCAF5DhdJY"
+                  title="Lección 03: Listar registros: SELECT, vista y tabla HTML"
+                  loading="lazy"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowfullscreen
+                  class="absolute inset-0 w-full h-full border-0"
+                ></iframe>
+              </div>
+              <a
+                href="https://www.youtube.com/watch?v=GtCAF5DhdJY&list=PLr1Os35AYMZGDQz6bAsHATNtqwNyMoAB6&index=18"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="mt-2.5 inline-flex items-center justify-center w-full py-2 px-3 rounded-xl bg-rose-50 hover:bg-rose-100 text-[#a7091b] font-bold text-xs no-underline transition-colors"
+              >
+                ▶ Abrir video en YouTube
+              </a>
+            </div>
+          </div>
         </div>
-        <p class="text-sm mb-4">
-          <a
-            href="https://www.youtube.com/watch?v=GtCAF5DhdJY&list=PLr1Os35AYMZGDQz6bAsHATNtqwNyMoAB6&index=18"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="text-[#a7091b] font-bold hover:underline"
-          >
-            ▶ Abrir video en YouTube
-          </a>
-        </p>
-
-        <h4 class="text-lg font-bold text-slate-900 mt-4 mb-2">
-          ¿Qué aprenderás y por qué es importante?
-        </h4>
-        <p class="text-sm sm:text-base">
-          La vista recibe una solicitud HTTP, consulta el modelo y construye el contexto que se entrega a una plantilla HTML. La plantilla presenta los resultados al usuario. Esta separación ayuda a mantener el acceso a datos en Python y la presentación en HTML.
-        </p>
-
-        <h4 class="text-lg font-bold text-slate-900 mt-4 mb-2">
-          Explicación técnica paso a paso
-        </h4>
-        <p class="text-sm sm:text-base">
-          <code>Producto.objects.all()</code> genera un QuerySet. Es posible ordenarlo, filtrarlo o limitarlo antes de mostrarlo. En el HTML, el lenguaje de plantillas de Django permite recorrer cada registro con <code>for</code> y acceder a sus atributos. No se deben escribir consultas SQL dentro de la plantilla.
-        </p>
 
         <details open class="border border-slate-200 rounded-xl my-3 bg-white">
           <summary class="cursor-pointer px-4 py-3 font-bold text-[#9c1021] bg-slate-50 rounded-t-xl">
@@ -370,12 +390,13 @@ def listado_productos(request):
           </div>
         </details>
 
-        <div class="p-4 rounded-xl bg-amber-50 border-l-4 border-amber-500 text-sm my-4">
-          <strong>Atención y buenas prácticas:</strong> Definir una ruta en <code>urls.py</code> y verificar que el nombre de la plantilla coincida. El bloque <code>empty</code> evita mostrar una tabla aparentemente rota cuando no existen registros.
-        </div>
-
-        <div class="p-4 rounded-xl bg-emerald-50 border-l-4 border-emerald-600 text-sm mt-4">
-          <strong>Actividad de aplicación:</strong> Agregar una columna Estado y mostrar “Disponible” cuando <code>stock</code> sea mayor que cero.
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+          <div class="p-4 rounded-xl bg-amber-50 border-l-4 border-amber-500 text-sm">
+            <strong>Atención y buenas prácticas:</strong> Definir una ruta en <code>urls.py</code> y verificar que el nombre de la plantilla coincida. El bloque <code>empty</code> evita mostrar una tabla aparentemente rota cuando no existen registros.
+          </div>
+          <div class="p-4 rounded-xl bg-emerald-50 border-l-4 border-emerald-600 text-sm">
+            <strong>Actividad de aplicación:</strong> Agregar una columna Estado y mostrar “Disponible” cuando <code>stock</code> sea mayor que cero.
+          </div>
         </div>
       </div>
     </article>
@@ -394,40 +415,46 @@ def listado_productos(request):
         </div>
       </div>
       <div class="p-5 sm:p-6">
-        <div class="relative aspect-video overflow-hidden bg-slate-950 rounded-xl my-4">
-          <iframe
-            src="https://www.youtube-nocookie.com/embed/NWiex0OelWg"
-            title="Lección 04: Crear registros con formularios HTML y POST"
-            loading="lazy"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            allowfullscreen
-            class="absolute inset-0 w-full h-full border-0"
-          ></iframe>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start mb-4">
+          <div class="lg:col-span-7">
+            <h4 class="text-lg font-bold text-slate-900 !mt-0 mb-2">
+              ¿Qué aprenderás y por qué es importante?
+            </h4>
+            <p class="!text-sm sm:!text-base !mb-4">
+              El método <code>GET</code> normalmente muestra la página y el formulario; <code>POST</code> envía datos al servidor para solicitar la creación del registro. La vista puede atender ambos métodos: en <code>GET</code> devuelve el formulario vacío y en <code>POST</code> lee, valida y guarda los valores. La operación de escritura nunca debe confiar ciegamente en los datos recibidos.
+            </p>
+
+            <h4 class="text-lg font-bold text-slate-900 mt-4 mb-2">
+              Explicación técnica paso a paso
+            </h4>
+            <p class="!text-sm sm:!text-base !mb-0">
+              Se utiliza <code>request.POST.get()</code> para obtener los campos del formulario. El nombre de cada <code>input</code> debe coincidir exactamente con la clave consultada. El token CSRF protege contra solicitudes falsificadas. Se recomienda convertir números dentro de un bloque <code>try</code>, comprobar rangos y redirigir después de guardar para evitar envíos duplicados al actualizar la página.
+            </p>
+          </div>
+
+          <div class="lg:col-span-5 lg:sticky lg:top-4">
+            <div class="p-3 rounded-2xl bg-slate-50 border-2 border-slate-200 shadow-sm">
+              <div class="relative aspect-video overflow-hidden bg-slate-950 rounded-xl border border-slate-800">
+                <iframe
+                  src="https://www.youtube-nocookie.com/embed/NWiex0OelWg"
+                  title="Lección 04: Crear registros con formularios HTML y POST"
+                  loading="lazy"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowfullscreen
+                  class="absolute inset-0 w-full h-full border-0"
+                ></iframe>
+              </div>
+              <a
+                href="https://www.youtube.com/watch?v=NWiex0OelWg&list=PLr1Os35AYMZGDQz6bAsHATNtqwNyMoAB6&index=19"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="mt-2.5 inline-flex items-center justify-center w-full py-2 px-3 rounded-xl bg-rose-50 hover:bg-rose-100 text-[#a7091b] font-bold text-xs no-underline transition-colors"
+              >
+                ▶ Abrir video en YouTube
+              </a>
+            </div>
+          </div>
         </div>
-        <p class="text-sm mb-4">
-          <a
-            href="https://www.youtube.com/watch?v=NWiex0OelWg&list=PLr1Os35AYMZGDQz6bAsHATNtqwNyMoAB6&index=19"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="text-[#a7091b] font-bold hover:underline"
-          >
-            ▶ Abrir video en YouTube
-          </a>
-        </p>
-
-        <h4 class="text-lg font-bold text-slate-900 mt-4 mb-2">
-          ¿Qué aprenderás y por qué es importante?
-        </h4>
-        <p class="text-sm sm:text-base">
-          El método <code>GET</code> normalmente muestra la página y el formulario; <code>POST</code> envía datos al servidor para solicitar la creación del registro. La vista puede atender ambos métodos: en <code>GET</code> devuelve el formulario vacío y en <code>POST</code> lee, valida y guarda los valores. La operación de escritura nunca debe confiar ciegamente en los datos recibidos.
-        </p>
-
-        <h4 class="text-lg font-bold text-slate-900 mt-4 mb-2">
-          Explicación técnica paso a paso
-        </h4>
-        <p class="text-sm sm:text-base">
-          Se utiliza <code>request.POST.get()</code> para obtener los campos del formulario. El nombre de cada <code>input</code> debe coincidir exactamente con la clave consultada. El token CSRF protege contra solicitudes falsificadas. Se recomienda convertir números dentro de un bloque <code>try</code>, comprobar rangos y redirigir después de guardar para evitar envíos duplicados al actualizar la página.
-        </p>
 
         <details open class="border border-slate-200 rounded-xl my-3 bg-white">
           <summary class="cursor-pointer px-4 py-3 font-bold text-[#9c1021] bg-slate-50 rounded-t-xl">
@@ -480,12 +507,13 @@ def crear_producto(request):
           </div>
         </details>
 
-        <div class="p-4 rounded-xl bg-amber-50 border-l-4 border-amber-500 text-sm my-4">
-          <strong>Atención y buenas prácticas:</strong> No utilizar <code>ProductoForm</code> ni <code>ModelForm</code> en este curso. La validación HTML mejora la experiencia, pero siempre debe repetirse en el servidor.
-        </div>
-
-        <div class="p-4 rounded-xl bg-emerald-50 border-l-4 border-emerald-600 text-sm mt-4">
-          <strong>Actividad de aplicación:</strong> Crear un producto y comprobar que aparece en el listado y en Django Admin. Probar el envío de un precio inválido.
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+          <div class="p-4 rounded-xl bg-amber-50 border-l-4 border-amber-500 text-sm">
+            <strong>Atención y buenas prácticas:</strong> No utilizar <code>ProductoForm</code> ni <code>ModelForm</code> en este curso. La validación HTML mejora la experiencia, pero siempre debe repetirse en el servidor.
+          </div>
+          <div class="p-4 rounded-xl bg-emerald-50 border-l-4 border-emerald-600 text-sm">
+            <strong>Actividad de aplicación:</strong> Crear un producto y comprobar que aparece en el listado y en Django Admin. Probar el envío de un precio inválido.
+          </div>
         </div>
       </div>
     </article>
@@ -504,40 +532,46 @@ def crear_producto(request):
         </div>
       </div>
       <div class="p-5 sm:p-6">
-        <div class="relative aspect-video overflow-hidden bg-slate-950 rounded-xl my-4">
-          <iframe
-            src="https://www.youtube-nocookie.com/embed/dlf85n_QZ0E"
-            title="Lección 05: Editar y eliminar registros"
-            loading="lazy"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            allowfullscreen
-            class="absolute inset-0 w-full h-full border-0"
-          ></iframe>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start mb-4">
+          <div class="lg:col-span-7">
+            <h4 class="text-lg font-bold text-slate-900 !mt-0 mb-2">
+              ¿Qué aprenderás y por qué es importante?
+            </h4>
+            <p class="!text-sm sm:!text-base !mb-4">
+              Editar consiste en recuperar un objeto existente, mostrar sus valores actuales y guardar los cambios. Eliminar consiste en localizar un registro y borrarlo de forma explícita. Ambas acciones deben trabajar con un identificador único y controlar el caso en que el objeto solicitado no existe.
+            </p>
+
+            <h4 class="text-lg font-bold text-slate-900 mt-4 mb-2">
+              Explicación técnica paso a paso
+            </h4>
+            <p class="!text-sm sm:!text-base !mb-0">
+              <code>get_object_or_404</code> devuelve una respuesta 404 cuando el registro no existe. En la edición, <code>GET</code> muestra el formulario precargado y <code>POST</code> actualiza el objeto. La eliminación debe confirmarse y ejecutarse mediante <code>POST</code>, no mediante un simple enlace <code>GET</code>, porque <code>GET</code> no debe producir cambios destructivos.
+            </p>
+          </div>
+
+          <div class="lg:col-span-5 lg:sticky lg:top-4">
+            <div class="p-3 rounded-2xl bg-slate-50 border-2 border-slate-200 shadow-sm">
+              <div class="relative aspect-video overflow-hidden bg-slate-950 rounded-xl border border-slate-800">
+                <iframe
+                  src="https://www.youtube-nocookie.com/embed/dlf85n_QZ0E"
+                  title="Lección 05: Editar y eliminar registros"
+                  loading="lazy"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowfullscreen
+                  class="absolute inset-0 w-full h-full border-0"
+                ></iframe>
+              </div>
+              <a
+                href="https://www.youtube.com/watch?v=dlf85n_QZ0E&list=PLr1Os35AYMZGDQz6bAsHATNtqwNyMoAB6&index=20"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="mt-2.5 inline-flex items-center justify-center w-full py-2 px-3 rounded-xl bg-rose-50 hover:bg-rose-100 text-[#a7091b] font-bold text-xs no-underline transition-colors"
+              >
+                ▶ Abrir video en YouTube
+              </a>
+            </div>
+          </div>
         </div>
-        <p class="text-sm mb-4">
-          <a
-            href="https://www.youtube.com/watch?v=dlf85n_QZ0E&list=PLr1Os35AYMZGDQz6bAsHATNtqwNyMoAB6&index=20"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="text-[#a7091b] font-bold hover:underline"
-          >
-            ▶ Abrir video en YouTube
-          </a>
-        </p>
-
-        <h4 class="text-lg font-bold text-slate-900 mt-4 mb-2">
-          ¿Qué aprenderás y por qué es importante?
-        </h4>
-        <p class="text-sm sm:text-base">
-          Editar consiste en recuperar un objeto existente, mostrar sus valores actuales y guardar los cambios. Eliminar consiste en localizar un registro y borrarlo de forma explícita. Ambas acciones deben trabajar con un identificador único y controlar el caso en que el objeto solicitado no existe.
-        </p>
-
-        <h4 class="text-lg font-bold text-slate-900 mt-4 mb-2">
-          Explicación técnica paso a paso
-        </h4>
-        <p class="text-sm sm:text-base">
-          <code>get_object_or_404</code> devuelve una respuesta 404 cuando el registro no existe. En la edición, <code>GET</code> muestra el formulario precargado y <code>POST</code> actualiza el objeto. La eliminación debe confirmarse y ejecutarse mediante <code>POST</code>, no mediante un simple enlace <code>GET</code>, porque <code>GET</code> no debe producir cambios destructivos.
-        </p>
 
         <details open class="border border-slate-200 rounded-xl my-3 bg-white">
           <summary class="cursor-pointer px-4 py-3 font-bold text-[#9c1021] bg-slate-50 rounded-t-xl">
@@ -599,12 +633,13 @@ def eliminar_producto(request, pk):
           </div>
         </details>
 
-        <div class="p-4 rounded-xl bg-amber-50 border-l-4 border-amber-500 text-sm my-4">
-          <strong>Atención y buenas prácticas:</strong> En <code>editar.html</code> se usan los mismos campos HTML del formulario de creación, con <code>value="&#123;&#123; producto.nombre &#125;&#125;"</code> y valores equivalentes para precio y stock. La URL debe enviar <code>pk</code> a la vista.
-        </div>
-
-        <div class="p-4 rounded-xl bg-emerald-50 border-l-4 border-emerald-600 text-sm mt-4">
-          <strong>Actividad de aplicación:</strong> Editar el precio de un producto y confirmar el cambio; después eliminar otro producto desde la pantalla de confirmación.
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+          <div class="p-4 rounded-xl bg-amber-50 border-l-4 border-amber-500 text-sm">
+            <strong>Atención y buenas prácticas:</strong> En <code>editar.html</code> se usan los mismos campos HTML del formulario de creación, con <code>value="&#123;&#123; producto.nombre &#125;&#125;"</code> y valores equivalentes para precio y stock. La URL debe enviar <code>pk</code> a la vista.
+          </div>
+          <div class="p-4 rounded-xl bg-emerald-50 border-l-4 border-emerald-600 text-sm">
+            <strong>Actividad de aplicación:</strong> Editar el precio de un producto y confirmar el cambio; después eliminar otro producto desde la pantalla de confirmación.
+          </div>
         </div>
       </div>
     </article>
@@ -623,40 +658,46 @@ def eliminar_producto(request, pk):
         </div>
       </div>
       <div class="p-5 sm:p-6">
-        <div class="relative aspect-video overflow-hidden bg-slate-950 rounded-xl my-4">
-          <iframe
-            src="https://www.youtube-nocookie.com/embed/lHna1t-U2jc"
-            title="Lección 06: Mensajes de éxito, advertencia y error"
-            loading="lazy"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            allowfullscreen
-            class="absolute inset-0 w-full h-full border-0"
-          ></iframe>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start mb-4">
+          <div class="lg:col-span-7">
+            <h4 class="text-lg font-bold text-slate-900 !mt-0 mb-2">
+              ¿Qué aprenderás y por qué es importante?
+            </h4>
+            <p class="!text-sm sm:!text-base !mb-4">
+              El framework de mensajes de Django permite mostrar avisos temporales después de una operación. Por ejemplo, al guardar un producto se muestra “Producto creado correctamente”; al eliminar, “Producto eliminado”. Los mensajes mejoran la claridad del flujo y permiten distinguir acciones exitosas de errores o advertencias.
+            </p>
+
+            <h4 class="text-lg font-bold text-slate-900 mt-4 mb-2">
+              Explicación técnica paso a paso
+            </h4>
+            <p class="!text-sm sm:!text-base !mb-0">
+              Los mensajes se agregan desde la vista y se leen desde la plantilla. Con la configuración habitual de Django, pueden mantenerse durante una redirección. Es importante distinguir un mensaje informativo de una validación: mostrar un mensaje de éxito no demuestra por sí solo que los datos sean correctos.
+            </p>
+          </div>
+
+          <div class="lg:col-span-5 lg:sticky lg:top-4">
+            <div class="p-3 rounded-2xl bg-slate-50 border-2 border-slate-200 shadow-sm">
+              <div class="relative aspect-video overflow-hidden bg-slate-950 rounded-xl border border-slate-800">
+                <iframe
+                  src="https://www.youtube-nocookie.com/embed/lHna1t-U2jc"
+                  title="Lección 06: Mensajes de éxito, advertencia y error"
+                  loading="lazy"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowfullscreen
+                  class="absolute inset-0 w-full h-full border-0"
+                ></iframe>
+              </div>
+              <a
+                href="https://www.youtube.com/watch?v=lHna1t-U2jc&list=PLr1Os35AYMZGDQz6bAsHATNtqwNyMoAB6&index=21"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="mt-2.5 inline-flex items-center justify-center w-full py-2 px-3 rounded-xl bg-rose-50 hover:bg-rose-100 text-[#a7091b] font-bold text-xs no-underline transition-colors"
+              >
+                ▶ Abrir video en YouTube
+              </a>
+            </div>
+          </div>
         </div>
-        <p class="text-sm mb-4">
-          <a
-            href="https://www.youtube.com/watch?v=lHna1t-U2jc&list=PLr1Os35AYMZGDQz6bAsHATNtqwNyMoAB6&index=21"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="text-[#a7091b] font-bold hover:underline"
-          >
-            ▶ Abrir video en YouTube
-          </a>
-        </p>
-
-        <h4 class="text-lg font-bold text-slate-900 mt-4 mb-2">
-          ¿Qué aprenderás y por qué es importante?
-        </h4>
-        <p class="text-sm sm:text-base">
-          El framework de mensajes de Django permite mostrar avisos temporales después de una operación. Por ejemplo, al guardar un producto se muestra “Producto creado correctamente”; al eliminar, “Producto eliminado”. Los mensajes mejoran la claridad del flujo y permiten distinguir acciones exitosas de errores o advertencias.
-        </p>
-
-        <h4 class="text-lg font-bold text-slate-900 mt-4 mb-2">
-          Explicación técnica paso a paso
-        </h4>
-        <p class="text-sm sm:text-base">
-          Los mensajes se agregan desde la vista y se leen desde la plantilla. Con la configuración habitual de Django, pueden mantenerse durante una redirección. Es importante distinguir un mensaje informativo de una validación: mostrar un mensaje de éxito no demuestra por sí solo que los datos sean correctos.
-        </p>
 
         <details open class="border border-slate-200 rounded-xl my-3 bg-white">
           <summary class="cursor-pointer px-4 py-3 font-bold text-[#9c1021] bg-slate-50 rounded-t-xl">
@@ -700,12 +741,13 @@ return redirect('listado_productos')`}
           </div>
         </details>
 
-        <div class="p-4 rounded-xl bg-amber-50 border-l-4 border-amber-500 text-sm my-4">
-          <strong>Atención y buenas prácticas:</strong> Verificar que <code>django.contrib.messages</code>, su middleware y su context processor estén habilitados. No exponer contraseñas ni datos sensibles en mensajes.
-        </div>
-
-        <div class="p-4 rounded-xl bg-emerald-50 border-l-4 border-emerald-600 text-sm mt-4">
-          <strong>Actividad de aplicación:</strong> Agregar mensajes al crear, editar y eliminar, y comprobar que aparecen después de cada redirección.
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+          <div class="p-4 rounded-xl bg-amber-50 border-l-4 border-amber-500 text-sm">
+            <strong>Atención y buenas prácticas:</strong> Verificar que <code>django.contrib.messages</code>, su middleware y su context processor estén habilitados. No exponer contraseñas ni datos sensibles en mensajes.
+          </div>
+          <div class="p-4 rounded-xl bg-emerald-50 border-l-4 border-emerald-600 text-sm">
+            <strong>Actividad de aplicación:</strong> Agregar mensajes al crear, editar y eliminar, y comprobar que aparecen después de cada redirección.
+          </div>
         </div>
       </div>
     </article>
