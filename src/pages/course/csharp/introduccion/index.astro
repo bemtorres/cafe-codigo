@@ -2,7 +2,6 @@
 import Layout from '../../../../layouts/Layout.astro';
 import CodeBlock from '../../../../components/CodeBlock.astro';
 import CsharpQuizModal from '../../../../components/quizzes/CsharpQuizModal.astro';
-import LoginGatedVideo from '../../../../components/auth/LoginGatedVideo';
 ---
 
 <Layout title="Introducción a C#" description="¿Qué es C# y .NET? Estructura básica de un programa" courseSlug="csharp">
@@ -19,7 +18,15 @@ import LoginGatedVideo from '../../../../components/auth/LoginGatedVideo';
         Si vienes de aprender pseudocódigo (como PSeInt), notarás que C# exige más precisión en cómo defines las cosas, pero a cambio te da un poder inmenso para crear software real y escalable.
       </p>
       <h3 class="mt-8 mb-3 text-lg font-black text-textPrimary">Video: C# y .NET</h3>
-      <LoginGatedVideo client:load videoId="NKPMGY6NCko" title="C# y .NET — introducción" />
+      <div class="mt-4 aspect-video w-full overflow-hidden rounded-xl border-2 border-white/25 shadow-[4px_4px_0px_rgba(0,0,0,0.2)]">
+        <iframe
+          title="C# y .NET — introducción"
+          src="https://www.youtube.com/embed/NKPMGY6NCko?rel=0"
+          class="h-full w-full border-0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen
+        />
+      </div>
     </section>
 
     <section class="mb-10">

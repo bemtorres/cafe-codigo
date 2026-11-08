@@ -1,6 +1,3 @@
-import { getSupabaseBrowser } from '../supabase/client';
-import { quizProgressHint, saveQuizAttempt } from '../supabase/quizProgress';
-
 const INIT_KEY = '__pseintQuizModalInit__';
 
 function closeModal(modal: Element | null) {
@@ -82,37 +79,6 @@ function gradeModal(modal: Element): { score: number; total: number } {
   return { score, total };
 }
 
-async function refreshHint(root: HTMLElement) {
-  const hintEl = root.querySelector('[data-pseint-quiz-hint]');
-  if (!hintEl) return;
-  const course = root.getAttribute('data-course-slug') ?? 'pseint';
-  const lesson = root.getAttribute('data-quiz-key') ?? '';
-  if (!lesson) return;
-  hintEl.textContent = await quizProgressHint(course, lesson);
-}
-
-async function persistAttempt(root: HTMLElement, score: number, total: number) {
-  const syncEl = root.querySelector('[data-pseint-quiz-sync]');
-  const course = root.getAttribute('data-course-slug') ?? 'pseint';
-  const lesson = root.getAttribute('data-quiz-key') ?? '';
-  if (!lesson) return;
-
-  const { ok, error } = await saveQuizAttempt(course, lesson, score, total);
-  if (syncEl) {
-    if (ok) {
-      syncEl.textContent = 'Progreso guardado en tu cuenta.';
-      syncEl.classList.remove('pseint-quiz__sync--err');
-    } else if (error === 'Sin sesión') {
-      syncEl.textContent = 'Iniciá sesión para guardar este resultado.';
-      syncEl.classList.add('pseint-quiz__sync--err');
-    } else {
-      syncEl.textContent = error ? `No se pudo guardar: ${error}` : 'No se pudo guardar.';
-      syncEl.classList.add('pseint-quiz__sync--err');
-    }
-  }
-  await refreshHint(root);
-}
-
 export function initPseintQuizModals() {
   if (typeof window === 'undefined') return;
   const w = window as unknown as Record<string, boolean>;
@@ -144,9 +110,8 @@ export function initPseintQuizModals() {
     if (submitBtn) {
       const root = submitBtn.closest('.pseint-quiz') as HTMLElement | null;
       const modal = root?.querySelector('.pseint-quiz__modal') ?? null;
-      if (modal && root) {
-        const { score, total } = gradeModal(modal);
-        void persistAttempt(root, score, total);
+      if (modal) {
+        gradeModal(modal);
       }
       return;
     }
@@ -164,8 +129,6 @@ export function initPseintQuizModals() {
       modal.querySelectorAll('[data-pseint-quiz-feedback]').forEach((el) => {
         el.textContent = '';
       });
-      const syncEl = root?.querySelector('[data-pseint-quiz-sync]');
-      if (syncEl) syncEl.textContent = '';
       return;
     }
   });
@@ -173,17 +136,5 @@ export function initPseintQuizModals() {
   document.addEventListener('keydown', (e) => {
     if (e.key !== 'Escape') return;
     document.querySelectorAll('.pseint-quiz__modal.is-open').forEach((m) => closeModal(m));
-  });
-
-  void (async () => {
-    document.querySelectorAll('.pseint-quiz[data-quiz-key]').forEach((el) => {
-      void refreshHint(el as HTMLElement);
-    });
-  })();
-
-  getSupabaseBrowser()?.auth.onAuthStateChange(() => {
-    document.querySelectorAll('.pseint-quiz[data-quiz-key]').forEach((el) => {
-      void refreshHint(el as HTMLElement);
-    });
   });
 }

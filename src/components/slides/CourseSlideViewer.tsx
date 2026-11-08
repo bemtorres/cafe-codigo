@@ -1485,11 +1485,10 @@ export default function CourseSlideViewer({
                         key={thm.id}
                         type="button"
                         onClick={() => handleSelectCodeTheme(thm.id)}
-                        className={`p-2 rounded-lg text-left flex flex-col gap-1 border transition-all cursor-pointer ${
-                          codeThemeId === thm.id
+                        className={`p-2 rounded-lg text-left flex flex-col gap-1 border transition-all cursor-pointer ${codeThemeId === thm.id
                             ? 'border-amber-400/80 bg-amber-400/15 ring-2 ring-amber-400/30 text-white font-bold'
                             : 'border-slate-700 bg-slate-800/80 text-slate-300 hover:bg-slate-700/80 hover:text-white'
-                        }`}
+                          }`}
                         title={thm.name}
                       >
                         <div className="flex items-center justify-between text-xs">
@@ -1573,17 +1572,14 @@ export default function CourseSlideViewer({
       <main
         onTouchStart={handleTouchStartSlide}
         onTouchEnd={handleTouchEndSlide}
-        className={`flex-1 min-h-0 w-full flex flex-col items-center justify-center p-2 sm:p-4 md:p-5 ${
-          currentSlide.visualChart ? 'max-w-7xl' : 'max-w-6xl'
-        } mx-auto relative overflow-hidden`}
+        className={`flex-1 min-h-0 w-full flex flex-col items-center justify-center p-2 sm:p-4 md:p-5 ${currentSlide.visualChart ? 'max-w-7xl' : 'max-w-6xl'
+          } mx-auto relative overflow-hidden`}
       >
         <div
           key={currentSlide.id}
-          className={`w-full h-full max-h-full min-h-0 ${currentTemplate.cardRadius} ${
-            currentSlide.visualChart ? 'p-3 sm:p-5 sm:px-7' : 'p-3.5 sm:p-6'
-          } border transition-all duration-300 transform shadow-2xl flex flex-col justify-between overflow-y-auto custom-scrollbar ${
-            templateTokens.bgCard
-          } ${templateTokens.borderCard} ${templateTokens.shadowCard}`}
+          className={`w-full h-full max-h-full min-h-0 ${currentTemplate.cardRadius} ${currentSlide.visualChart ? 'p-3 sm:p-5 sm:px-7' : 'p-3.5 sm:p-6'
+            } border transition-all duration-300 transform shadow-2xl flex flex-col justify-between overflow-y-auto custom-scrollbar ${templateTokens.bgCard
+            } ${templateTokens.borderCard} ${templateTokens.shadowCard}`}
         >
           {/* SLIDE TYPE: COVER */}
           {currentSlide.type === 'cover' && (
@@ -2619,11 +2615,10 @@ export default function CourseSlideViewer({
                           <button
                             type="button"
                             onClick={() => copyCode(activeSnippet.code)}
-                            className={`p-1.5 rounded-lg text-xs font-bold border transition-all cursor-pointer shadow-xs flex items-center justify-center ${
-                              copiedCode
+                            className={`p-1.5 rounded-lg text-xs font-bold border transition-all cursor-pointer shadow-xs flex items-center justify-center ${copiedCode
                                 ? 'bg-emerald-600 text-white border-emerald-500 scale-105'
                                 : 'bg-white/10 hover:bg-white/20 border-white/20 text-slate-200 hover:text-white'
-                            }`}
+                              }`}
                             title={copiedCode ? '¡Copiado con éxito!' : 'Copiar código'}
                             aria-label="Copiar código"
                           >
@@ -2785,27 +2780,24 @@ export default function CourseSlideViewer({
       {/* BARRA INFERIOR DE NAVEGACIÓN COMPACTA (FLUJO NORMAL, NUNCA QUEDA ENCIMA DEL CONTENIDO) */}
       {shouldShowNavFooter && (
         <footer
-          className={`shrink-0 w-full px-3 sm:px-6 py-1.5 sm:py-2 flex items-center justify-between border-t backdrop-blur-md z-20 transition-all duration-300 ease-in-out ${
-            isDark
+          className={`shrink-0 w-full px-3 sm:px-6 py-1.5 sm:py-2 flex items-center justify-between border-t backdrop-blur-md z-20 transition-all duration-300 ease-in-out ${isDark
               ? 'bg-[#1e293b]/95 border-slate-700/60'
               : 'bg-white/95 border-slate-200 shadow-md'
-          } ${
-            barMode === 'autohide' && !isBarVisible && !isMobile
+            } ${barMode === 'autohide' && !isBarVisible && !isMobile
               ? 'max-h-0 py-0 opacity-0 overflow-hidden border-transparent pointer-events-none'
               : 'max-h-16 opacity-100'
-          }`}
+            }`}
         >
           <button
             type="button"
             onClick={goToPrev}
             disabled={currentIndex === 0}
-            className={`px-3 sm:px-4 py-1.5 rounded-xl font-bold text-xs sm:text-sm flex items-center gap-1.5 transition-all border cursor-pointer ${
-              currentIndex === 0
+            className={`px-3 sm:px-4 py-1.5 rounded-xl font-bold text-xs sm:text-sm flex items-center gap-1.5 transition-all border cursor-pointer ${currentIndex === 0
                 ? 'opacity-40 cursor-not-allowed border-slate-700 text-slate-500'
                 : isDark
-                ? 'bg-slate-800 text-slate-100 border-slate-700 hover:bg-slate-700 active:scale-95'
-                : 'bg-slate-100 text-slate-800 border-slate-300 hover:bg-slate-200 active:scale-95'
-            }`}
+                  ? 'bg-slate-800 text-slate-100 border-slate-700 hover:bg-slate-700 active:scale-95'
+                  : 'bg-slate-100 text-slate-800 border-slate-300 hover:bg-slate-200 active:scale-95'
+              }`}
           >
             <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
@@ -2819,13 +2811,12 @@ export default function CourseSlideViewer({
                 key={idx}
                 type="button"
                 onClick={() => goToSlide(idx)}
-                className={`h-2 rounded-full transition-all cursor-pointer ${
-                  idx === currentIndex
+                className={`h-2 rounded-full transition-all cursor-pointer ${idx === currentIndex
                     ? 'w-6 shadow-xs'
                     : isDark
-                    ? 'w-2 bg-slate-700 hover:bg-slate-600'
-                    : 'w-2 bg-slate-300 hover:bg-slate-400'
-                }`}
+                      ? 'w-2 bg-slate-700 hover:bg-slate-600'
+                      : 'w-2 bg-slate-300 hover:bg-slate-400'
+                  }`}
                 style={idx === currentIndex ? { backgroundColor: activeAccent } : undefined}
                 title={`Diapositiva ${idx + 1}`}
               />
@@ -2836,9 +2827,8 @@ export default function CourseSlideViewer({
             <button
               type="button"
               onClick={goToNext}
-              className={`px-4 sm:px-5 py-1.5 ${currentTemplate.cardRadius} font-bold text-xs sm:text-sm flex items-center gap-1.5 transition-all border shadow-md active:scale-95 cursor-pointer ${
-                templateTokens.navBtnClass
-              }`}
+              className={`px-4 sm:px-5 py-1.5 ${currentTemplate.cardRadius} font-bold text-xs sm:text-sm flex items-center gap-1.5 transition-all border shadow-md active:scale-95 cursor-pointer ${templateTokens.navBtnClass
+                }`}
             >
               <span>Siguiente</span>
               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -2858,9 +2848,8 @@ export default function CourseSlideViewer({
           onClick={() => setIsCodeModalOpen(false)}
         >
           <div
-            className={`relative w-full max-w-5xl max-h-[92vh] flex flex-col rounded-2xl border shadow-2xl overflow-hidden code-themed-container ${
-              activeCodeTheme.isDark ? 'text-slate-100' : 'text-slate-900'
-            }`}
+            className={`relative w-full max-w-5xl max-h-[92vh] flex flex-col rounded-2xl border shadow-2xl overflow-hidden code-themed-container ${activeCodeTheme.isDark ? 'text-slate-100' : 'text-slate-900'
+              }`}
             style={{
               backgroundColor: activeCodeTheme.bg,
               borderColor: activeCodeTheme.border,
@@ -2951,7 +2940,7 @@ export default function CourseSlideViewer({
                   className={`px-3 py-1.5 rounded-lg text-xs font-bold border flex items-center gap-1.5 transition-all cursor-pointer shadow-xs ${copiedCode
                     ? 'bg-emerald-600 text-white border-emerald-500'
                     : 'bg-white/10 hover:bg-white/20 border-white/20 text-slate-200 hover:text-white'
-                  }`}
+                    }`}
                   title="Copiar código al portapapeles"
                 >
                   {copiedCode ? (
@@ -3042,7 +3031,7 @@ export default function CourseSlideViewer({
               onClick={() => setShowOverview(false)}
               className="p-2 rounded-xl bg-slate-800 text-slate-200 hover:bg-slate-700 font-bold border border-slate-700 text-sm cursor-pointer"
             >
-              ✕ Cerrar (Esc)
+              ✕
             </button>
           </div>
 

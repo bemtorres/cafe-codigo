@@ -86,7 +86,7 @@ Las 8 preguntas de Metacognición se concentran en **una única diapositiva inte
 | `embed` | `e` | `true` \| `1` | Oculta el botón superior de *"Volver a la lección"* para integraciones en `<iframe>` o LMS. |
 | `timer` | `time` | `true` \| *segundos* | Activa el Reloj Temporizador Regresivo Flotante (ej. `timer=300`). |
 | `logo` | `institutionLogo` / `l` | *URL de imagen* | Muestra la imagen del Logo Institucional en el banner header y badge. |
-| `title` | `institution` / `t` | *Texto* (ej. `INACAP`) | Muestra el distintivo con el nombre de la institución en el encabezado. |
+| `title` | `institution` / `t` | *Texto* (ej. `CAFEYCODIGO`) | Muestra el distintivo con el nombre de la institución en el encabezado. |
 | `name` | `n` | *Texto* (ej. `Juan Pérez`) | Muestra el distintivo con el nombre del estudiante en el encabezado. |
 | `email` | `m` | *Correo* (ej. `juan@e.com`) | Muestra el correo del estudiante en el perfil de la barra superior. |
 | `icon` | `emoji` | *Emoji/Ícono* (ej. `🚀` \| `🐍`) | Reemplaza o antepone un ícono/emoji personalizado en las insignias. |

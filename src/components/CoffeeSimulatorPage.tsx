@@ -1,6 +1,4 @@
 import { useCallback, useEffect, useState } from 'react';
-import { getSupabaseBrowser, type CoffeeHistoryRow } from '../lib/supabase/client';
-import { useSupabaseAuth } from '../lib/supabase/useSupabaseAuth';
 
 const CAFE_STORAGE_KEY = 'cafe_del_dia_current';
 const CAFE_EXPIRE_MS = 30 * 60 * 1000; // 30 minutos
@@ -476,7 +474,6 @@ function ResultScreen({
 // ─── Componente principal ─────────────────────────────────────────────────────
 
 export default function CoffeeSimulatorPage() {
-  const { user } = useSupabaseAuth();
   const [selectedCoffee, setSelectedCoffee] = useState<string>('cappuccino');
   const [selectedMilk, setSelectedMilk] = useState<string>('entera');
   const [tempMode, setTempMode] = useState<'hot' | 'iced'>('hot');
@@ -552,26 +549,14 @@ export default function CoffeeSimulatorPage() {
     })();
     const finishedAt = new Date().toISOString();
 
-    const supabase = getSupabaseBrowser();
-    if (supabase && user?.id) {
-      await supabase.from('coffee_history').insert({
-        user_id: user.id,
-        coffee_id: selectedCoffee,
-        milk_id: hasMilk ? selectedMilk : null,
-        temp_mode: tempMode,
-        prepared_at: preparedAt,
-        finished_at: finishedAt,
-      });
-    } else {
-      saveLocalEntry({
-        id: crypto.randomUUID?.() ?? `${Date.now()}`,
-        coffeeId: selectedCoffee,
-        milkId: hasMilk ? selectedMilk : null,
-        tempMode,
-        preparedAt,
-        finishedAt,
-      });
-    }
+    saveLocalEntry({
+      id: crypto.randomUUID?.() ?? `${Date.now()}`,
+      coffeeId: selectedCoffee,
+      milkId: hasMilk ? selectedMilk : null,
+      tempMode,
+      preparedAt,
+      finishedAt,
+    });
 
     clearCafe();
     setPrepared(false);
@@ -822,51 +807,32 @@ function formatDate(iso: string): string {
 // ─── Historial de cafés ───────────────────────────────────────────────────────
 
 export function CoffeeHistorySection() {
-  const { user } = useSupabaseAuth();
-  const [history, setHistory] = useState<(CoffeeHistoryRow | LocalHistoryEntry)[]>([]);
+  const [history, setHistory] = useState<LocalHistoryEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [mounted, setMounted] = useState(false);
 
-  const isRemote = (e: CoffeeHistoryRow | LocalHistoryEntry): e is CoffeeHistoryRow =>
-    'finished_at' in e && 'user_id' in e;
+  const getCoffeeId = (e: LocalHistoryEntry) => e.coffeeId;
+  const getMilkId = (e: LocalHistoryEntry) => e.milkId;
+  const getTempMode = (e: LocalHistoryEntry) => e.tempMode;
+  const getFinishedAt = (e: LocalHistoryEntry) => e.finishedAt;
 
-  const getCoffeeId = (e: CoffeeHistoryRow | LocalHistoryEntry) =>
-    isRemote(e) ? e.coffee_id : (e as LocalHistoryEntry).coffeeId;
-  const getMilkId = (e: CoffeeHistoryRow | LocalHistoryEntry) =>
-    isRemote(e) ? e.milk_id : (e as LocalHistoryEntry).milkId;
-  const getTempMode = (e: CoffeeHistoryRow | LocalHistoryEntry) =>
-    isRemote(e) ? e.temp_mode : (e as LocalHistoryEntry).tempMode;
-  const getFinishedAt = (e: CoffeeHistoryRow | LocalHistoryEntry) =>
-    isRemote(e) ? e.finished_at : (e as LocalHistoryEntry).finishedAt;
-
-  const load = useCallback(async () => {
+  const load = useCallback(() => {
     setLoading(true);
-    const supabase = getSupabaseBrowser();
-    if (supabase && user?.id) {
-      const { data } = await supabase
-        .from('coffee_history')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('finished_at', { ascending: false })
-        .limit(30);
-      setHistory((data as CoffeeHistoryRow[]) ?? []);
-    } else {
-      setHistory(loadLocalHistory());
-    }
+    setHistory(loadLocalHistory());
     setLoading(false);
-  }, [user?.id]);
+  }, []);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
   useEffect(() => {
-    if (mounted) void load();
+    if (mounted) load();
   }, [mounted, load]);
 
   // escuchar cuando se termina una taza para refrescar
   useEffect(() => {
-    const handler = () => void load();
+    const handler = () => load();
     window.addEventListener('cafe-del-dia-update', handler);
     return () => window.removeEventListener('cafe-del-dia-update', handler);
   }, [load]);
@@ -902,7 +868,7 @@ export function CoffeeHistorySection() {
     <div className="mt-10">
       <h2 className="font-nunito font-black text-2xl text-textPrimary mb-1">☕ Tu historial de cafés</h2>
       <p className="font-nunito font-bold text-textSecondary text-sm mb-5">
-        {user ? 'Guardado en tu cuenta.' : 'Guardado en este dispositivo.'} {totalCups} taza{totalCups !== 1 ? 's' : ''} en total.
+        Guardado en este dispositivo. {totalCups} taza{totalCups !== 1 ? 's' : ''} en total.
       </p>
 
       {/* Stats rápidas */}

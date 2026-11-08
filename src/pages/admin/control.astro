@@ -4,12 +4,9 @@ import { courses } from '../../data/courses';
 import {
   ArrowRight,
   BookOpen,
-  ChartColumn,
   Check,
   Presentation,
   Search,
-  Trophy,
-  Users,
   Zap,
 } from '@lucide/astro';
 
@@ -66,39 +63,6 @@ const adminModules = [
     stats: `${pptCourses.length} cursos activos (${totalPptLessons} lecciones)`,
     features: ['Parámetro &style= en tiempo real', 'Temporizador flotante movible', 'Evaluación de 10 preguntas'],
     ctaText: 'Crear presentación',
-  },
-  {
-    title: 'Dashboard de Rendimiento',
-    badge: 'Analítica',
-    Icon: ChartColumn,
-    description:
-      'Métricas globales de actividad, tasa de finalización de ejercicios, visitas a lecciones y datos agregados de rendimiento de los estudiantes.',
-    href: '/admin/dashboard/',
-    stats: 'Monitoreo en tiempo real',
-    features: ['Progreso por estudiante', 'Tasas de acierto en quizzes', 'Historial de actividad'],
-    ctaText: 'Ver métricas',
-  },
-  {
-    title: 'Gestión de Usuarios',
-    badge: 'Comunidad & Roles',
-    Icon: Users,
-    description:
-      'Administración de perfiles de usuario, asignación de permisos docentes, supervisión de cuentas registradas y control de accesos.',
-    href: '/admin/users/',
-    stats: 'Control de accesos y roles',
-    features: ['Roles (admin, docente, alumno)', 'Edición de perfiles', 'Historial de sesiones'],
-    ctaText: 'Gestionar usuarios',
-  },
-  {
-    title: 'Gestor de Insignias',
-    badge: 'Gamificación',
-    Icon: Trophy,
-    description:
-      'Configuración de insignias de logro, medallas por resolución de retos de código y reglas de desbloqueo automático para motivar el aprendizaje.',
-    href: '/admin/badges/',
-    stats: 'Catálogo de reconocimientos',
-    features: ['Niveles bronce, plata, oro', 'Criterios de desbloqueo', 'Diseño de insignias'],
-    ctaText: 'Administrar insignias',
   },
 ];
 

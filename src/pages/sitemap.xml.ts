@@ -3,18 +3,14 @@ import { courses } from '../data/courses';
 
 const SITE = 'https://cafeycodigo.org';
 
-// Páginas estáticas públicas (excluye /admin, /panel, /cuenta)
+// Páginas estáticas públicas (excluye /admin)
 const STATIC_PAGES: { path: string; priority: string; changefreq: string }[] = [
   // Portada y Secciones Principales
   { path: '/', priority: '1.0', changefreq: 'daily' },
   { path: '/cursos/', priority: '0.9', changefreq: 'weekly' },
-  { path: '/academia/', priority: '0.8', changefreq: 'monthly' },
-  { path: '/academia/unirse/', priority: '0.8', changefreq: 'monthly' },
   { path: '/academico/', priority: '0.7', changefreq: 'monthly' },
   { path: '/cafe-del-dia/', priority: '0.8', changefreq: 'daily' },
   { path: '/colaboradores/', priority: '0.6', changefreq: 'monthly' },
-  { path: '/landing/', priority: '0.7', changefreq: 'monthly' },
-  { path: '/landing2/', priority: '0.7', changefreq: 'monthly' },
 
   // Motor y Herramientas Interactivas
   { path: '/engine/relational-database/', priority: '0.8', changefreq: 'weekly' },

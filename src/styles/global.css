@@ -542,22 +542,6 @@ body[data-course="arch"] ::-webkit-scrollbar-thumb { background: #C5A059; border
   }
 }
 
-/* input-otp (código academia): cursor falso en slots */
-@keyframes join-otp-caret-blink {
-  0%,
-  70%,
-  100% {
-    opacity: 1;
-  }
-  20%,
-  50% {
-    opacity: 0;
-  }
-}
-.join-otp-caret-blink {
-  animation: join-otp-caret-blink 1.2s ease-out infinite;
-}
-
 /* ==============================================
    ESTILOS DE RESALTADO DE SINTAXIS (CODE HIGHLIGHT)
    ============================================== */

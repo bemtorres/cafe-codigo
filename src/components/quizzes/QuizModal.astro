@@ -190,10 +190,9 @@ const radiosNamePrefix = `universal_quiz_${courseSlug}_${quizKey}_q_`;
 
       <div class="universal-quiz__footer">
         <div id={resultId} class="universal-quiz__result" aria-live="polite"></div>
-        <p class="universal-quiz__sync" data-quiz-sync></p>
         <div class="universal-quiz__actions">
           <button type="button" class="universal-quiz__submit" data-quiz-submit>
-            Finalizar y Guardar
+            Finalizar Quiz
           </button>
           <button type="button" class="universal-quiz__restart" data-quiz-restart>
             Reintentar
@@ -205,9 +204,6 @@ const radiosNamePrefix = `universal_quiz_${courseSlug}_${quizKey}_q_`;
 </div>
 
 <script>
-  import { getSupabaseBrowser } from '../../lib/supabase/client';
-  import { quizProgressHint, saveQuizAttempt } from '../../lib/supabase/quizProgress';
-
   const DELEGATED_KEY = '__universalQuizDelegated__';
 
   function closeModal(modal: Element | null) {
@@ -224,8 +220,6 @@ const radiosNamePrefix = `universal_quiz_${courseSlug}_${quizKey}_q_`;
     modal.querySelectorAll('[data-quiz-feedback]').forEach((el) => {
       el.textContent = '';
     });
-    const syncEl = modal.closest('.universal-quiz')?.querySelector('[data-quiz-sync]');
-    if (syncEl) syncEl.textContent = '';
     modal.setAttribute('aria-hidden', 'false');
     modal.classList.add('is-open');
     document.documentElement.style.overflow = 'hidden';
@@ -287,37 +281,6 @@ const radiosNamePrefix = `universal_quiz_${courseSlug}_${quizKey}_q_`;
     return { score, total };
   }
 
-  async function refreshHint(root: HTMLElement) {
-    const hintEl = root.querySelector('[data-quiz-hint]');
-    if (!hintEl) return;
-    const course = root.getAttribute('data-course-slug') ?? '';
-    const lesson = root.getAttribute('data-quiz-key') ?? '';
-    if (!course || !lesson) return;
-    hintEl.textContent = await quizProgressHint(course, lesson);
-  }
-
-  async function persistAttempt(root: HTMLElement, score: number, total: number) {
-    const syncEl = root.querySelector('[data-quiz-sync]');
-    const course = root.getAttribute('data-course-slug') ?? '';
-    const lesson = root.getAttribute('data-quiz-key') ?? '';
-    if (!course || !lesson) return;
-
-    const { ok, error } = await saveQuizAttempt(course, lesson, score, total);
-    if (syncEl) {
-      if (ok) {
-        syncEl.textContent = '✓ Progreso guardado en tu cuenta.';
-        syncEl.classList.remove('universal-quiz__sync--err');
-      } else if (error === 'Sin sesión') {
-        syncEl.textContent = 'Iniciá sesión para guardar este resultado.';
-        syncEl.classList.add('universal-quiz__sync--err');
-      } else {
-        syncEl.textContent = error ? `No se pudo guardar: ${error}` : 'No se pudo guardar.';
-        syncEl.classList.add('universal-quiz__sync--err');
-      }
-    }
-    await refreshHint(root);
-  }
-
   function initUniversalQuizModals() {
     if (typeof window === 'undefined') return;
     const w = window as unknown as Record<string, boolean>;
@@ -349,9 +312,8 @@ const radiosNamePrefix = `universal_quiz_${courseSlug}_${quizKey}_q_`;
       if (submitBtn) {
         const root = submitBtn.closest('.universal-quiz') as HTMLElement | null;
         const modal = root?.querySelector('.universal-quiz__modal') ?? null;
-        if (modal && root) {
-          const { score, total } = gradeModal(modal);
-          void persistAttempt(root, score, total);
+        if (modal) {
+          gradeModal(modal);
         }
         return;
       }
@@ -369,8 +331,6 @@ const radiosNamePrefix = `universal_quiz_${courseSlug}_${quizKey}_q_`;
         modal.querySelectorAll('[data-quiz-feedback]').forEach((el) => {
           el.textContent = '';
         });
-        const syncEl = root?.querySelector('[data-quiz-sync]');
-        if (syncEl) syncEl.textContent = '';
         return;
       }
     });
@@ -379,17 +339,6 @@ const radiosNamePrefix = `universal_quiz_${courseSlug}_${quizKey}_q_`;
       if (e.key === 'Escape') {
         document.querySelectorAll('.universal-quiz__modal.is-open').forEach((m) => closeModal(m));
       }
-    });
-
-    // Cargar estados iniciales
-    document.querySelectorAll('.universal-quiz[data-quiz-key]').forEach((el) => {
-      void refreshHint(el as HTMLElement);
-    });
-
-    getSupabaseBrowser()?.auth.onAuthStateChange(() => {
-      document.querySelectorAll('.universal-quiz[data-quiz-key]').forEach((el) => {
-        void refreshHint(el as HTMLElement);
-      });
     });
   }
 

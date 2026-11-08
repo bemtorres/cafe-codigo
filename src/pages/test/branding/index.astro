@@ -1,0 +1,31 @@
+---
+import '../../../styles/global.css';
+import BrandingCoursePlayer from '../../../components/courses/BrandingCoursePlayer';
+import logoCafeycodigo from '../../../assets/images/cafeycodigo.png';
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href={logoCafeycodigo.src} />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Demo de Curso Interactivo & Branding | Café y Código</title>
+    <style is:global>
+      html,
+      body.branding-test-body {
+        background: #ffffff !important;
+        background-image: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+  <body class="branding-test-body">
+    <BrandingCoursePlayer client:load />
+  </body>
+</html>

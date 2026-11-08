@@ -2,16 +2,13 @@
 import "../styles/global.css";
 import logoCafeycodigo from "../assets/images/cafeycodigo.png";
 import {
-  Award,
   BookOpen,
-  ChartColumn,
   ChevronRight,
   ExternalLink,
   Menu,
   Presentation,
   ShieldCheck,
   SlidersHorizontal,
-  Users,
   Zap,
 } from "@lucide/astro";
 
@@ -19,10 +16,7 @@ type SectionKey =
   | "control"
   | "courses"
   | "express"
-  | "ppt"
-  | "dashboard"
-  | "users"
-  | "badges";
+  | "ppt";
 
 interface Props {
   title: string;
@@ -46,12 +40,6 @@ const navGroups = [
         label: "Centro de Control",
         Icon: SlidersHorizontal,
       },
-      {
-        href: "/admin/dashboard/",
-        key: "dashboard",
-        label: "Dashboard",
-        Icon: ChartColumn,
-      },
     ],
   },
   {
@@ -65,13 +53,6 @@ const navGroups = [
         Icon: Zap,
       },
       { href: "/admin/embed-ppt/", key: "ppt", label: "Embed PPT", Icon: Presentation },
-    ],
-  },
-  {
-    label: "Comunidad",
-    items: [
-      { href: "/admin/users/", key: "users", label: "Usuarios", Icon: Users },
-      { href: "/admin/badges/", key: "badges", label: "Insignias", Icon: Award },
     ],
   },
 ];

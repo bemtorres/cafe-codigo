@@ -1,7 +1,3 @@
-import { useEffect, useState } from 'react';
-import { getSupabaseBrowser } from '../../lib/supabase/client';
-import { fetchSponsorWall, type SponsorWallRow } from '../../lib/supabase/sponsors';
-
 export interface SponsorDisplay {
   id: string;
   name: string;
@@ -107,51 +103,7 @@ const FALLBACK_SPONSORS: SponsorDisplay[] = [
 ];
 
 export default function SponsorsWall() {
-  const [dbRows, setDbRows] = useState<SponsorWallRow[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const supabase = getSupabaseBrowser();
-    if (!supabase) {
-      setLoading(false);
-      return;
-    }
-    void fetchSponsorWall(supabase).then(({ rows: r }) => {
-      setLoading(false);
-      setDbRows(r || []);
-    });
-  }, []);
-
-  // Combinar registros reales de Supabase con la grilla precargada visual
-  const realSponsors: SponsorDisplay[] = dbRows.map((r, i) => ({
-    id: r.id,
-    name: r.display_name?.trim() || 'Colaborador Anónimo',
-    role: 'Sponsor de la Comunidad',
-    avatar: `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(r.display_name || r.id)}`,
-    badge: '☕ Sponsor Oficial',
-    color: '#10B981',
-    coffeeCount: 3 + (i % 5),
-    message: 'Colaborador activo de la plataforma.',
-    tier: 'Gold',
-  }));
-
-  const allSponsors = [...realSponsors, ...FALLBACK_SPONSORS];
-
-  if (loading) {
-    return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {[1, 2, 3, 4, 5, 6].map((idx) => (
-          <div key={idx} className="animate-pulse bg-slate-100 border-2 border-slate-200 rounded-2xl p-4 h-28 flex items-center gap-3">
-            <div className="w-14 h-14 bg-slate-200 rounded-2xl shrink-0" />
-            <div className="space-y-2 flex-1">
-              <div className="h-4 bg-slate-200 rounded w-3/4" />
-              <div className="h-3 bg-slate-200 rounded w-1/2" />
-            </div>
-          </div>
-        ))}
-      </div>
-    );
-  }
+  const allSponsors = FALLBACK_SPONSORS;
 
   return (
     <div className="space-y-6">

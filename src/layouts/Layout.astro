@@ -10,17 +10,11 @@ import logoPseint from '../assets/images/pseint.png';
 import ogLogo from '../assets/images/logo-cafecodigo.png';
 import arkBg from '../assets/images/modelo_4_1/1_modelo.png';
 import kofiLogo from '../assets/images/kofi.png';
-import HeaderAuth from '../components/auth/HeaderAuth';
 import CafeDelDiaNavBtn from '../components/CafeDelDiaNavBtn';
 import CoffeeTimerWidget from '../components/CoffeeTimerWidget';
 import ChallengeTimerWidget from '../components/ChallengeTimerWidget';
 import ShareEmbedButton from '../components/ShareEmbedButton';
-import LessonBookmarkToggle from '../components/auth/LessonBookmarkToggle';
-import CourseFavoriteButton from '../components/auth/CourseFavoriteButton';
-import CourseLoginUnlock from '../components/auth/CourseLoginUnlock';
 import SupportModal from '../components/SupportModal';
-import { isAuthEnabled } from '../lib/supabase/client';
-import MobileNavProfile from '../components/auth/MobileNavProfile';
 import LanguageCuriosity from '../components/LanguageCuriosity.astro';
 import LayoutEmbedPdfHead from './LayoutEmbedPdfHead.astro';
 import SeoHead from '../components/SeoHead.astro';
@@ -93,8 +87,6 @@ const showLanguageCuriosity =
   );
 /** Diapositivas (PPT): desactivadas por defecto en todos los módulos; solo se muestran si la lección tiene hasSlides: true explícitamente */
 const showPptButton = Boolean(currentLesson?.hasSlides === true);
-/** Autenticación y Supabase: activos solo si está habilitado en .env y con credenciales válidas */
-const authActive = isAuthEnabled();
 ---
 
 <!DOCTYPE html>
@@ -156,10 +148,7 @@ const authActive = isAuthEnabled();
     )}
 
     {currentCourse?.requiresPassword && (
-      <>
-        <PasswordProtect courseSlug={currentCourse.slug} />
-        <CourseLoginUnlock client:only="react" courseSlug={currentCourse.slug} />
-      </>
+      <PasswordProtect courseSlug={currentCourse.slug} />
     )}
     
     <!-- Mini header solo mobile -->
@@ -286,7 +275,6 @@ const authActive = isAuthEnabled();
 
         <div class="flex items-center justify-end gap-4 row-start-1 sm:row-auto col-start-2 sm:col-auto">
           <div class="flex items-center gap-4">
-            <HeaderAuth client:only="react" />
             {currentCourse && (
               <div class="flex items-center">
                 {currentCourse.slug === 'pseint' && (
@@ -613,42 +601,21 @@ const authActive = isAuthEnabled();
 
       <!-- CONTENIDO PRINCIPAL -->
       <main class="flex-1 min-w-0 w-full">
-        {authActive && isCourseHome && currentCourse && (
-          <div class="embed-hide">
-            <CourseFavoriteButton
-              client:only="react"
-              courseSlug={currentCourse.slug}
-              courseName={currentCourse.name}
-            />
-          </div>
-        )}
-        {currentCourse && currentLesson && (authActive || showPptButton) && (
-          <div class="embed-hide flex items-center justify-between gap-3 mb-2 flex-wrap">
-            {authActive && (
-              <div class="flex-1 min-w-[220px]">
-                <LessonBookmarkToggle
-                  client:only="react"
-                  courseSlug={currentCourse.slug}
-                  lessonSlug={currentLesson.slug}
-                  lessonTitle={currentLesson.title}
-                />
-              </div>
-            )}
-            {showPptButton && (
-              <a
-                href={`/course-slides/${currentCourse.slug}/${currentLesson.slug}/`}
-                class="shrink-0 mb-4 inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl border-[3px] border-border bg-gradient-to-r from-[#1e293b] to-[#0f172a] text-white font-nunito font-black text-sm shadow-[3px_3px_0px_#1E1210] hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_#1E1210] transition-all no-underline"
-                title="Ver presentación interactiva en diapositivas estilo PowerPoint"
-              >
-                <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12H4z" />
-                </svg>
-                <span>Presentación</span>
-                <span class="bg-amber-400 text-slate-950 text-[10px] px-2 py-0.5 rounded-full uppercase font-black tracking-wider">
-                  PPT 📊
-                </span>
-              </a>
-            )}
+        {currentCourse && currentLesson && showPptButton && (
+          <div class="embed-hide flex items-center justify-end gap-3 mb-2 flex-wrap">
+            <a
+              href={`/course-slides/${currentCourse.slug}/${currentLesson.slug}/`}
+              class="shrink-0 mb-4 inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl border-[3px] border-border bg-gradient-to-r from-[#1e293b] to-[#0f172a] text-white font-nunito font-black text-sm shadow-[3px_3px_0px_#1E1210] hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_#1E1210] transition-all no-underline"
+              title="Ver presentación interactiva en diapositivas estilo PowerPoint"
+            >
+              <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12H4z" />
+              </svg>
+              <span>Presentación</span>
+              <span class="bg-amber-400 text-slate-950 text-[10px] px-2 py-0.5 rounded-full uppercase font-black tracking-wider">
+                PPT 📊
+              </span>
+            </a>
           </div>
         )}
         <slot />
@@ -2015,8 +1982,6 @@ const authActive = isAuthEnabled();
             <img src={kofiLogo.src} alt="" class="w-[22px] h-[22px] object-contain rounded-full" />
             <span class="text-[10px] font-nunito font-extrabold tracking-wide">Ko-fi</span>
           </button>
-
-          {authActive && <MobileNavProfile client:only="react" />}
 
         </div>
       )}
