@@ -15,38 +15,34 @@ import {
 } from '../../data/courses/brandingCourseDemoData';
 import { EditBlockHeader } from './widgets/EditBlockHeader';
 import { WidgetRichTextEditorial } from './widgets/WidgetRichTextEditorial';
-import {
-  WidgetHeroBanner,
-  WidgetImageCoverBanner,
-  WidgetVideoEditorial,
-  WidgetCodeWalkthrough,
-  WidgetSlideCards,
-  WidgetAccordionDetails,
-  WidgetCodeComparison,
-  WidgetArchitectureHotspots,
-  WidgetArchitectureHotspotsVisual,
-  WidgetFlipCards3D,
-  WidgetStepToStep,
-  WidgetChecklist,
-  WidgetPipelineChecklist,
-  WidgetScenarioQuiz,
-  WidgetFinalReport,
-} from './widgets/AtomicCourseWidgets';
-import {
-  WidgetScenarioQuizMultiple,
-  WidgetScenarioQuizDragAndDrop,
-  WidgetScenarioQuizOrdering,
-  WidgetScenarioQuizMatching,
-  WidgetScenarioQuizFillBlank,
-  WidgetScenarioQuizBranching,
-  WidgetScenarioQuizTrueFalseMatrix,
-  WidgetScenarioQuizHotspotSpotter,
-  WidgetScenarioQuizImageHotspot,
-  WidgetScenarioQuizImageChoice,
-  WidgetScenarioQuizRiskSlider,
-} from './widgets/ScenarioQuizSuiteWidgets';
+import { WidgetHeroBanner } from './widgets/WidgetHeroBanner';
+import { WidgetImageCoverBanner } from './widgets/WidgetImageCoverBanner';
+import { WidgetVideoEditorial } from './widgets/WidgetVideoEditorial';
+import { WidgetCodeWalkthrough } from './widgets/WidgetCodeWalkthrough';
+import { WidgetSlideCards } from './widgets/WidgetSlideCards';
+import { WidgetAccordionDetails } from './widgets/WidgetAccordionDetails';
+import { WidgetCodeComparison } from './widgets/WidgetCodeComparison';
+import { WidgetArchitectureHotspots } from './widgets/WidgetArchitectureHotspots';
+import { WidgetArchitectureHotspotsVisual } from './widgets/WidgetArchitectureHotspotsVisual';
+import { WidgetFlipCards3D } from './widgets/WidgetFlipCards3D';
+import { WidgetStepToStep } from './widgets/WidgetStepToStep';
+import { WidgetChecklist } from './widgets/WidgetChecklist';
+import { WidgetPipelineChecklist } from './widgets/WidgetPipelineChecklist';
+import { WidgetScenarioQuiz } from './widgets/WidgetScenarioQuiz';
+import { WidgetFinalReport } from './widgets/WidgetFinalReport';
+import { WidgetScenarioQuizMultiple } from './widgets/WidgetScenarioQuizMultiple';
+import { WidgetScenarioQuizDragAndDrop } from './widgets/WidgetScenarioQuizDragAndDrop';
+import { WidgetScenarioQuizOrdering } from './widgets/WidgetScenarioQuizOrdering';
+import { WidgetScenarioQuizMatching } from './widgets/WidgetScenarioQuizMatching';
+import { WidgetScenarioQuizFillBlank } from './widgets/WidgetScenarioQuizFillBlank';
+import { WidgetScenarioQuizBranching } from './widgets/WidgetScenarioQuizBranching';
+import { WidgetScenarioQuizTrueFalseMatrix } from './widgets/WidgetScenarioQuizTrueFalseMatrix';
+import { WidgetScenarioQuizHotspotSpotter } from './widgets/WidgetScenarioQuizHotspotSpotter';
+import { WidgetScenarioQuizImageHotspot } from './widgets/WidgetScenarioQuizImageHotspot';
+import { WidgetScenarioQuizImageChoice } from './widgets/WidgetScenarioQuizImageChoice';
+import { WidgetScenarioQuizRiskSlider } from './widgets/WidgetScenarioQuizRiskSlider';
 
-const STORAGE_KEY_COURSE_JSON = 'cc_course_json_draft_v10';
+const STORAGE_KEY_COURSE_JSON = 'cc_course_json_draft_v11';
 
 export default function BrandingCoursePlayer() {
   const mainScrollRef = useRef<HTMLDivElement>(null);

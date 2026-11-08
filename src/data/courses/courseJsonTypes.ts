@@ -8,8 +8,33 @@ export type BrandPreset = {
   bgQuiz: string;
 };
 
+export type CourseContentItemMeta = {
+  id: string;
+  title: string;
+  targetId: string;
+  icon?: 'video' | 'text' | 'slides' | 'code' | 'quiz' | 'tabs' | 'timeline';
+};
+
+export type CourseSectionMeta = {
+  id: string;
+  title: string;
+  contenidos: CourseContentItemMeta[];
+};
+
+export type CourseLessionMeta = {
+  id: string;
+  title: string;
+  secciones: CourseSectionMeta[];
+};
+
 export type CourseLessonMeta = {
   id: string;
+  /** Nivel 1: Lession (antes module) */
+  lession?: string;
+  /** Nivel 2: Seccion (agrupador intermedio dentro de la Lession) */
+  seccion?: string;
+  /** Nivel 3: Contenido (título del ítem que apunta al widget) */
+  contenido?: string;
   module: string;
   title: string;
   targetId: string;
@@ -165,8 +190,14 @@ export type FlipCardItem = {
   title: string;
   frontQuestion: string;
   frontContext: string;
+  frontImageUrl?: string;
+  frontImageCaption?: string;
+  frontApaCitation?: string;
   backRule: string;
-  backCode: string;
+  backCode?: string;
+  backImageUrl?: string;
+  backImageCaption?: string;
+  backApaCitation?: string;
 };
 
 export type FlipCards3DBlockData = {
@@ -676,6 +707,8 @@ export type CourseDocumentJSON = {
   institution: string;
   defaultBrandId: string;
   showScoreInBanner: boolean;
+  /** Estructura jerárquica de 3 niveles para el índice lateral: Lession -> Seccion -> Contenidos */
+  lessions?: CourseLessionMeta[];
   lessons: CourseLessonMeta[];
   blocks: CourseWidgetBlock[];
 };

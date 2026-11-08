@@ -726,15 +726,28 @@ export const INITIAL_BRANDING_COURSE_JSON: CourseDocumentJSON = {
           {
             badge: '01 · SECRETOS',
             title: 'Variables .env',
+            frontImageUrl:
+              'https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?auto=format&fit=crop&w=800&q=80',
+            frontImageCaption: 'Gestión de variables de entorno fuera del repositorio Git.',
+            frontApaCitation:
+              'Pavlov, I. (2019). Código fuente y configuración de seguridad en pantalla [Fotografía]. Unsplash.',
             frontQuestion: '¿Por qué nunca se suben las claves al repositorio Git?',
             frontContext:
               'Incluso si borras el archivo en un commit posterior, el secreto queda grabado para siempre en el historial.',
             backRule: 'Usa os.environ y declara .env dentro de .gitignore:',
+            backImageUrl:
+              'https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=800&q=80',
+            backImageCaption: 'Bóveda de secretos cifrados y variables de sistema.',
+            backApaCitation:
+              'Spiske, M. (2020). Candado digital y protección de credenciales [Fotografía]. Unsplash.',
             backCode: `SECRET_KEY = os.environ["SECRET_KEY"]\nDB_PASS = os.environ["POSTGRES_PASSWORD"]`,
           },
           {
             badge: '02 · PERMISOS',
             title: 'Principio de Menor Privilegio',
+            frontImageUrl:
+              'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=800&q=80',
+            frontImageCaption: 'Control de permisos granulares sobre el motor de base de datos.',
             frontQuestion: '¿Con qué permisos debe conectarse la aplicación a la BD?',
             frontContext:
               'Nunca conectes la aplicación web con el superusuario postgres o root en producción.',
@@ -748,6 +761,9 @@ export const INITIAL_BRANDING_COURSE_JSON: CourseDocumentJSON = {
             frontContext:
               'Acceder a una llave foránea dentro de un ciclo for consulta la base de datos en cada vuelta.',
             backRule: 'Precarga las relaciones en 1 sola consulta con JOIN:',
+            backImageUrl:
+              'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80',
+            backImageCaption: 'Optimización de latencia y reducción de consultas SQL.',
             backCode: `pedidos = Pedido.objects.select_related(\n    "cliente", "sucursal"\n).prefetch_related("items")`,
           },
           {
