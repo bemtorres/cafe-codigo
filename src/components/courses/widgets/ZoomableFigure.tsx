@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
+import { createPortal } from 'react-dom';
 
 export interface ZoomableFigureProps {
   title?: string;
@@ -8,6 +9,7 @@ export interface ZoomableFigureProps {
   brandColor?: string;
   maxWidth?: string;
   clickIconOnly?: boolean;
+  zoomImage?: { src: string; alt: string };
   children: ReactNode;
 }
 
@@ -49,6 +51,7 @@ export function ZoomableFigure({
   brandColor = '#E31B23',
   maxWidth = '540px',
   clickIconOnly = false,
+  zoomImage,
   children,
 }: ZoomableFigureProps) {
   const [hovered, setHovered] = useState(false);
@@ -202,7 +205,7 @@ export function ZoomableFigure({
       )}
 
       {/* Modal Lightbox al hacer clic */}
-      {isOpen && (
+      {isOpen && createPortal(
         <div
           onClick={(e) => {
             e.stopPropagation();
@@ -226,9 +229,10 @@ export function ZoomableFigure({
             style={{
               width: '100%',
               maxWidth: '940px',
+              maxHeight: '100%',
               backgroundColor: '#FFFFFF',
               borderRadius: '12px',
-              overflow: 'hidden',
+              overflow: 'auto',
               boxShadow: '0 25px 70px rgba(0, 0, 0, 0.5)',
               border: '1px solid #334155',
               cursor: 'default',
@@ -267,6 +271,7 @@ export function ZoomableFigure({
 
               <button
                 type="button"
+                aria-label="Cerrar imagen ampliada"
                 onClick={() => setIsOpen(false)}
                 style={{
                   padding: '6px 14px',
@@ -286,14 +291,28 @@ export function ZoomableFigure({
             {/* Lienzo ampliado */}
             <div
               style={{
-                padding: '28px',
+                padding: 'clamp(8px, 3vw, 28px)',
                 backgroundColor: '#F8FAFC',
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
               }}
             >
-              <div style={{ width: '100%', maxWidth: '860px' }}>{children}</div>
+              <div style={{ width: '100%', maxWidth: '860px' }}>
+                {zoomImage ? (
+                  <img
+                    src={zoomImage.src}
+                    alt={zoomImage.alt}
+                    style={{
+                      display: 'block',
+                      width: '100%',
+                      height: 'auto',
+                      maxHeight: '72dvh',
+                      objectFit: 'contain',
+                    }}
+                  />
+                ) : children}
+              </div>
             </div>
 
             {(caption || apaCitation) && (
@@ -317,7 +336,8 @@ export function ZoomableFigure({
               </div>
             )}
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { BrandPreset, FlipCards3DBlockData } from '../../../data/courses/courseJsonTypes';
-import { ZoomableFigure } from './ZoomableFigure';
+import { ApaReferenceFooter } from './ZoomableFigure';
 
 export interface WidgetFlipCards3DProps {
   data: FlipCards3DBlockData;
@@ -139,27 +139,19 @@ export function WidgetFlipCards3D({ data, brand }: WidgetFlipCards3DProps) {
 
                     {card.frontImageUrl && (
                       <div style={{ marginBottom: '12px' }}>
-                        <ZoomableFigure
-                          title={`${card.title} (Frente)`}
-                          caption={card.frontImageCaption || card.frontQuestion}
-                          apaCitation={card.frontApaCitation}
-                          brandColor={brand.primary}
-                          maxWidth="100%"
-                          clickIconOnly
-                        >
-                          <img
-                            src={card.frontImageUrl}
-                            alt={card.title}
-                            style={{
-                              width: '100%',
-                              height: '126px',
-                              objectFit: 'cover',
-                              display: 'block',
-                              borderRadius: '6px',
-                              border: '1px solid #E2E8F0',
-                            }}
-                          />
-                        </ZoomableFigure>
+                        <img
+                          src={card.frontImageUrl}
+                          alt={card.frontImageCaption || card.title}
+                          style={{
+                            width: '100%',
+                            height: '126px',
+                            objectFit: 'cover',
+                            display: 'block',
+                            borderRadius: '6px',
+                            border: '1px solid #E2E8F0',
+                          }}
+                        />
+                        <ApaReferenceFooter citation={card.frontApaCitation} />
                       </div>
                     )}
 
@@ -273,27 +265,19 @@ export function WidgetFlipCards3D({ data, brand }: WidgetFlipCards3DProps) {
 
                     {card.backImageUrl && (
                       <div style={{ marginBottom: card.backCode ? '8px' : '0' }}>
-                        <ZoomableFigure
-                          title={`${card.title} (Reverso)`}
-                          caption={card.backImageCaption || card.backRule}
-                          apaCitation={card.backApaCitation}
-                          brandColor={brand.primary}
-                          maxWidth="100%"
-                          clickIconOnly
-                        >
-                          <img
-                            src={card.backImageUrl}
-                            alt={`${card.title} reverso`}
-                            style={{
-                              width: '100%',
-                              height: card.backCode ? '100px' : '150px',
-                              objectFit: 'cover',
-                              display: 'block',
-                              borderRadius: '6px',
-                              border: '1px solid rgba(255,255,255,0.28)',
-                            }}
-                          />
-                        </ZoomableFigure>
+                        <img
+                          src={card.backImageUrl}
+                          alt={card.backImageCaption || `${card.title} reverso`}
+                          style={{
+                            width: '100%',
+                            height: card.backCode ? '100px' : '150px',
+                            objectFit: 'cover',
+                            display: 'block',
+                            borderRadius: '6px',
+                            border: '1px solid rgba(255,255,255,0.28)',
+                          }}
+                        />
+                        <ApaReferenceFooter citation={card.backApaCitation} />
                       </div>
                     )}
 

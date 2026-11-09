@@ -1,133 +1,327 @@
-import { useState } from 'react';
+import { useId, useRef, useState } from 'react';
+import type { KeyboardEvent, PointerEvent } from 'react';
 import type {
   BrandPreset,
   ScenarioQuizImageHotspotBlockData,
+  ScenarioQuizImageHotspotZone,
 } from '../../../data/courses/courseJsonTypes';
 import { ApaReferenceFooter } from './ZoomableFigure';
 import { QuizCardShell } from './QuizCardShell';
+import { useQuizAnswer, useQuizSubmission } from './QuizAttemptContext';
+import './scenario-image-hotspot.css';
 
 export interface WidgetScenarioQuizImageHotspotProps {
   blockId: string;
   data: ScenarioQuizImageHotspotBlockData;
   brand: BrandPreset;
+  isEditMode?: boolean;
+  onUpdateData?: (data: ScenarioQuizImageHotspotBlockData) => void;
   onScoreChange?: (blockId: string, earned: number, max: number) => void;
+}
+
+type Point = { x: number; y: number };
+type Rectangle = Pick<ScenarioQuizImageHotspotZone, 'xPercent' | 'yPercent' | 'widthPercent' | 'heightPercent'>;
+
+const clamp = (value: number) => Math.max(0, Math.min(100, value));
+const center = { x: 50, y: 50 };
+
+function pointAt(element: HTMLElement, x: number, y: number): Point {
+  const bounds = element.getBoundingClientRect();
+  return {
+    x: clamp((x - bounds.left) / bounds.width * 100),
+    y: clamp((y - bounds.top) / bounds.height * 100),
+  };
+}
+
+function rectangleBetween(start: Point, end: Point): Rectangle {
+  return {
+    xPercent: Math.min(start.x, end.x),
+    yPercent: Math.min(start.y, end.y),
+    widthPercent: Math.abs(end.x - start.x),
+    heightPercent: Math.abs(end.y - start.y),
+  };
+}
+
+function contains(zone: Rectangle, point: Point): boolean {
+  return point.x >= zone.xPercent && point.x <= zone.xPercent + zone.widthPercent &&
+    point.y >= zone.yPercent && point.y <= zone.yPercent + zone.heightPercent;
+}
+
+function rectangleStyle(zone: Rectangle) {
+  return {
+    left: `${zone.xPercent}%`,
+    top: `${zone.yPercent}%`,
+    width: `${zone.widthPercent}%`,
+    height: `${zone.heightPercent}%`,
+  };
 }
 
 export function WidgetScenarioQuizImageHotspot({
   blockId,
   data,
   brand,
+  isEditMode = false,
+  onUpdateData,
   onScoreChange,
 }: WidgetScenarioQuizImageHotspotProps) {
-  const [selectedZoneIds, setSelectedZoneIds] = useState<string[]>([]);
-  const [hoveredZoneId, setHoveredZoneId] = useState<string | null>(null);
-  const [clickCoords, setClickCoords] = useState<{ x: number; y: number } | null>(null);
-  const [submitted, setSubmitted] = useState(false);
+  const hintId = useId();
+  const [points, setPoints] = useQuizAnswer<Point[]>([]);
+  const [cursor, setCursor] = useState<Point | null>(null);
+  const { submitted, setSubmitted } = useQuizSubmission();
+  const [selectedTargetId, setSelectedTargetId] = useState<string>();
+  const [draft, setDraft] = useState<Rectangle | null>(null);
+  const [keyboardStart, setKeyboardStart] = useState<Point | null>(null);
+  const [editorMessage, setEditorMessage] = useState('');
+  const drag = useRef<{ pointerId: number; start: Point } | null>(null);
 
+  const editing = isEditMode && Boolean(onUpdateData);
+  const targets = data.zones.filter((zone) => zone.isRiskTarget);
+  const selectedTarget = targets.find((zone) => zone.id === selectedTargetId) ??
+    (selectedTargetId === undefined ? targets[0] : undefined);
   const requiredCount = data.targetRiskCount || 1;
-  const isSingleChoiceMode = requiredCount === 1;
+  const selectedTargets = points.map((point) => targets.find((zone) => contains(zone, point)));
+  const selectedDistractor = points.map((point) =>
+    data.zones.find((zone) => !zone.isRiskTarget && contains(zone, point))
+  ).find(Boolean);
+  const isCorrect = points.length === requiredCount &&
+    selectedTargets.every(Boolean) &&
+    new Set(selectedTargets.map((zone) => zone?.id)).size === requiredCount;
 
-  const handleSelectZone = (id: string, e: React.MouseEvent<HTMLButtonElement>) => {
+  const clearResult = () => {
+    if (submitted) onScoreChange?.(blockId, 0, data.points);
     setSubmitted(false);
-    const parent = e.currentTarget.parentElement;
-    if (parent) {
-      const rect = parent.getBoundingClientRect();
-      const xPct = Math.max(4, Math.min(96, ((e.clientX - rect.left) / rect.width) * 100));
-      const yPct = Math.max(6, Math.min(94, ((e.clientY - rect.top) / rect.height) * 100));
-      setClickCoords({ x: xPct, y: yPct });
-    }
-
-    if (isSingleChoiceMode) {
-      setSelectedZoneIds([id]);
-    } else {
-      setSelectedZoneIds((prev) =>
-        prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
-      );
-    }
   };
 
-  const targetIds = data.zones.filter((z) => z.isRiskTarget).map((z) => z.id);
-  const isPerfect =
-    selectedZoneIds.length === targetIds.length &&
-    targetIds.every((id) => selectedZoneIds.includes(id));
-
-  const earnedPoints = submitted ? (isPerfect ? data.points : 0) : 0;
-
-  const handleVerify = () => {
-    setSubmitted(true);
-    const perfect =
-      selectedZoneIds.length === targetIds.length &&
-      targetIds.every((id) => selectedZoneIds.includes(id));
-    onScoreChange?.(blockId, perfect ? data.points : 0, data.points);
+  const markPoint = (point: Point) => {
+    clearResult();
+    const zone = data.zones.find((entry) => contains(entry, point));
+    setPoints((previous) => {
+      if (requiredCount === 1) return [point];
+      const existing = zone ? previous.findIndex((entry) => contains(zone, entry)) : -1;
+      if (existing >= 0) return previous.filter((_, index) => index !== existing);
+      return [...previous.slice(0, requiredCount - 1), point];
+    });
   };
 
-  const selectedSingleZone = data.zones.find((z) => z.id === selectedZoneIds[0]);
+  const saveRectangle = (start: Point, end: Point) => {
+    setDraft(null);
+    setKeyboardStart(null);
+    const bounds = rectangleBetween(start, end);
+    if (bounds.widthPercent < 1 || bounds.heightPercent < 1) {
+      setEditorMessage('Dibuja un rectángulo de al menos 1 % de ancho y alto.');
+      return;
+    }
+    const newTarget: ScenarioQuizImageHotspotZone = {
+      id: selectedTarget?.id ?? `zona-${crypto.randomUUID()}`,
+      label: selectedTarget?.label ?? `Objetivo ${targets.length + 1}`,
+      feedback: selectedTarget?.feedback ?? 'Marcaste el objetivo correcto.',
+      isRiskTarget: true,
+      ...bounds,
+    };
+    const zones = selectedTarget
+      ? data.zones.map((zone) => zone.id === newTarget.id ? newTarget : zone)
+      : [...data.zones, newTarget];
+    clearResult();
+    setPoints([]);
+    setSelectedTargetId(newTarget.id);
+    setEditorMessage('Rectángulo guardado en el borrador.');
+    onUpdateData?.({
+      ...data,
+      zones,
+      targetRiskCount: selectedTarget ? data.targetRiskCount : targets.length + 1,
+    });
+  };
+
+  const handlePointerDown = (event: PointerEvent<HTMLDivElement>) => {
+    if (!editing || !event.isPrimary || event.button !== 0) return;
+    const point = pointAt(event.currentTarget, event.clientX, event.clientY);
+    drag.current = { pointerId: event.pointerId, start: point };
+    event.currentTarget.setPointerCapture(event.pointerId);
+    setCursor(null);
+    setKeyboardStart(null);
+    setDraft(rectangleBetween(point, point));
+    setEditorMessage('');
+  };
+
+  const handlePointerMove = (event: PointerEvent<HTMLDivElement>) => {
+    if (!editing || drag.current?.pointerId !== event.pointerId) return;
+    setDraft(rectangleBetween(drag.current.start, pointAt(event.currentTarget, event.clientX, event.clientY)));
+  };
+
+  const handlePointerUp = (event: PointerEvent<HTMLDivElement>) => {
+    if (!editing || drag.current?.pointerId !== event.pointerId) return;
+    const { start } = drag.current;
+    drag.current = null;
+    saveRectangle(start, pointAt(event.currentTarget, event.clientX, event.clientY));
+  };
+
+  const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    const position = cursor ?? center;
+    if (event.key === 'Escape') {
+      setDraft(null);
+      setKeyboardStart(null);
+      setCursor(null);
+      return;
+    }
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      if (event.repeat) return;
+      if (!editing) markPoint(position);
+      else if (keyboardStart) saveRectangle(keyboardStart, position);
+      else {
+        setCursor(position);
+        setKeyboardStart(position);
+        setEditorMessage('Primera esquina marcada. Mueve el cursor y confirma la segunda.');
+      }
+      return;
+    }
+    const step = event.shiftKey ? 0.5 : 2;
+    const movement = {
+      ArrowLeft: { x: -step, y: 0 },
+      ArrowRight: { x: step, y: 0 },
+      ArrowUp: { x: 0, y: -step },
+      ArrowDown: { x: 0, y: step },
+    }[event.key];
+    if (!movement) return;
+    event.preventDefault();
+    const next = { x: clamp(position.x + movement.x), y: clamp(position.y + movement.y) };
+    setCursor(next);
+    if (editing && keyboardStart) setDraft(rectangleBetween(keyboardStart, next));
+  };
 
   return (
     <QuizCardShell
+      variant="board"
       badge={data.badge}
       points={data.points}
       title={data.title}
       context={data.context}
       brand={brand}
-      earnedPoints={earnedPoints}
-      submitted={submitted}
+      earnedPoints={!editing && submitted && isCorrect ? data.points : 0}
+      submitted={!editing && submitted}
     >
-      <div
-        style={{
-          marginBottom: '12px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          fontSize: '12.5px',
-          fontWeight: 800,
-          color: '#334155',
-          flexWrap: 'wrap',
-          gap: '8px',
-        }}
-      >
-        <span>
-          {isSingleChoiceMode
-            ? '👆 Haz clic directamente sobre la parte o lado correcto de la imagen:'
-            : `👆 Toca sobre la imagen las ${requiredCount} zonas correctas:`}
-        </span>
-        <span
-          style={{
-            padding: '4px 10px',
-            borderRadius: '999px',
-            backgroundColor: selectedZoneIds.length > 0 ? '#EFF6FF' : '#F1F5F9',
-            color: selectedZoneIds.length > 0 ? brand.primary : '#64748B',
-            fontSize: '11.5px',
+      <div className="image-hotspot">
+        {editing && (
+          <label className="image-hotspot-control">
+            Zona correcta
+            <select value={selectedTarget?.id ?? ''} onChange={(event) => {
+              setSelectedTargetId(event.target.value);
+              setDraft(null);
+              setKeyboardStart(null);
+              setEditorMessage('');
+            }}>
+              {targets.map((zone) => <option key={zone.id} value={zone.id}>{zone.label}</option>)}
+              <option value="">Nueva zona</option>
+            </select>
+          </label>
+        )}
+
+        <p id={hintId} className="image-hotspot-hint">
+          {editing
+            ? 'Arrastra sobre la imagen de una esquina a otra. Con teclado, mueve el cursor con las flechas y confirma cada esquina con Enter.'
+            : 'Haz clic o toca la imagen para marcar. Con teclado, mueve el cursor con las flechas y marca con Enter.'}
+        </p>
+
+        <div
+          className="image-hotspot-canvas"
+          data-editing={editing}
+          tabIndex={0}
+          role="group"
+          aria-label={data.imageAlt ?? 'Imagen de la actividad'}
+          aria-describedby={hintId}
+          onKeyDown={handleKeyDown}
+          onBlur={() => {
+            setCursor(null);
+            if (keyboardStart) {
+              setDraft(null);
+              setKeyboardStart(null);
+            }
+          }}
+          onClick={(event) => {
+            if (editing) return;
+            setCursor(null);
+            markPoint(pointAt(event.currentTarget, event.clientX, event.clientY));
+          }}
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerUp}
+          onPointerCancel={() => {
+            drag.current = null;
+            setDraft(null);
           }}
         >
-          {isSingleChoiceMode
-            ? selectedSingleZone
-              ? `🎯 Seleccionado: ${selectedSingleZone.label}`
-              : 'Ninguna parte seleccionada aún'
-            : `${selectedZoneIds.length} / ${requiredCount} zonas marcadas`}
-        </span>
-      </div>
+          {data.imageUrl ? (
+            <img src={data.imageUrl} alt={data.imageAlt ?? data.title} draggable={false} />
+          ) : (
+            <HotspotIllustration sceneType={data.sceneType} />
+          )}
 
-      {/* Contenedor relativo con la imagen de fondo y las regiones clicables */}
-      <div
-        style={{
-          position: 'relative',
-          width: '100%',
-          borderRadius: '12px',
-          overflow: 'hidden',
-          border: '2px solid #CBD5E1',
-          backgroundColor: '#0F172A',
-          userSelect: 'none',
-          boxShadow: '0 12px 28px rgba(15, 23, 42, 0.14)',
-        }}
-      >
-        {data.imageUrl ? (
-          <img
-            src={data.imageUrl}
-            alt={data.title}
-            style={{ width: '100%', height: 'auto', display: 'block' }}
-          />
-        ) : data.sceneType === 'phishing-email' ? (
+          {editing && targets.map((zone) => (
+            <span
+              key={zone.id}
+              className="image-hotspot-rectangle"
+              data-active={zone.id === selectedTarget?.id}
+              style={rectangleStyle(zone)}
+              aria-hidden="true"
+            />
+          ))}
+          {editing && draft && (
+            <span className="image-hotspot-rectangle" data-active="true" style={rectangleStyle(draft)} aria-hidden="true" />
+          )}
+          {!editing && points.map((point, index) => (
+            <span
+              key={index}
+              className="image-hotspot-pin"
+              data-result={submitted ? (selectedTargets[index] ? 'correct' : 'incorrect') : undefined}
+              style={{ left: `${point.x}%`, top: `${point.y}%` }}
+              aria-hidden="true"
+            >
+              {submitted ? (selectedTargets[index] ? '✓' : '×') : '•'}
+            </span>
+          ))}
+          {cursor && (
+            <span className="image-hotspot-cursor" style={{ left: `${cursor.x}%`, top: `${cursor.y}%` }} aria-hidden="true" />
+          )}
+        </div>
+        <ApaReferenceFooter citation={data.apaCitation} />
+
+        {editing ? (
+          <p role="status" className="image-hotspot-hint">{editorMessage}</p>
+        ) : (
+          <div className="image-hotspot-footer">
+            <div role="status" className="image-hotspot-status">
+              {submitted ? (
+                <>
+                  <strong>{isCorrect ? 'Correcto.' : 'Incorrecto.'}</strong>{' '}
+                  {isCorrect
+                    ? selectedTargets.map((zone) => zone?.feedback).join(' ')
+                    : selectedDistractor?.feedback || 'Revisa la imagen y marca lo que pide la consigna.'}
+                </>
+              ) : (
+                `${points.length} de ${requiredCount} ${requiredCount === 1 ? 'punto marcado' : 'puntos marcados'}`
+              )}
+            </div>
+            <div className="image-hotspot-actions">
+              <button type="button" disabled={points.length === 0} onClick={() => {
+                clearResult();
+                setPoints([]);
+                setCursor(null);
+              }}>Reiniciar</button>
+              <button data-quiz-check type="button" disabled={points.length !== requiredCount} onClick={() => {
+                setSubmitted(true);
+                onScoreChange?.(blockId, isCorrect ? data.points : 0, data.points);
+              }}>Comprobar</button>
+            </div>
+          </div>
+        )}
+      </div>
+    </QuizCardShell>
+  );
+}
+
+
+function HotspotIllustration({ sceneType }: { sceneType: ScenarioQuizImageHotspotBlockData['sceneType'] }) {
+  return sceneType === 'phishing-email' ? (
           /* Escena opcional de Correo Corporativo */
           <svg
             viewBox="0 0 800 440"
@@ -283,195 +477,5 @@ export function WidgetScenarioQuizImageHotspot({
               <line x1="118" y1="142" x2="36" y2="205" stroke="#94A3B8" strokeWidth="4" />
             </g>
           </svg>
-        )}
-
-        {/* Regiones clicables invisibles sobre la imagen */}
-        {data.zones.map((zone) => {
-          const isSelected = selectedZoneIds.includes(zone.id);
-          const isHovered = hoveredZoneId === zone.id;
-
-          const showOutline = isSelected || isHovered || submitted;
-          const borderCol = submitted
-            ? zone.isRiskTarget
-              ? '#10B981'
-              : isSelected
-                ? '#EF4444'
-                : 'transparent'
-            : isSelected
-              ? '#FDE047'
-              : isHovered
-                ? 'rgba(255, 255, 255, 0.65)'
-                : 'transparent';
-
-          const bgCol = submitted
-            ? zone.isRiskTarget
-              ? 'rgba(16, 185, 129, 0.24)'
-              : isSelected
-                ? 'rgba(239, 68, 68, 0.28)'
-                : 'transparent'
-            : isSelected
-              ? 'rgba(250, 204, 21, 0.18)'
-              : isHovered
-                ? 'rgba(255, 255, 255, 0.08)'
-                : 'transparent';
-
-          return (
-            <button
-              key={zone.id}
-              type="button"
-              onMouseEnter={() => setHoveredZoneId(zone.id)}
-              onMouseLeave={() => setHoveredZoneId(null)}
-              onClick={(e) => handleSelectZone(zone.id, e)}
-              aria-label={zone.label}
-              style={{
-                position: 'absolute',
-                left: `${zone.xPercent}%`,
-                top: `${zone.yPercent}%`,
-                width: `${zone.widthPercent}%`,
-                height: `${zone.heightPercent}%`,
-                border: showOutline ? `3px solid ${borderCol}` : '2px solid transparent',
-                backgroundColor: bgCol,
-                borderRadius: '12px',
-                cursor: 'crosshair',
-                padding: '8px',
-                display: 'flex',
-                alignItems: 'flex-end',
-                justifyContent: 'center',
-                transition: 'all 0.18s ease',
-              }}
-            >
-              {(isSelected || (submitted && zone.isRiskTarget)) && (
-                <span
-                  style={{
-                    backgroundColor: submitted
-                      ? zone.isRiskTarget
-                        ? '#10B981'
-                        : '#EF4444'
-                      : '#0F172A',
-                    color: '#FFFFFF',
-                    border: '2px solid #FFFFFF',
-                    fontSize: '11px',
-                    fontWeight: 900,
-                    padding: '4px 12px',
-                    borderRadius: '999px',
-                    boxShadow: '0 4px 12px rgba(0,0,0,0.4)',
-                  }}
-                >
-                  {submitted
-                    ? zone.isRiskTarget
-                      ? `✓ ${zone.label}`
-                      : `✕ ${zone.label}`
-                    : `🎯 ${zone.label}`}
-                </span>
-              )}
-            </button>
-          );
-        })}
-
-        {/* Pin / Mira visual exacta donde el usuario hizo clic */}
-        {isSingleChoiceMode && clickCoords && selectedZoneIds.length > 0 && (
-          <div
-            style={{
-              position: 'absolute',
-              left: `${clickCoords.x}%`,
-              top: `${clickCoords.y}%`,
-              transform: 'translate(-50%, -50%)',
-              width: '36px',
-              height: '36px',
-              borderRadius: '999px',
-              backgroundColor: submitted
-                ? isPerfect
-                  ? '#10B981'
-                  : '#EF4444'
-                : brand.primary,
-              border: '3px solid #FFFFFF',
-              color: '#FFFFFF',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '16px',
-              fontWeight: 900,
-              boxShadow: '0 0 0 6px rgba(255,255,255,0.28), 0 8px 20px rgba(0,0,0,0.45)',
-              pointerEvents: 'none',
-            }}
-          >
-            {submitted ? (isPerfect ? '✓' : '✕') : '🎯'}
-          </div>
-        )}
-      </div>
-
-      <ApaReferenceFooter citation={data.apaCitation} />
-
-      {submitted && (
-        <div style={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          {data.zones
-            .filter((z) => selectedZoneIds.includes(z.id) || z.isRiskTarget)
-            .map((z) => {
-              const wasPicked = selectedZoneIds.includes(z.id);
-              return (
-                <div
-                  key={z.id}
-                  style={{
-                    padding: '12px 16px',
-                    borderRadius: '8px',
-                    backgroundColor: z.isRiskTarget ? '#ECFDF5' : '#FEF2F2',
-                    border: z.isRiskTarget ? '1px solid #6EE7B7' : '1px solid #FCA5A5',
-                    color: z.isRiskTarget ? '#065F46' : '#991B1B',
-                    fontSize: '13px',
-                    fontWeight: 600,
-                  }}
-                >
-                  <strong>{z.label}:</strong> {z.feedback}{' '}
-                  {!wasPicked && z.isRiskTarget ? '(Esta era la parte correcta de la imagen)' : ''}
-                </div>
-              );
-            })}
-        </div>
-      )}
-
-      <div style={{ marginTop: '22px', display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
-        <button
-          type="button"
-          onClick={() => {
-            setSelectedZoneIds([]);
-            setClickCoords(null);
-            setSubmitted(false);
-            onScoreChange?.(blockId, 0, data.points);
-          }}
-          style={{
-            padding: '10px 18px',
-            borderRadius: '999px',
-            border: '1px solid #CBD5E1',
-            backgroundColor: '#FFFFFF',
-            color: '#475569',
-            fontSize: '12px',
-            fontWeight: 800,
-            cursor: 'pointer',
-          }}
-        >
-          Reiniciar Selección
-        </button>
-        <button
-          type="button"
-          onClick={handleVerify}
-          disabled={selectedZoneIds.length === 0}
-          style={{
-            padding: '10px 28px',
-            borderRadius: '999px',
-            border: 'none',
-            backgroundColor: brand.primary,
-            color: '#FFFFFF',
-            fontSize: '12px',
-            fontWeight: 800,
-            textTransform: 'uppercase',
-            cursor: selectedZoneIds.length > 0 ? 'pointer' : 'not-allowed',
-            opacity: selectedZoneIds.length > 0 ? 1 : 0.5,
-          }}
-        >
-          Comprobar Selección
-        </button>
-      </div>
-    </QuizCardShell>
-  );
+        );
 }
-

@@ -5,6 +5,10 @@ export function courseHomePath(slug: string): string {
   return `${COURSE_PATH_PREFIX}/${slug}/`;
 }
 
+export function academyCoursePath(slug: string): string {
+  return `/app/courses/${slug}/`;
+}
+
 export function courseLessonPath(courseSlug: string, lessonSlug: string): string {
   return `${COURSE_PATH_PREFIX}/${courseSlug}/${lessonSlug}/`;
 }

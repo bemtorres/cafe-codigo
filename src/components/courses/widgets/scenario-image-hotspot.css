@@ -1,0 +1,143 @@
+.image-hotspot {
+  color: #0f172a;
+}
+
+.image-hotspot-hint {
+  margin: 8px 0 12px;
+  color: #475569;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.image-hotspot-control {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.image-hotspot-control select {
+  max-width: 100%;
+  padding: 6px 8px;
+  border: 1px solid #94a3b8;
+  border-radius: 5px;
+  background: white;
+  color: inherit;
+}
+
+.image-hotspot-canvas {
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+  background: #f1f5f9;
+  box-shadow: 0 0 0 1px #cbd5e1;
+  cursor: crosshair;
+  user-select: none;
+}
+
+.image-hotspot-canvas[data-editing='true'] {
+  touch-action: none;
+}
+
+.image-hotspot-canvas :is(img, svg) {
+  display: block;
+  width: 100%;
+  height: auto;
+  pointer-events: none;
+}
+
+.image-hotspot :is(button, select, .image-hotspot-canvas):focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 3px;
+}
+
+.image-hotspot-rectangle,
+.image-hotspot-pin,
+.image-hotspot-cursor {
+  position: absolute;
+  pointer-events: none;
+}
+
+.image-hotspot-rectangle {
+  border: 2px dashed #4f46e5;
+  background: rgb(79 70 229 / 12%);
+}
+
+.image-hotspot-rectangle[data-active='true'] {
+  border-style: solid;
+  box-shadow: inset 0 0 0 1px white;
+}
+
+.image-hotspot-pin,
+.image-hotspot-cursor {
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+}
+
+.image-hotspot-pin {
+  display: grid;
+  width: 24px;
+  height: 24px;
+  place-items: center;
+  border: 2px solid white;
+  background: #1e40af;
+  color: white;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1;
+  box-shadow: 0 1px 4px rgb(15 23 42 / 40%);
+}
+
+.image-hotspot-pin[data-result='correct'] { background: #166534; }
+.image-hotspot-pin[data-result='incorrect'] { background: #b91c1c; }
+
+.image-hotspot-cursor {
+  width: 14px;
+  height: 14px;
+  border: 2px solid #1e40af;
+  box-shadow: 0 0 0 1px white;
+}
+
+.image-hotspot-footer,
+.image-hotspot-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.image-hotspot-footer {
+  justify-content: space-between;
+  margin-top: 14px;
+}
+
+.image-hotspot-status {
+  flex: 1 1 200px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.image-hotspot-actions button {
+  min-height: 38px;
+  padding: 6px 12px;
+  border: 1px solid #94a3b8;
+  border-radius: 6px;
+  background: white;
+  color: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.image-hotspot-actions button:last-child {
+  border-color: #1e40af;
+  background: #1e40af;
+  color: white;
+}
+
+.image-hotspot-actions button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}

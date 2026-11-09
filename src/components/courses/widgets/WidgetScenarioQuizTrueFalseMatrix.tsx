@@ -1,9 +1,9 @@
-import { useState } from 'react';
 import type {
   BrandPreset,
   ScenarioQuizTrueFalseMatrixBlockData,
 } from '../../../data/courses/courseJsonTypes';
 import { QuizCardShell } from './QuizCardShell';
+import { useQuizAnswer, useQuizSubmission } from './QuizAttemptContext';
 
 export interface WidgetScenarioQuizTrueFalseMatrixProps {
   blockId: string;
@@ -18,8 +18,8 @@ export function WidgetScenarioQuizTrueFalseMatrix({
   brand,
   onScoreChange,
 }: WidgetScenarioQuizTrueFalseMatrixProps) {
-  const [verdicts, setVerdicts] = useState<Record<string, 'cumple' | 'incumple'>>({});
-  const [submitted, setSubmitted] = useState(false);
+  const [verdicts, setVerdicts] = useQuizAnswer<Record<string, 'cumple' | 'incumple'>>({});
+  const { submitted, setSubmitted } = useQuizSubmission();
 
   const allAnswered = data.statements.every((s) => Boolean(verdicts[s.id]));
   const correctCount = data.statements.filter(
@@ -145,7 +145,7 @@ export function WidgetScenarioQuizTrueFalseMatrix({
       </div>
 
       <div style={{ marginTop: '24px', display: 'flex', justifyContent: 'flex-end' }}>
-        <button
+        <button data-quiz-check
           type="button"
           onClick={handleVerify}
           disabled={!allAnswered}

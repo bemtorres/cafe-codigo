@@ -1,9 +1,9 @@
-import { useState } from 'react';
 import type {
   BrandPreset,
   ScenarioQuizHotspotSpotterBlockData,
 } from '../../../data/courses/courseJsonTypes';
 import { QuizCardShell } from './QuizCardShell';
+import { useQuizAnswer, useQuizSubmission } from './QuizAttemptContext';
 
 export interface WidgetScenarioQuizHotspotSpotterProps {
   blockId: string;
@@ -18,8 +18,8 @@ export function WidgetScenarioQuizHotspotSpotter({
   brand,
   onScoreChange,
 }: WidgetScenarioQuizHotspotSpotterProps) {
-  const [flaggedLines, setFlaggedLines] = useState<number[]>([]);
-  const [submitted, setSubmitted] = useState(false);
+  const [flaggedLines, setFlaggedLines] = useQuizAnswer<number[]>([]);
+  const { submitted, setSubmitted } = useQuizSubmission();
 
   const toggleLine = (lineNumber: number) => {
     setSubmitted(false);
@@ -162,7 +162,7 @@ export function WidgetScenarioQuizHotspotSpotter({
       </div>
 
       <div style={{ marginTop: '24px', display: 'flex', justifyContent: 'flex-end' }}>
-        <button
+        <button data-quiz-check
           type="button"
           onClick={handleVerify}
           disabled={flaggedLines.length === 0}

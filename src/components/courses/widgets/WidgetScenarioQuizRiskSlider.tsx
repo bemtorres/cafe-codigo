@@ -1,9 +1,9 @@
-import { useState } from 'react';
 import type {
   BrandPreset,
   ScenarioQuizRiskSliderBlockData,
 } from '../../../data/courses/courseJsonTypes';
 import { QuizCardShell } from './QuizCardShell';
+import { useQuizAnswer, useQuizSubmission } from './QuizAttemptContext';
 
 export interface WidgetScenarioQuizRiskSliderProps {
   blockId: string;
@@ -18,8 +18,8 @@ export function WidgetScenarioQuizRiskSlider({
   brand,
   onScoreChange,
 }: WidgetScenarioQuizRiskSliderProps) {
-  const [selectedLevel, setSelectedLevel] = useState<number>(3);
-  const [submitted, setSubmitted] = useState(false);
+  const [selectedLevel, setSelectedLevel] = useQuizAnswer<number>(3);
+  const { submitted, setSubmitted, mode } = useQuizSubmission();
 
   const currentLevelObj =
     data.levels.find((l) => l.level === selectedLevel) || data.levels[0];
@@ -114,7 +114,7 @@ export function WidgetScenarioQuizRiskSlider({
           style={{ width: '100%', cursor: 'pointer', accentColor: brand.primary }}
         />
 
-        {currentLevelObj && (
+        {mode !== 'exam' && currentLevelObj && (
           <div
             style={{
               marginTop: '10px',
@@ -152,7 +152,7 @@ export function WidgetScenarioQuizRiskSlider({
       )}
 
       <div style={{ marginTop: '24px', display: 'flex', justifyContent: 'flex-end' }}>
-        <button
+        <button data-quiz-check
           type="button"
           onClick={handleVerify}
           style={{

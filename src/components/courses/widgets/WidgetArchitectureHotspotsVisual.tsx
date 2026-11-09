@@ -197,6 +197,7 @@ export function WidgetArchitectureHotspotsVisual({
                 apaCitation={currentHotspotObj.apaCitation}
                 brandColor={brand.primary}
                 maxWidth="100%"
+                zoomImage={{ src: currentHotspotObj.rightImageUrl, alt: currentHotspotObj.name }}
               >
                 <div
                   style={{

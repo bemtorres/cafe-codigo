@@ -76,9 +76,28 @@ export type RichTextEditorialBlockData = {
 
 export type VideoEditorialBlockData = {
   videoUrl: string;
+  title?: string;
+  objective?: string;
+  videoPageUrl?: string;
   apaCitation?: string;
-  highlightLead: string;
-  statementRest: string;
+  highlightLead?: string;
+  statementRest?: string;
+};
+
+export type DocumentResource = {
+  id: string;
+  title: string;
+  description?: string;
+  url: string;
+} & (
+  | { action: 'download'; fileName?: string }
+  | { action: 'open' }
+);
+
+export type DocumentResourcesBlockData = {
+  title: string;
+  description?: string;
+  resources: DocumentResource[];
 };
 
 export type CodeWalkthroughStep = {
@@ -296,6 +315,7 @@ export type ScenarioQuizDragDropCategory = {
 export type ScenarioQuizDragDropItem = {
   id: string;
   text: string;
+  imageUrl?: string;
   correctCategoryId: string;
   feedback: string;
 };
@@ -437,6 +457,7 @@ export type ScenarioQuizImageHotspotBlockData = {
   title: string;
   context: string;
   imageUrl?: string;
+  imageAlt?: string;
   apaCitation?: string;
   sceneType: 'rock-band-stage' | 'phishing-email' | 'custom-image';
   targetRiskCount?: number; // Por defecto 1 (seleccionar la zona correcta)
@@ -536,6 +557,13 @@ export type CourseWidgetBlock = CourseBlockBgConfig &
         componentName: 'WidgetVideoEditorial';
         summary: string;
         data: VideoEditorialBlockData;
+      }
+    | {
+        id: string;
+        type: 'document-resources';
+        componentName: 'WidgetDocumentResources';
+        summary: string;
+        data: DocumentResourcesBlockData;
       }
     | {
         id: string;
@@ -700,6 +728,30 @@ export type CourseWidgetBlock = CourseBlockBgConfig &
       }
   );
 
+export type CourseContenido = {
+  id: string;
+  title: string;
+  widget: CourseWidgetBlock;
+};
+
+export type CourseSeccion = {
+  id: string;
+  title: string;
+  contenidos: CourseContenido[];
+};
+
+export type CourseLession = {
+  id: string;
+  title: string;
+  secciones: CourseSeccion[];
+};
+
+export type CourseModule = {
+  id: string;
+  title: string;
+  lessions: CourseLession[];
+};
+
 export type CourseDocumentJSON = {
   courseId: string;
   version: string;
@@ -707,7 +759,11 @@ export type CourseDocumentJSON = {
   institution: string;
   defaultBrandId: string;
   showScoreInBanner: boolean;
-  /** Estructura jerárquica de 3 niveles para el índice lateral: Lession -> Seccion -> Contenidos */
+  modulos: CourseModule[];
+};
+
+/** Formato plano de los borradores guardados antes de introducir módulos. */
+export type LegacyCourseDocument = Omit<CourseDocumentJSON, 'modulos'> & {
   lessions?: CourseLessionMeta[];
   lessons: CourseLessonMeta[];
   blocks: CourseWidgetBlock[];

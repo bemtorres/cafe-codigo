@@ -49,7 +49,13 @@ export function detectLang(src: string) {
 
   if (/\bmatch\b/.test(s) && /\bcase\s/.test(s)) return 'python';
 
-  if (/\bdef \w+\(/.test(s) || (/\bimport \w/.test(s) && /\bprint\(/.test(s))) return 'python';
+  if (/\bdef \w+\(/.test(s) || /^\s*from [\w.]+ import\b/m.test(s) ||
+      (/\bimport \w/.test(s) && /\bprint\(/.test(s))) return 'python';
+  if (/^\s*(?:python3?\s+manage\.py|django-admin)\b/.test(s)) return 'bash';
+  if (/^\s*<(?:!--|!doctype\b|\/?[a-z][\w-]*(?:\s|\/?>))/i.test(s)) return 'html';
+  if (s.trim().startsWith('# ') && s.trim().split('\n').every((line) => !line.trim() || line.trimStart().startsWith('#'))) {
+    return 'python';
+  }
   if (/\bEnd Sub\b/.test(s) || (/\bDim \w+ As \b/.test(s) && /\bSub \b/.test(s))) return 'vba';
   if (/\b(SELECT|INSERT|UPDATE|DELETE|CREATE|ALTER|DROP|FROM|WHERE|JOIN)\b/i.test(s)) return 'sql';
   if (/<\/?[a-z][a-z0-9]*[\s>]/i.test(s) && /<!DOCTYPE|<html|<div|<p |<h[1-6]|<span/i.test(s)) return 'html';

@@ -1,9 +1,9 @@
-import { useState } from 'react';
 import type {
   BrandPreset,
   ScenarioQuizOrderingBlockData,
 } from '../../../data/courses/courseJsonTypes';
 import { QuizCardShell } from './QuizCardShell';
+import { useQuizAnswer, useQuizSubmission } from './QuizAttemptContext';
 
 export interface WidgetScenarioQuizOrderingProps {
   blockId: string;
@@ -18,8 +18,9 @@ export function WidgetScenarioQuizOrdering({
   brand,
   onScoreChange,
 }: WidgetScenarioQuizOrderingProps) {
-  const [orderedSteps, setOrderedSteps] = useState(() => [...data.steps]);
-  const [submitted, setSubmitted] = useState(false);
+  const [order, setOrder] = useQuizAnswer(() => data.steps.map((step) => step.id));
+  const { submitted, setSubmitted, mode } = useQuizSubmission();
+  const orderedSteps = order.flatMap((id) => data.steps.filter((step) => step.id === id));
 
   const moveStep = (index: number, direction: -1 | 1) => {
     const target = index + direction;
@@ -28,7 +29,7 @@ export function WidgetScenarioQuizOrdering({
     const next = [...orderedSteps];
     const [moved] = next.splice(index, 1);
     next.splice(target, 0, moved);
-    setOrderedSteps(next);
+    setOrder(next.map((step) => step.id));
   };
 
   const correctCount = orderedSteps.filter(
@@ -163,6 +164,11 @@ export function WidgetScenarioQuizOrdering({
         })}
       </div>
 
+      {mode === 'exam' && (
+        <button type="button" className="exam-secondary" onClick={() => setOrder(order)}>
+          Guardar este orden
+        </button>
+      )}
       {submitted && (
         <div
           style={{
@@ -182,7 +188,7 @@ export function WidgetScenarioQuizOrdering({
       )}
 
       <div style={{ marginTop: '24px', display: 'flex', justifyContent: 'flex-end' }}>
-        <button
+        <button data-quiz-check
           type="button"
           onClick={handleVerify}
           style={{

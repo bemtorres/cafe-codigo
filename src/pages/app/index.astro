@@ -1,0 +1,215 @@
+---
+import CourseAppLayout from "../../layouts/CourseAppLayout.astro";
+import { courses } from "../../data/courses";
+import { courseTestimonials } from "../../data/courseTestimonials";
+import { academyCoursePath } from "../../lib/coursePaths";
+
+const featured = ["ecosistemas", "django", "consultas-sql"].flatMap((slug) => {
+  const course = courses.find(
+    (entry) => entry.slug === slug && entry.status === "available",
+  );
+  return course ? [course] : [];
+});
+
+const benefits = [
+  [
+    "Rutas claras",
+    "Un camino ordenado para saber qué estudiar hoy y qué viene después. Sin laberintos.",
+  ],
+  [
+    "Práctica integrada",
+    "Ejercicios y ejemplos al lado de cada explicación. Aprendes haciendo, no solo leyendo.",
+  ],
+  [
+    "Ritmo propio",
+    "Sin fechas rígidas ni presión. Estudias cuando quieres, hasta donde llegues hoy.",
+  ],
+  [
+    "Desde cualquier lugar",
+    "Computadora, tablet o celular. Tu progreso te acompaña a donde vayas.",
+  ],
+];
+---
+
+<CourseAppLayout
+  page="home"
+  title="La IA puede escribir código. Tú debes saber qué construir"
+  description="Aprende lógica y programación para dirigir la IA, entender sus decisiones y convertir código generado en productos bien construidos."
+>
+  <section class="academy-wrap academy-hero" aria-labelledby="academy-title">
+    <div class="academy-hero-copy">
+      <p class="academy-kicker">Lógica · Criterio · Inteligencia Artificial</p>
+      <h1 id="academy-title">
+        La IA puede escribir código. <span>Tú debes saber qué construir.</span>
+      </h1>
+      <p class="academy-lede">
+        Aprende <strong>lógica y programación</strong> para dirigir la IA, entender
+        sus decisiones, detectar sus errores y convertir código generado en <strong
+          >productos realmente bien construidos</strong
+        >.
+      </p>
+      <a class="academy-button" href="/app/courses/"
+        >Empieza ahora gratis <span aria-hidden="true">↗</span></a
+      >
+      <p class="academy-note">
+        Aprende con rutas claras · Ejercicios prácticos · 100% gratis
+      </p>
+    </div>
+    <figure class="academy-hero-media">
+      <img
+        src="/images/cyc1.png"
+        alt="Cafetería de Café y Código construida con bloques, con personas programando"
+        width="1536"
+        height="1024"
+        fetchpriority="high"
+        decoding="async"
+      />
+      <!-- <figcaption>
+        <span>Aprende a tu ritmo</span>
+        <a href="/app/courses/">{courses.length} cursos y rutas <span aria-hidden="true">↗</span></a>
+      </figcaption> -->
+    </figure>
+  </section>
+
+  <section class="academy-curriculum">
+    <div class="academy-wrap academy-feature">
+      <div class="academy-feature-intro">
+        <p class="academy-kicker">Catálogo en vivo</p>
+        <h2>Explora los cursos y rutas de aprendizaje</h2>
+        <p>Elige una ruta o busca por categoría y tecnología.</p>
+        <a class="academy-text-link" href="/app/courses/"
+          >Ver todos los cursos <span aria-hidden="true">↗</span></a
+        >
+      </div>
+      <ol class="academy-feature-list">
+        {
+          featured.map((course, index) => (
+            <li>
+              <a href={academyCoursePath(course.slug)}>
+                <span class="academy-index">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <span>
+                  <>
+                    <strong>{course.name}</strong>
+                    <span class="academy-feature-desc">
+                      {course.description}
+                    </span>
+                  </>
+                </span>
+                <span aria-hidden="true">↗</span>
+              </a>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section class="academy-wrap academy-section academy-method">
+    <div>
+      <p class="academy-kicker">El problema</p>
+      <h2>Aprender por tu cuenta no debería sentirse así.</h2>
+      <ul class="academy-pain">
+        <li>
+          Diez pestañas abiertas y ninguna te dice <strong
+            >qué estudiar primero</strong
+          >.
+        </li>
+        <li>
+          Saltas de un tutorial a otro y cada uno <strong
+            >arranca desde cero</strong
+          > de nuevo.
+        </li>
+        <li>
+          Avanzas un rato, te frustras y <strong>abandonas</strong> sin saber por
+          qué.
+        </li>
+      </ul>
+      <p>No es tu culpa. Es el camino el que está desordenado.</p>
+    </div>
+    <div>
+      <p class="academy-kicker">La solución</p>
+      <h2>Un solo lugar, un solo camino, a tu ritmo.</h2>
+      <p>
+        Café y Código ordena lo que necesitas aprender en rutas claras, con
+        explicaciones cortas, ejemplos al lado y ejercicios para practicar. Así
+        pasas de no saber por dónde empezar a avanzar con confianza, una lección
+        a la vez.
+      </p>
+      <ol class="academy-steps">
+        <li>
+          <strong>Eliges una ruta.</strong> Lógica, Python, web… la que más te interese.
+        </li>
+        <li>
+          <strong>Lees y practicas.</strong> Explicación breve y ejercicio en la misma
+          pantalla.
+        </li>
+        <li>
+          <strong>Avanzas con calma.</strong> Sin fechas, sin presión. Tu progreso
+          siempre visible.
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="academy-wrap academy-section academy-benefits">
+    <p class="academy-kicker">Por qué funciona</p>
+    <h2>Todo pensado para que no te pierdas.</h2>
+    <ul class="academy-benefit-list">
+      {
+        benefits.map(([title, text]) => (
+          <li>
+            <>
+              <h3>{title}</h3>
+              <p>{text}</p>
+            </>
+          </li>
+        ))
+      }
+    </ul>
+    <div class="academy-workshop">
+      <div>
+        <p class="academy-kicker">Aula interactiva</p>
+        <h3>Prueba una actividad del curso</h3>
+      </div>
+      <a class="academy-text-link" href="/test/branding/"
+        >Abrir el aula de prueba <span aria-hidden="true">↗</span></a
+      >
+    </div>
+  </section>
+
+  <section class="academy-wrap academy-section">
+    <p class="academy-kicker">Lo que dicen</p>
+    <h2>Personas reales, caminos más claros.</h2>
+    <div class="academy-quotes">
+      {
+        courseTestimonials.map(([quote, name, role]) => (
+          <figure>
+            <blockquote>«{quote}»</blockquote>
+            <figcaption>
+              <>
+                <strong>{name}</strong>
+                <span>{role}</span>
+              </>
+            </figcaption>
+          </figure>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="academy-wrap academy-section academy-final">
+    <div>
+      <h2>Servite un café. Empezá a programar con calma.</h2>
+      <p>
+        Abrí tu primera ruta hoy y descubrí lo cómodo que es aprender cuando el
+        camino está ordenado para ti.
+      </p>
+      <p class="academy-note">Gratis para siempre · sin tarjeta · en español</p>
+    </div>
+    <a class="academy-button" href="/app/courses/"
+      >Empieza ahora <span aria-hidden="true">↗</span></a
+    >
+  </section>
+</CourseAppLayout>

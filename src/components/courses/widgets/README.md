@@ -6,7 +6,7 @@ Cada widget de la plataforma está separado en su propio archivo `.tsx` independ
 
 ## 🎨 Propiedades Comunes a Todos los Widgets (`CourseWidgetBlock`)
 
-Todos los bloques dentro del arreglo `widgets[]` del documento JSON del curso comparten estas propiedades de nivel superior:
+Cada entrada de `contenidos[]` incluye un objeto `widget` con estas propiedades:
 
 | Propiedad | Tipo | Descripción |
 | :--- | :--- | :--- |
@@ -132,8 +132,8 @@ Todos los bloques dentro del arreglo `widgets[]` del documento JSON del curso co
 - **¿Qué se puede hacer en este widget?**
   - Mostrar una grilla de **tarjetas 3D interactivas** que giran `180°` al hacer clic.
   - **Soporte de imágenes tanto al inicio (frente) como al revés (reverso)**:
-    - **Cara frontal (inicio)**: `badge`, `title`, `frontQuestion`, `frontContext` y opcionalmente una **imagen frontal (`frontImageUrl`)** con lupa de zoom (`frontImageCaption`, `frontApaCitation`).
-    - **Cara trasera (al revés)**: `backRule`, fragmento de código opcional (`backCode`) y opcionalmente una **imagen trasera (`backImageUrl`)** con lupa de zoom (`backImageCaption`, `backApaCitation`).
+    - **Cara frontal (inicio)**: `badge`, `title`, `frontQuestion`, `frontContext` y una imagen opcional (`frontImageUrl`) con texto alternativo (`frontImageCaption`) y fuente (`frontApaCitation`).
+    - **Cara trasera (al revés)**: `backRule`, fragmento de código opcional (`backCode`) y una imagen opcional (`backImageUrl`) con texto alternativo (`backImageCaption`) y fuente (`backApaCitation`).
 
 ---
 
@@ -163,6 +163,15 @@ Todos los bloques dentro del arreglo `widgets[]` del documento JSON del curso co
 
 ---
 
+### 1.15. [`WidgetDocumentResources.tsx`](./WidgetDocumentResources.tsx)
+
+- **Tipo JSON (`type`)**: `'document-resources'`
+- Configura `data.title`, una `data.description` opcional y la lista `data.resources`. Cada recurso lleva `id`, `title`, `url` y, si hace falta, `description`.
+- Usa `action: 'download'` para un archivo del sitio, como un PDF en `public/course-resources/`. El campo opcional `fileName` indica el nombre sugerido al guardar. Para archivos de otro sitio, la descarga depende de la configuración de ese servidor.
+- Usa `action: 'open'` con la URL compartida de Drive o OneDrive para abrir el recurso en otra pestaña.
+
+---
+
 ## 🧪 2. Suite de Widgets de Evaluación y Simulación (`ScenarioQuiz`)
 
 Todos los widgets de la suite de evaluación utilizan [`QuizCardShell.tsx`](./QuizCardShell.tsx) para mantener un encabezado unificado con insignia, puntaje máximo (`+PTS`), puntaje obtenido tras validar y retroalimentación pedagógica.
@@ -188,7 +197,7 @@ Todos los widgets de la suite de evaluación utilizan [`QuizCardShell.tsx`](./Qu
 - **Tipo JSON (`type`)**: `'scenario-quiz-drag-drop'`
 - **Interfaz de Props**: `WidgetScenarioQuizDragAndDropProps`
 - **¿Qué se puede hacer en este widget?**
-  - Actividad de **arrastrar y soltar tarjetas (Drag & Drop)** hacia columnas/contenedores de clasificación (`categories[]`), con botones rápidos de asignación accesible para teclado/móvil y validación individual por tarjeta.
+  - Arrastra las tarjetas hacia las categorías (`categories[]`) o selecciona una tarjeta y pulsa su destino con el teclado o en una pantalla táctil. Cada tarjeta admite una imagen opcional en `imageUrl` y recibe retroalimentación individual.
 
 ---
 
@@ -245,7 +254,8 @@ Todos los widgets de la suite de evaluación utilizan [`QuizCardShell.tsx`](./Qu
 - **Interfaz de Props**: `WidgetScenarioQuizImageHotspotProps`
 - **¿Qué se puede hacer en este widget?**
   - Mostrar una **imagen o ilustración escénica** (por ejemplo, una **banda de música en vivo** con Guitarrista, Vocalista, Batería y Tecladista, o cualquier imagen personalizada mediante `imageUrl`) y pedirle al estudiante que **seleccione la parte o lado de la imagen donde se encuentra el elemento correcto** (ej. *"Selecciona dónde está la batería"*).
-  - Al hacer clic sobre la imagen se coloca un **pin visual (`🎯`)** en la zona elegida, sin delatar las cajas antes de responder, y al pulsar **Comprobar Selección** se valida si el sector elegido tiene `isRiskTarget: true`.
+  - En el modo alumno se puede marcar cualquier punto de la imagen. **Comprobar** valida si la selección cae dentro de una zona con `isRiskTarget: true`. El alumno solo ve sus marcas y el resultado.
+  - En `?edit=true` se puede elegir una zona y dibujar su rectángulo sobre la imagen. El editor guarda los límites como porcentajes en el borrador JSON. La [demo de carga de archivos](/test/branding/file-hotspot/) usa la misma imagen en tres actividades con objetivos distintos.
 
 ---
 
@@ -265,10 +275,17 @@ Todos los widgets de la suite de evaluación utilizan [`QuizCardShell.tsx`](./Qu
 
 ---
 
-## 📊 3. Reporte Final y Componentes Transversales
+## 📊 3. Índice Lateral (`SidebarIndice`), Reporte Final y Componentes Transversales
+
+### 3.1. Documento del curso e índice del módulo
+
+El [endpoint de la demo](../../../pages/api/courses/branding.json.ts) devuelve un [`CourseDocumentJSON`](../../../data/courses/courseJsonTypes.ts) con la estructura `modulos[] → lessions[] → secciones[] → contenidos[] → widget`. Cada widget recibe los datos de su bloque. El reproductor usa `widget.type` para elegir el componente y el orden de los arreglos para armar el panel principal.
+
+El reproductor toma el módulo indicado en `?modulo=<id>` o el primero del documento. El índice muestra el título del módulo, sus Lessions y Secciones. Al pulsar una sección, el panel se desplaza a su primer contenido. El buscador también encuentra contenidos internos y los abre desde su sección. El editor de la demo guarda borradores en el navegador y permite reordenar contenidos dentro de una sección.
 
 | Archivo | Propósito |
 | :--- | :--- |
+| [`WidgetSidebarIndice.tsx`](./WidgetSidebarIndice.tsx) | (`#sidebar-index`) Índice de Lessions y Secciones, con buscador y barra de progreso del módulo. |
 | [`WidgetFinalReport.tsx`](./WidgetFinalReport.tsx) | (`type: 'final-report'`) Calcula y muestra el **Score Global (0-100)** ponderando los Casos de Decisión (70%) y el Checklist (30%), lista el desglose por pregunta, permite reiniciar la evaluación o imprimir en PDF. |
 | [`ZoomableFigure.tsx`](./ZoomableFigure.tsx) | Envuelve cualquier imagen o SVG para agregar **botón de lupa**, **modal Lightbox de pantalla completa** y el pie de **referencia APA (`ApaReferenceFooter`)** ubicado siempre debajo de la figura. |
 | [`EditBlockHeader.tsx`](./EditBlockHeader.tsx) | Barra de herramientas en modo constructor para **subir/bajar bloques**, **duplicar**, **eliminar**, **cambiar el color de fondo (`bgMode` / `bgColor`)** y **editar el JSON** individual del widget. |

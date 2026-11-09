@@ -1,242 +1,274 @@
-import type { BrandPreset, CourseDocumentJSON } from './courseJsonTypes';
+import { migrateLegacyCourse } from './courseDocument';
+import type { LegacyCourseDocument } from './courseJsonTypes';
 
-export const BRAND_PRESETS: BrandPreset[] = [
-  {
-    id: 'inacap',
-    name: 'Rojo Institucional',
-    institution: 'INACAP',
-    primary: '#E31B23',
-    primaryDark: '#B9141B',
-    primaryLight: '#FEE2E2',
-    bgQuiz: '#D84339',
-  },
-  {
-    id: 'cafeycodigo',
-    name: 'Café y Código',
-    institution: 'Café y Código',
-    primary: '#EF476F',
-    primaryDark: '#C82D54',
-    primaryLight: '#FCE7F3',
-    bgQuiz: '#E13D65',
-  },
-  {
-    id: 'ocean',
-    name: 'Azul Corporativo',
-    institution: 'TechCorp Academy',
-    primary: '#0284C7',
-    primaryDark: '#0369A1',
-    primaryLight: '#E0F2FE',
-    bgQuiz: '#0369A1',
-  },
-  {
-    id: 'emerald',
-    name: 'Verde Django',
-    institution: 'Escuela Python',
-    primary: '#059669',
-    primaryDark: '#047857',
-    primaryLight: '#D1FAE5',
-    bgQuiz: '#047857',
-  },
-];
-
-export const INITIAL_BRANDING_COURSE_JSON: CourseDocumentJSON = {
+const demoModule: LegacyCourseDocument = {
   courseId: 'arquitectura-etica-cumplimiento-v1',
-  version: '1.0.0',
+  version: '1.1.0',
   title: 'Modelo de Arquitectura, Ética y Cumplimiento',
   institution: 'INACAP',
   defaultBrandId: 'inacap',
   showScoreInBanner: false,
-  lessons: [
+  lessions: [
     {
-      id: 'l1',
-      module: 'PRESENTACIÓN GENERAL',
-      title: 'Bienvenida y presentación del curso',
-      targetId: 'widget-video',
-      icon: 'video',
+      id: 'lession-1',
+      title: 'LESSION 1: PRESENTACIÓN GENERAL',
+      secciones: [
+        {
+          id: 'sec-1-1',
+          title: 'Sección 1.1 · Introducción al Curso',
+          contenidos: [
+            {
+              id: 'l1',
+              title: 'Bienvenida y presentación del curso',
+              targetId: 'widget-video',
+              icon: 'video',
+            },
+          ],
+        },
+        {
+          id: 'sec-1-recursos',
+          title: 'Documentos y enlaces del curso',
+          contenidos: [
+            {
+              id: 'l1-recursos',
+              title: 'Documentos y enlaces del curso',
+              targetId: 'widget-document-resources',
+              icon: 'text',
+            },
+          ],
+        },
+      ],
     },
     {
-      id: 'l2',
-      module: 'MÓDULO I: ARQUITECTURA Y ÉTICA EN IA',
-      title: 'Código de Seguridad y Buenas Prácticas',
-      targetId: 'widget-code-steps',
-      icon: 'code',
+      id: 'lession-2',
+      title: 'LESSION 2: ARQUITECTURA Y ÉTICA EN IA',
+      secciones: [
+        {
+          id: 'sec-2-1',
+          title: 'Sección 2.1 · Fundamentos y Portadas',
+          contenidos: [
+            {
+              id: 'l2',
+              title: 'Código de Seguridad y Buenas Prácticas',
+              targetId: 'widget-code-steps',
+              icon: 'code',
+            },
+            {
+              id: 'l3',
+              title: 'Principios de Desarrollo Seguro',
+              targetId: 'widget-hero',
+              icon: 'slides',
+            },
+            {
+              id: 'l3b',
+              title: 'Banner de Portada con Imagen (Solo Banner)',
+              targetId: 'widget-image-cover-banner',
+              icon: 'slides',
+            },
+          ],
+        },
+        {
+          id: 'sec-2-2',
+          title: 'Sección 2.2 · Lectura Normativa y Canales de Reporte',
+          contenidos: [
+            {
+              id: 'l3c',
+              title: 'Lectura Editorial Diseñable (Tiptap Rich Text)',
+              targetId: 'widget-rich-text',
+              icon: 'text',
+            },
+            {
+              id: 'l4',
+              title: '¿Qué hago si tengo dudas o debo reportar una vulnerabilidad?',
+              targetId: 'widget-details',
+              icon: 'text',
+            },
+            {
+              id: 'l5',
+              title: 'Actividad: ¿Qué haría usted?',
+              targetId: 'widget-quiz',
+              icon: 'quiz',
+            },
+          ],
+        },
+      ],
     },
     {
-      id: 'l3',
-      module: 'MÓDULO I: ARQUITECTURA Y ÉTICA EN IA',
-      title: 'Principios de Desarrollo Seguro',
-      targetId: 'widget-hero',
-      icon: 'slides',
+      id: 'lession-3',
+      title: 'LESSION 3: MODELO DE PREVENCIÓN DE INCIDENTES',
+      secciones: [
+        {
+          id: 'sec-3-1',
+          title: 'Sección 3.1 · Prevención y Comparación de Código',
+          contenidos: [
+            {
+              id: 'l6',
+              title: 'Modelo de Prevención de Fallos en Producción',
+              targetId: 'widget-slides',
+              icon: 'slides',
+            },
+            {
+              id: 'l7',
+              title: 'Comparador: Código Vulnerable vs. Código Blindado',
+              targetId: 'widget-comparison',
+              icon: 'tabs',
+            },
+          ],
+        },
+        {
+          id: 'sec-3-2',
+          title: 'Sección 3.2 · Mapas de Arquitectura (Hotspots)',
+          contenidos: [
+            {
+              id: 'l8',
+              title: 'Mapa de Capas de Arquitectura (Hotspots)',
+              targetId: 'widget-hotspots',
+              icon: 'slides',
+            },
+            {
+              id: 'l8b',
+              title: 'Mapa de Capas con Imagen Izquierda y Derecha (Hotspots Visual)',
+              targetId: 'widget-hotspots-visual',
+              icon: 'slides',
+            },
+          ],
+        },
+      ],
     },
     {
-      id: 'l3b',
-      module: 'MÓDULO I: ARQUITECTURA Y ÉTICA EN IA',
-      title: 'Banner de Portada con Imagen (Solo Banner)',
-      targetId: 'widget-image-cover-banner',
-      icon: 'slides',
+      id: 'lession-4',
+      title: 'LESSION 4: DESPLIEGUE Y AUDITORÍA CONTINUA',
+      secciones: [
+        {
+          id: 'sec-4-1',
+          title: 'Sección 4.1 · Tarjetas 3D y Pipeline Paso a Paso',
+          contenidos: [
+            {
+              id: 'l9',
+              title: 'Tarjetas Giratorias de Conceptos Clave',
+              targetId: 'widget-flipcards',
+              icon: 'slides',
+            },
+            {
+              id: 'l10',
+              title: 'Paso a Paso del Pipeline CI/CD (Step to Step)',
+              targetId: 'widget-timeline',
+              icon: 'timeline',
+            },
+            {
+              id: 'l10b',
+              title: 'Checklist Interactivo de Paso a Producción',
+              targetId: 'widget-checklist',
+              icon: 'timeline',
+            },
+            {
+              id: 'l11',
+              title: 'Quiz 1: Casos de Selección Única y Video',
+              targetId: 'widget-quiz',
+              icon: 'quiz',
+            },
+          ],
+        },
+      ],
     },
     {
-      id: 'l3c',
-      module: 'MÓDULO I: ARQUITECTURA Y ÉTICA EN IA',
-      title: 'Lectura Editorial Diseñable (Tiptap Rich Text)',
-      targetId: 'widget-rich-text',
-      icon: 'text',
-    },
-    {
-      id: 'l4',
-      module: 'MÓDULO I: ARQUITECTURA Y ÉTICA EN IA',
-      title: '¿Qué hago si tengo dudas o debo reportar una vulnerabilidad?',
-      targetId: 'widget-details',
-      icon: 'text',
-    },
-    {
-      id: 'l5',
-      module: 'MÓDULO I: ARQUITECTURA Y ÉTICA EN IA',
-      title: 'Actividad: ¿Qué haría usted?',
-      targetId: 'widget-quiz',
-      icon: 'quiz',
-    },
-    {
-      id: 'l6',
-      module: 'MÓDULO II: MODELO DE PREVENCIÓN DE INCIDENTES',
-      title: 'Modelo de Prevención de Fallos en Producción',
-      targetId: 'widget-slides',
-      icon: 'slides',
-    },
-    {
-      id: 'l7',
-      module: 'MÓDULO II: MODELO DE PREVENCIÓN DE INCIDENTES',
-      title: 'Comparador: Código Vulnerable vs. Código Blindado',
-      targetId: 'widget-comparison',
-      icon: 'tabs',
-    },
-    {
-      id: 'l8',
-      module: 'MÓDULO II: MODELO DE PREVENCIÓN DE INCIDENTES',
-      title: 'Mapa de Capas de Arquitectura (Hotspots)',
-      targetId: 'widget-hotspots',
-      icon: 'slides',
-    },
-    {
-      id: 'l8b',
-      module: 'MÓDULO II: MODELO DE PREVENCIÓN DE INCIDENTES',
-      title: 'Mapa de Capas con Imagen Izquierda y Derecha (Hotspots Visual)',
-      targetId: 'widget-hotspots-visual',
-      icon: 'slides',
-    },
-    {
-      id: 'l9',
-      module: 'MÓDULO III: DESPLIEGUE Y AUDITORÍA CONTINUA',
-      title: 'Tarjetas Giratorias de Conceptos Clave',
-      targetId: 'widget-flipcards',
-      icon: 'slides',
-    },
-    {
-      id: 'l10',
-      module: 'MÓDULO III: DESPLIEGUE Y AUDITORÍA CONTINUA',
-      title: 'Paso a Paso del Pipeline CI/CD (Step to Step)',
-      targetId: 'widget-timeline',
-      icon: 'timeline',
-    },
-    {
-      id: 'l10b',
-      module: 'MÓDULO III: DESPLIEGUE Y AUDITORÍA CONTINUA',
-      title: 'Checklist Interactivo de Paso a Producción',
-      targetId: 'widget-checklist',
-      icon: 'timeline',
-    },
-    {
-      id: 'l11',
-      module: 'MÓDULO III: DESPLIEGUE Y AUDITORÍA CONTINUA',
-      title: 'Quiz 1: Casos de Selección Única y Video',
-      targetId: 'widget-quiz',
-      icon: 'quiz',
-    },
-    {
-      id: 'l12',
-      module: 'MÓDULO IV: LABORATORIO AVANZADO DE INTERACCIONES QUIZ',
-      title: 'Quiz 2: Selección Múltiple (Checkboxes)',
-      targetId: 'widget-quiz-multiple',
-      icon: 'quiz',
-    },
-    {
-      id: 'l13',
-      module: 'MÓDULO IV: LABORATORIO AVANZADO DE INTERACCIONES QUIZ',
-      title: 'Quiz 3: Drag & Drop de Clasificación Normativa',
-      targetId: 'widget-quiz-dragdrop',
-      icon: 'quiz',
-    },
-    {
-      id: 'l14',
-      module: 'MÓDULO IV: LABORATORIO AVANZADO DE INTERACCIONES QUIZ',
-      title: 'Quiz 4: Secuencia de Protocolo (Ordering 1..4)',
-      targetId: 'widget-quiz-ordering',
-      icon: 'quiz',
-    },
-    {
-      id: 'l15',
-      module: 'MÓDULO IV: LABORATORIO AVANZADO DE INTERACCIONES QUIZ',
-      title: 'Quiz 5: Emparejar Riesgo ↔ Control (Matching)',
-      targetId: 'widget-quiz-matching',
-      icon: 'quiz',
-    },
-    {
-      id: 'l16',
-      module: 'MÓDULO IV: LABORATORIO AVANZADO DE INTERACCIONES QUIZ',
-      title: 'Quiz 6: Completar Código en Blanco (Fill-in-Blank)',
-      targetId: 'widget-quiz-fillblank',
-      icon: 'quiz',
-    },
-    {
-      id: 'l17',
-      module: 'MÓDULO IV: LABORATORIO AVANZADO DE INTERACCIONES QUIZ',
-      title: 'Quiz 7: Simulación de Rol Ramificada (Branching)',
-      targetId: 'widget-quiz-branching',
-      icon: 'quiz',
-    },
-    {
-      id: 'l18',
-      module: 'MÓDULO IV: LABORATORIO AVANZADO DE INTERACCIONES QUIZ',
-      title: 'Quiz 8: Matriz Rápida Cumple vs. Incumple',
-      targetId: 'widget-quiz-matrix',
-      icon: 'quiz',
-    },
-    {
-      id: 'l19',
-      module: 'MÓDULO IV: LABORATORIO AVANZADO DE INTERACCIONES QUIZ',
-      title: 'Quiz 9: Cazador de Líneas Vulnerables (Spotter)',
-      targetId: 'widget-quiz-spotter',
-      icon: 'quiz',
-    },
-    {
-      id: 'l20',
-      module: 'MÓDULO IV: LABORATORIO AVANZADO DE INTERACCIONES QUIZ',
-      title: 'Quiz 10: Seleccionar Parte de una Imagen (Banda / Batería)',
-      targetId: 'widget-quiz-image-hotspot',
-      icon: 'quiz',
-    },
-    {
-      id: 'l21',
-      module: 'MÓDULO IV: LABORATORIO AVANZADO DE INTERACCIONES QUIZ',
-      title: 'Quiz 11: Selección Visual de Escenas (Image Choice)',
-      targetId: 'widget-quiz-image-choice',
-      icon: 'quiz',
-    },
-    {
-      id: 'l22',
-      module: 'MÓDULO IV: LABORATORIO AVANZADO DE INTERACCIONES QUIZ',
-      title: 'Quiz 12: Termómetro Calibrador de Severidad (Risk Slider)',
-      targetId: 'widget-quiz-risk-slider',
-      icon: 'quiz',
-    },
-    {
-      id: 'l23',
-      module: 'MÓDULO IV: LABORATORIO AVANZADO DE INTERACCIONES QUIZ',
-      title: 'Reporte Final de Desempeño y Score',
-      targetId: 'widget-report',
-      icon: 'timeline',
+      id: 'lession-5',
+      title: 'LESSION 5: LABORATORIO DE EVALUACIONES INTERACTIVAS',
+      secciones: [
+        {
+          id: 'sec-5-1',
+          title: 'Sección 5.1 · Selección, Clasificación y Ordenamiento',
+          contenidos: [
+            {
+              id: 'l12',
+              title: 'Quiz 2: Selección Múltiple (Checkboxes)',
+              targetId: 'widget-quiz-multiple',
+              icon: 'quiz',
+            },
+            {
+              id: 'l13',
+              title: 'Quiz 3: Drag & Drop de Clasificación Normativa',
+              targetId: 'widget-quiz-dragdrop',
+              icon: 'quiz',
+            },
+            {
+              id: 'l13-animales',
+              title: 'Quiz 3b: Clasificación de animales con imágenes',
+              targetId: 'widget-quiz-dragdrop-animals',
+              icon: 'quiz',
+            },
+            {
+              id: 'l14',
+              title: 'Quiz 4: Secuencia de Protocolo (Ordering 1..4)',
+              targetId: 'widget-quiz-ordering',
+              icon: 'quiz',
+            },
+            {
+              id: 'l15',
+              title: 'Quiz 5: Emparejar Riesgo ↔ Control (Matching)',
+              targetId: 'widget-quiz-matching',
+              icon: 'quiz',
+            },
+            {
+              id: 'l16',
+              title: 'Quiz 6: Completar Código en Blanco (Fill-in-Blank)',
+              targetId: 'widget-quiz-fillblank',
+              icon: 'quiz',
+            },
+          ],
+        },
+        {
+          id: 'sec-5-2',
+          title: 'Sección 5.2 · Simulaciones, Imágenes y Reporte Final',
+          contenidos: [
+            {
+              id: 'l17',
+              title: 'Quiz 7: Simulación de Rol Ramificada (Branching)',
+              targetId: 'widget-quiz-branching',
+              icon: 'quiz',
+            },
+            {
+              id: 'l18',
+              title: 'Quiz 8: Matriz Rápida Cumple vs. Incumple',
+              targetId: 'widget-quiz-matrix',
+              icon: 'quiz',
+            },
+            {
+              id: 'l19',
+              title: 'Quiz 9: Cazador de Líneas Vulnerables (Spotter)',
+              targetId: 'widget-quiz-spotter',
+              icon: 'quiz',
+            },
+            {
+              id: 'l20',
+              title: 'Quiz 10: Seleccionar Parte de una Imagen (Banda / Batería)',
+              targetId: 'widget-quiz-image-hotspot',
+              icon: 'quiz',
+            },
+            {
+              id: 'l21',
+              title: 'Quiz 11: Selección Visual de Escenas (Image Choice)',
+              targetId: 'widget-quiz-image-choice',
+              icon: 'quiz',
+            },
+            {
+              id: 'l22',
+              title: 'Quiz 12: Termómetro Calibrador de Severidad (Risk Slider)',
+              targetId: 'widget-quiz-risk-slider',
+              icon: 'quiz',
+            },
+            {
+              id: 'l23',
+              title: 'Reporte Final de Desempeño y Score',
+              targetId: 'widget-report',
+              icon: 'timeline',
+            },
+          ],
+        },
+      ],
     },
   ],
+  lessons: [],
   blocks: [
     {
       id: 'widget-hero',
@@ -319,6 +351,39 @@ export const INITIAL_BRANDING_COURSE_JSON: CourseDocumentJSON = {
         highlightLead: 'Comprender',
         statementRest:
           'la aplicación del Código de Arquitectura y el Modelo de Prevención de Incidentes para fortalecer la integridad y la conducta técnica en',
+      },
+    },
+    {
+      id: 'widget-document-resources',
+      type: 'document-resources',
+      componentName: 'WidgetDocumentResources',
+      summary: 'Material descargable y accesos a documentos en la nube.',
+      data: {
+        title: 'Documentos y enlaces del curso',
+        description: 'Descarga la lista de verificación o abre los accesos de ejemplo en otra pestaña.',
+        resources: [
+          {
+            id: 'checklist',
+            title: 'Lista de verificación de seguridad',
+            description: 'Archivo de texto para revisar un cambio antes de publicarlo.',
+            action: 'download',
+            url: '/course-resources/lista-verificacion-seguridad.txt',
+          },
+          {
+            id: 'drive',
+            title: 'Google Drive',
+            description: 'Acceso de ejemplo a Google Drive.',
+            action: 'open',
+            url: 'https://drive.google.com/',
+          },
+          {
+            id: 'onedrive',
+            title: 'OneDrive',
+            description: 'Acceso de ejemplo a OneDrive.',
+            action: 'open',
+            url: 'https://onedrive.live.com/',
+          },
+        ],
       },
     },
     {
@@ -1045,12 +1110,12 @@ export const INITIAL_BRANDING_COURSE_JSON: CourseDocumentJSON = {
       type: 'scenario-quiz-drag-drop',
       componentName: 'WidgetScenarioQuizDragAndDrop',
       summary:
-        'Clasificación interactiva Drag & Drop: arrastrar o asignar prácticas a contenedores Permitido vs. Prohibido',
+        'Clasificación interactiva de prácticas permitidas y prohibidas.',
       data: {
         badge: 'INTERACCIÓN QUIZ · DRAG & DROP DE CLASIFICACIÓN',
         title: 'Clasifica cada práctica en su contenedor normativo correspondiente',
         context:
-          'Arrastra cada tarjeta (o usa los botones rápidos de asignación) hacia la columna correcta según el Código de Ética y Arquitectura:',
+          'Clasifica cada práctica según el Código de Ética y Arquitectura.',
         points: 20,
         categories: [
           {
@@ -1090,6 +1155,52 @@ export const INITIAL_BRANDING_COURSE_JSON: CourseDocumentJSON = {
             text: 'Desactivar las pruebas automatizadas del pipeline CI/CD para desplegar rápido un viernes en la tarde.',
             correctCategoryId: 'cat-prohibido',
             feedback: 'Saltarse las puertas de calidad expone producción a regresiones críticas.',
+          },
+        ],
+      },
+    },
+    {
+      id: 'widget-quiz-dragdrop-animals',
+      type: 'scenario-quiz-drag-drop',
+      componentName: 'WidgetScenarioQuizDragAndDrop',
+      summary: 'Clasifica tarjetas ilustradas de animales domésticos y silvestres.',
+      data: {
+        badge: 'INTERACCIÓN QUIZ · CLASIFICACIÓN CON IMÁGENES',
+        title: 'Clasifica los animales',
+        context: 'Agrupa los animales según si su especie fue domesticada o vive en estado silvestre.',
+        points: 10,
+        categories: [
+          { id: 'domesticos', title: 'Domésticos', subtitle: 'Especies domesticadas por las personas', accentColor: 'emerald' },
+          { id: 'silvestres', title: 'Silvestres', subtitle: 'Especies que viven en la naturaleza', accentColor: 'amber' },
+        ],
+        items: [
+          {
+            id: 'perro',
+            text: 'Perro',
+            imageUrl: '/images/classification/perro.svg',
+            correctCategoryId: 'domesticos',
+            feedback: 'El perro es una especie domesticada.',
+          },
+          {
+            id: 'zorro',
+            text: 'Zorro',
+            imageUrl: '/images/classification/zorro.svg',
+            correctCategoryId: 'silvestres',
+            feedback: 'El zorro vive en libertad en bosques, praderas y otros hábitats.',
+          },
+          {
+            id: 'leon',
+            text: 'León',
+            imageUrl: '/images/classification/leon.svg',
+            correctCategoryId: 'silvestres',
+            feedback: 'El león es un felino silvestre que vive principalmente en sabanas.',
+          },
+          {
+            id: 'gato',
+            text: 'Gato',
+            imageUrl: '/images/classification/gato.svg',
+            correctCategoryId: 'domesticos',
+            feedback: 'El gato doméstico es una especie domesticada.',
           },
         ],
       },
@@ -1404,58 +1515,25 @@ export const INITIAL_BRANDING_COURSE_JSON: CourseDocumentJSON = {
         'Seleccionar una parte/lado de una imagen (Image Hotspot): ej. seleccionar dónde está la batería en una banda de música',
       data: {
         badge: 'INTERACCIÓN QUIZ · SELECCIONAR PARTE DE UNA IMAGEN (IMAGE HOTSPOT)',
-        title: 'Observa el escenario de la banda de música y selecciona dónde está la Batería',
-        context:
-          'Haz clic directamente sobre el sector de la imagen donde se encuentra ubicada la batería acústica (bombo, caja y platillos) en el escenario:',
-        sceneType: 'rock-band-stage',
+        title: '¿Dónde está la batería en el escenario?',
+        context: 'Marca la batería acústica en la imagen y pulsa Comprobar.',
+        sceneType: 'custom-image',
+        imageUrl: '/images/banda-rock-hotspot.webp',
+        imageAlt: 'Cuatro músicos actuando en un escenario iluminado con focos azules y ámbar.',
         apaCitation:
-          'Elaboración propia. (2026). Disposición escénica de una banda de rock en vivo (Guitarrista, Vocalista, Batería y Tecladista) [Ilustración vectorial]. Café y Código.',
+          'Café y Código. (2026). Banda de rock en concierto [Imagen generada con IA].',
         targetRiskCount: 1,
         points: 20,
         zones: [
           {
-            id: 'zone-guitar',
-            label: 'Sector Izquierdo: Guitarrista Eléctrico y Amplificador',
-            xPercent: 2,
-            yPercent: 24,
-            widthPercent: 25,
-            heightPercent: 64,
-            isRiskTarget: false,
-            feedback:
-              'Incorrecto. En el extremo izquierdo del escenario se encuentran el guitarrista eléctrico y su amplificador, no la batería.',
-          },
-          {
-            id: 'zone-vocal',
-            label: 'Sector Centro-Izquierdo: Vocalista Principal y Micrófono',
-            xPercent: 28,
-            yPercent: 26,
-            widthPercent: 20,
-            heightPercent: 62,
-            isRiskTarget: false,
-            feedback:
-              'Incorrecto. Esta parte corresponde al vocalista principal frente al pedestal de micrófono.',
-          },
-          {
             id: 'zone-drums',
-            label: 'Sector Centro-Derecho: Batería Acústica (Bombo, Toms y Platillos)',
-            xPercent: 49,
-            yPercent: 18,
-            widthPercent: 28,
-            heightPercent: 70,
+            label: 'Batería acústica',
+            xPercent: 47,
+            yPercent: 21,
+            widthPercent: 29,
+            heightPercent: 44,
             isRiskTarget: true,
-            feedback:
-              '¡Correcto! Seleccionaste exactamente la parte del escenario donde está la batería acústica sobre su tarima.',
-          },
-          {
-            id: 'zone-keys',
-            label: 'Sector Derecho: Tecladista y Sintetizador',
-            xPercent: 78,
-            yPercent: 26,
-            widthPercent: 20,
-            heightPercent: 62,
-            isRiskTarget: false,
-            feedback:
-              'Incorrecto. En el lado derecho del escenario se ubica el tecladista con su sintetizador.',
+            feedback: 'Identificaste la batería acústica.',
           },
         ],
       },
@@ -1573,3 +1651,8 @@ export const INITIAL_BRANDING_COURSE_JSON: CourseDocumentJSON = {
   ],
 };
 
+export const BRANDING_COURSE = migrateLegacyCourse(
+  demoModule,
+  'Desarrollo seguro de software',
+  'modelo-arquitectura-etica-cumplimiento'
+);

@@ -1,4 +1,6 @@
+import { useContext, useEffect } from 'react';
 import type { BrandPreset } from '../../../data/courses/courseJsonTypes';
+import { QuizAttemptContext } from './QuizAttemptContext';
 
 export interface QuizCardShellProps {
   badge: string;
@@ -8,6 +10,7 @@ export interface QuizCardShellProps {
   brand: BrandPreset;
   earnedPoints: number;
   submitted: boolean;
+  variant?: 'board';
   children: React.ReactNode;
 }
 
@@ -19,18 +22,34 @@ export function QuizCardShell({
   brand,
   earnedPoints,
   submitted,
+  variant,
   children,
 }: QuizCardShellProps) {
+  const isBoard = variant === 'board';
+  const attempt = useContext(QuizAttemptContext);
+  const reportScore = attempt?.reportScore;
+  const reviewScore = attempt?.answer === undefined ? 0 : earnedPoints;
+
+  useEffect(() => {
+    if (attempt?.mode === 'review') reportScore?.(reviewScore);
+  }, [attempt?.mode, reportScore, reviewScore]);
+
   return (
-    <div style={{ maxWidth: '820px', margin: '0 auto', padding: '56px 24px' }}>
+    <div style={{
+      maxWidth: isBoard ? '1080px' : '820px',
+      margin: '0 auto',
+      padding: isBoard ? '32px clamp(8px, 3%, 32px)' : '56px 24px',
+    }}>
       <div
+        className="exam-quiz-card"
         style={{
           backgroundColor: '#FFFFFF',
           borderRadius: '10px',
-          boxShadow: '0 20px 50px rgba(15, 23, 42, 0.14)',
+          boxShadow: isBoard ? undefined : '0 20px 50px rgba(15, 23, 42, 0.14)',
           border: '1px solid #E2E8F0',
-          borderTop: `5px solid ${brand.primary}`,
-          padding: '40px 44px',
+          borderTop: `${isBoard ? 2 : 5}px solid ${brand.primary}`,
+          padding: isBoard ? 'clamp(12px, 3%, 28px)' : '40px 44px',
+          overflowWrap: isBoard ? 'anywhere' : undefined,
         }}
       >
         <div
@@ -47,9 +66,9 @@ export function QuizCardShell({
             style={{
               fontSize: '11px',
               fontWeight: 900,
-              color: brand.primary,
-              backgroundColor: brand.primaryLight,
-              padding: '4px 12px',
+              color: isBoard ? brand.primaryDark : brand.primary,
+              backgroundColor: isBoard ? 'transparent' : brand.primaryLight,
+              padding: isBoard ? 0 : '4px 12px',
               borderRadius: '999px',
               letterSpacing: '0.06em',
               textTransform: 'uppercase',
@@ -81,7 +100,7 @@ export function QuizCardShell({
                   : '#334155',
               }}
             >
-              {submitted ? `Puntaje obtenido: ${earnedPoints} / ${points} PTS` : `Valor: +${points} PTS`}
+              {submitted ? `Puntaje obtenido: ${attempt ? reviewScore : earnedPoints} / ${points} PTS` : `Valor: +${points} PTS`}
             </span>
           </div>
         </div>
@@ -99,13 +118,14 @@ export function QuizCardShell({
         </h3>
 
         <p
+          className="exam-quiz-context"
           style={{
             fontSize: '14px',
             lineHeight: 1.6,
             color: '#475569',
-            margin: '0 0 24px 0',
-            paddingBottom: '18px',
-            borderBottom: '1px solid #E2E8F0',
+            margin: isBoard ? '0 0 16px' : '0 0 24px 0',
+            paddingBottom: isBoard ? 0 : '18px',
+            borderBottom: isBoard ? undefined : '1px solid #E2E8F0',
           }}
         >
           {context}

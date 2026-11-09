@@ -1,0 +1,53 @@
+---
+import '../styles/global.css';
+import '../styles/course-app.css';
+
+interface Props {
+  page: 'home' | 'courses' | 'course';
+  title: string;
+  description: string;
+}
+
+const { page, title, description } = Astro.props;
+const logoUrl = '/images/cafeycodigologo3.png';
+---
+
+<!doctype html>
+<html lang="es" class="academy-document">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="icon" href={logoUrl} type="image/png" />
+    <link rel="apple-touch-icon" href={logoUrl} />
+    <title>{title} | Café y Código</title>
+  </head>
+  <body class="academy-body">
+    <a class="academy-skip" href="#contenido">Ir al contenido</a>
+    <header class="academy-header">
+      <div class="academy-wrap academy-header-inner">
+        <a class="academy-brand" href="/app/" aria-label="Café y Código, inicio">
+          <img class="academy-mark" src={logoUrl} alt="" width="40" height="40" />
+          <span>Café y Código</span>
+        </a>
+        <nav class="academy-nav" aria-label="Navegación principal">
+          <a href="/app/" aria-current={page === 'home' ? 'page' : undefined}>Inicio</a>
+          <a href="/app/courses/" aria-current={page === 'courses' ? 'page' : page === 'course' ? 'location' : undefined}>Cursos</a>
+        </nav>
+      </div>
+    </header>
+    <main id="contenido">
+      <slot />
+    </main>
+    <footer class="academy-footer">
+      <div class="academy-wrap academy-footer-inner">
+        <span>Café y Código <span class="academy-footer-note">· Vista de prueba</span></span>
+        <nav aria-label="Enlaces del pie">
+          <a href="/app/courses/">Catálogo</a>
+          <a href="/">Sitio principal</a>
+        </nav>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { courses, type Course, type CourseCategory } from '../../data/courses';
-import { courseHomePath } from '../../lib/coursePaths';
+import { courseTestimonials } from '../../data/courseTestimonials';
+import { academyCoursePath, courseHomePath } from '../../lib/coursePaths';
 
 const categoryOrder: CourseCategory[] = [
   'foundations',
@@ -14,6 +15,11 @@ const categoryOrder: CourseCategory[] = [
   'tools',
   'gamedev',
 ];
+
+const trendingCourses = ['pseint', 'java', 'python', 'django'].flatMap((slug) => {
+  const course = courses.find((entry) => entry.slug === slug);
+  return course ? [course] : [];
+});
 
 const categoryLabel: Record<CourseCategory, string> = {
   foundations: 'Conceptos base',
@@ -66,12 +72,19 @@ function CourseBadges({ course }: { course: Course }) {
   );
 }
 
-export default function CoursesCatalog() {
+export default function CoursesCatalog({ variant = 'default' }: { variant?: 'default' | 'academy' } = {}) {
   const [searchQuery, setSearchQuery] = useState('');
   const [mounted, setMounted] = useState(false);
   const [comingOpen, setComingOpen] = useState(false);
   const [comingName, setComingName] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<CourseCategory | 'all'>('all');
+  const [previewCourse, setPreviewCourse] = useState<Course | null>(null);
+  const courseDialog = useRef<HTMLDialogElement>(null);
+
+  useEffect(() => {
+    const dialog = courseDialog.current;
+    if (previewCourse && dialog && !dialog.open) dialog.showModal();
+  }, [previewCourse]);
 
   useEffect(() => {
     setMounted(true);
@@ -129,7 +142,7 @@ export default function CoursesCatalog() {
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key !== 'Escape') return;
+      if (e.key !== 'Escape' || courseDialog.current?.open) return;
       if (comingOpen) {
         closeComing();
         return;
@@ -139,6 +152,150 @@ export default function CoursesCatalog() {
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
   }, [closeComing, comingOpen, searchQuery]);
+
+  if (variant === 'academy') {
+    const hasFilters = Boolean(searchQuery.trim()) || selectedCategory !== 'all';
+    const visibleTrending = trendingCourses.filter((course) =>
+      (selectedCategory === 'all' || selectedCategory === course.category) && courseMatchesQuery(course, searchQuery)
+    );
+    const trendingSlugs = new Set(visibleTrending.map(({ slug }) => slug));
+    const visibleGroups = filteredGrouped
+      .map((group) => ({ ...group, items: group.items.filter((course) => !trendingSlugs.has(course.slug)) }))
+      .filter(({ items }) => items.length > 0);
+
+    function renderAcademyCard(course: Course) {
+      const coming = course.status === 'coming';
+      return (
+        <li key={course.slug} className="academy-course-item">
+          <article className="academy-course-entry">
+            {course.image && (
+              <div className="academy-course-media">
+                <img className="academy-course-cover" src={course.image} alt="" width={320} height={180} loading="lazy" decoding="async" />
+                <img className="academy-course-portrait" src="/images/instructor-cafeycodigo.webp"
+                  alt="Instructor de Café y Código" width={48} height={48} loading="lazy" decoding="async" />
+              </div>
+            )}
+            <div className="academy-course-text">
+              <h3>{coming ? course.name : (
+                <a className="academy-course-link" href={academyCoursePath(course.slug)}>{course.name}</a>
+              )}</h3>
+              <div className="academy-course-rating">
+                <button
+                  type="button"
+                  className="academy-course-star"
+                  aria-label={`Ver temario y opiniones de ${course.name}. Sin valoraciones registradas.`}
+                  aria-haspopup="dialog"
+                  title="Ver temario y opiniones"
+                  onClick={() => setPreviewCourse(course)}
+                >
+                  <span aria-hidden="true">☆☆☆☆☆</span>
+                </button>
+                <span>Inscritos: —</span>
+              </div>
+              <p>{course.description}</p>
+              <span className="academy-course-meta">
+                {coming ? 'Próximamente' : course.requiresPassword ? 'Acceso con clave' : course.lessons?.length
+                  ? `${course.lessons.length} ${course.lessons.length === 1 ? 'lección' : 'lecciones'}`
+                  : 'Disponible'}
+              </span>
+            </div>
+            <div className="academy-course-price">
+              <strong>Free</strong>
+              <span>$0 CLP</span>
+              {!coming && <span className="academy-course-arrow" aria-hidden="true">↗</span>}
+            </div>
+          </article>
+        </li>
+      );
+    }
+
+    return (
+      <div className="academy-catalog">
+        <div className="academy-filters">
+          <label>
+            Buscar cursos
+            <input type="search" placeholder="Ej. Django, Python, bases de datos…" value={searchQuery}
+              onChange={(event) => setSearchQuery(event.target.value)} autoComplete="off" />
+          </label>
+          <label>
+            Categoría
+            <select value={selectedCategory} onChange={(event) => {
+              const value = event.currentTarget.value;
+              setSelectedCategory(value === 'all' ? 'all' : value as CourseCategory);
+            }}>
+              <option value="all">Todas las categorías</option>
+              {grouped.map(({ cat, label }) => (
+                <option key={cat} value={cat}>{label} ({categoryCounts[cat]})</option>
+              ))}
+            </select>
+          </label>
+        </div>
+
+        <div className="academy-result-line">
+          <p role="status">{filteredCount} {filteredCount === 1 ? 'curso' : 'cursos'}{hasFilters ? ' con estos filtros' : ' en todas las categorías'}</p>
+          {hasFilters && <button type="button" className="academy-text-link" onClick={() => {
+            setSearchQuery('');
+            setSelectedCategory('all');
+          }}>Limpiar filtros</button>}
+        </div>
+
+        {!filteredCount && <p className="academy-empty">No encontramos cursos. Prueba con otra palabra o categoría.</p>}
+
+        {visibleTrending.length > 0 && (
+          <section className="academy-course-group" aria-labelledby="academy-trending">
+            <h2 id="academy-trending">En tendencia</h2>
+            <ul className="academy-course-list">{visibleTrending.map(renderAcademyCard)}</ul>
+          </section>
+        )}
+
+        {visibleGroups.map(({ cat, label, items }) => (
+          <section className="academy-course-group" key={cat} aria-labelledby={`academy-category-${cat}`}>
+            <h2 id={`academy-category-${cat}`}>{label}<span>{items.length}</span></h2>
+            <ul className="academy-course-list">
+              {items.map(renderAcademyCard)}
+            </ul>
+          </section>
+        ))}
+        <dialog ref={courseDialog} className="academy-course-dialog" aria-labelledby="academy-preview-title"
+          onClose={() => setPreviewCourse(null)}>
+          {previewCourse && (
+            <>
+              <header className="academy-preview-header">
+                <div>
+                  <p className="academy-kicker">Ficha del curso</p>
+                  <h2 id="academy-preview-title">{previewCourse.name}</h2>
+                </div>
+                <button type="button" className="academy-preview-close" aria-label="Cerrar ficha"
+                  onClick={() => courseDialog.current?.close()}>×</button>
+              </header>
+              <p>{previewCourse.description}</p>
+              <section className="academy-preview-section">
+                <h3>Qué verás</h3>
+                {previewCourse.lessons?.length ? (
+                  <ol>
+                    {previewCourse.lessons.map((lesson) => <li key={lesson.slug}>{lesson.title.replace(/^\d+(?:\.\d+)*\.\s+/, '')}</li>)}
+                  </ol>
+                ) : <p>El temario detallado estará disponible en la página del curso.</p>}
+              </section>
+              <section className="academy-preview-section">
+                <h3>Opiniones sobre Café y Código</h3>
+                <p>Aún no hay reseñas de este curso. Estos comentarios son sobre la plataforma.</p>
+                {courseTestimonials.map(([quote, name, role]) => (
+                  <figure key={name}>
+                    <blockquote>«{quote}»</blockquote>
+                    <figcaption>{name} · {role}</figcaption>
+                  </figure>
+                ))}
+              </section>
+              {previewCourse.status === 'available' && (
+                <a className="academy-button" href={academyCoursePath(previewCourse.slug)}>Abrir curso <span aria-hidden="true">↗</span></a>
+              )}
+            </>
+          )}
+        </dialog>
+      </div>
+    );
+  }
 
   const renderCard = (course: Course, stripeIndex: number) => {
     const bgClass = stripeIndex % 2 === 0 ? 'bg-tertiary' : 'bg-secondary';

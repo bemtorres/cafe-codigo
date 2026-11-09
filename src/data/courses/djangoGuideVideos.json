@@ -1,0 +1,92 @@
+[
+  {
+    "title": "Modelo y base de datos",
+    "videoUrl": "https://www.youtube-nocookie.com/embed/EASkmNop9wA",
+    "videoPageUrl": "https://www.youtube.com/watch?v=EASkmNop9wA&list=PLr1Os35AYMZGDQz6bAsHATNtqwNyMoAB6&index=16",
+    "examples": [
+      "# biblioteca/models.py\nfrom django.db import models\n\n\nclass Categoria(models.Model):\n    nombre = models.CharField(max_length=200)\n\n    def __str__(self):\n        return self.nombre\n\n\nclass Libro(models.Model):\n    codigo_isbn = models.CharField(max_length=200, unique=True)\n    nombre = models.CharField(max_length=200)\n    descripcion = models.TextField(null=True, blank=True)\n    imagen = models.ImageField(upload_to='libros/', null=True, blank=True)\n    categoria = models.ForeignKey(\n        Categoria,\n        on_delete=models.CASCADE,\n        related_name='libros',\n    )\n\n    def __str__(self):\n        return self.nombre",
+      "python manage.py makemigrations biblioteca\npython manage.py migrate\npython manage.py showmigrations biblioteca"
+    ]
+  },
+  {
+    "title": "Administración con Django Admin",
+    "videoUrl": "https://www.youtube-nocookie.com/embed/HtDCOqxauc4",
+    "videoPageUrl": "https://www.youtube.com/watch?v=HtDCOqxauc4&list=PLr1Os35AYMZGDQz6bAsHATNtqwNyMoAB6&index=17",
+    "examples": [
+      "# biblioteca/admin.py\nfrom django.contrib import admin\nfrom .models import Categoria, Libro\n\nadmin.site.register(Categoria)\n\n\n@admin.register(Libro)\nclass LibroAdmin(admin.ModelAdmin):\n    list_display = ('nombre', 'codigo_isbn', 'categoria')\n    search_fields = ('nombre', 'codigo_isbn')\n    list_filter = ('categoria',)",
+      "python manage.py createsuperuser\npython manage.py runserver\n# Abrir /admin/"
+    ]
+  },
+  {
+    "title": "Listar registros: SELECT, vista y tabla HTML",
+    "videoUrl": "https://www.youtube-nocookie.com/embed/GtCAF5DhdJY",
+    "videoPageUrl": "https://www.youtube.com/watch?v=GtCAF5DhdJY&list=PLr1Os35AYMZGDQz6bAsHATNtqwNyMoAB6&index=18",
+    "examples": [
+      "# biblioteca/views.py\nfrom django.shortcuts import render\nfrom .models import Libro\n\ndef listado_libros(request):\n    libros = Libro.objects.select_related('categoria').order_by('nombre')\n    return render(request, 'biblioteca/listado.html', {\n        'libros': libros\n    })",
+      "<!-- templates/biblioteca/listado.html -->\n<table>\n  <thead><tr><th>Nombre</th><th>ISBN</th><th>Categoría</th></tr></thead>\n  <tbody>\n    {% for libro in libros %}\n    <tr>\n      <td>{{ libro.nombre }}</td>\n      <td>{{ libro.codigo_isbn }}</td>\n      <td>{{ libro.categoria.nombre }}</td>\n    </tr>\n    {% empty %}\n    <tr><td colspan=\"3\">No hay libros registrados.</td></tr>\n    {% endfor %}\n  </tbody>\n</table>"
+    ]
+  },
+  {
+    "title": "Crear registros con formularios HTML y POST",
+    "videoUrl": "https://www.youtube-nocookie.com/embed/NWiex0OelWg",
+    "videoPageUrl": "https://www.youtube.com/watch?v=NWiex0OelWg&list=PLr1Os35AYMZGDQz6bAsHATNtqwNyMoAB6&index=19",
+    "examples": [
+      "# biblioteca/views.py\nfrom django.core.exceptions import ValidationError\nfrom django.db import IntegrityError\nfrom django.shortcuts import redirect, render\nfrom .models import Categoria, Libro\n\n\ndef guardar_datos_libro(request, libro):\n    libro.nombre = request.POST.get('nombre', '').strip()\n    libro.codigo_isbn = request.POST.get('codigo_isbn', '').strip()\n    libro.descripcion = request.POST.get('descripcion', '').strip()\n\n    try:\n        libro.categoria_id = int(request.POST.get('categoria', ''))\n    except ValueError:\n        raise ValidationError('Selecciona una categoría válida.')\n\n    if 'imagen' in request.FILES:\n        libro.imagen = request.FILES['imagen']\n\n    libro.full_clean()\n    libro.save()\n\n\ndef crear_libro(request):\n    libro = Libro()\n    error = None\n\n    if request.method == 'POST':\n        try:\n            guardar_datos_libro(request, libro)\n            return redirect('listado_libros')\n        except ValidationError as exc:\n            error = ' '.join(exc.messages)\n        except IntegrityError:\n            error = 'No se pudo guardar el libro. Revisa el ISBN y la categoría.'\n\n    return render(request, 'biblioteca/formulario.html', {\n        'libro': libro,\n        'categorias': Categoria.objects.order_by('nombre'),\n        'error': error,\n    })",
+      "<!-- templates/biblioteca/formulario.html -->\n<form method=\"post\" enctype=\"multipart/form-data\">\n  {% csrf_token %}\n  <label>ISBN\n    <input name=\"codigo_isbn\" maxlength=\"200\" required value=\"{{ libro.codigo_isbn }}\">\n  </label>\n  <label>Nombre\n    <input name=\"nombre\" maxlength=\"200\" required value=\"{{ libro.nombre }}\">\n  </label>\n  <label>Descripción\n    <textarea name=\"descripcion\">{{ libro.descripcion|default_if_none:'' }}</textarea>\n  </label>\n  <label>Categoría\n    <select name=\"categoria\" required>\n      <option value=\"\">Selecciona una categoría</option>\n      {% for categoria in categorias %}\n        <option value=\"{{ categoria.pk }}\"{% if categoria.pk == libro.categoria_id %} selected{% endif %}>\n          {{ categoria.nombre }}\n        </option>\n      {% endfor %}\n    </select>\n  </label>\n  <label>Imagen <input type=\"file\" name=\"imagen\" accept=\"image/*\"></label>\n  <button type=\"submit\">Guardar libro</button>\n</form>\n{% if error %}<p role=\"alert\">{{ error }}</p>{% endif %}"
+    ]
+  },
+  {
+    "title": "Editar y eliminar registros",
+    "videoUrl": "https://www.youtube-nocookie.com/embed/dlf85n_QZ0E",
+    "videoPageUrl": "https://www.youtube.com/watch?v=dlf85n_QZ0E&list=PLr1Os35AYMZGDQz6bAsHATNtqwNyMoAB6&index=20",
+    "examples": [
+      "# Agrega estas vistas a biblioteca/views.py\nfrom django.shortcuts import get_object_or_404\n\n\ndef editar_libro(request, pk):\n    libro = get_object_or_404(Libro, pk=pk)\n    error = None\n\n    if request.method == 'POST':\n        try:\n            guardar_datos_libro(request, libro)\n            return redirect('listado_libros')\n        except ValidationError as exc:\n            error = ' '.join(exc.messages)\n        except IntegrityError:\n            error = 'No se pudo guardar el libro. Revisa el ISBN y la categoría.'\n\n    return render(request, 'biblioteca/formulario.html', {\n        'libro': libro,\n        'categorias': Categoria.objects.order_by('nombre'),\n        'error': error,\n    })\n\n\ndef eliminar_libro(request, pk):\n    libro = get_object_or_404(Libro, pk=pk)\n    if request.method == 'POST':\n        libro.delete()\n        return redirect('listado_libros')\n    return render(request, 'biblioteca/confirmar_eliminar.html', {'libro': libro})",
+      "<!-- templates/biblioteca/confirmar_eliminar.html -->\n<h2>¿Eliminar {{ libro.nombre }}?</h2>\n<form method=\"post\">\n  {% csrf_token %}\n  <button type=\"submit\">Confirmar eliminación</button>\n</form>\n<a href=\"{% url 'listado_libros' %}\">Cancelar</a>"
+    ]
+  },
+  {
+    "title": "Mensajes de éxito, advertencia y error",
+    "videoUrl": "https://www.youtube-nocookie.com/embed/lHna1t-U2jc",
+    "videoPageUrl": "https://www.youtube.com/watch?v=lHna1t-U2jc&list=PLr1Os35AYMZGDQz6bAsHATNtqwNyMoAB6&index=21",
+    "examples": [
+      "# biblioteca/views.py (fragmento)\nfrom django.contrib import messages\n\n# Después de crear correctamente:\nmessages.success(request, 'Libro registrado correctamente.')\nreturn redirect('listado_libros')\n\n# Después de eliminar correctamente:\nmessages.warning(request, 'Libro eliminado.')\nreturn redirect('listado_libros')",
+      "<!-- En una plantilla base -->\n{% if messages %}\n  {% for message in messages %}\n    <div class=\"alerta {{ message.tags }}\" role=\"status\">\n      {{ message }}\n    </div>\n  {% endfor %}\n{% endif %}"
+    ]
+  },
+  {
+    "title": "Autenticación: login, logout y sesiones",
+    "videoUrl": "https://www.youtube-nocookie.com/embed/Y1Jb0Dds5XE",
+    "videoPageUrl": "https://www.youtube.com/watch?v=Y1Jb0Dds5XE&list=PLr1Os35AYMZGDQz6bAsHATNtqwNyMoAB6&index=22",
+    "examples": [
+      "# cuentas/views.py\nfrom django.contrib.auth import authenticate, login, logout\nfrom django.shortcuts import render, redirect\nfrom django.views.decorators.http import require_POST\n\ndef iniciar_sesion(request):\n    error = None\n    if request.method == 'POST':\n        usuario = request.POST.get('username', '')\n        clave = request.POST.get('password', '')\n        user = authenticate(request, username=usuario, password=clave)\n        if user is not None:\n            login(request, user)\n            return redirect('listado_libros')\n        error = 'Credenciales incorrectas.'\n    return render(request, 'cuentas/login.html', {'error': error})\n\n@require_POST\ndef cerrar_sesion(request):\n    logout(request)\n    return redirect('iniciar_sesion')",
+      "<!-- cuentas/login.html -->\n<form method=\"post\">\n  {% csrf_token %}\n  <input name=\"username\" autocomplete=\"username\" required>\n  <input name=\"password\" type=\"password\" autocomplete=\"current-password\" required>\n  <button type=\"submit\">Ingresar</button>\n</form>\n{% if error %}<p role=\"alert\">{{ error }}</p>{% endif %}\n\n<!-- Botón de salida en una página autenticada -->\n<form method=\"post\" action=\"{% url 'cerrar_sesion' %}\">\n  {% csrf_token %}\n  <button type=\"submit\">Cerrar sesión</button>\n</form>"
+    ]
+  },
+  {
+    "title": "Proteger vistas con login_required",
+    "videoUrl": "https://www.youtube-nocookie.com/embed/AiJ9u5ShdmI",
+    "videoPageUrl": "https://www.youtube.com/watch?v=AiJ9u5ShdmI&list=PLr1Os35AYMZGDQz6bAsHATNtqwNyMoAB6&index=23",
+    "examples": [
+      "# settings.py\nLOGIN_URL = 'iniciar_sesion'\n\n# biblioteca/views.py\nfrom django.contrib.auth.decorators import login_required\n\n@login_required\ndef listado_libros(request):\n    libros = Libro.objects.all()\n    return render(request, 'biblioteca/listado.html', {'libros': libros})\n\n@login_required\ndef crear_libro(request):\n    # Mantener aquí el flujo GET / POST de la lección 04\n    ...",
+      "<!-- En una plantilla -->\n{% if user.is_authenticated %}\n  <p>Bienvenido, {{ user.username }}</p>\n{% else %}\n  <a href=\"{% url 'iniciar_sesion' %}\">Iniciar sesión</a>\n{% endif %}"
+    ]
+  },
+  {
+    "title": "Autorización por perfiles y permisos",
+    "videoUrl": "https://www.youtube-nocookie.com/embed/TshHIyPC9tA",
+    "videoPageUrl": "https://www.youtube.com/watch?v=TshHIyPC9tA&list=PLr1Os35AYMZGDQz6bAsHATNtqwNyMoAB6&index=24",
+    "examples": [
+      "# settings.py (roles de ejemplo)\nROLES = [\n    ('administrador', 'Administrador'),\n    ('operador', 'Operador'),\n]\n\n# cuentas/models.py\nfrom django.conf import settings\nfrom django.contrib.auth import get_user_model\nfrom django.db import models\n\n\nclass UserProfile(models.Model):\n    user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE)\n    role = models.CharField(max_length=20, choices=settings.ROLES)",
+      "# cuentas/views.py\nfrom django.contrib.auth import authenticate, login\nfrom django.shortcuts import redirect, render\nfrom .models import UserProfile\n\n\ndef iniciar_sesion(request):\n    error = None\n    if request.method == 'POST':\n        usuario = request.POST.get('username', '')\n        clave = request.POST.get('password', '')\n        user = authenticate(request, username=usuario, password=clave)\n\n        if user is None:\n            error = 'Credenciales incorrectas.'\n        else:\n            try:\n                profile = UserProfile.objects.get(user=user)\n            except UserProfile.DoesNotExist:\n                error = 'Esta cuenta todavía no tiene un perfil asignado.'\n            else:\n                login(request, user)\n                request.session['perfil'] = profile.role\n                return redirect('listado_libros')\n\n    return render(request, 'cuentas/login.html', {'error': error})"
+    ]
+  },
+  {
+    "title": "Crear decoradores personalizados",
+    "videoUrl": "https://www.youtube-nocookie.com/embed/HGeah1qX_sg",
+    "videoPageUrl": "https://www.youtube.com/watch?v=HGeah1qX_sg&list=PLr1Os35AYMZGDQz6bAsHATNtqwNyMoAB6&index=25",
+    "examples": [
+      "# cuentas/decoradores.py\nfrom functools import wraps\nfrom django.contrib.auth.decorators import login_required\nfrom django.core.exceptions import PermissionDenied\n\ndef grupo_requerido(nombre_grupo):\n    def decorador(vista):\n        @wraps(vista)\n        @login_required\n        def envoltura(request, *args, **kwargs):\n            if not request.user.groups.filter(name=nombre_grupo).exists():\n                raise PermissionDenied\n            return vista(request, *args, **kwargs)\n        return envoltura\n    return decorador\n\n# Uso en biblioteca/views.py\nfrom cuentas.decoradores import grupo_requerido\n\n@grupo_requerido('Administradores')\ndef eliminar_libro(request, pk):\n    # Recuperar objeto y confirmar borrado mediante POST\n    ...",
+      "# Pruebas sugeridas\n# 1. Usuario anónimo -> redirigido al login\n# 2. Usuario autenticado sin grupo -> 403\n# 3. Usuario del grupo -> accede a la vista\n# 4. Solicitud GET de eliminación -> solo confirma"
+    ]
+  }
+]

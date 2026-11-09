@@ -12,6 +12,8 @@ export function WidgetVideoEditorial({
   brand,
   institutionName,
 }: WidgetVideoEditorialProps) {
+  const showStatement = data.highlightLead || data.statementRest;
+
   return (
     <div style={{ maxWidth: '720px', margin: '0 auto', padding: '56px 24px 64px 24px' }}>
       <div
@@ -57,6 +59,13 @@ export function WidgetVideoEditorial({
           </span>
         </div>
 
+        {data.title && (
+          <div className="mb-4 min-w-0 wrap-anywhere">
+            <h3 className="text-2xl font-bold text-slate-900">{data.title}</h3>
+            {data.objective && <p className="mt-2 leading-relaxed text-slate-600">{data.objective}</p>}
+          </div>
+        )}
+
         <div
           style={{
             position: 'relative',
@@ -70,16 +79,28 @@ export function WidgetVideoEditorial({
           <iframe
             style={{ width: '100%', height: '100%', border: 0 }}
             src={data.videoUrl}
-            title="Video del Curso"
+            title={data.title || 'Video del Curso'}
+            loading="lazy"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
           />
         </div>
 
         <ApaReferenceFooter citation={data.apaCitation} />
+        {data.videoPageUrl && (
+          <a
+            className="mt-3 inline-flex min-h-11 items-center gap-2 text-sm font-semibold underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-4"
+            style={{ color: brand.primaryDark }}
+            href={data.videoPageUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Abrir en YouTube <span aria-hidden="true">↗</span>
+          </a>
+        )}
       </div>
 
-      <div style={{ textAlign: 'center', maxWidth: '620px', margin: '48px auto 0 auto' }}>
+      {showStatement && <div style={{ textAlign: 'center', maxWidth: '620px', margin: '48px auto 0 auto' }}>
         <div
           style={{
             width: '52px',
@@ -100,7 +121,7 @@ export function WidgetVideoEditorial({
           <strong style={{ color: brand.primary, fontWeight: 700 }}>{data.highlightLead}</strong>{' '}
           {data.statementRest} {institutionName}.
         </p>
-      </div>
+      </div>}
     </div>
   );
 }

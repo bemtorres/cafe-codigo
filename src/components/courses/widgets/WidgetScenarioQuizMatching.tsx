@@ -1,9 +1,9 @@
-import { useState } from 'react';
 import type {
   BrandPreset,
   ScenarioQuizMatchingBlockData,
 } from '../../../data/courses/courseJsonTypes';
 import { QuizCardShell } from './QuizCardShell';
+import { useQuizAnswer, useQuizSubmission } from './QuizAttemptContext';
 
 export interface WidgetScenarioQuizMatchingProps {
   blockId: string;
@@ -18,8 +18,8 @@ export function WidgetScenarioQuizMatching({
   brand,
   onScoreChange,
 }: WidgetScenarioQuizMatchingProps) {
-  const [selectedMatches, setSelectedMatches] = useState<Record<string, string>>({});
-  const [submitted, setSubmitted] = useState(false);
+  const [selectedMatches, setSelectedMatches] = useQuizAnswer<Record<string, string>>({});
+  const { submitted, setSubmitted } = useQuizSubmission();
 
   const rightOptions = data.pairs.map((p) => p.rightMatch);
 
@@ -126,7 +126,7 @@ export function WidgetScenarioQuizMatching({
       </div>
 
       <div style={{ marginTop: '24px', display: 'flex', justifyContent: 'flex-end' }}>
-        <button
+        <button data-quiz-check
           type="button"
           onClick={handleVerify}
           disabled={!allSelected}

@@ -1,5 +1,7 @@
+import { useContext, useRef, useState } from 'react';
 import type { BrandPreset, ScenarioQuizBlockData } from '../../../data/courses/courseJsonTypes';
 import { ApaReferenceFooter } from './ZoomableFigure';
+import { QuizAttemptContext } from './QuizAttemptContext';
 
 export interface WidgetScenarioQuizProps {
   data: ScenarioQuizBlockData;
@@ -28,6 +30,9 @@ export function WidgetScenarioQuiz({
   maxQuizScore,
   onViewReport,
 }: WidgetScenarioQuizProps) {
+  const isExam = useContext(QuizAttemptContext)?.mode === 'exam';
+  const videoDialog = useRef<HTMLDialogElement>(null);
+  const [videoOpen, setVideoOpen] = useState(false);
   const questions = data.questions || [];
   const currentQuestion = questions[activeScenarioIdx] || questions[0];
   if (!currentQuestion) return null;
@@ -36,9 +41,83 @@ export function WidgetScenarioQuiz({
   const isQuestionSubmitted = Boolean(submittedQuestions[currentQuestion.id]);
   const chosenOptionObj = currentQuestion.options.find((o) => o.id === chosenOptionId);
 
+  const video = currentQuestion.videoUrl && (
+    <div
+      style={{
+        marginBottom: '24px',
+        backgroundColor: '#0F172A',
+        borderRadius: '8px',
+        padding: '12px',
+        border: `2px solid ${brand.primary}`,
+        boxShadow: '0 10px 25px rgba(15, 23, 42, 0.12)',
+      }}
+    >
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          marginBottom: '8px',
+          color: '#FFFFFF',
+          fontSize: '11px',
+          fontWeight: 800,
+        }}
+      >
+        <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <span
+            style={{
+              padding: '2px 8px',
+              borderRadius: '4px',
+              backgroundColor: brand.primary,
+            }}
+          >
+            ▶ VIDEO DEL CASO
+          </span>
+          <span>Evidencia de Auditoría en Producción</span>
+        </span>
+        <span style={{ color: '#94A3B8' }}>Observa antes de responder</span>
+      </div>
+
+      <div
+        style={{
+          position: 'relative',
+          width: '100%',
+          aspectRatio: '16 / 9',
+          borderRadius: '6px',
+          overflow: 'hidden',
+          backgroundColor: '#000000',
+        }}
+      >
+        <iframe
+          style={{ width: '100%', height: '100%', border: 0 }}
+          src={currentQuestion.videoUrl}
+          title={`Video de ${currentQuestion.badge}`}
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+        />
+      </div>
+
+      {currentQuestion.videoCaption && (
+        <div
+          style={{
+            marginTop: '8px',
+            fontSize: '11.5px',
+            color: '#CBD5E1',
+            textAlign: 'center',
+          }}
+        >
+          {currentQuestion.videoCaption}
+        </div>
+      )}
+
+      <ApaReferenceFooter citation={currentQuestion.apaCitation} dark />
+    </div>
+  );
+
   return (
     <div style={{ maxWidth: '700px', margin: '0 auto', padding: '64px 24px 72px 24px' }}>
       <div
+        data-quiz-check
         style={{
           display: 'flex',
           alignItems: 'center',
@@ -113,6 +192,7 @@ export function WidgetScenarioQuiz({
       </div>
 
       <div
+        className="exam-quiz-card"
         style={{
           backgroundColor: '#FFFFFF',
           borderRadius: '4px',
@@ -166,6 +246,7 @@ export function WidgetScenarioQuiz({
         </h3>
 
         <p
+          className="exam-quiz-context"
           style={{
             textAlign: 'center',
             fontSize: '13.5px',
@@ -179,85 +260,34 @@ export function WidgetScenarioQuiz({
           {currentQuestion.context}
         </p>
 
-        {currentQuestion.videoUrl && (
-          <div
-            style={{
-              marginBottom: '24px',
-              backgroundColor: '#0F172A',
-              borderRadius: '8px',
-              padding: '12px',
-              border: `2px solid ${brand.primary}`,
-              boxShadow: '0 10px 25px rgba(15, 23, 42, 0.12)',
-            }}
-          >
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                marginBottom: '8px',
-                color: '#FFFFFF',
-                fontSize: '11px',
-                fontWeight: 800,
-              }}
-            >
-              <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <span
-                  style={{
-                    padding: '2px 8px',
-                    borderRadius: '4px',
-                    backgroundColor: brand.primary,
-                  }}
-                >
-                  ▶ VIDEO DEL CASO
-                </span>
-                <span>Evidencia de Auditoría en Producción</span>
-              </span>
-              <span style={{ color: '#94A3B8' }}>Observa antes de responder</span>
-            </div>
-
-            <div
-              style={{
-                position: 'relative',
-                width: '100%',
-                aspectRatio: '16 / 9',
-                borderRadius: '6px',
-                overflow: 'hidden',
-                backgroundColor: '#000000',
-              }}
-            >
-              <iframe
-                style={{ width: '100%', height: '100%', border: 0 }}
-                src={currentQuestion.videoUrl}
-                title={`Video de ${currentQuestion.badge}`}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              />
-            </div>
-
-            {currentQuestion.videoCaption && (
-              <div
-                style={{
-                  marginTop: '8px',
-                  fontSize: '11.5px',
-                  color: '#CBD5E1',
-                  textAlign: 'center',
-                }}
-              >
-                {currentQuestion.videoCaption}
+        {currentQuestion.videoUrl && (isExam ? (
+          <>
+            <button className="exam-secondary exam-video-trigger" type="button" onClick={() => {
+              videoDialog.current?.showModal();
+              setVideoOpen(true);
+            }}>
+              Ver video del caso
+            </button>
+            <dialog ref={videoDialog} className="exam-dialog exam-video-dialog" aria-label="Video del caso"
+              onClose={() => setVideoOpen(false)}>
+              <div className="exam-dialog-actions">
+                <button className="exam-secondary" type="button" onClick={() => videoDialog.current?.close()}>
+                  Volver a la pregunta
+                </button>
               </div>
-            )}
+              {videoOpen && video}
+            </dialog>
+          </>
+        ) : video)}
 
-            <ApaReferenceFooter citation={currentQuestion.apaCitation} dark />
-          </div>
-        )}
-
-        <div>
+        <div className="exam-quiz-options">
           {currentQuestion.options.map((opt) => {
             const isSelected = chosenOptionId === opt.id;
             return (
-              <label
+              <button
                 key={opt.id}
+                type="button"
+                aria-pressed={isSelected}
                 onClick={() => onSelectOption(currentQuestion.id, opt.id)}
                 style={{
                   display: 'flex',
@@ -265,6 +295,9 @@ export function WidgetScenarioQuiz({
                   gap: '16px',
                   padding: '18px 20px',
                   backgroundColor: isSelected ? '#F4F5F7' : 'transparent',
+                  width: '100%',
+                  border: 'none',
+                  textAlign: 'left',
                   cursor: 'pointer',
                   borderRadius: '2px',
                   marginBottom: '6px',
@@ -304,7 +337,7 @@ export function WidgetScenarioQuiz({
                 >
                   {opt.text}
                 </span>
-              </label>
+              </button>
             );
           })}
         </div>
@@ -328,6 +361,7 @@ export function WidgetScenarioQuiz({
         )}
 
         <div
+          data-quiz-check
           style={{
             marginTop: '32px',
             display: 'flex',

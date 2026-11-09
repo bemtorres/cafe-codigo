@@ -227,13 +227,13 @@ export function WidgetFinalReport({
             }}
           >
             <div style={{ fontSize: '11px', fontWeight: 800, color: '#64748B' }}>
-              AVANCE GENERAL DEL CURSO
+              AVANCE DEL MÓDULO
             </div>
             <div style={{ fontSize: '24px', fontWeight: 900, color: '#0F172A', margin: '4px 0' }}>
               {progressPct}%
             </div>
             <div style={{ fontSize: '12px', color: '#475569' }}>
-              {completedLessonsCount} de {totalLessonsCount} lecciones completadas
+              {completedLessonsCount} de {totalLessonsCount} contenidos completados
             </div>
           </div>
         </div>
@@ -374,7 +374,7 @@ export function WidgetFinalReport({
                 cursor: 'pointer',
               }}
             >
-              ✓ Marcar Todo el Curso 100%
+              ✓ Marcar todo el módulo como completado
             </button>
 
             <button

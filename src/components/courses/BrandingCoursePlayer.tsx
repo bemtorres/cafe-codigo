@@ -3,21 +3,23 @@ import type {
   BrandPreset,
   ChecklistBlockData,
   CourseDocumentJSON,
+  CourseSeccion,
   CourseWidgetBlock,
+  LegacyCourseDocument,
   PipelineChecklistBlockData,
   RichTextEditorialBlockData,
   ScenarioQuizBlockData,
   WidgetBgMode,
 } from '../../data/courses/courseJsonTypes';
-import {
-  BRAND_PRESETS,
-  INITIAL_BRANDING_COURSE_JSON,
-} from '../../data/courses/brandingCourseDemoData';
+import { BRAND_PRESETS } from '../../data/courses/brandPresets';
+import { getModuleContents, isCourseDocument, migrateLegacyCourse, upgradeCourseDraft } from '../../data/courses/courseDocument';
+import { CourseLoadingSkeleton } from './CourseLoadingSkeleton';
 import { EditBlockHeader } from './widgets/EditBlockHeader';
 import { WidgetRichTextEditorial } from './widgets/WidgetRichTextEditorial';
 import { WidgetHeroBanner } from './widgets/WidgetHeroBanner';
 import { WidgetImageCoverBanner } from './widgets/WidgetImageCoverBanner';
 import { WidgetVideoEditorial } from './widgets/WidgetVideoEditorial';
+import { WidgetDocumentResources } from './widgets/WidgetDocumentResources';
 import { WidgetCodeWalkthrough } from './widgets/WidgetCodeWalkthrough';
 import { WidgetSlideCards } from './widgets/WidgetSlideCards';
 import { WidgetAccordionDetails } from './widgets/WidgetAccordionDetails';
@@ -41,29 +43,91 @@ import { WidgetScenarioQuizHotspotSpotter } from './widgets/WidgetScenarioQuizHo
 import { WidgetScenarioQuizImageHotspot } from './widgets/WidgetScenarioQuizImageHotspot';
 import { WidgetScenarioQuizImageChoice } from './widgets/WidgetScenarioQuizImageChoice';
 import { WidgetScenarioQuizRiskSlider } from './widgets/WidgetScenarioQuizRiskSlider';
+import { WidgetSidebarIndice } from './widgets/WidgetSidebarIndice';
 
-const STORAGE_KEY_COURSE_JSON = 'cc_course_json_draft_v11';
+export default function BrandingCoursePlayer({ courseUrl }: { courseUrl: string }) {
+  const [course, setCourse] = useState<CourseDocumentJSON>();
+  const [moduleId, setModuleId] = useState('');
+  const [error, setError] = useState(false);
+  const [attempt, setAttempt] = useState(0);
 
-export default function BrandingCoursePlayer() {
+  useEffect(() => {
+    const controller = new AbortController();
+    async function loadCourse() {
+      try {
+        const response = await fetch(courseUrl, { signal: controller.signal });
+        if (!response.ok) throw new Error('Error al cargar el curso');
+        const document: unknown = await response.json();
+        if (!isCourseDocument(document)) throw new Error('El JSON del curso no es válido');
+        if (controller.signal.aborted) return;
+        setModuleId(new URLSearchParams(window.location.search).get('modulo') || document.modulos[0].id);
+        setCourse(document);
+      } catch {
+        if (!controller.signal.aborted) setError(true);
+      }
+    }
+    void loadCourse();
+    return () => controller.abort();
+  }, [courseUrl, attempt]);
+
+  if (error) {
+    return (
+      <main style={{ padding: '24px' }}>
+        <p role="alert">No se pudo cargar el curso.</p>
+        <button type="button" onClick={() => {
+          setError(false);
+          setAttempt((value) => value + 1);
+        }}>Volver a intentar</button>
+      </main>
+    );
+  }
+
+  if (!course) return <CourseLoadingSkeleton />;
+
+  return (
+    <BrandingModulePlayer
+      key={`${course.courseId}:${moduleId}`}
+      initialCourse={course}
+      moduleId={moduleId}
+      onSelectModule={(id) => {
+        const url = new URL(window.location.href);
+        url.searchParams.set('modulo', id);
+        window.history.replaceState({}, '', url.toString());
+        setModuleId(id);
+      }}
+    />
+  );
+}
+
+function BrandingModulePlayer({ initialCourse, moduleId, onSelectModule }: {
+  initialCourse: CourseDocumentJSON;
+  moduleId: string;
+  onSelectModule: (moduleId: string) => void;
+}) {
   const mainScrollRef = useRef<HTMLDivElement>(null);
+  const storageKey = `cc_course_json_draft_v13:${initialCourse.courseId}`;
 
-  // Documento JSON maestro que gobierna todo el curso y sus widgets atómicos
-  const [courseDoc, setCourseDoc] = useState<CourseDocumentJSON>(INITIAL_BRANDING_COURSE_JSON);
+  const [courseDoc, setCourseDoc] = useState(initialCourse);
+  const activeModule = courseDoc.modulos.find((module) => module.id === moduleId) || courseDoc.modulos[0];
+  const contents = getModuleContents(activeModule);
+  const blocks = contents.map((content) => content.widget);
 
   // Estados de branding y ajustes del reproductor
   const [selectedBrand, setSelectedBrand] = useState<BrandPreset>(
-    BRAND_PRESETS.find((b) => b.id === INITIAL_BRANDING_COURSE_JSON.defaultBrandId) ||
+    BRAND_PRESETS.find((b) => b.id === initialCourse.defaultBrandId) ||
       BRAND_PRESETS[0]
   );
   const [customInstitutionName, setCustomInstitutionName] = useState(
-    INITIAL_BRANDING_COURSE_JSON.institution
+    initialCourse.institution
   );
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [showScoreInBanner, setShowScoreInBanner] = useState(
-    INITIAL_BRANDING_COURSE_JSON.showScoreInBanner
+    initialCourse.showScoreInBanner
   );
   const [isEditMode, setIsEditMode] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(() =>
+    typeof window === 'undefined' || window.matchMedia('(min-width: 768px)').matches
+  );
 
   // Estados del Inspector / Editor JSON en vivo (?edit=true)
   const [jsonEditorOpen, setJsonEditorOpen] = useState(false);
@@ -73,11 +137,9 @@ export default function BrandingCoursePlayer() {
   const [jsonSavedFlash, setJsonSavedFlash] = useState(false);
 
   // Estados de progreso del alumno y actividades evaluadas
-  const [activeLessonId, setActiveLessonId] = useState('l3');
-  const [completedLessons, setCompletedLessons] = useState<string[]>(['l1', 'l2']);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [showSearch, setShowSearch] = useState(false);
-  const [checkedItems, setCheckedItems] = useState<string[]>(['chk-1', 'chk-2']);
+  const [activeContentId, setActiveContentId] = useState('');
+  const [completedContents, setCompletedContents] = useState<string[]>([]);
+  const [checkedItems, setCheckedItems] = useState<string[]>([]);
   const [activeScenarioIdx, setActiveScenarioIdx] = useState(0);
   const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>({});
   const [submittedQuestions, setSubmittedQuestions] = useState<Record<string, boolean>>({});
@@ -102,30 +164,34 @@ export default function BrandingCoursePlayer() {
       }
 
       try {
-        const savedRaw = window.localStorage.getItem(STORAGE_KEY_COURSE_JSON);
-        if (savedRaw) {
-          const parsed = JSON.parse(savedRaw) as CourseDocumentJSON;
-          if (parsed && Array.isArray(parsed.blocks) && Array.isArray(parsed.lessons)) {
-            setCourseDoc(parsed);
-            if (parsed.institution) setCustomInstitutionName(parsed.institution);
-            if (typeof parsed.showScoreInBanner === 'boolean') {
-              setShowScoreInBanner(parsed.showScoreInBanner);
-            }
-            const foundPreset = BRAND_PRESETS.find((b) => b.id === parsed.defaultBrandId);
-            if (foundPreset) setSelectedBrand(foundPreset);
+        const savedRaw = window.localStorage.getItem(storageKey);
+        const legacyRaw = savedRaw ? null : window.localStorage.getItem('cc_course_json_draft_v12');
+        let draft: unknown = savedRaw ? JSON.parse(savedRaw) : null;
+        if (legacyRaw) {
+          const legacy = JSON.parse(legacyRaw) as LegacyCourseDocument | null;
+          if (legacy?.courseId === initialCourse.courseId &&
+              Array.isArray(legacy.blocks) && Array.isArray(legacy.lessons)) {
+            const migrated = migrateLegacyCourse(legacy, initialCourse.title, initialCourse.modulos[0].id);
+            draft = { ...migrated, modulos: [...migrated.modulos, ...initialCourse.modulos.slice(1)] };
           }
+        }
+        if (isCourseDocument(draft) && draft.courseId === initialCourse.courseId) {
+          setCourseDoc(upgradeCourseDraft(draft, initialCourse));
+          setCustomInstitutionName(draft.institution);
+          setShowScoreInBanner(draft.showScoreInBanner);
+          setSelectedBrand(BRAND_PRESETS.find((brand) => brand.id === draft.defaultBrandId) || BRAND_PRESETS[0]);
         }
       } catch {
         // Ignorar errores de parseo en localStorage
       }
     }
-  }, []);
+  }, [initialCourse, storageKey]);
 
   const persistCourseDoc = (nextDoc: CourseDocumentJSON) => {
     setCourseDoc(nextDoc);
     if (typeof window !== 'undefined') {
       try {
-        window.localStorage.setItem(STORAGE_KEY_COURSE_JSON, JSON.stringify(nextDoc));
+        window.localStorage.setItem(storageKey, JSON.stringify(nextDoc));
       } catch {
         // Ignorar si quota está llena
       }
@@ -156,7 +222,7 @@ export default function BrandingCoursePlayer() {
     if (target === 'FULL_COURSE') {
       setJsonDraftText(JSON.stringify(courseDoc, null, 2));
     } else {
-      const foundBlock = courseDoc.blocks.find((b) => b.id === target);
+      const foundBlock = blocks.find((b) => b.id === target);
       if (foundBlock) {
         setJsonDraftText(JSON.stringify(foundBlock, null, 2));
       }
@@ -170,26 +236,27 @@ export default function BrandingCoursePlayer() {
     try {
       const parsed = JSON.parse(jsonDraftText);
       if (editingBlockId === 'FULL_COURSE') {
-        if (!parsed || !Array.isArray(parsed.blocks) || !Array.isArray(parsed.lessons)) {
+        if (!isCourseDocument(parsed) || parsed.courseId !== initialCourse.courseId) {
           setJsonError(
-            'El JSON del curso debe contener las propiedades "lessons" (array) y "blocks" (array).'
+            'Revisa la estructura de módulos, Lessions, Secciones y Contenidos del curso.'
           );
           return;
         }
-        persistCourseDoc(parsed as CourseDocumentJSON);
-        if (parsed.institution) setCustomInstitutionName(parsed.institution);
+        persistCourseDoc(parsed);
+        setCustomInstitutionName(parsed.institution);
+        setShowScoreInBanner(parsed.showScoreInBanner);
+        setSelectedBrand(BRAND_PRESETS.find((brand) => brand.id === parsed.defaultBrandId) || BRAND_PRESETS[0]);
+        if (!parsed.modulos.some((module) => module.id === activeModule.id)) {
+          onSelectModule(parsed.modulos[0].id);
+        }
       } else {
-        if (!parsed || typeof parsed.id !== 'string' || typeof parsed.type !== 'string' || !parsed.data) {
-          setJsonError('El bloque JSON debe incluir "id", "type", "componentName" y "data".');
+        if (!parsed || parsed.id !== editingBlockId || typeof parsed.type !== 'string' ||
+            typeof parsed.componentName !== 'string' || typeof parsed.summary !== 'string' ||
+            !parsed.data || typeof parsed.data !== 'object' || Array.isArray(parsed.data)) {
+          setJsonError('El bloque debe conservar su ID e incluir tipo, componente, resumen y datos.');
           return;
         }
-        const nextBlocks = courseDoc.blocks.map((b) =>
-          b.id === editingBlockId ? (parsed as CourseWidgetBlock) : b
-        );
-        persistCourseDoc({
-          ...courseDoc,
-          blocks: nextBlocks,
-        });
+        persistCourseDoc(updateWidget(editingBlockId, () => parsed as CourseWidgetBlock));
       }
       setJsonSavedFlash(true);
       setTimeout(() => setJsonSavedFlash(false), 1800);
@@ -199,88 +266,90 @@ export default function BrandingCoursePlayer() {
     }
   };
 
-  // Mover un bloque hacia arriba o abajo en el array blocks[] del JSON
-  const moveBlock = (index: number, direction: -1 | 1) => {
+  const updateSections = (update: (section: CourseSeccion) => CourseSeccion): CourseDocumentJSON => ({
+    ...courseDoc,
+    modulos: courseDoc.modulos.map((module) => module.id === activeModule.id ? {
+      ...module,
+      lessions: module.lessions.map((lession) => ({
+        ...lession,
+        secciones: lession.secciones.map(update),
+      })),
+    } : module),
+  });
+
+  const updateWidget = (blockId: string, update: (block: CourseWidgetBlock) => CourseWidgetBlock) =>
+    updateSections((section) => ({
+      ...section,
+      contenidos: section.contenidos.map((content) =>
+        content.widget.id === blockId ? { ...content, widget: update(content.widget) } : content
+      ),
+    }));
+
+  const moveBlock = (section: CourseSeccion, index: number, direction: -1 | 1) => {
     const targetIndex = index + direction;
-    if (targetIndex < 0 || targetIndex >= courseDoc.blocks.length) return;
-    const nextBlocks = [...courseDoc.blocks];
-    const [moved] = nextBlocks.splice(index, 1);
-    nextBlocks.splice(targetIndex, 0, moved);
-    persistCourseDoc({
-      ...courseDoc,
-      blocks: nextBlocks,
-    });
+    if (targetIndex < 0 || targetIndex >= section.contenidos.length) return;
+    const contenidos = [...section.contenidos];
+    const [moved] = contenidos.splice(index, 1);
+    contenidos.splice(targetIndex, 0, moved);
+    const nextDoc = updateSections((entry) => entry === section ? { ...entry, contenidos } : entry);
+    persistCourseDoc(nextDoc);
+    if (jsonEditorOpen && editingBlockId === 'FULL_COURSE') {
+      setJsonDraftText(JSON.stringify(nextDoc, null, 2));
+    }
   };
 
-  // Cambiar el color de fondo de cualquier widget y guardarlo en el JSON
+  const saveWidgetEdit = (blockId: string, update: (block: CourseWidgetBlock) => CourseWidgetBlock) => {
+    const nextDoc = updateWidget(blockId, update);
+    persistCourseDoc(nextDoc);
+    if (!jsonEditorOpen) return;
+    if (editingBlockId === 'FULL_COURSE') {
+      setJsonDraftText(JSON.stringify(nextDoc, null, 2));
+    } else if (editingBlockId === blockId) {
+      const block = blocks.find((entry) => entry.id === blockId);
+      if (block) setJsonDraftText(JSON.stringify(update(block), null, 2));
+    }
+  };
+
   const updateBlockBackground = (blockId: string, bgMode: WidgetBgMode, bgColor?: string) => {
-    const nextBlocks = courseDoc.blocks.map((b) => {
-      if (b.id !== blockId) return b;
-      return {
-        ...b,
-        bgMode,
-        bgColor: bgMode === 'custom' || bgMode === 'soft' || bgMode === 'white' ? bgColor : undefined,
-      };
-    });
-    const nextDoc: CourseDocumentJSON = {
-      ...courseDoc,
-      blocks: nextBlocks,
-    };
-    persistCourseDoc(nextDoc);
-    if (jsonEditorOpen) {
-      if (editingBlockId === 'FULL_COURSE') {
-        setJsonDraftText(JSON.stringify(nextDoc, null, 2));
-      } else if (editingBlockId === blockId) {
-        const updatedBlock = nextBlocks.find((b) => b.id === blockId);
-        if (updatedBlock) {
-          setJsonDraftText(JSON.stringify(updatedBlock, null, 2));
-        }
-      }
-    }
+    saveWidgetEdit(blockId, (block) => ({
+      ...block,
+      bgMode,
+      bgColor: bgMode === 'custom' || bgMode === 'soft' || bgMode === 'white' ? bgColor : undefined,
+    }));
   };
 
-  // Actualizar en vivo los datos de un bloque de texto enriquecido Tiptap y sincronizar con el JSON
-  const updateRichTextBlockData = (blockId: string, nextData: RichTextEditorialBlockData) => {
-    const nextBlocks = courseDoc.blocks.map((b) => {
-      if (b.id !== blockId || b.type !== 'rich-text-editorial') return b;
-      return {
-        ...b,
-        data: nextData,
-      };
-    });
-    const nextDoc: CourseDocumentJSON = {
-      ...courseDoc,
-      blocks: nextBlocks,
-    };
-    persistCourseDoc(nextDoc);
-    if (jsonEditorOpen) {
-      if (editingBlockId === 'FULL_COURSE') {
-        setJsonDraftText(JSON.stringify(nextDoc, null, 2));
-      } else if (editingBlockId === blockId) {
-        const updatedBlock = nextBlocks.find((b) => b.id === blockId);
-        if (updatedBlock) {
-          setJsonDraftText(JSON.stringify(updatedBlock, null, 2));
-        }
-      }
-    }
+  const updateRichTextBlockData = (blockId: string, data: RichTextEditorialBlockData) => {
+    saveWidgetEdit(blockId, (block) => block.type === 'rich-text-editorial' ? { ...block, data } : block);
   };
 
   // Restaurar el JSON original de fábrica
   const handleResetCourseJsonToDefault = () => {
-    persistCourseDoc(INITIAL_BRANDING_COURSE_JSON);
-    setCustomInstitutionName(INITIAL_BRANDING_COURSE_JSON.institution);
+    persistCourseDoc(initialCourse);
+    setCustomInstitutionName(initialCourse.institution);
+    setShowScoreInBanner(initialCourse.showScoreInBanner);
+    setSelectedBrand(BRAND_PRESETS.find((brand) => brand.id === initialCourse.defaultBrandId) || BRAND_PRESETS[0]);
     if (typeof window !== 'undefined') {
-      window.localStorage.removeItem(STORAGE_KEY_COURSE_JSON);
+      try {
+        window.localStorage.removeItem(storageKey);
+        const legacy = JSON.parse(window.localStorage.getItem('cc_course_json_draft_v12') || 'null');
+        if (legacy?.courseId === initialCourse.courseId) {
+          window.localStorage.removeItem('cc_course_json_draft_v12');
+        }
+      } catch {
+        // El editor sigue funcionando si el almacenamiento no está disponible.
+      }
+    }
+    if (!initialCourse.modulos.some((module) => module.id === activeModule.id)) {
+      onSelectModule(initialCourse.modulos[0].id);
     }
     if (editingBlockId === 'FULL_COURSE') {
-      setJsonDraftText(JSON.stringify(INITIAL_BRANDING_COURSE_JSON, null, 2));
+      setJsonDraftText(JSON.stringify(initialCourse, null, 2));
     } else {
-      const defaultBlock = INITIAL_BRANDING_COURSE_JSON.blocks.find(
-        (b) => b.id === editingBlockId
-      );
-      if (defaultBlock) {
-        setJsonDraftText(JSON.stringify(defaultBlock, null, 2));
-      }
+      const defaultModule = initialCourse.modulos.find((module) => module.id === activeModule.id);
+      const defaultBlock = defaultModule && getModuleContents(defaultModule)
+        .find((content) => content.widget.id === editingBlockId)?.widget;
+      setEditingBlockId(defaultBlock ? editingBlockId : 'FULL_COURSE');
+      setJsonDraftText(JSON.stringify(defaultBlock || initialCourse, null, 2));
     }
   };
 
@@ -298,13 +367,14 @@ export default function BrandingCoursePlayer() {
     URL.revokeObjectURL(url);
   };
 
-  const lessons = courseDoc.lessons || [];
-  const progressPct =
-    lessons.length > 0 ? Math.round((completedLessons.length / lessons.length) * 100) : 0;
+  const completedCount = contents.filter((content) => completedContents.includes(content.id)).length;
+  const progressPct = contents.length ? Math.round((completedCount / contents.length) * 100) : 0;
 
-  const toggleLessonComplete = (id: string) => {
-    setCompletedLessons((prev) =>
-      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+  const toggleSectionComplete = (section: CourseSeccion) => {
+    const ids = section.contenidos.map((content) => content.id);
+    setCompletedContents((previous) => ids.every((id) => previous.includes(id))
+      ? previous.filter((id) => !ids.includes(id))
+      : [...new Set([...previous, ...ids])]
     );
   };
 
@@ -314,28 +384,32 @@ export default function BrandingCoursePlayer() {
     );
   };
 
-  const scrollToWidget = (elementId: string, lessonId?: string) => {
-    if (lessonId) setActiveLessonId(lessonId);
+  const scrollToWidget = (elementId: string) => {
+    const content = contents.find((entry) => entry.widget.id === elementId);
+    if (content) setActiveContentId(content.id);
     const container = mainScrollRef.current;
     const el = document.getElementById(elementId);
     if (container && el) {
-      const top = el.offsetTop - 56;
+      const headerHeight = document.getElementById('topbar-header')?.offsetHeight || 0;
+      const top = el.getBoundingClientRect().top - container.getBoundingClientRect().top +
+        container.scrollTop - headerHeight;
       container.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
     } else if (el) {
       el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
+    if (window.matchMedia('(max-width: 767px)').matches) setSidebarOpen(false);
   };
 
   // Extraer dinámicamente las preguntas del bloque scenario-quiz y el checklist del bloque pipeline-checklist en el JSON
-  const quizBlock = courseDoc.blocks.find((b) => b.type === 'scenario-quiz') as
+  const quizBlock = blocks.find((b) => b.type === 'scenario-quiz') as
     | Extract<CourseWidgetBlock, { type: 'scenario-quiz' }>
     | undefined;
   const scenarioQuestions = (quizBlock?.data as ScenarioQuizBlockData | undefined)?.questions || [];
 
-  const checklistBlock = courseDoc.blocks.find((b) => b.type === 'checklist') as
+  const checklistBlock = blocks.find((b) => b.type === 'checklist') as
     | Extract<CourseWidgetBlock, { type: 'checklist' }>
     | undefined;
-  const pipelineBlock = courseDoc.blocks.find((b) => b.type === 'pipeline-checklist') as
+  const pipelineBlock = blocks.find((b) => b.type === 'pipeline-checklist') as
     | Extract<CourseWidgetBlock, { type: 'pipeline-checklist' }>
     | undefined;
   const checklistItems =
@@ -352,7 +426,7 @@ export default function BrandingCoursePlayer() {
   }, 0);
 
   // Sumar también el puntaje de los nuevos widgets interactivos de la suite Quiz
-  const suiteQuizBlocks = courseDoc.blocks.filter((b) =>
+  const suiteQuizBlocks = blocks.filter((b) =>
     [
       'scenario-quiz-multiple',
       'scenario-quiz-drag-drop',
@@ -405,21 +479,17 @@ export default function BrandingCoursePlayer() {
     }));
   };
 
-  const handleSubmitQuizQuestion = (questionId: string) => {
+  const handleSubmitQuizQuestion = (blockId: string, questionId: string) => {
     if (!selectedOptions[questionId]) return;
     setSubmittedQuestions((prev) => ({ ...prev, [questionId]: true }));
-    if (!completedLessons.includes('l5')) {
-      setCompletedLessons((prev) => [...prev, 'l5']);
-    }
-    if (
-      activeScenarioIdx === scenarioQuestions.length - 1 &&
-      !completedLessons.includes('l11')
-    ) {
-      setCompletedLessons((prev) => [...prev, 'l11']);
+    const content = contents.find((entry) => entry.widget.id === blockId);
+    if (content) {
+      setCompletedContents((previous) =>
+        previous.includes(content.id) ? previous : [...previous, content.id]
+      );
     }
   };
 
-  const modulesList = Array.from(new Set(lessons.map((l) => l.module)));
   const effectiveInstitution = customInstitutionName || selectedBrand.institution;
 
   /* =========================================================
@@ -442,7 +512,7 @@ export default function BrandingCoursePlayer() {
     return block.bgColor || '#F4F5F7';
   };
 
-  const renderAtomicBlock = (block: CourseWidgetBlock, index: number) => {
+  const renderAtomicBlock = (block: CourseWidgetBlock, index: number, section: CourseSeccion) => {
     const isQuizSection = block.type === 'scenario-quiz';
     const isReportSection = block.type === 'final-report';
     const sectionBg = resolveBlockBackground(block);
@@ -470,7 +540,7 @@ export default function BrandingCoursePlayer() {
           blockType={block.type}
           summary={block.summary}
           index={index}
-          totalBlocks={courseDoc.blocks.length}
+          totalBlocks={section.contenidos.length}
           bgMode={block.bgMode || 'default'}
           bgColor={block.bgColor}
           resolvedBgColor={sectionBg}
@@ -478,8 +548,8 @@ export default function BrandingCoursePlayer() {
           onChangeBg={(nextMode, nextColor) =>
             updateBlockBackground(block.id, nextMode, nextColor)
           }
-          onMoveUp={() => moveBlock(index, -1)}
-          onMoveDown={() => moveBlock(index, 1)}
+          onMoveUp={() => moveBlock(section, index, -1)}
+          onMoveDown={() => moveBlock(section, index, 1)}
           onEditJson={() => openJsonEditorFor(block.id)}
         />
 
@@ -488,7 +558,7 @@ export default function BrandingCoursePlayer() {
             data={block.data}
             brand={selectedBrand}
             institutionName={effectiveInstitution}
-            totalLessons={lessons.length}
+            totalLessons={activeModule.lessions.length}
           />
         )}
 
@@ -517,6 +587,10 @@ export default function BrandingCoursePlayer() {
           />
         )}
 
+        {block.type === 'document-resources' && (
+          <WidgetDocumentResources data={block.data} brand={selectedBrand} />
+        )}
+
         {block.type === 'code-walkthrough' && (
           <WidgetCodeWalkthrough data={block.data} brand={selectedBrand} />
         )}
@@ -529,7 +603,7 @@ export default function BrandingCoursePlayer() {
           <WidgetAccordionDetails
             data={block.data}
             brand={selectedBrand}
-            onNavigateNext={(targetId, lessonId) => scrollToWidget(targetId, lessonId)}
+            onNavigateNext={scrollToWidget}
           />
         )}
 
@@ -580,10 +654,10 @@ export default function BrandingCoursePlayer() {
             selectedOptions={selectedOptions}
             submittedQuestions={submittedQuestions}
             onSelectOption={handleSelectQuizOption}
-            onSubmitQuestion={handleSubmitQuizQuestion}
+            onSubmitQuestion={(questionId) => handleSubmitQuizQuestion(block.id, questionId)}
             earnedQuizScore={baseEarnedQuizScore}
             maxQuizScore={baseMaxQuizScore}
-            onViewReport={(targetId) => scrollToWidget(targetId, 'l20')}
+            onViewReport={scrollToWidget}
           />
         )}
 
@@ -664,6 +738,10 @@ export default function BrandingCoursePlayer() {
             blockId={block.id}
             data={block.data}
             brand={selectedBrand}
+            isEditMode={isEditMode}
+            onUpdateData={(data) => saveWidgetEdit(block.id, (current) =>
+              current.type === 'scenario-quiz-image-hotspot' ? { ...current, data } : current
+            )}
             onScoreChange={handleExtraQuizScoreChange}
           />
         )}
@@ -691,7 +769,7 @@ export default function BrandingCoursePlayer() {
             data={block.data}
             brand={selectedBrand}
             institutionName={effectiveInstitution}
-            courseTitle={courseDoc.title}
+            courseTitle={activeModule.title}
             globalScore={globalScore}
             earnedQuizScore={earnedQuizScore}
             maxQuizScore={maxQuizScore}
@@ -703,21 +781,21 @@ export default function BrandingCoursePlayer() {
             checkedItemsCount={checkedItems.length}
             totalChecklistCount={checklistItems.length}
             progressPct={progressPct}
-            completedLessonsCount={completedLessons.length}
-            totalLessonsCount={lessons.length}
+            completedLessonsCount={completedCount}
+            totalLessonsCount={contents.length}
             onJumpToScenario={(idx) => {
               setActiveScenarioIdx(idx);
-              scrollToWidget(quizBlock?.id || 'widget-quiz', 'l5');
+              if (quizBlock) scrollToWidget(quizBlock.id);
             }}
             onResetEvaluation={() => {
               setSelectedOptions({});
               setSubmittedQuestions({});
               setExtraQuizScores({});
               setActiveScenarioIdx(0);
-              scrollToWidget(quizBlock?.id || 'widget-quiz', 'l5');
+              if (quizBlock) scrollToWidget(quizBlock.id);
             }}
             onCompleteAllLessons={() => {
-              setCompletedLessons(lessons.map((l) => l.id));
+              setCompletedContents(contents.map((content) => content.id));
             }}
           />
         )}
@@ -727,6 +805,7 @@ export default function BrandingCoursePlayer() {
 
   return (
     <div
+      className="relative max-md:[&>#sidebar-index]:absolute max-md:[&>#sidebar-index]:inset-s-0 max-md:[&>#sidebar-index]:top-0 max-md:[&>#sidebar-index]:pt-14"
       style={{
         display: 'flex',
         flexDirection: 'row',
@@ -739,336 +818,20 @@ export default function BrandingCoursePlayer() {
       }}
     >
       {/* =========================================================
-          PARTE 1 (IZQUIERDA): SIDEBAR FIJO DE ÍNDICE PASO A PASO (~280px)
+          PARTE 1 (IZQUIERDA): SIDEBAR DE ÍNDICE (Lession -> Seccion -> Contenidos)
          ========================================================= */}
-      <aside
-        id="sidebar-index"
-        style={{
-          width: sidebarOpen ? '280px' : '0px',
-          minWidth: sidebarOpen ? '280px' : '0px',
-          maxWidth: sidebarOpen ? '280px' : '0px',
-          height: '100vh',
-          backgroundColor: '#FFFFFF',
-          borderRight: sidebarOpen ? '1px solid #E2E8F0' : 'none',
-          display: 'flex',
-          flexDirection: 'column',
-          overflow: 'hidden',
-          transition: 'width 0.25s ease, min-width 0.25s ease, max-width 0.25s ease',
-          flexShrink: 0,
-          zIndex: 30,
-          outline: isEditMode && sidebarOpen ? '2px dashed #F59E0B' : 'none',
-          outlineOffset: '-2px',
-        }}
-      >
-        {isEditMode && (
-          <div
-            style={{
-              backgroundColor: '#0F172A',
-              color: '#FDE047',
-              fontSize: '10px',
-              fontWeight: 900,
-              fontFamily: '"JetBrains Mono", Consolas, monospace',
-              padding: '5px 12px',
-              borderBottom: '1px dashed #F59E0B',
-              display: 'flex',
-              justifyContent: 'space-between',
-            }}
-          >
-            <span>✏️ SidebarIndice</span>
-            <span style={{ color: '#38BDF8' }}>#sidebar-index</span>
-          </div>
-        )}
-
-        <div
-          style={{
-            backgroundColor: selectedBrand.primary,
-            color: '#FFFFFF',
-            padding: '22px 20px 18px 20px',
-            flexShrink: 0,
-          }}
-        >
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              marginBottom: '10px',
-            }}
-          >
-            <span
-              style={{
-                fontSize: '10px',
-                fontWeight: 800,
-                letterSpacing: '0.08em',
-                textTransform: 'uppercase',
-                backgroundColor: 'rgba(0,0,0,0.2)',
-                padding: '3px 8px',
-                borderRadius: '4px',
-              }}
-            >
-              {effectiveInstitution}
-            </span>
-            <button
-              type="button"
-              onClick={() => setShowSearch((s) => !s)}
-              style={{
-                background: 'transparent',
-                border: 'none',
-                color: '#FFFFFF',
-                cursor: 'pointer',
-                padding: '4px',
-              }}
-              title="Buscar en el curso"
-            >
-              <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2.5}
-                  d="M21 21l-4.35-4.35m1.85-5.15a7 7 0 11-14 0 7 7 0 0114 0z"
-                />
-              </svg>
-            </button>
-          </div>
-
-          <h1
-            style={{
-              fontSize: '19px',
-              fontWeight: 800,
-              lineHeight: 1.25,
-              margin: '0 0 20px 0',
-              color: '#FFFFFF',
-            }}
-          >
-            {courseDoc.title}
-          </h1>
-
-          {showSearch && (
-            <div style={{ marginBottom: '14px' }}>
-              <input
-                type="search"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Buscar lección..."
-                style={{
-                  width: '100%',
-                  padding: '6px 10px',
-                  borderRadius: '4px',
-                  border: 'none',
-                  fontSize: '12px',
-                  color: '#1E293B',
-                  backgroundColor: '#FFFFFF',
-                }}
-              />
-            </div>
-          )}
-
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              fontSize: '11px',
-              fontWeight: 800,
-              letterSpacing: '0.04em',
-              textTransform: 'uppercase',
-              marginBottom: '8px',
-            }}
-          >
-            <span>{progressPct}% COMPLETA</span>
-            <span>
-              {completedLessons.length}/{lessons.length}
-            </span>
-          </div>
-          <div
-            style={{
-              width: '100%',
-              height: '5px',
-              backgroundColor: 'rgba(255, 255, 255, 0.35)',
-              borderRadius: '999px',
-              overflow: 'hidden',
-            }}
-          >
-            <div
-              style={{
-                width: `${progressPct}%`,
-                height: '100%',
-                backgroundColor: '#FFFFFF',
-                transition: 'width 0.4s ease',
-              }}
-            />
-          </div>
-        </div>
-
-        <div
-          style={{
-            flex: 1,
-            overflowY: 'auto',
-            backgroundColor: '#FFFFFF',
-          }}
-        >
-          {modulesList.map((modName) => {
-            const lessonsInMod = lessons.filter(
-              (l) =>
-                l.module === modName &&
-                (!searchTerm.trim() ||
-                  l.title.toLowerCase().includes(searchTerm.toLowerCase()))
-            );
-            if (lessonsInMod.length === 0) return null;
-
-            return (
-              <div key={modName}>
-                <div
-                  style={{
-                    padding: '14px 18px 10px 18px',
-                    borderBottom: '1px solid #F1F5F9',
-                    backgroundColor: '#F8FAFC',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    fontSize: '9.5px',
-                    fontWeight: 800,
-                    letterSpacing: '0.04em',
-                    color: '#1E293B',
-                    textTransform: 'uppercase',
-                  }}
-                >
-                  <span>{modName}</span>
-                  <span style={{ fontSize: '11px', color: '#64748B' }}>⌄</span>
-                </div>
-
-                {lessonsInMod.map((lesson) => {
-                  const isCompleted = completedLessons.includes(lesson.id);
-                  const isActive = activeLessonId === lesson.id;
-
-                  return (
-                    <div
-                      key={lesson.id}
-                      style={{
-                        position: 'relative',
-                        borderBottom: '1px solid #F1F5F9',
-                        backgroundColor: isActive ? '#F8FAFC' : '#FFFFFF',
-                        padding: '15px 18px',
-                        display: 'flex',
-                        alignItems: 'flex-start',
-                        justifyContent: 'space-between',
-                        gap: '10px',
-                      }}
-                    >
-                      {isActive && (
-                        <div
-                          style={{
-                            position: 'absolute',
-                            left: 0,
-                            top: 0,
-                            bottom: 0,
-                            width: '4px',
-                            backgroundColor: selectedBrand.primary,
-                          }}
-                        />
-                      )}
-
-                      <button
-                        type="button"
-                        onClick={() => scrollToWidget(lesson.targetId, lesson.id)}
-                        style={{
-                          flex: 1,
-                          textAlign: 'left',
-                          background: 'transparent',
-                          border: 'none',
-                          padding: 0,
-                          cursor: 'pointer',
-                        }}
-                      >
-                        <div
-                          style={{
-                            fontSize: '10.5px',
-                            color: '#64748B',
-                            marginBottom: '5px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '5px',
-                          }}
-                        >
-                          <span>≡</span>
-                        </div>
-                        <div
-                          style={{
-                            fontSize: '13px',
-                            lineHeight: 1.38,
-                            fontWeight: isActive ? 700 : 500,
-                            color: '#1E293B',
-                          }}
-                        >
-                          {lesson.title}
-                        </div>
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={() => toggleLessonComplete(lesson.id)}
-                        title={
-                          isCompleted
-                            ? 'Lección completada (clic para cambiar)'
-                            : 'Marcar como completada'
-                        }
-                        style={{
-                          background: 'transparent',
-                          border: 'none',
-                          padding: 0,
-                          cursor: 'pointer',
-                          flexShrink: 0,
-                          marginTop: '2px',
-                        }}
-                      >
-                        {isCompleted ? (
-                          <span
-                            style={{
-                              width: '16px',
-                              height: '16px',
-                              borderRadius: '999px',
-                              backgroundColor: selectedBrand.primary,
-                              color: '#FFFFFF',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              fontSize: '10px',
-                              fontWeight: 900,
-                            }}
-                          >
-                            ✓
-                          </span>
-                        ) : isActive ? (
-                          <span
-                            style={{
-                              width: '16px',
-                              height: '16px',
-                              borderRadius: '999px',
-                              border: '2px solid #CBD5E1',
-                              borderTopColor: selectedBrand.primary,
-                              borderRightColor: selectedBrand.primary,
-                              display: 'block',
-                            }}
-                          />
-                        ) : (
-                          <span
-                            style={{
-                              width: '16px',
-                              height: '16px',
-                              borderRadius: '999px',
-                              border: '1.5px solid #CBD5E1',
-                              display: 'block',
-                            }}
-                          />
-                        )}
-                      </button>
-                    </div>
-                  );
-                })}
-              </div>
-            );
-          })}
-        </div>
-      </aside>
+      <WidgetSidebarIndice
+        sidebarOpen={sidebarOpen}
+        isEditMode={isEditMode}
+        brand={selectedBrand}
+        institutionName={effectiveInstitution}
+        moduleTitle={activeModule.title}
+        lessions={activeModule.lessions}
+        activeContentId={activeContentId}
+        completedContents={completedContents}
+        onSelectContent={scrollToWidget}
+        onToggleSectionComplete={toggleSectionComplete}
+      />
 
       {/* =========================================================
           PARTE 2 (DERECHA): LIENZO DEL CURSO CON SCROLL INDEPENDIENTE
@@ -1077,6 +840,7 @@ export default function BrandingCoursePlayer() {
         ref={mainScrollRef}
         style={{
           flex: 1,
+          minWidth: 0,
           height: '100vh',
           overflowY: 'auto',
           overflowX: 'hidden',
@@ -1087,6 +851,7 @@ export default function BrandingCoursePlayer() {
         {/* Barra Superior Flotante */}
         <div
           id="topbar-header"
+          className="max-md:z-[35]!"
           style={{
             position: 'sticky',
             top: 0,
@@ -1103,6 +868,8 @@ export default function BrandingCoursePlayer() {
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
             <button
               type="button"
+              aria-controls="sidebar-index"
+              aria-expanded={sidebarOpen}
               onClick={() => setSidebarOpen((o) => !o)}
               style={{
                 width: '32px',
@@ -1121,6 +888,19 @@ export default function BrandingCoursePlayer() {
             >
               ☰
             </button>
+
+            {courseDoc.modulos.length > 1 && (
+              <select
+                aria-label="Módulo del curso"
+                value={activeModule.id}
+                onChange={(event) => onSelectModule(event.target.value)}
+                style={{ maxWidth: '260px', padding: '6px', border: '1px solid #CBD5E1', borderRadius: '6px' }}
+              >
+                {courseDoc.modulos.map((module) => (
+                  <option key={module.id} value={module.id}>{module.title}</option>
+                ))}
+              </select>
+            )}
 
             {/* Icono + Nombre de la Institución */}
             <div
@@ -1199,7 +979,7 @@ export default function BrandingCoursePlayer() {
                     fontFamily: '"JetBrains Mono", Consolas, monospace',
                   }}
                 >
-                  ✏️ MODO EDITOR (?edit=true) · {courseDoc.blocks.length} bloques JSON
+                  ✏️ MODO EDITOR (?edit=true) · {blocks.length} bloques JSON
                 </span>
 
                 <button
@@ -1270,7 +1050,16 @@ export default function BrandingCoursePlayer() {
         {/* =========================================================
             RENDERIZADO DINÁMICO DE LOS WIDGETS ATÓMICOS DESDE JSON
            ========================================================= */}
-        {courseDoc.blocks.map((block, index) => renderAtomicBlock(block, index))}
+        {activeModule.lessions.map((lession) => (
+          <div key={lession.id}>
+            {lession.secciones.map((section) => (
+              <div key={section.id}>
+                {section.contenidos.map(({ widget }, index) => renderAtomicBlock(widget, index, section))}
+              </div>
+            ))}
+          </div>
+        ))}
+        {contents.length === 0 && <p style={{ padding: '24px' }}>Este módulo aún no tiene contenidos.</p>}
       </div>
 
       {/* =========================================================
@@ -1371,7 +1160,7 @@ export default function BrandingCoursePlayer() {
               }}
             >
               <option value="FULL_COURSE">📦 Curso Completo (CourseDocumentJSON)</option>
-              {courseDoc.blocks.map((b, i) => (
+              {blocks.map((b, i) => (
                 <option key={b.id} value={b.id}>
                   {i + 1}. {b.componentName} (#{b.id})
                 </option>

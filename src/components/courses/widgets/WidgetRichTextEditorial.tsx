@@ -1,14 +1,57 @@
-import { useState, useEffect } from 'react';
-import { useEditor, EditorContent } from '@tiptap/react';
+import { createContext, useContext, useState, useEffect } from 'react';
+import { useEditor, EditorContent, NodeViewContent, NodeViewWrapper, ReactNodeViewRenderer } from '@tiptap/react';
+import type { NodeViewProps } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import Underline from '@tiptap/extension-underline';
+import CodeBlock from '@tiptap/extension-code-block';
 import TextAlign from '@tiptap/extension-text-align';
 import Highlight from '@tiptap/extension-highlight';
-import Link from '@tiptap/extension-link';
 import { TextStyle } from '@tiptap/extension-text-style';
 import { Color } from '@tiptap/extension-color';
 import type { BrandPreset, RichTextEditorialBlockData } from '../../../data/courses/courseJsonTypes';
 import { ApaReferenceFooter } from './ZoomableFigure';
+import { CodeSnippet } from '../molecules/CodeSnippet';
+import { langColors } from '../../../lib/codeHighlight';
+
+const CodeBlockEditing = createContext(false);
+
+function EditorialCodeBlockView({ node, updateAttributes }: NodeViewProps) {
+  const isEditing = useContext(CodeBlockEditing);
+  const language = node.attrs.language as string | null;
+  const languages = Object.keys(langColors);
+
+  return (
+    <NodeViewWrapper>
+      {isEditing ? (
+        <label className="mt-3 inline-flex flex-wrap items-center gap-2 text-sm font-semibold" contentEditable={false}>
+          Lenguaje del código
+          <select
+            value={language ?? ''}
+            onChange={(event) => updateAttributes({ language: event.target.value || null })}
+            className="rounded border border-slate-300 bg-white px-2 py-1"
+          >
+            <option value="">Detectar automáticamente</option>
+            <option value="text">Texto sin formato</option>
+            {language && language !== 'text' && !languages.includes(language) && (
+              <option value={language}>{language}</option>
+            )}
+            {languages.map((lang) => <option key={lang} value={lang}>{lang.toUpperCase()}</option>)}
+          </select>
+        </label>
+      ) : (
+        <div contentEditable={false}>
+          <CodeSnippet code={node.textContent} language={language ?? undefined} />
+        </div>
+      )}
+      <NodeViewContent<'pre'> as="pre" hidden={!isEditing} />
+    </NodeViewWrapper>
+  );
+}
+
+const EditorialCodeBlock = CodeBlock.extend({
+  addNodeView() {
+    return ReactNodeViewRenderer(EditorialCodeBlockView, { contentDOMElementTag: 'code' });
+  },
+});
 
 export interface WidgetRichTextEditorialProps {
   data: RichTextEditorialBlockData;
@@ -45,18 +88,19 @@ export function WidgetRichTextEditorial({
     immediatelyRender: false,
     extensions: [
       StarterKit.configure({
+        codeBlock: false,
         heading: {
           levels: [1, 2, 3],
         },
+        link: {
+          openOnClick: false,
+        },
       }),
-      Underline,
+      EditorialCodeBlock,
       TextStyle,
       Color,
       Highlight.configure({
         multicolor: true,
-      }),
-      Link.configure({
-        openOnClick: false,
       }),
       TextAlign.configure({
         types: ['heading', 'paragraph'],
@@ -76,7 +120,7 @@ export function WidgetRichTextEditorial({
   // Sincronizar modo editable cuando cambia isEditingText
   useEffect(() => {
     if (!editor) return;
-    editor.setEditable(isEditingText);
+    editor.setEditable(isEditingText, false);
   }, [editor, isEditingText]);
 
   // Si el JSON externo cambia (por ejemplo desde el drawer JSON), sincronizar el contenido si no tiene el foco activo
@@ -700,7 +744,9 @@ export function WidgetRichTextEditorial({
           transition: 'all 0.2s ease',
         }}
       >
-        <EditorContent editor={editor} />
+        <CodeBlockEditing.Provider value={isEditingText}>
+          <EditorContent editor={editor} />
+        </CodeBlockEditing.Provider>
 
         {data.apaCitation && (
           <div style={{ marginTop: '24px', paddingTop: '14px', borderTop: '1px solid #F1F5F9' }}>

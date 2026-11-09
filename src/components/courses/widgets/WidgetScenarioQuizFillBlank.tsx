@@ -1,9 +1,9 @@
-import { useState } from 'react';
 import type {
   BrandPreset,
   ScenarioQuizFillBlankBlockData,
 } from '../../../data/courses/courseJsonTypes';
 import { QuizCardShell } from './QuizCardShell';
+import { useQuizAnswer, useQuizSubmission } from './QuizAttemptContext';
 
 export interface WidgetScenarioQuizFillBlankProps {
   blockId: string;
@@ -18,8 +18,8 @@ export function WidgetScenarioQuizFillBlank({
   brand,
   onScoreChange,
 }: WidgetScenarioQuizFillBlankProps) {
-  const [answers, setAnswers] = useState<Record<string, string>>({});
-  const [submitted, setSubmitted] = useState(false);
+  const [answers, setAnswers] = useQuizAnswer<Record<string, string>>({});
+  const { submitted, setSubmitted } = useQuizSubmission();
 
   const blankSegments = data.segments.filter((s) => s.type === 'blank' && s.blankId);
   const allFilled = blankSegments.every((b) => Boolean(b.blankId && answers[b.blankId]));
@@ -123,7 +123,7 @@ export function WidgetScenarioQuizFillBlank({
       )}
 
       <div style={{ marginTop: '24px', display: 'flex', justifyContent: 'flex-end' }}>
-        <button
+        <button data-quiz-check
           type="button"
           onClick={handleVerify}
           disabled={!allFilled}

@@ -1,0 +1,23 @@
+---
+import CourseAppLayout from '../../../layouts/CourseAppLayout.astro';
+import CoursesCatalog from '../../../components/courses/CoursesCatalog';
+import { courses } from '../../../data/courses';
+---
+
+<CourseAppLayout
+  page="courses"
+  title="Catálogo de cursos"
+  description="Explora todos los cursos de programación, desarrollo web, bases de datos e ingeniería de software de Café y Código."
+>
+  <div class="academy-wrap academy-catalog-page">
+    <header class="academy-catalog-heading">
+      <div>
+        <p class="academy-kicker">Biblioteca de aprendizaje</p>
+        <h1>Catálogo de cursos</h1>
+        <p class="academy-lede">Elige qué estudiar y encuentra un camino para empezar.</p>
+      </div>
+      <div class="academy-catalog-total"><strong>{courses.length}</strong><span>cursos en el catálogo</span></div>
+    </header>
+    <CoursesCatalog client:load variant="academy" />
+  </div>
+</CourseAppLayout>

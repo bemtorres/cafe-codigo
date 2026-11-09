@@ -19,6 +19,11 @@ export {
 } from './WidgetVideoEditorial';
 
 export {
+  WidgetDocumentResources,
+  type WidgetDocumentResourcesProps,
+} from './WidgetDocumentResources';
+
+export {
   WidgetCodeWalkthrough,
   type WidgetCodeWalkthroughProps,
 } from './WidgetCodeWalkthrough';
@@ -82,3 +87,8 @@ export {
   WidgetRichTextEditorial,
   type WidgetRichTextEditorialProps,
 } from './WidgetRichTextEditorial';
+
+export {
+  WidgetSidebarIndice,
+  type WidgetSidebarIndiceProps,
+} from './WidgetSidebarIndice';

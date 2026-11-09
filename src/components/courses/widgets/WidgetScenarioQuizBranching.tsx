@@ -1,9 +1,9 @@
-import { useState } from 'react';
 import type {
   BrandPreset,
   ScenarioQuizBranchingBlockData,
 } from '../../../data/courses/courseJsonTypes';
 import { QuizCardShell } from './QuizCardShell';
+import { useQuizAnswer, useQuizSubmission } from './QuizAttemptContext';
 
 export interface WidgetScenarioQuizBranchingProps {
   blockId: string;
@@ -18,47 +18,33 @@ export function WidgetScenarioQuizBranching({
   brand,
   onScoreChange,
 }: WidgetScenarioQuizBranchingProps) {
-  const [currentNodeId, setCurrentNodeId] = useState(data.initialNodeId);
-  const [history, setHistory] = useState<
-    { nodeId: string; choiceLabel: string; consequence: string; isOptimal: boolean }[]
-  >([]);
-  const [finishedScore, setFinishedScore] = useState<number | null>(null);
+  const [path, setPath] = useQuizAnswer<string[]>([]);
+  const { mode } = useQuizSubmission();
+  const showFeedback = mode !== 'exam';
+  let currentNode = data.nodes.find((node) => node.id === data.initialNodeId);
+  let finishedScore: number | null = null;
+  const history = [];
 
-  const currentNode =
-    data.nodes.find((n) => n.id === currentNodeId) || data.nodes[0];
+  for (const id of path) {
+    const choice = currentNode?.choices.find((entry) => entry.id === id);
+    if (!choice) break;
+    history.push(choice);
+    if (!choice.nextNodeId) {
+      finishedScore = Math.round((choice.impactScore / 100) * data.points);
+      break;
+    }
+    currentNode = data.nodes.find((node) => node.id === choice.nextNodeId);
+  }
 
-  const handlePickChoice = (choice: {
-    id: string;
-    label: string;
-    consequenceText: string;
-    nextNodeId?: string;
-    impactScore: number;
-    isOptimal: boolean;
-  }) => {
-    const nextHistory = [
-      ...history,
-      {
-        nodeId: currentNode.id,
-        choiceLabel: choice.label,
-        consequence: choice.consequenceText,
-        isOptimal: choice.isOptimal,
-      },
-    ];
-    setHistory(nextHistory);
-
-    if (choice.nextNodeId) {
-      setCurrentNodeId(choice.nextNodeId);
-    } else {
-      const earned = Math.round((choice.impactScore / 100) * data.points);
-      setFinishedScore(earned);
-      onScoreChange?.(blockId, earned, data.points);
+  const handlePickChoice = (choice: NonNullable<typeof currentNode>['choices'][number]) => {
+    setPath([...path, choice.id]);
+    if (!choice.nextNodeId) {
+      onScoreChange?.(blockId, Math.round((choice.impactScore / 100) * data.points), data.points);
     }
   };
 
   const resetBranching = () => {
-    setCurrentNodeId(data.initialNodeId);
-    setHistory([]);
-    setFinishedScore(null);
+    setPath([]);
     onScoreChange?.(blockId, 0, data.points);
   };
 
@@ -70,7 +56,7 @@ export function WidgetScenarioQuizBranching({
       context={data.context}
       brand={brand}
       earnedPoints={finishedScore ?? 0}
-      submitted={finishedScore !== null}
+      submitted={mode === 'review' || (showFeedback && finishedScore !== null)}
     >
       {/* Historial de decisiones tomadas */}
       {history.length > 0 && (
@@ -88,17 +74,19 @@ export function WidgetScenarioQuizBranching({
               style={{
                 padding: '12px 16px',
                 borderRadius: '8px',
-                backgroundColor: h.isOptimal ? '#ECFDF5' : '#FEF3C7',
-                borderLeft: `4px solid ${h.isOptimal ? '#10B981' : '#F59E0B'}`,
+                backgroundColor: !showFeedback ? '#F8FAFC' : h.isOptimal ? '#ECFDF5' : '#FEF3C7',
+                borderLeft: `4px solid ${!showFeedback ? '#CBD5E1' : h.isOptimal ? '#10B981' : '#F59E0B'}`,
                 fontSize: '13px',
               }}
             >
               <div style={{ fontWeight: 800, color: '#0F172A' }}>
-                Decisión {i + 1}: {h.choiceLabel}
+                Decisión {i + 1}: {h.label}
               </div>
-              <div style={{ color: '#334155', marginTop: '4px' }}>
-                ↳ <strong>Consecuencia:</strong> {h.consequence}
-              </div>
+              {showFeedback && (
+                <div style={{ color: '#334155', marginTop: '4px' }}>
+                  ↳ <strong>Consecuencia:</strong> {h.consequenceText}
+                </div>
+              )}
             </div>
           ))}
         </div>
@@ -178,11 +166,13 @@ export function WidgetScenarioQuizBranching({
         >
           <div>
             <div style={{ fontSize: '15px', fontWeight: 900, color: '#0F172A' }}>
-              Simulación de Rol Finalizada
+              {mode === 'exam' ? 'Decisiones guardadas' : 'Simulación de rol finalizada'}
             </div>
-            <div style={{ fontSize: '13px', color: '#475569' }}>
-              Puntaje alcanzado en este árbol de decisión: {finishedScore} de {data.points} pts.
-            </div>
+            {showFeedback && (
+              <div style={{ fontSize: '13px', color: '#475569' }}>
+                Puntaje alcanzado en este árbol de decisión: {finishedScore} de {data.points} pts.
+              </div>
+            )}
           </div>
           <button
             type="button"
@@ -198,7 +188,7 @@ export function WidgetScenarioQuizBranching({
               cursor: 'pointer',
             }}
           >
-            ↺ Explorar otra rama de decisión
+            {mode === 'exam' ? 'Cambiar decisiones' : '↺ Explorar otra rama de decisión'}
           </button>
         </div>
       )}

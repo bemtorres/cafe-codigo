@@ -1,10 +1,10 @@
-import { useState } from 'react';
 import type {
   BrandPreset,
   ScenarioQuizImageChoiceBlockData,
 } from '../../../data/courses/courseJsonTypes';
 import { ZoomableFigure, ApaReferenceFooter } from './ZoomableFigure';
 import { QuizCardShell } from './QuizCardShell';
+import { useQuizAnswer, useQuizSubmission } from './QuizAttemptContext';
 
 export interface WidgetScenarioQuizImageChoiceProps {
   blockId: string;
@@ -19,8 +19,8 @@ export function WidgetScenarioQuizImageChoice({
   brand,
   onScoreChange,
 }: WidgetScenarioQuizImageChoiceProps) {
-  const [selectedCardId, setSelectedCardId] = useState<string>('');
-  const [submitted, setSubmitted] = useState(false);
+  const [selectedCardId, setSelectedCardId] = useQuizAnswer<string>('');
+  const { submitted, setSubmitted } = useQuizSubmission();
 
   const chosenCard = data.cards.find((c) => c.id === selectedCardId);
   const earnedPoints = submitted && chosenCard?.isCorrect ? data.points : 0;
@@ -192,7 +192,7 @@ export function WidgetScenarioQuizImageChoice({
       )}
 
       <div style={{ marginTop: '24px', display: 'flex', justifyContent: 'flex-end' }}>
-        <button
+        <button data-quiz-check
           type="button"
           onClick={handleVerify}
           disabled={!selectedCardId}

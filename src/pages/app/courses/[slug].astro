@@ -1,0 +1,191 @@
+---
+import type { GetStaticPaths } from "astro";
+import CourseAppLayout from "../../../layouts/CourseAppLayout.astro";
+import { courses } from "../../../data/courses";
+import { courseHomePath } from "../../../lib/coursePaths";
+
+export const getStaticPaths = (() =>
+  courses
+    .filter((course) => course.status === "available")
+    .map((course) => ({
+      params: { slug: course.slug },
+      props: { course },
+    }))) satisfies GetStaticPaths;
+
+const { course } = Astro.props;
+const lessons = course.lessons ?? [];
+const firstLesson = lessons[0];
+const embeddedExercises: Partial<Record<string, Record<string, string>>> = {
+  pseint: {
+    variables: "Ejercicios de variables",
+    matematicas: "Ejercicios de operaciones matemáticas",
+    condicionales: "Ejercicios con Si",
+    repeticion: "Ejercicios de repetición",
+  },
+  python: { funciones: "Ejercicios prácticos de funciones" },
+  django: {
+    "admin-crud": "Ejercicios de Django Admin",
+    seguridad: "Ejercicios de seguridad",
+  },
+  excel: { graficos: "Ejercicios de gráficos" },
+  "excel-intermedio": {
+    "variables-tipos": "Ejercicios de variables y tipos en VBA",
+  },
+};
+
+const practice = lessons.flatMap((lesson) => {
+  const embeddedTitle = embeddedExercises[course.slug]?.[lesson.slug];
+  if (embeddedTitle)
+    return [{ title: embeddedTitle, href: lesson.href, embedded: true }];
+  if (
+    /práctic[ao]|ejercicios?|retos?|proyectos?|desafíos?/i.test(lesson.title)
+  ) {
+    return [{ title: lesson.title, href: lesson.href, embedded: false }];
+  }
+  return [];
+});
+
+if (course.slug === "java") {
+  practice.unshift({
+    title: "Taller práctico de programación orientada a objetos",
+    href: "/course/java/poo-completed/",
+    embedded: false,
+  });
+}
+---
+
+<CourseAppLayout
+  page="course"
+  title={course.name}
+  description={course.description}
+>
+  <div class="academy-wrap academy-detail">
+    <a class="academy-detail-back" href="/app/courses/">← Todos los cursos</a>
+
+    <header class="academy-detail-hero">
+      <div class="academy-detail-intro">
+        <p class="academy-kicker">Curso de Café y Código</p>
+        <h1>{course.name}</h1>
+        <p class="academy-lede">{course.description}</p>
+        <ul class="academy-detail-meta" aria-label="Datos del curso">
+          <li>Free · $0 CLP</li>
+          <li>
+            {lessons.length}
+            {lessons.length === 1 ? "lección" : "lecciones"}
+          </li>
+          {course.requiresPassword && <li>Acceso con clave</li>}
+        </ul>
+        <a
+          class="academy-button"
+          href={course.requiresPassword
+            ? courseHomePath(course.slug)
+            : (firstLesson?.href ?? courseHomePath(course.slug))}
+        >
+          {firstLesson ? "Empezar curso" : "Abrir curso"}
+          <span aria-hidden="true">→</span>
+        </a>
+      </div>
+      {
+        course.image && (
+          <div class="academy-detail-media">
+            <img
+              src={course.image}
+              alt=""
+              width="640"
+              height="360"
+              decoding="async"
+            />
+            <div class="academy-detail-instructor">
+              <img
+                src="/images/instructor-cafeycodigo.webp"
+                alt=""
+                width="36"
+                height="36"
+              />
+              <span>
+                <>
+                  <strong>Café y Código</strong>
+                  <small>Instructor</small>
+                </>
+              </span>
+            </div>
+          </div>
+        )
+      }
+    </header>
+
+    <nav class="academy-detail-nav" aria-label="Secciones del curso">
+      <a href="#temario">Temario</a>
+      <a href="#ejercicios">Ejercicios</a>
+    </nav>
+
+    <div class="academy-detail-content">
+      <section id="temario" aria-labelledby="academy-syllabus">
+        <h2 id="academy-syllabus">Temario</h2>
+        {
+          lessons.length ? (
+            <ol class="academy-syllabus">
+              {lessons.map((lesson, index) => (
+                <li class:list={[{ "academy-syllabus-sub": lesson.isSubItem }]}>
+                  <a href={lesson.href}>
+                    <span class="academy-syllabus-index" aria-hidden="true">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <span>
+                      {lesson.title.replace(/^\d+(?:\.\d+)*[.)]?\s+/, "")}
+                    </span>
+                    <span aria-hidden="true">→</span>
+                  </a>
+                </li>
+              ))}
+            </ol>
+          ) : (
+            <p>
+              Consulta los contenidos en la{" "}
+              <a href={courseHomePath(course.slug)}>página del curso</a>.
+            </p>
+          )
+        }
+      </section>
+
+      <section
+        id="ejercicios"
+        class="academy-practice"
+        aria-labelledby="academy-practice-title"
+      >
+        <h2 id="academy-practice-title">Ejercicios</h2>
+        {
+          practice.length ? (
+            <ul class="academy-practice-list">
+              {practice.map(({ href, title, embedded }) => (
+                <li>
+                  <a href={href}>
+                    <span>
+                      <strong>{title}</strong>
+                      <small>
+                        {embedded
+                          ? "Dentro de la lección"
+                          : "Actividad del curso"}
+                      </small>
+                    </span>
+                    <span aria-hidden="true">↗</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <>
+              <p>
+                Consulta las lecciones para ver las actividades incluidas en
+                cada una.
+              </p>
+              <a class="academy-text-link" href="#temario">
+                Ver lecciones <span aria-hidden="true">→</span>
+              </a>
+            </>
+          )
+        }
+      </section>
+    </div>
+  </div>
+</CourseAppLayout>

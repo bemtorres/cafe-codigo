@@ -1,9 +1,9 @@
-import { useState } from 'react';
 import type {
   BrandPreset,
   ScenarioQuizMultipleBlockData,
 } from '../../../data/courses/courseJsonTypes';
 import { QuizCardShell } from './QuizCardShell';
+import { useQuizAnswer, useQuizSubmission } from './QuizAttemptContext';
 
 export interface WidgetScenarioQuizMultipleProps {
   blockId: string;
@@ -18,8 +18,8 @@ export function WidgetScenarioQuizMultiple({
   brand,
   onScoreChange,
 }: WidgetScenarioQuizMultipleProps) {
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  const [submitted, setSubmitted] = useState(false);
+  const [selectedIds, setSelectedIds] = useQuizAnswer<string[]>([]);
+  const { submitted, setSubmitted } = useQuizSubmission();
 
   const toggleOption = (id: string) => {
     setSubmitted(false);
@@ -195,7 +195,7 @@ export function WidgetScenarioQuizMultiple({
         >
           Reiniciar
         </button>
-        <button
+        <button data-quiz-check
           type="button"
           onClick={handleVerify}
           disabled={selectedIds.length === 0}

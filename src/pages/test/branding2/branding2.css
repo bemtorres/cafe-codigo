@@ -1,0 +1,44 @@
+/* Hallmark · course reader · academic editorial · INACAP red · pre-emit critique: P4 H5 E4 S5 R5 V4 */
+html:has(#django-presentacion),
+body:has(#django-presentacion) {
+  overflow-x: clip !important;
+}
+
+#django-presentacion {
+  --cover-text: #fff;
+  --cover-secondary: #ffe4e8;
+  --cover-code: #800c1a;
+  overflow-wrap: anywhere;
+}
+
+#django-presentacion > div {
+  padding: clamp(36px, 7vw, 84px) clamp(20px, 5vw, 44px) !important;
+}
+
+#django-presentacion h3 {
+  color: var(--cover-text) !important;
+  font-size: clamp(2rem, 5vw, 3.5rem) !important;
+}
+
+#django-presentacion span,
+#django-presentacion p,
+#django-presentacion .ProseMirror p {
+  color: var(--cover-secondary) !important;
+}
+
+#django-presentacion .ProseMirror strong {
+  color: var(--cover-text);
+}
+
+#django-presentacion .ProseMirror code {
+  color: var(--cover-code);
+}
+
+section[id^='django-leccion-'] > div {
+  padding: clamp(24px, 4vw, 44px) clamp(16px, 4vw, 28px) !important;
+}
+
+section[id^='django-leccion-'] h3,
+#django-proyecto-checklist h4 {
+  overflow-wrap: anywhere;
+}
