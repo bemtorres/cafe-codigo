@@ -1,0 +1,11 @@
+---
+import CourseAppLayout from '../../../layouts/CourseAppLayout.astro';
+import CourseAdmin from '../../../components/courses/CourseAdmin';
+import { getPublishedCourses } from '../../../lib/publishedCourses.mjs';
+
+if (!import.meta.env.DEV) return Astro.redirect('/app/contenidos/');
+---
+
+<CourseAppLayout page="contents" title="Administrador de cursos" description="Organiza cursos por categoría y crea sus módulos.">
+  <CourseAdmin client:load courses={getPublishedCourses()} />
+</CourseAppLayout>

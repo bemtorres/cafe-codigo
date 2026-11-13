@@ -80,8 +80,12 @@ export type VideoEditorialBlockData = {
   objective?: string;
   videoPageUrl?: string;
   apaCitation?: string;
+};
+
+export type EditorialQuoteBlockData = {
   highlightLead?: string;
-  statementRest?: string;
+  text: string;
+  includeInstitutionName?: boolean;
 };
 
 export type DocumentResource = {
@@ -121,6 +125,8 @@ export type SlideCardItem = {
   step: string;
   title: string;
   illustration: 'analyst' | 'shield' | 'server' | 'team';
+  imageUrl?: string;
+  imageAlt?: string;
   videoUrl?: string;
   videoCaption?: string;
   apaCitation?: string;
@@ -526,6 +532,7 @@ export type WidgetBgMode = 'default' | 'soft' | 'brand' | 'white' | 'dark' | 'cu
 export type CourseBlockBgConfig = {
   bgMode?: WidgetBgMode;
   bgColor?: string;
+  brandColors?: Partial<Pick<BrandPreset, 'primary' | 'primaryDark' | 'primaryLight' | 'bgQuiz'>>;
 };
 
 export type CourseWidgetBlock = CourseBlockBgConfig &
@@ -557,6 +564,13 @@ export type CourseWidgetBlock = CourseBlockBgConfig &
         componentName: 'WidgetVideoEditorial';
         summary: string;
         data: VideoEditorialBlockData;
+      }
+    | {
+        id: string;
+        type: 'editorial-quote';
+        componentName: 'WidgetEditorialQuote';
+        summary: string;
+        data: EditorialQuoteBlockData;
       }
     | {
         id: string;
@@ -737,6 +751,8 @@ export type CourseContenido = {
 export type CourseSeccion = {
   id: string;
   title: string;
+  /** Abre una página del aula antes de esta sección. */
+  pageBreak?: true;
   contenidos: CourseContenido[];
 };
 
@@ -756,6 +772,7 @@ export type CourseDocumentJSON = {
   courseId: string;
   version: string;
   title: string;
+  category?: string;
   institution: string;
   defaultBrandId: string;
   showScoreInBanner: boolean;

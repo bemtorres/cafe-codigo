@@ -15,6 +15,8 @@ export interface WidgetSidebarIndiceProps {
   activeContentId: string;
   completedContents: string[];
   onSelectContent: (widgetId: string) => void;
+  activePageId?: string;
+  onSelectPage?: (pageId: string) => void;
   onToggleSectionComplete: (section: CourseSeccion) => void;
 }
 
@@ -28,6 +30,8 @@ export function WidgetSidebarIndice({
   activeContentId,
   completedContents,
   onSelectContent,
+  activePageId,
+  onSelectPage,
   onToggleSectionComplete,
 }: WidgetSidebarIndiceProps) {
   const [showSearch, setShowSearch] = useState(false);
@@ -93,7 +97,7 @@ export function WidgetSidebarIndice({
         style={{
           backgroundColor: brand.primary,
           color: '#FFFFFF',
-          padding: '22px 20px 18px 20px',
+          padding: '20px 18px 16px 18px',
           flexShrink: 0,
         }}
       >
@@ -111,7 +115,7 @@ export function WidgetSidebarIndice({
               fontWeight: 800,
               letterSpacing: '0.08em',
               textTransform: 'uppercase',
-              backgroundColor: 'rgba(0,0,0,0.2)',
+              backgroundColor: 'rgba(0,0,0,0.22)',
               padding: '3px 8px',
               borderRadius: '4px',
             }}
@@ -131,10 +135,13 @@ export function WidgetSidebarIndice({
               color: '#FFFFFF',
               cursor: 'pointer',
               padding: '4px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
             }}
             title="Buscar en Lession, Seccion o Contenidos"
           >
-            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg width="17" height="17" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -145,15 +152,12 @@ export function WidgetSidebarIndice({
           </button>
         </div>
 
-        <p style={{ margin: '0 0 4px', fontSize: '10px', fontWeight: 800, textTransform: 'uppercase' }}>
-          Módulo
-        </p>
         <h1
           style={{
-            fontSize: '19px',
+            fontSize: '18px',
             fontWeight: 800,
             lineHeight: 1.25,
-            margin: '0 0 18px 0',
+            margin: '0 0 16px 0',
             color: '#FFFFFF',
           }}
         >
@@ -161,21 +165,22 @@ export function WidgetSidebarIndice({
         </h1>
 
         {showSearch && (
-          <div style={{ marginBottom: '14px' }}>
+          <div style={{ marginBottom: '12px' }}>
             <input
               type="search"
               aria-label="Buscar en el módulo"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Buscar Lession, Sección o Contenido..."
+              placeholder="Buscar Sección o Contenido..."
               style={{
                 width: '100%',
-                padding: '6px 10px',
-                borderRadius: '4px',
+                padding: '7px 10px',
+                borderRadius: '5px',
                 border: 'none',
                 fontSize: '12px',
                 color: '#1E293B',
                 backgroundColor: '#FFFFFF',
+                boxShadow: '0 2px 4px rgba(0,0,0,0.15)',
               }}
             />
           </div>
@@ -189,10 +194,10 @@ export function WidgetSidebarIndice({
             fontWeight: 800,
             letterSpacing: '0.04em',
             textTransform: 'uppercase',
-            marginBottom: '8px',
+            marginBottom: '7px',
           }}
         >
-          <span>{progressPct}% COMPLETADO</span>
+          <span>{progressPct}% COMPLETA</span>
           <span>
             {completedCount}/{contents.length}
           </span>
@@ -217,7 +222,7 @@ export function WidgetSidebarIndice({
         </div>
       </div>
 
-      {/* Índice del módulo */}
+      {/* Índice del módulo (Lession -> Seccion -> Contenidos) */}
       <div
         style={{
           flex: 1,
@@ -235,60 +240,47 @@ export function WidgetSidebarIndice({
             return titleMatches || target ? [{ section, target }] : [];
           });
 
-          if (query && sections.length === 0 && !lessionMatches) return null;
+          if (sections.length === 0) return null;
           const isLessionCollapsed = Boolean(collapsedLessions[lessionObj.id]) && !query;
 
           return (
             <div key={lessionObj.id}>
-              {/* NIVEL 1: LESSION */}
+              {/* NIVEL 1: LESSION (Acordeón de grupo) */}
               <button
                 type="button"
                 onClick={() => toggleLession(lessionObj.id)}
                 aria-expanded={!isLessionCollapsed}
                 style={{
                   width: '100%',
-                  padding: '13px 16px 11px 16px',
+                  padding: '13px 18px 12px 18px',
                   border: 'none',
                   borderBottom: '1px solid #E2E8F0',
-                  backgroundColor: '#F1F5F9',
+                  backgroundColor: '#FFFFFF',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'space-between',
-                  gap: '8px',
+                  gap: '10px',
                   cursor: 'pointer',
                   textAlign: 'left',
                 }}
-                title="Nivel 1: Lession (clic para desplegar/contraer)"
+                title="Lession (clic para desplegar/contraer)"
               >
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', minWidth: 0 }}>
-                  <span
-                    style={{
-                      fontSize: '8.5px',
-                      fontWeight: 900,
-                      letterSpacing: '0.08em',
-                      color: brand.primary,
-                      textTransform: 'uppercase',
-                    }}
-                  >
-                    LESSION
-                  </span>
-                  <span
-                    style={{
-                      fontSize: '10.5px',
-                      fontWeight: 800,
-                      letterSpacing: '0.03em',
-                      color: '#0F172A',
-                      textTransform: 'uppercase',
-                      lineHeight: 1.3,
-                    }}
-                  >
-                    {lessionObj.title.replace(/^LESSION\s+\d+\s*:\s*/i, '')}
-                  </span>
-                </div>
+                <span
+                  style={{
+                    fontSize: '11px',
+                    fontWeight: 900,
+                    letterSpacing: '0.04em',
+                    color: '#0F172A',
+                    textTransform: 'uppercase',
+                    lineHeight: 1.3,
+                  }}
+                >
+                  {lessionObj.title}
+                </span>
                 <span
                   style={{
                     fontSize: '12px',
-                    color: '#475569',
+                    color: '#64748B',
                     fontWeight: 800,
                     transform: isLessionCollapsed ? 'rotate(-90deg)' : 'rotate(0deg)',
                     transition: 'transform 0.2s ease',
@@ -299,10 +291,15 @@ export function WidgetSidebarIndice({
                 </span>
               </button>
 
+              {/* NIVEL 2: SECCIONES */}
               {!isLessionCollapsed && sections.map(({ section, target }) => {
-                const isActive = section.contenidos.some((content) => content.id === activeContentId);
+                const isPage = Boolean(section.pageBreak && onSelectPage);
+                const isActive = (isPage && activePageId === section.id) ||
+                  section.contenidos.some((content) => content.id === activeContentId);
                 const isCompleted = section.contenidos.length > 0 &&
                   section.contenidos.every((content) => completedContents.includes(content.id));
+                const select = isPage && (!query || !target) ? () => onSelectPage?.(section.id)
+                  : target ? () => onSelectContent(target.widget.id) : undefined;
 
                 return (
                   <div
@@ -310,50 +307,88 @@ export function WidgetSidebarIndice({
                     style={{
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '8px',
-                      padding: '8px 12px 8px 18px',
-                      borderBottom: '1px solid #E2E8F0',
-                      borderLeft: `3px solid ${isActive ? brand.primary : '#CBD5E1'}`,
-                      backgroundColor: isActive ? brand.primaryLight : '#F8FAFC',
+                      gap: '10px',
+                      padding: '12px 16px 12px 16px',
+                      borderBottom: '1px solid #F1F5F9',
+                      borderLeft: isActive ? `4px solid ${brand.primary}` : '4px solid transparent',
+                      backgroundColor: '#FFFFFF',
+                      transition: 'background-color 0.15s ease',
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!isActive) e.currentTarget.style.backgroundColor = '#F8FAFC';
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!isActive) e.currentTarget.style.backgroundColor = '#FFFFFF';
                     }}
                   >
-                    <button
-                      type="button"
-                      disabled={!target}
+                    {/* Ícono de 3 líneas horizontales (≡) */}
+                    <svg
+                      width="13"
+                      height="11"
+                      viewBox="0 0 16 12"
+                      fill="none"
+                      style={{ flexShrink: 0, marginTop: '1px' }}
+                      aria-hidden="true"
+                    >
+                      <line x1="0" y1="2" x2="16" y2="2" stroke="#64748B" strokeWidth="1.75" strokeLinecap="round" />
+                      <line x1="0" y1="6" x2="16" y2="6" stroke="#64748B" strokeWidth="1.75" strokeLinecap="round" />
+                      <line x1="0" y1="10" x2="16" y2="10" stroke="#64748B" strokeWidth="1.75" strokeLinecap="round" />
+                    </svg>
+
+                    {/* Título de la Sección */}
+                    <button type="button" disabled={!select} onClick={select}
                       aria-current={isActive ? 'location' : undefined}
-                      onClick={() => target && onSelectContent(target.widget.id)}
                       style={{
                         flex: 1,
                         textAlign: 'left',
-                        background: 'transparent',
-                        border: 'none',
-                        padding: '2px 0',
-                        cursor: target ? 'pointer' : 'default',
-                        color: '#334155',
-                        fontSize: '12px',
-                        fontWeight: isActive ? 800 : 700,
+                        color: '#0F172A',
+                        fontSize: '13px',
+                        lineHeight: 1.35,
+                        fontWeight: isActive ? 800 : 600,
+                        overflowWrap: 'anywhere',
+                        cursor: select ? 'pointer' : 'default',
                       }}
                     >
                       {section.title}
                     </button>
+
+                    {/* Indicador de Completado: Círculo Rojo con Check si está listo, o Círculo vacío si falta */}
                     {section.contenidos.length > 0 && (
                       <button
                         type="button"
                         aria-label={`Completar sección ${section.title}`}
                         aria-pressed={isCompleted}
-                        onClick={() => onToggleSectionComplete(section)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onToggleSectionComplete(section);
+                        }}
                         style={{
                           width: '20px',
                           height: '20px',
                           flexShrink: 0,
                           borderRadius: '50%',
-                          border: `1px solid ${isCompleted ? brand.primary : '#94A3B8'}`,
+                          border: isCompleted ? 'none' : '1.75px solid #CBD5E1',
                           backgroundColor: isCompleted ? brand.primary : '#FFFFFF',
                           color: '#FFFFFF',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
                           cursor: 'pointer',
+                          padding: 0,
+                          transition: 'all 0.2s ease',
                         }}
                       >
-                        {isCompleted ? '✓' : ''}
+                        {isCompleted && (
+                          <svg width="11" height="9" viewBox="0 0 12 10" fill="none">
+                            <path
+                              d="M1.5 5.2L4.5 8.2L10.5 1.8"
+                              stroke="#FFFFFF"
+                              strokeWidth="2.2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        )}
                       </button>
                     )}
                   </div>

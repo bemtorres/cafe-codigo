@@ -5,10 +5,14 @@ import logoCafeycodigo from '../assets/images/cafeycodigo.png';
 
 interface Props {
   title: string;
-  courseUrl: string;
+  courseUrl?: string;
+  editCourseUrl?: string;
+  sequence?: boolean;
+  backHref?: string;
+  allowManagement?: boolean;
 }
 
-const { title, courseUrl } = Astro.props;
+const { title, courseUrl, editCourseUrl, sequence, backHref, allowManagement } = Astro.props;
 ---
 
 <!doctype html>
@@ -33,6 +37,6 @@ const { title, courseUrl } = Astro.props;
     </style>
   </head>
   <body class="branding-test-body">
-    <BrandingCoursePlayer client:load courseUrl={courseUrl} />
+    <BrandingCoursePlayer client:load courseUrl={courseUrl} editCourseUrl={editCourseUrl} sequence={sequence} backHref={backHref} allowManagement={allowManagement} />
   </body>
 </html>

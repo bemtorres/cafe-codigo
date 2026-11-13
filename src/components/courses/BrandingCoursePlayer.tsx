@@ -1,24 +1,28 @@
-import { useState, useRef, useEffect } from 'react';
+import { Fragment, useState, useRef, useEffect, useMemo } from 'react';
 import type {
   BrandPreset,
-  ChecklistBlockData,
   CourseDocumentJSON,
+  CourseContenido,
   CourseSeccion,
   CourseWidgetBlock,
   LegacyCourseDocument,
-  PipelineChecklistBlockData,
   RichTextEditorialBlockData,
   ScenarioQuizBlockData,
   WidgetBgMode,
 } from '../../data/courses/courseJsonTypes';
 import { BRAND_PRESETS } from '../../data/courses/brandPresets';
-import { getModuleContents, isCourseDocument, migrateLegacyCourse, upgradeCourseDraft } from '../../data/courses/courseDocument';
+import { getModuleContents, getModulePages, isCourseDocument, migrateLegacyCourse, splitLegacyVideoQuotes, upgradeCourseDraft } from '../../data/courses/courseDocument';
 import { CourseLoadingSkeleton } from './CourseLoadingSkeleton';
+import { CanvasInsertBar, CourseInsertDialog, type CanvasInsertion } from './CourseCanvasEditor';
+import { saveLocalCourse } from '../../lib/localCourseClient';
 import { EditBlockHeader } from './widgets/EditBlockHeader';
+import { WidgetPropertiesEditor } from './widgets/WidgetPropertiesEditor';
+import { widgetTemplates } from '../../data/courses/widgetTemplates';
 import { WidgetRichTextEditorial } from './widgets/WidgetRichTextEditorial';
 import { WidgetHeroBanner } from './widgets/WidgetHeroBanner';
 import { WidgetImageCoverBanner } from './widgets/WidgetImageCoverBanner';
 import { WidgetVideoEditorial } from './widgets/WidgetVideoEditorial';
+import { WidgetEditorialQuote } from './widgets/WidgetEditorialQuote';
 import { WidgetDocumentResources } from './widgets/WidgetDocumentResources';
 import { WidgetCodeWalkthrough } from './widgets/WidgetCodeWalkthrough';
 import { WidgetSlideCards } from './widgets/WidgetSlideCards';
@@ -45,35 +49,62 @@ import { WidgetScenarioQuizImageChoice } from './widgets/WidgetScenarioQuizImage
 import { WidgetScenarioQuizRiskSlider } from './widgets/WidgetScenarioQuizRiskSlider';
 import { WidgetSidebarIndice } from './widgets/WidgetSidebarIndice';
 
-export default function BrandingCoursePlayer({ courseUrl }: { courseUrl: string }) {
+function hasEditParam(params: URLSearchParams) {
+  const edit = params.get('edit');
+  return edit === 'true' || edit === '1';
+}
+
+export default function BrandingCoursePlayer({ courseUrl, editCourseUrl, sequence = false, backHref, allowManagement = false }: {
+  courseUrl?: string;
+  editCourseUrl?: string;
+  sequence?: boolean;
+  backHref?: string;
+  allowManagement?: boolean;
+}) {
   const [course, setCourse] = useState<CourseDocumentJSON>();
   const [moduleId, setModuleId] = useState('');
   const [error, setError] = useState(false);
   const [attempt, setAttempt] = useState(0);
+  const [source, setSource] = useState<'curso' | 'plantillas'>();
+  const [revision, setRevision] = useState<string>();
 
   useEffect(() => {
     const controller = new AbortController();
     async function loadCourse() {
       try {
-        const response = await fetch(courseUrl, { signal: controller.signal });
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get('id') ?? '';
+        const managed = allowManagement && !courseUrl && params.get('gestionar') === '1';
+        const useTemplateCourse = Boolean(editCourseUrl) && (params.get('lienzo') === 'plantillas' ||
+          (params.get('lienzo') !== 'curso' && hasEditParam(params)));
+        const configuredUrl = useTemplateCourse ? editCourseUrl : courseUrl;
+        const url = configuredUrl ?? (/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(id) ? `/contenidos/${id}.json` : '');
+        if (!url) throw new Error('Identificador de asignatura inválido');
+        const response = await fetch(url, { signal: controller.signal, cache: managed ? 'no-store' : 'default' });
         if (!response.ok) throw new Error('Error al cargar el curso');
-        const document: unknown = await response.json();
+        const raw = await response.text();
+        const document: unknown = JSON.parse(raw);
         if (!isCourseDocument(document)) throw new Error('El JSON del curso no es válido');
         if (controller.signal.aborted) return;
-        setModuleId(new URLSearchParams(window.location.search).get('modulo') || document.modulos[0].id);
-        setCourse(document);
+        const requestedModule = params.get('modulo');
+        setModuleId(document.modulos.find((module) => module.id === requestedModule)?.id ?? document.modulos[0]?.id ?? '');
+        setRevision(managed ? raw : undefined);
+        setSource(editCourseUrl ? (useTemplateCourse ? 'plantillas' : 'curso') : undefined);
+        setCourse(splitLegacyVideoQuotes(document));
       } catch {
         if (!controller.signal.aborted) setError(true);
       }
     }
     void loadCourse();
     return () => controller.abort();
-  }, [courseUrl, attempt]);
+  }, [courseUrl, editCourseUrl, attempt, allowManagement]);
 
   if (error) {
     return (
       <main style={{ padding: '24px' }}>
         <p role="alert">No se pudo cargar el curso.</p>
+        {backHref && <p><a href={backHref}>Volver al curso</a></p>}
+        {!backHref && sequence && <p><a href="/app/contenidos/">Volver a las asignaturas</a></p>}
         <button type="button" onClick={() => {
           setError(false);
           setAttempt((value) => value + 1);
@@ -83,15 +114,30 @@ export default function BrandingCoursePlayer({ courseUrl }: { courseUrl: string 
   }
 
   if (!course) return <CourseLoadingSkeleton />;
+  const managementHref = '/app/contenidos/administrar/?curso=' + encodeURIComponent(course.courseId);
+  if (!course.modulos.length) return <main className="p-6">
+    <h1 className="text-2xl font-bold">{course.title}</h1>
+    <p>Este curso aún no tiene módulos.</p>
+    <a href={revision !== undefined ? managementHref : backHref ?? '/app/contenidos/'}>← Volver</a>
+  </main>;
 
   return (
     <BrandingModulePlayer
       key={`${course.courseId}:${moduleId}`}
       initialCourse={course}
       moduleId={moduleId}
+      sequence={sequence && revision === undefined}
+      backHref={revision === undefined ? backHref : managementHref}
+      onSaveManaged={revision === undefined ? undefined : async (document) => {
+        const nextRevision = await saveLocalCourse(document, revision);
+        setRevision(nextRevision);
+        setCourse(document);
+      }}
+      source={source}
       onSelectModule={(id) => {
         const url = new URL(window.location.href);
         url.searchParams.set('modulo', id);
+        url.searchParams.delete('pagina');
         window.history.replaceState({}, '', url.toString());
         setModuleId(id);
       }}
@@ -99,10 +145,15 @@ export default function BrandingCoursePlayer({ courseUrl }: { courseUrl: string 
   );
 }
 
-function BrandingModulePlayer({ initialCourse, moduleId, onSelectModule }: {
+export function BrandingModulePlayer({ initialCourse, moduleId, onSelectModule, sequence, backHref, preview = false, source, onSaveManaged }: {
   initialCourse: CourseDocumentJSON;
   moduleId: string;
   onSelectModule: (moduleId: string) => void;
+  sequence: boolean;
+  backHref?: string;
+  preview?: boolean;
+  source?: 'curso' | 'plantillas';
+  onSaveManaged?: (document: CourseDocumentJSON) => Promise<void>;
 }) {
   const mainScrollRef = useRef<HTMLDivElement>(null);
   const storageKey = `cc_course_json_draft_v13:${initialCourse.courseId}`;
@@ -111,6 +162,24 @@ function BrandingModulePlayer({ initialCourse, moduleId, onSelectModule }: {
   const activeModule = courseDoc.modulos.find((module) => module.id === moduleId) || courseDoc.modulos[0];
   const contents = getModuleContents(activeModule);
   const blocks = contents.map((content) => content.widget);
+  const pages = useMemo(() => getModulePages(activeModule), [activeModule]);
+  const [pageId, setPageId] = useState(() => !preview && !sequence && typeof window !== 'undefined'
+    ? new URLSearchParams(window.location.search).get('pagina') ?? '' : '');
+  const currentPageIndex = Math.max(0, pages.findIndex((page) => page.id === pageId));
+  const currentPage = pages[currentPageIndex];
+  const pendingNavigation = useRef<{ pageId: string; widgetId?: string } | null>(null);
+  const [insertion, setInsertion] = useState<CanvasInsertion>();
+  const [canvasFeedback, setCanvasFeedback] = useState<{ message: string; error?: boolean }>();
+  const [savingManaged, setSavingManaged] = useState(false);
+  const managed = Boolean(onSaveManaged);
+  const managedDirty = managed && initialCourse !== courseDoc;
+
+  useEffect(() => {
+    if (!managedDirty && !savingManaged) return;
+    const warn = (event: BeforeUnloadEvent) => { event.preventDefault(); event.returnValue = ''; };
+    window.addEventListener('beforeunload', warn);
+    return () => window.removeEventListener('beforeunload', warn);
+  }, [managedDirty, savingManaged]);
 
   // Estados de branding y ajustes del reproductor
   const [selectedBrand, setSelectedBrand] = useState<BrandPreset>(
@@ -125,6 +194,7 @@ function BrandingModulePlayer({ initialCourse, moduleId, onSelectModule }: {
     initialCourse.showScoreInBanner
   );
   const [isEditMode, setIsEditMode] = useState(false);
+  const [propertiesBlockId, setPropertiesBlockId] = useState<string>();
   const [sidebarOpen, setSidebarOpen] = useState(() =>
     typeof window === 'undefined' || window.matchMedia('(min-width: 768px)').matches
   );
@@ -137,10 +207,12 @@ function BrandingModulePlayer({ initialCourse, moduleId, onSelectModule }: {
   const [jsonSavedFlash, setJsonSavedFlash] = useState(false);
 
   // Estados de progreso del alumno y actividades evaluadas
-  const [activeContentId, setActiveContentId] = useState('');
+  const [activeContentId, setActiveContentId] = useState(sequence ? contents[0]?.id ?? '' : '');
+  const currentStep = Math.max(0, contents.findIndex((content) => content.id === activeContentId));
   const [completedContents, setCompletedContents] = useState<string[]>([]);
   const [checkedItems, setCheckedItems] = useState<string[]>([]);
-  const [activeScenarioIdx, setActiveScenarioIdx] = useState(0);
+  const [scenarioIndexes, setScenarioIndexes] = useState<Record<string, number>>({});
+  const [evaluationResets, setEvaluationResets] = useState<Record<string, number>>({});
   const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>({});
   const [submittedQuestions, setSubmittedQuestions] = useState<Record<string, boolean>>({});
   const [extraQuizScores, setExtraQuizScores] = useState<
@@ -156,12 +228,13 @@ function BrandingModulePlayer({ initialCourse, moduleId, onSelectModule }: {
 
   // Al montar: leer ?edit=true y restaurar borrador JSON desde localStorage si existe
   useEffect(() => {
+    if (sequence || preview) return;
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
-      const editParam = params.get('edit');
-      if (editParam === 'true' || editParam === '1') {
+      if (hasEditParam(params)) {
         setIsEditMode(true);
       }
+      if (managed) return;
 
       try {
         const savedRaw = window.localStorage.getItem(storageKey);
@@ -176,7 +249,7 @@ function BrandingModulePlayer({ initialCourse, moduleId, onSelectModule }: {
           }
         }
         if (isCourseDocument(draft) && draft.courseId === initialCourse.courseId) {
-          setCourseDoc(upgradeCourseDraft(draft, initialCourse));
+          setCourseDoc(splitLegacyVideoQuotes(upgradeCourseDraft(draft, initialCourse)));
           setCustomInstitutionName(draft.institution);
           setShowScoreInBanner(draft.showScoreInBanner);
           setSelectedBrand(BRAND_PRESETS.find((brand) => brand.id === draft.defaultBrandId) || BRAND_PRESETS[0]);
@@ -185,34 +258,34 @@ function BrandingModulePlayer({ initialCourse, moduleId, onSelectModule }: {
         // Ignorar errores de parseo en localStorage
       }
     }
-  }, [initialCourse, storageKey]);
+  }, [initialCourse, storageKey, sequence, preview, managed]);
 
-  const persistCourseDoc = (nextDoc: CourseDocumentJSON) => {
+  const persistCourseDoc = (document: CourseDocumentJSON) => {
+    const nextDoc = splitLegacyVideoQuotes(document);
     setCourseDoc(nextDoc);
-    if (typeof window !== 'undefined') {
+    if (!preview && !managed && typeof window !== 'undefined') {
       try {
         window.localStorage.setItem(storageKey, JSON.stringify(nextDoc));
       } catch {
-        // Ignorar si quota está llena
+        return false;
       }
     }
+    return true;
   };
 
   const toggleEditModeUrl = () => {
-    setIsEditMode((prev) => {
-      const next = !prev;
-      if (typeof window !== 'undefined') {
-        const url = new URL(window.location.href);
-        if (next) {
-          url.searchParams.set('edit', 'true');
-        } else {
-          url.searchParams.delete('edit');
-          setJsonEditorOpen(false);
-        }
-        window.history.replaceState({}, '', url.toString());
-      }
-      return next;
-    });
+    const next = !isEditMode;
+    const url = new URL(window.location.href);
+    if (source) url.searchParams.set('lienzo', source);
+    if (next) {
+      url.searchParams.set('edit', 'true');
+    } else {
+      url.searchParams.delete('edit');
+      setJsonEditorOpen(false);
+      setPropertiesBlockId(undefined);
+    }
+    window.history.replaceState({}, '', url);
+    setIsEditMode(next);
   };
 
   // Abrir el editor JSON para un bloque específico o para todo el curso
@@ -236,7 +309,7 @@ function BrandingModulePlayer({ initialCourse, moduleId, onSelectModule }: {
     try {
       const parsed = JSON.parse(jsonDraftText);
       if (editingBlockId === 'FULL_COURSE') {
-        if (!isCourseDocument(parsed) || parsed.courseId !== initialCourse.courseId) {
+        if (!isCourseDocument(parsed) || !parsed.modulos.length || parsed.courseId !== initialCourse.courseId) {
           setJsonError(
             'Revisa la estructura de módulos, Lessions, Secciones y Contenidos del curso.'
           );
@@ -276,6 +349,130 @@ function BrandingModulePlayer({ initialCourse, moduleId, onSelectModule }: {
       })),
     } : module),
   });
+
+  const navigatePage = (id: string, widgetId?: string, contentId?: string) => {
+    pendingNavigation.current = { pageId: id, widgetId };
+    setPageId(id);
+    if (!preview && !sequence) {
+      const url = new URL(window.location.href);
+      if (source) url.searchParams.set('lienzo', source);
+      if (id) url.searchParams.set('pagina', id);
+      else url.searchParams.delete('pagina');
+      window.history.replaceState({}, '', url);
+    }
+    if (widgetId) setActiveContentId(contentId ?? contents.find(({ widget }) => widget.id === widgetId)?.id ?? '');
+    else setActiveContentId('');
+    if (window.matchMedia('(max-width: 767px)').matches) setSidebarOpen(false);
+  };
+
+  function scrollWithinCanvas(elementId: string, behavior: ScrollBehavior = 'auto') {
+    const container = mainScrollRef.current;
+    const el = document.getElementById(elementId);
+    if (container && el) {
+      const headerHeight = document.getElementById('topbar-header')?.offsetHeight || 0;
+      const top = el.getBoundingClientRect().top - container.getBoundingClientRect().top +
+        container.scrollTop - headerHeight;
+      container.scrollTo({ top: Math.max(0, top), behavior });
+    }
+  }
+
+  useEffect(() => {
+    const target = pendingNavigation.current;
+    if (!target || target.pageId !== currentPage.id) return;
+    pendingNavigation.current = null;
+    if (target.widgetId) {
+      scrollWithinCanvas(target.widgetId);
+      document.getElementById(target.widgetId)?.focus({ preventScroll: true });
+    } else {
+      mainScrollRef.current?.scrollTo({ top: 0 });
+      mainScrollRef.current?.querySelector<HTMLElement>('.canvas-page-heading')?.focus({ preventScroll: true });
+    }
+  }, [currentPage.id, courseDoc]);
+
+  const saveCanvasChange = (next: CourseDocumentJSON, message: string) => {
+    const saved = persistCourseDoc(next);
+    if (jsonEditorOpen && editingBlockId === 'FULL_COURSE') {
+      setJsonDraftText(JSON.stringify(next, null, 2));
+    }
+    setInsertion(undefined);
+    setCanvasFeedback(managed ? { message: message + ' Guarda el módulo para conservar el cambio.' } : saved
+      ? { message: message + ' Guardado en este navegador.' }
+      : { message: message + ' No se pudo guardar en el navegador. Descarga el JSON para conservar el cambio.', error: true });
+  };
+
+  const saveManaged = async () => {
+    if (!onSaveManaged || savingManaged) return;
+    setSavingManaged(true);
+    try {
+      await onSaveManaged(courseDoc);
+      setCanvasFeedback({ message: 'Contenido guardado.' });
+    } catch (error) {
+      setCanvasFeedback({ message: (error as Error).message, error: true });
+    } finally {
+      setSavingManaged(false);
+    }
+  };
+
+  const applyInsertion = (value: { template: CourseContenido } | { title: string }) => {
+    if (!insertion) return false;
+    const section = currentPage.sections.find(({ id }) => id === insertion.sectionId);
+    if (!section) return false;
+    const anchor = insertion.afterId ?? insertion.beforeId;
+    const anchorIndex = section.contenidos.findIndex(({ id }) => id === anchor);
+    if (anchor && anchorIndex < 0) return false;
+    const at = !anchor ? 0 : insertion.afterId ? anchorIndex + 1 : anchorIndex;
+    const before = section.contenidos.slice(0, at);
+    const after = section.contenidos.slice(at);
+    const id = 'canvas-' + crypto.randomUUID();
+
+    if ('template' in value) {
+      const item = structuredClone(value.template);
+      item.id = id;
+      item.widget.id = id;
+      const next = updateSections((entry) => entry === section
+        ? { ...section, contenidos: [...before, item, ...after] } : entry);
+      saveCanvasChange(next, 'Recurso añadido.');
+      setPropertiesBlockId(id);
+      navigatePage(currentPage.id, id, id);
+    } else {
+      const newSection: CourseSeccion = { id, title: value.title, pageBreak: true, contenidos: after };
+      const next = {
+        ...courseDoc,
+        modulos: courseDoc.modulos.map((module) => module === activeModule ? {
+          ...module,
+          lessions: module.lessions.map((lesson) => ({
+            ...lesson,
+            secciones: lesson.secciones.flatMap((entry) => entry === section
+              ? [...(before.length || entry.pageBreak ? [{ ...entry, contenidos: before }] : []), newSection]
+              : [entry]),
+          })),
+        } : module),
+      };
+      saveCanvasChange(next, 'Página creada.');
+      navigatePage(id);
+    }
+    return true;
+  };
+
+  const removePageBreak = () => {
+    if (!currentPage.id) return;
+    const next = {
+      ...courseDoc,
+      modulos: courseDoc.modulos.map((module) => module === activeModule ? {
+        ...module,
+        lessions: module.lessions.map((lesson) => ({
+          ...lesson,
+          secciones: lesson.secciones.flatMap((section) => {
+            if (section.id !== currentPage.id) return [section];
+            const { pageBreak: _, ...rest } = section;
+            return section.contenidos.length ? [rest] : [];
+          }),
+        })),
+      } : module),
+    };
+    saveCanvasChange(next, 'Salto eliminado. Se conservaron los recursos.');
+    navigatePage(pages[currentPageIndex - 1]?.id ?? '');
+  };
 
   const updateWidget = (blockId: string, update: (block: CourseWidgetBlock) => CourseWidgetBlock) =>
     updateSections((section) => ({
@@ -367,9 +564,6 @@ function BrandingModulePlayer({ initialCourse, moduleId, onSelectModule }: {
     URL.revokeObjectURL(url);
   };
 
-  const completedCount = contents.filter((content) => completedContents.includes(content.id)).length;
-  const progressPct = contents.length ? Math.round((completedCount / contents.length) * 100) : 0;
-
   const toggleSectionComplete = (section: CourseSeccion) => {
     const ids = section.contenidos.map((content) => content.id);
     setCompletedContents((previous) => ids.every((id) => previous.includes(id))
@@ -388,85 +582,57 @@ function BrandingModulePlayer({ initialCourse, moduleId, onSelectModule }: {
     const content = contents.find((entry) => entry.widget.id === elementId);
     if (content) setActiveContentId(content.id);
     const container = mainScrollRef.current;
-    const el = document.getElementById(elementId);
-    if (container && el) {
-      const headerHeight = document.getElementById('topbar-header')?.offsetHeight || 0;
-      const top = el.getBoundingClientRect().top - container.getBoundingClientRect().top +
-        container.scrollTop - headerHeight;
-      container.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
-    } else if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (sequence) {
+      container?.scrollTo({ top: 0 });
+      if (window.matchMedia('(max-width: 767px)').matches) setSidebarOpen(false);
+      return;
     }
+    const page = pages.find((entry) => entry.contents.some(({ widget }) => widget.id === elementId));
+    if (page && page.id !== currentPage.id) {
+      navigatePage(page.id, elementId);
+      return;
+    }
+    scrollWithinCanvas(elementId, window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth');
     if (window.matchMedia('(max-width: 767px)').matches) setSidebarOpen(false);
   };
 
-  // Extraer dinámicamente las preguntas del bloque scenario-quiz y el checklist del bloque pipeline-checklist en el JSON
-  const quizBlock = blocks.find((b) => b.type === 'scenario-quiz') as
-    | Extract<CourseWidgetBlock, { type: 'scenario-quiz' }>
-    | undefined;
-  const scenarioQuestions = (quizBlock?.data as ScenarioQuizBlockData | undefined)?.questions || [];
+  const attemptKey = (blockId: string, itemId: string) => JSON.stringify([blockId, itemId]);
+  const earnedFor = (questions: ScenarioQuizBlockData['questions']) => questions.reduce((acc, question) =>
+    submittedQuestions[question.id] && question.options.some((option) =>
+      option.isCorrect && option.id === selectedOptions[question.id]) ? acc + question.points : acc, 0);
 
-  const checklistBlock = blocks.find((b) => b.type === 'checklist') as
-    | Extract<CourseWidgetBlock, { type: 'checklist' }>
-    | undefined;
-  const pipelineBlock = blocks.find((b) => b.type === 'pipeline-checklist') as
-    | Extract<CourseWidgetBlock, { type: 'pipeline-checklist' }>
-    | undefined;
-  const checklistItems =
-    (checklistBlock?.data as ChecklistBlockData | undefined)?.checklist ||
-    (pipelineBlock?.data as PipelineChecklistBlockData | undefined)?.checklist ||
-    [];
+  function getEvaluation(scope: CourseContenido[]) {
+    const questions = scope.flatMap(({ widget }) => widget.type === 'scenario-quiz'
+      ? widget.data.questions.map((question, index) => ({
+        widgetId: widget.id, index, question: { ...question, id: attemptKey(widget.id, question.id) },
+      }))
+      : []);
+    const scenarioQuestions = questions.map(({ question }) => question);
+    const checklistIds = scope.flatMap(({ widget }) => widget.type === 'checklist' || widget.type === 'pipeline-checklist'
+      ? widget.data.checklist.map(({ id }) => attemptKey(widget.id, id)) : []);
+    const suite = scope.filter(({ widget }) => widget.type.startsWith('scenario-quiz-'));
+    const earnedQuizScore = earnedFor(scenarioQuestions) + suite.reduce((acc, { widget }) => acc + (extraQuizScores[widget.id]?.earned ?? 0), 0);
+    const maxQuizScore = scenarioQuestions.reduce((acc, question) => acc + question.points, 0) +
+      suite.reduce((acc, { widget }) => acc + ((widget.data as { points?: number }).points ?? 0), 0);
+    const checkedItemsCount = checklistIds.filter((id) => checkedItems.includes(id)).length;
+    const checklistScorePct = checklistIds.length ? Math.round(checkedItemsCount * 100 / checklistIds.length) : 0;
+    const quizPct = maxQuizScore ? Math.round(earnedQuizScore * 100 / maxQuizScore) : 0;
+    const quizWeight = maxQuizScore ? (checklistIds.length ? 70 : 100) : 0;
+    const checklistWeight = checklistIds.length ? (maxQuizScore ? 30 : 100) : 0;
+    const globalScore = Math.round((quizPct * quizWeight + checklistScorePct * checklistWeight) / 100);
+    const completedLessonsCount = scope.filter(({ id }) => completedContents.includes(id)).length;
+    return { questions, checklistIds, globalScore, maxQuizScore, earnedQuizScore, scenarioQuestions, quizWeight, checklistWeight,
+      totalScenariosCount: scenarioQuestions.length + suite.length,
+      answeredScenariosCount: scenarioQuestions.filter(({ id }) => submittedQuestions[id]).length +
+        suite.filter(({ widget }) => extraQuizScores[widget.id]).length,
+      checklistScorePct, checkedItemsCount, totalChecklistCount: checklistIds.length,
+      completedLessonsCount, totalLessonsCount: scope.length,
+      progressPct: scope.length ? Math.round(completedLessonsCount * 100 / scope.length) : 0 };
+  }
 
-  const baseMaxQuizScore = scenarioQuestions.reduce((acc, q) => acc + q.points, 0);
-  const baseEarnedQuizScore = scenarioQuestions.reduce((acc, q) => {
-    if (!submittedQuestions[q.id]) return acc;
-    const selectedId = selectedOptions[q.id];
-    const opt = q.options.find((o) => o.id === selectedId);
-    return opt?.isCorrect ? acc + q.points : acc;
-  }, 0);
-
-  // Sumar también el puntaje de los nuevos widgets interactivos de la suite Quiz
-  const suiteQuizBlocks = blocks.filter((b) =>
-    [
-      'scenario-quiz-multiple',
-      'scenario-quiz-drag-drop',
-      'scenario-quiz-ordering',
-      'scenario-quiz-matching',
-      'scenario-quiz-fill-blank',
-      'scenario-quiz-branching',
-      'scenario-quiz-matrix',
-      'scenario-quiz-spotter',
-      'scenario-quiz-image-hotspot',
-      'scenario-quiz-image-choice',
-      'scenario-quiz-risk-slider',
-    ].includes(b.type)
-  );
-
-  const suiteMaxPoints = suiteQuizBlocks.reduce((acc, b) => {
-    const pts = (b.data as { points?: number }).points || 0;
-    return acc + pts;
-  }, 0);
-
-  const suiteEarnedPoints = suiteQuizBlocks.reduce((acc, b) => {
-    return acc + (extraQuizScores[b.id]?.earned || 0);
-  }, 0);
-
-  const maxQuizScore = baseMaxQuizScore + suiteMaxPoints;
-  const earnedQuizScore = baseEarnedQuizScore + suiteEarnedPoints;
-
-  const answeredScenariosCount = scenarioQuestions.filter((q) =>
-    Boolean(submittedQuestions[q.id])
-  ).length;
-
-  const checklistScorePct =
-    checklistItems.length > 0
-      ? Math.round((checkedItems.length / checklistItems.length) * 100)
-      : 0;
-
-  // Score Global Ponderado sobre 100 (70% todas las evaluaciones Quiz + 30% Checklist de Producción)
-  const quizPctNormalized =
-    maxQuizScore > 0 ? Math.round((earnedQuizScore / maxQuizScore) * 100) : 0;
-  const globalScore = Math.round(quizPctNormalized * 0.7 + checklistScorePct * 0.3);
+  const sequenceContent = contents[currentStep];
+  const scorePage = sequence ? pages.find((page) => page.contents.includes(sequenceContent)) ?? currentPage : currentPage;
+  const globalScore = getEvaluation(scorePage.contents).globalScore;
 
   const handleSelectQuizOption = (questionId: string, optionId: string) => {
     setSelectedOptions((prev) => ({
@@ -480,8 +646,9 @@ function BrandingModulePlayer({ initialCourse, moduleId, onSelectModule }: {
   };
 
   const handleSubmitQuizQuestion = (blockId: string, questionId: string) => {
-    if (!selectedOptions[questionId]) return;
-    setSubmittedQuestions((prev) => ({ ...prev, [questionId]: true }));
+    const key = attemptKey(blockId, questionId);
+    if (!selectedOptions[key]) return;
+    setSubmittedQuestions((prev) => ({ ...prev, [key]: true }));
     const content = contents.find((entry) => entry.widget.id === blockId);
     if (content) {
       setCompletedContents((previous) =>
@@ -495,32 +662,51 @@ function BrandingModulePlayer({ initialCourse, moduleId, onSelectModule }: {
   /* =========================================================
      REGISTRO DE WIDGETS ATÓMICOS (Renderizador desde JSON)
      ========================================================= */
-  const resolveBlockBackground = (block: CourseWidgetBlock): string => {
+  const resolveBlockBackground = (block: CourseWidgetBlock, brand: BrandPreset): string => {
     const mode = block.bgMode || 'default';
     if (mode === 'soft') return '#F4F5F7';
     if (mode === 'white') return '#FFFFFF';
-    if (mode === 'brand') return selectedBrand.bgQuiz;
+    if (mode === 'brand') return brand.bgQuiz;
     if (mode === 'dark') return '#0F172A';
     if (mode === 'custom' && block.bgColor) return block.bgColor;
 
     // Por defecto:
-    // - WidgetScenarioQuiz usa el color del curso (selectedBrand.bgQuiz)
+    // - WidgetScenarioQuiz usa el color del curso (brand.bgQuiz)
     // - WidgetFinalReport usa pizarra oscura (#0F172A)
     // - Todos los demás widgets usan #F4F5F7 por defecto (y pueden cambiar su color en bgMode/bgColor)
-    if (block.type === 'scenario-quiz') return selectedBrand.bgQuiz;
+    if (block.type === 'scenario-quiz') return brand.bgQuiz;
     if (block.type === 'final-report') return '#0F172A';
     return block.bgColor || '#F4F5F7';
   };
 
-  const renderAtomicBlock = (block: CourseWidgetBlock, index: number, section: CourseSeccion) => {
+  const renderAtomicBlock = (block: CourseWidgetBlock, index: number, section: CourseSeccion, isTemplatePreview = false) => {
+    const canEdit = isEditMode && !isTemplatePreview;
     const isQuizSection = block.type === 'scenario-quiz';
     const isReportSection = block.type === 'final-report';
-    const sectionBg = resolveBlockBackground(block);
+    const blockBrand = { ...selectedBrand, ...block.brandColors };
+    const sectionBg = resolveBlockBackground(block, blockBrand);
+    const page = pages.find((entry) => entry.sections.includes(section)) ?? currentPage;
+    const activityContents = isTemplatePreview ? section.contenidos : page.contents;
+    const reportIndex = isReportSection || block.type === 'scenario-quiz'
+      ? activityContents.findIndex(({ widget }) => widget === block) : -1;
+    const previousReportIndex = isReportSection ? activityContents.findLastIndex(({ widget }, i) =>
+      i < reportIndex && widget.type === 'final-report') : -1;
+    const reportScope = isReportSection ? activityContents.slice(previousReportIndex + 1, reportIndex + 1) : [];
+    const evaluation = isReportSection ? getEvaluation(reportScope) : undefined;
+    const scenarioQuestions = block.type === 'scenario-quiz' ? block.data.questions : [];
+    const localSelections = Object.fromEntries(scenarioQuestions.map(({ id }) => [id, selectedOptions[attemptKey(block.id, id)]]));
+    const localSubmissions = Object.fromEntries(scenarioQuestions.map(({ id }) => [id, submittedQuestions[attemptKey(block.id, id)]]));
+    const localChecks = block.type === 'checklist' || block.type === 'pipeline-checklist'
+      ? block.data.checklist.filter(({ id }) => checkedItems.includes(attemptKey(block.id, id))).map(({ id }) => id) : [];
+    const reportTarget = block.type === 'scenario-quiz'
+      ? activityContents.slice(reportIndex + 1).find(({ widget }) => widget.type === 'final-report')
+      : undefined;
 
     return (
       <section
-        key={block.id}
-        id={block.id}
+        key={evaluationResets[block.id] ?? 0}
+        id={isTemplatePreview ? undefined : block.id}
+        tabIndex={-1}
         style={{
           backgroundColor: sectionBg,
           color: isReportSection || block.bgMode === 'dark' ? '#FFFFFF' : undefined,
@@ -528,13 +714,13 @@ function BrandingModulePlayer({ initialCourse, moduleId, onSelectModule }: {
             isQuizSection || isReportSection || block.type === 'hero-banner'
               ? 'none'
               : '1px solid #E2E8F0',
-          outline: isEditMode ? '2px dashed #F59E0B' : 'none',
+          outline: canEdit ? '2px dashed #F59E0B' : 'none',
           outlineOffset: '-2px',
           transition: 'background-color 0.25s ease',
         }}
       >
         <EditBlockHeader
-          show={isEditMode}
+          show={canEdit}
           componentName={block.componentName}
           blockId={block.id}
           blockType={block.type}
@@ -544,19 +730,31 @@ function BrandingModulePlayer({ initialCourse, moduleId, onSelectModule }: {
           bgMode={block.bgMode || 'default'}
           bgColor={block.bgColor}
           resolvedBgColor={sectionBg}
-          brandBgColor={selectedBrand.bgQuiz}
+          brandBgColor={blockBrand.bgQuiz}
           onChangeBg={(nextMode, nextColor) =>
             updateBlockBackground(block.id, nextMode, nextColor)
           }
           onMoveUp={() => moveBlock(section, index, -1)}
           onMoveDown={() => moveBlock(section, index, 1)}
           onEditJson={() => openJsonEditorFor(block.id)}
+          onEditProperties={() => setPropertiesBlockId((id) => id === block.id ? undefined : block.id)}
         />
 
+        {canEdit && propertiesBlockId === block.id && (
+          <div className="mx-auto max-w-3xl p-4">
+            <WidgetPropertiesEditor key={block.id} widget={block}
+              examples={widgetTemplates.filter(({ widget }) => widget.type === block.type).map(({ widget }) => widget)}
+              onCancel={() => setPropertiesBlockId(undefined)}
+              onSave={(next) => {
+                saveWidgetEdit(block.id, () => next);
+                setPropertiesBlockId(undefined);
+              }} />
+          </div>
+        )}
         {block.type === 'hero-banner' && (
           <WidgetHeroBanner
             data={block.data}
-            brand={selectedBrand}
+            brand={blockBrand}
             institutionName={effectiveInstitution}
             totalLessons={activeModule.lessions.length}
           />
@@ -565,7 +763,7 @@ function BrandingModulePlayer({ initialCourse, moduleId, onSelectModule }: {
         {block.type === 'image-cover-banner' && (
           <WidgetImageCoverBanner
             data={block.data}
-            brand={selectedBrand}
+            brand={blockBrand}
             institutionName={effectiveInstitution}
           />
         )}
@@ -573,8 +771,8 @@ function BrandingModulePlayer({ initialCourse, moduleId, onSelectModule }: {
         {block.type === 'rich-text-editorial' && (
           <WidgetRichTextEditorial
             data={block.data}
-            brand={selectedBrand}
-            isEditMode={isEditMode}
+            brand={blockBrand}
+            isEditMode={canEdit}
             onUpdateData={(nextData) => updateRichTextBlockData(block.id, nextData)}
           />
         )}
@@ -582,82 +780,93 @@ function BrandingModulePlayer({ initialCourse, moduleId, onSelectModule }: {
         {block.type === 'video-editorial' && (
           <WidgetVideoEditorial
             data={block.data}
-            brand={selectedBrand}
+            brand={blockBrand}
             institutionName={effectiveInstitution}
           />
         )}
 
+        {block.type === 'editorial-quote' && (
+          <WidgetEditorialQuote data={block.data} brand={blockBrand} institutionName={effectiveInstitution} />
+        )}
+
         {block.type === 'document-resources' && (
-          <WidgetDocumentResources data={block.data} brand={selectedBrand} />
+          <WidgetDocumentResources
+            data={block.data}
+            brand={blockBrand}
+            isEditMode={canEdit}
+            onUpdateData={(data) => saveWidgetEdit(block.id, (current) =>
+              current.type === 'document-resources' ? { ...current, data } : current
+            )}
+          />
         )}
 
         {block.type === 'code-walkthrough' && (
-          <WidgetCodeWalkthrough data={block.data} brand={selectedBrand} />
+          <WidgetCodeWalkthrough data={block.data} brand={blockBrand} />
         )}
 
         {block.type === 'slide-cards' && (
-          <WidgetSlideCards data={block.data} brand={selectedBrand} />
+          <WidgetSlideCards data={block.data} brand={blockBrand} />
         )}
 
         {block.type === 'accordion-details' && (
           <WidgetAccordionDetails
             data={block.data}
-            brand={selectedBrand}
+            brand={blockBrand}
             onNavigateNext={scrollToWidget}
           />
         )}
 
         {block.type === 'code-comparison' && (
-          <WidgetCodeComparison data={block.data} brand={selectedBrand} />
+          <WidgetCodeComparison data={block.data} brand={blockBrand} />
         )}
 
         {block.type === 'architecture-hotspots' && (
-          <WidgetArchitectureHotspots data={block.data} brand={selectedBrand} />
+          <WidgetArchitectureHotspots data={block.data} brand={blockBrand} />
         )}
 
         {block.type === 'architecture-hotspots-visual' && (
-          <WidgetArchitectureHotspotsVisual data={block.data} brand={selectedBrand} />
+          <WidgetArchitectureHotspotsVisual data={block.data} brand={blockBrand} />
         )}
 
         {block.type === 'flip-cards-3d' && (
-          <WidgetFlipCards3D data={block.data} brand={selectedBrand} />
+          <WidgetFlipCards3D data={block.data} brand={blockBrand} />
         )}
 
         {block.type === 'pipeline-steps' && (
-          <WidgetStepToStep data={block.data} brand={selectedBrand} />
+          <WidgetStepToStep data={block.data} brand={blockBrand} />
         )}
 
         {block.type === 'checklist' && (
           <WidgetChecklist
             data={block.data}
-            brand={selectedBrand}
-            checkedItems={checkedItems}
-            onToggleChecklistItem={toggleChecklistItem}
+            brand={blockBrand}
+            checkedItems={localChecks}
+            onToggleChecklistItem={(id) => toggleChecklistItem(attemptKey(block.id, id))}
           />
         )}
 
         {block.type === 'pipeline-checklist' && (
           <WidgetPipelineChecklist
             data={block.data}
-            brand={selectedBrand}
-            checkedItems={checkedItems}
-            onToggleChecklistItem={toggleChecklistItem}
+            brand={blockBrand}
+            checkedItems={localChecks}
+            onToggleChecklistItem={(id) => toggleChecklistItem(attemptKey(block.id, id))}
           />
         )}
 
         {block.type === 'scenario-quiz' && (
           <WidgetScenarioQuiz
             data={block.data}
-            brand={selectedBrand}
-            activeScenarioIdx={activeScenarioIdx}
-            onSelectScenarioIdx={setActiveScenarioIdx}
-            selectedOptions={selectedOptions}
-            submittedQuestions={submittedQuestions}
-            onSelectOption={handleSelectQuizOption}
+            brand={blockBrand}
+            activeScenarioIdx={scenarioIndexes[block.id] ?? 0}
+            onSelectScenarioIdx={(idx) => setScenarioIndexes((prev) => ({ ...prev, [block.id]: idx }))}
+            selectedOptions={localSelections}
+            submittedQuestions={localSubmissions}
+            onSelectOption={(questionId, optionId) => handleSelectQuizOption(attemptKey(block.id, questionId), optionId)}
             onSubmitQuestion={(questionId) => handleSubmitQuizQuestion(block.id, questionId)}
-            earnedQuizScore={baseEarnedQuizScore}
-            maxQuizScore={baseMaxQuizScore}
-            onViewReport={scrollToWidget}
+            earnedQuizScore={earnedFor(scenarioQuestions.map((question) => ({ ...question, id: attemptKey(block.id, question.id) })))}
+            maxQuizScore={scenarioQuestions.reduce((sum, question) => sum + question.points, 0)}
+            onViewReport={reportTarget ? () => scrollToWidget(reportTarget.widget.id) : undefined}
           />
         )}
 
@@ -665,7 +874,7 @@ function BrandingModulePlayer({ initialCourse, moduleId, onSelectModule }: {
           <WidgetScenarioQuizMultiple
             blockId={block.id}
             data={block.data}
-            brand={selectedBrand}
+            brand={blockBrand}
             onScoreChange={handleExtraQuizScoreChange}
           />
         )}
@@ -674,7 +883,7 @@ function BrandingModulePlayer({ initialCourse, moduleId, onSelectModule }: {
           <WidgetScenarioQuizDragAndDrop
             blockId={block.id}
             data={block.data}
-            brand={selectedBrand}
+            brand={blockBrand}
             onScoreChange={handleExtraQuizScoreChange}
           />
         )}
@@ -683,7 +892,7 @@ function BrandingModulePlayer({ initialCourse, moduleId, onSelectModule }: {
           <WidgetScenarioQuizOrdering
             blockId={block.id}
             data={block.data}
-            brand={selectedBrand}
+            brand={blockBrand}
             onScoreChange={handleExtraQuizScoreChange}
           />
         )}
@@ -692,7 +901,7 @@ function BrandingModulePlayer({ initialCourse, moduleId, onSelectModule }: {
           <WidgetScenarioQuizMatching
             blockId={block.id}
             data={block.data}
-            brand={selectedBrand}
+            brand={blockBrand}
             onScoreChange={handleExtraQuizScoreChange}
           />
         )}
@@ -701,7 +910,7 @@ function BrandingModulePlayer({ initialCourse, moduleId, onSelectModule }: {
           <WidgetScenarioQuizFillBlank
             blockId={block.id}
             data={block.data}
-            brand={selectedBrand}
+            brand={blockBrand}
             onScoreChange={handleExtraQuizScoreChange}
           />
         )}
@@ -710,7 +919,7 @@ function BrandingModulePlayer({ initialCourse, moduleId, onSelectModule }: {
           <WidgetScenarioQuizBranching
             blockId={block.id}
             data={block.data}
-            brand={selectedBrand}
+            brand={blockBrand}
             onScoreChange={handleExtraQuizScoreChange}
           />
         )}
@@ -719,7 +928,7 @@ function BrandingModulePlayer({ initialCourse, moduleId, onSelectModule }: {
           <WidgetScenarioQuizTrueFalseMatrix
             blockId={block.id}
             data={block.data}
-            brand={selectedBrand}
+            brand={blockBrand}
             onScoreChange={handleExtraQuizScoreChange}
           />
         )}
@@ -728,7 +937,7 @@ function BrandingModulePlayer({ initialCourse, moduleId, onSelectModule }: {
           <WidgetScenarioQuizHotspotSpotter
             blockId={block.id}
             data={block.data}
-            brand={selectedBrand}
+            brand={blockBrand}
             onScoreChange={handleExtraQuizScoreChange}
           />
         )}
@@ -737,8 +946,8 @@ function BrandingModulePlayer({ initialCourse, moduleId, onSelectModule }: {
           <WidgetScenarioQuizImageHotspot
             blockId={block.id}
             data={block.data}
-            brand={selectedBrand}
-            isEditMode={isEditMode}
+            brand={blockBrand}
+            isEditMode={canEdit}
             onUpdateData={(data) => saveWidgetEdit(block.id, (current) =>
               current.type === 'scenario-quiz-image-hotspot' ? { ...current, data } : current
             )}
@@ -750,7 +959,7 @@ function BrandingModulePlayer({ initialCourse, moduleId, onSelectModule }: {
           <WidgetScenarioQuizImageChoice
             blockId={block.id}
             data={block.data}
-            brand={selectedBrand}
+            brand={blockBrand}
             onScoreChange={handleExtraQuizScoreChange}
           />
         )}
@@ -759,43 +968,44 @@ function BrandingModulePlayer({ initialCourse, moduleId, onSelectModule }: {
           <WidgetScenarioQuizRiskSlider
             blockId={block.id}
             data={block.data}
-            brand={selectedBrand}
+            brand={blockBrand}
             onScoreChange={handleExtraQuizScoreChange}
           />
         )}
 
-        {block.type === 'final-report' && (
+        {block.type === 'final-report' && evaluation && (
           <WidgetFinalReport
             data={block.data}
-            brand={selectedBrand}
+            brand={blockBrand}
             institutionName={effectiveInstitution}
-            courseTitle={activeModule.title}
-            globalScore={globalScore}
-            earnedQuizScore={earnedQuizScore}
-            maxQuizScore={maxQuizScore}
-            answeredScenariosCount={answeredScenariosCount + Object.keys(extraQuizScores).length}
-            scenarioQuestions={scenarioQuestions}
+            courseTitle={page.id && !sequence ? page.title : activeModule.title}
+            scoped={pages.length > 1 || activityContents.filter(({ widget }) => widget.type === 'final-report').length > 1}
+            {...evaluation}
             submittedQuestions={submittedQuestions}
             selectedOptions={selectedOptions}
-            checklistScorePct={checklistScorePct}
-            checkedItemsCount={checkedItems.length}
-            totalChecklistCount={checklistItems.length}
-            progressPct={progressPct}
-            completedLessonsCount={completedCount}
-            totalLessonsCount={contents.length}
             onJumpToScenario={(idx) => {
-              setActiveScenarioIdx(idx);
-              if (quizBlock) scrollToWidget(quizBlock.id);
+              const question = evaluation.questions[idx];
+              if (!question) return;
+              setScenarioIndexes((prev) => ({ ...prev, [question.widgetId]: question.index }));
+              scrollToWidget(question.widgetId);
             }}
             onResetEvaluation={() => {
-              setSelectedOptions({});
-              setSubmittedQuestions({});
-              setExtraQuizScores({});
-              setActiveScenarioIdx(0);
-              if (quizBlock) scrollToWidget(quizBlock.id);
+              const questionIds = new Set(evaluation.scenarioQuestions.map(({ id }) => id));
+              const widgetIds = new Set(reportScope.filter(({ widget }) => widget.type.startsWith('scenario-quiz')).map(({ widget }) => widget.id));
+              const checks = new Set(evaluation.checklistIds);
+              setSelectedOptions((prev) => Object.fromEntries(Object.entries(prev).filter(([id]) => !questionIds.has(id))));
+              setSubmittedQuestions((prev) => Object.fromEntries(Object.entries(prev).filter(([id]) => !questionIds.has(id))));
+              setCheckedItems((prev) => prev.filter((id) => !checks.has(id)));
+              setExtraQuizScores((prev) => Object.fromEntries(Object.entries(prev).filter(([id]) => !widgetIds.has(id))));
+              setScenarioIndexes((prev) => Object.fromEntries(Object.entries(prev).filter(([id]) => !widgetIds.has(id))));
+              setEvaluationResets((prev) => ({
+                ...prev, ...Object.fromEntries([...widgetIds].map((id) => [id, (prev[id] ?? 0) + 1])),
+              }));
+              const firstQuiz = [...widgetIds][0];
+              if (firstQuiz) scrollToWidget(firstQuiz);
             }}
             onCompleteAllLessons={() => {
-              setCompletedContents(contents.map((content) => content.id));
+              setCompletedContents((prev) => [...new Set([...prev, ...reportScope.map(({ id }) => id)])]);
             }}
           />
         )}
@@ -809,8 +1019,8 @@ function BrandingModulePlayer({ initialCourse, moduleId, onSelectModule }: {
       style={{
         display: 'flex',
         flexDirection: 'row',
-        width: '100vw',
-        height: '100vh',
+        width: preview ? '100%' : '100vw',
+        height: preview ? 'min(75dvh, 760px)' : '100vh',
         overflow: 'hidden',
         backgroundColor: '#F5F6F8',
         color: '#262C30',
@@ -828,6 +1038,8 @@ function BrandingModulePlayer({ initialCourse, moduleId, onSelectModule }: {
         moduleTitle={activeModule.title}
         lessions={activeModule.lessions}
         activeContentId={activeContentId}
+        activePageId={currentPage.id}
+        onSelectPage={sequence ? undefined : navigatePage}
         completedContents={completedContents}
         onSelectContent={scrollToWidget}
         onToggleSectionComplete={toggleSectionComplete}
@@ -841,7 +1053,7 @@ function BrandingModulePlayer({ initialCourse, moduleId, onSelectModule }: {
         style={{
           flex: 1,
           minWidth: 0,
-          height: '100vh',
+          height: preview ? '100%' : '100vh',
           overflowY: 'auto',
           overflowX: 'hidden',
           position: 'relative',
@@ -851,7 +1063,7 @@ function BrandingModulePlayer({ initialCourse, moduleId, onSelectModule }: {
         {/* Barra Superior Flotante */}
         <div
           id="topbar-header"
-          className="max-md:z-[35]!"
+          className="max-md:z-[35]! max-md:flex-wrap max-md:gap-2 max-md:px-3!"
           style={{
             position: 'sticky',
             top: 0,
@@ -893,7 +1105,12 @@ function BrandingModulePlayer({ initialCourse, moduleId, onSelectModule }: {
               <select
                 aria-label="Módulo del curso"
                 value={activeModule.id}
-                onChange={(event) => onSelectModule(event.target.value)}
+                disabled={savingManaged}
+                onChange={(event) => {
+                  if (!managedDirty || window.confirm('Hay cambios sin guardar. ¿Quieres cambiar de módulo y descartarlos?')) {
+                    onSelectModule(event.target.value);
+                  }
+                }}
                 style={{ maxWidth: '260px', padding: '6px', border: '1px solid #CBD5E1', borderRadius: '6px' }}
               >
                 {courseDoc.modulos.map((module) => (
@@ -979,7 +1196,7 @@ function BrandingModulePlayer({ initialCourse, moduleId, onSelectModule }: {
                     fontFamily: '"JetBrains Mono", Consolas, monospace',
                   }}
                 >
-                  ✏️ MODO EDITOR (?edit=true) · {blocks.length} bloques JSON
+                  Editor de contenido · {blocks.length} recursos
                 </span>
 
                 <button
@@ -997,10 +1214,21 @@ function BrandingModulePlayer({ initialCourse, moduleId, onSelectModule }: {
                     fontFamily: '"JetBrains Mono", Consolas, monospace',
                   }}
                 >
-                  {'{ }'} Ver / Editar JSON del Curso
+                  {'{ }'} Editar JSON
                 </button>
               </>
             )}
+
+            {!sequence && !preview && <div className="canvas-edit-entry">
+              <button className={`canvas-button${isEditMode ? '' : ' canvas-primary'}`} type="button"
+                onClick={toggleEditModeUrl}>{isEditMode ? 'Vista estudiante' : 'Editar contenido'}</button>
+            </div>}
+            {managed && (isEditMode || managedDirty) && <div className="canvas-edit-entry">
+              <button className="canvas-button canvas-primary" type="button"
+                disabled={!managedDirty || savingManaged} onClick={saveManaged}>
+                {savingManaged ? 'Guardando…' : 'Guardar módulo'}
+              </button>
+            </div>}
 
             {/* Contador en vivo de Score (Oculto por defecto; solo visible si se activa en Settings y sin botón VER REPORTE) */}
             {showScoreInBanner && (
@@ -1050,17 +1278,77 @@ function BrandingModulePlayer({ initialCourse, moduleId, onSelectModule }: {
         {/* =========================================================
             RENDERIZADO DINÁMICO DE LOS WIDGETS ATÓMICOS DESDE JSON
            ========================================================= */}
-        {activeModule.lessions.map((lession) => (
-          <div key={lession.id}>
-            {lession.secciones.map((section) => (
-              <div key={section.id}>
-                {section.contenidos.map(({ widget }, index) => renderAtomicBlock(widget, index, section))}
-              </div>
+        {backHref && (
+          <nav aria-label="Curso" className="border-b border-slate-200 px-4 py-3">
+            <a className="text-sm font-semibold" href={backHref}>{managed ? '← Volver a los módulos' : '← Volver al curso'}</a>
+          </nav>
+        )}
+        {!sequence && pages.length > 1 && (
+          <nav className="canvas-page-nav" aria-label="Páginas del aula">
+            <select className="canvas-button" aria-label="Página del aula" value={currentPage.id}
+              onChange={(event) => navigatePage(event.target.value)}>
+              {pages.map((page, index) => <option key={page.id} value={page.id}>{index + 1}. {page.title}</option>)}
+            </select>
+            <div>
+              <button type="button" className="canvas-button" disabled={currentPageIndex === 0}
+                onClick={() => navigatePage(pages[currentPageIndex - 1].id)}>Anterior</button>
+              <button type="button" className="canvas-button" disabled={currentPageIndex === pages.length - 1}
+                onClick={() => navigatePage(pages[currentPageIndex + 1].id)}>Siguiente</button>
+            </div>
+          </nav>
+        )}
+        {!sequence && (currentPage.id || pages.length > 1) && (
+          <header className="canvas-page-heading" tabIndex={-1}>
+            <h2>{currentPage.title}</h2>
+            {isEditMode && currentPage.id && <button className="canvas-button" type="button" onClick={removePageBreak}>Quitar salto</button>}
+          </header>
+        )}
+        {(isEditMode || managed) && canvasFeedback && <div className="canvas-feedback">
+          <p role={canvasFeedback.error ? 'alert' : 'status'}>{canvasFeedback.message}</p>
+          <button type="button" className="canvas-button" onClick={handleDownloadCourseJson}>Descargar JSON</button>
+        </div>}
+        {sequence && (
+          <nav aria-label="Secuencia de aprendizaje" className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 px-4 py-3">
+            <a className="text-sm font-semibold" href="/app/contenidos/">← Asignaturas</a>
+            {contents.length > 0 && <>
+            <span aria-live="polite" className="text-sm font-semibold">Paso {currentStep + 1} de {contents.length}</span>
+            <div className="flex gap-2">
+              <button type="button" className="rounded border border-slate-300 px-3 py-2 text-sm disabled:opacity-50"
+                disabled={currentStep === 0} onClick={() => scrollToWidget(contents[currentStep - 1].widget.id)}>Anterior</button>
+              <button type="button" className="rounded bg-slate-900 px-3 py-2 text-sm text-white disabled:opacity-50"
+                disabled={currentStep === contents.length - 1} onClick={() => scrollToWidget(contents[currentStep + 1].widget.id)}>Siguiente</button>
+            </div>
+            </>}
+          </nav>
+        )}
+        {pages.flatMap((page) => page.sections.map((section, sectionIndex) => (
+          <div key={section.id} hidden={!sequence && page.id !== currentPage.id}>
+            {isEditMode && page.id === currentPage.id && (sectionIndex === 0 || !section.contenidos.length) && (
+              <CanvasInsertBar location={section.contenidos.length ? 'Al inicio de esta página' : `En «${section.title}»`}
+                onOpen={(mode) => setInsertion({ mode, sectionId: section.id,
+                  beforeId: section.contenidos[0]?.id,
+                  location: section.contenidos.length ? 'Al inicio de esta página' : `En «${section.title}»` })} />
+            )}
+            {section.contenidos.map(({ widget, id, title }, index) => (
+              <Fragment key={id}>
+                <div hidden={sequence && id !== contents[currentStep]?.id}>{renderAtomicBlock(widget, index, section)}</div>
+                {isEditMode && page.id === currentPage.id && <CanvasInsertBar location={`Después de «${title}»`}
+                  onOpen={(mode) => setInsertion({ mode, sectionId: section.id, afterId: id, location: `Después de «${title}»` })} />}
+              </Fragment>
             ))}
           </div>
-        ))}
-        {contents.length === 0 && <p style={{ padding: '24px' }}>Este módulo aún no tiene contenidos.</p>}
+        )))}
+        {(sequence ? !contents.length : !currentPage.contents.length) &&
+          <p style={{ padding: '24px' }}>Esta página aún no tiene contenidos.</p>}
       </div>
+      {isEditMode && insertion && <CourseInsertDialog insertion={insertion}
+        renderPreview={(template) => {
+          const widget = { ...template.widget, id: 'preview-' + template.widget.id };
+          return renderAtomicBlock(widget, 0, { id: 'preview', title: template.title, contenidos: [{ ...template, widget }] }, true);
+        }}
+        onClose={() => setInsertion(undefined)}
+        onInsert={(template) => applyInsertion({ template })}
+        onPage={(title) => applyInsertion({ title })} />}
 
       {/* =========================================================
           DRAWER / INSPECTOR DE JSON EN VIVO (SOLO EN ?edit=true)
@@ -1522,9 +1810,9 @@ function BrandingModulePlayer({ initialCourse, moduleId, onSelectModule }: {
                 </label>
               </div>
 
-              <div style={{ marginBottom: '22px' }}>
+              <div hidden={sequence} style={{ marginBottom: '22px' }}>
                 <label
-                  onClick={toggleEditModeUrl}
+                  onClick={preview ? undefined : toggleEditModeUrl}
                   style={{
                     display: 'flex',
                     alignItems: 'center',
@@ -1606,7 +1894,7 @@ function BrandingModulePlayer({ initialCourse, moduleId, onSelectModule }: {
                 </button>
 
                 <a
-                  href="/cursos/"
+                  href={backHref ?? (sequence ? '/app/contenidos/' : '/cursos/')}
                   style={{
                     width: '100%',
                     padding: '11px 16px',

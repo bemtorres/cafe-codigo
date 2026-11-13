@@ -4,194 +4,332 @@ import { courses } from "../../data/courses";
 import { courseTestimonials } from "../../data/courseTestimonials";
 import { academyCoursePath } from "../../lib/coursePaths";
 
-const featured = ["ecosistemas", "django", "consultas-sql"].flatMap((slug) => {
+// Cursos destacados para el catálogo de inicio
+const featuredSlugs = [
+  "ecosistemas",
+  "django",
+  "consultas-sql",
+  "cpp",
+  "git",
+  "pseint",
+];
+const featuredCourses = featuredSlugs.flatMap((slug) => {
   const course = courses.find(
     (entry) => entry.slug === slug && entry.status === "available",
   );
   return course ? [course] : [];
 });
 
-const benefits = [
-  [
-    "Rutas claras",
-    "Un camino ordenado para saber qué estudiar hoy y qué viene después. Sin laberintos.",
-  ],
-  [
-    "Práctica integrada",
-    "Ejercicios y ejemplos al lado de cada explicación. Aprendes haciendo, no solo leyendo.",
-  ],
-  [
-    "Ritmo propio",
-    "Sin fechas rígidas ni presión. Estudias cuando quieres, hasta donde llegues hoy.",
-  ],
-  [
-    "Desde cualquier lugar",
-    "Computadora, tablet o celular. Tu progreso te acompaña a donde vayas.",
-  ],
+const tracks = [
+  {
+    title: "Fundamentos y Pensamiento Algorítmico",
+    tag: "Track 01 · Bases",
+    summary:
+      "Domina la lógica computacional, estructuras de control, tipos de datos y diseño algorítmico sin atajos.",
+    courses: "PSeInt · C++ · Lógica",
+    icon: "code",
+  },
+  {
+    title: "Ingeniería de Backend con Python & Django",
+    tag: "Track 02 · Backend",
+    summary:
+      "Construcción de arquitecturas web robustas, modelado de dominios, autenticación, APIs REST y seguridad.",
+    courses: "Python · Django · APIs",
+    icon: "server",
+  },
+  {
+    title: "Bases de Datos & Análisis Relacional (SQL)",
+    tag: "Track 03 · Datos",
+    summary:
+      "Diseño de esquemas relacionales, consultas complejas, normalización, optimización de índices y persistencia.",
+    courses: "SQL · PostgreSQL · Modelado",
+    icon: "database",
+  },
+  {
+    title: "Arquitectura, Seguridad & Cumplimiento",
+    tag: "Track 04 · Especialización",
+    summary:
+      "Prevención de vulnerabilidades, auditoría de código, pipelines CI/CD y despliegue continuo con estándares OWASP.",
+    courses: "Arquitectura · Ética · CI/CD",
+    icon: "shield",
+  },
+];
+
+const methodologyPillars = [
+  {
+    number: "01",
+    title: "Marco Conceptual Breve y Riguroso",
+    text: "Explicaciones técnicas precisas orientadas al problema de ingeniería, eliminando teoría innecesaria para enfocarse en la decisión de diseño.",
+  },
+  {
+    number: "02",
+    title: "Laboratorios Interactivos en Navegador",
+    text: "Comparadores de código vulnerable vs. blindado, mapas de arquitectura con hotspots y simuladores paso a paso sin requerir instalaciones locales complejas.",
+  },
+  {
+    number: "03",
+    title: "Evaluación de Decisiones Críticas",
+    text: "Supera cuestionarios de escenario real: clasificación normativa, matrices de cumplimiento, calibración de riesgo y detección de anomalías.",
+  },
+  {
+    number: "04",
+    title: "Trazabilidad y Auditoría de Progreso",
+    text: "Estructura granular de Módulos, Lecciones y Contenidos con métricas cuantitativas y reporte final de competencias adquiridas.",
+  },
 ];
 ---
 
 <CourseAppLayout
   page="home"
-  title="La IA puede escribir código. Tú debes saber qué construir"
-  description="Aprende lógica y programación para dirigir la IA, entender sus decisiones y convertir código generado en productos bien construidos."
+  title="Campus Virtual · Formación en Ingeniería y Arquitectura de Software"
+  description="Plataforma de formación técnica con rigor pedagógico: lógica algorítmica, backend profesional, bases de datos SQL y arquitectura de software seguro."
 >
-  <section class="academy-wrap academy-hero" aria-labelledby="academy-title">
+  {/* HERO INSTITUCIONAL */}
+  <section
+    class="academy-wrap academy-hero"
+    aria-labelledby="academy-hero-title"
+  >
     <div class="academy-hero-copy">
-      <p class="academy-kicker">Lógica · Criterio · Inteligencia Artificial</p>
-      <h1 id="academy-title">
-        La IA puede escribir código. <span>Tú debes saber qué construir.</span>
+      <div class="campus-badge-wrapper">
+        <span class="campus-kicker-badge"
+          >CAMPUS VIRTUAL · INGENIERÍA & ARQUITECTURA DE SOFTWARE</span
+        >
+      </div>
+      <h1 id="academy-hero-title">
+        Formación Técnica Rigurosa para la Era del Software y la IA
       </h1>
       <p class="academy-lede">
-        Aprende <strong>lógica y programación</strong> para dirigir la IA, entender
-        sus decisiones, detectar sus errores y convertir código generado en <strong
-          >productos realmente bien construidos</strong
+        La inteligencia artificial puede autocompletar sintaxis. Tu valor
+        profesional radica en <strong>comprender la arquitectura</strong>,
+        auditar decisiones críticas, modelar datos con precisión y construir <strong
+          >sistemas fiables, seguros y escalables</strong
         >.
       </p>
-      <a class="academy-button" href="/app/courses/"
-        >Empieza ahora gratis <span aria-hidden="true">↗</span></a
-      >
-      <p class="academy-note">
-        Aprende con rutas claras · Ejercicios prácticos · 100% gratis
-      </p>
+
+      <div class="hero-actions">
+        <a class="academy-button academy-button-primary" href="/app/courses/">
+          Explorar Catálogo de Cursos <span aria-hidden="true">↗</span>
+        </a>
+        <a
+          class="academy-button academy-button-secondary"
+          href="/test/branding/"
+        >
+          Aula de Demostración Interactiva <span aria-hidden="true">↗</span>
+        </a>
+      </div>
+
+      <div class="hero-trust-indicators">
+        <span>✓ +14 Programas de formación técnica</span>
+        <span>✓ 100% interactivo en navegador</span>
+        <span>✓ Estándares OWASP y Clean Architecture</span>
+      </div>
     </div>
+
     <figure class="academy-hero-media">
       <img
-        src="/images/cyc1.png"
-        alt="Cafetería de Café y Código construida con bloques, con personas programando"
+        src="/images/cyc2.png"
+        alt="Estudiantes e ingenieros analizando arquitecturas de software en Café y Código Campus"
         width="1536"
         height="1024"
         fetchpriority="high"
         decoding="async"
       />
-      <!-- <figcaption>
-        <span>Aprende a tu ritmo</span>
-        <a href="/app/courses/">{courses.length} cursos y rutas <span aria-hidden="true">↗</span></a>
-      </figcaption> -->
     </figure>
   </section>
 
-  <section class="academy-curriculum">
-    <div class="academy-wrap academy-feature">
-      <div class="academy-feature-intro">
-        <p class="academy-kicker">Catálogo en vivo</p>
-        <h2>Explora los cursos y rutas de aprendizaje</h2>
-        <p>Elige una ruta o busca por categoría y tecnología.</p>
-        <a class="academy-text-link" href="/app/courses/"
-          >Ver todos los cursos <span aria-hidden="true">↗</span></a
-        >
+  {/* BARRA DE MÉTRICAS INSTITUCIONALES */}
+  <section class="academy-stats-bar" aria-label="Métricas de formación">
+    <div class="academy-wrap academy-stats-grid">
+      <div class="stat-card">
+        <strong class="stat-number">+120h</strong>
+        <span class="stat-label">Contenido Práctico Aplicado</span>
+        <p class="stat-sub">
+          Laboratorios guiados y ejercicios de ingeniería real.
+        </p>
       </div>
-      <ol class="academy-feature-list">
-        {
-          featured.map((course, index) => (
-            <li>
-              <a href={academyCoursePath(course.slug)}>
-                <span class="academy-index">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                <span>
-                  <>
-                    <strong>{course.name}</strong>
-                    <span class="academy-feature-desc">
-                      {course.description}
-                    </span>
-                  </>
-                </span>
-                <span aria-hidden="true">↗</span>
-              </a>
-            </li>
-          ))
-        }
-      </ol>
+      <div class="stat-card">
+        <strong class="stat-number">4 Rutas</strong>
+        <span class="stat-label">Especializaciones Estructuradas</span>
+        <p class="stat-sub">
+          De fundamentos lógicos a arquitectura empresarial.
+        </p>
+      </div>
+      <div class="stat-card">
+        <strong class="stat-number">12+ Widgets</strong>
+        <span class="stat-label">Laboratorios e Interacciones</span>
+        <p class="stat-sub">
+          Comparadores de código, hotspots y escenarios de decisión.
+        </p>
+      </div>
+      <div class="stat-card">
+        <strong class="stat-number">100%</strong>
+        <span class="stat-label">Evaluación por Competencias</span>
+        <p class="stat-sub">Validación objetiva sin pruebas memorísticas.</p>
+      </div>
     </div>
   </section>
 
-  <section class="academy-wrap academy-section academy-method">
-    <div>
-      <p class="academy-kicker">El problema</p>
-      <h2>Aprender por tu cuenta no debería sentirse así.</h2>
-      <ul class="academy-pain">
-        <li>
-          Diez pestañas abiertas y ninguna te dice <strong
-            >qué estudiar primero</strong
-          >.
-        </li>
-        <li>
-          Saltas de un tutorial a otro y cada uno <strong
-            >arranca desde cero</strong
-          > de nuevo.
-        </li>
-        <li>
-          Avanzas un rato, te frustras y <strong>abandonas</strong> sin saber por
-          qué.
-        </li>
-      </ul>
-      <p>No es tu culpa. Es el camino el que está desordenado.</p>
-    </div>
-    <div>
-      <p class="academy-kicker">La solución</p>
-      <h2>Un solo lugar, un solo camino, a tu ritmo.</h2>
-      <p>
-        Café y Código ordena lo que necesitas aprender en rutas claras, con
-        explicaciones cortas, ejemplos al lado y ejercicios para practicar. Así
-        pasas de no saber por dónde empezar a avanzar con confianza, una lección
-        a la vez.
+  {/* RUTAS DE ESPECIALIZACIÓN */}
+  <section class="academy-wrap academy-section" aria-labelledby="tracks-title">
+    <div class="section-header-academic">
+      <p class="academy-kicker">Itinerarios Formativos</p>
+      <h2 id="tracks-title">Rutas de Carrera y Especialización Técnica</h2>
+      <p class="section-academic-desc">
+        Caminos curriculares organizados secuencialmente para adquirir solvencia
+        profesional desde los cimientos hasta sistemas en producción.
       </p>
-      <ol class="academy-steps">
-        <li>
-          <strong>Eliges una ruta.</strong> Lógica, Python, web… la que más te interese.
-        </li>
-        <li>
-          <strong>Lees y practicas.</strong> Explicación breve y ejercicio en la misma
-          pantalla.
-        </li>
-        <li>
-          <strong>Avanzas con calma.</strong> Sin fechas, sin presión. Tu progreso
-          siempre visible.
-        </li>
-      </ol>
     </div>
-  </section>
 
-  <section class="academy-wrap academy-section academy-benefits">
-    <p class="academy-kicker">Por qué funciona</p>
-    <h2>Todo pensado para que no te pierdas.</h2>
-    <ul class="academy-benefit-list">
+    <div class="tracks-grid">
       {
-        benefits.map(([title, text]) => (
-          <li>
-            <>
-              <h3>{title}</h3>
-              <p>{text}</p>
-            </>
-          </li>
+        tracks.map((track) => (
+          <div class="track-card">
+            <div class="track-header">
+              <span class="track-tag">{track.tag}</span>
+              <span class="track-courses-label">{track.courses}</span>
+            </div>
+            <h3 class="track-title">{track.title}</h3>
+            <p class="track-summary">{track.summary}</p>
+            <div class="track-footer">
+              <a href="/app/courses/" class="track-link">
+                Ver programas de esta ruta <span aria-hidden="true">→</span>
+              </a>
+            </div>
+          </div>
         ))
       }
-    </ul>
-    <div class="academy-workshop">
-      <div>
-        <p class="academy-kicker">Aula interactiva</p>
-        <h3>Prueba una actividad del curso</h3>
-      </div>
-      <a class="academy-text-link" href="/test/branding/"
-        >Abrir el aula de prueba <span aria-hidden="true">↗</span></a
-      >
     </div>
   </section>
 
+  {/* CATÁLOGO DE PROGRAMAS DESTACADOS */}
+  <section class="academy-wrap academy-section" aria-labelledby="catalog-title">
+    <div class="section-header-academic">
+      <p class="academy-kicker">Planes de Estudio</p>
+      <h2 id="catalog-title">Programas Destacados con Acceso Inmediato</h2>
+      <p class="section-academic-desc">
+        Formación modular estructurada en lecciones interactivas, material
+        descargable y verificación de aprendizaje.
+      </p>
+    </div>
+
+    <div class="catalog-cards-grid">
+      {
+        featuredCourses.map((course) => {
+          const lessonCount = course.lessons?.length || 0;
+          return (
+            <article class="course-academic-card">
+              <div class="course-academic-header">
+                <span class="course-category-badge">
+                  {course.category.toUpperCase()}
+                </span>
+                <span class="course-lessons-badge">
+                  {lessonCount} Lecciones
+                </span>
+              </div>
+              <h3 class="course-academic-title">{course.name}</h3>
+              <p class="course-academic-desc">{course.description}</p>
+
+              <div class="course-academic-meta">
+                <span class="course-status-pill">Disponible</span>
+                <a
+                  class="course-action-btn"
+                  href={academyCoursePath(course.slug)}
+                >
+                  Ver Programa <span aria-hidden="true">↗</span>
+                </a>
+              </div>
+            </article>
+          );
+        })
+      }
+    </div>
+
+    <div class="catalog-academic-footer">
+      <a class="academy-button academy-button-secondary" href="/app/courses/">
+        Ver todos los {courses.length} cursos del catálogo completo <span
+          aria-hidden="true">→</span
+        >
+      </a>
+    </div>
+  </section>
+
+  {/* BANNER INSTITUCIONAL DEL AULA INTERACTIVA */}
   <section class="academy-wrap academy-section">
-    <p class="academy-kicker">Lo que dicen</p>
-    <h2>Personas reales, caminos más claros.</h2>
+    <div class="module-player-callout">
+      <div class="callout-content">
+        <span class="callout-badge"
+          >LABORATORIO EN VIVO · PLATAFORMA DE APRENDIZAJE ACTIVO</span
+        >
+        <h2>Módulo Demostrativo: Arquitectura, Ética y Cumplimiento</h2>
+        <p>
+          Explora la experiencia de aprendizaje completa: un módulo interactivo
+          diseñado con navegación jerárquica (Lession › Secciones › Contenidos),
+          12 tipos de widgets evaluativos, comparador de código blindado y
+          reporte final con score de auditoría.
+        </p>
+        <div class="callout-features">
+          <span>✓ Estructura desacoplada vía API JSON</span>
+          <span>✓ Inspección de código en vivo</span>
+          <span>✓ Tarjetas 3D con Lightbox a pantalla completa</span>
+        </div>
+      </div>
+      <div class="callout-action-col">
+        <a
+          class="academy-button academy-button-primary callout-btn"
+          href="/test/branding/"
+        >
+          Abrir Aula Interactiva <span aria-hidden="true">↗</span>
+        </a>
+        <span class="callout-note"
+          >Sin registro previo requerido · Ejecución en vivo</span
+        >
+      </div>
+    </div>
+  </section>
+
+  {/* METODOLOGÍA PEDAGÓGICA */}
+  <section class="academy-wrap academy-section" aria-labelledby="method-title">
+    <div class="section-header-academic">
+      <p class="academy-kicker">Metodología Formativa</p>
+      <h2 id="method-title">Aprender Ingeniería Haciendo Ingeniería</h2>
+      <p class="section-academic-desc">
+        Nuestro modelo pedagógico se aleja de la memorización pasiva y sitúa al
+        estudiante en el rol del arquitecto de software que toma decisiones
+        reales.
+      </p>
+    </div>
+
+    <div class="methodology-grid">
+      {
+        methodologyPillars.map((pillar) => (
+          <div class="methodology-card">
+            <span class="methodology-number">{pillar.number}</span>
+            <h3 class="methodology-title">{pillar.title}</h3>
+            <p class="methodology-text">{pillar.text}</p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  {/* TESTIMONIOS Y RIGOR */}
+  <section
+    class="academy-wrap academy-section"
+    aria-labelledby="testimonials-title"
+  >
+    <div class="section-header-academic">
+      <p class="academy-kicker">Opinión Profesional</p>
+      <h2 id="testimonials-title">Experiencias de Aprendizaje Técnico</h2>
+    </div>
+
     <div class="academy-quotes">
       {
-        courseTestimonials.map(([quote, name, role]) => (
-          <figure>
+        courseTestimonials.slice(0, 3).map(([quote, name, role]) => (
+          <figure class="academic-quote-card">
             <blockquote>«{quote}»</blockquote>
             <figcaption>
-              <>
-                <strong>{name}</strong>
-                <span>{role}</span>
-              </>
+              <strong>{name}</strong>
+              <span>{role}</span>
             </figcaption>
           </figure>
         ))
@@ -199,17 +337,486 @@ const benefits = [
     </div>
   </section>
 
-  <section class="academy-wrap academy-section academy-final">
-    <div>
-      <h2>Servite un café. Empezá a programar con calma.</h2>
+  {/* LLAMADO A LA ACCIÓN FINAL */}
+  <section class="academy-wrap academy-section academy-final-academic">
+    <div class="final-academic-inner">
+      <h2>Inicia tu Formación en Ingeniería de Software</h2>
       <p>
-        Abrí tu primera ruta hoy y descubrí lo cómodo que es aprender cuando el
-        camino está ordenado para ti.
+        Desarrolla el criterio técnico indispensable para liderar proyectos
+        tecnológicos en un entorno dominado por la inteligencia artificial.
       </p>
-      <p class="academy-note">Gratis para siempre · sin tarjeta · en español</p>
+      <div class="final-actions">
+        <a class="academy-button academy-button-primary" href="/app/courses/">
+          Explorar Catálogo Académico <span aria-hidden="true">↗</span>
+        </a>
+        <a
+          class="academy-button academy-button-secondary"
+          href="/test/branding/"
+        >
+          Ingresar al Aula de Muestra <span aria-hidden="true">↗</span>
+        </a>
+      </div>
+      <p class="final-subtext">
+        Plataforma libre, modular y orientada a la excelencia técnica.
+      </p>
     </div>
-    <a class="academy-button" href="/app/courses/"
-      >Empieza ahora <span aria-hidden="true">↗</span></a
-    >
   </section>
 </CourseAppLayout>
+
+<style>
+  /* ESTILOS DE SERIEDAD INSTITUCIONAL PARA /APP */
+  .campus-badge-wrapper {
+    margin-bottom: 12px;
+  }
+  .campus-kicker-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #b9141b;
+    background-color: #fff1f2;
+    border: 1px solid #fecdd3;
+    padding: 4px 10px;
+    border-radius: 4px;
+  }
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 24px;
+    margin-bottom: 18px;
+  }
+  .academy-button-primary {
+    background-color: #b9141b;
+    color: #ffffff !important;
+    border: 1px solid #991b1b;
+    padding: 12px 22px;
+    border-radius: 6px;
+    font-weight: 800;
+    font-size: 15px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition:
+      background-color 0.2s ease,
+      transform 0.1s ease;
+  }
+  .academy-button-primary:hover {
+    background-color: #991b1b;
+  }
+  .academy-button-secondary {
+    background-color: #ffffff;
+    color: #1e293b !important;
+    border: 1px solid #cbd5e1;
+    padding: 12px 22px;
+    border-radius: 6px;
+    font-weight: 800;
+    font-size: 15px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition:
+      background-color 0.2s ease,
+      border-color 0.2s ease;
+  }
+  .academy-button-secondary:hover {
+    background-color: #f8fafc;
+    border-color: #94a3b8;
+  }
+  .hero-trust-indicators {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #475569;
+    margin-top: 10px;
+  }
+
+  /* BARRA DE ESTADÍSTICAS */
+  .academy-stats-bar {
+    background-color: #0f172a;
+    color: #ffffff;
+    padding: 40px 0;
+    margin-top: 36px;
+    border-top: 1px solid #1e293b;
+    border-bottom: 1px solid #1e293b;
+  }
+  .academy-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 28px;
+  }
+  .stat-card {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    border-left: 2px solid #b9141b;
+    padding-left: 18px;
+  }
+  .stat-number {
+    font-size: 32px;
+    font-weight: 900;
+    color: #ffffff;
+    line-height: 1.1;
+  }
+  .stat-label {
+    font-size: 14px;
+    font-weight: 800;
+    color: #f1f5f9;
+  }
+  .stat-sub {
+    font-size: 12px;
+    color: #94a3b8;
+    margin: 0;
+    line-height: 1.4;
+  }
+
+  /* CABECERAS DE SECCIÓN ACADÉMICAS */
+  .section-header-academic {
+    margin-bottom: 32px;
+  }
+  .section-academic-desc {
+    font-size: 16px;
+    color: #475569;
+    max-width: 680px;
+    margin-top: 8px;
+    line-height: 1.5;
+  }
+
+  /* TRACKS / ITINERARIOS */
+  .tracks-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+  }
+  .track-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    justifycontent: space-between;
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease,
+      border-color 0.2s ease;
+  }
+  .track-card:hover {
+    border-color: #b9141b;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+    transform: translateY(-2px);
+  }
+  .track-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .track-tag {
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: #b9141b;
+    letter-spacing: 0.05em;
+  }
+  .track-courses-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #64748b;
+    background: #f1f5f9;
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+  .track-title {
+    font-size: 18px;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1.3;
+    margin-bottom: 10px;
+  }
+  .track-summary {
+    font-size: 13.5px;
+    color: #475569;
+    line-height: 1.5;
+    margin-bottom: 20px;
+    flex-grow: 1;
+  }
+  .track-link {
+    font-size: 13px;
+    font-weight: 800;
+    color: #b9141b;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .track-link:hover {
+    text-decoration: underline;
+  }
+
+  /* CATÁLOGO DE CURSOS ACADÉMICO */
+  .catalog-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 22px;
+  }
+  .course-academic-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    justifycontent: space-between;
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+  .course-academic-card:hover {
+    border-color: #cbd5e1;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+  }
+  .course-academic-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  .course-category-badge {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    background-color: #f1f5f9;
+    color: #334155;
+    padding: 3px 8px;
+    border-radius: 4px;
+  }
+  .course-lessons-badge {
+    font-size: 11px;
+    font-weight: 700;
+    color: #64748b;
+  }
+  .course-academic-title {
+    font-size: 19px;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 8px;
+  }
+  .course-academic-desc {
+    font-size: 13.5px;
+    color: #475569;
+    line-height: 1.5;
+    margin-bottom: 20px;
+    flex-grow: 1;
+  }
+  .course-academic-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #f1f5f9;
+    padding-top: 14px;
+  }
+  .course-status-pill {
+    font-size: 11px;
+    font-weight: 700;
+    color: #15803d;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .course-status-pill::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: #16a34a;
+  }
+  .course-action-btn {
+    font-size: 13px;
+    font-weight: 800;
+    color: #b9141b;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .course-action-btn:hover {
+    text-decoration: underline;
+  }
+  .catalog-academic-footer {
+    text-align: center;
+    margin-top: 32px;
+  }
+
+  /* CALLOUT DEL AULA INTERACTIVA */
+  .module-player-callout {
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    color: #ffffff;
+    border-radius: 12px;
+    padding: clamp(28px, 4vw, 44px);
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 32px;
+    align-items: center;
+    border: 1px solid #334155;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.15);
+  }
+  @media (max-width: 840px) {
+    .module-player-callout {
+      grid-template-columns: 1fr;
+    }
+  }
+  .callout-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: #fca5a5;
+    background: rgba(185, 20, 27, 0.25);
+    border: 1px solid rgba(252, 165, 165, 0.3);
+    padding: 3px 10px;
+    border-radius: 4px;
+    margin-bottom: 12px;
+  }
+  .module-player-callout h2 {
+    color: #ffffff;
+    font-size: clamp(20px, 2.5vw, 26px);
+    font-weight: 900;
+    margin-bottom: 12px;
+  }
+  .module-player-callout p {
+    color: #cbd5e1;
+    font-size: 14.5px;
+    line-height: 1.55;
+    max-width: 660px;
+    margin-bottom: 18px;
+  }
+  .callout-features {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #94a3b8;
+  }
+  .callout-action-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  .callout-btn {
+    white-space: nowrap;
+    padding: 14px 28px;
+    font-size: 15px;
+  }
+  .callout-note {
+    font-size: 11px;
+    color: #94a3b8;
+  }
+
+  /* METODOLOGÍA */
+  .methodology-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 22px;
+  }
+  .methodology-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 24px;
+  }
+  .methodology-number {
+    display: block;
+    font-size: 26px;
+    font-weight: 900;
+    color: #b9141b;
+    margin-bottom: 8px;
+    line-height: 1;
+  }
+  .methodology-title {
+    font-size: 16px;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 8px;
+    line-height: 1.3;
+  }
+  .methodology-text {
+    font-size: 13.5px;
+    color: #475569;
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  /* TESTIMONIOS ACADÉMICOS */
+  .academic-quote-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    justifycontent: space-between;
+  }
+  .academic-quote-card blockquote {
+    margin: 0 0 16px 0;
+    font-size: 14px;
+    color: #334155;
+    line-height: 1.55;
+    font-style: italic;
+  }
+  .academic-quote-card figcaption strong {
+    display: block;
+    font-size: 13px;
+    color: #0f172a;
+  }
+  .academic-quote-card figcaption span {
+    font-size: 12px;
+    color: #64748b;
+  }
+
+  /* SECCIÓN FINAL ACADÉMICA */
+  .academy-final-academic {
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: clamp(32px, 5vw, 48px);
+    text-align: center;
+    margin-bottom: 48px;
+  }
+  .final-academic-inner {
+    max-width: 640px;
+    margin-inline: auto;
+  }
+  .final-academic-inner h2 {
+    font-size: clamp(22px, 3vw, 30px);
+    font-weight: 900;
+    color: #0f172a;
+    margin-bottom: 12px;
+  }
+  .final-academic-inner p {
+    font-size: 15px;
+    color: #475569;
+    line-height: 1.55;
+    margin-bottom: 24px;
+  }
+  .final-actions {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-bottom: 12px;
+  }
+  .final-subtext {
+    font-size: 12px;
+    color: #64748b;
+    margin: 0;
+  }
+</style>

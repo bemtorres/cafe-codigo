@@ -185,8 +185,11 @@ export function WidgetSlideCards({ data, brand }: WidgetSlideCardsProps) {
                 apaCitation={activeCard.apaCitation}
                 brandColor={brand.primary}
                 maxWidth="460px"
+                zoomImage={activeCard.imageUrl ? { src: activeCard.imageUrl, alt: activeCard.imageAlt || activeCard.title } : undefined}
               >
-                <SlideIllustration type={activeCard.illustration} brandColor={brand.primary} />
+                {activeCard.imageUrl
+                  ? <img className="h-auto w-full" src={activeCard.imageUrl} alt={activeCard.imageAlt || activeCard.title} />
+                  : <SlideIllustration type={activeCard.illustration} brandColor={brand.primary} />}
               </ZoomableFigure>
             )}
           </div>

@@ -4,6 +4,7 @@ import type {
   CourseLessionMeta,
   CourseModule,
   LegacyCourseDocument,
+  VideoEditorialBlockData,
 } from './courseJsonTypes';
 
 export function migrateLegacyCourse({
@@ -90,14 +91,16 @@ export function isCourseDocument(value: unknown): value is CourseDocumentJSON {
   return isRecord(value) &&
     typeof value.courseId === 'string' && Boolean(value.courseId.trim()) &&
     typeof value.title === 'string' && Boolean(value.title.trim()) &&
+    (value.category === undefined || (typeof value.category === 'string' &&
+      Boolean(value.category.trim()) && value.category.length <= 80)) &&
     typeof value.version === 'string' &&
     typeof value.institution === 'string' &&
     typeof value.defaultBrandId === 'string' &&
     typeof value.showScoreInBanner === 'boolean' &&
-    Array.isArray(value.modulos) && value.modulos.length > 0 &&
-    value.modulos.every((module) => isNamed(module) &&
+    isList(value.modulos, (module) => isNamed(module) &&
       isList(module.lessions, (lession) => isNamed(lession) &&
         isList(lession.secciones, (section) => isNamed(section) &&
+          (section.pageBreak === undefined || section.pageBreak === true) &&
           isList(section.contenidos, (content) => isNamed(content) &&
             isRecord(content.widget) &&
             typeof content.widget.id === 'string' &&
@@ -111,6 +114,81 @@ export function getModuleContents(module: CourseModule): CourseContenido[] {
   return module.lessions.flatMap((lession) =>
     lession.secciones.flatMap((section) => section.contenidos)
   );
+}
+
+export type CoursePage = {
+  id: string;
+  title: string;
+  sections: CourseModule['lessions'][number]['secciones'];
+  contents: CourseContenido[];
+};
+
+export function getModulePages(module: CourseModule): CoursePage[] {
+  const pages: CoursePage[] = [{ id: '', title: 'Inicio', sections: [], contents: [] }];
+  for (const lesson of module.lessions) {
+    for (const section of lesson.secciones) {
+      if (section.pageBreak) {
+        if (pages.length === 1 && !pages[0].sections.length) pages.pop();
+        pages.push({ id: section.id, title: section.title, sections: [], contents: [] });
+      }
+      const page = pages[pages.length - 1];
+      page.sections.push(section);
+      page.contents.push(...section.contenidos);
+    }
+  }
+  return pages;
+}
+
+export function splitLegacyVideoQuotes(course: CourseDocumentJSON): CourseDocumentJSON {
+  const contents = course.modulos.flatMap(getModuleContents);
+  const ids = new Set(contents.flatMap(({ id, widget }) => [id, widget.id]));
+  let changed = false;
+
+  const modulos = course.modulos.map((module) => ({
+    ...module,
+    lessions: module.lessions.map((lesson) => ({
+      ...lesson,
+      secciones: lesson.secciones.map((section) => ({
+        ...section,
+        contenidos: section.contenidos.flatMap((content): CourseContenido[] => {
+          const { widget } = content;
+          if (widget.type !== 'video-editorial') return [content];
+
+          const { highlightLead, statementRest, ...data } = widget.data as VideoEditorialBlockData & {
+            highlightLead?: string;
+            statementRest?: string;
+          };
+          if (highlightLead === undefined && statementRest === undefined) return [content];
+
+          changed = true;
+          const video = { ...content, widget: { ...widget, data } };
+          if (!highlightLead && !statementRest) return [video];
+
+          const baseId = `${widget.id}-cita`;
+          let id = baseId;
+          for (let suffix = 2; ids.has(id); suffix++) id = `${baseId}-${suffix}`;
+          ids.add(id);
+          const { bgMode, bgColor, brandColors } = widget;
+          return [video, {
+            id,
+            title: 'Cita editorial',
+            widget: {
+              id,
+              type: 'editorial-quote',
+              componentName: 'WidgetEditorialQuote',
+              summary: 'Cita editorial',
+              bgMode,
+              bgColor,
+              brandColors,
+              data: { highlightLead, text: statementRest ?? '', includeInstitutionName: true },
+            },
+          }];
+        }),
+      })),
+    })),
+  }));
+
+  return changed ? { ...course, modulos } : course;
 }
 
 function upgradeDjangoGuide(draft: CourseDocumentJSON, source: CourseDocumentJSON): CourseDocumentJSON {

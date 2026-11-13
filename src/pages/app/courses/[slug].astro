@@ -2,7 +2,8 @@
 import type { GetStaticPaths } from "astro";
 import CourseAppLayout from "../../../layouts/CourseAppLayout.astro";
 import { courses } from "../../../data/courses";
-import { courseHomePath } from "../../../lib/coursePaths";
+import { getCoursePractice } from "../../../lib/coursePractice";
+import { academyCoursePath, courseHomePath } from "../../../lib/coursePaths";
 
 export const getStaticPaths = (() =>
   courses
@@ -15,43 +16,9 @@ export const getStaticPaths = (() =>
 const { course } = Astro.props;
 const lessons = course.lessons ?? [];
 const firstLesson = lessons[0];
-const embeddedExercises: Partial<Record<string, Record<string, string>>> = {
-  pseint: {
-    variables: "Ejercicios de variables",
-    matematicas: "Ejercicios de operaciones matemáticas",
-    condicionales: "Ejercicios con Si",
-    repeticion: "Ejercicios de repetición",
-  },
-  python: { funciones: "Ejercicios prácticos de funciones" },
-  django: {
-    "admin-crud": "Ejercicios de Django Admin",
-    seguridad: "Ejercicios de seguridad",
-  },
-  excel: { graficos: "Ejercicios de gráficos" },
-  "excel-intermedio": {
-    "variables-tipos": "Ejercicios de variables y tipos en VBA",
-  },
-};
+const practice = getCoursePractice(course);
+const classroomHref = academyCoursePath(course.slug) + "aula/";
 
-const practice = lessons.flatMap((lesson) => {
-  const embeddedTitle = embeddedExercises[course.slug]?.[lesson.slug];
-  if (embeddedTitle)
-    return [{ title: embeddedTitle, href: lesson.href, embedded: true }];
-  if (
-    /práctic[ao]|ejercicios?|retos?|proyectos?|desafíos?/i.test(lesson.title)
-  ) {
-    return [{ title: lesson.title, href: lesson.href, embedded: false }];
-  }
-  return [];
-});
-
-if (course.slug === "java") {
-  practice.unshift({
-    title: "Taller práctico de programación orientada a objetos",
-    href: "/course/java/poo-completed/",
-    embedded: false,
-  });
-}
 ---
 
 <CourseAppLayout
@@ -60,7 +27,23 @@ if (course.slug === "java") {
   description={course.description}
 >
   <div class="academy-wrap academy-detail">
-    <a class="academy-detail-back" href="/app/courses/">← Todos los cursos</a>
+    <a class="academy-detail-back" href="/app/courses/">
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+        style="display: inline-block; vertical-align: -2px; margin-right: 6px;"
+      >
+        <path d="M19 12H5M12 19l-7-7 7-7" />
+      </svg>
+      Todos los cursos
+    </a>
 
     <header class="academy-detail-hero">
       <div class="academy-detail-intro">
@@ -79,11 +62,14 @@ if (course.slug === "java") {
           class="academy-button"
           href={course.requiresPassword
             ? courseHomePath(course.slug)
-            : (firstLesson?.href ?? courseHomePath(course.slug))}
+            : classroomHref}
         >
           {firstLesson ? "Empezar curso" : "Abrir curso"}
           <span aria-hidden="true">→</span>
         </a>
+        {!course.requiresPassword && (
+          <a class="academy-text-link" style="margin-inline-start: 12px;" href={classroomHref + "?edit=true"}>Editar curso</a>
+        )}
       </div>
       {
         course.image && (

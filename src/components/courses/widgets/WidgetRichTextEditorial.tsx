@@ -368,7 +368,7 @@ export function WidgetRichTextEditorial({
               transition: 'all 0.18s ease',
             }}
           >
-            <span>{isEditingText ? '👁️ Ver Modo Lectura' : '✍️ Editar Texto con Tiptap'}</span>
+            <span>{isEditingText ? 'Ver modo lectura' : 'Editar texto'}</span>
           </button>
 
           {savedNotice && (

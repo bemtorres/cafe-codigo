@@ -11,17 +11,22 @@ const demoModule: LegacyCourseDocument = {
   lessions: [
     {
       id: 'lession-1',
-      title: 'LESSION 1: PRESENTACIÓN GENERAL',
+      title: 'PRESENTACIÓN GENERAL',
       secciones: [
         {
           id: 'sec-1-1',
-          title: 'Sección 1.1 · Introducción al Curso',
+          title: 'Bienvenida y presentación del curso',
           contenidos: [
             {
               id: 'l1',
               title: 'Bienvenida y presentación del curso',
               targetId: 'widget-video',
               icon: 'video',
+            },
+            {
+              id: 'l1-cita',
+              title: 'Objetivo del curso',
+              targetId: 'widget-video-cita',
             },
           ],
         },
@@ -41,11 +46,11 @@ const demoModule: LegacyCourseDocument = {
     },
     {
       id: 'lession-2',
-      title: 'LESSION 2: ARQUITECTURA Y ÉTICA EN IA',
+      title: 'ARQUITECTURA Y ÉTICA EN IA',
       secciones: [
         {
-          id: 'sec-2-1',
-          title: 'Sección 2.1 · Fundamentos y Portadas',
+          id: 'sec-2-codigo',
+          title: 'Código de Seguridad y Buenas Prácticas',
           contenidos: [
             {
               id: 'l2',
@@ -53,12 +58,24 @@ const demoModule: LegacyCourseDocument = {
               targetId: 'widget-code-steps',
               icon: 'code',
             },
+          ],
+        },
+        {
+          id: 'sec-2-principios',
+          title: 'Principios de Desarrollo Seguro',
+          contenidos: [
             {
               id: 'l3',
               title: 'Principios de Desarrollo Seguro',
               targetId: 'widget-hero',
               icon: 'slides',
             },
+          ],
+        },
+        {
+          id: 'sec-2-banner',
+          title: 'Banner de Portada con Imagen (Solo Banner)',
+          contenidos: [
             {
               id: 'l3b',
               title: 'Banner de Portada con Imagen (Solo Banner)',
@@ -68,8 +85,8 @@ const demoModule: LegacyCourseDocument = {
           ],
         },
         {
-          id: 'sec-2-2',
-          title: 'Sección 2.2 · Lectura Normativa y Canales de Reporte',
+          id: 'sec-2-lectura',
+          title: 'Lectura Editorial Diseñable (Tiptap Rich Text)',
           contenidos: [
             {
               id: 'l3c',
@@ -77,12 +94,24 @@ const demoModule: LegacyCourseDocument = {
               targetId: 'widget-rich-text',
               icon: 'text',
             },
+          ],
+        },
+        {
+          id: 'sec-2-dudas',
+          title: '¿Qué hago si tengo dudas o debo reportar una vulnerabilidad?',
+          contenidos: [
             {
               id: 'l4',
               title: '¿Qué hago si tengo dudas o debo reportar una vulnerabilidad?',
               targetId: 'widget-details',
               icon: 'text',
             },
+          ],
+        },
+        {
+          id: 'sec-2-actividad',
+          title: 'Actividad: ¿Qué haría usted?',
+          contenidos: [
             {
               id: 'l5',
               title: 'Actividad: ¿Qué haría usted?',
@@ -95,11 +124,11 @@ const demoModule: LegacyCourseDocument = {
     },
     {
       id: 'lession-3',
-      title: 'LESSION 3: MODELO DE PREVENCIÓN DE INCIDENTES',
+      title: 'MODELO DE PREVENCIÓN DE INCIDENTES',
       secciones: [
         {
-          id: 'sec-3-1',
-          title: 'Sección 3.1 · Prevención y Comparación de Código',
+          id: 'sec-3-prevencion',
+          title: 'Modelo de Prevención de Fallos en Producción',
           contenidos: [
             {
               id: 'l6',
@@ -107,6 +136,12 @@ const demoModule: LegacyCourseDocument = {
               targetId: 'widget-slides',
               icon: 'slides',
             },
+          ],
+        },
+        {
+          id: 'sec-3-comparador',
+          title: 'Comparador: Código Vulnerable vs. Código Blindado',
+          contenidos: [
             {
               id: 'l7',
               title: 'Comparador: Código Vulnerable vs. Código Blindado',
@@ -116,8 +151,8 @@ const demoModule: LegacyCourseDocument = {
           ],
         },
         {
-          id: 'sec-3-2',
-          title: 'Sección 3.2 · Mapas de Arquitectura (Hotspots)',
+          id: 'sec-3-hotspots',
+          title: 'Mapa de Capas de Arquitectura (Hotspots)',
           contenidos: [
             {
               id: 'l8',
@@ -125,6 +160,12 @@ const demoModule: LegacyCourseDocument = {
               targetId: 'widget-hotspots',
               icon: 'slides',
             },
+          ],
+        },
+        {
+          id: 'sec-3-visual',
+          title: 'Mapa de Capas con Imagen Izquierda y Derecha (Hotspots Visual)',
+          contenidos: [
             {
               id: 'l8b',
               title: 'Mapa de Capas con Imagen Izquierda y Derecha (Hotspots Visual)',
@@ -137,11 +178,11 @@ const demoModule: LegacyCourseDocument = {
     },
     {
       id: 'lession-4',
-      title: 'LESSION 4: DESPLIEGUE Y AUDITORÍA CONTINUA',
+      title: 'DESPLIEGUE Y AUDITORÍA CONTINUA',
       secciones: [
         {
-          id: 'sec-4-1',
-          title: 'Sección 4.1 · Tarjetas 3D y Pipeline Paso a Paso',
+          id: 'sec-4-flipcards',
+          title: 'Tarjetas Giratorias de Conceptos Clave',
           contenidos: [
             {
               id: 'l9',
@@ -149,18 +190,36 @@ const demoModule: LegacyCourseDocument = {
               targetId: 'widget-flipcards',
               icon: 'slides',
             },
+          ],
+        },
+        {
+          id: 'sec-4-steptostep',
+          title: 'Paso a Paso del Pipeline CI/CD (Step to Step)',
+          contenidos: [
             {
               id: 'l10',
               title: 'Paso a Paso del Pipeline CI/CD (Step to Step)',
               targetId: 'widget-timeline',
               icon: 'timeline',
             },
+          ],
+        },
+        {
+          id: 'sec-4-checklist',
+          title: 'Checklist Interactivo de Paso a Producción',
+          contenidos: [
             {
               id: 'l10b',
               title: 'Checklist Interactivo de Paso a Producción',
               targetId: 'widget-checklist',
               icon: 'timeline',
             },
+          ],
+        },
+        {
+          id: 'sec-4-quiz1',
+          title: 'Quiz 1: Casos de Selección Única y Video',
+          contenidos: [
             {
               id: 'l11',
               title: 'Quiz 1: Casos de Selección Única y Video',
@@ -173,11 +232,11 @@ const demoModule: LegacyCourseDocument = {
     },
     {
       id: 'lession-5',
-      title: 'LESSION 5: LABORATORIO DE EVALUACIONES INTERACTIVAS',
+      title: 'LABORATORIO DE EVALUACIONES INTERACTIVAS',
       secciones: [
         {
-          id: 'sec-5-1',
-          title: 'Sección 5.1 · Selección, Clasificación y Ordenamiento',
+          id: 'sec-5-multiple',
+          title: 'Quiz 2: Selección Múltiple (Checkboxes)',
           contenidos: [
             {
               id: 'l12',
@@ -185,30 +244,60 @@ const demoModule: LegacyCourseDocument = {
               targetId: 'widget-quiz-multiple',
               icon: 'quiz',
             },
+          ],
+        },
+        {
+          id: 'sec-5-dragdrop',
+          title: 'Quiz 3: Drag & Drop de Clasificación Normativa',
+          contenidos: [
             {
               id: 'l13',
               title: 'Quiz 3: Drag & Drop de Clasificación Normativa',
               targetId: 'widget-quiz-dragdrop',
               icon: 'quiz',
             },
+          ],
+        },
+        {
+          id: 'sec-5-animales',
+          title: 'Quiz 3b: Clasificación de animales con imágenes',
+          contenidos: [
             {
               id: 'l13-animales',
               title: 'Quiz 3b: Clasificación de animales con imágenes',
               targetId: 'widget-quiz-dragdrop-animals',
               icon: 'quiz',
             },
+          ],
+        },
+        {
+          id: 'sec-5-ordering',
+          title: 'Quiz 4: Secuencia de Protocolo (Ordering 1..4)',
+          contenidos: [
             {
               id: 'l14',
               title: 'Quiz 4: Secuencia de Protocolo (Ordering 1..4)',
               targetId: 'widget-quiz-ordering',
               icon: 'quiz',
             },
+          ],
+        },
+        {
+          id: 'sec-5-matching',
+          title: 'Quiz 5: Emparejar Riesgo ↔ Control (Matching)',
+          contenidos: [
             {
               id: 'l15',
               title: 'Quiz 5: Emparejar Riesgo ↔ Control (Matching)',
               targetId: 'widget-quiz-matching',
               icon: 'quiz',
             },
+          ],
+        },
+        {
+          id: 'sec-5-fillblank',
+          title: 'Quiz 6: Completar Código en Blanco (Fill-in-Blank)',
+          contenidos: [
             {
               id: 'l16',
               title: 'Quiz 6: Completar Código en Blanco (Fill-in-Blank)',
@@ -218,8 +307,8 @@ const demoModule: LegacyCourseDocument = {
           ],
         },
         {
-          id: 'sec-5-2',
-          title: 'Sección 5.2 · Simulaciones, Imágenes y Reporte Final',
+          id: 'sec-5-branching',
+          title: 'Quiz 7: Simulación de Rol Ramificada (Branching)',
           contenidos: [
             {
               id: 'l17',
@@ -227,36 +316,72 @@ const demoModule: LegacyCourseDocument = {
               targetId: 'widget-quiz-branching',
               icon: 'quiz',
             },
+          ],
+        },
+        {
+          id: 'sec-5-matrix',
+          title: 'Quiz 8: Matriz Rápida Cumple vs. Incumple',
+          contenidos: [
             {
               id: 'l18',
               title: 'Quiz 8: Matriz Rápida Cumple vs. Incumple',
               targetId: 'widget-quiz-matrix',
               icon: 'quiz',
             },
+          ],
+        },
+        {
+          id: 'sec-5-spotter',
+          title: 'Quiz 9: Cazador de Líneas Vulnerables (Spotter)',
+          contenidos: [
             {
               id: 'l19',
               title: 'Quiz 9: Cazador de Líneas Vulnerables (Spotter)',
               targetId: 'widget-quiz-spotter',
               icon: 'quiz',
             },
+          ],
+        },
+        {
+          id: 'sec-5-image-hotspot',
+          title: 'Quiz 10: Seleccionar Parte de una Imagen (Banda / Batería)',
+          contenidos: [
             {
               id: 'l20',
               title: 'Quiz 10: Seleccionar Parte de una Imagen (Banda / Batería)',
               targetId: 'widget-quiz-image-hotspot',
               icon: 'quiz',
             },
+          ],
+        },
+        {
+          id: 'sec-5-image-choice',
+          title: 'Quiz 11: Selección Visual de Escenas (Image Choice)',
+          contenidos: [
             {
               id: 'l21',
               title: 'Quiz 11: Selección Visual de Escenas (Image Choice)',
               targetId: 'widget-quiz-image-choice',
               icon: 'quiz',
             },
+          ],
+        },
+        {
+          id: 'sec-5-risk-slider',
+          title: 'Quiz 12: Termómetro Calibrador de Severidad (Risk Slider)',
+          contenidos: [
             {
               id: 'l22',
               title: 'Quiz 12: Termómetro Calibrador de Severidad (Risk Slider)',
               targetId: 'widget-quiz-risk-slider',
               icon: 'quiz',
             },
+          ],
+        },
+        {
+          id: 'sec-5-report',
+          title: 'Reporte Final de Desempeño y Score',
+          contenidos: [
             {
               id: 'l23',
               title: 'Reporte Final de Desempeño y Score',
@@ -342,15 +467,23 @@ const demoModule: LegacyCourseDocument = {
       id: 'widget-video',
       type: 'video-editorial',
       componentName: 'WidgetVideoEditorial',
-      summary:
-        'Reproductor de video enmarcado + línea divisoria + frase editorial con palabras resaltadas',
+      summary: 'Reproductor de video enmarcado con referencia bibliográfica',
       data: {
         videoUrl: 'https://www.youtube.com/embed/f79MRyMsjrQ?rel=0',
         apaCitation:
           'Python Software Foundation. (2024). Buenas prácticas de arquitectura y seguridad en entornos Python [Video]. YouTube. https://www.youtube.com/watch?v=f79MRyMsjrQ',
+      },
+    },
+    {
+      id: 'widget-video-cita',
+      type: 'editorial-quote',
+      componentName: 'WidgetEditorialQuote',
+      summary: 'Objetivo del curso',
+      data: {
         highlightLead: 'Comprender',
-        statementRest:
+        text:
           'la aplicación del Código de Arquitectura y el Modelo de Prevención de Incidentes para fortalecer la integridad y la conducta técnica en',
+        includeInstitutionName: true,
       },
     },
     {

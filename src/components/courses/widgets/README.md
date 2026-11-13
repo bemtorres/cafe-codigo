@@ -2,6 +2,13 @@
 
 Cada widget de la plataforma está separado en su propio archivo `.tsx` independiente con su propia interfaz de `Props` tipada y su esquema de datos en [`courseJsonTypes.ts`](../../../data/courses/courseJsonTypes.ts). Esto permite editar, extender o probar cualquier widget de forma aislada sin afectar al resto del reproductor.
 
+## Editor visual del aula
+
+- Abre el aula y pulsa **Editar contenido**. Para probar con el lienzo de ejemplo que ya incluye un informe, abre `/app/courses/django/aula/?edit=true`.
+- Entre bloques, **Añadir recurso** abre la biblioteca de plantillas. Busca por nombre o filtra por Contenido, Práctica y Evaluación. Al insertar una plantilla se abre su formulario de propiedades.
+- **Salto de página** crea una página con nombre en el índice. Los recursos que siguen pasan a esa página hasta el próximo salto. En el JSON, `pageBreak: true` marca la sección que inicia una página. **Quitar salto** reúne ambas partes y conserva los recursos.
+- Cada informe reúne las actividades de su página desde el informe anterior, si lo hay. **Vista estudiante** oculta los controles y permite probar la navegación. Los cambios quedan en el borrador del navegador y se pueden exportar como JSON.
+
 ---
 
 ## 🎨 Propiedades Comunes a Todos los Widgets (`CourseWidgetBlock`)
@@ -61,7 +68,10 @@ Cada entrada de `contenidos[]` incluye un objeto `widget` con estas propiedades:
 - **¿Qué se puede hacer en este widget?**
   - Incrustar un **video principal 16:9** (`videoUrl`, ej. YouTube embed) dentro de un marco editorial con insignia institucional.
   - Añadir la **fuente o cita en formato APA 7** (`apaCitation`) debajo del reproductor.
-  - Mostrar una **declaración editorial destacada** bajo el video con frase inicial resaltada en el color de la marca (`highlightLead`) + continuación (`statementRest`).
+
+### [`WidgetEditorialQuote.tsx`](./WidgetEditorialQuote.tsx)
+
+El tipo `editorial-quote` muestra una cita independiente. El editor permite cambiar el texto, la frase destacada, el color de acento y si se añade el nombre de la institución al final.
 
 ---
 

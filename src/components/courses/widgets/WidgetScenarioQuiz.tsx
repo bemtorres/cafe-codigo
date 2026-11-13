@@ -14,7 +14,7 @@ export interface WidgetScenarioQuizProps {
   onSubmitQuestion: (questionId: string) => void;
   earnedQuizScore: number;
   maxQuizScore: number;
-  onViewReport: (targetId: string) => void;
+  onViewReport?: (targetId: string) => void;
 }
 
 export function WidgetScenarioQuiz({
@@ -409,7 +409,7 @@ export function WidgetScenarioQuiz({
             >
               Siguiente Caso →
             </button>
-          ) : (
+          ) : onViewReport && (
             <button
               type="button"
               onClick={() => onViewReport(data.reportTargetId || 'widget-report')}

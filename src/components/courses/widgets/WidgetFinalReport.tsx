@@ -13,6 +13,10 @@ export interface WidgetFinalReportProps {
   earnedQuizScore: number;
   maxQuizScore: number;
   answeredScenariosCount: number;
+  totalScenariosCount?: number;
+  quizWeight?: number;
+  checklistWeight?: number;
+  scoped?: boolean;
   scenarioQuestions: ScenarioQuestionItem[];
   submittedQuestions: Record<string, boolean>;
   selectedOptions: Record<string, string>;
@@ -36,6 +40,10 @@ export function WidgetFinalReport({
   earnedQuizScore,
   maxQuizScore,
   answeredScenariosCount,
+  totalScenariosCount,
+  quizWeight = 70,
+  checklistWeight = 30,
+  scoped = false,
   scenarioQuestions,
   submittedQuestions,
   selectedOptions,
@@ -130,7 +138,9 @@ export function WidgetFinalReport({
             >
               {isApproved
                 ? `✓ APROBADO CON ESTÁNDAR DE PRODUCCIÓN (≥ ${data.passingScore || 70} PTS)`
-                : '⏳ EN PROGRESO — COMPLETA LOS CASOS Y EL CHECKLIST PARA APROBAR'}
+                : quizWeight || checklistWeight
+                  ? '⏳ EN PROGRESO — COMPLETA LAS ACTIVIDADES EVALUADAS'
+                  : 'Sin actividades evaluadas en este informe'}
             </span>
           </div>
 
@@ -174,7 +184,7 @@ export function WidgetFinalReport({
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 210px), 1fr))',
             gap: '16px',
             marginTop: '28px',
             marginBottom: '32px',
@@ -189,13 +199,13 @@ export function WidgetFinalReport({
             }}
           >
             <div style={{ fontSize: '11px', fontWeight: 800, color: '#64748B' }}>
-              CASOS DE DECISIÓN (70%)
+              ACTIVIDADES EVALUADAS{quizWeight > 0 && ` (${quizWeight}%)`}
             </div>
             <div style={{ fontSize: '24px', fontWeight: 900, color: '#0F172A', margin: '4px 0' }}>
               {earnedQuizScore} / {maxQuizScore} pts
             </div>
             <div style={{ fontSize: '12px', color: '#475569' }}>
-              {answeredScenariosCount} de {scenarioQuestions.length} escenarios enviados
+              {answeredScenariosCount} de {totalScenariosCount ?? scenarioQuestions.length} actividades respondidas
             </div>
           </div>
 
@@ -208,7 +218,7 @@ export function WidgetFinalReport({
             }}
           >
             <div style={{ fontSize: '11px', fontWeight: 800, color: '#64748B' }}>
-              CHECKLIST DE PRODUCCIÓN (30%)
+              LISTAS DE VERIFICACIÓN{checklistWeight > 0 && ` (${checklistWeight}%)`}
             </div>
             <div style={{ fontSize: '24px', fontWeight: 900, color: '#0F172A', margin: '4px 0' }}>
               {checklistScorePct}%
@@ -227,7 +237,7 @@ export function WidgetFinalReport({
             }}
           >
             <div style={{ fontSize: '11px', fontWeight: 800, color: '#64748B' }}>
-              AVANCE DEL MÓDULO
+              {scoped ? 'AVANCE DE ESTE TRAMO' : 'AVANCE DEL MÓDULO'}
             </div>
             <div style={{ fontSize: '24px', fontWeight: 900, color: '#0F172A', margin: '4px 0' }}>
               {progressPct}%
@@ -374,7 +384,7 @@ export function WidgetFinalReport({
                 cursor: 'pointer',
               }}
             >
-              ✓ Marcar todo el módulo como completado
+              {scoped ? '✓ Completar este tramo' : '✓ Marcar todo el módulo como completado'}
             </button>
 
             <button

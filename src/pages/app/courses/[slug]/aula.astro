@@ -1,0 +1,19 @@
+---
+import type { GetStaticPaths } from 'astro';
+import CourseWidgetsPreview from '../../../../layouts/CourseWidgetsPreview.astro';
+import { courses } from '../../../../data/courses';
+import { academyCoursePath } from '../../../../lib/coursePaths';
+import '../../../test/branding2/branding2.css';
+
+export const getStaticPaths = (() => courses.filter((course) => course.status === 'available')
+  .map((course) => ({ params: { slug: course.slug }, props: { course } }))) satisfies GetStaticPaths;
+
+const { course } = Astro.props;
+---
+
+<CourseWidgetsPreview
+  title={`${course.name} · Aula interactiva | Café y Código`}
+  courseUrl={`/api/courses/catalog/${course.slug}.json`}
+  editCourseUrl={course.slug === 'django' ? '/api/courses/catalog/django-branding.json' : undefined}
+  backHref={academyCoursePath(course.slug)}
+/>

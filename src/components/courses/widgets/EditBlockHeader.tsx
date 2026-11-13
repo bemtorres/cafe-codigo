@@ -17,6 +17,7 @@ export interface EditBlockHeaderProps {
   onMoveUp?: () => void;
   onMoveDown?: () => void;
   onEditJson?: () => void;
+  onEditProperties?: () => void;
 }
 
 const PRESET_COLOR_SWATCHES = [
@@ -45,6 +46,7 @@ export function EditBlockHeader({
   onMoveUp,
   onMoveDown,
   onEditJson,
+  onEditProperties,
 }: EditBlockHeaderProps) {
   const [copied, setCopied] = useState(false);
 
@@ -357,6 +359,12 @@ export function EditBlockHeader({
           </button>
         )}
 
+        {onEditProperties && (
+          <button type="button" onClick={onEditProperties}
+            className="rounded border border-sky-300 px-2 py-1 font-bold text-sky-200 hover:bg-slate-700">
+            Editar propiedades
+          </button>
+        )}
         {onEditJson && (
           <button
             type="button"

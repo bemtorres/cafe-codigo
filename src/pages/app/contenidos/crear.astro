@@ -1,0 +1,11 @@
+---
+import CourseAppLayout from '../../../layouts/CourseAppLayout.astro';
+import CourseCreator from '../../../components/courses/CourseCreator';
+import { getPublishedCourses } from '../../../lib/publishedCourses.mjs';
+
+if (!import.meta.env.DEV) return Astro.redirect('/app/contenidos/');
+---
+
+<CourseAppLayout page="contents" title="Creador de contenidos" description="Edita asignaturas interactivas por módulos y widgets.">
+  <CourseCreator client:load documents={getPublishedCourses()} />
+</CourseAppLayout>

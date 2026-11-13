@@ -1,38 +1,13 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { courses, type Course, type CourseCategory } from '../../data/courses';
+import { courseCategoryOrder as categoryOrder, courseCategoryLabels as categoryLabel } from '../../data/courseCategories';
 import { courseTestimonials } from '../../data/courseTestimonials';
 import { academyCoursePath, courseHomePath } from '../../lib/coursePaths';
-
-const categoryOrder: CourseCategory[] = [
-  'foundations',
-  'language',
-  'advanced',
-  'frameworks',
-  'testing',
-  'frontend',
-  'engineering',
-  'database',
-  'tools',
-  'gamedev',
-];
 
 const trendingCourses = ['pseint', 'java', 'python', 'django'].flatMap((slug) => {
   const course = courses.find((entry) => entry.slug === slug);
   return course ? [course] : [];
 });
-
-const categoryLabel: Record<CourseCategory, string> = {
-  foundations: 'Conceptos base',
-  language: 'Lenguajes',
-  advanced: 'Programación avanzada',
-  frameworks: 'Frameworks',
-  testing: 'Test',
-  frontend: 'Frontend (web)',
-  engineering: 'Ingeniería y calidad',
-  database: 'Bases de datos',
-  tools: 'Herramientas',
-  gamedev: 'Videojuegos',
-};
 
 /** Normaliza para búsqueda insensible a mayúsculas y acentos. */
 function normalizeSearch(s: string): string {

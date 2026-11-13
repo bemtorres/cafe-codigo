@@ -12,8 +12,6 @@ export function WidgetVideoEditorial({
   brand,
   institutionName,
 }: WidgetVideoEditorialProps) {
-  const showStatement = data.highlightLead || data.statementRest;
-
   return (
     <div style={{ maxWidth: '720px', margin: '0 auto', padding: '56px 24px 64px 24px' }}>
       <div
@@ -100,28 +98,6 @@ export function WidgetVideoEditorial({
         )}
       </div>
 
-      {showStatement && <div style={{ textAlign: 'center', maxWidth: '620px', margin: '48px auto 0 auto' }}>
-        <div
-          style={{
-            width: '52px',
-            height: '2px',
-            backgroundColor: brand.primary,
-            margin: '0 auto 24px auto',
-          }}
-        />
-        <p
-          style={{
-            fontSize: '23px',
-            lineHeight: 1.5,
-            color: '#374151',
-            fontWeight: 400,
-            margin: 0,
-          }}
-        >
-          <strong style={{ color: brand.primary, fontWeight: 700 }}>{data.highlightLead}</strong>{' '}
-          {data.statementRest} {institutionName}.
-        </p>
-      </div>}
     </div>
   );
 }
