@@ -3,10 +3,6 @@
   "version": "1.0.0",
   "private": true,
   "description": "Café y Código - Monorepo (Frontend Astro 7 + Backend NestJS 11)",
-  "workspaces": [
-    "frontend",
-    "backend"
-  ],
   "scripts": {
     "dev": "npm run dev --prefix frontend",
     "build": "npm run build --prefix frontend",
