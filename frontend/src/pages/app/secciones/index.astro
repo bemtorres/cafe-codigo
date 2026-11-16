@@ -1,0 +1,298 @@
+---
+import CourseAppLayout from '../../../layouts/CourseAppLayout.astro';
+---
+
+<CourseAppLayout
+  page="secciones"
+  title="Mis Secciones Académicas"
+  description="Accede a tus secciones de clase, grupos de trabajo y foros de debate en Café y Código."
+>
+  <div style="max-width: 1200px; margin: 0 auto; padding: 2rem 1rem 4rem 1rem;">
+
+    <!-- Encabezado -->
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; border-bottom: 3px solid #18181b; padding-bottom: 1.5rem; margin-bottom: 2rem; gap: 1rem;">
+      <div>
+        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+          <span style="background: #3b82f6; color: #ffffff; font-size: 0.75rem; font-weight: 900; padding: 0.25rem 0.6rem; border: 2px solid #18181b; border-radius: 6px; box-shadow: 2px 2px 0px #18181b; text-transform: uppercase;">
+            👥 Espacio Colaborativo
+          </span>
+          <span id="auth-status-pill" style="background: #f4f4f5; color: #52525b; font-size: 0.75rem; font-weight: 700; padding: 0.25rem 0.6rem; border: 2px solid #18181b; border-radius: 6px;">
+            Conectando...
+          </span>
+        </div>
+        <h1 style="font-size: 2.25rem; font-weight: 900; color: #18181b; margin: 0; line-height: 1.1;">
+          Mis Secciones Académicas
+        </h1>
+        <p style="margin: 0.35rem 0 0 0; font-size: 0.95rem; color: #52525b; font-weight: 500;">
+          Únete a la sección de tu docente mediante un código único, participa en grupos con representante y debate en los foros.
+        </p>
+      </div>
+
+      <div>
+        <button
+          id="btn-open-join"
+          type="button"
+          style="background: #f59e0b; color: #18181b; font-weight: 900; font-size: 0.95rem; padding: 0.75rem 1.4rem; border: 2px solid #18181b; border-radius: 8px; box-shadow: 4px 4px 0px #18181b; cursor: pointer; display: flex; align-items: center; gap: 0.5rem;"
+        >
+          🔑 Unirme a una Sección
+        </button>
+      </div>
+    </div>
+
+    <!-- Modal para ingresar código de sección -->
+    <div id="modal-join" style="display: none; background: #fffdfa; border: 3px solid #18181b; border-radius: 12px; padding: 1.75rem; margin-bottom: 2.5rem; box-shadow: 6px 6px 0px #18181b;">
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #18181b; padding-bottom: 0.75rem; margin-bottom: 1.25rem;">
+        <h2 style="margin: 0; font-size: 1.35rem; font-weight: 900; color: #18181b;">
+          🔑 Ingresar Código de Sección
+        </h2>
+        <button id="btn-close-join" type="button" style="background: none; border: none; font-size: 1.5rem; font-weight: 900; cursor: pointer;">✕</button>
+      </div>
+
+      <p style="font-size: 0.9rem; color: #52525b; margin: 0 0 1rem 0;">
+        Pide a tu docente el código de acceso (por ejemplo <code>ALGO-2026</code>). Al ingresar, tu solicitud quedará registrada y tu docente la aprobará.
+      </p>
+
+      <form id="form-join" style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+        <input
+          id="join-code-input"
+          type="text"
+          required
+          placeholder="EJ: ALGO-2026"
+          style="flex: 1; min-width: 200px; padding: 0.65rem 1rem; border: 2px solid #18181b; border-radius: 8px; font-weight: 800; text-transform: uppercase; font-size: 1rem; letter-spacing: 0.05em;"
+        />
+        <button
+          type="submit"
+          id="join-submit-btn"
+          style="background: #10b981; color: #ffffff; font-weight: 900; padding: 0.65rem 1.5rem; border: 2px solid #18181b; border-radius: 8px; box-shadow: 3px 3px 0px #18181b; cursor: pointer;"
+        >
+          Enviar Solicitud
+        </button>
+      </form>
+      <div id="join-feedback" style="margin-top: 0.75rem; font-size: 0.85rem; font-weight: 700; display: none;"></div>
+    </div>
+
+    <!-- Secciones Pendientes de Aprobación -->
+    <div id="pending-container" style="display: none; margin-bottom: 2.5rem;">
+      <h2 style="font-size: 1.25rem; font-weight: 900; color: #b45309; display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem;">
+        ⏳ Solicitudes Pendientes de Aprobación por el Docente
+      </h2>
+      <div id="pending-list" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem;"></div>
+    </div>
+
+    <!-- Secciones Activas / Aprobadas -->
+    <div>
+      <h2 style="font-size: 1.35rem; font-weight: 900; color: #18181b; margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.5rem;">
+        📚 Mis Secciones Activas
+      </h2>
+      <div id="active-list" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem;">
+        <div style="background: #ffffff; border: 2px dashed #cbd5e1; border-radius: 12px; padding: 2.5rem 1.5rem; text-align: center; color: #64748b; font-weight: 600;">
+          Cargando tus secciones...
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script is:inline>
+    const API_BASE = 'http://localhost:3001/api';
+
+    function getToken() {
+      return localStorage.getItem('cafeycodigo_token') || localStorage.getItem('access_token') || sessionStorage.getItem('cafeycodigo_token') || sessionStorage.getItem('access_token');
+    }
+
+    const modalJoin = document.getElementById('modal-join');
+    const btnOpenJoin = document.getElementById('btn-open-join');
+    const btnCloseJoin = document.getElementById('btn-close-join');
+    const formJoin = document.getElementById('form-join');
+    const joinInput = document.getElementById('join-code-input');
+    const joinFeedback = document.getElementById('join-feedback');
+    const pendingContainer = document.getElementById('pending-container');
+    const pendingList = document.getElementById('pending-list');
+    const activeList = document.getElementById('active-list');
+    const statusPill = document.getElementById('auth-status-pill');
+
+    btnOpenJoin?.addEventListener('click', () => {
+      modalJoin.style.display = modalJoin.style.display === 'none' ? 'block' : 'none';
+      if (modalJoin.style.display === 'block') joinInput.focus();
+    });
+
+    btnCloseJoin?.addEventListener('click', () => {
+      modalJoin.style.display = 'none';
+    });
+
+    // Formulario de unirse
+    formJoin?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const code = joinInput.value.trim().toUpperCase();
+      if (!code) return;
+
+      const token = getToken();
+      if (!token) {
+        showFeedback('Debes iniciar sesión para unirte a una sección.', 'error');
+        return;
+      }
+
+      const submitBtn = document.getElementById('join-submit-btn');
+      submitBtn.disabled = true;
+      submitBtn.innerText = 'Enviando...';
+
+      try {
+        const res = await fetch(`${API_BASE}/sections/join`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ code })
+        });
+
+        const data = await res.json();
+        if (res.ok) {
+          showFeedback(`¡Solicitud enviada con éxito para la sección "${data.section?.name || code}"! Espera la aprobación de tu docente.`, 'success');
+          joinInput.value = '';
+          loadSections();
+        } else {
+          showFeedback(data.message || 'Error al solicitar unión a la sección.', 'error');
+        }
+      } catch (err) {
+        showFeedback('No se pudo conectar con el servidor backend.', 'error');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerText = 'Enviar Solicitud';
+      }
+    });
+
+    function showFeedback(msg, type) {
+      joinFeedback.style.display = 'block';
+      joinFeedback.innerText = msg;
+      joinFeedback.style.color = type === 'success' ? '#047857' : '#b91c1c';
+    }
+
+    // Cargar Secciones
+    async function loadSections() {
+      const token = getToken();
+      if (!token) {
+        statusPill.innerText = 'Modo Invitado / Sin Sesión';
+        statusPill.style.background = '#fef3c7';
+        activeList.innerHTML = `
+          <div style="background: #fff; border: 2px solid #18181b; border-radius: 12px; padding: 2rem; box-shadow: 4px 4px 0px #18181b; grid-column: 1 / -1; text-align: center;">
+            <p style="font-size: 1.1rem; font-weight: 800; margin-bottom: 0.75rem;">Inicia sesión para ver tus secciones académicas</p>
+            <p style="color: #71717a; margin-bottom: 1.25rem;">Regístrate con tu correo o Google para solicitar ingreso a secciones y colaborar con tus compañeros.</p>
+            <a href="/login" style="background: #f59e0b; color: #18181b; font-weight: 900; padding: 0.6rem 1.5rem; border: 2px solid #18181b; border-radius: 8px; text-decoration: none; box-shadow: 2px 2px 0px #18181b; display: inline-block;">Iniciar Sesión</a>
+          </div>
+        `;
+        return;
+      }
+
+      try {
+        const res = await fetch(`${API_BASE}/sections/my-sections`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (!res.ok) throw new Error('Error al cargar');
+        const sections = await res.json();
+
+        statusPill.innerText = '🟢 Conectado';
+        statusPill.style.background = '#dcfce7';
+
+        const pending = sections.filter(s => s.membership?.status === 'PENDING');
+        const active = sections.filter(s => s.membership?.status === 'APPROVED');
+
+        // Renderizar pendientes
+        if (pending.length > 0) {
+          pendingContainer.style.display = 'block';
+          pendingList.innerHTML = pending.map(s => `
+            <div style="background: #fffbeb; border: 2px solid #d97706; border-radius: 10px; padding: 1.25rem; box-shadow: 3px 3px 0px #18181b;">
+              <div style="display: flex; justify-content: space-between; align-items: start;">
+                <h3 style="margin: 0; font-size: 1.1rem; font-weight: 800; color: #92400e;">${s.name}</h3>
+                <span style="background: #fef3c7; color: #b45309; font-size: 0.7rem; font-weight: 900; border: 1px solid #d97706; padding: 0.2rem 0.5rem; border-radius: 4px;">EN ESPERA</span>
+              </div>
+              <p style="font-size: 0.85rem; color: #78350f; margin: 0.5rem 0;">Docente: <strong>${s.teacher?.name || 'Profesor'}</strong></p>
+              <div style="font-size: 0.75rem; color: #b45309; font-weight: 600;">Código de sección: <code>${s.code}</code></div>
+            </div>
+          `).join('');
+        } else {
+          pendingContainer.style.display = 'none';
+        }
+
+        // Renderizar activas
+        if (active.length === 0) {
+          activeList.innerHTML = `
+            <div style="background: #fff; border: 2px dashed #a1a1aa; border-radius: 12px; padding: 3rem 1.5rem; text-align: center; grid-column: 1 / -1;">
+              <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">🎒</div>
+              <h3 style="font-size: 1.25rem; font-weight: 900; color: #18181b; margin-bottom: 0.5rem;">Aún no perteneces a ninguna sección activa</h3>
+              <p style="color: #71717a; max-width: 480px; margin: 0 auto 1.5rem auto; font-size: 0.9rem;">
+                Pídele a tu docente el código de unión de su sección y haz clic en "Unirme a una Sección" arriba.
+              </p>
+            </div>
+          `;
+        } else {
+          activeList.innerHTML = active.map(s => {
+            const courseCount = s.courses?.length || 0;
+            const myGroup = s.groups?.find(g => g.members?.some(m => m.userId === s.currentUserId));
+            const isLeader = myGroup?.leaderId === s.currentUserId;
+
+            return `
+              <div style="background: #ffffff; border: 3px solid #18181b; border-radius: 12px; padding: 1.5rem; box-shadow: 5px 5px 0px #18181b; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.15s ease;">
+                <div>
+                  <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem;">
+                    <span style="background: #18181b; color: #ffffff; font-size: 0.75rem; font-weight: 900; padding: 0.2rem 0.6rem; border-radius: 6px;">
+                      ${s.code}
+                    </span>
+                    <span style="background: #dcfce7; color: #166534; font-size: 0.75rem; font-weight: 800; border: 1.5px solid #166534; border-radius: 6px; padding: 0.2rem 0.5rem;">
+                      ✅ Miembro
+                    </span>
+                  </div>
+
+                  <h3 style="margin: 0 0 0.5rem 0; font-size: 1.35rem; font-weight: 900; color: #18181b; line-height: 1.2;">
+                    ${s.name}
+                  </h3>
+                  
+                  <p style="margin: 0 0 1rem 0; font-size: 0.85rem; color: #52525b; line-height: 1.4;">
+                    ${s.description || 'Sin descripción.'}
+                  </p>
+
+                  <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 8px; padding: 0.75rem; margin-bottom: 1.25rem;">
+                    <div style="font-size: 0.8rem; color: #475569; margin-bottom: 0.35rem;">
+                      👨‍🏫 Docente: <strong>${s.teacher?.name || 'Profesor'}</strong>
+                    </div>
+                    <div style="font-size: 0.8rem; color: #475569; margin-bottom: 0.35rem;">
+                      📚 Cursos Vinculados: <strong>${courseCount}</strong>
+                    </div>
+                    ${myGroup ? `
+                      <div style="font-size: 0.8rem; color: #1e3a8a; font-weight: 700; margin-top: 0.35rem; border-top: 1px dashed #cbd5e1; padding-top: 0.35rem;">
+                        👥 Grupo: ${myGroup.name} ${isLeader ? '<span style="background: #fef08a; color: #854d0e; padding: 0.1rem 0.4rem; border-radius: 4px; border: 1px solid #ca8a04;">👑 Representante</span>' : ''}
+                      </div>
+                    ` : `
+                      <div style="font-size: 0.8rem; color: #64748b; font-style: italic; margin-top: 0.35rem; border-top: 1px dashed #cbd5e1; padding-top: 0.35rem;">
+                        Trabajo Individual (Sin grupo asignado)
+                      </div>
+                    `}
+                  </div>
+                </div>
+
+                <div>
+                  <a
+                    href="/app/secciones/detalle?id=${s.id}"
+                    style="display: block; text-align: center; background: #3b82f6; color: #ffffff; font-weight: 900; font-size: 0.95rem; padding: 0.65rem; border: 2px solid #18181b; border-radius: 8px; text-decoration: none; box-shadow: 3px 3px 0px #18181b;"
+                  >
+                    Entrar a la Sección ➔
+                  </a>
+                </div>
+              </div>
+            `;
+          }).join('');
+        }
+
+      } catch (err) {
+        activeList.innerHTML = `
+          <div style="background: #fee2e2; border: 2px solid #b91c1c; border-radius: 10px; padding: 1.5rem; grid-column: 1 / -1; color: #991b1b; font-weight: 700;">
+            No se pudieron conectar las secciones con el backend. Asegúrate de tener el servidor NestJS iniciado en el puerto 3000.
+          </div>
+        `;
+      }
+    }
+
+    loadSections();
+  </script>
+</CourseAppLayout>

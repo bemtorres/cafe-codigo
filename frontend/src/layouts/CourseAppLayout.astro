@@ -3,7 +3,7 @@ import '../styles/global.css';
 import '../styles/course-app.css';
 
 interface Props {
-  page: 'home' | 'courses' | 'course' | 'contents';
+  page: 'home' | 'courses' | 'course' | 'contents' | 'secciones' | 'docente';
   title: string;
   description: string;
 }
@@ -37,6 +37,8 @@ const logoUrl = '/images/cafeycodigologo3.png';
         <nav class="academy-nav" aria-label="Navegación principal">
           <a href="/app/" aria-current={page === 'home' ? 'page' : undefined}>Campus</a>
           <a href="/app/courses/" aria-current={page === 'courses' ? 'page' : page === 'course' ? 'location' : undefined}>Catálogo de Cursos</a>
+          <a href="/app/secciones/" aria-current={page === 'secciones' ? 'page' : undefined}>Mis Secciones 👥</a>
+          <a href="/app/docente/" aria-current={page === 'docente' ? 'page' : undefined}>Portal Docente 👨‍🏫</a>
           <a href="/app/contenidos/" aria-current={page === 'contents' ? 'page' : undefined} style="font-weight: 800; color: var(--academy-accent, #b9141b);">Aula Interactiva ↗</a>
         </nav>
       </div>

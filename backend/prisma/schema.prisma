@@ -1,0 +1,324 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  STUDENT
+  TEACHER
+  EDITOR
+  ADMIN
+}
+
+enum MembershipStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum UserLevelCode {
+  americano
+  latte
+  macchiato
+  espresso
+  ristretto
+}
+
+enum CourseStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+model User {
+  id              String         @id @default(uuid())
+  email           String         @unique
+  passwordHash    String?
+  name            String
+  avatarUrl       String?
+  role            Role           @default(STUDENT)
+  googleId        String?        @unique
+  isEmailVerified Boolean        @default(false)
+  
+  // Gamificación de Café y Código
+  coffeeCoins     Int            @default(0)
+  levelCode       UserLevelCode  @default(americano)
+  points          Int            @default(0)
+
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  coursesCreated      Course[]       @relation("CourseAuthor")
+  revisions           CourseRevision[]
+  enrollments         Enrollment[]
+  quizAttempts        QuizAttempt[]
+  passwordResets      PasswordResetToken[]
+  emailTokens         EmailVerificationToken[]
+
+  // Relaciones del Docente / Profesor
+  classroomsTaught    Classroom[]    @relation("TeacherClassrooms")
+  studentsRegistered  Enrollment[]   @relation("TeacherRegisteredEnrollments")
+  sectionsTaught      Section[]      @relation("TeacherSections")
+
+  // Membresías, Grupos y Foros de Estudiantes
+  sectionMemberships  SectionMember[]   @relation("UserSectionMemberships")
+  ledGroups           WorkGroup[]       @relation("GroupLeader")
+  groupMemberships    WorkGroupMember[] @relation("UserGroupMemberships")
+  forumTopics         ForumTopic[]      @relation("UserForumTopics")
+  forumPosts          ForumPost[]       @relation("UserForumPosts")
+
+  @@map("users")
+}
+
+model EmailVerificationToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  email     String
+  userId    String?
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("email_verification_tokens")
+}
+
+model PasswordResetToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("password_reset_tokens")
+}
+
+model Course {
+  id                String         @id @default(uuid())
+  courseId          String         @unique // Slug identificador: ej. 'primeros-pasos-algoritmos'
+  title             String
+  version           String         @default("1.0.0")
+  category          String?
+  institution       String         @default("Café y Código")
+  defaultBrandId    String         @default("cafeycodigo")
+  showScoreInBanner Boolean        @default(true)
+  status            CourseStatus   @default(DRAFT)
+  
+  // Estructura completa de la nueva versión /app (Módulos, Lessions, Secciones y Widgets)
+  document          Json
+
+  authorId          String?
+  author            User?          @relation("CourseAuthor", fields: [authorId], references: [id], onDelete: SetNull)
+
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+
+  revisions         CourseRevision[]
+  enrollments       Enrollment[]
+  quizAttempts      QuizAttempt[]
+  classrooms        Classroom[]
+  sectionCourses    SectionCourse[]
+
+  @@map("courses")
+}
+
+model CourseRevision {
+  id         String   @id @default(uuid())
+  courseId   String
+  course     Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  document   Json
+  authorId   String?
+  author     User?    @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  createdAt  DateTime @default(now())
+
+  @@map("course_revisions")
+}
+
+model Classroom {
+  id          String       @id @default(uuid())
+  name        String       // ej: "Algoritmos - Grupo A (Otoño 2026)"
+  code        String       @unique // Código que el docente comparte a los alumnos (ej: "ALGO-A26")
+  description String?
+
+  teacherId   String
+  teacher     User         @relation("TeacherClassrooms", fields: [teacherId], references: [id], onDelete: Cascade)
+
+  courseId    String
+  course      Course       @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  enrollments Enrollment[]
+
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@map("classrooms")
+}
+
+model Enrollment {
+  id                  String     @id @default(uuid())
+  userId              String
+  courseId            String
+  classroomId         String?
+  registeredById      String?    // Docente que matriculó al estudiante
+  completedContentIds String[]   @default([])
+  lastLessionId       String?
+  lastSeccionId       String?
+  lastContenidoId     String?
+  score               Int        @default(0)
+  isCompleted         Boolean    @default(false)
+  startedAt           DateTime   @default(now())
+  updatedAt           DateTime   @updatedAt
+
+  user                User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course              Course     @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  classroom           Classroom? @relation(fields: [classroomId], references: [id], onDelete: SetNull)
+  registeredBy        User?      @relation("TeacherRegisteredEnrollments", fields: [registeredById], references: [id], onDelete: SetNull)
+
+  @@unique([userId, courseId])
+  @@map("enrollments")
+}
+
+model QuizAttempt {
+  id        String   @id @default(uuid())
+  userId    String
+  courseId  String
+  widgetId  String
+  score     Int
+  maxScore  Int
+  isPassed  Boolean  @default(false)
+  details   Json?
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@map("quiz_attempts")
+}
+
+// ========================================================
+// 🏫 SECCIONES ACADÉMICAS, GRUPOS Y FOROS (/app)
+// ========================================================
+
+model Section {
+  id          String   @id @default(uuid())
+  name        String   // Ej: "Programación II - Sección 1 (2026)"
+  code        String   @unique // Código único de unión (Ej: "PROG2-2026")
+  description String?
+
+  teacherId   String
+  teacher     User     @relation("TeacherSections", fields: [teacherId], references: [id], onDelete: Cascade)
+
+  members     SectionMember[]
+  courses     SectionCourse[]
+  groups      WorkGroup[]
+  topics      ForumTopic[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("sections")
+}
+
+model SectionMember {
+  id        String           @id @default(uuid())
+  sectionId String
+  section   Section          @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+
+  userId    String
+  user      User             @relation("UserSectionMemberships", fields: [userId], references: [id], onDelete: Cascade)
+
+  status    MembershipStatus @default(PENDING) // PENDING -> Espera aprobación del docente
+  joinedAt  DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  @@unique([sectionId, userId])
+  @@map("section_members")
+}
+
+model SectionCourse {
+  id         String   @id @default(uuid())
+  sectionId  String
+  section    Section  @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+
+  courseId   String
+  course     Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  assignedAt DateTime @default(now())
+
+  @@unique([sectionId, courseId])
+  @@map("section_courses")
+}
+
+model WorkGroup {
+  id        String            @id @default(uuid())
+  sectionId String
+  section   Section           @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+
+  name      String            // Ej: "Grupo 1 - Proyecto Final"
+  leaderId  String?           // Representante del grupo (obligatorio al conformarse)
+  leader    User?             @relation("GroupLeader", fields: [leaderId], references: [id], onDelete: SetNull)
+
+  members   WorkGroupMember[]
+
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+
+  @@map("work_groups")
+}
+
+model WorkGroupMember {
+  id       String    @id @default(uuid())
+  groupId  String
+  group    WorkGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  userId   String
+  user     User      @relation("UserGroupMemberships", fields: [userId], references: [id], onDelete: Cascade)
+
+  joinedAt DateTime  @default(now())
+
+  @@unique([groupId, userId])
+  @@map("work_group_members")
+}
+
+model ForumTopic {
+  id        String      @id @default(uuid())
+  sectionId String
+  section   Section     @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+
+  authorId  String
+  author    User        @relation("UserForumTopics", fields: [authorId], references: [id], onDelete: Cascade)
+
+  title     String
+  content   String
+  isPinned  Boolean     @default(false)
+
+  posts     ForumPost[]
+
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  @@map("forum_topics")
+}
+
+model ForumPost {
+  id         String     @id @default(uuid())
+  topicId    String
+  topic      ForumTopic @relation(fields: [topicId], references: [id], onDelete: Cascade)
+
+  authorId   String
+  author     User       @relation("UserForumPosts", fields: [authorId], references: [id], onDelete: Cascade)
+
+  content    String
+  isSolution Boolean    @default(false)
+
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  @@map("forum_posts")
+}

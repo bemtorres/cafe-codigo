@@ -5,6 +5,7 @@ import {
   BookOpen,
   ChevronRight,
   ExternalLink,
+  LayoutDashboard,
   Menu,
   Presentation,
   ShieldCheck,
@@ -13,6 +14,7 @@ import {
 } from "@lucide/astro";
 
 type SectionKey =
+  | "dashboard"
   | "control"
   | "courses"
   | "express"
@@ -34,6 +36,12 @@ const navGroups = [
   {
     label: "General",
     items: [
+      {
+        href: "/admin/dashboard/",
+        key: "dashboard",
+        label: "Dashboard Backend",
+        Icon: LayoutDashboard,
+      },
       {
         href: "/admin/control/",
         key: "control",

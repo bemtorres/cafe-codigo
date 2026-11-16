@@ -1,0 +1,517 @@
+---
+import AdminShellLayout from '../../layouts/AdminShellLayout.astro';
+import {
+  Users,
+  ShieldCheck,
+  BookOpen,
+  Coins,
+  RefreshCw,
+  AlertCircle,
+  Edit3,
+} from '@lucide/astro';
+---
+
+<AdminShellLayout title="Dashboard Administrativo" activeSection="dashboard">
+  <div class="mx-auto max-w-7xl space-y-8 p-4 sm:p-6 lg:p-8">
+    
+    <!-- Header del Dashboard -->
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b-2 border-zinc-900 pb-6">
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="inline-flex items-center gap-1 rounded-md bg-amber-400 px-2.5 py-1 text-xs font-black uppercase tracking-wider text-zinc-950 border-2 border-zinc-950 shadow-[2px_2px_0px_#18181b]">
+            <ShieldCheck class="size-4" /> Panel de Control Global
+          </span>
+          <span id="backend-status-pill" class="inline-flex items-center gap-1 rounded-md bg-zinc-200 px-2.5 py-1 text-xs font-bold text-zinc-700 border-2 border-zinc-900">
+            <span class="size-2 rounded-full bg-zinc-500 animate-pulse"></span> Verificando Backend...
+          </span>
+        </div>
+        <h1 class="mt-2 text-3xl font-black text-zinc-950 sm:text-4xl">
+          Dashboard Administrativo
+        </h1>
+        <p class="mt-1 text-sm font-medium text-zinc-600">
+          Supervisión en tiempo real de estudiantes, editores de contenido, cursos en <code>/app</code> y economía de CoffeeCoins.
+        </p>
+      </div>
+
+      <!-- Controles de API Token y Recargar -->
+      <div class="flex flex-wrap items-center gap-3">
+        <button
+          id="btn-refresh"
+          type="button"
+          class="inline-flex items-center gap-2 rounded-lg border-2 border-zinc-950 bg-white px-4 py-2 text-sm font-bold text-zinc-900 shadow-[3px_3px_0px_#18181b] transition-all hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_#18181b] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none"
+        >
+          <RefreshCw class="size-4" id="refresh-icon" /> Sincronizar
+        </button>
+      </div>
+    </div>
+
+    <!-- Banner si el backend no está iniciado -->
+    <div id="backend-offline-banner" class="hidden rounded-xl border-3 border-zinc-900 bg-amber-100 p-5 shadow-[5px_5px_0px_#18181b]">
+      <div class="flex items-start gap-4">
+        <div class="rounded-lg border-2 border-zinc-900 bg-amber-400 p-2 text-zinc-950">
+          <AlertCircle class="size-6" />
+        </div>
+        <div>
+          <h2 class="text-lg font-black text-zinc-950">Backend desconectado o en espera de inicio</h2>
+          <p class="mt-1 text-sm font-medium text-zinc-700">
+            Para ver los datos reales de PostgreSQL, inicia el servidor backend ejecutando en tu terminal:
+          </p>
+          <div class="mt-3 inline-block rounded-md border-2 border-zinc-900 bg-zinc-950 px-3 py-1.5 font-mono text-xs text-amber-400">
+            cd backend && npm run start:dev
+          </div>
+          <p class="mt-2 text-xs text-zinc-600">
+            El backend responderá en <code>http://localhost:3001/api</code> y Swagger en <code>http://localhost:3001/api/docs</code>.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tarjetas de Métricas KPI -->
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      
+      <!-- KPI 1: Estudiantes -->
+      <div class="rounded-xl border-2 border-zinc-900 bg-white p-5 shadow-[4px_4px_0px_#18181b]">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-black uppercase tracking-wider text-zinc-500">Estudiantes</span>
+          <div class="rounded-lg border-2 border-zinc-900 bg-sky-200 p-2 text-sky-950">
+            <Users class="size-5" />
+          </div>
+        </div>
+        <div class="mt-3 text-3xl font-black text-zinc-950" id="stat-students">0</div>
+        <p class="mt-1 text-xs font-semibold text-zinc-500" id="stat-total-users">Total registrados: 0</p>
+      </div>
+
+      <!-- KPI 2: Editores y Admins -->
+      <div class="rounded-xl border-2 border-zinc-900 bg-white p-5 shadow-[4px_4px_0px_#18181b]">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-black uppercase tracking-wider text-zinc-500">Equipo y Creadores</span>
+          <div class="rounded-lg border-2 border-zinc-900 bg-indigo-200 p-2 text-indigo-950">
+            <Edit3 class="size-5" />
+          </div>
+        </div>
+        <div class="mt-3 text-3xl font-black text-zinc-950" id="stat-editors">0</div>
+        <p class="mt-1 text-xs font-semibold text-zinc-500" id="stat-admins">0 Administradores</p>
+      </div>
+
+      <!-- KPI 3: Cursos /app -->
+      <div class="rounded-xl border-2 border-zinc-900 bg-white p-5 shadow-[4px_4px_0px_#18181b]">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-black uppercase tracking-wider text-zinc-500">Cursos (/app)</span>
+          <div class="rounded-lg border-2 border-zinc-900 bg-emerald-200 p-2 text-emerald-950">
+            <BookOpen class="size-5" />
+          </div>
+        </div>
+        <div class="mt-3 text-3xl font-black text-zinc-950" id="stat-courses">0</div>
+        <p class="mt-1 text-xs font-semibold text-zinc-500" id="stat-courses-details">0 publicados · 0 borradores</p>
+      </div>
+
+      <!-- KPI 4: CoffeeCoins -->
+      <div class="rounded-xl border-2 border-zinc-900 bg-white p-5 shadow-[4px_4px_0px_#18181b]">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-black uppercase tracking-wider text-zinc-500">CoffeeCoins Activas</span>
+          <div class="rounded-lg border-2 border-zinc-900 bg-amber-200 p-2 text-amber-950">
+            <Coins class="size-5" />
+          </div>
+        </div>
+        <div class="mt-3 text-3xl font-black text-amber-600" id="stat-coins">0 ☕</div>
+        <p class="mt-1 text-xs font-semibold text-zinc-500" id="stat-quizzes">0 retos completados</p>
+      </div>
+
+    </div>
+
+    <!-- Navegación por Pestañas -->
+    <div class="flex border-b-2 border-zinc-900 gap-2">
+      <button
+        id="tab-btn-users"
+        type="button"
+        class="tab-btn active border-t-2 border-x-2 border-zinc-900 bg-white px-5 py-2.5 text-sm font-black text-zinc-950 shadow-[2px_-2px_0px_#18181b] rounded-t-lg"
+      >
+        👥 Gestión de Usuarios y Roles
+      </button>
+      <button
+        id="tab-btn-courses"
+        type="button"
+        class="tab-btn border-t-2 border-x-2 border-transparent bg-zinc-100 px-5 py-2.5 text-sm font-bold text-zinc-600 rounded-t-lg hover:bg-zinc-200"
+      >
+        📚 Cursos de la Versión /app
+      </button>
+      <button
+        id="tab-btn-activity"
+        type="button"
+        class="tab-btn border-t-2 border-x-2 border-transparent bg-zinc-100 px-5 py-2.5 text-sm font-bold text-zinc-600 rounded-t-lg hover:bg-zinc-200"
+      >
+        ⚡ Actividad Reciente
+      </button>
+    </div>
+
+    <!-- Contenido de Pestaña 1: Usuarios y Roles -->
+    <div id="tab-content-users" class="space-y-4">
+      <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div class="relative flex-1 max-w-md">
+          <input
+            id="user-search-input"
+            type="text"
+            placeholder="Buscar por nombre o correo..."
+            class="w-full rounded-lg border-2 border-zinc-900 bg-white px-4 py-2 text-sm font-medium text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-amber-400"
+          />
+        </div>
+        <div class="flex items-center gap-2">
+          <label class="text-xs font-bold text-zinc-600">Filtrar por rol:</label>
+          <select
+            id="role-filter-select"
+            class="rounded-lg border-2 border-zinc-900 bg-white px-3 py-1.5 text-sm font-bold text-zinc-900 focus:outline-none"
+          >
+            <option value="">Todos los roles</option>
+            <option value="STUDENT">Estudiantes</option>
+            <option value="TEACHER">Docentes / Profesores</option>
+            <option value="EDITOR">Editores</option>
+            <option value="ADMIN">Administradores</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Tabla de Usuarios -->
+      <div class="overflow-x-auto rounded-xl border-2 border-zinc-900 bg-white shadow-[4px_4px_0px_#18181b]">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="border-b-2 border-zinc-900 bg-zinc-100 text-xs font-black uppercase text-zinc-700">
+              <th class="p-4">Usuario</th>
+              <th class="p-4">Rol Asignado</th>
+              <th class="p-4">Nivel Café</th>
+              <th class="p-4">CoffeeCoins</th>
+              <th class="p-4">Google Link</th>
+              <th class="p-4 text-right">Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="users-table-body" class="divide-y divide-zinc-200 text-sm">
+            <tr>
+              <td colspan="6" class="p-8 text-center font-medium text-zinc-500">
+                Cargando lista de usuarios...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Contenido de Pestaña 2: Cursos /app -->
+    <div id="tab-content-courses" class="hidden space-y-4">
+      <div class="overflow-x-auto rounded-xl border-2 border-zinc-900 bg-white shadow-[4px_4px_0px_#18181b]">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="border-b-2 border-zinc-900 bg-zinc-100 text-xs font-black uppercase text-zinc-700">
+              <th class="p-4">Slug del Curso</th>
+              <th class="p-4">Título</th>
+              <th class="p-4">Versión</th>
+              <th class="p-4">Estado</th>
+              <th class="p-4">Autor</th>
+              <th class="p-4">Inscritos</th>
+              <th class="p-4 text-right">Acción</th>
+            </tr>
+          </thead>
+          <tbody id="courses-table-body" class="divide-y divide-zinc-200 text-sm">
+            <tr>
+              <td colspan="7" class="p-8 text-center font-medium text-zinc-500">
+                Cargando cursos del backend...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Contenido de Pestaña 3: Actividad -->
+    <div id="tab-content-activity" class="hidden space-y-4">
+      <div class="rounded-xl border-2 border-zinc-900 bg-white p-5 shadow-[4px_4px_0px_#18181b]">
+        <h3 class="text-base font-black text-zinc-950 mb-4">Registro en tiempo real</h3>
+        <div id="activity-list" class="space-y-3">
+          <p class="text-sm text-zinc-500">Cargando actividades...</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script is:inline>
+    const API_URL = 'http://localhost:3001/api';
+    let currentUsers = [];
+    let currentCourses = [];
+
+    // Helper para headers
+    function getHeaders() {
+      const token = localStorage.getItem('cafeycodigo_token');
+      const headers = { 'Content-Type': 'application/json' };
+      if (token) headers['Authorization'] = 'Bearer ' + token;
+      return headers;
+    }
+
+    // Comprobación de estado del backend
+    async function checkBackendHealth() {
+      const pill = document.getElementById('backend-status-pill');
+      const banner = document.getElementById('backend-offline-banner');
+      try {
+        const res = await fetch(`${API_URL}/courses`, { signal: AbortSignal.timeout(3000) });
+        if (res.ok) {
+          pill.className = 'inline-flex items-center gap-1 rounded-md bg-emerald-400 px-2.5 py-1 text-xs font-black text-zinc-950 border-2 border-zinc-900 shadow-[1px_1px_0px_#18181b]';
+          pill.innerHTML = '<span class="size-2 rounded-full bg-emerald-950"></span> Backend Online (NestJS)';
+          banner.classList.add('hidden');
+          return true;
+        }
+      } catch (err) {
+        // Backend offline
+      }
+      pill.className = 'inline-flex items-center gap-1 rounded-md bg-rose-400 px-2.5 py-1 text-xs font-black text-zinc-950 border-2 border-zinc-900';
+      pill.innerHTML = '<span class="size-2 rounded-full bg-rose-950"></span> Backend Offline (Puerto 3001)';
+      banner.classList.remove('hidden');
+      return false;
+    }
+
+    // Cargar Estadísticas
+    async function loadStats() {
+      try {
+        const res = await fetch(`${API_URL}/admin/stats`, { headers: getHeaders() });
+        if (!res.ok) return;
+        const data = await res.json();
+        
+        document.getElementById('stat-students').textContent = data.users.students;
+        document.getElementById('stat-total-users').textContent = `Total registrados: ${data.users.total}`;
+        document.getElementById('stat-editors').textContent = data.users.editors;
+        document.getElementById('stat-admins').textContent = `${data.users.admins} Administradores`;
+        document.getElementById('stat-courses').textContent = data.courses.total;
+        document.getElementById('stat-courses-details').textContent = `${data.courses.published} publicados · ${data.courses.draft} borradores`;
+        document.getElementById('stat-coins').textContent = `${data.gamification.totalCoffeeCoins} ☕`;
+        document.getElementById('stat-quizzes').textContent = `${data.gamification.totalQuizAttempts} retos completados`;
+      } catch (e) {
+        console.warn('Error cargando stats:', e);
+      }
+    }
+
+    // Cargar Usuarios
+    async function loadUsers() {
+      const role = document.getElementById('role-filter-select')?.value || '';
+      const search = document.getElementById('user-search-input')?.value || '';
+      const params = new URLSearchParams();
+      if (role) params.set('role', role);
+      if (search) params.set('search', search);
+
+      try {
+        const res = await fetch(`${API_URL}/admin/users?${params.toString()}`, { headers: getHeaders() });
+        const tbody = document.getElementById('users-table-body');
+        if (!res.ok) {
+          tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-zinc-500">Inicia sesión como Administrador en el backend para gestionar usuarios.</td></tr>`;
+          return;
+        }
+        const data = await res.json();
+        currentUsers = data.users || [];
+        renderUsersTable(currentUsers);
+      } catch (e) {
+        document.getElementById('users-table-body').innerHTML = `<tr><td colspan="6" class="p-6 text-center text-zinc-500">No se pudo conectar con el endpoint de usuarios.</td></tr>`;
+      }
+    }
+
+    function renderUsersTable(users) {
+      const tbody = document.getElementById('users-table-body');
+      if (!users.length) {
+        tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-zinc-500">No se encontraron usuarios.</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = users.map(u => `
+        <tr class="hover:bg-zinc-50 font-medium">
+          <td class="p-4">
+            <div class="font-bold text-zinc-950">${escapeHtml(u.name)}</div>
+            <div class="text-xs text-zinc-500 font-mono">${escapeHtml(u.email)}</div>
+          </td>
+          <td class="p-4">
+            <select onchange="updateUserRole('${u.id}', this.value)" class="rounded border-2 border-zinc-900 px-2 py-1 text-xs font-bold ${
+              u.role === 'ADMIN' ? 'bg-amber-300 text-zinc-950' : u.role === 'TEACHER' ? 'bg-emerald-200 text-emerald-950' : u.role === 'EDITOR' ? 'bg-indigo-100 text-indigo-900' : 'bg-zinc-100 text-zinc-800'
+            }">
+              <option value="STUDENT" ${u.role === 'STUDENT' ? 'selected' : ''}>🎓 Estudiante</option>
+              <option value="TEACHER" ${u.role === 'TEACHER' ? 'selected' : ''}>👨‍🏫 Docente</option>
+              <option value="EDITOR" ${u.role === 'EDITOR' ? 'selected' : ''}>✏️ Editor</option>
+              <option value="ADMIN" ${u.role === 'ADMIN' ? 'selected' : ''}>👑 Administrador</option>
+            </select>
+          </td>
+          <td class="p-4">
+            <span class="inline-flex items-center gap-1 text-xs font-bold uppercase px-2 py-0.5 rounded border border-zinc-300 bg-amber-50 text-amber-900">
+              ☕ ${u.levelCode} (${u.points} pts)
+            </span>
+          </td>
+          <td class="p-4 font-bold text-amber-700">
+            ${u.coffeeCoins} ☕
+          </td>
+          <td class="p-4 text-xs font-semibold">
+            ${u.hasGoogleLinked ? '<span class="text-emerald-600 font-bold">✓ Vinculado</span>' : '<span class="text-zinc-400">Email</span>'}
+          </td>
+          <td class="p-4 text-right">
+            <button onclick="adjustCoinsPrompt('${u.id}', '${escapeHtml(u.name)}')" class="text-xs font-bold border-2 border-zinc-900 bg-amber-400 px-2.5 py-1 rounded shadow-[2px_2px_0px_#18181b] hover:bg-amber-300">
+              + Monedas
+            </button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    // Actualizar Rol
+    window.updateUserRole = async function(userId, newRole) {
+      try {
+        const res = await fetch(`${API_URL}/admin/users/${userId}/role`, {
+          method: 'PATCH',
+          headers: getHeaders(),
+          body: JSON.stringify({ role: newRole }),
+        });
+        if (res.ok) {
+          alert('Rol actualizado con éxito');
+          loadUsers();
+          loadStats();
+        } else {
+          alert('Error al actualizar rol');
+        }
+      } catch (e) {
+        alert('Fallo de conexión');
+      }
+    };
+
+    // Ajustar Monedas
+    window.adjustCoinsPrompt = async function(userId, name) {
+      const amountStr = prompt(`¿Cuántas CoffeeCoins deseas sumar a ${name}? (Usa números negativos para restar)`, '20');
+      if (!amountStr) return;
+      const amount = parseInt(amountStr, 10);
+      if (isNaN(amount)) return alert('Número inválido');
+
+      try {
+        const res = await fetch(`${API_URL}/admin/users/${userId}/coins`, {
+          method: 'PATCH',
+          headers: getHeaders(),
+          body: JSON.stringify({ amount }),
+        });
+        if (res.ok) {
+          alert('CoffeeCoins actualizadas');
+          loadUsers();
+          loadStats();
+        }
+      } catch (e) {
+        alert('Fallo de conexión');
+      }
+    };
+
+    // Cargar Cursos
+    async function loadCourses() {
+      try {
+        const res = await fetch(`${API_URL}/admin/courses`, { headers: getHeaders() });
+        const tbody = document.getElementById('courses-table-body');
+        if (!res.ok) {
+          tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-zinc-500">Cursos no disponibles.</td></tr>`;
+          return;
+        }
+        const courses = await res.json();
+        currentCourses = courses;
+        if (!courses.length) {
+          tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-zinc-500">No hay cursos registrados en PostgreSQL todavía. Guarda un curso desde /app/contenidos/crear.</td></tr>`;
+          return;
+        }
+        tbody.innerHTML = courses.map(c => `
+          <tr class="hover:bg-zinc-50 font-medium">
+            <td class="p-4 font-mono text-xs font-bold text-indigo-700">${escapeHtml(c.courseId)}</td>
+            <td class="p-4 font-bold text-zinc-950">${escapeHtml(c.title)}</td>
+            <td class="p-4 text-xs font-semibold">${escapeHtml(c.version)}</td>
+            <td class="p-4">
+              <span class="inline-block px-2 py-0.5 rounded text-xs font-black border border-zinc-900 ${
+                c.status === 'PUBLISHED' ? 'bg-emerald-300 text-emerald-950' : 'bg-amber-300 text-amber-950'
+              }">${c.status}</span>
+            </td>
+            <td class="p-4 text-xs text-zinc-600">${escapeHtml(c.author?.name || 'Sistema')}</td>
+            <td class="p-4 font-bold text-zinc-700">${c._count?.enrollments || 0} alumnos</td>
+            <td class="p-4 text-right">
+              <a href="/app/courses/${c.courseId}/" target="_blank" class="text-xs font-bold underline text-indigo-600 hover:text-indigo-800">
+                Ver en Aula →
+              </a>
+            </td>
+          </tr>
+        `).join('');
+      } catch (e) {
+        console.warn('Error al cargar cursos:', e);
+      }
+    }
+
+    // Cargar Actividades
+    async function loadActivities() {
+      try {
+        const res = await fetch(`${API_URL}/admin/activities`, { headers: getHeaders() });
+        const container = document.getElementById('activity-list');
+        if (!res.ok) {
+          container.innerHTML = `<p class="text-sm text-zinc-500">Requiere permisos de administrador.</p>`;
+          return;
+        }
+        const activities = await res.json();
+        if (!activities.length) {
+          container.innerHTML = `<p class="text-sm text-zinc-500">Sin actividades registradas recientemente.</p>`;
+          return;
+        }
+        container.innerHTML = activities.map(a => `
+          <div class="flex items-center justify-between p-3 border-2 border-zinc-900 rounded-lg bg-zinc-50">
+            <div class="text-sm font-semibold text-zinc-900">${escapeHtml(a.description)}</div>
+            <div class="text-xs font-medium text-zinc-500 font-mono">${new Date(a.timestamp).toLocaleTimeString()}</div>
+          </div>
+        `).join('');
+      } catch (e) {
+        console.warn(e);
+      }
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    // Manejo de pestañas
+    const tabUsers = document.getElementById('tab-btn-users');
+    const tabCourses = document.getElementById('tab-btn-courses');
+    const tabActivity = document.getElementById('tab-btn-activity');
+
+    const contentUsers = document.getElementById('tab-content-users');
+    const contentCourses = document.getElementById('tab-content-courses');
+    const contentActivity = document.getElementById('tab-content-activity');
+
+    function setActiveTab(activeBtn, activeContent) {
+      [tabUsers, tabCourses, tabActivity].forEach(btn => {
+        btn.className = 'tab-btn border-t-2 border-x-2 border-transparent bg-zinc-100 px-5 py-2.5 text-sm font-bold text-zinc-600 rounded-t-lg hover:bg-zinc-200';
+      });
+      [contentUsers, contentCourses, contentActivity].forEach(c => c.classList.add('hidden'));
+
+      activeBtn.className = 'tab-btn active border-t-2 border-x-2 border-zinc-900 bg-white px-5 py-2.5 text-sm font-black text-zinc-950 shadow-[2px_-2px_0px_#18181b] rounded-t-lg';
+      activeContent.classList.remove('hidden');
+    }
+
+    tabUsers.addEventListener('click', () => setActiveTab(tabUsers, contentUsers));
+    tabCourses.addEventListener('click', () => {
+      setActiveTab(tabCourses, contentCourses);
+      loadCourses();
+    });
+    tabActivity.addEventListener('click', () => {
+      setActiveTab(tabActivity, contentActivity);
+      loadActivities();
+    });
+
+    document.getElementById('role-filter-select')?.addEventListener('change', loadUsers);
+    document.getElementById('user-search-input')?.addEventListener('input', () => {
+      clearTimeout(window._searchTimer);
+      window._searchTimer = setTimeout(loadUsers, 350);
+    });
+
+    document.getElementById('btn-refresh')?.addEventListener('click', async () => {
+      await checkBackendHealth();
+      await loadStats();
+      await loadUsers();
+      await loadCourses();
+      await loadActivities();
+    });
+
+    // Inicio automático
+    checkBackendHealth().then(online => {
+      if (online) {
+        loadStats();
+        loadUsers();
+      }
+    });
+  </script>
+</AdminShellLayout>
