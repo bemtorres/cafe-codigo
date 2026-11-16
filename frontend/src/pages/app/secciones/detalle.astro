@@ -1,5 +1,6 @@
 ---
 import CourseAppLayout from '../../../layouts/CourseAppLayout.astro';
+const backendApiUrl = import.meta.env.PUBLIC_BACKEND_API_URL || 'http://localhost:3001/api';
 ---
 
 <CourseAppLayout
@@ -159,8 +160,8 @@ import CourseAppLayout from '../../../layouts/CourseAppLayout.astro';
 
   </div>
 
-  <script is:inline>
-    const API_BASE = 'http://localhost:3001/api';
+  <script is:inline define:vars={{ backendApiUrl }}>
+    const API_BASE = backendApiUrl;
 
     function getToken() {
       return localStorage.getItem('cafeycodigo_token') || localStorage.getItem('access_token') || sessionStorage.getItem('cafeycodigo_token') || sessionStorage.getItem('access_token');

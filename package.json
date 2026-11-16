@@ -8,11 +8,16 @@
     "backend"
   ],
   "scripts": {
+    "dev": "npm run dev --prefix frontend",
+    "build": "npm run build --prefix frontend",
+    "preview": "npm run preview --prefix frontend",
+    "check": "npm run check --prefix frontend",
+    "audit:lessons": "npm run audit:lessons --prefix frontend",
     "dev:frontend": "npm run dev --prefix frontend",
     "dev:backend": "npm run start:dev --prefix backend",
     "build:frontend": "npm run build --prefix frontend",
     "build:backend": "npm run build --prefix backend",
-    "build": "npm run build:backend && npm run build:frontend",
+    "build:all": "npm run build:backend && npm run build:frontend",
     "prisma:generate": "npm run prisma:generate --prefix backend",
     "prisma:push": "npm run prisma:push --prefix backend",
     "prisma:seed": "npm run prisma:seed --prefix backend",

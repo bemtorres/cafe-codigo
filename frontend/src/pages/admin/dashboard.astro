@@ -9,6 +9,8 @@ import {
   AlertCircle,
   Edit3,
 } from '@lucide/astro';
+
+const backendApiUrl = import.meta.env.PUBLIC_BACKEND_API_URL || 'http://localhost:3001/api';
 ---
 
 <AdminShellLayout title="Dashboard Administrativo" activeSection="dashboard">
@@ -232,8 +234,8 @@ import {
 
   </div>
 
-  <script is:inline>
-    const API_URL = 'http://localhost:3001/api';
+  <script is:inline define:vars={{ backendApiUrl }}>
+    const API_URL = backendApiUrl;
     let currentUsers = [];
     let currentCourses = [];
 

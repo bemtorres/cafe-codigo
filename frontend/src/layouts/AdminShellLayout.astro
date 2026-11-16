@@ -32,19 +32,25 @@ const {
   activeSection = "control",
 } = Astro.props;
 
+const hasBackend = Boolean(import.meta.env.PUBLIC_BACKEND_API_URL);
+
 const navGroups = [
   {
     label: "General",
     items: [
-      {
-        href: "/admin/dashboard/",
-        key: "dashboard",
-        label: "Dashboard Backend",
-        Icon: LayoutDashboard,
-      },
+      ...(hasBackend
+        ? [
+            {
+              href: "/admin/dashboard/",
+              key: "dashboard" as const,
+              label: "Dashboard Backend",
+              Icon: LayoutDashboard,
+            },
+          ]
+        : []),
       {
         href: "/admin/control/",
-        key: "control",
+        key: "control" as const,
         label: "Centro de Control",
         Icon: SlidersHorizontal,
       },
