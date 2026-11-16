@@ -1,0 +1,46 @@
+---
+import CourseAppLayout from '../../../layouts/CourseAppLayout.astro';
+import { getPublishedCourses } from '../../../lib/publishedCourses.mjs';
+const subjects = getPublishedCourses();
+const categories = [...new Set(subjects.map((subject) => subject.category))]
+  .sort((a, b) => a.localeCompare(b, 'es'));
+---
+
+<CourseAppLayout page="contents" title="Asignaturas interactivas" description="Aprende paso a paso con lecturas, videos y preguntas interactivas.">
+  <div class="academy-wrap library">
+    <header>
+      <h1>Asignaturas interactivas</h1>
+      <p class="academy-lede">Avanza paso a paso con el aula de Café y Código.</p>
+      {import.meta.env.DEV && <div class="library-actions">
+        <a class="academy-button" href="/app/contenidos/administrar/">Administrar cursos</a>
+        <a href="/app/contenidos/crear/">Editor avanzado</a>
+      </div>}
+    </header>
+    {categories.map((category) => <section class="library-category">
+      <h2>{category}</h2>
+      <ul>
+      {subjects.filter((subject) => subject.category === category).map((subject) => <li>
+        <div>
+          <h3>{subject.title}</h3>
+          <p>{subject.institution} · {subject.modules} {subject.modules === 1 ? 'módulo' : 'módulos'}</p>
+        </div>
+        <a href={'/app/contenidos/ver/?id=' + subject.courseId} aria-label={'Abrir ' + subject.title}>Abrir aula <span aria-hidden="true">→</span></a>
+      </li>)}
+      </ul>
+    </section>)}
+    {subjects.length === 0 && <p>Todavía no hay asignaturas publicadas.</p>}
+  </div>
+</CourseAppLayout>
+
+<style>
+  .library { padding-block: 40px 64px; }
+  h1 { font-size: clamp(2rem, 5vw, 3.25rem); }
+  .academy-button { margin-top: 14px; }
+  .library-actions { display: flex; flex-wrap: wrap; align-items: baseline; gap: 12px 20px; }
+  .library-category { margin-top: 24px; }
+  ul { padding: 0; list-style: none; margin-top: 8px; border-top: 1px solid var(--academy-line); }
+  li { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 16px 0; border-bottom: 1px solid var(--academy-line); }
+  h2 { font-size: 1.3rem; }
+  li p { color: var(--academy-muted); }
+  li a { color: var(--academy-accent); font-weight: 700; white-space: nowrap; }
+</style>

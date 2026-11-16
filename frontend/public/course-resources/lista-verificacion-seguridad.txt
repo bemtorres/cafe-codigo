@@ -1,0 +1,10 @@
+﻿Lista de verificación de seguridad
+Curso de Arquitectura, Ética y Cumplimiento
+
+Antes de publicar un cambio, verifica lo siguiente.
+
+[ ] Revisé el cambio y el historial de Git para detectar credenciales o datos privados.
+[ ] Usé datos sintéticos en las pruebas y demostraciones.
+[ ] Ejecuté las pruebas automatizadas y revisé sus resultados.
+[ ] Registré la revisión de código y la aprobación del cambio.
+[ ] Sé cómo revertir el cambio y a quién avisar si detecto un incidente.

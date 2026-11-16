@@ -1,0 +1,287 @@
+/* Hallmark · component: classification board · genre: modern-minimal · theme: course palette
+   Pre-emit critique: P4 H5 E4 S5 R5 V4 */
+.classification-board {
+  --board-paper: #fff;
+  --board-surface: #f8fafc;
+  --board-ink: #0f172a;
+  --board-muted: #475569;
+  --board-line: #d8e0e9;
+  --board-control: #8798ad;
+  --board-correct: #166534;
+  --board-incorrect: #9f1239;
+  container: classification / inline-size;
+  color: var(--board-ink);
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.classification-instructions {
+  margin: 0 0 14px;
+  color: var(--board-muted);
+  font-size: 13px;
+}
+
+.classification-layout,
+.classification-zones {
+  display: grid;
+  gap: 12px;
+  align-items: start;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@container classification (min-width: 360px) {
+  .classification-zones {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@container classification (min-width: 660px) {
+  .classification-layout {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+  }
+}
+
+.classification-pool,
+.classification-zone {
+  --zone-ink: var(--board-ink);
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid var(--board-line);
+  border-radius: 8px;
+  background: var(--board-surface);
+}
+
+.classification-zone[data-accent='sky'] { --zone-ink: #075985; }
+.classification-zone[data-accent='emerald'] { --zone-ink: #065f46; }
+.classification-zone[data-accent='amber'] { --zone-ink: #92400e; }
+.classification-zone[data-accent='rose'] { --zone-ink: #9f1239; }
+
+.classification-board [data-drop-active='true'] {
+  outline: 2px dashed var(--board-accent);
+  outline-offset: -2px;
+  background: var(--board-accent-soft);
+}
+
+.classification-zone-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.classification-zone-header h4 {
+  margin: 0;
+  color: var(--zone-ink);
+  font-size: 14px;
+  line-height: 1.35;
+  font-weight: 750;
+}
+
+.classification-zone-header p,
+.classification-empty {
+  margin: 2px 0 0;
+  color: var(--board-muted);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.classification-zone-header > span {
+  flex: none;
+  color: var(--board-muted);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.classification-empty {
+  padding: 8px 0 2px;
+  border-top: 1px dashed var(--board-line);
+}
+
+.classification-cards {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@container classification (min-width: 560px) {
+  .classification-board[data-illustrated='true'] .classification-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.classification-card {
+  min-width: 0;
+  margin: 0;
+  border: 1px solid var(--board-line);
+  border-radius: 6px;
+  background: var(--board-paper);
+  cursor: grab;
+}
+
+.classification-card-button {
+  display: block;
+  width: 100%;
+  padding: 9px 10px;
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+  color: inherit;
+  text-align: start;
+  font: inherit;
+  cursor: inherit;
+}
+
+.classification-card-button[aria-pressed='true'] {
+  outline: 2px solid var(--board-accent);
+  outline-offset: -2px;
+  background: var(--board-accent-soft);
+}
+
+.classification-card-image {
+  display: block;
+  width: 100%;
+  height: 96px;
+  margin-bottom: 7px;
+  border-radius: 4px;
+  object-fit: contain;
+}
+
+.classification-card:focus-within {
+  border-color: var(--board-control);
+}
+
+.classification-card:active {
+  cursor: grabbing;
+}
+
+.classification-card[data-dragging='true'] {
+  opacity: 0.5;
+}
+
+.classification-card-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 13px;
+  line-height: 1.4;
+  font-weight: 650;
+}
+
+.classification-card-label svg {
+  flex: none;
+  margin-top: 1px;
+  color: var(--board-muted);
+}
+
+.classification-destination {
+  width: 100%;
+  min-height: 36px;
+  margin-top: 8px;
+  padding: 6px 8px;
+  border: 1px solid var(--board-accent);
+  border-radius: 6px;
+  background: var(--board-paper);
+  color: var(--board-accent);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.classification-card[data-result='correct'] { --result-ink: var(--board-correct); }
+.classification-card[data-result='incorrect'] { --result-ink: var(--board-incorrect); }
+
+.classification-card[data-result] {
+  border-inline-start-color: var(--result-ink);
+  box-shadow: inset 2px 0 var(--result-ink);
+}
+
+.classification-feedback {
+  margin: 0;
+  padding: 0 10px 9px;
+  color: var(--result-ink);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.classification-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--board-line);
+}
+
+.classification-footer p {
+  margin: 0;
+  color: var(--board-muted);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.classification-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.classification-actions button {
+  min-height: 38px;
+  padding: 6px 12px;
+  border: 1px solid var(--board-control);
+  border-radius: 6px;
+  background: var(--board-paper);
+  color: var(--board-ink);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.classification-actions button:last-child {
+  border-color: var(--board-accent);
+  background: var(--board-accent);
+  color: var(--board-paper);
+}
+
+@media (hover: hover) {
+  .classification-card:hover {
+    border-color: var(--board-control);
+  }
+
+  .classification-actions button:not(:disabled):hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+}
+
+@media (pointer: coarse) {
+  .classification-card-button,
+  .classification-destination,
+  .classification-actions button {
+    min-height: 44px;
+  }
+}
+
+.classification-actions button:not(:disabled):active {
+  transform: translateY(1px);
+}
+
+.classification-actions button:disabled {
+  border-color: var(--board-line);
+  background: var(--board-surface);
+  color: var(--board-muted);
+  cursor: not-allowed;
+}
+
+.classification-board button:focus-visible {
+  outline: 2px solid var(--board-accent);
+  outline-offset: 2px;
+}

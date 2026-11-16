@@ -1,0 +1,23 @@
+.course-admin :is(h1, h2, strong, p) { overflow-wrap: anywhere; }
+.course-admin .creator-header p, .course-admin small { color: var(--academy-muted); }
+.admin-form { max-width: 36rem; margin-block-end: 24px; }
+.admin-form fieldset { border: 0; padding: 0; margin: 12px 0 0; min-width: 0; display: grid; gap: 12px; }
+.admin-filter { max-width: 20rem; margin-block-end: 20px; }
+.course-admin .admin-primary { background: var(--academy-accent); color: var(--academy-paper); }
+.course-admin :is(button, a, input, select):focus-visible { outline: 2px solid var(--academy-accent); outline-offset: 3px; }
+.admin-status { padding: 10px 14px; border-inline-start: 3px solid var(--academy-accent); margin-block-end: 16px; }
+.admin-group { margin-block: 20px 28px; }
+.admin-group h2, .admin-group a { display: flex; align-items: center; gap: 8px; }
+.admin-group h2 svg, .admin-group a svg { flex: none; }
+.admin-group :is(ol, ul) { list-style: none; padding: 0; }
+.admin-group li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  padding-block: 12px;
+  border-bottom: 1px solid var(--academy-line);
+}
+.admin-group li small { display: block; margin-block-start: 3px; }
+.admin-group a { min-height: 44px; color: var(--academy-accent); font-weight: 700; white-space: nowrap; }

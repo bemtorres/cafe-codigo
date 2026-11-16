@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 480" role="img" aria-labelledby="title">
+  <title id="title">Pantalla de Entregas con selector de archivos</title>
+  <rect width="800" height="480" fill="#f2f5f9"/>
+  <rect x="24" y="20" width="752" height="440" rx="12" fill="#fff" stroke="#bdc9d8" stroke-width="2"/>
+  <g font-family="system-ui, sans-serif">
+    <rect x="44" y="40" width="34" height="34" rx="8" fill="#2454a2"/>
+    <path d="M52 50h18v13H52z M55 47v3m12-3v3m-10 6h8" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+    <text x="90" y="63" fill="#162741" font-size="20" font-weight="700">Aula · Entregas</text>
+    <path d="M24 90h752" stroke="#d6dfeb"/>
+    <text x="48" y="126" fill="#162741" font-size="25" font-weight="750">Subir una entrega</text>
+    <text x="48" y="153" fill="#435775" font-size="15">Adjunta el PDF de tu proyecto.</text>
+    <rect x="48" y="176" width="204" height="52" rx="8" fill="#eaf1ff" stroke="#7999ce"/>
+    <path d="M64 195h8l4 4h12v12H64z" fill="none" stroke="#234f92" stroke-width="2" stroke-linejoin="round"/>
+    <text x="94" y="207" fill="#193d76" font-size="13" font-weight="700" textLength="140" lengthAdjust="spacingAndGlyphs">Seleccionar archivo</text>
+    <rect x="48" y="247" width="704" height="139" rx="8" fill="#f8fafd" stroke="#c6d2e3"/>
+    <text x="68" y="274" fill="#435775" font-size="14" font-weight="700">ARCHIVOS DISPONIBLES</text>
+    <rect x="64" y="286" width="672" height="42" rx="5" fill="#fff" stroke="#c6d2e3"/>
+    <rect x="64" y="334" width="672" height="40" rx="5" fill="#fff" stroke="#c6d2e3"/>
+    <g fill="none" stroke="#426594" stroke-width="1.7">
+      <path d="M79 296h12l5 5v16H79z m12 0v5h5"/>
+      <path d="M79 344h12l5 5v15H79z m12 0v5h5"/>
+    </g>
+    <text x="107" y="313" fill="#162741" font-size="16">Informe-final.pdf</text>
+    <text x="107" y="360" fill="#162741" font-size="16">Notas-del-proyecto.txt</text>
+    <text x="709" y="313" fill="#435775" text-anchor="end" font-size="14">740 KB</text>
+    <text x="709" y="360" fill="#435775" text-anchor="end" font-size="14">12 KB</text>
+    <text x="48" y="430" fill="#435775" font-size="15">Formato admitido: PDF</text>
+    <rect x="567" y="402" width="185" height="48" rx="8" fill="#2454a2"/>
+    <path d="M584 434h16m-8-2v-15m-5 5 5-5 5 5" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="608" y="432" fill="#fff" font-size="15" font-weight="700" textLength="128" lengthAdjust="spacingAndGlyphs">Cargar archivo</text>
+  </g>
+</svg>

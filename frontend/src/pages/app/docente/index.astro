@@ -1,0 +1,1037 @@
+---
+import CourseAppLayout from '../../../layouts/CourseAppLayout.astro';
+const backendApiUrl = import.meta.env.PUBLIC_BACKEND_API_URL || 'http://localhost:3001/api';
+---
+
+<CourseAppLayout
+  page="docente"
+  title="Portal Docente · Gestión de Secciones y Estudiantes"
+  description="Panel para profesores de Café y Código: gestiona secciones, aprueba estudiantes, organiza grupos con representante y supervisa el progreso de tus cursos."
+>
+  <div style="max-width: 1200px; margin: 0 auto; padding: 2rem 1rem 4rem 1rem;">
+    
+    <!-- Encabezado Principal -->
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; border-bottom: 3px solid #18181b; padding-bottom: 1.5rem; margin-bottom: 2rem; gap: 1rem;">
+      <div>
+        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+          <span style="background: #10b981; color: #ffffff; font-size: 0.75rem; font-weight: 900; padding: 0.25rem 0.6rem; border: 2px solid #18181b; border-radius: 6px; box-shadow: 2px 2px 0px #18181b; text-transform: uppercase;">
+            👨‍🏫 Panel del Docente
+          </span>
+          <span id="teacher-status-pill" style="background: #f4f4f5; color: #52525b; font-size: 0.75rem; font-weight: 700; padding: 0.25rem 0.6rem; border: 2px solid #18181b; border-radius: 6px;">
+            Verificando conexión...
+          </span>
+        </div>
+        <h1 style="font-size: 2.25rem; font-weight: 900; color: #18181b; margin: 0; line-height: 1.1;">
+          Centro de Gestión y Acompañamiento Docente
+        </h1>
+        <p style="margin: 0.35rem 0 0 0; font-size: 0.95rem; color: #52525b; font-weight: 500;">
+          Crea secciones con código de unión, aprueba alumnos, forma grupos con representante y supervisa el avance en los cursos vinculados.
+        </p>
+      </div>
+
+      <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+        <button
+          id="btn-open-section-modal"
+          type="button"
+          style="background: #f59e0b; color: #18181b; font-weight: 900; font-size: 0.9rem; padding: 0.65rem 1.25rem; border: 2px solid #18181b; border-radius: 8px; box-shadow: 3px 3px 0px #18181b; cursor: pointer;"
+        >
+          ➕ Nueva Sección con Código
+        </button>
+        <button
+          id="btn-open-enroll"
+          type="button"
+          style="background: #ffffff; color: #18181b; font-weight: 800; font-size: 0.9rem; padding: 0.65rem 1.25rem; border: 2px solid #18181b; border-radius: 8px; box-shadow: 3px 3px 0px #18181b; cursor: pointer;"
+        >
+          📝 Matrícula Manual
+        </button>
+      </div>
+    </div>
+
+    <!-- Banner si falta autenticación de Docente -->
+    <div id="teacher-alert-banner" style="display: none; background: #fef3c7; border: 3px solid #18181b; border-radius: 10px; padding: 1.25rem; margin-bottom: 2rem; box-shadow: 4px 4px 0px #18181b;">
+      <h3 style="margin: 0 0 0.5rem 0; font-size: 1.1rem; font-weight: 900; color: #92400e;">
+        ⚠️ Inicia sesión con perfil de Docente
+      </h3>
+      <p style="margin: 0; font-size: 0.9rem; color: #78350f;">
+        Para utilizar las funciones de docente, debes haber iniciado sesión con una cuenta con rol <code>TEACHER</code> o <code>ADMIN</code> en el backend.
+        (Ejemplo del seeder: correo <code>docente@cafeycodigo.org</code> con contraseña <code>Cafe1234!</code>).
+      </p>
+    </div>
+
+    <!-- Pestañas de Vista del Docente -->
+    <div style="display: flex; gap: 0.5rem; border-bottom: 3px solid #18181b; margin-bottom: 2rem;">
+      <button
+        id="tab-btn-sections"
+        class="tab-btn active"
+        onclick="switchTeacherTab('sections')"
+        style="background: #f59e0b; color: #18181b; font-weight: 900; font-size: 0.95rem; padding: 0.7rem 1.4rem; border: 2px solid #18181b; border-bottom: none; border-radius: 8px 8px 0 0; cursor: pointer;"
+      >
+        🏫 Secciones, Aprobaciones y Grupos
+      </button>
+      <button
+        id="tab-btn-overview"
+        class="tab-btn"
+        onclick="switchTeacherTab('overview')"
+        style="background: #e4e4e7; color: #18181b; font-weight: 800; font-size: 0.95rem; padding: 0.7rem 1.4rem; border: 2px solid #18181b; border-bottom: none; border-radius: 8px 8px 0 0; cursor: pointer;"
+      >
+        📊 Alumnos Matriculados Directos
+      </button>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- TAB 1: GESTIÓN DE SECCIONES, APROBACIONES Y GRUPOS -->
+    <!-- ======================================================== -->
+    <div id="teacher-tab-sections" class="teacher-tab-pane">
+
+      <!-- Selector de Sección Activa -->
+      <div style="background: #ffffff; border: 3px solid #18181b; border-radius: 12px; padding: 1.5rem; box-shadow: 5px 5px 0px #18181b; margin-bottom: 2rem;">
+        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem;">
+          <div style="flex: 1; min-width: 280px;">
+            <label style="display: block; font-size: 0.85rem; font-weight: 900; text-transform: uppercase; color: #52525b; margin-bottom: 0.4rem;">
+              Seleccionar Sección a Supervisar:
+            </label>
+            <select
+              id="section-selector"
+              style="width: 100%; padding: 0.65rem 1rem; border: 2px solid #18181b; border-radius: 8px; font-weight: 800; font-size: 1rem; background: #fff;"
+              onchange="onSelectSection(this.value)"
+            >
+              <option value="">Cargando secciones...</option>
+            </select>
+          </div>
+
+          <div id="section-meta-box" style="display: flex; gap: 1rem; align-items: center; background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 8px; padding: 0.6rem 1rem;">
+            <div>
+              <span style="font-size: 0.75rem; color: #64748b; font-weight: 700;">Código de Unión:</span>
+              <div id="current-section-code" style="font-size: 1.15rem; font-weight: 900; font-family: monospace; color: #1e3a8a;">---</div>
+            </div>
+            <div style="border-left: 2px solid #cbd5e1; height: 30px;"></div>
+            <div>
+              <span style="font-size: 0.75rem; color: #64748b; font-weight: 700;">Alumnos Aprobados:</span>
+              <div id="current-section-members" style="font-size: 1.15rem; font-weight: 900; color: #10b981;">0</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BANDEJA DE APROBACIÓN DE ALUMNOS (PENDIENTES) -->
+      <div style="background: #fffbeb; border: 3px solid #d97706; border-radius: 12px; padding: 1.5rem; box-shadow: 5px 5px 0px #18181b; margin-bottom: 2rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #d97706; padding-bottom: 0.75rem; margin-bottom: 1rem;">
+          <h2 style="margin: 0; font-size: 1.25rem; font-weight: 900; color: #92400e; display: flex; align-items: center; gap: 0.5rem;">
+            ⏳ Solicitudes de Ingreso Pendientes (<span id="count-pending">0</span>)
+          </h2>
+          <span style="font-size: 0.8rem; font-weight: 700; color: #b45309;">
+            Los alumnos ingresaron el código de sección y esperan tu confirmación
+          </span>
+        </div>
+
+        <div id="pending-students-box">
+          <p style="margin: 0; font-size: 0.9rem; color: #92400e; font-style: italic;">
+            No hay solicitudes pendientes en esta sección.
+          </p>
+        </div>
+      </div>
+
+      <!-- SECCIÓN: CURSOS VINCULADOS & GESTIÓN DE GRUPOS (2 COLUMNAS) -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+        
+        <!-- Cursos Vinculados -->
+        <div style="background: #ffffff; border: 3px solid #18181b; border-radius: 12px; padding: 1.5rem; box-shadow: 4px 4px 0px #18181b;">
+          <h3 style="margin: 0 0 0.75rem 0; font-size: 1.2rem; font-weight: 900; color: #18181b;">
+            📚 Cursos Vinculados a la Sección
+          </h3>
+          <p style="font-size: 0.85rem; color: #52525b; margin: 0 0 1rem 0;">
+            Los estudiantes aprobados se matriculan automáticamente en estos cursos para medir su avance.
+          </p>
+
+          <div id="linked-courses-list" style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.25rem;">
+            <div style="font-size: 0.85rem; color: #71717a;">Cargando cursos...</div>
+          </div>
+
+          <!-- Formulario para Vincular Curso -->
+          <form id="form-link-course" style="display: flex; gap: 0.5rem;">
+            <select
+              id="select-course-to-link"
+              style="flex: 1; padding: 0.5rem; border: 2px solid #18181b; border-radius: 6px; font-weight: 700; font-size: 0.85rem;"
+            >
+              <option value="primeros-pasos-algoritmos">Primeros Pasos en Algoritmos</option>
+            </select>
+            <button
+              type="submit"
+              style="background: #3b82f6; color: #ffffff; font-weight: 900; font-size: 0.85rem; padding: 0.5rem 1rem; border: 2px solid #18181b; border-radius: 6px; box-shadow: 2px 2px 0px #18181b; cursor: pointer;"
+            >
+              Vincular
+            </button>
+          </form>
+        </div>
+
+        <!-- Grupos de Trabajo con Representante -->
+        <div style="background: #ffffff; border: 3px solid #18181b; border-radius: 12px; padding: 1.5rem; box-shadow: 4px 4px 0px #18181b;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+            <h3 style="margin: 0; font-size: 1.2rem; font-weight: 900; color: #18181b;">
+              👥 Grupos de Trabajo
+            </h3>
+            <button
+              id="btn-open-create-group"
+              type="button"
+              style="background: #f59e0b; color: #18181b; font-weight: 900; font-size: 0.8rem; padding: 0.4rem 0.8rem; border: 2px solid #18181b; border-radius: 6px; box-shadow: 2px 2px 0px #18181b; cursor: pointer;"
+            >
+              ➕ Crear Grupo
+            </button>
+          </div>
+          <p style="font-size: 0.85rem; color: #52525b; margin: 0 0 1rem 0;">
+            Cada grupo debe tener un <strong>Representante 👑</strong>. Si no creas grupos, los alumnos continúan en modalidad individual ("Sin Grupo").
+          </p>
+
+          <div id="section-groups-list" style="display: flex; flex-direction: column; gap: 0.75rem;">
+            <div style="font-size: 0.85rem; color: #71717a;">Cargando grupos...</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- MODAL / FORMULARIO: CREAR GRUPO CON REPRESENTANTE -->
+      <div id="modal-create-group" style="display: none; background: #fffdfa; border: 3px solid #18181b; border-radius: 12px; padding: 1.75rem; margin-bottom: 2rem; box-shadow: 5px 5px 0px #18181b;">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #18181b; padding-bottom: 0.75rem; margin-bottom: 1.25rem;">
+          <h3 style="margin: 0; font-size: 1.25rem; font-weight: 900; color: #18181b;">
+            👥 Crear Nuevo Grupo de Trabajo con Representante
+          </h3>
+          <button id="btn-close-create-group" type="button" style="background: none; border: none; font-size: 1.5rem; font-weight: 900; cursor: pointer;">✕</button>
+        </div>
+
+        <form id="form-create-group">
+          <div style="margin-bottom: 1rem;">
+            <label style="display: block; font-size: 0.8rem; font-weight: 800; margin-bottom: 0.35rem;">Nombre del Grupo:</label>
+            <input
+              id="group-name-input"
+              type="text"
+              required
+              placeholder="Ej: Grupo 1 - Proyecto Algoritmos"
+              style="width: 100%; padding: 0.6rem; border: 2px solid #18181b; border-radius: 6px; font-weight: 700; font-size: 0.9rem;"
+            />
+          </div>
+
+          <div style="margin-bottom: 1rem;">
+            <label style="display: block; font-size: 0.8rem; font-weight: 800; margin-bottom: 0.35rem;">
+              Seleccionar Alumnos Integrantes de la Sección:
+            </label>
+            <div id="group-students-checkboxes" style="background: #ffffff; border: 2px solid #18181b; border-radius: 6px; padding: 0.75rem; max-height: 160px; overflow-y: auto; display: flex; flex-direction: column; gap: 0.4rem;">
+              <span style="font-size: 0.85rem; color: #71717a;">Selecciona primero una sección con alumnos aprobados.</span>
+            </div>
+          </div>
+
+          <div style="margin-bottom: 1.25rem;">
+            <label style="display: block; font-size: 0.8rem; font-weight: 900; color: #92400e; margin-bottom: 0.35rem;">
+              👑 Designar Representante del Grupo (Obligatorio):
+            </label>
+            <select
+              id="group-leader-select"
+              required
+              style="width: 100%; padding: 0.6rem; border: 2px solid #18181b; border-radius: 6px; font-weight: 800; font-size: 0.9rem; background: #fffbeb;"
+            >
+              <option value="">Selecciona al alumno líder/representante...</option>
+            </select>
+            <span style="font-size: 0.75rem; color: #78350f; font-weight: 600;">
+              El representante es el responsable principal del equipo y portavoz en debates y entregas.
+            </span>
+          </div>
+
+          <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+            <button
+              type="button"
+              id="btn-cancel-group"
+              style="background: #e4e4e7; color: #18181b; font-weight: 800; padding: 0.6rem 1.25rem; border: 2px solid #18181b; border-radius: 6px; cursor: pointer;"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              id="btn-submit-group"
+              style="background: #10b981; color: #ffffff; font-weight: 900; padding: 0.6rem 1.5rem; border: 2px solid #18181b; border-radius: 6px; box-shadow: 3px 3px 0px #18181b; cursor: pointer;"
+            >
+              ✓ Crear Grupo de Trabajo
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- MATRIZ DE PROGRESO Y SEGUIMIENTO DE LA SECCIÓN -->
+      <div style="background: #ffffff; border: 3px solid #18181b; border-radius: 12px; overflow: hidden; box-shadow: 5px 5px 0px #18181b; margin-bottom: 2rem;">
+        <div style="background: #f4f4f5; border-bottom: 2px solid #18181b; padding: 1rem 1.25rem; display: flex; justify-content: space-between; align-items: center;">
+          <h3 style="margin: 0; font-size: 1.15rem; font-weight: 900; color: #18181b;">
+            📈 Matriz de Progreso de la Sección
+          </h3>
+          <span style="font-size: 0.8rem; font-weight: 700; color: #71717a;">
+            Avance por estudiante y equipo en cursos vinculados
+          </span>
+        </div>
+
+        <div style="overflow-x: auto;">
+          <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem;">
+            <thead>
+              <tr style="border-bottom: 2px solid #18181b; background: #fafafa; font-size: 0.75rem; font-weight: 900; text-transform: uppercase; color: #52525b;">
+                <th style="padding: 0.9rem 1rem;">Estudiante</th>
+                <th style="padding: 0.9rem 1rem;">Grupo Asignado</th>
+                <th style="padding: 0.9rem 1rem;">Rol en Grupo</th>
+                <th style="padding: 0.9rem 1rem; width: 220px;">Progreso en Cursos de la Sección</th>
+                <th style="padding: 0.9rem 1rem;">CoffeeCoins</th>
+                <th style="padding: 0.9rem 1rem;">Puntos</th>
+              </tr>
+            </thead>
+            <tbody id="section-analytics-tbody" style="font-weight: 600;">
+              <tr>
+                <td colspan="6" style="padding: 2.5rem; text-align: center; color: #71717a;">
+                  Selecciona una sección para ver la matriz de progreso.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- TAB 2: VISTA TRADICIONAL DE MATRÍCULAS DIRECTAS -->
+    <!-- ======================================================== -->
+    <div id="teacher-tab-overview" class="teacher-tab-pane" style="display: none;">
+      
+      <!-- KPIs -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem; margin-bottom: 2rem;">
+        <div style="background: #ffffff; border: 2px solid #18181b; border-radius: 10px; padding: 1.25rem; box-shadow: 4px 4px 0px #18181b;">
+          <span style="font-size: 0.75rem; font-weight: 900; text-transform: uppercase; color: #71717a;">Comisiones Activas</span>
+          <div id="stat-classrooms" style="font-size: 2.25rem; font-weight: 900; color: #18181b; margin-top: 0.5rem;">0</div>
+          <span style="font-size: 0.8rem; font-weight: 600; color: #a1a1aa;">Aulas creadas por ti</span>
+        </div>
+
+        <div style="background: #ffffff; border: 2px solid #18181b; border-radius: 10px; padding: 1.25rem; box-shadow: 4px 4px 0px #18181b;">
+          <span style="font-size: 0.75rem; font-weight: 900; text-transform: uppercase; color: #71717a;">Alumnos a Cargo</span>
+          <div id="stat-students" style="font-size: 2.25rem; font-weight: 900; color: #2563eb; margin-top: 0.5rem;">0</div>
+          <span style="font-size: 0.8rem; font-weight: 600; color: #a1a1aa;">Estudiantes matriculados</span>
+        </div>
+
+        <div style="background: #ffffff; border: 2px solid #18181b; border-radius: 10px; padding: 1.25rem; box-shadow: 4px 4px 0px #18181b;">
+          <span style="font-size: 0.75rem; font-weight: 900; text-transform: uppercase; color: #71717a;">Avance Promedio Grupal</span>
+          <div id="stat-progress" style="font-size: 2.25rem; font-weight: 900; color: #10b981; margin-top: 0.5rem;">0%</div>
+          <span style="font-size: 0.8rem; font-weight: 600; color: #a1a1aa;">Completitud de lecciones</span>
+        </div>
+      </div>
+
+      <!-- Tabla de Alumnos Matriculados Directos -->
+      <div style="background: #ffffff; border: 3px solid #18181b; border-radius: 12px; overflow: hidden; box-shadow: 5px 5px 0px #18181b;">
+        <div style="background: #f4f4f5; border-bottom: 2px solid #18181b; padding: 1rem 1.25rem; display: flex; justify-content: space-between; align-items: center;">
+          <h3 style="margin: 0; font-size: 1.1rem; font-weight: 900; color: #18181b;">
+            📊 Seguimiento de Alumnos Matriculados
+          </h3>
+        </div>
+
+        <div style="overflow-x: auto;">
+          <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem;">
+            <thead>
+              <tr style="border-bottom: 2px solid #18181b; background: #fafafa; font-size: 0.75rem; font-weight: 900; text-transform: uppercase; color: #52525b;">
+                <th style="padding: 0.9rem 1rem;">Estudiante</th>
+                <th style="padding: 0.9rem 1rem;">Curso</th>
+                <th style="padding: 0.9rem 1rem;">Nivel Café</th>
+                <th style="padding: 0.9rem 1rem; width: 200px;">Progreso del Temario</th>
+                <th style="padding: 0.9rem 1rem;">CoffeeCoins</th>
+                <th style="padding: 0.9rem 1rem;">Última Actividad</th>
+              </tr>
+            </thead>
+            <tbody id="teacher-students-tbody" style="font-weight: 600;">
+              <tr>
+                <td colspan="6" style="padding: 2.5rem; text-align: center; color: #71717a;">
+                  Cargando datos de estudiantes...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- MODAL: CREAR SECCIÓN ACADÉMICA CON CÓDIGO -->
+    <div id="modal-section" style="display: none; background: #fffdfa; border: 3px solid #18181b; border-radius: 12px; padding: 1.75rem; margin-bottom: 2.5rem; box-shadow: 6px 6px 0px #18181b;">
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #18181b; padding-bottom: 0.75rem; margin-bottom: 1.25rem;">
+        <h2 style="margin: 0; font-size: 1.35rem; font-weight: 900; color: #18181b;">
+          🏫 Crear Sección Académica con Código de Unión
+        </h2>
+        <button id="btn-close-section-modal" type="button" style="background: none; border: none; font-size: 1.5rem; font-weight: 900; cursor: pointer;">✕</button>
+      </div>
+
+      <form id="form-create-section" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem;">
+        <div>
+          <label style="display: block; font-size: 0.8rem; font-weight: 800; margin-bottom: 0.35rem;">Nombre de la Sección:</label>
+          <input
+            id="section-name-input"
+            type="text"
+            required
+            placeholder="Ej: Programación II - Sección 1 (2026)"
+            style="width: 100%; padding: 0.6rem; border: 2px solid #18181b; border-radius: 6px; font-weight: 600; font-size: 0.9rem;"
+          />
+        </div>
+
+        <div>
+          <label style="display: block; font-size: 0.8rem; font-weight: 800; margin-bottom: 0.35rem;">Código Único de Unión (los alumnos usarán este código):</label>
+          <input
+            id="section-code-input"
+            type="text"
+            required
+            placeholder="Ej: PROG2-2026"
+            style="width: 100%; padding: 0.6rem; border: 2px solid #18181b; border-radius: 6px; font-weight: 800; font-size: 0.9rem; text-transform: uppercase;"
+          />
+        </div>
+
+        <div style="grid-column: 1 / -1;">
+          <label style="display: block; font-size: 0.8rem; font-weight: 800; margin-bottom: 0.35rem;">Descripción o Instrucciones para Alumnos:</label>
+          <input
+            id="section-desc-input"
+            type="text"
+            placeholder="Ej: Sección teórico-práctica. Al unirte, el docente aprobará tu solicitud."
+            style="width: 100%; padding: 0.6rem; border: 2px solid #18181b; border-radius: 6px; font-weight: 500; font-size: 0.9rem;"
+          />
+        </div>
+
+        <div style="grid-column: 1 / -1; display: flex; justify-content: flex-end; margin-top: 0.5rem;">
+          <button
+            type="submit"
+            id="btn-submit-section"
+            style="background: #f59e0b; color: #18181b; font-weight: 900; font-size: 0.95rem; padding: 0.75rem 1.75rem; border: 2px solid #18181b; border-radius: 8px; box-shadow: 3px 3px 0px #18181b; cursor: pointer;"
+          >
+            ✓ Crear Sección y Generar Código
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- MODAL: MATRÍCULA MANUAL -->
+    <div id="modal-enroll" style="display: none; background: #fffdfa; border: 3px solid #18181b; border-radius: 12px; padding: 1.75rem; margin-bottom: 2.5rem; box-shadow: 6px 6px 0px #18181b;">
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #18181b; padding-bottom: 0.75rem; margin-bottom: 1.25rem;">
+        <h2 style="margin: 0; font-size: 1.35rem; font-weight: 900; color: #18181b;">
+          📝 Matricular Estudiante Manualmente
+        </h2>
+        <button id="btn-close-enroll" type="button" style="background: none; border: none; font-size: 1.5rem; font-weight: 900; cursor: pointer;">✕</button>
+      </div>
+
+      <form id="form-enroll" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem;">
+        <div>
+          <label style="display: block; font-size: 0.8rem; font-weight: 800; margin-bottom: 0.35rem;">Nombre Completo del Alumno:</label>
+          <input
+            id="student-name"
+            type="text"
+            required
+            placeholder="Ej: Carlos Mendoza"
+            style="width: 100%; padding: 0.6rem; border: 2px solid #18181b; border-radius: 6px; font-weight: 600; font-size: 0.9rem;"
+          />
+        </div>
+
+        <div>
+          <label style="display: block; font-size: 0.8rem; font-weight: 800; margin-bottom: 0.35rem;">Correo Electrónico:</label>
+          <input
+            id="student-email"
+            type="email"
+            required
+            placeholder="carlos@universidad.edu"
+            style="width: 100%; padding: 0.6rem; border: 2px solid #18181b; border-radius: 6px; font-weight: 600; font-size: 0.9rem;"
+          />
+        </div>
+
+        <div>
+          <label style="display: block; font-size: 0.8rem; font-weight: 800; margin-bottom: 0.35rem;">Curso Asignado:</label>
+          <select
+            id="student-course"
+            required
+            style="width: 100%; padding: 0.6rem; border: 2px solid #18181b; border-radius: 6px; font-weight: 700; font-size: 0.9rem; background: #fff;"
+          >
+            <option value="primeros-pasos-algoritmos">Primeros pasos con algoritmos</option>
+          </select>
+        </div>
+
+        <div style="grid-column: 1 / -1; display: flex; justify-content: flex-end; margin-top: 0.5rem;">
+          <button
+            type="submit"
+            style="background: #10b981; color: #ffffff; font-weight: 900; font-size: 0.95rem; padding: 0.75rem 1.75rem; border: 2px solid #18181b; border-radius: 8px; box-shadow: 3px 3px 0px #18181b; cursor: pointer;"
+          >
+            ✓ Matricular y Enviar Acceso
+          </button>
+        </div>
+      </form>
+    </div>
+
+  </div>
+
+  <script is:inline define:vars={{ backendApiUrl }}>
+    const API_URL = backendApiUrl;
+
+    function getHeaders() {
+      const token = localStorage.getItem('cafeycodigo_token') || localStorage.getItem('access_token') || sessionStorage.getItem('cafeycodigo_token') || sessionStorage.getItem('access_token');
+      const headers = { 'Content-Type': 'application/json' };
+      if (token) headers['Authorization'] = 'Bearer ' + token;
+      return headers;
+    }
+
+    let currentSectionId = null;
+    let currentSectionData = null;
+
+    // Switch Tabs Docente
+    window.switchTeacherTab = function(tabName) {
+      document.querySelectorAll('.tab-btn').forEach(b => {
+        b.style.background = '#e4e4e7';
+        b.style.fontWeight = '800';
+      });
+      document.querySelectorAll('.teacher-tab-pane').forEach(p => p.style.display = 'none');
+
+      const activeBtn = document.getElementById(`tab-btn-${tabName}`);
+      const activePane = document.getElementById(`teacher-tab-${tabName}`);
+      if (activeBtn) {
+        activeBtn.style.background = '#f59e0b';
+        activeBtn.style.fontWeight = '900';
+      }
+      if (activePane) activePane.style.display = 'block';
+    };
+
+    // Healthcheck
+    async function checkHealth() {
+      const pill = document.getElementById('teacher-status-pill');
+      try {
+        const res = await fetch(`${API_URL}/courses`, { signal: AbortSignal.timeout(3000) });
+        if (res.ok) {
+          pill.style.background = '#34d399';
+          pill.style.color = '#064e3b';
+          pill.textContent = '● Backend Conectado';
+          return true;
+        }
+      } catch (e) {}
+      pill.style.background = '#f87171';
+      pill.style.color = '#7f1d1d';
+      pill.textContent = '✕ Backend Desconectado (Puerto 3001)';
+      return false;
+    }
+
+    // Cargar Lista de Secciones del Docente
+    async function loadTeacherSections() {
+      try {
+        const res = await fetch(`${API_URL}/sections/my-sections`, { headers: getHeaders() });
+        const banner = document.getElementById('teacher-alert-banner');
+        if (!res.ok) {
+          banner.style.display = 'block';
+          return;
+        }
+        banner.style.display = 'none';
+
+        const sections = await res.json();
+        const selector = document.getElementById('section-selector');
+
+        if (!sections || sections.length === 0) {
+          selector.innerHTML = '<option value="">Sin secciones creadas. Haz clic en "➕ Nueva Sección con Código".</option>';
+          return;
+        }
+
+        selector.innerHTML = sections.map(s => `
+          <option value="${s.id}">
+            ${s.name} (${s.code}) - ${s.members?.filter(m => m.status === 'APPROVED').length || 0} alumnos
+          </option>
+        `).join('');
+
+        // Seleccionar la primera por defecto
+        if (!currentSectionId && sections.length > 0) {
+          currentSectionId = sections[0].id;
+        }
+        if (currentSectionId) {
+          selector.value = currentSectionId;
+          onSelectSection(currentSectionId);
+        }
+      } catch (err) {
+        console.warn('Error al cargar secciones del docente:', err);
+      }
+    }
+
+    // Seleccionar una sección
+    window.onSelectSection = async function(sectionId) {
+      if (!sectionId) return;
+      currentSectionId = sectionId;
+
+      try {
+        const res = await fetch(`${API_URL}/sections/${sectionId}`, { headers: getHeaders() });
+        if (!res.ok) return;
+
+        currentSectionData = await res.json();
+
+        // Metadatos
+        document.getElementById('current-section-code').textContent = currentSectionData.code;
+        const approvedCount = currentSectionData.members?.filter(m => m.status === 'APPROVED').length || 0;
+        document.getElementById('current-section-members').textContent = approvedCount;
+
+        // Renderizar Pendientes
+        renderPendingMembers(currentSectionData.members || []);
+
+        // Renderizar Cursos Vinculados
+        renderLinkedCourses(currentSectionData.courses || []);
+
+        // Renderizar Grupos de Trabajo
+        renderWorkGroups(currentSectionData.groups || [], currentSectionData.members || []);
+
+        // Renderizar Matriz de Analítica
+        loadSectionAnalytics(sectionId);
+
+      } catch (err) {
+        console.error('Error al cargar detalle de sección:', err);
+      }
+    };
+
+    // Renderizar Bandeja de Alumnos Pendientes
+    function renderPendingMembers(members) {
+      const pending = members.filter(m => m.status === 'PENDING');
+      document.getElementById('count-pending').textContent = pending.length;
+      const box = document.getElementById('pending-students-box');
+
+      if (pending.length === 0) {
+        box.innerHTML = `
+          <p style="margin: 0; font-size: 0.9rem; color: #92400e; font-style: italic;">
+            ✓ Todas las solicitudes han sido atendidas. No hay alumnos pendientes de aprobación.
+          </p>
+        `;
+        return;
+      }
+
+      box.innerHTML = `
+        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+          ${pending.map(m => `
+            <div style="background: #ffffff; border: 2px solid #b45309; border-radius: 8px; padding: 0.85rem 1rem; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 0.75rem;">
+              <div>
+                <div style="font-weight: 900; color: #18181b;">${escapeHtml(m.user?.name || 'Estudiante')}</div>
+                <div style="font-size: 0.75rem; color: #71717a; font-family: monospace;">${escapeHtml(m.user?.email || '')}</div>
+                <div style="font-size: 0.75rem; color: #b45309; margin-top: 0.2rem;">
+                  Solicitó unión: ${new Date(m.joinedAt).toLocaleString()}
+                </div>
+              </div>
+
+              <div style="display: flex; gap: 0.5rem;">
+                <button
+                  type="button"
+                  onclick="updateMemberStatus('${m.id}', 'APPROVED')"
+                  style="background: #10b981; color: #ffffff; font-weight: 900; font-size: 0.85rem; padding: 0.45rem 1rem; border: 2px solid #18181b; border-radius: 6px; box-shadow: 2px 2px 0px #18181b; cursor: pointer;"
+                >
+                  ✓ Aprobar Ingreso
+                </button>
+                <button
+                  type="button"
+                  onclick="updateMemberStatus('${m.id}', 'REJECTED')"
+                  style="background: #ef4444; color: #ffffff; font-weight: 900; font-size: 0.85rem; padding: 0.45rem 1rem; border: 2px solid #18181b; border-radius: 6px; box-shadow: 2px 2px 0px #18181b; cursor: pointer;"
+                >
+                  ✕ Rechazar
+                </button>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    // Actualizar Estado de Membresía (Aprobar / Rechazar)
+    window.updateMemberStatus = async function(memberId, status) {
+      if (!currentSectionId) return;
+
+      try {
+        const res = await fetch(`${API_URL}/sections/${currentSectionId}/members/${memberId}`, {
+          method: 'PATCH',
+          headers: getHeaders(),
+          body: JSON.stringify({ status })
+        });
+
+        if (res.ok) {
+          onSelectSection(currentSectionId);
+        } else {
+          const err = await res.json();
+          alert(err.message || 'Error al actualizar estado del alumno');
+        }
+      } catch (e) {
+        alert('No se pudo conectar con el servidor backend');
+      }
+    };
+
+    // Renderizar Cursos Vinculados
+    function renderLinkedCourses(courses) {
+      const list = document.getElementById('linked-courses-list');
+      if (courses.length === 0) {
+        list.innerHTML = `
+          <div style="font-size: 0.85rem; color: #64748b; font-style: italic;">
+            No hay cursos vinculados. Selecciona un curso abajo para vincularlo a la sección.
+          </div>
+        `;
+        return;
+      }
+
+      list.innerHTML = courses.map(sc => `
+        <div style="background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 6px; padding: 0.6rem 0.8rem; display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <div style="font-weight: 800; font-size: 0.9rem; color: #18181b;">${escapeHtml(sc.course?.title || '')}</div>
+            <div style="font-size: 0.75rem; color: #64748b;">ID: <code>${sc.course?.courseId || ''}</code></div>
+          </div>
+          <a
+            href="/app/courses/${sc.course?.courseId}/aula/"
+            target="_blank"
+            style="font-size: 0.75rem; font-weight: 800; color: #2563eb; text-decoration: underline;"
+          >
+            Ver Aula ↗
+          </a>
+        </div>
+      `).join('');
+    }
+
+    // Vincular Curso Form
+    document.getElementById('form-link-course')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!currentSectionId) return;
+
+      const courseId = document.getElementById('select-course-to-link').value;
+      try {
+        const res = await fetch(`${API_URL}/sections/${currentSectionId}/courses`, {
+          method: 'POST',
+          headers: getHeaders(),
+          body: JSON.stringify({ courseIds: [courseId] })
+        });
+
+        if (res.ok) {
+          alert('¡Curso vinculado exitosamente a la sección!');
+          onSelectSection(currentSectionId);
+        } else {
+          const err = await res.json();
+          alert(err.message || 'Error al vincular el curso');
+        }
+      } catch (e) {
+        alert('Error al conectar con el servidor');
+      }
+    });
+
+    // Renderizar Grupos de Trabajo
+    function renderWorkGroups(groups, members) {
+      const list = document.getElementById('section-groups-list');
+      const approvedMembers = members.filter(m => m.status === 'APPROVED');
+
+      // Actualizar select de representante en el modal de grupos
+      const leaderSelect = document.getElementById('group-leader-select');
+      leaderSelect.innerHTML = '<option value="">-- Elige un representante obligatorio --</option>' +
+        approvedMembers.map(m => `<option value="${m.user?.id}">${escapeHtml(m.user?.name || '')} (${escapeHtml(m.user?.email || '')})</option>`).join('');
+
+      // Actualizar checkboxes de alumnos
+      const checksBox = document.getElementById('group-students-checkboxes');
+      if (approvedMembers.length === 0) {
+        checksBox.innerHTML = '<span style="font-size: 0.85rem; color: #71717a;">Debes aprobar alumnos antes de crear grupos.</span>';
+      } else {
+        checksBox.innerHTML = approvedMembers.map(m => `
+          <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; font-weight: 600; cursor: pointer;">
+            <input type="checkbox" name="group-member-check" value="${m.user?.id}" />
+            <span>${escapeHtml(m.user?.name || '')}</span>
+          </label>
+        `).join('');
+      }
+
+      if (groups.length === 0) {
+        list.innerHTML = `
+          <div style="font-size: 0.85rem; color: #64748b; font-style: italic;">
+            No hay grupos formados. Todos los alumnos están trabajando de manera individual ("Sin grupo").
+          </div>
+        `;
+        return;
+      }
+
+      list.innerHTML = groups.map(g => `
+        <div style="background: #fafafa; border: 2px solid #18181b; border-radius: 8px; padding: 0.85rem; box-shadow: 2px 2px 0px #18181b;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+            <h4 style="margin: 0; font-size: 0.95rem; font-weight: 900; color: #18181b;">${escapeHtml(g.name)}</h4>
+            <button
+              type="button"
+              onclick="deleteWorkGroup('${g.id}')"
+              style="background: #fee2e2; color: #b91c1c; border: 1px solid #ef4444; font-size: 0.75rem; font-weight: 800; border-radius: 4px; padding: 0.15rem 0.45rem; cursor: pointer;"
+            >
+              Eliminar
+            </button>
+          </div>
+
+          <div style="background: #fef9c3; border: 1px solid #ca8a04; border-radius: 4px; padding: 0.35rem 0.5rem; font-size: 0.8rem; font-weight: 800; color: #854d0e; margin-bottom: 0.5rem;">
+            👑 Representante: ${escapeHtml(g.leader?.name || 'Sin representante')}
+          </div>
+
+          <div style="font-size: 0.75rem; color: #52525b; font-weight: 600;">
+            ${(g.members || []).map(m => escapeHtml(m.user?.name || '')).join(', ') || 'Sin integrantes'}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Modal Crear Grupo
+    const modalGroup = document.getElementById('modal-create-group');
+    document.getElementById('btn-open-create-group')?.addEventListener('click', () => { modalGroup.style.display = 'block'; });
+    document.getElementById('btn-close-create-group')?.addEventListener('click', () => { modalGroup.style.display = 'none'; });
+    document.getElementById('btn-cancel-group')?.addEventListener('click', () => { modalGroup.style.display = 'none'; });
+
+    // Submit Crear Grupo
+    document.getElementById('form-create-group')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!currentSectionId) return;
+
+      const name = document.getElementById('group-name-input').value.trim();
+      const leaderId = document.getElementById('group-leader-select').value;
+      const checkedBoxes = Array.from(document.querySelectorAll('input[name="group-member-check"]:checked'));
+      const memberUserIds = checkedBoxes.map(cb => cb.value);
+
+      if (!leaderId) {
+        alert('Debes designar un Representante (Líder) para el grupo obligatoriamente.');
+        return;
+      }
+
+      if (!memberUserIds.includes(leaderId)) {
+        memberUserIds.push(leaderId);
+      }
+
+      try {
+        const res = await fetch(`${API_URL}/sections/${currentSectionId}/groups`, {
+          method: 'POST',
+          headers: getHeaders(),
+          body: JSON.stringify({ name, leaderId, memberUserIds })
+        });
+
+        if (res.ok) {
+          alert('¡Grupo creado exitosamente!');
+          modalGroup.style.display = 'none';
+          document.getElementById('form-create-group').reset();
+          onSelectSection(currentSectionId);
+        } else {
+          const err = await res.json();
+          alert(err.message || 'Error al crear el grupo');
+        }
+      } catch (e) {
+        alert('Error al conectar con el servidor');
+      }
+    });
+
+    // Eliminar Grupo
+    window.deleteWorkGroup = async function(groupId) {
+      if (!confirm('¿Seguro que deseas eliminar este grupo? Los alumnos volverán a estar "Sin grupo".')) return;
+      try {
+        const res = await fetch(`${API_URL}/sections/${currentSectionId}/groups/${groupId}`, {
+          method: 'DELETE',
+          headers: getHeaders()
+        });
+        if (res.ok) {
+          onSelectSection(currentSectionId);
+        }
+      } catch (e) {
+        alert('Error al eliminar grupo');
+      }
+    };
+
+    // Cargar Matriz de Analítica de la Sección
+    async function loadSectionAnalytics(sectionId) {
+      const tbody = document.getElementById('section-analytics-tbody');
+      tbody.innerHTML = '<tr><td colspan="6" style="padding: 1.5rem; text-align: center; color: #71717a;">Cargando analítica...</td></tr>';
+
+      try {
+        const res = await fetch(`${API_URL}/sections/${sectionId}/analytics`, { headers: getHeaders() });
+        if (!res.ok) {
+          tbody.innerHTML = '<tr><td colspan="6" style="padding: 1.5rem; text-align: center; color: #71717a;">No se pudo cargar la analítica.</td></tr>';
+          return;
+        }
+
+        const data = await res.json();
+        const students = data.students || [];
+
+        if (students.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="6" style="padding: 2rem; text-align: center; color: #71717a;">Aún no hay alumnos aprobados en esta sección.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = students.map(s => {
+          const hasGroup = !!s.group;
+          const isLeader = s.isLeader;
+          const courses = s.coursesProgress || [];
+
+          return `
+            <tr style="border-bottom: 1px solid #e4e4e7;">
+              <td style="padding: 1rem;">
+                <div style="font-weight: 900; color: #18181b;">${escapeHtml(s.name)}</div>
+                <div style="font-size: 0.75rem; color: #71717a; font-family: monospace;">${escapeHtml(s.email)}</div>
+              </td>
+              <td style="padding: 1rem;">
+                ${hasGroup ? `
+                  <span style="font-weight: 800; color: #1e40af;">${escapeHtml(s.group.name)}</span>
+                ` : `
+                  <span style="font-style: italic; color: #64748b; font-size: 0.85rem;">Individual (Sin grupo)</span>
+                `}
+              </td>
+              <td style="padding: 1rem;">
+                ${isLeader ? `
+                  <span style="background: #fef08a; color: #854d0e; font-weight: 900; font-size: 0.75rem; padding: 0.2rem 0.5rem; border-radius: 4px; border: 1.5px solid #ca8a04;">
+                    👑 Representante
+                  </span>
+                ` : hasGroup ? `
+                  <span style="color: #475569; font-size: 0.8rem; font-weight: 700;">Integrante</span>
+                ` : `
+                  <span style="color: #94a3b8; font-size: 0.8rem;">-</span>
+                `}
+              </td>
+              <td style="padding: 1rem;">
+                ${courses.length === 0 ? '<span style="font-size: 0.8rem; color: #94a3b8;">Sin cursos vinculados</span>' : courses.map(cp => `
+                  <div style="margin-bottom: 0.35rem;">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.75rem; font-weight: 800; margin-bottom: 0.15rem;">
+                      <span style="color: #334155;">${escapeHtml(cp.courseTitle)}</span>
+                      <span>${cp.progressPercent}%</span>
+                    </div>
+                    <div style="height: 6px; background: #e2e8f0; border-radius: 999px; overflow: hidden;">
+                      <div style="width: ${cp.progressPercent}%; height: 100%; background: ${cp.progressPercent >= 80 ? '#10b981' : cp.progressPercent >= 40 ? '#f59e0b' : '#3b82f6'};"></div>
+                    </div>
+                  </div>
+                `).join('')}
+              </td>
+              <td style="padding: 1rem; font-weight: 900; color: #b45309;">
+                ${s.coffeeCoins || 0} ☕
+              </td>
+              <td style="padding: 1rem; font-weight: 800; color: #18181b;">
+                ${s.points || 0} pts
+              </td>
+            </tr>
+          `;
+        }).join('');
+
+      } catch (err) {
+        tbody.innerHTML = '<tr><td colspan="6" style="padding: 1.5rem; text-align: center; color: #ef4444;">Error al cargar la matriz de progreso.</td></tr>';
+      }
+    }
+
+    // Modal Crear Sección
+    const modalSection = document.getElementById('modal-section');
+    document.getElementById('btn-open-section-modal')?.addEventListener('click', () => { modalSection.style.display = 'block'; });
+    document.getElementById('btn-close-section-modal')?.addEventListener('click', () => { modalSection.style.display = 'none'; });
+
+    // Submit Crear Sección
+    document.getElementById('form-create-section')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const payload = {
+        name: document.getElementById('section-name-input').value.trim(),
+        code: document.getElementById('section-code-input').value.trim().toUpperCase(),
+        description: document.getElementById('section-desc-input').value.trim() || undefined,
+      };
+
+      try {
+        const res = await fetch(`${API_URL}/sections`, {
+          method: 'POST',
+          headers: getHeaders(),
+          body: JSON.stringify(payload),
+        });
+        const data = await res.json();
+        if (res.ok) {
+          alert(`¡Sección "${data.name}" creada exitosamente con código "${data.code}"!`);
+          modalSection.style.display = 'none';
+          document.getElementById('form-create-section').reset();
+          currentSectionId = data.id;
+          loadTeacherSections();
+        } else {
+          alert('Error: ' + (data.message || 'No se pudo crear la sección'));
+        }
+      } catch (err) {
+        alert('Fallo de conexión con el backend.');
+      }
+    });
+
+    // Modal Matricular Manual
+    const modalEnroll = document.getElementById('modal-enroll');
+    document.getElementById('btn-open-enroll')?.addEventListener('click', () => { modalEnroll.style.display = 'block'; });
+    document.getElementById('btn-close-enroll')?.addEventListener('click', () => { modalEnroll.style.display = 'none'; });
+
+    // Submit Matricular Manual
+    document.getElementById('form-enroll')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const payload = {
+        name: document.getElementById('student-name').value,
+        email: document.getElementById('student-email').value,
+        courseId: document.getElementById('student-course').value,
+      };
+
+      try {
+        const res = await fetch(`${API_URL}/teachers/students/register`, {
+          method: 'POST',
+          headers: getHeaders(),
+          body: JSON.stringify(payload),
+        });
+        const data = await res.json();
+        if (res.ok) {
+          alert(`¡Éxito! ${data.message}`);
+          modalEnroll.style.display = 'none';
+          document.getElementById('form-enroll').reset();
+          loadOverviewDashboard();
+        } else {
+          alert('Error: ' + (data.message || 'No se pudo matricular'));
+        }
+      } catch (err) {
+        alert('Fallo de conexión con el backend.');
+      }
+    });
+
+    // Cargar Vista Tradicional Overview
+    async function loadOverviewDashboard() {
+      try {
+        const res = await fetch(`${API_URL}/teachers/dashboard`, { headers: getHeaders() });
+        if (!res.ok) return;
+        const data = await res.json();
+        
+        document.getElementById('stat-classrooms').textContent = data.stats.totalClassrooms;
+        document.getElementById('stat-students').textContent = data.stats.totalStudentsEnrolled;
+        document.getElementById('stat-progress').textContent = `${data.stats.averageClassProgress}%`;
+
+        renderStudentsList(data.studentsProgress || []);
+      } catch (e) {}
+    }
+
+    function renderStudentsList(list) {
+      const tbody = document.getElementById('teacher-students-tbody');
+      if (!list.length) {
+        tbody.innerHTML = '<tr><td colspan="6" style="padding: 2.5rem; text-align: center; color: #71717a;">Aún no has registrado estudiantes individuales.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = list.map(item => `
+        <tr style="border-bottom: 1px solid #e4e4e7;">
+          <td style="padding: 1rem;">
+            <div style="font-weight: 900; color: #18181b;">${escapeHtml(item.student?.name || 'Estudiante')}</div>
+            <div style="font-size: 0.75rem; color: #71717a; font-family: monospace;">${escapeHtml(item.student?.email || '')}</div>
+          </td>
+          <td style="padding: 1rem;">
+            <span style="font-weight: 800; color: #4338ca;">${escapeHtml(item.course?.title || '')}</span>
+          </td>
+          <td style="padding: 1rem;">
+            <span style="display: inline-block; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; background: #fffbeb; color: #92400e; border: 1px solid #d97706; padding: 0.15rem 0.5rem; border-radius: 4px;">
+              ☕ ${item.student?.levelCode || 'americano'}
+            </span>
+          </td>
+          <td style="padding: 1rem;">
+            <div style="display: flex; align-items: center; gap: 0.6rem;">
+              <div style="flex: 1; height: 10px; background: #e4e4e7; border: 1px solid #18181b; border-radius: 999px; overflow: hidden;">
+                <div style="width: ${item.progressPercent}%; height: 100%; background: ${item.progressPercent >= 80 ? '#10b981' : item.progressPercent >= 40 ? '#f59e0b' : '#3b82f6'};"></div>
+              </div>
+              <span style="font-size: 0.8rem; font-weight: 900; min-width: 35px; text-align: right;">${item.progressPercent}%</span>
+            </div>
+          </td>
+          <td style="padding: 1rem; font-weight: 900; color: #b45309;">
+            ${item.student?.coffeeCoins || 0} ☕
+          </td>
+          <td style="padding: 1rem; font-size: 0.75rem; color: #71717a;">
+            ${new Date(item.lastActivity).toLocaleDateString()}
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    // Inicializar
+    checkHealth().then(ok => {
+      if (ok) {
+        loadTeacherSections();
+        loadOverviewDashboard();
+      }
+    });
+  </script>
+</CourseAppLayout>

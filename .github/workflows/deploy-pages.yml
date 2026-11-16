@@ -1,9 +1,3 @@
-# Requiere secretos en el repo: Settings → Secrets and variables → Actions → New repository secret
-# - PUBLIC_SUPABASE_URL
-# - PUBLIC_SUPABASE_ANON_KEY
-# Opcional: PUBLIC_COFFEECOIN_STORE_ENABLED (ej. false). Si no existe, el build igual funciona.
-# Valores: los mismos que en .env.local (no commitees .env.local).
-
 name: Deploy to GitHub Pages
 
 on:
@@ -35,18 +29,18 @@ jobs:
         with:
           node-version: 24
           cache: npm
+          cache-dependency-path: frontend/package-lock.json
 
       - name: Install dependencies
+        working-directory: ./frontend
         run: npm ci
 
       - name: Astro check
+        working-directory: ./frontend
         run: npm run check
 
       - name: Build
-        env:
-          PUBLIC_SUPABASE_URL: ${{ secrets.PUBLIC_SUPABASE_URL }}
-          PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.PUBLIC_SUPABASE_ANON_KEY }}
-          PUBLIC_COFFEECOIN_STORE_ENABLED: ${{ secrets.PUBLIC_COFFEECOIN_STORE_ENABLED }}
+        working-directory: ./frontend
         run: npm run build
 
       - name: Setup Pages
@@ -55,7 +49,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: dist
+          path: frontend/dist
 
   deploy:
     needs: build

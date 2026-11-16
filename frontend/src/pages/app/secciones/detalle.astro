@@ -1,0 +1,492 @@
+---
+import CourseAppLayout from '../../../layouts/CourseAppLayout.astro';
+const backendApiUrl = import.meta.env.PUBLIC_BACKEND_API_URL || 'http://localhost:3001/api';
+---
+
+<CourseAppLayout
+  page="secciones"
+  title="Detalle de Sección · Café y Código"
+  description="Acceso a cursos vinculados, grupos de trabajo y foro de debate de la sección."
+>
+  <div style="max-width: 1200px; margin: 0 auto; padding: 2rem 1rem 4rem 1rem;">
+    
+    <!-- Botón Volver y Estado -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+      <a
+        href="/app/secciones/"
+        style="display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.9rem; font-weight: 800; color: #18181b; text-decoration: none; background: #f4f4f5; padding: 0.4rem 0.8rem; border: 2px solid #18181b; border-radius: 6px; box-shadow: 2px 2px 0px #18181b;"
+      >
+        ← Volver a Mis Secciones
+      </a>
+      <span id="detail-membership-badge" style="display: none; font-size: 0.8rem; font-weight: 800; padding: 0.25rem 0.75rem; border-radius: 6px; border: 2px solid #18181b;"></span>
+    </div>
+
+    <!-- Encabezado de la Sección -->
+    <div style="background: #ffffff; border: 3px solid #18181b; border-radius: 12px; padding: 1.75rem; box-shadow: 6px 6px 0px #18181b; margin-bottom: 2rem;">
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 1rem;">
+        <div>
+          <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+            <span id="detail-code" style="background: #18181b; color: #ffffff; font-size: 0.8rem; font-weight: 900; padding: 0.2rem 0.6rem; border-radius: 6px;">
+              Cargando código...
+            </span>
+            <span style="font-size: 0.85rem; color: #52525b; font-weight: 600;">
+              Profesor: <strong id="detail-teacher" style="color: #18181b;">...</strong>
+            </span>
+          </div>
+          <h1 id="detail-title" style="font-size: 2rem; font-weight: 900; color: #18181b; margin: 0 0 0.5rem 0; line-height: 1.15;">
+            Cargando sección...
+          </h1>
+          <p id="detail-desc" style="font-size: 0.95rem; color: #52525b; margin: 0; max-width: 800px; line-height: 1.4;">
+            ...
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navegación por Pestañas (Tabs) -->
+    <div style="display: flex; gap: 0.5rem; border-bottom: 3px solid #18181b; margin-bottom: 2rem;">
+      <button
+        id="tab-btn-courses"
+        class="tab-btn active"
+        onclick="switchTab('courses')"
+        style="background: #f59e0b; color: #18181b; font-weight: 900; font-size: 0.95rem; padding: 0.65rem 1.25rem; border: 2px solid #18181b; border-bottom: none; border-radius: 8px 8px 0 0; cursor: pointer;"
+      >
+        📚 Cursos de la Sección (<span id="count-courses">0</span>)
+      </button>
+      <button
+        id="tab-btn-group"
+        class="tab-btn"
+        onclick="switchTab('group')"
+        style="background: #e4e4e7; color: #18181b; font-weight: 800; font-size: 0.95rem; padding: 0.65rem 1.25rem; border: 2px solid #18181b; border-bottom: none; border-radius: 8px 8px 0 0; cursor: pointer;"
+      >
+        👥 Mi Grupo y Compañeros
+      </button>
+      <button
+        id="tab-btn-forum"
+        class="tab-btn"
+        onclick="switchTab('forum')"
+        style="background: #e4e4e7; color: #18181b; font-weight: 800; font-size: 0.95rem; padding: 0.65rem 1.25rem; border: 2px solid #18181b; border-bottom: none; border-radius: 8px 8px 0 0; cursor: pointer;"
+      >
+        💬 Foros de Debate (<span id="count-topics">0</span>)
+      </button>
+    </div>
+
+    <!-- TAB 1: CURSOS VINCULADOS -->
+    <div id="tab-content-courses" class="tab-pane">
+      <div id="courses-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem;">
+        <div style="background: #ffffff; border: 2px dashed #cbd5e1; border-radius: 12px; padding: 2.5rem; text-align: center; color: #64748b; font-weight: 600;">
+          Cargando cursos vinculados...
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: MI GRUPO Y EQUIPO -->
+    <div id="tab-content-group" class="tab-pane" style="display: none;">
+      <div id="group-container" style="background: #ffffff; border: 3px solid #18181b; border-radius: 12px; padding: 1.75rem; box-shadow: 5px 5px 0px #18181b;">
+        Cargando información del grupo...
+      </div>
+    </div>
+
+    <!-- TAB 3: FORO DE DISCUSIÓN -->
+    <div id="tab-content-forum" class="tab-pane" style="display: none;">
+      
+      <!-- Botón para nuevo debate -->
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h2 style="font-size: 1.35rem; font-weight: 900; margin: 0; color: #18181b;">
+          Hilos de Conversación y Preguntas
+        </h2>
+        <button
+          id="btn-open-new-topic"
+          type="button"
+          style="background: #10b981; color: #ffffff; font-weight: 900; font-size: 0.9rem; padding: 0.6rem 1.25rem; border: 2px solid #18181b; border-radius: 8px; box-shadow: 3px 3px 0px #18181b; cursor: pointer;"
+        >
+          ➕ Iniciar Nuevo Debate
+        </button>
+      </div>
+
+      <!-- Formulario para crear tema -->
+      <div id="new-topic-form-card" style="display: none; background: #fffdfa; border: 3px solid #18181b; border-radius: 10px; padding: 1.5rem; margin-bottom: 2rem; box-shadow: 4px 4px 0px #18181b;">
+        <h3 style="margin: 0 0 1rem 0; font-size: 1.15rem; font-weight: 900; color: #18181b;">
+          Crear Tema de Debate
+        </h3>
+        <form id="form-create-topic">
+          <div style="margin-bottom: 0.75rem;">
+            <label style="display: block; font-size: 0.8rem; font-weight: 800; margin-bottom: 0.25rem;">Título del tema:</label>
+            <input
+              id="topic-title-input"
+              type="text"
+              required
+              placeholder="Ej: Duda con el ejercicio de bucles While"
+              style="width: 100%; padding: 0.6rem; border: 2px solid #18181b; border-radius: 6px; font-weight: 700; font-size: 0.9rem;"
+            />
+          </div>
+          <div style="margin-bottom: 1rem;">
+            <label style="display: block; font-size: 0.8rem; font-weight: 800; margin-bottom: 0.25rem;">Contenido o pregunta detallada:</label>
+            <textarea
+              id="topic-content-input"
+              required
+              rows="3"
+              placeholder="Escribe aquí tu consulta o planteamiento para que tus compañeros y docente respondan..."
+              style="width: 100%; padding: 0.6rem; border: 2px solid #18181b; border-radius: 6px; font-size: 0.9rem; font-family: inherit;"
+            ></textarea>
+          </div>
+          <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
+            <button
+              type="button"
+              id="btn-cancel-topic"
+              style="background: #e4e4e7; color: #18181b; font-weight: 800; padding: 0.5rem 1rem; border: 2px solid #18181b; border-radius: 6px; cursor: pointer;"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              id="btn-submit-topic"
+              style="background: #10b981; color: #ffffff; font-weight: 900; padding: 0.5rem 1.25rem; border: 2px solid #18181b; border-radius: 6px; box-shadow: 2px 2px 0px #18181b; cursor: pointer;"
+            >
+              Publicar Debate
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Lista de Temas -->
+      <div id="topics-list" style="display: flex; flex-direction: column; gap: 1rem;">
+        <div style="background: #ffffff; border: 2px dashed #cbd5e1; border-radius: 10px; padding: 2rem; text-align: center; color: #64748b; font-weight: 600;">
+          Cargando temas del foro...
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script is:inline define:vars={{ backendApiUrl }}>
+    const API_BASE = backendApiUrl;
+
+    function getToken() {
+      return localStorage.getItem('cafeycodigo_token') || localStorage.getItem('access_token') || sessionStorage.getItem('cafeycodigo_token') || sessionStorage.getItem('access_token');
+    }
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const sectionId = urlParams.get('id');
+
+    let sectionData = null;
+
+    window.switchTab = function(tabName) {
+      document.querySelectorAll('.tab-btn').forEach(b => {
+        b.style.background = '#e4e4e7';
+        b.style.fontWeight = '800';
+      });
+      document.querySelectorAll('.tab-pane').forEach(p => p.style.display = 'none');
+
+      const activeBtn = document.getElementById(`tab-btn-${tabName}`);
+      const activePane = document.getElementById(`tab-content-${tabName}`);
+      if (activeBtn) {
+        activeBtn.style.background = '#f59e0b';
+        activeBtn.style.fontWeight = '900';
+      }
+      if (activePane) activePane.style.display = 'block';
+    };
+
+    // Toggle nuevo tema
+    const btnOpenTopic = document.getElementById('btn-open-new-topic');
+    const formCard = document.getElementById('new-topic-form-card');
+    const btnCancelTopic = document.getElementById('btn-cancel-topic');
+
+    btnOpenTopic?.addEventListener('click', () => {
+      formCard.style.display = formCard.style.display === 'none' ? 'block' : 'none';
+      if (formCard.style.display === 'block') document.getElementById('topic-title-input').focus();
+    });
+
+    btnCancelTopic?.addEventListener('click', () => {
+      formCard.style.display = 'none';
+    });
+
+    // Enviar nuevo tema
+    document.getElementById('form-create-topic')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const token = getToken();
+      if (!token || !sectionId) return;
+
+      const title = document.getElementById('topic-title-input').value.trim();
+      const content = document.getElementById('topic-content-input').value.trim();
+      if (!title || !content) return;
+
+      const submitBtn = document.getElementById('btn-submit-topic');
+      submitBtn.disabled = true;
+      submitBtn.innerText = 'Publicando...';
+
+      try {
+        const res = await fetch(`${API_BASE}/sections/${sectionId}/topics`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ title, content })
+        });
+
+        if (res.ok) {
+          document.getElementById('topic-title-input').value = '';
+          document.getElementById('topic-content-input').value = '';
+          formCard.style.display = 'none';
+          loadSection();
+        } else {
+          const err = await res.json();
+          alert(err.message || 'Error al publicar el tema');
+        }
+      } catch (err) {
+        alert('No se pudo contactar al servidor');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerText = 'Publicar Debate';
+      }
+    });
+
+    // Enviar respuesta a tema
+    window.submitReply = async function(topicId) {
+      const textarea = document.getElementById(`reply-input-${topicId}`);
+      if (!textarea) return;
+      const content = textarea.value.trim();
+      if (!content) return;
+
+      const token = getToken();
+      if (!token) {
+        alert('Debes iniciar sesión para responder');
+        return;
+      }
+
+      try {
+        const res = await fetch(`${API_BASE}/sections/topics/${topicId}/posts`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ content })
+        });
+
+        if (res.ok) {
+          textarea.value = '';
+          loadSection();
+        } else {
+          const err = await res.json();
+          alert(err.message || 'Error al enviar respuesta');
+        }
+      } catch (err) {
+        alert('Error al conectar con el servidor');
+      }
+    };
+
+    async function loadSection() {
+      if (!sectionId) {
+        document.getElementById('detail-title').innerText = 'ID de sección no proporcionado';
+        return;
+      }
+
+      const token = getToken();
+      if (!token) {
+        document.getElementById('detail-title').innerText = 'Inicia sesión para ver la sección';
+        return;
+      }
+
+      try {
+        const res = await fetch(`${API_BASE}/sections/${sectionId}`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (!res.ok) {
+          document.getElementById('detail-title').innerText = 'Sección no encontrada o sin acceso';
+          return;
+        }
+
+        sectionData = await res.json();
+
+        // 1. Cabecera
+        document.getElementById('detail-title').innerText = sectionData.name;
+        document.getElementById('detail-code').innerText = sectionData.code;
+        document.getElementById('detail-teacher').innerText = sectionData.teacher?.name || 'Profesor';
+        document.getElementById('detail-desc').innerText = sectionData.description || 'Sin descripción adicional.';
+
+        // Badge membresía
+        const badge = document.getElementById('detail-membership-badge');
+        badge.style.display = 'inline-block';
+        badge.innerText = '✅ Miembro Activo';
+        badge.style.background = '#dcfce7';
+        badge.style.color = '#166534';
+
+        // 2. Cursos
+        const courses = sectionData.courses || [];
+        document.getElementById('count-courses').innerText = courses.length;
+        const coursesGrid = document.getElementById('courses-grid');
+
+        if (courses.length === 0) {
+          coursesGrid.innerHTML = `
+            <div style="background: #ffffff; border: 2px dashed #cbd5e1; border-radius: 12px; padding: 2.5rem; text-align: center; color: #64748b; font-weight: 600; grid-column: 1 / -1;">
+              El docente aún no ha vinculado cursos a esta sección.
+            </div>
+          `;
+        } else {
+          coursesGrid.innerHTML = courses.map(sc => {
+            const c = sc.course;
+            return `
+              <div style="background: #ffffff; border: 3px solid #18181b; border-radius: 12px; padding: 1.5rem; box-shadow: 4px 4px 0px #18181b; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                  <span style="background: #eff6ff; color: #1d4ed8; font-size: 0.75rem; font-weight: 800; padding: 0.2rem 0.5rem; border-radius: 4px; border: 1px solid #bfdbfe;">
+                    ${c.category || 'Curso Técnico'}
+                  </span>
+                  <h3 style="margin: 0.75rem 0 0.5rem 0; font-size: 1.25rem; font-weight: 900; color: #18181b; line-height: 1.25;">
+                    ${c.title}
+                  </h3>
+                  <p style="margin: 0 0 1rem 0; font-size: 0.85rem; color: #64748b;">
+                    Institución: ${c.institution}
+                  </p>
+                </div>
+                <div style="margin-top: 1rem;">
+                  <a
+                    href="/app/courses/${c.courseId}/aula/"
+                    style="display: block; text-align: center; background: #10b981; color: #ffffff; font-weight: 900; font-size: 0.9rem; padding: 0.65rem; border: 2px solid #18181b; border-radius: 8px; text-decoration: none; box-shadow: 2px 2px 0px #18181b;"
+                  >
+                    🚀 Entrar al Aula Interactiva
+                  </a>
+                </div>
+              </div>
+            `;
+          }).join('');
+        }
+
+        // 3. Grupo de Trabajo
+        const groupContainer = document.getElementById('group-container');
+        const groups = sectionData.groups || [];
+        
+        // Find group where current user belongs
+        // In client we check token's user id or search across memberships
+        if (groups.length === 0) {
+          groupContainer.innerHTML = `
+            <div style="text-align: center; padding: 1.5rem;">
+              <div style="font-size: 2.25rem; margin-bottom: 0.5rem;">👤</div>
+              <h3 style="font-size: 1.25rem; font-weight: 900; color: #18181b; margin-bottom: 0.35rem;">Modalidad Individual</h3>
+              <p style="color: #64748b; font-size: 0.9rem; max-width: 500px; margin: 0 auto;">
+                Actualmente todos los estudiantes de esta sección trabajan sin grupo asignado. Si el docente crea equipos de trabajo, tu grupo y representante asignado se mostrarán aquí.
+              </p>
+            </div>
+          `;
+        } else {
+          // Render groups
+          groupContainer.innerHTML = `
+            <div>
+              <h3 style="font-size: 1.25rem; font-weight: 900; margin-bottom: 1rem; color: #18181b;">
+                Equipos de Trabajo de la Sección
+              </h3>
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
+                ${groups.map(g => `
+                  <div style="background: #fafafa; border: 2px solid #18181b; border-radius: 10px; padding: 1.25rem; box-shadow: 3px 3px 0px #18181b;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                      <h4 style="margin: 0; font-size: 1.1rem; font-weight: 900; color: #18181b;">${g.name}</h4>
+                      <span style="font-size: 0.75rem; font-weight: 800; background: #e0f2fe; color: #0369a1; padding: 0.2rem 0.5rem; border-radius: 4px; border: 1px solid #7dd3fc;">
+                        ${g.members?.length || 0} integrantes
+                      </span>
+                    </div>
+
+                    <div style="margin-bottom: 0.75rem; background: #fef08a; border: 1.5px solid #ca8a04; border-radius: 6px; padding: 0.5rem 0.75rem; font-size: 0.85rem; color: #854d0e; font-weight: 800; display: flex; align-items: center; gap: 0.4rem;">
+                      👑 Representante: ${g.leader?.name || 'No asignado'}
+                    </div>
+
+                    <div style="font-size: 0.8rem; font-weight: 800; color: #52525b; margin-bottom: 0.35rem;">Integrantes:</div>
+                    <ul style="margin: 0; padding-left: 1.2rem; font-size: 0.85rem; color: #27272a;">
+                      ${(g.members || []).map(m => `
+                        <li style="margin-bottom: 0.25rem;">
+                          ${m.user?.name || 'Estudiante'} ${m.userId === g.leaderId ? '<strong style="color: #ca8a04;">(Líder)</strong>' : ''}
+                        </li>
+                      `).join('')}
+                    </ul>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          `;
+        }
+
+        // 4. Foros de Debate
+        const topics = sectionData.topics || [];
+        document.getElementById('count-topics').innerText = topics.length;
+        const topicsList = document.getElementById('topics-list');
+
+        if (topics.length === 0) {
+          topicsList.innerHTML = `
+            <div style="background: #ffffff; border: 2px dashed #cbd5e1; border-radius: 10px; padding: 2.5rem; text-align: center; color: #64748b; font-weight: 600;">
+              No hay debates iniciados aún. ¡Sé el primero en hacer una pregunta o proponer una discusión!
+            </div>
+          `;
+        } else {
+          topicsList.innerHTML = topics.map(t => {
+            const posts = t.posts || [];
+            return `
+              <div style="background: #ffffff; border: 2px solid #18181b; border-radius: 10px; padding: 1.25rem; box-shadow: 4px 4px 0px #18181b;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
+                  <h3 style="margin: 0; font-size: 1.2rem; font-weight: 900; color: #18181b;">
+                    ${t.isPinned ? '📌 ' : ''}${t.title}
+                  </h3>
+                  <span style="font-size: 0.75rem; font-weight: 700; color: #71717a;">
+                    ${new Date(t.createdAt).toLocaleDateString()}
+                  </span>
+                </div>
+
+                <div style="font-size: 0.8rem; color: #52525b; margin-bottom: 0.75rem;">
+                  Iniciado por: <strong>${t.author?.name || 'Usuario'}</strong>
+                </div>
+
+                <p style="font-size: 0.95rem; color: #27272a; margin: 0 0 1rem 0; line-height: 1.4; white-space: pre-line;">
+                  ${t.content}
+                </p>
+
+                <!-- Respuestas -->
+                <div style="border-top: 1.5px solid #e4e4e7; padding-top: 0.75rem; margin-top: 0.75rem;">
+                  <div style="font-size: 0.8rem; font-weight: 800; color: #71717a; text-transform: uppercase; margin-bottom: 0.5rem;">
+                    💬 Respuestas (${posts.length})
+                  </div>
+
+                  <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem;">
+                    ${posts.map(p => `
+                      <div style="background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 6px; padding: 0.6rem 0.8rem;">
+                        <div style="display: flex; justify-content: space-between; font-size: 0.75rem; font-weight: 800; color: #475569; margin-bottom: 0.2rem;">
+                          <span>${p.author?.name || 'Estudiante'}</span>
+                          <span style="font-weight: 500; color: #94a3b8;">${new Date(p.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                        </div>
+                        <div style="font-size: 0.88rem; color: #1e293b;">${p.content}</div>
+                      </div>
+                    `).join('')}
+                  </div>
+
+                  <!-- Formulario responder -->
+                  <div style="display: flex; gap: 0.5rem;">
+                    <input
+                      id="reply-input-${t.id}"
+                      type="text"
+                      placeholder="Escribe una respuesta a este tema..."
+                      style="flex: 1; padding: 0.5rem 0.75rem; border: 2px solid #18181b; border-radius: 6px; font-size: 0.85rem;"
+                      onkeydown="if(event.key === 'Enter') submitReply('${t.id}')"
+                    />
+                    <button
+                      type="button"
+                      onclick="submitReply('${t.id}')"
+                      style="background: #3b82f6; color: #ffffff; font-weight: 900; font-size: 0.85rem; padding: 0.5rem 1rem; border: 2px solid #18181b; border-radius: 6px; box-shadow: 2px 2px 0px #18181b; cursor: pointer;"
+                    >
+                      Responder
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+            `;
+          }).join('');
+        }
+
+      } catch (err) {
+        document.getElementById('detail-title').innerText = 'Error al cargar la sección';
+      }
+    }
+
+    loadSection();
+  </script>
+</CourseAppLayout>

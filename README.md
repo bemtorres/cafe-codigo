@@ -75,3 +75,13 @@ Ya sea que estés dando tus primeros pasos en la universidad, preparándote para
 [![Ko-fi](https://img.shields.io/badge/Invitar%20un%20café%20en%20Ko--fi-☕%20🌎-FF5E5B?style=for-the-badge)](https://ko-fi.com/cafeycodigo)
 
 </div>
+
+## Creador de contenidos interactivos
+
+Para crear un curso desde cero, abre `/app/contenidos/administrar/` en el servidor local. Pulsa **Añadir curso**, escribe su nombre y elige una de las categorías de `/app/courses/`. Abre el curso, pulsa **Añadir módulo** y entra a **Editar contenido** en ese módulo. Puedes insertar recursos desde plantillas y crear saltos de página; pulsa **Guardar módulo** para escribir los cambios en el proyecto.
+
+Con Node.js 24, ejecuta `npm run dev` y abre `/app/contenidos/crear/` en la dirección local que muestra Astro. Crea una asignatura, organiza sus módulos, lecciones y secciones, y ordena los widgets de cada sección. La biblioteca también permite volver a abrir una asignatura guardada.
+
+Al guardar, el creador escribe el documento completo en `.course-creator/contents.sqlite` y en `public/contenidos/<id>.json`. El JSON incluye el orden del temario, los datos de cada widget y los ajustes visuales de la asignatura. La base SQLite queda en tu equipo.
+
+Para publicar, incorpora el JSON y los recursos locales que use al repositorio. GitHub Pages construye la biblioteca en `/app/contenidos/` y el aula carga el JSON para mostrar un widget por paso. La asignatura de ejemplo es **Primeros pasos con algoritmos**.

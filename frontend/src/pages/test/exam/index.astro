@@ -1,0 +1,31 @@
+---
+import '../../../styles/global.css';
+import { CourseExam } from '../../../components/courses/CourseExam';
+import { BRANDING_COURSE } from '../../../data/courses/brandingCourseDemoData';
+import { BRAND_PRESETS } from '../../../data/courses/brandPresets';
+import { getExamQuestions } from '../../../data/courses/examQuestions';
+
+const module = BRANDING_COURSE.modulos[0];
+const questions = getExamQuestions(module);
+const brand = BRAND_PRESETS.find(({ id }) => id === BRANDING_COURSE.defaultBrandId) ?? BRAND_PRESETS[0];
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Examen de Arquitectura y Cumplimiento | Café y Código</title>
+  </head>
+  <body class="course-exam-body">
+    <CourseExam
+      client:load
+      examId={`${BRANDING_COURSE.courseId}:${BRANDING_COURSE.version}:v1`}
+      title={module.title}
+      questions={questions}
+      brand={brand}
+      defaultMinutes={20}
+    />
+  </body>
+</html>

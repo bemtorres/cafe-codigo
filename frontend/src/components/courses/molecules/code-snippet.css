@@ -1,0 +1,82 @@
+.course-code-snippet {
+  --snippet-bar: #181b22;
+  --snippet-line: #49515d;
+  --snippet-control: #eef2f8;
+  --snippet-hover: #303744;
+  --snippet-focus: #8cc8ff;
+  --snippet-error: #ffb9ba;
+  --snippet-comment: #9ea9bb;
+  --snippet-number: #f4be88;
+  min-width: 0;
+  margin: 1em 0 1.35em;
+  overflow: hidden;
+  border: 1px solid var(--snippet-line);
+  border-radius: 8px;
+  background: var(--snippet-paper);
+  color: var(--snippet-ink);
+}
+
+.course-code-snippet-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  padding: 4px 12px;
+  border-bottom: 1px solid var(--snippet-line);
+  background: var(--snippet-bar);
+  color: var(--snippet-control);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.course-code-snippet-bar button {
+  min-height: 36px;
+  padding: 4px 9px;
+  border-radius: 4px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.course-code-snippet-bar button:not(:disabled):is(:hover, :active) {
+  background: var(--snippet-hover);
+}
+
+.course-code-snippet-bar button:disabled {
+  opacity: 0.65;
+  cursor: default;
+}
+
+.course-code-snippet :is(button, pre):focus-visible {
+  outline: 2px solid var(--snippet-focus);
+  outline-offset: -2px;
+}
+
+figure.course-code-snippet pre.course-code-snippet-source {
+  overflow-x: auto;
+  margin: 0;
+  padding: 12px;
+  border-radius: 0;
+  background: var(--snippet-paper);
+  color: inherit;
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 0.8125rem;
+  line-height: 1.65;
+  white-space: pre;
+  tab-size: 4;
+}
+
+.course-code-snippet .hl-kw { color: var(--snippet-keyword); }
+.course-code-snippet .hl-str { color: var(--snippet-string); }
+.course-code-snippet :is(.hl-func, .hl-func-call) { color: var(--snippet-function); }
+.course-code-snippet :is(.hl-type, .hl-annotation, .hl-attr) { color: var(--snippet-type); }
+.course-code-snippet .hl-tag { color: var(--snippet-keyword); }
+.course-code-snippet .hl-comment { color: var(--snippet-comment); opacity: 1; }
+.course-code-snippet .hl-num { color: var(--snippet-number); }
+
+.course-code-snippet-error {
+  display: block;
+  padding: 0 12px 10px;
+  color: var(--snippet-error);
+  font-size: 0.8125rem;
+}

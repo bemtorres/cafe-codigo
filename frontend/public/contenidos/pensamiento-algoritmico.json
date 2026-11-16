@@ -1,0 +1,84 @@
+{
+  "courseId": "pensamiento-algoritmico",
+  "version": "1.0.0",
+  "title": "Primeros pasos con algoritmos",
+  "category": "foundations",
+  "institution": "Café y Código",
+  "defaultBrandId": "cafeycodigo",
+  "showScoreInBanner": true,
+  "modulos": [
+    {
+      "id": "fundamentos",
+      "title": "Fundamentos de programación",
+      "lessions": [
+        {
+          "id": "primer-algoritmo",
+          "title": "Tu primer algoritmo",
+          "secciones": [
+            {
+              "id": "entrada-proceso-salida",
+              "title": "Entrada, proceso y salida",
+              "contenidos": [
+                {
+                  "id": "portada",
+                  "title": "Primeros pasos con algoritmos",
+                  "widget": {
+                    "id": "algoritmos-portada",
+                    "type": "image-cover-banner",
+                    "componentName": "WidgetImageCoverBanner",
+                    "summary": "Primeros pasos con algoritmos",
+                    "data": {
+                      "bannerTitlePrefix": "Primeros pasos con algoritmos",
+                      "includeInstitutionName": false,
+                      "bannerDescription": "Transforma una tarea cotidiana en una secuencia de instrucciones que puedes comprobar.",
+                      "bannerImageUrl": "/images/pseint.webp"
+                    }
+                  }
+                },
+                {
+                  "id": "ejemplo",
+                  "title": "Calcular el total de una compra",
+                  "widget": {
+                    "id": "algoritmos-ejemplo",
+                    "type": "rich-text-editorial",
+                    "componentName": "WidgetRichTextEditorial",
+                    "summary": "Calcular el total de una compra",
+                    "bgMode": "white",
+                    "data": {
+                      "title": "Calcular el total de una compra",
+                      "htmlContent": "<p>Un algoritmo es una secuencia ordenada de instrucciones para resolver un problema.</p><ol><li><p><strong>Entrada:</strong> recibe el precio unitario y la cantidad.</p></li><li><p><strong>Proceso:</strong> multiplica el precio por la cantidad.</p></li><li><p><strong>Salida:</strong> muestra el total de la compra.</p></li></ol><p>Si cada producto cuesta $2.000 y llevas tres, el total es $6.000.</p>"
+                    }
+                  }
+                },
+                {
+                  "id": "pregunta",
+                  "title": "Identifica las entradas",
+                  "widget": {
+                    "id": "algoritmos-pregunta",
+                    "type": "scenario-quiz-multiple",
+                    "componentName": "WidgetScenarioQuizMultiple",
+                    "summary": "Identifica las entradas",
+                    "data": {
+                      "badge": "Práctica",
+                      "title": "¿Qué datos necesita el algoritmo antes de calcular el total?",
+                      "context": "Imagina que compras varios ejemplares de un mismo producto.",
+                      "instruction": "Selecciona todas las entradas.",
+                      "points": 10,
+                      "successFeedback": "Con esos dos datos puedes calcular el total.",
+                      "errorFeedback": "Revisa cuáles datos tienes antes de hacer la multiplicación.",
+                      "options": [
+                        { "id": "precio", "text": "El precio unitario", "isCorrect": true, "explanation": "Es un dato que el algoritmo recibe." },
+                        { "id": "cantidad", "text": "La cantidad de productos", "isCorrect": true, "explanation": "También se conoce antes del cálculo." },
+                        { "id": "total", "text": "El total de la compra", "isCorrect": false, "explanation": "Es la salida que produce el algoritmo." }
+                      ]
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
