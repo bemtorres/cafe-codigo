@@ -221,8 +221,9 @@ export const courses: Course[] = [
       { slug: 'apis-restful', title: '8. APIs RESTful', href: '/course/django/apis-restful/', hasSlides: true },
       { slug: 'consumiendo-api-rest', title: '9. Consumiendo API REST', href: '/course/django/consumiendo-api-rest/', hasSlides: true },
       { slug: 'tarea-colaborativa-apis', title: '10. Tarea Colaborativa: APIs en Equipo', href: '/course/django/tarea-colaborativa-apis/', hasSlides: true },
-      { slug: 'drf-jwt', title: '11. Django REST Framework y JWT', href: '/course/django/drf-jwt/', hasSlides: true },
-      { slug: 'proyecto-integrador', title: '12. Proyecto Integrador', href: '/course/django/proyecto-integrador/', hasSlides: true },
+      { slug: 'drf-jwt', title: '11. Creando API REST (GET, POST, PUT, DELETE)', href: '/course/django/drf-jwt/', hasSlides: true },
+      { slug: 'api-seguridad-token', title: '12. API Seguridad y AUTH TOKEN', href: '/course/django/api-seguridad-token/', hasSlides: true },
+      { slug: 'proyecto-integrador', title: '13. Proyecto Integrador', href: '/course/django/proyecto-integrador/', hasSlides: true },
     ],
   },
   {

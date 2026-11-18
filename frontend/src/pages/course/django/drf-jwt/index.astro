@@ -4,73 +4,496 @@ import CodeBlock from '../../../../components/CodeBlock.astro';
 import DjangoQuizModal from '../../../../components/quizzes/DjangoQuizModal.astro';
 ---
 
-<Layout title="Django REST Framework y JWT" description="Implementa una API segura con Django REST Framework y autenticación JWT." courseSlug="django">
+<Layout
+  title="11. Creando API REST con Django REST Framework: GET, POST, SHOW, PUT y DELETE"
+  description="Aprende a construir un CRUD completo en Django REST Framework con LibroSerializer, lista_libros (GET y POST) y vista_libro (SHOW/GET por ID, PUT y DELETE) paso a paso."
+  courseSlug="django"
+>
   <article class="content-section">
-    <h1>11. Django REST Framework y JWT</h1>
-
-    <section class="mb-10">
-      <h2>DRF: serializadores y views</h2>
-      <p>
-        Django REST Framework facilita construir APIs en Django. Puedes convertir modelos a JSON con serializers y crear views especializadas.
+    <!-- HERO -->
+    <header class="rounded-3xl bg-gradient-to-br from-[#0c4a3f] via-[#0f5e4f] to-[#062e27] text-white p-6 sm:p-10 mb-6 shadow-lg border-2 border-slate-900">
+      <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+        <span class="inline-block bg-emerald-400/20 border border-emerald-300/40 text-emerald-200 rounded-full px-3.5 py-1 font-black text-xs tracking-wider uppercase">
+          MÓDULO 11 · DJANGO REST FRAMEWORK · CRUD COMPLETO CON MODELOS
+        </span>
+        <span class="inline-block bg-slate-950/50 text-emerald-300 rounded-xl px-3 py-1 font-mono font-bold text-xs border border-emerald-500/30">
+          CURSO DJANGO 29 &amp; 30
+        </span>
+      </div>
+      <h1 class="!text-3xl sm:!text-4xl font-black !text-white leading-tight !mb-3 !mt-0" style="text-shadow: none;">
+        11. Creando API REST en Django: [GET, POST] y [SHOW, PUT, DELETE] 📚⚡
+      </h1>
+      <p class="!text-base sm:!text-lg !text-white/95 max-w-3xl font-semibold !mb-3">
+        Conecta tu base de datos y tus modelos de Django (<code>Libro</code>) con una aplicación dedicada <code>rest_api</code>. Aprende a transformar registros con <code>ModelSerializer</code>, listar y crear con <code>GET</code> y <code>POST</code>, y consultar, actualizar o eliminar por clave primaria (<code>id</code>) con <code>SHOW</code>, <code>PUT</code> y <code>DELETE</code>.
       </p>
-      <CodeBlock
-        lang="python"
-        code={`from rest_framework import serializers
-from .models import Curso
+      <div class="flex flex-wrap gap-2 text-xs font-mono font-bold">
+        <span class="bg-white/15 px-3 py-1 rounded-lg">✓ LibroSerializer (ModelSerializer)</span>
+        <span class="bg-white/15 px-3 py-1 rounded-lg">✓ lista_libros: GET &amp; POST (201 / 400)</span>
+        <span class="bg-white/15 px-3 py-1 rounded-lg">✓ vista_libro(id): SHOW, PUT &amp; DELETE (204 / 404)</span>
+        <span class="bg-white/15 px-3 py-1 rounded-lg">✓ JSONParser().parse(request)</span>
+      </div>
+    </header>
+
+    <!-- BANNER PRESENTACIÓN DIAPOSITIVAS -->
+    <aside class="my-6 p-4 sm:p-5 rounded-2xl border-2 border-emerald-500/40 bg-gradient-to-r from-emerald-500/10 via-teal-500/5 to-transparent flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm">
+      <div class="flex items-center gap-3">
+        <span class="text-3xl sm:text-4xl p-2 rounded-xl bg-emerald-500/20 text-emerald-700 shrink-0">📊</span>
+        <div>
+          <h3 class="text-base font-black text-slate-900 mb-0.5">
+            Presentación Guiada Paso a Paso en Diapositivas
+          </h3>
+          <p class="text-xs sm:text-sm text-slate-600 !mb-0">
+            Revisa en diapositivas cómo estructurar la app <code>rest_api</code>, <code>serializers.py</code>, <code>lista_libros</code> y <code>vista_libro</code> con sus códigos de estado HTTP.
+          </p>
+        </div>
+      </div>
+      <a
+        href="/course-slides/django/drf-jwt/"
+        class="shrink-0 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-nunito font-black text-sm shadow-md hover:shadow-lg transition-all no-underline"
+      >
+        <span>Ver Diapositivas</span>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+        </svg>
+      </a>
+    </aside>
+
+    <!-- NAVEGACIÓN INTERNA RÁPIDA -->
+    <nav class="p-4 rounded-2xl bg-slate-100 border-2 border-slate-300 my-6" aria-label="Índice del módulo 11">
+      <div class="text-xs font-black uppercase tracking-wider text-slate-500 mb-2.5">
+        Ruta del Módulo 11:
+      </div>
+      <div class="flex flex-wrap gap-2">
+        <a href="#arquitectura-rest-api" class="px-3 py-1.5 rounded-xl bg-white hover:bg-emerald-50 text-slate-800 border border-slate-300 font-bold text-xs no-underline transition-colors">
+          1. App rest_api y LibroSerializer
+        </a>
+        <a href="#parte-1-get-post" class="px-3 py-1.5 rounded-xl bg-emerald-700 text-white border border-slate-900 font-black text-xs no-underline shadow-[2px_2px_0px_#0f172a]">
+          2. Video 1: Creando API REST [GET y POST]
+        </a>
+        <a href="#parte-2-show-put-delete" class="px-3 py-1.5 rounded-xl bg-amber-500 text-slate-950 border border-slate-900 font-black text-xs no-underline shadow-[2px_2px_0px_#0f172a]">
+          3. Video 2: Creando API REST [SHOW, PUT y DELETE]
+        </a>
+        <a href="#urls-resumen-crud" class="px-3 py-1.5 rounded-xl bg-white hover:bg-emerald-50 text-slate-800 border border-slate-300 font-bold text-xs no-underline transition-colors">
+          4. Rutas en urls.py y Tabla de Códigos HTTP
+        </a>
+      </div>
+    </nav>
+
+    <!-- =================================================================== -->
+    <!-- SECCIÓN 1: PREPARACIÓN DE LA APP REST_API Y SERIALIZERS.PY          -->
+    <!-- =================================================================== -->
+    <section id="arquitectura-rest-api" class="mb-10">
+      <h2>1. Estructura del Proyecto (<code>core</code> + <code>rest_api</code>) y <code>LibroSerializer</code></h2>
+      <p>
+        En un proyecto profesional de Django (como nuestra biblioteca), mantenemos nuestros modelos de base de datos en la aplicación principal (por ejemplo <code>core/models.py</code> con el modelo <code>Libro</code>) y creamos una aplicación exclusiva llamada <strong><code>rest_api</code></strong> para alojar los serializadores, las vistas de la API y sus rutas.
+      </p>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 my-6">
+        <div class="p-5 rounded-2xl border-2 border-slate-200 bg-white shadow-sm">
+          <h3 class="text-base font-black text-slate-900 !mt-0 mb-2">
+            1.1 Crear y registrar la aplicación <code>rest_api</code>
+          </h3>
+          <p class="!text-xs text-slate-600 mb-3">
+            Creamos la app con <code>startapp rest_api</code> y registramos tanto <code>'rest_framework'</code> como <code>'rest_api'</code> en <code>INSTALLED_APPS</code>:
+          </p>
+          <CodeBlock
+            lang="python"
+            title="settings.py — Registro de rest_framework y rest_api"
+            code={`# En terminal:
+# pip install djangorestframework
+# python manage.py startapp rest_api
+
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'core',
+    'rest_framework',
+    'rest_api',
+]`}
+          />
+        </div>
+
+        <div class="p-5 rounded-2xl border-2 border-emerald-600/60 bg-emerald-50/40 shadow-sm">
+          <h3 class="text-base font-black text-slate-900 !mt-0 mb-2">
+            1.2 Crear el serializador en <code>rest_api/serializers.py</code>
+          </h3>
+          <p class="!text-xs text-slate-600 mb-3">
+            <code>ModelSerializer</code> convierte automáticamente los objetos <code>Libro</code> del ORM de Django a formato JSON y valida los datos entrantes cuando creamos o editamos un registro:
+          </p>
+          <CodeBlock
+            lang="python"
+            title="rest_api/serializers.py"
+            code={`from rest_framework import serializers
+from core.models import Libro
 
 
-class CursoSerializer(serializers.ModelSerializer):
+class LibroSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Curso
-        fields = ['id', 'nombre', 'descripcion', 'duracion', 'publicado']`}
-        title="serializers.py"
-      />
+        model = Libro
+        fields = '__all__'  # O lista explícita: ['isbn', 'titulo', 'autor', 'categoria']`}
+          />
+        </div>
+      </div>
     </section>
 
-    <section class="mb-10">
-      <h2>ViewSets y routers</h2>
+    <!-- =================================================================== -->
+    <!-- SECCIÓN 2: VIDEO 1 — CREANDO API REST [GET Y POST]                  -->
+    <!-- =================================================================== -->
+    <section id="parte-1-get-post" class="my-10">
+      <div class="border-l-[6px] border-emerald-600 pl-4 mb-6">
+        <span class="inline-block bg-emerald-100 text-emerald-900 rounded-full px-3 py-1 font-black text-xs mb-1.5">
+          PARTE 1 · LISTAR Y CREAR REGISTROS · CURSO DJANGO 29
+        </span>
+        <h2 class="text-2xl sm:text-3xl font-black text-slate-900 !m-0">
+          2. Creando API REST — [GET y POST] con <code>lista_libros</code> 📥📤
+        </h2>
+      </div>
+
+      <!-- VIDEO 1 CARD -->
+      <div class="my-6 rounded-3xl border-2 border-slate-900 bg-white overflow-hidden shadow-[6px_6px_0px_#0f172a]">
+        <div class="bg-[#0c4a3f] text-white px-5 py-4 border-b-2 border-slate-900 flex flex-wrap items-center justify-between gap-2">
+          <div class="flex items-center gap-2.5">
+            <span class="inline-block bg-emerald-400 text-slate-950 font-mono font-black text-xs px-2.5 py-1 rounded-md border border-slate-900">
+              🎬 VIDEOTUTORIAL 1 (GET &amp; POST)
+            </span>
+            <h3 class="text-base sm:text-lg font-black !text-white !m-0">
+              Creando API REST - [GET y POST]
+            </h3>
+          </div>
+          <span class="text-xs font-mono text-emerald-200">lista_libros(request)</span>
+        </div>
+
+        <div class="p-5 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+          <div class="lg:col-span-5 space-y-3">
+            <p class="!text-sm text-slate-700 !m-0 leading-relaxed">
+              En esta primera parte programamos la vista <strong><code>lista_libros(request)</code></strong> en <code>rest_api/views.py</code> decorada con <code>@csrf_exempt</code> y <code>@api_view(['GET', 'POST'])</code>:
+            </p>
+            <ul class="text-xs sm:text-sm text-slate-800 space-y-2 list-disc pl-5 !m-0 font-medium">
+              <li>
+                <strong>Cuando el método es <code>GET</code>:</strong> Consultamos todos los libros con <code>Libro.objects.all()</code>, los pasamos por <code>LibroSerializer(libro, many=True)</code> y retornamos <code>Response(serializer.data)</code>.
+              </li>
+              <li>
+                <strong>Cuando el método es <code>POST</code>:</strong> Parseamos el JSON recibido con <code>data = JSONParser().parse(request)</code>, lo pasamos a <code>LibroSerializer(data=data)</code> y verificamos <code>if serializer.is_valid():</code>.
+              </li>
+              <li>
+                <strong>Códigos HTTP semánticos:</strong> Si es válido, ejecutamos <code>serializer.save()</code> y devolvemos <code>status.HTTP_201_CREATED</code>; si falla la validación, devolvemos <code>serializer.errors</code> con <code>status.HTTP_400_BAD_REQUEST</code>.
+              </li>
+            </ul>
+            <a
+              href="https://www.youtube.com/watch?v=2WbNr7ELPa4"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs no-underline border-2 border-slate-900 shadow-[2px_2px_0px_#0f172a] transition-colors"
+            >
+              <span>▶ Ver video [GET y POST] en YouTube</span>
+            </a>
+          </div>
+
+          <div class="lg:col-span-7">
+            <div class="p-2.5 rounded-2xl bg-slate-900 border-2 border-slate-900 shadow-sm">
+              <div class="relative aspect-video overflow-hidden bg-slate-950 rounded-xl">
+                <iframe
+                  src="https://www.youtube-nocookie.com/embed/2WbNr7ELPa4"
+                  title="Creando API REST - [GET y POST]"
+                  loading="lazy"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowfullscreen
+                  class="absolute inset-0 w-full h-full border-0"
+                ></iframe>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CÓDIGO EXACTO DE LISTA_LIBROS (SEGÚN EL VIDEO Y LAS CAPTURAS) -->
+      <div class="my-6">
+        <h3 class="text-lg font-black text-slate-900 mb-2">
+          💻 Código de <code>lista_libros</code> en <code>rest_api/views.py</code>
+        </h3>
+        <p class="!text-sm text-slate-700 mb-3">
+          Tal como se muestra en el video, aquí tienes la implementación completa de la vista que lista todos los libros con <code>GET</code> y crea un nuevo libro con <code>POST</code>:
+        </p>
+
+        <CodeBlock
+          lang="python"
+          title="rest_api/views.py — Vista lista_libros (GET y POST)"
+          code={`from django.shortcuts import render
+from rest_framework import status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework.parsers import JSONParser
+from django.views.decorators.csrf import csrf_exempt
+
+from core.models import Libro
+from .serializers import LibroSerializer
+
+
+@csrf_exempt
+@api_view(['GET', 'POST'])
+def lista_libros(request):
+    if request.method == 'GET':
+        libro = Libro.objects.all()
+        serializer = LibroSerializer(libro, many=True)
+        return Response(serializer.data)
+
+    elif request.method == 'POST':
+        data = JSONParser().parse(request)
+        serializer = LibroSerializer(data=data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            print('error', serializer.errors)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)`}
+        />
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+          <div class="p-4 rounded-xl bg-emerald-50 border border-emerald-300 text-xs">
+            <strong class="text-emerald-950 font-mono block mb-1">many=True en GET</strong>
+            Como <code>Libro.objects.all()</code> devuelve una lista (QuerySet) con varios libros, debemos indicar <code>many=True</code> para que el serializador convierta toda la colección a un arreglo JSON <code>[...]</code>.
+          </div>
+          <div class="p-4 rounded-xl bg-amber-50 border border-amber-300 text-xs">
+            <strong class="text-amber-950 font-mono block mb-1">JSONParser().parse(request)</strong>
+            Transforma el flujo de bytes JSON enviado en el cuerpo de la petición <code>POST</code> en un diccionario de Python listo para ser evaluado por <code>LibroSerializer(data=data)</code>.
+          </div>
+          <div class="p-4 rounded-xl bg-cyan-50 border border-cyan-300 text-xs">
+            <strong class="text-cyan-950 font-mono block mb-1">HTTP_201_CREATED vs 400</strong>
+            Si todos los campos obligatorios del modelo <code>Libro</code> son válidos, <code>serializer.save()</code> hace el <code>INSERT</code> en la BD y responde <code>201</code>; si falta algún campo, responde <code>400</code> detallando el error.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- SECCIÓN 3: VIDEO 2 — CREANDO API REST [SHOW, PUT Y DELETE]          -->
+    <!-- =================================================================== -->
+    <section id="parte-2-show-put-delete" class="my-10">
+      <div class="border-l-[6px] border-amber-500 pl-4 mb-6">
+        <span class="inline-block bg-amber-100 text-amber-950 rounded-full px-3 py-1 font-black text-xs mb-1.5">
+          PARTE 2 · OPERACIONES SOBRE UN REGISTRO ESPECÍFICO · CURSO DJANGO 30
+        </span>
+        <h2 class="text-2xl sm:text-3xl font-black text-slate-900 !m-0">
+          3. CURSO DJANGO 30 — Creando API REST: [SHOW, PUT y DELETE] con <code>vista_libro</code> 🔍✏️🗑️
+        </h2>
+      </div>
+
+      <!-- VIDEO 2 CARD -->
+      <div class="my-6 rounded-3xl border-2 border-slate-900 bg-white overflow-hidden shadow-[6px_6px_0px_#0f172a]">
+        <div class="bg-slate-900 text-white px-5 py-4 border-b-2 border-slate-900 flex flex-wrap items-center justify-between gap-2">
+          <div class="flex items-center gap-2.5">
+            <span class="inline-block bg-amber-400 text-slate-950 font-mono font-black text-xs px-2.5 py-1 rounded-md border border-slate-900">
+              🎬 VIDEOTUTORIAL 2 (SHOW, PUT &amp; DELETE)
+            </span>
+            <h3 class="text-base sm:text-lg font-black !text-white !m-0">
+              CURSO DJANGO 30 - Creando API REST - [SHOW, PUT y DELETE]
+            </h3>
+          </div>
+          <span class="text-xs font-mono text-amber-300">vista_libro(request, id)</span>
+        </div>
+
+        <div class="p-5 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+          <div class="lg:col-span-5 space-y-3">
+            <p class="!text-sm text-slate-700 !m-0 leading-relaxed">
+              En este segundo video completamos el CRUD creando la vista <strong><code>vista_libro(request, id)</code></strong> que recibe el identificador (o ISBN/clave primaria) del libro en la URL para operar sobre un único registro:
+            </p>
+            <ul class="text-xs sm:text-sm text-slate-800 space-y-2 list-disc pl-5 !m-0 font-medium">
+              <li>
+                <strong>Búsqueda inicial segura (<code>try / except Libro.DoesNotExist</code>):</strong> Buscamos <code>libro = Libro.objects.get(isbn=id)</code> (o <code>id=id</code>). Si no existe, retornamos inmediatamente <code>Response(status=status.HTTP_404_NOT_FOUND)</code>.
+              </li>
+              <li>
+                <strong><code>GET</code> (SHOW / Mostrar detalle):</strong> Serializa ese único libro con <code>LibroSerializer(libro)</code> (sin <code>many=True</code>) y devuelve <code>Response(serializer.data)</code>.
+              </li>
+              <li>
+                <strong><code>PUT</code> (Actualizar):</strong> Parsea los nuevos datos con <code>JSONParser().parse(request)</code>, los pasa junto con la instancia actual a <code>LibroSerializer(libro, data=data)</code> y si es válido guarda los cambios con <code>serializer.save()</code>.
+              </li>
+              <li>
+                <strong><code>DELETE</code> (Eliminar):</strong> Ejecuta <code>libro.delete()</code> y responde <code>Response(status=status.HTTP_204_NO_CONTENT)</code>.
+              </li>
+            </ul>
+            <a
+              href="https://www.youtube.com/watch?v=9c0B_0su_JA"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 py-2.5 px-4 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs no-underline border-2 border-slate-900 shadow-[2px_2px_0px_#0f172a] transition-colors"
+            >
+              <span>▶ Ver video [SHOW, PUT y DELETE] en YouTube</span>
+            </a>
+          </div>
+
+          <div class="lg:col-span-7">
+            <div class="p-2.5 rounded-2xl bg-slate-900 border-2 border-slate-900 shadow-sm">
+              <div class="relative aspect-video overflow-hidden bg-slate-950 rounded-xl">
+                <iframe
+                  src="https://www.youtube-nocookie.com/embed/9c0B_0su_JA"
+                  title="CURSO DJANGO 30 - Creando API REST - [SHOW, PUT y DELETE]"
+                  loading="lazy"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowfullscreen
+                  class="absolute inset-0 w-full h-full border-0"
+                ></iframe>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CÓDIGO DE VISTA_LIBRO (SHOW, PUT Y DELETE) -->
+      <div class="my-6">
+        <h3 class="text-lg font-black text-slate-900 mb-2">
+          💻 Código de <code>vista_libro</code> en <code>rest_api/views.py</code>
+        </h3>
+        <p class="!text-sm text-slate-700 mb-3">
+          Agregamos la segunda función debajo de <code>lista_libros</code> para manejar la consulta individual (<code>GET</code>), modificación (<code>PUT</code>) y eliminación (<code>DELETE</code>):
+        </p>
+
+        <CodeBlock
+          lang="python"
+          title="rest_api/views.py — Vista vista_libro (SHOW / GET, PUT y DELETE)"
+          code={`@csrf_exempt
+@api_view(['GET', 'PUT', 'DELETE'])
+def vista_libro(request, id):
+    try:
+        libro = Libro.objects.get(isbn=id)
+    except Libro.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        serializer = LibroSerializer(libro)
+        return Response(serializer.data)
+
+    elif request.method == 'PUT':
+        data = JSONParser().parse(request)
+        serializer = LibroSerializer(libro, data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    elif request.method == 'DELETE':
+        libro.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)`}
+        />
+
+        <div class="mt-4 p-4 rounded-2xl bg-amber-50 border-l-4 border-amber-500 text-xs sm:text-sm text-amber-950">
+          <strong>💡 Diferencia clave en <code>LibroSerializer</code> al crear (POST) vs actualizar (PUT):</strong>
+          <ul class="list-disc pl-5 mt-1 space-y-1 !mb-0">
+            <li>En <strong><code>POST</code> (Crear)</strong> solo pasamos los datos nuevos: <code>LibroSerializer(data=data)</code> → al llamar a <code>.save()</code> hace un <code>INSERT</code>.</li>
+            <li>En <strong><code>PUT</code> (Actualizar)</strong> pasamos primero el objeto recuperado de la BD y luego los datos nuevos: <code>LibroSerializer(libro, data=data)</code> → al llamar a <code>.save()</code> hace un <code>UPDATE</code> sobre ese registro.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- SECCIÓN 4: CONECTAR LAS RUTAS EN URLS.PY Y TABLA DE RESUMEN CRUD    -->
+    <!-- =================================================================== -->
+    <section id="urls-resumen-crud" class="my-10">
+      <h2>4. Conectar las Rutas (<code>rest_api/urls.py</code>) y Resumen del CRUD REST</h2>
       <p>
-        Los ViewSets permiten definir lógica CRUD de manera compacta. Los routers crean las rutas automáticamente.
+        Finalmente, exponemos ambas vistas en el archivo <code>rest_api/urls.py</code> y lo incluimos en el <code>urls.py</code> principal del proyecto (por ejemplo <code>biblioteca_duoc/urls.py</code>):
       </p>
-      <CodeBlock
-        lang="python"
-        code={`from rest_framework import viewsets
-from .models import Curso
-from .serializers import CursoSerializer
 
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 my-6">
+        <div>
+          <CodeBlock
+            lang="python"
+            title="rest_api/urls.py"
+            code={`from django.urls import path
+from .views import lista_libros, vista_libro
 
-class CursoViewSet(viewsets.ModelViewSet):
-    queryset = Curso.objects.all()
-    serializer_class = CursoSerializer`}
-        title="views.py"
-      />
+urlpatterns = [
+    path('libros/', lista_libros, name='lista_libros'),
+    path('libro/<id>', vista_libro, name='vista_libro'),
+]`}
+          />
+        </div>
+
+        <div>
+          <CodeBlock
+            lang="python"
+            title="urls.py (Proyecto Principal)"
+            code={`from django.contrib import admin
+from django.urls import path, include
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('', include('core.urls')),
+    path('api/', include('rest_api.urls')),
+]`}
+          />
+        </div>
+      </div>
+
+      <!-- TABLA RESUMEN DE LAS 5 OPERACIONES -->
+      <div class="overflow-x-auto rounded-2xl border-2 border-slate-900 shadow-[4px_4px_0px_#0f172a] my-6">
+        <table class="w-full text-left border-collapse text-sm bg-white">
+          <thead class="bg-slate-900 text-white font-black uppercase text-xs tracking-wider">
+            <tr>
+              <th class="p-3.5">Operación CRUD</th>
+              <th class="p-3.5">Método HTTP</th>
+              <th class="p-3.5">Ruta (Endpoint)</th>
+              <th class="p-3.5">Vista ejecutada</th>
+              <th class="p-3.5">Código HTTP de Éxito / Error</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-200 font-medium text-xs sm:text-sm">
+            <tr>
+              <td class="p-3.5 font-bold">Listar todos</td>
+              <td class="p-3.5 font-mono font-black text-emerald-700">GET</td>
+              <td class="p-3.5 font-mono text-xs"><code>/api/libros/</code></td>
+              <td class="p-3.5 font-mono text-xs"><code>lista_libros(request)</code></td>
+              <td class="p-3.5 font-mono text-xs"><code>200 OK</code></td>
+            </tr>
+            <tr>
+              <td class="p-3.5 font-bold">Crear libro</td>
+              <td class="p-3.5 font-mono font-black text-amber-700">POST</td>
+              <td class="p-3.5 font-mono text-xs"><code>/api/libros/</code></td>
+              <td class="p-3.5 font-mono text-xs"><code>lista_libros(request)</code></td>
+              <td class="p-3.5 font-mono text-xs"><code>201 CREATED</code> / <code>400 BAD REQUEST</code></td>
+            </tr>
+            <tr>
+              <td class="p-3.5 font-bold">Mostrar 1 (SHOW)</td>
+              <td class="p-3.5 font-mono font-black text-emerald-700">GET</td>
+              <td class="p-3.5 font-mono text-xs"><code>/api/libro/&lt;id&gt;</code></td>
+              <td class="p-3.5 font-mono text-xs"><code>vista_libro(request, id)</code></td>
+              <td class="p-3.5 font-mono text-xs"><code>200 OK</code> / <code>404 NOT FOUND</code></td>
+            </tr>
+            <tr>
+              <td class="p-3.5 font-bold">Actualizar libro</td>
+              <td class="p-3.5 font-mono font-black text-cyan-700">PUT</td>
+              <td class="p-3.5 font-mono text-xs"><code>/api/libro/&lt;id&gt;</code></td>
+              <td class="p-3.5 font-mono text-xs"><code>vista_libro(request, id)</code></td>
+              <td class="p-3.5 font-mono text-xs"><code>200 OK</code> / <code>400</code> / <code>404</code></td>
+            </tr>
+            <tr>
+              <td class="p-3.5 font-bold">Eliminar libro</td>
+              <td class="p-3.5 font-mono font-black text-rose-700">DELETE</td>
+              <td class="p-3.5 font-mono text-xs"><code>/api/libro/&lt;id&gt;</code></td>
+              <td class="p-3.5 font-mono text-xs"><code>vista_libro(request, id)</code></td>
+              <td class="p-3.5 font-mono text-xs"><code>204 NO CONTENT</code> / <code>404 NOT FOUND</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </section>
 
-    <section class="mb-10">
-      <h2>JWT para autenticación</h2>
-      <p>
-        JWT es un método para proteger APIs con tokens firmados. El cliente envía el token en cada petición y el servidor lo valida.
-      </p>
-      <CodeBlock
-        lang="python"
-        code={`REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ],
-}`}
-        title="settings.py"
-      />
-    </section>
-
+    <!-- PONTE A PRUEBA -->
     <section class="mb-10">
       <h2>Ponte a prueba</h2>
-      <p>Comprueba que dominas los conceptos de DRF y JWT.</p>
+      <p>Comprueba que dominas la creación de APIs REST completas (<code>GET</code>, <code>POST</code>, <code>SHOW</code>, <code>PUT</code> y <code>DELETE</code>) con <code>ModelSerializer</code> y <code>@api_view</code>.</p>
       <DjangoQuizModal quizKey="drf-jwt" />
     </section>
 
     <nav class="nav-bottom">
       <a href="/course/django/tarea-colaborativa-apis/" class="prev">← 10. Tarea Colaborativa: APIs en Equipo</a>
-      <a href="/course/django/proyecto-integrador/" class="next">12. Proyecto Integrador →</a>
+      <a href="/course/django/api-seguridad-token/" class="next">12. API Seguridad y AUTH TOKEN →</a>
     </nav>
   </article>
 </Layout>

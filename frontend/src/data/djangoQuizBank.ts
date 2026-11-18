@@ -552,32 +552,88 @@ export const djangoQuizBank: Record<string, DjangoQuizDefinition> = {
   },
   'drf-jwt': {
     key: 'drf-jwt',
-    title: 'Quiz: Django REST Framework y JWT',
+    title: 'Quiz: Creando API REST (GET, POST, SHOW, PUT y DELETE)',
     questions: [
       {
-        prompt: '¿Qué biblioteca se usa para serializar modelos en Django REST Framework?',
-        options: ['Serializer', 'ModelSerializer', 'JSONSerializer', 'ViewSerializer'],
-        correctIndex: 1,
-      },
-      {
-        prompt: '¿Qué significa JWT?',
-        options: ['JSON Web Token', 'Java Web Token', 'Jupyter Web Token', 'JavaScript Web Token'],
+        prompt: 'En la vista lista_libros, ¿por qué debemos pasar many=True en LibroSerializer(libro, many=True) cuando el método es GET?',
+        options: [
+          'Porque Libro.objects.all() devuelve una colección (QuerySet) con múltiples libros',
+          'Porque queremos borrar todos los libros',
+          'Porque solo funciona en bases de datos MySQL',
+          'Porque sin many=True se desactiva el puerto 8000',
+        ],
         correctIndex: 0,
       },
       {
-        prompt: '¿Cuál es el propósito del token de acceso?',
-        options: ['Cambiar la apariencia de la app', 'Autenticar peticiones', 'Enviar plantillas HTML', 'Actualizar la base de datos'],
+        prompt: 'Al recibir una petición POST en lista_libros, ¿qué código de estado HTTP devolvemos después de ejecutar serializer.save() cuando serializer.is_valid() es True?',
+        options: ['status.HTTP_200_OK', 'status.HTTP_201_CREATED', 'status.HTTP_204_NO_CONTENT', 'status.HTTP_404_NOT_FOUND'],
         correctIndex: 1,
       },
       {
-        prompt: '¿Qué view set ayuda a crear CRUD con menos esfuerzo en DRF?',
-        options: ['APIView', 'ViewSet', 'FunctionView', 'TemplateView'],
+        prompt: 'En la vista vista_libro(request, id), ¿qué excepción capturamos cuando el ID o ISBN buscado no existe en la base de datos para responder HTTP_404_NOT_FOUND?',
+        options: ['KeyError', 'Libro.DoesNotExist', 'ValueError', 'ZeroDivisionError'],
         correctIndex: 1,
       },
       {
-        prompt: '¿Qué tipo de permiso permite el acceso solo a usuarios autenticados?',
-        options: ['AllowAny', 'IsAuthenticated', 'IsAdminUser', 'ReadOnly'],
+        prompt: '¿Qué diferencia tiene la llamada a LibroSerializer en el método PUT (actualizar) frente al método POST (crear)?',
+        options: [
+          'En PUT pasamos tanto la instancia actual del libro como los nuevos datos: LibroSerializer(libro, data=data)',
+          'En PUT no se llama a serializer.is_valid()',
+          'En PUT no se llama a serializer.save()',
+          'Son exactamente iguales',
+        ],
+        correctIndex: 0,
+      },
+      {
+        prompt: 'Al eliminar un registro con libro.delete() mediante el método DELETE en vista_libro, ¿qué código HTTP estándar devolvemos?',
+        options: ['status.HTTP_201_CREATED', 'status.HTTP_204_NO_CONTENT', 'status.HTTP_400_BAD_REQUEST', 'status.HTTP_500_INTERNAL_SERVER_ERROR'],
         correctIndex: 1,
+      },
+    ],
+  },
+  'api-seguridad-token': {
+    key: 'api-seguridad-token',
+    title: 'Quiz: API Seguridad y AUTH TOKEN (Curso Django 31)',
+    questions: [
+      {
+        prompt: '¿Qué aplicación oficial de Django REST Framework debemos agregar a INSTALLED_APPS en settings.py y migrar para habilitar la tabla de tokens por usuario?',
+        options: ['rest_framework.jwt', 'rest_framework.authtoken', 'django.contrib.tokens', 'rest_api.security'],
+        correctIndex: 1,
+      },
+      {
+        prompt: 'En viewsLogin.py, ¿qué función utilizamos para verificar si la contraseña enviada en texto plano coincide con la contraseña encriptada de user.password?',
+        options: ['verify_hash()', 'check_password(password, user.password)', 'user.password == password', 'encrypt_password()'],
+        correctIndex: 1,
+      },
+      {
+        prompt: '¿Qué método del modelo Token permite crear el token la primera vez que el usuario hace login o recuperar el existente si ya lo tenía?',
+        options: [
+          'Token.objects.get_or_create(user=user)',
+          'Token.objects.all()',
+          'Token.objects.filter_token(user)',
+          'Token.create_new()',
+        ],
+        correctIndex: 0,
+      },
+      {
+        prompt: '¿Qué decorador colocamos sobre lista_libros y vista_libro para exigir que solo usuarios autenticados con token puedan acceder?',
+        options: [
+          '@login_required',
+          '@permission_classes((IsAuthenticated,))',
+          '@token_only',
+          '@csrf_protect',
+        ],
+        correctIndex: 1,
+      },
+      {
+        prompt: '¿Cómo se debe enviar el token en la pestaña Headers de Postman o Thunder Client al consultar /api/libros/?',
+        options: [
+          'Key: Authorization | Value: Token <tu_token>',
+          'Key: Password | Value: <tu_token>',
+          'Key: Cookie | Value: session=<tu_token>',
+          'Key: User-Agent | Value: DjangoToken',
+        ],
+        correctIndex: 0,
       },
     ],
   },

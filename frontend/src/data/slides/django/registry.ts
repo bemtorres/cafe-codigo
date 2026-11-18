@@ -24,6 +24,7 @@ import { apisRestfulSlides } from './apis-restful';
 import { consumiendoApiRestSlides } from './consumiendo-api-rest';
 import { tareaColaborativaApisSlides } from './tarea-colaborativa-apis';
 import { drfJwtSlides } from './drf-jwt';
+import { apiSeguridadTokenSlides } from './api-seguridad-token';
 import { proyectoIntegradorSlides } from './proyecto-integrador';
 
 export { getQuizForLesson, type QuizQuestion };
@@ -49,6 +50,7 @@ export {
   consumiendoApiRestSlides,
   tareaColaborativaApisSlides,
   drfJwtSlides,
+  apiSeguridadTokenSlides,
   proyectoIntegradorSlides,
 };
 
@@ -146,6 +148,9 @@ export function getSlidesForLesson(lessonSlug: string): Slide[] {
 
     case 'drf-jwt':
       return drfJwtSlides;
+
+    case 'api-seguridad-token':
+      return apiSeguridadTokenSlides;
 
     case 'proyecto-integrador':
       return proyectoIntegradorSlides;

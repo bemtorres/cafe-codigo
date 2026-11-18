@@ -452,18 +452,39 @@ export function getMetaQuestionsForLesson(lessonSlug: string): MetaReflectionQue
         {
           id: 5,
           category: 'CourseSpecific',
-          title: '5. La Revolución de los Tokens Sin Estado (Stateless)',
-          questionText: '¿Por qué la arquitectura JWT escala mucho mejor en sistemas con millones de usuarios concurrentes frente a guardar sesiones en tablas de base de datos?',
-          promptHint: 'Reflexiona sobre la carga de lectura que tendría la base de datos si cada petición de cada usuario requiriera verificar una fila de sesión.',
-          keyTakeaway: 'Los JWT permiten validar identidades con cálculo criptográfico instantáneo sin sobrecargar el motor de base de datos.'
+          title: '5. El Poder de ModelSerializer en el CRUD',
+          questionText: '¿Cuánto código de validación y conversión ahorra LibroSerializer al procesar las operaciones POST y PUT frente a validar cada campo a mano?',
+          promptHint: 'Piensa en cómo ModelSerializer lee directamente las restricciones definidas en core/models.py.',
+          keyTakeaway: 'ModelSerializer mantiene sincronizadas las reglas de tu base de datos con tu API REST sin duplicar lógica.'
         },
         {
           id: 6,
           category: 'CourseSpecific',
-          title: '6. La Danza del Access Token y Refresh Token',
-          questionText: '¿Por qué dividimos las credenciales en un Access Token de corta duración y un Refresh Token de larga duración?',
-          promptHint: 'Si un atacante intercepta un Access Token que expira en 10 minutos, ¿cuál es la ventana de riesgo comparada con un token eterno?',
-          keyTakeaway: 'Tokens de vida corta minimizan la ventana de vulnerabilidad ante interceptaciones, mientras que el Refresh Token mantiene la comodidad del usuario.'
+          title: '6. Separación de Vistas: Colección vs Recurso Individual',
+          questionText: '¿Por qué dividimos nuestra API en dos vistas distintas: lista_libros (/api/libros/) para GET/POST y vista_libro (/api/libro/<id>) para SHOW/PUT/DELETE?',
+          promptHint: 'Reflexiona sobre cuáles operaciones actúan sobre toda la tabla y cuáles requieren identificar un registro único por su clave primaria.',
+          keyTakeaway: 'Separar el endpoint de colección del endpoint de detalle por ID es el estándar universal del diseño RESTful.'
+        }
+      ];
+      break;
+
+    case 'api-seguridad-token':
+      specific = [
+        {
+          id: 5,
+          category: 'CourseSpecific',
+          title: '5. Autenticación por Token vs Sesiones de Navegador',
+          questionText: '¿Por qué al consumir una API desde aplicaciones externas o clientes como Postman / Thunder Client preferimos usar un Token en el header Authorization en lugar de formularios con cookies?',
+          promptHint: 'Piensa en cómo una app móvil o otro servidor backend envía credenciales en cada petición HTTP.',
+          keyTakeaway: 'El encabezado Authorization: Token <key> ofrece un mecanismo limpio, explícito y multiplataforma para autenticar cualquier cliente.'
+        },
+        {
+          id: 6,
+          category: 'CourseSpecific',
+          title: '6. Verificación de Contraseñas con check_password',
+          questionText: '¿Por qué en viewsLogin.py es indispensable utilizar check_password(password, user.password) en lugar de comparar con el operador ==?',
+          promptHint: 'Recuerda cómo almacena Django las contraseñas en la tabla auth_user.',
+          keyTakeaway: 'Como las contraseñas están hasheadas con sal criptográfica, solo check_password puede verificar su validez de forma segura.'
         }
       ];
       break;

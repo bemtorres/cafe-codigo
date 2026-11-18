@@ -1,0 +1,476 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import DjangoQuizModal from '../../../../components/quizzes/DjangoQuizModal.astro';
+---
+
+<Layout
+  title="12. API Seguridad y AUTH TOKEN en Django REST Framework"
+  description="CURSO DJANGO 31: Aprende a proteger tus endpoints de Django REST Framework utilizando rest_framework.authtoken, creación de login por token, check_password, Token.objects.get_or_create y permisos IsAuthenticated."
+  courseSlug="django"
+>
+  <article class="content-section">
+    <!-- HERO -->
+    <header class="rounded-3xl bg-gradient-to-br from-[#0c4a3f] via-[#0f5e4f] to-[#062e27] text-white p-6 sm:p-10 mb-6 shadow-lg border-2 border-slate-900">
+      <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+        <span class="inline-block bg-emerald-400/20 border border-emerald-300/40 text-emerald-200 rounded-full px-3.5 py-1 font-black text-xs tracking-wider uppercase">
+          MÓDULO 12 · SEGURIDAD EN APIS · TOKEN AUTHENTICATION
+        </span>
+        <span class="inline-block bg-slate-950/50 text-emerald-300 rounded-xl px-3 py-1 font-mono font-bold text-xs border border-emerald-500/30">
+          CURSO DJANGO 31
+        </span>
+      </div>
+      <h1 class="!text-3xl sm:!text-4xl font-black !text-white leading-tight !mb-3 !mt-0" style="text-shadow: none;">
+        12. API Seguridad y AUTH TOKEN en Django REST Framework 🔐🔑
+      </h1>
+      <p class="!text-base sm:!text-lg !text-white/95 max-w-3xl font-semibold !mb-3">
+        En el Módulo 11 construimos los endpoints de nuestra API (<code>lista_libros</code> y <code>vista_libro</code>), pero quedaron abiertos a cualquier visitante. En este módulo aprenderás a blindar tus endpoints utilizando <strong><code>rest_framework.authtoken</code></strong>, crear la vista de <code>login</code> que valida credenciales con <code>check_password</code> y exigir el encabezado <code>Authorization: Token &lt;tu_token&gt;</code> con <code>IsAuthenticated</code>.
+      </p>
+      <div class="flex flex-wrap gap-2 text-xs font-mono font-bold">
+        <span class="bg-white/15 px-3 py-1 rounded-lg">✓ rest_framework.authtoken</span>
+        <span class="bg-white/15 px-3 py-1 rounded-lg">✓ check_password &amp; Token.objects.get_or_create</span>
+        <span class="bg-white/15 px-3 py-1 rounded-lg">✓ @permission_classes((IsAuthenticated,))</span>
+        <span class="bg-white/15 px-3 py-1 rounded-lg">✓ Header Authorization: Token ...</span>
+      </div>
+    </header>
+
+    <!-- BANNER PRESENTACIÓN DIAPOSITIVAS -->
+    <aside class="my-6 p-4 sm:p-5 rounded-2xl border-2 border-emerald-500/40 bg-gradient-to-r from-emerald-500/10 via-teal-500/5 to-transparent flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm">
+      <div class="flex items-center gap-3">
+        <span class="text-3xl sm:text-4xl p-2 rounded-xl bg-emerald-500/20 text-emerald-700 shrink-0">📊</span>
+        <div>
+          <h3 class="text-base font-black text-slate-900 mb-0.5">
+            Presentación Guiada Paso a Paso en Diapositivas
+          </h3>
+          <p class="text-xs sm:text-sm text-slate-600 !mb-0">
+            Repasa en diapositivas la configuración de <code>authtoken</code> en <code>settings.py</code>, el código de <code>viewsLogin.py</code>, la protección de vistas y las pruebas en Postman / Thunder Client.
+          </p>
+        </div>
+      </div>
+      <a
+        href="/course-slides/django/api-seguridad-token/"
+        class="shrink-0 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-nunito font-black text-sm shadow-md hover:shadow-lg transition-all no-underline"
+      >
+        <span>Ver Diapositivas</span>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+        </svg>
+      </a>
+    </aside>
+
+    <!-- NAVEGACIÓN INTERNA RÁPIDA -->
+    <nav class="p-4 rounded-2xl bg-slate-100 border-2 border-slate-300 my-6" aria-label="Índice del módulo 12">
+      <div class="text-xs font-black uppercase tracking-wider text-slate-500 mb-2.5">
+        Ruta del Módulo 12 (CURSO DJANGO 31):
+      </div>
+      <div class="flex flex-wrap gap-2">
+        <a href="#video-django-31" class="px-3 py-1.5 rounded-xl bg-emerald-700 text-white border border-slate-900 font-black text-xs no-underline shadow-[2px_2px_0px_#0f172a]">
+          1. Video: CURSO DJANGO 31 - API Seguridad y AUTH TOKEN
+        </a>
+        <a href="#paso-1-settings" class="px-3 py-1.5 rounded-xl bg-white hover:bg-emerald-50 text-slate-800 border border-slate-300 font-bold text-xs no-underline transition-colors">
+          2. Configurar authtoken en settings.py y migrar
+        </a>
+        <a href="#paso-2-viewslogin" class="px-3 py-1.5 rounded-xl bg-white hover:bg-emerald-50 text-slate-800 border border-slate-300 font-bold text-xs no-underline transition-colors">
+          3. Crear viewsLogin.py (Generación del Token)
+        </a>
+        <a href="#paso-3-proteger-vistas" class="px-3 py-1.5 rounded-xl bg-white hover:bg-emerald-50 text-slate-800 border border-slate-300 font-bold text-xs no-underline transition-colors">
+          4. Proteger Endpoints con @permission_classes
+        </a>
+        <a href="#paso-4-pruebas-token" class="px-3 py-1.5 rounded-xl bg-white hover:bg-emerald-50 text-slate-800 border border-slate-300 font-bold text-xs no-underline transition-colors">
+          5. Pruebas en Postman / Thunder Client
+        </a>
+      </div>
+    </nav>
+
+    <!-- =================================================================== -->
+    <!-- SECCIÓN 1: VIDEOTUTORIAL CURSO DJANGO 31                            -->
+    <!-- =================================================================== -->
+    <section id="video-django-31" class="my-10">
+      <div class="rounded-3xl border-2 border-slate-900 bg-white overflow-hidden shadow-[6px_6px_0px_#0f172a]">
+        <div class="bg-[#0c4a3f] text-white px-5 py-4 border-b-2 border-slate-900 flex flex-wrap items-center justify-between gap-2">
+          <div class="flex items-center gap-2.5">
+            <span class="inline-block bg-amber-400 text-slate-950 font-mono font-black text-xs px-2.5 py-1 rounded-md border border-slate-900">
+              🎬 VIDEOTUTORIAL PRINCIPAL
+            </span>
+            <h2 class="!text-lg sm:!text-xl font-black !text-white !m-0">
+              CURSO DJANGO 31 - API Seguridad y AUTH TOKEN
+            </h2>
+          </div>
+          <span class="text-xs font-mono text-emerald-200">TokenAuthentication &amp; IsAuthenticated</span>
+        </div>
+
+        <div class="p-5 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+          <div class="lg:col-span-5 space-y-3">
+            <p class="!text-sm text-slate-700 !m-0 leading-relaxed">
+              En esta clase implementamos de principio a fin el sistema de seguridad por <strong>Token de Autenticación (<code>authtoken</code>)</strong> nativo de Django REST Framework:
+            </p>
+            <ol class="text-xs sm:text-sm text-slate-800 space-y-2 list-decimal pl-5 !m-0 font-medium">
+              <li>
+                Activamos <code>'rest_framework.authtoken'</code> en <code>INSTALLED_APPS</code> y configuramos <code>TokenAuthentication</code> en <code>settings.py</code>.
+              </li>
+              <li>
+                Creamos el archivo <strong><code>rest_api/viewsLogin.py</code></strong> para que un usuario envíe su <code>username</code> y <code>password</code> por <code>POST</code> y reciba su <strong>Token hexadecimal único</strong>.
+              </li>
+              <li>
+                Protegemos <code>lista_libros</code> y <code>vista_libro</code> con <code>@permission_classes((IsAuthenticated,))</code> para bloquear accesos no autorizados.
+              </li>
+              <li>
+                Enviamos el token en la cabecera <strong><code>Authorization: Token &lt;clave&gt;</code></strong> desde Postman o Thunder Client.
+              </li>
+            </ol>
+            <a
+              href="https://www.youtube.com/watch?v=dLVxAQ1ejiQ"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 py-2.5 px-4 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-black text-xs no-underline border-2 border-slate-900 shadow-[2px_2px_0px_#0f172a] transition-colors"
+            >
+              <span>▶ Abrir CURSO DJANGO 31 en YouTube</span>
+            </a>
+          </div>
+
+          <div class="lg:col-span-7">
+            <div class="p-2.5 rounded-2xl bg-slate-900 border-2 border-slate-900 shadow-sm">
+              <div class="relative aspect-video overflow-hidden bg-slate-950 rounded-xl">
+                <iframe
+                  src="https://www.youtube-nocookie.com/embed/dLVxAQ1ejiQ"
+                  title="CURSO DJANGO 31 - API Seguridad y AUTH TOKEN"
+                  loading="lazy"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowfullscreen
+                  class="absolute inset-0 w-full h-full border-0"
+                ></iframe>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- SECCIÓN 2: PASO 1 — CONFIGURAR AUTHTOKEN EN SETTINGS.PY Y MIGRAR    -->
+    <!-- =================================================================== -->
+    <section id="paso-1-settings" class="my-10">
+      <div class="border-l-[6px] border-[#0c4a3f] pl-4 mb-6">
+        <span class="inline-block bg-emerald-100 text-[#0c4a3f] rounded-full px-3 py-1 font-black text-xs mb-1.5">
+          PASO 1 · CONFIGURACIÓN Y BASE DE DATOS
+        </span>
+        <h2 class="text-2xl sm:text-3xl font-black text-slate-900 !m-0">
+          2. Activar <code>rest_framework.authtoken</code> en <code>settings.py</code> y Ejecutar Migraciones ⚙️
+        </h2>
+      </div>
+
+      <p>
+        Django REST Framework incluye una aplicación oficial llamada <code>rest_framework.authtoken</code> que crea una tabla en la base de datos para almacenar un token único asociado a cada usuario (<code>User</code>).
+      </p>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 my-6">
+        <div>
+          <h3 class="text-base font-black text-slate-900 !mt-0 mb-2">
+            2.1 Agregar <code>authtoken</code> y <code>REST_FRAMEWORK</code> en <code>settings.py</code>
+          </h3>
+          <CodeBlock
+            lang="python"
+            title="settings.py — Configuración de TokenAuthentication"
+            code={`INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'core',
+    'rest_framework',
+    'rest_api',
+    'rest_framework.authtoken',  # 👈 1. Habilita la tabla de Tokens
+]
+
+# 2. Define TokenAuthentication como esquema de autenticación de la API
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+}`}
+          />
+        </div>
+
+        <div>
+          <h3 class="text-base font-black text-slate-900 !mt-0 mb-2">
+            2.2 Ejecutar <code>migrate</code> para crear la tabla de tokens
+          </h3>
+          <p class="!text-xs text-slate-600 mb-3">
+            Cada vez que agregamos <code>'rest_framework.authtoken'</code> a <code>INSTALLED_APPS</code>, es obligatorio ejecutar <code>migrate</code> para que Django cree físicamente la tabla <code>authtoken_token</code> en la base de datos:
+          </p>
+          <CodeBlock
+            lang="bash"
+            title="Terminal — Crear tabla authtoken_token y superusuario"
+            code={`python manage.py migrate
+
+# Si aún no tienes un usuario para probar el login, crea uno:
+python manage.py createsuperuser`}
+          />
+          <div class="mt-4 p-4 rounded-xl bg-amber-50 border-l-4 border-amber-500 text-xs text-amber-950">
+            <strong>⚠️ Error frecuente:</strong> Si olvidas ejecutar <code>python manage.py migrate</code> después de agregar <code>rest_framework.authtoken</code>, al intentar iniciar sesión obtendrás el error <code>OperationalError: no such table: authtoken_token</code>.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- SECCIÓN 3: PASO 2 — CREAR VIEWSLOGIN.PY                             -->
+    <!-- =================================================================== -->
+    <section id="paso-2-viewslogin" class="my-10">
+      <div class="border-l-[6px] border-emerald-600 pl-4 mb-6">
+        <span class="inline-block bg-emerald-100 text-emerald-900 rounded-full px-3 py-1 font-black text-xs mb-1.5">
+          PASO 2 · ENDPOINT DE AUTENTICACIÓN Y ENTREGA DE TOKEN
+        </span>
+        <h2 class="text-2xl sm:text-3xl font-black text-slate-900 !m-0">
+          3. Crear la Vista de Login en <code>rest_api/viewsLogin.py</code> 🔑
+        </h2>
+      </div>
+
+      <p>
+        Creamos un archivo dedicado llamado <strong><code>viewsLogin.py</code></strong> dentro de la carpeta <code>rest_api</code>. Esta vista recibe <code>username</code> y <code>password</code> mediante <code>POST</code>, verifica que el usuario exista en el modelo <code>User</code> de Django, comprueba la contraseña encriptada con <code>check_password</code> y genera (o recupera) su token con <code>Token.objects.get_or_create(user=user)</code>:
+      </p>
+
+      <CodeBlock
+        lang="python"
+        title="rest_api/viewsLogin.py — Vista login para generar y devolver el Token"
+        code={`from django.shortcuts import render
+from rest_framework import status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework.parsers import JSONParser
+from django.views.decorators.csrf import csrf_exempt
+
+from django.contrib.auth.models import User
+from django.contrib.auth.hashers import check_password
+from rest_framework.authtoken.models import Token
+
+
+@api_view(['POST'])
+def login(request):
+    data = JSONParser().parse(request)
+
+    username = data['username']
+    password = data['password']
+
+    try:
+        user = User.objects.get(username=username)
+    except User.DoesNotExist:
+        return Response("Usuario inválido")
+
+    # Validamos la password encriptada con check_password
+    pass_valido = check_password(password, user.password)
+    if not pass_valido:
+        return Response("Password incorrecta")
+
+    # Permite crear o recuperar el token del usuario
+    token, created = Token.objects.get_or_create(user=user)
+
+    return Response(token.key)`}
+      />
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+        <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs">
+          <code class="font-black text-emerald-800 block mb-1">User.objects.get(username=username)</code>
+          Busca al usuario en la tabla oficial de usuarios de Django. Si el nombre de usuario no existe, captura <code>User.DoesNotExist</code> y devuelve <code>"Usuario inválido"</code>.
+        </div>
+        <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs">
+          <code class="font-black text-amber-800 block mb-1">check_password(password, user.password)</code>
+          Como Django guarda las contraseñas con hash criptográfico (nunca en texto plano), usamos <code>check_password</code> para comparar la clave enviada con el hash almacenado.
+        </div>
+        <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs">
+          <code class="font-black text-cyan-800 block mb-1">Token.objects.get_or_create(user=user)</code>
+          Si es la primera vez que el usuario inicia sesión, crea su token en la BD (<code>created=True</code>); si ya tenía uno, lo recupera. Finalmente devuelve <code>token.key</code>.
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- SECCIÓN 4: PASO 3 — PROTEGER LAS VISTAS CON @PERMISSION_CLASSES     -->
+    <!-- =================================================================== -->
+    <section id="paso-3-proteger-vistas" class="my-10">
+      <div class="border-l-[6px] border-amber-500 pl-4 mb-6">
+        <span class="inline-block bg-amber-100 text-amber-950 rounded-full px-3 py-1 font-black text-xs mb-1.5">
+          PASO 3 · BLINDAJE DE ENDPOINTS
+        </span>
+        <h2 class="text-2xl sm:text-3xl font-black text-slate-900 !m-0">
+          4. Proteger <code>lista_libros</code> y <code>vista_libro</code> con <code>IsAuthenticated</code> 🛡️
+        </h2>
+      </div>
+
+      <p>
+        Ahora abrimos <code>rest_api/views.py</code>, importamos <code>permission_classes</code> e <code>IsAuthenticated</code>, y agregamos el decorador <strong><code>@permission_classes((IsAuthenticated,))</code></strong> debajo de <code>@api_view</code> en nuestras vistas. Además, registramos la ruta <code>login</code> en <code>rest_api/urls.py</code>:
+      </p>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 my-6 items-start">
+        <div class="lg:col-span-7">
+          <CodeBlock
+            lang="python"
+            title="rest_api/views.py — Vistas protegidas con @permission_classes((IsAuthenticated,))"
+            code={`from django.shortcuts import render
+from rest_framework import status
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.response import Response
+from rest_framework.parsers import JSONParser
+from django.views.decorators.csrf import csrf_exempt
+
+from core.models import Libro
+from .serializers import LibroSerializer
+
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
+
+
+@csrf_exempt
+@api_view(['GET', 'POST'])
+@permission_classes((IsAuthenticated,))
+def lista_libros(request):
+    if request.method == 'GET':
+        libro = Libro.objects.all()
+        serializer = LibroSerializer(libro, many=True)
+        return Response(serializer.data)
+
+    elif request.method == 'POST':
+        data = JSONParser().parse(request)
+        serializer = LibroSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@csrf_exempt
+@api_view(['GET', 'PUT', 'DELETE'])
+@permission_classes((IsAuthenticated,))
+def vista_libro(request, id):
+    try:
+        libro = Libro.objects.get(isbn=id)
+    except Libro.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        serializer = LibroSerializer(libro)
+        return Response(serializer.data)
+
+    elif request.method == 'PUT':
+        data = JSONParser().parse(request)
+        serializer = LibroSerializer(libro, data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    elif request.method == 'DELETE':
+        libro.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)`}
+          />
+        </div>
+
+        <div class="lg:col-span-5 space-y-4">
+          <CodeBlock
+            lang="python"
+            title="rest_api/urls.py — Agregar ruta login/"
+            code={`from django.urls import path
+from .views import lista_libros, vista_libro
+from .viewsLogin import login
+
+urlpatterns = [
+    path('libros/', lista_libros, name='lista_libros'),
+    path('libro/<id>', vista_libro, name='vista_libro'),
+    path('login', login, name='login'),
+]`}
+          />
+
+          <div class="p-4 rounded-2xl bg-rose-50 border-2 border-rose-300 text-xs text-rose-950">
+            <strong class="block font-black mb-1">🚫 ¿Qué ocurre si intentas entrar a <code>/api/libros/</code> sin enviar el Token?</strong>
+            Django REST Framework bloqueará inmediatamente el acceso con código <strong><code>401 Unauthorized</code></strong> (o <code>403 Forbidden</code>) y el mensaje:
+            <pre class="mt-2 p-2.5 rounded-lg bg-slate-900 text-rose-300 font-mono text-[11px] m-0">{`{
+  "detail": "Las credenciales de autenticación no se proveyeron."
+}`}</pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- SECCIÓN 5: PASO 4 — PRUEBAS EN POSTMAN / THUNDER CLIENT             -->
+    <!-- =================================================================== -->
+    <section id="paso-4-pruebas-token" class="my-10">
+      <div class="rounded-3xl border-2 border-slate-900 bg-white overflow-hidden shadow-[6px_6px_0px_#0f172a]">
+        <div class="bg-slate-900 text-white p-6 border-b-2 border-slate-900 flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <span class="text-xs font-mono font-black uppercase tracking-wider text-emerald-400 block mb-1">
+              FLUJO COMPLETO DE PRUEBA EN CLIENTE HTTP
+            </span>
+            <h2 class="!text-2xl font-black !text-white !m-0">
+              5. Cómo Obtener y Usar el Token en Postman o Thunder Client 🧪
+            </h2>
+          </div>
+          <span class="px-3.5 py-1.5 rounded-xl bg-emerald-500 text-slate-950 font-mono text-xs font-black">
+            Authorization: Token &lt;key&gt;
+          </span>
+        </div>
+
+        <div class="p-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div class="p-5 rounded-2xl bg-slate-50 border-2 border-slate-200">
+            <span class="inline-block bg-emerald-600 text-white font-mono font-black text-xs px-2.5 py-1 rounded mb-2">
+              1º · OBTENER EL TOKEN (POST /api/login)
+            </span>
+            <p class="!text-xs text-slate-700 mb-3">
+              Envía una petición <code>POST</code> a <code>http://127.0.0.1:8000/api/login</code> con el cuerpo JSON (<code>Body → raw → JSON</code>) indicando tu usuario y contraseña de Django:
+            </p>
+            <CodeBlock
+              lang="json"
+              title="POST http://127.0.0.1:8000/api/login — Body JSON"
+              code={`{
+  "username": "admin",
+  "password": "tu_password_123"
+}`}
+            />
+            <p class="!text-xs text-slate-700 mt-3 mb-1 font-bold">
+              Respuesta del servidor (200 OK):
+            </p>
+            <CodeBlock
+              lang="json"
+              title="Token devuelto por viewsLogin.py"
+              code={`"9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b"`}
+            />
+          </div>
+
+          <div class="p-5 rounded-2xl bg-emerald-50/50 border-2 border-emerald-600/50">
+            <span class="inline-block bg-amber-500 text-slate-950 font-mono font-black text-xs px-2.5 py-1 rounded mb-2">
+              2º · ENVIAR EL TOKEN EN LOS HEADERS
+            </span>
+            <p class="!text-xs text-slate-700 mb-3">
+              Copia el token recibido (sin las comillas) y en tu petición a <code>http://127.0.0.1:8000/api/libros/</code> ve a la pestaña <strong>Headers (Encabezados)</strong> y agrega la clave <code>Authorization</code> con la palabra <code>Token</code>, un espacio y tu código:
+            </p>
+            <CodeBlock
+              lang="text"
+              title="Pestaña Headers en Postman / Thunder Client"
+              code={`Key:   Authorization
+Value: Token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b`}
+            />
+            <div class="mt-3 p-3 rounded-xl bg-white border border-emerald-300 text-xs text-slate-800">
+              <strong>⚠️ Atención al formato del Header:</strong> Debe llevar exactamente la palabra <strong><code>Token</code></strong> (con T mayúscula), seguida de <strong>un espacio en blanco</strong> y la cadena de 40 caracteres del token.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PONTE A PRUEBA -->
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>Verifica tu dominio de <code>rest_framework.authtoken</code>, <code>viewsLogin.py</code>, <code>@permission_classes((IsAuthenticated,))</code> y el envío del token en los headers HTTP.</p>
+      <DjangoQuizModal quizKey="api-seguridad-token" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/django/drf-jwt/" class="prev">← 11. Creando API REST (GET, POST, SHOW, PUT, DELETE)</a>
+      <a href="/course/django/proyecto-integrador/" class="next">13. Proyecto Integrador →</a>
+    </nav>
+  </article>
+</Layout>

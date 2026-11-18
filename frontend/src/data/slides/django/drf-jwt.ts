@@ -4,156 +4,182 @@ export const drfJwtSlides: Slide[] = [
   {
     id: 1,
     type: 'cover',
-    title: '11. Django REST Framework y JWT: APIs de Nivel Senior ⚡',
-    subtitle: 'ModelSerializer, ViewSets, Routers y Autenticación con JSON Web Tokens (SimpleJWT)',
-    badge: 'Django · Lección 11',
-    content: 'Domina Django REST Framework (DRF), la librería estándar para construir APIs industriales en Python. Implementaremos serializadores automáticos, ViewSets con routers y autenticación segura con tokens JWT.',
+    title: '11. Creando API REST en Django: [GET, POST] y [SHOW, PUT, DELETE] 📚⚡',
+    subtitle: 'CURSO DJANGO 29 & 30 · ModelSerializer, lista_libros y vista_libro con JSONParser',
+    badge: 'Django · Módulo 11',
+    content: 'Aprende a construir un CRUD REST completo conectando el modelo Libro de tu base de datos con una aplicación rest_api mediante LibroSerializer, @api_view y códigos de estado HTTP semánticos.',
     bulletPoints: [
-      '📦 Serializadores de alto nivel: ModelSerializer y validaciones de campo',
-      '🚀 ViewSets y DefaultRouter: Un CRUD de API completo en solo 5 líneas de código',
-      '🔑 ¿Cómo funciona un JWT?: Estructura (Header.Payload.Signature) y ventajas',
-      '🔄 Ciclo de vida: Access Token (vida corta) vs Refresh Token (renovación)',
-      '🛡️ Protección de endpoints: IsAuthenticated y headers Authorization: Bearer'
+      '📦 Creación de la aplicación rest_api y definición de LibroSerializer (ModelSerializer)',
+      '📥 Parte 1 (GET): Listar todos los libros con Libro.objects.all() y many=True',
+      '📤 Parte 1 (POST): Crear libros con JSONParser().parse(request), is_valid() y HTTP_201_CREATED',
+      '🔍 Parte 2 (SHOW / GET por ID): Buscar un libro por clave primaria o devolver HTTP_404_NOT_FOUND',
+      '✏️🗑️ Parte 2 (PUT y DELETE): Actualizar un registro existente y eliminar con HTTP_204_NO_CONTENT'
     ],
-    keyTakeaway: 'DRF convierte a Django en uno de los frameworks más productivos del mundo para construir APIs REST profesionales.'
+    keyTakeaway: 'Con dos vistas (@api_view) y un ModelSerializer puedes exponer todas las operaciones CRUD de tu modelo Libro hacia cualquier cliente HTTP.'
   },
   {
     id: 2,
-    type: 'concept',
-    title: '¿Qué es un Serializador (ModelSerializer)? El Traductor Universal',
-    badge: 'Concepto Clave DRF',
-    content: 'Un serializador en DRF cumple dos misiones bidireccionales idénticas a un traductor diplomático:',
-    visualChart: {
-      headers: ['Dirección del Flujo', 'Nombre Técnico', '¿Qué ocurre?', 'Ejemplo en Código'],
-      rows: [
-        ['Python → JSON (Salida)', 'Serialización', 'Toma instancias complejas de modelos del ORM y las convierte a tipos primitivos que se exportan como JSON', '`serializer = VehiculoSerializer(vehiculo)`'],
-        ['JSON → Python (Entrada)', 'Deserialización & Validación', 'Recibe JSON del cliente, valida los tipos de datos y restricciones del modelo y crea/actualiza registros', '`if serializer.is_valid(): serializer.save()`']
-      ]
+    type: 'code',
+    title: '1. Crear la App rest_api y el Serializador (serializers.py)',
+    badge: 'Configuración & Serializer',
+    content: 'Registramos "rest_framework" y "rest_api" en INSTALLED_APPS y creamos rest_api/serializers.py para traducir nuestro modelo Libro a JSON y viceversa:',
+    bulletPoints: [
+      'ModelSerializer lee automáticamente los campos y tipos del modelo Libro definido en core/models.py',
+      'fields = "__all__" incluye todas las columnas del modelo en el JSON',
+      'También valida automáticamente que los datos recibidos en POST o PUT cumplan las reglas del modelo'
+    ],
+    codeSnippet: {
+      filename: 'rest_api/serializers.py',
+      lang: 'python',
+      code: `from rest_framework import serializers
+from core.models import Libro
+
+
+class LibroSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Libro
+        fields = '__all__'`,
+      explanation: 'LibroSerializer actúa como puente bidireccional entre los objetos Libro del ORM y el formato JSON.'
     },
-    keyTakeaway: 'ModelSerializer replica las reglas de tu models.py (longitud, tipos, únicos) sin que tengas que repetir código.'
+    keyTakeaway: 'ModelSerializer evita tener que escribir manualmente las validaciones y conversiones de cada campo del modelo.'
   },
   {
     id: 3,
     type: 'code',
-    title: 'Serializador y ViewSet: El CRUD Completo en Minutos',
-    badge: 'Código DRF',
-    content: 'Observa la asombrosa brevedad con la que se construye una API REST completa con DRF:',
+    title: '2. Parte 1: Vista lista_libros — Método GET y POST',
+    badge: 'CURSO DJANGO 29 · GET & POST',
+    content: 'En rest_api/views.py programamos lista_libros(request) decorada con @csrf_exempt y @api_view(["GET", "POST"]):',
+    bulletPoints: [
+      'En GET: consultamos Libro.objects.all() y pasamos many=True a LibroSerializer porque es una lista de objetos',
+      'En POST: extraemos el JSON con data = JSONParser().parse(request) y lo pasamos a LibroSerializer(data=data)',
+      'Si serializer.is_valid() es True, ejecutamos serializer.save() y devolvemos status.HTTP_201_CREATED',
+      'Si hay errores de validación, devolvemos serializer.errors con status.HTTP_400_BAD_REQUEST'
+    ],
     codeSnippet: {
-      filename: 'flota/api.py',
+      filename: 'rest_api/views.py — lista_libros',
       lang: 'python',
-      code: `from rest_framework import serializers, viewsets
-from .models import Vehiculo
+      code: `from django.shortcuts import render
+from rest_framework import status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework.parsers import JSONParser
+from django.views.decorators.csrf import csrf_exempt
+from core.models import Libro
+from .serializers import LibroSerializer
 
-# 1. EL SERIALIZADOR: Define qué campos viajarán en el JSON
-class VehiculoSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Vehiculo
-        fields = ['id', 'patente', 'marca', 'modelo', 'estado', 'kilometraje']
+@csrf_exempt
+@api_view(['GET', 'POST'])
+def lista_libros(request):
+    if request.method == 'GET':
+        libro = Libro.objects.all()
+        serializer = LibroSerializer(libro, many=True)
+        return Response(serializer.data)
 
-# 2. EL VIEWSET: Genera automáticamente las 5 operaciones CRUD:
-# (GET lista, GET detalle, POST crear, PUT/PATCH editar, DELETE borrar)
-class VehiculoViewSet(viewsets.ModelViewSet):
-    queryset = Vehiculo.objects.all()
-    serializer_class = VehiculoSerializer`,
-      explanation: 'ModelViewSet implementa de forma automática la paginación, filtros y los 5 métodos estándar de HTTP.'
+    elif request.method == 'POST':
+        data = JSONParser().parse(request)
+        serializer = LibroSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            print('error', serializer.errors)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)`,
+      explanation: 'many=True es obligatorio al serializar un QuerySet con múltiples registros; sin él, DRF intentaría leer un único objeto.'
     },
-    keyTakeaway: 'Con solo estas dos clases tienes un CRUD de API completamente funcional listo para conectar a React o Flutter.'
+    keyTakeaway: 'En POST siempre debemos validar con if serializer.is_valid(): antes de invocar serializer.save().'
   },
   {
     id: 4,
     type: 'code',
-    title: 'Enrutamiento Mágico con DefaultRouter',
-    badge: 'Routers de DRF',
-    content: 'Olvídate de escribir 5 líneas de path() para cada endpoint. El router genera las URLs REST estándar automáticamente:',
+    title: '3. Parte 2: Vista vista_libro — [SHOW, PUT y DELETE]',
+    badge: 'CURSO DJANGO 30 · SHOW, PUT & DELETE',
+    content: 'Para operar sobre un libro específico creamos vista_libro(request, id) que recibe la clave primaria o ISBN desde la URL:',
+    bulletPoints: [
+      'Primero buscamos el libro con Libro.objects.get(isbn=id); si lanza Libro.DoesNotExist respondemos HTTP_404_NOT_FOUND',
+      'GET (SHOW): serializa ese único libro con LibroSerializer(libro) y retorna Response(serializer.data)',
+      'PUT (Actualizar): pasa la instancia actual y los datos nuevos a LibroSerializer(libro, data=data) y guarda con .save()',
+      'DELETE (Eliminar): borra el registro con libro.delete() y responde HTTP_204_NO_CONTENT'
+    ],
     codeSnippet: {
-      filename: 'flota/urls_api.py',
+      filename: 'rest_api/views.py — vista_libro(request, id)',
       lang: 'python',
-      code: `from django.urls import path, include
-from rest_framework.routers import DefaultRouter
-from .api import VehiculoViewSet
+      code: `@csrf_exempt
+@api_view(['GET', 'PUT', 'DELETE'])
+def vista_libro(request, id):
+    try:
+        libro = Libro.objects.get(isbn=id)
+    except Libro.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
 
-# 1. Instanciamos el router
-router = DefaultRouter()
+    if request.method == 'GET':
+        serializer = LibroSerializer(libro)
+        return Response(serializer.data)
 
-# 2. Registramos el ViewSet con el prefijo deseado
-router.register(r'vehiculos', VehiculoViewSet, basename='vehiculo')
+    elif request.method == 'PUT':
+        data = JSONParser().parse(request)
+        serializer = LibroSerializer(libro, data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-# 3. Incluimos las URLs generadas:
-urlpatterns = [
-    path('api/', include(router.urls)),
-]
-
-# Rutas creadas automáticamente:
-# GET    /api/vehiculos/      (Listar)
-# POST   /api/vehiculos/      (Crear)
-# GET    /api/vehiculos/{id}/ (Detalle)
-# PUT    /api/vehiculos/{id}/ (Actualizar)
-# DELETE /api/vehiculos/{id}/ (Eliminar)`,
-      explanation: 'DefaultRouter además genera la interfaz interactiva "Browsable API" para probar las peticiones directamente desde el navegador.'
+    elif request.method == 'DELETE':
+        libro.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)`,
+      explanation: 'Al pasar (libro, data=data) en PUT, el serializador sabe que debe hacer un UPDATE sobre ese libro en lugar de crear uno nuevo.'
     },
-    keyTakeaway: 'DefaultRouter garantiza que todas tus URLs sigan al 100% las convenciones RESTful estándar de la industria.'
+    keyTakeaway: 'Capturar Libro.DoesNotExist y responder 404 evita que un ID inexistente provoque un Error 500 en el servidor.'
   },
   {
     id: 5,
-    type: 'concept',
-    title: 'Autenticación JWT: ¿Por qué reemplazar a las cookies tradicionales?',
-    badge: 'JSON Web Tokens',
-    content: 'En aplicaciones móviles y SPAs (Single Page Applications), las sesiones basadas en cookies tienen problemas con CORS. JWT soluciona esto con tokens sin estado:',
-    visualChart: {
-      headers: ['Parte del Token', 'Nombre', '¿Qué contiene?', 'Seguridad'],
-      rows: [
-        ['1. Encabezado (Header)', 'Algoritmo y tipo', '`{"alg": "HS256", "typ": "JWT"}`', 'Base64 codificado'],
-        ['2. Carga Útil (Payload)', 'Datos del usuario', '`{"user_id": 42, "username": "admin_flota", "exp": 1727500000}`', 'Legible pero NO alterable'],
-        ['3. Firma (Signature)', 'Sello criptográfico', 'HMACSHA256(header + payload, SECRET_KEY)', '¡Si alguien altera el payload, la firma se invalida!']
-      ]
+    type: 'code',
+    title: '4. Conectar las Rutas en rest_api/urls.py',
+    badge: 'Enrutamiento REST',
+    content: 'Registramos las rutas libros/ y libro/<id> en rest_api/urls.py y las incluimos bajo el prefijo api/ en el urls.py principal:',
+    bulletPoints: [
+      '/api/libros/ atiende GET (listar todos) y POST (crear nuevo libro)',
+      '/api/libro/<id> atiende GET (mostrar detalle), PUT (actualizar) y DELETE (eliminar)'
+    ],
+    codeSnippet: {
+      filename: 'rest_api/urls.py y urls.py principal',
+      lang: 'python',
+      code: `# 1. Archivo: rest_api/urls.py
+from django.urls import path
+from .views import lista_libros, vista_libro
+
+urlpatterns = [
+    path('libros/', lista_libros, name='lista_libros'),
+    path('libro/<id>', vista_libro, name='vista_libro'),
+]
+
+# ---------------------------------------------------------
+# 2. Archivo: urls.py (Proyecto Principal)
+from django.contrib import admin
+from django.urls import path, include
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('', include('core.urls')),
+    path('api/', include('rest_api.urls')),
+]`,
+      explanation: 'Con solo dos rutas en urlpatterns cubrimos las 5 operaciones del estándar REST.'
     },
-    keyTakeaway: 'El servidor no necesita guardar sesiones en base de datos; solo valida la firma criptográfica del token recibido.'
+    keyTakeaway: 'En el Módulo 12 aprenderemos a proteger estas dos rutas utilizando Seguridad por Token (rest_framework.authtoken).'
   },
   {
     id: 6,
-    type: 'code',
-    title: 'Implementando SimpleJWT en Django',
-    badge: 'djangorestframework-simplejwt',
-    content: 'Así se configuran los endpoints de login y refresco de tokens en tu proyecto:',
-    codeSnippet: {
-      filename: 'config/urls.py',
-      lang: 'python',
-      code: `from django.urls import path
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-
-urlpatterns = [
-    # 1. Endpoint para hacer login (Envías usuario/contraseña, recibes tokens):
-    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-
-    # 2. Endpoint para renovar el Access Token expirado usando el Refresh Token:
-    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-]
-
-# RESPUESTA DEL ENDPOINT /api/token/:
-# {
-#   "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",   (Válido por 15 minutos)
-#   "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."  (Válido por 7 días)
-# }
-
-# EL CLIENTE (REACT/MÓVIL) LO ENVÍA EN CADA PETICIÓN:
-# Header: Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...`,
-      explanation: 'El Access Token protege las peticiones regulares; el Refresh Token permite renovarlo sin obligar al usuario a escribir su contraseña cada 15 minutos.'
-    },
-    keyTakeaway: 'Usa Access Tokens de corta duración para minimizar riesgos si un token es interceptado en la red.'
-  },
-  {
-    id: 7,
     type: 'summary',
-    title: 'Resumen de la Lección: Tu API Lista para Clientes Modernos',
-    badge: 'Habilidades Senior',
-    content: 'Has aprendido a construir APIs con la suite más avanzada del ecosistema Python:',
+    title: '5. Resumen: Las 5 Operaciones del CRUD en Django REST Framework 🏆',
+    badge: 'Síntesis del Módulo 11',
+    content: 'Repasa cómo se conectan los métodos HTTP, el serializador y los códigos de estado:',
     bulletPoints: [
-      '✅ Creas serializadores automáticos con ModelSerializer.',
-      '✅ Generas CRUDs completos en minutos con ModelViewSet y DefaultRouter.',
-      '✅ Comprendes la estructura y ventajas de los tokens JWT.',
-      '✅ Implementas el flujo de Access Token y Refresh Token con SimpleJWT.',
-      '✅ Proteges endpoints para requerir usuarios autenticados.'
+      '✅ 1. GET /api/libros/ -> LibroSerializer(libro, many=True) -> 200 OK.',
+      '✅ 2. POST /api/libros/ -> LibroSerializer(data=data) + .save() -> 201 CREATED (o 400 BAD REQUEST).',
+      '✅ 3. GET /api/libro/<id> (SHOW) -> LibroSerializer(libro) -> 200 OK (o 404 NOT FOUND).',
+      '✅ 4. PUT /api/libro/<id> -> LibroSerializer(libro, data=data) + .save() -> 200 OK (o 400 / 404).',
+      '✅ 5. DELETE /api/libro/<id> -> libro.delete() -> 204 NO CONTENT.'
     ],
-    keyTakeaway: 'En el Módulo 12 reuniremos todo lo aprendido en el Proyecto Integrador final con checklist de despliegue.'
+    keyTakeaway: '¡Continúa ahora con el Módulo 12 para proteger tus endpoints con API Seguridad y AUTH TOKEN!'
   }
 ];

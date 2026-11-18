@@ -928,67 +928,132 @@ export const tareaColaborativaApisQuiz: QuizQuestion[] = [
 ];
 
 // ============================================================================
-// 11. DRF Y JWT
+// 11. CREANDO API REST (GET, POST, SHOW, PUT Y DELETE)
 // ============================================================================
 export const drfJwtQuiz: QuizQuestion[] = [
   {
     id: 1,
     kind: 'TrueFalse',
     title: '🧪 Desafío (1/5) · TrueFalse',
-    questionText: 'En autenticación JWT, el servidor no necesita guardar registros de sesión en la base de datos; solo valida la firma criptográfica del token recibido en la petición.',
+    questionText: 'En la vista lista_libros, cuando el método es GET y consultamos Libro.objects.all(), debemos pasar many=True a LibroSerializer(libro, many=True) porque estamos serializando una lista de registros.',
     correctAnswer: true,
     labels: { trueText: 'VERDADERO', falseText: 'FALSO' },
-    explanation: '¡VERDADERO! Los JWT son tokens "sin estado" (stateless). El propio token contiene los datos y la firma verificable con la SECRET_KEY.'
+    explanation: '¡VERDADERO! many=True le indica al ModelSerializer que debe recorrer un QuerySet de múltiples objetos y devolver una lista JSON.'
   },
   {
     id: 2,
     kind: 'MultipleChoice',
     title: '🧪 Desafío (2/5) · MultipleChoice',
-    questionText: '¿Qué clase de Django REST Framework permite generar los 5 endpoints CRUD completos (listar, crear, ver, editar, borrar) en una sola definición?',
+    questionText: 'En la vista vista_libro(request, id), ¿cómo pasamos los datos a LibroSerializer cuando el método es PUT para actualizar un libro existente?',
     options: [
-      'viewsets.ModelViewSet',
-      'views.APIView',
-      'generics.ListCreateAPIView',
-      'serializers.ModelSerializer'
+      'serializer = LibroSerializer(libro, data=data)',
+      'serializer = LibroSerializer(many=True)',
+      'serializer = LibroSerializer()',
+      'serializer = LibroSerializer(id=id)'
     ],
     correctOption: 0,
-    explanation: '¡CORRECTO! ModelViewSet unifica la lógica de los 5 métodos estándar y se combina con DefaultRouter para crear las URLs automáticamente.'
+    explanation: '¡CORRECTO! Al pasar primero la instancia recuperada (libro) y luego data=data, serializer.save() ejecuta un UPDATE sobre ese registro en lugar de un INSERT.'
   },
   {
     id: 3,
     kind: 'FillInTheBlank',
     title: '🧪 Desafío (3/5) · FillInTheBlank',
-    questionText: 'El token de corta duración (ej: 15 minutos) que viaja en el encabezado Authorization: Bearer se conoce como _________ Token.',
-    code: `Authorization: Bearer <_______-token>`,
-    options: ['Access', 'Refresh', 'Static', 'Master'],
+    questionText: 'Para parsear el flujo JSON enviado en el cuerpo de una solicitud POST o PUT en nuestras vistas de rest_api utilizamos: data = ____________().parse(request)',
+    code: `data = ____________().parse(request)`,
+    options: ['JSONParser', 'ModelSerializer', 'HttpResponse', 'QueryParser'],
     correctOption: 0,
-    explanation: '¡CORRECTO! El Access Token valida las peticiones regulares; el Refresh Token permite obtener un nuevo Access Token cuando expira.'
+    explanation: '¡CORRECTO! JSONParser().parse(request) de rest_framework.parsers transforma el cuerpo JSON entrante en un diccionario de Python.'
   },
   {
     id: 4,
     kind: 'MatchPairs',
     title: '🧪 Desafío (4/5) · MatchPairs',
-    questionText: 'Relaciona cada componente de Django REST Framework con su rol:',
+    questionText: 'Empareja cada operación de nuestras vistas lista_libros y vista_libro con la constante de estado HTTP que retorna:',
     pairs: [
-      { id: 'p1', left: 'ModelSerializer', right: 'Traduce modelos a JSON y valida datos entrantes con reglas de BD' },
-      { id: 'p2', left: 'DefaultRouter', right: 'Genera las rutas REST estándar y la interfaz Browsable API' },
-      { id: 'p3', left: 'IsAuthenticated', right: 'Clase de permiso que exige un token o sesión válida para entrar' }
+      { id: 'p1', left: 'POST exitoso tras serializer.save()', right: 'status.HTTP_201_CREATED' },
+      { id: 'p2', left: 'Libro no existe (except Libro.DoesNotExist)', right: 'status.HTTP_404_NOT_FOUND' },
+      { id: 'p3', left: 'DELETE exitoso tras libro.delete()', right: 'status.HTTP_204_NO_CONTENT' }
     ],
-    explanation: '¡EXCELENTE! DRF es la herramienta más potente del ecosistema Python para construir APIs REST profesionales.'
+    explanation: '¡EXCELENTE! Dominas los códigos de estado de rest_framework.status para cada acción del CRUD.'
   },
   {
     id: 5,
     kind: 'FindTheBug',
     title: '🧪 Desafío (5/5) · FindTheBug',
-    questionText: '¿Por qué la API rechaza con 401 Unauthorized una petición si el cliente envía el header: "Authorization: eyJhbGciOi..."?',
+    questionText: '¿Qué ocurre en POST o PUT cuando serializer.is_valid() devuelve False?',
     options: [
-      'Porque falta la palabra clave "Bearer " antes de la cadena del token (ej: "Authorization: Bearer eyJhbG...")',
-      'Porque el token no debe enviarse en los headers',
-      'Porque DRF no soporta tokens en mayúsculas',
-      'Porque falta el parámetro ?token= en la URL'
+      'Entra al bloque else y retorna Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) sin guardar en la BD',
+      'Guarda el libro igualmente en la base de datos',
+      'Borra la tabla Libro',
+      'Devuelve HTTP 204 No Content'
     ],
     correctOption: 0,
-    explanation: '¡CORRECTO! El estándar RFC 6750 exige el prefijo "Bearer " para identificar el tipo de credencial portadora.'
+    explanation: '¡CORRECTO! Si los datos enviados no cumplen las reglas del modelo, serializer.is_valid() es False y devolvemos los errores detallados con código 400.'
+  }
+];
+
+// ============================================================================
+// 12. API SEGURIDAD Y AUTH TOKEN (CURSO DJANGO 31)
+// ============================================================================
+export const apiSeguridadTokenQuiz: QuizQuestion[] = [
+  {
+    id: 1,
+    kind: 'TrueFalse',
+    title: '🧪 Desafío (1/5) · TrueFalse',
+    questionText: 'Después de agregar "rest_framework.authtoken" a INSTALLED_APPS en settings.py, es obligatorio ejecutar "python manage.py migrate" para crear la tabla de tokens en la base de datos.',
+    correctAnswer: true,
+    labels: { trueText: 'VERDADERO', falseText: 'FALSO' },
+    explanation: '¡VERDADERO! Sin ejecutar migrate, la tabla authtoken_token no existirá y viewsLogin.py fallará al intentar crear el token.'
+  },
+  {
+    id: 2,
+    kind: 'MultipleChoice',
+    title: '🧪 Desafío (2/5) · MultipleChoice',
+    questionText: 'En rest_api/viewsLogin.py, ¿qué función de django.contrib.auth.hashers utilizamos para comprobar si la contraseña enviada coincide con el hash de user.password?',
+    options: [
+      'check_password(password, user.password)',
+      'compare_text(password, user.password)',
+      'Token.verify(password)',
+      'JSONParser().parse(password)'
+    ],
+    correctOption: 0,
+    explanation: '¡CORRECTO! check_password compara de forma segura la contraseña en texto plano con el hash criptográfico almacenado en user.password.'
+  },
+  {
+    id: 3,
+    kind: 'FillInTheBlank',
+    title: '🧪 Desafío (3/5) · FillInTheBlank',
+    questionText: 'Para crear el token del usuario la primera vez que inicia sesión o recuperarlo si ya existe, usamos Token.objects.____________(user=user):',
+    code: `token, created = Token.objects.____________(user=user)`,
+    options: ['get_or_create', 'all', 'filter', 'delete'],
+    correctOption: 0,
+    explanation: '¡CORRECTO! Token.objects.get_or_create(user=user) retorna una tupla (token, created) y luego devolvemos token.key en el Response.'
+  },
+  {
+    id: 4,
+    kind: 'MatchPairs',
+    title: '🧪 Desafío (4/5) · MatchPairs',
+    questionText: 'Relaciona cada elemento de seguridad de CURSO DJANGO 31 con su función:',
+    pairs: [
+      { id: 'p1', left: 'TokenAuthentication en settings.py', right: 'Configura a DRF para autenticar peticiones mediante tokens' },
+      { id: 'p2', left: '@permission_classes((IsAuthenticated,))', right: 'Decorador que bloquea el acceso a las vistas si no se envía un token válido' },
+      { id: 'p3', left: 'Authorization: Token <clave>', right: 'Encabezado HTTP que se envía desde Postman o Thunder Client' }
+    ],
+    explanation: '¡EXCELENTE! Has conectado todas las piezas del flujo de autenticación por Token en Django REST Framework.'
+  },
+  {
+    id: 5,
+    kind: 'FindTheBug',
+    title: '🧪 Desafío (5/5) · FindTheBug',
+    questionText: 'Un estudiante obtiene su token en /api/login, pero al enviarlo en los Headers de Postman hacia /api/libros/ sigue recibiendo 401 Unauthorized. Escribió el valor del Header como "9944b09199c62bcf...". ¿Qué le faltó?',
+    options: [
+      'Le faltó anteponer la palabra "Token " y un espacio antes de la clave (ej: "Token 9944b09199c62bcf...") en el header Authorization',
+      'Debe enviarlo por método DELETE',
+      'Los tokens no funcionan en localhost',
+      'Falta borrar el archivo urls.py'
+    ],
+    correctOption: 0,
+    explanation: '¡CORRECTO! TokenAuthentication de DRF exige que el encabezado Authorization comience con la palabra "Token " seguida de un espacio y la clave hexadecimal.'
   }
 ];
 
@@ -1396,6 +1461,9 @@ export function getQuizForLesson(lessonSlug: string): QuizQuestion[] {
 
     case 'drf-jwt':
       return drfJwtQuiz;
+
+    case 'api-seguridad-token':
+      return apiSeguridadTokenQuiz;
 
     case 'proyecto-integrador':
       return proyectoIntegradorQuiz;
