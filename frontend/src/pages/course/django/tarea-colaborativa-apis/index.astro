@@ -1,0 +1,957 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import DjangoQuizModal from '../../../../components/quizzes/DjangoQuizModal.astro';
+import DjangoCollaborativeChainSimulator from '../../../../components/django/DjangoCollaborativeChainSimulator';
+---
+
+<Layout
+  title="10. Tarea Colaborativa: APIs en Equipo (Calculadora y Distribuidora de Vino)"
+  description="Práctica colaborativa en Django REST Framework + requests: conecta servidores de compañeros en red local mediante 3 actividades progresivas (Calculadora de 2 nodos, Validador + Calculadora de 3 nodos y Distribuidora de Vino en cadena)."
+  courseSlug="django"
+>
+  <article class="content-section">
+    <!-- HERO -->
+    <header class="rounded-3xl bg-gradient-to-br from-[#0c4a3f] via-[#0f5e4f] to-[#062e27] text-white p-6 sm:p-10 mb-6 shadow-lg border-2 border-slate-900">
+      <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+        <span class="inline-block bg-emerald-400/20 border border-emerald-300/40 text-emerald-200 rounded-full px-3.5 py-1 font-black text-xs tracking-wider uppercase">
+          MÓDULO 10 · TAREA COLABORATIVA · DJANGO REST FRAMEWORK + REQUESTS
+        </span>
+        <span class="inline-block bg-slate-950/50 text-emerald-300 rounded-xl px-3 py-1 font-mono font-bold text-xs border border-emerald-500/30">
+          3 ACTIVIDADES PROGRESIVAS · 20 PUNTOS
+        </span>
+      </div>
+      <h1 class="!text-3xl sm:!text-4xl font-black !text-white leading-tight !mb-3 !mt-0" style="text-shadow: none;">
+        10. Tarea Colaborativa: APIs que Trabajan en Equipo (Calculadora y Distribuidora de Vino) 🤝🍷
+      </h1>
+      <p class="!text-base sm:!text-lg !text-white/95 max-w-3xl font-semibold !mb-3">
+        Conecta programas de distintos compañeros mediante solicitudes HTTP <code>POST</code> en red local. Cada participante asume una responsabilidad clara: <strong>enviar datos, validar, calcular o transformar resultados en cadena</strong> sin requerir base de datos ni serializers.
+      </p>
+      <div class="flex flex-wrap gap-2 text-xs font-mono font-bold">
+        <span class="bg-white/15 px-3 py-1 rounded-lg">✓ Actividad 1: Calculadora (A → B)</span>
+        <span class="bg-white/15 px-3 py-1 rounded-lg">✓ Actividad 2: Validador + Calculadora (A → B → C)</span>
+        <span class="bg-white/15 px-3 py-1 rounded-lg">✓ Actividad 3: Distribuidora de Vino (A → B → C → B → A)</span>
+        <span class="bg-white/15 px-3 py-1 rounded-lg">✓ Códigos HTTP 200, 400 y 502</span>
+      </div>
+    </header>
+
+    <!-- BANNER PRESENTACIÓN DIAPOSITIVAS -->
+    <aside class="my-6 p-4 sm:p-5 rounded-2xl border-2 border-emerald-500/40 bg-gradient-to-r from-emerald-500/10 via-teal-500/5 to-transparent flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm">
+      <div class="flex items-center gap-3">
+        <span class="text-3xl sm:text-4xl p-2 rounded-xl bg-emerald-500/20 text-emerald-700 shrink-0">📊</span>
+        <div>
+          <h3 class="text-base font-black text-slate-900 mb-0.5">
+            Presentación Guiada Paso a Paso en Diapositivas
+          </h3>
+          <p class="text-xs sm:text-sm text-slate-600 !mb-0">
+            Revisa en diapositivas la preparación común (<code>utiles.py</code>), los roles A, B y C de las 3 actividades, las fórmulas del vino y la rúbrica de 20 puntos.
+          </p>
+        </div>
+      </div>
+      <a
+        href="/course-slides/django/tarea-colaborativa-apis/"
+        class="shrink-0 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-nunito font-black text-sm shadow-md hover:shadow-lg transition-all no-underline"
+      >
+        <span>Ver Diapositivas</span>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+        </svg>
+      </a>
+    </aside>
+
+    <!-- NAVEGACIÓN INTERNA RÁPIDA -->
+    <nav class="p-4 rounded-2xl bg-slate-100 border-2 border-slate-300 my-6" aria-label="Índice del módulo 10">
+      <div class="text-xs font-black uppercase tracking-wider text-slate-500 mb-2.5">
+        Ruta de la Tarea Colaborativa:
+      </div>
+      <div class="flex flex-wrap gap-2">
+        <a href="#objetivo-acuerdos" class="px-3 py-1.5 rounded-xl bg-white hover:bg-emerald-50 text-slate-800 border border-slate-300 font-bold text-xs no-underline transition-colors">
+          1. Objetivo y Acuerdos del Equipo
+        </a>
+        <a href="#preparacion-comun" class="px-3 py-1.5 rounded-xl bg-white hover:bg-emerald-50 text-slate-800 border border-slate-300 font-bold text-xs no-underline transition-colors">
+          2. Preparación Común (utiles.py)
+        </a>
+        <a href="#simulador-cadena" class="px-3 py-1.5 rounded-xl bg-emerald-700 text-white border border-slate-900 font-black text-xs no-underline shadow-[2px_2px_0px_#0f172a]">
+          3. Simulador en Cadena (A → B → C)
+        </a>
+        <a href="#actividad-1" class="px-3 py-1.5 rounded-xl bg-white hover:bg-emerald-50 text-slate-800 border border-slate-300 font-bold text-xs no-underline transition-colors">
+          4. Actividad 1: Calculadora (2 compañeros)
+        </a>
+        <a href="#actividad-2" class="px-3 py-1.5 rounded-xl bg-white hover:bg-emerald-50 text-slate-800 border border-slate-300 font-bold text-xs no-underline transition-colors">
+          5. Actividad 2: Validador + Calculadora (3 compañeros)
+        </a>
+        <a href="#actividad-3" class="px-3 py-1.5 rounded-xl bg-white hover:bg-emerald-50 text-slate-800 border border-slate-300 font-bold text-xs no-underline transition-colors">
+          6. Actividad 3: Distribuidora de Vino
+        </a>
+        <a href="#entrega-evaluacion" class="px-3 py-1.5 rounded-xl bg-white hover:bg-emerald-50 text-slate-800 border border-slate-300 font-bold text-xs no-underline transition-colors">
+          7. Entrega, Reflexión y Evaluación (20 pts)
+        </a>
+      </div>
+    </nav>
+
+    <!-- =================================================================== -->
+    <!-- SECCIÓN 1: OBJETIVO, LAS 3 ACTIVIDADES Y ACUERDOS DEL EQUIPO        -->
+    <!-- =================================================================== -->
+    <section id="objetivo-acuerdos" class="mb-10">
+      <h2>1. Objetivo, Flujo de Datos y Acuerdos del Equipo</h2>
+      <p>
+        El objetivo de esta práctica es <strong>conectar programas de distintos compañeros mediante solicitudes HTTP</strong>. Cada participante tendrá una responsabilidad específica: enviar datos, validar, calcular o transformar resultados. <strong>No se requiere base de datos ni serializers</strong> para esta práctica.
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 my-6">
+        <div class="p-5 rounded-2xl border-2 border-emerald-600/60 bg-emerald-50/70 shadow-sm">
+          <span class="font-mono font-black text-xs uppercase text-emerald-900 bg-emerald-200/80 px-2.5 py-1 rounded inline-block mb-2">
+            Actividad 1 · 2 Compañeros
+          </span>
+          <h3 class="text-base font-black text-slate-900 !m-0 mb-1">
+            Calculadora Directa (A → B)
+          </h3>
+          <p class="!text-xs !text-slate-700 !m-0 leading-relaxed">
+            El compañero <strong>A</strong> solicita una operación matemática mediante <code>POST</code> y el compañero <strong>B</strong> la valida, calcula y devuelve el resultado.
+          </p>
+        </div>
+
+        <div class="p-5 rounded-2xl border-2 border-cyan-600/60 bg-cyan-50/70 shadow-sm">
+          <span class="font-mono font-black text-xs uppercase text-cyan-900 bg-cyan-200/80 px-2.5 py-1 rounded inline-block mb-2">
+            Actividad 2 · 3 Compañeros
+          </span>
+          <h3 class="text-base font-black text-slate-900 !m-0 mb-1">
+            Cadena con Validador (A → B → C)
+          </h3>
+          <p class="!text-xs !text-slate-700 !m-0 leading-relaxed">
+            <strong>A</strong> solicita, <strong>B</strong> valida (si falla responde <code>400</code> sin llamar a C) y reenvía a <strong>C</strong>, quien calcula y devuelve el resultado a través de B.
+          </p>
+        </div>
+
+        <div class="p-5 rounded-2xl border-2 border-rose-700/60 bg-rose-50/70 shadow-sm">
+          <span class="font-mono font-black text-xs uppercase text-rose-900 bg-rose-200/80 px-2.5 py-1 rounded inline-block mb-2">
+            Actividad 3 · 3 Compañeros
+          </span>
+          <h3 class="text-base font-black text-slate-900 !m-0 mb-1">
+            Distribuidora de Vino (A → B → C → B → A)
+          </h3>
+          <p class="!text-xs !text-slate-700 !m-0 leading-relaxed">
+            Simula una distribuidora que recibe un lote de uva en <strong>A</strong>, extrae jugo y residuos en <strong>B</strong>, distribuye vino/vinagre/merma en <strong>C</strong> y calcula copas completas de 150 mL en <strong>B</strong>.
+          </p>
+        </div>
+      </div>
+
+      <!-- Cómo viajan los datos y Acuerdos del equipo -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 my-6">
+        <div class="p-5 rounded-2xl border-2 border-slate-900 bg-slate-900 text-white shadow-[4px_4px_0px_#0f172a]">
+          <h3 class="text-lg font-black !text-emerald-400 !mt-0 mb-2">
+            🔄 ¿Cómo viajan los datos entre programas?
+          </h3>
+          <div class="p-3 rounded-xl bg-slate-800 font-mono text-xs text-emerald-300 font-bold mb-3 border border-slate-700">
+            Cliente → POST con JSON → API → procesamiento → respuesta JSON → cliente
+          </div>
+          <p class="!text-xs sm:!text-sm !text-slate-300 !mb-0 leading-relaxed">
+            <code>requests</code> es una biblioteca de Python que envía solicitudes HTTP. <strong>Django REST Framework</strong> recibe esas solicitudes. No es necesario usar un navegador como cliente ni configurar <code>CORS</code> para estas llamadas directas entre programas Python.
+          </p>
+        </div>
+
+        <div class="p-5 rounded-2xl border-2 border-amber-500 bg-amber-50/80">
+          <h3 class="text-lg font-black text-amber-950 !mt-0 mb-2">
+            🤝 Acuerdos Obligatorios del Equipo
+          </h3>
+          <ol class="list-decimal pl-5 space-y-1.5 text-xs sm:text-sm text-slate-800 font-medium !m-0">
+            <li>Conecten los equipos a la <strong>misma red LAN</strong> y anoten la dirección IPv4 de cada servidor.</li>
+            <li>Usen exactamente las <strong>rutas, nombres de campos y operaciones indicados</strong>. Todas las llamadas de la práctica son <code>POST</code>.</li>
+            <li>Cada servidor devuelve errores <strong><code>400</code> para datos inválidos</strong> y <strong><code>502</code> (Bad Gateway) si no puede comunicarse con el siguiente servidor</strong> de la cadena.</li>
+            <li>Prueben primero un servicio individualmente y después la cadena completa. Cambien de roles al terminar.</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- SECCIÓN 2: PREPARACIÓN COMÚN DE LOS SERVIDORES (UTILES.PY)          -->
+    <!-- =================================================================== -->
+    <section id="preparacion-comun" class="my-10">
+      <div class="border-l-[6px] border-[#0c4a3f] pl-4 mb-6">
+        <span class="inline-block bg-emerald-100 text-[#0c4a3f] rounded-full px-3 py-1 font-black text-xs mb-1.5">
+          CONFIGURACIÓN BASE PARA TODOS LOS SERVIDORES
+        </span>
+        <h2 class="text-2xl sm:text-3xl font-black text-slate-900 !m-0">
+          2. Preparación Común de los Servidores y Validador <code>api/utiles.py</code> 🛠️
+        </h2>
+      </div>
+
+      <p>
+        Cada compañero que publique una API (roles <strong>B</strong> y <strong>C</strong>) crea su propio proyecto Django. El compañero que solo envía solicitudes (rol <strong>A</strong>) necesita únicamente instalar <code>requests</code>. Ejecuten los comandos de creación una sola vez:
+      </p>
+
+      <CodeBlock
+        lang="bash"
+        title="Terminal — Creación del proyecto sistema e instalación de dependencias"
+        code={`pip install django djangorestframework requests
+django-admin startproject sistema
+cd sistema
+python manage.py startapp api`}
+      />
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 my-6">
+        <div>
+          <h3 class="text-base font-black text-slate-900 !mt-0 mb-2">
+            2.1 Configurar <code>sistema/settings.py</code> y <code>sistema/urls.py</code>
+          </h3>
+          <p class="!text-xs text-slate-600 mb-2">
+            En <code>sistema/settings.py</code> agreguen <code>"rest_framework"</code> y <code>"api"</code> a <code>INSTALLED_APPS</code> y configuren <code>ALLOWED_HOSTS</code> con la IP real del equipo servidor:
+          </p>
+          <CodeBlock
+            lang="python"
+            title="sistema/settings.py y sistema/urls.py"
+            code={`# En sistema/settings.py:
+INSTALLED_APPS = [
+    # ... entradas existentes de Django ...
+    "rest_framework",
+    "api",
+]
+
+ALLOWED_HOSTS = ["127.0.0.1", "localhost", "192.168.1.20"]
+
+# ---------------------------------------------------------
+# En sistema/urls.py:
+from django.urls import include, path
+
+urlpatterns = [
+    path("api/", include("api.urls")),
+]`}
+          />
+        </div>
+
+        <div>
+          <h3 class="text-base font-black text-slate-900 !mt-0 mb-2">
+            2.2 Crear <code>api/utiles.py</code> en todos los servidores
+          </h3>
+          <p class="!text-xs text-slate-600 mb-2">
+            Esta función acepta números JSON reales como <code>12</code> o <code>2.5</code>, y rechaza estrictamente textos como <code>"12"</code>, valores nulos (<code>null</code>), infinitos y booleanos (<code>true</code>/<code>false</code>):
+          </p>
+          <CodeBlock
+            lang="python"
+            title="api/utiles.py — Validación estricta de números JSON"
+            code={`import math
+
+
+def leer_numero(datos, campo):
+    if not isinstance(datos, dict):
+        raise ValueError("El cuerpo debe ser un objeto JSON")
+    valor = datos.get(campo)
+    if type(valor) not in (int, float):
+        raise ValueError(f"{campo} debe ser un número JSON")
+    try:
+        numero = float(valor)
+    except (ValueError, OverflowError):
+        raise ValueError(f"{campo} está fuera de rango")
+    if not math.isfinite(numero):
+        raise ValueError(f"{campo} debe ser finito")
+    return numero`}
+          />
+        </div>
+      </div>
+
+      <div class="p-4 rounded-2xl bg-slate-100 border-2 border-slate-300 text-xs sm:text-sm text-slate-800 space-y-2">
+        <div>
+          🚀 <strong>Encendido de cada servidor:</strong> Después de escribir las vistas y rutas de su rol, ejecuten <code>python manage.py migrate</code> y luego <code>python manage.py runserver 0.0.0.0:8000</code>.
+        </div>
+        <div>
+          📡 <strong>Dirección de escucha vs URL del cliente:</strong> Usen la IP real del compañero en <code>requests</code> (ej. <code>http://192.168.1.20:8000/</code>). Recuerden que <code>0.0.0.0</code> es solo la dirección de escucha, no la URL a la que llama el cliente.
+        </div>
+        <div>
+          💻 <strong>¿Simulando dos o tres servidores en una sola computadora?</strong> Creen carpetas de proyectos separados y usen puertos distintos al levantar cada uno (por ejemplo, compañero B con <code>python manage.py runserver 8000</code> y compañero C con <code>python manage.py runserver 8001</code> usando <code>127.0.0.1</code>).
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- SECCIÓN 3: SIMULADOR INTERACTIVO DE LAS 3 ACTIVIDADES               -->
+    <!-- =================================================================== -->
+    <section id="simulador-cadena" class="my-10">
+      <h2>3. Laboratorio Interactivo: Simulador de las 3 Actividades en Cadena</h2>
+      <p>
+        Prueba aquí mismo el comportamiento de los servidores <strong>A, B y C</strong> en las tres actividades. Puedes probar lotes de uva de <code>100 kg</code> y <code>50 kg</code>, enviar textos inválidos para verificar que <strong>B responde 400 sin molestar a C</strong>, o apagar el servidor <strong>C</strong> para observar cómo <strong>B devuelve el error 502 Bad Gateway</strong>:
+      </p>
+      <DjangoCollaborativeChainSimulator client:load />
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- SECCIÓN 4: ACTIVIDAD 1 — CALCULADORA ENTRE DOS COMPAÑEROS           -->
+    <!-- =================================================================== -->
+    <section id="actividad-1" class="my-10">
+      <div class="border-l-[6px] border-emerald-600 pl-4 mb-6">
+        <span class="inline-block bg-emerald-100 text-emerald-900 rounded-full px-3 py-1 font-black text-xs mb-1.5">
+          ACTIVIDAD 1 · 2 COMPAÑEROS · 4 PUNTOS
+        </span>
+        <h2 class="text-2xl sm:text-3xl font-black text-slate-900 !m-0">
+          4. Actividad 1: Calculadora entre Dos Compañeros (A → B → A) 🖩
+        </h2>
+      </div>
+
+      <div class="p-4 rounded-2xl bg-emerald-50 border-2 border-emerald-600/40 mb-6 text-sm text-slate-800">
+        <div><strong>Flujo:</strong> Compañero A (cliente) → Compañero B (API calculadora) → Compañero A (resultado).</div>
+        <div class="mt-1"><strong>Operaciones permitidas:</strong> <code>suma</code>, <code>resta</code>, <code>multiplicacion</code> y <code>division</code>. El orden importa: <code>valor1 − valor2</code> y <code>valor1 ÷ valor2</code>.</div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 my-6">
+        <!-- Compañero B -->
+        <div class="rounded-2xl border-2 border-emerald-600 bg-white overflow-hidden shadow-sm">
+          <div class="p-4 bg-emerald-600 text-white font-black text-sm flex items-center justify-between">
+            <span>🖥️ Compañero B · API Calculadora</span>
+            <span class="font-mono text-xs bg-emerald-800 px-2.5 py-0.5 rounded">POST /api/calcular/</span>
+          </div>
+          <div class="p-5 space-y-4">
+            <p class="!text-xs text-slate-600 !m-0">
+              Recibe los datos, comprueba los valores con <code>leer_numero</code>, realiza la operación y devuelve el resultado:
+            </p>
+            <CodeBlock
+              lang="python"
+              title="Compañero B — api/views.py"
+              code={`import math
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .utiles import leer_numero
+
+
+@api_view(["POST"])
+def calcular(request):
+    try:
+        a = leer_numero(request.data, "valor1")
+        b = leer_numero(request.data, "valor2")
+        operacion = request.data.get("operacion")
+        if operacion == "suma":
+            resultado = a + b
+        elif operacion == "resta":
+            resultado = a - b
+        elif operacion == "multiplicacion":
+            resultado = a * b
+        elif operacion == "division":
+            if b == 0:
+                raise ValueError("No se puede dividir entre cero")
+            resultado = a / b
+        else:
+            raise ValueError("Operación no permitida")
+        if not math.isfinite(resultado):
+            raise ValueError("Resultado fuera de rango")
+    except ValueError as error:
+        return Response({"error": str(error)}, status=400)
+
+    return Response({
+        "operacion": operacion,
+        "valor1": a,
+        "valor2": b,
+        "resultado": resultado
+    })`}
+            />
+            <CodeBlock
+              lang="python"
+              title="Compañero B — api/urls.py"
+              code={`from django.urls import path
+from .views import calcular
+
+urlpatterns = [path("calcular/", calcular)]`}
+            />
+          </div>
+        </div>
+
+        <!-- Compañero A -->
+        <div class="rounded-2xl border-2 border-slate-900 bg-white overflow-hidden shadow-sm flex flex-col justify-between">
+          <div>
+            <div class="p-4 bg-slate-900 text-white font-black text-sm flex items-center justify-between">
+              <span>💻 Compañero A · Cliente Python</span>
+              <span class="font-mono text-xs bg-slate-800 text-emerald-300 px-2.5 py-0.5 rounded">cliente.py</span>
+            </div>
+            <div class="p-5 space-y-4">
+              <p class="!text-xs text-slate-600 !m-0">
+                Reemplaza la IP por la del compañero B y ejecuta <code>python cliente.py</code>. El parámetro <code>json=datos</code> envía automáticamente el encabezado <code>Content-Type: application/json</code>:
+              </p>
+              <CodeBlock
+                lang="python"
+                title="Compañero A — cliente.py"
+                code={`import requests
+
+URL = "http://192.168.1.30:8000/api/calcular/"
+datos = {"valor1": 12, "valor2": 4, "operacion": "division"}
+
+try:
+    respuesta = requests.post(URL, json=datos, timeout=10)
+    print("Código HTTP:", respuesta.status_code)
+    print("Respuesta:", respuesta.json())
+except (requests.RequestException, ValueError) as error:
+    print("No se pudo obtener una respuesta JSON:", error)`}
+              />
+
+              <div>
+                <span class="text-xs font-mono font-black text-emerald-800 block mb-1">
+                  Respuesta esperada — 200 OK:
+                </span>
+                <CodeBlock
+                  lang="json"
+                  title="Salida esperada"
+                  code={`{"operacion": "division", "valor1": 12.0, "valor2": 4.0, "resultado": 3.0}`}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="p-5 bg-slate-50 border-t border-slate-200">
+            <h4 class="text-xs font-black uppercase tracking-wider text-slate-800 !mt-0 mb-2">
+              ✅ Pruebas obligatorias de la Actividad 1:
+            </h4>
+            <ul class="text-xs text-slate-700 space-y-1 list-disc pl-4 !m-0">
+              <li>Con <code>12</code> y <code>4</code>: <code>suma</code> → <code>16</code>; <code>resta</code> → <code>8</code>; <code>multiplicacion</code> → <code>48</code>; <code>division</code> → <code>3</code>.</li>
+              <li>División entre cero (<code>valor2: 0</code>) → Código <code>400</code>.</li>
+              <li><code>valor1</code> como texto <code>"hola"</code> → Código <code>400</code>.</li>
+              <li>Operación desconocida (ej. <code>"potencia"</code>) → Código <code>400</code>.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- SECCIÓN 5: ACTIVIDAD 2 — CALCULADORA ENTRE TRES COMPAÑEROS          -->
+    <!-- =================================================================== -->
+    <section id="actividad-2" class="my-10">
+      <div class="border-l-[6px] border-cyan-600 pl-4 mb-6">
+        <span class="inline-block bg-cyan-100 text-cyan-950 rounded-full px-3 py-1 font-black text-xs mb-1.5">
+          ACTIVIDAD 2 · 3 COMPAÑEROS · 5 PUNTOS
+        </span>
+        <h2 class="text-2xl sm:text-3xl font-black text-slate-900 !m-0">
+          5. Actividad 2: Calculadora entre Tres Compañeros (A → B → C → B → A) 🛡️
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <div class="p-4 rounded-xl bg-slate-100 border border-slate-300 text-xs">
+          <strong class="block text-slate-900 mb-1">1. Compañero A (Cliente):</strong>
+          Reutiliza <code>cliente.py</code> de la Actividad 1, pero cambia la <code>URL</code> para apuntar al validador <strong>B</strong>: <code>http://192.168.1.20:8000/api/validar/</code>.
+        </div>
+        <div class="p-4 rounded-xl bg-cyan-50 border border-cyan-300 text-xs">
+          <strong class="block text-cyan-950 mb-1">2. Compañero B (Validador):</strong>
+          Valida los datos. Si son incorrectos, responde <strong><code>400</code> sin llamar a C</strong>. Si son correctos, los reenvía a <strong>C</strong> con <code>requests.post()</code>.
+        </div>
+        <div class="p-4 rounded-xl bg-emerald-50 border border-emerald-300 text-xs">
+          <strong class="block text-emerald-950 mb-1">3. Compañero C (Calculadora):</strong>
+          Reutiliza exactamente el código <code>calcular</code> de la Actividad 1 y su ruta <code>/api/calcular/</code>. Calcula y devuelve el resultado a B.
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <div class="lg:col-span-7">
+          <CodeBlock
+            lang="python"
+            title="Compañero B (Validador Intermediario) — api/views.py"
+            code={`import requests
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .utiles import leer_numero
+
+URL_CALCULO = "http://192.168.1.30:8000/api/calcular/"
+
+
+@api_view(["POST"])
+def validar(request):
+    try:
+        a = leer_numero(request.data, "valor1")
+        b = leer_numero(request.data, "valor2")
+        operacion = request.data.get("operacion")
+        permitidas = ["suma", "resta", "multiplicacion", "division"]
+        if operacion not in permitidas:
+            raise ValueError("Operación no permitida")
+        if operacion == "division" and b == 0:
+            raise ValueError("No se puede dividir entre cero")
+    except ValueError as error:
+        return Response({"error": str(error)}, status=400)
+
+    try:
+        respuesta = requests.post(
+            URL_CALCULO,
+            json={"valor1": a, "valor2": b, "operacion": operacion},
+            timeout=5
+        )
+        salida = respuesta.json()
+    except (requests.RequestException, ValueError):
+        return Response({"error": "No se pudo contactar con C"}, status=502)
+
+    if respuesta.status_code not in (200, 400):
+        return Response({"error": "Respuesta inesperada de C"}, status=502)
+    return Response(salida, status=respuesta.status_code)`}
+          />
+        </div>
+
+        <div class="lg:col-span-5 space-y-4">
+          <CodeBlock
+            lang="python"
+            title="Compañero B — api/urls.py"
+            code={`from django.urls import path
+from .views import validar
+
+urlpatterns = [path("validar/", validar)]`}
+          />
+
+          <div class="p-5 rounded-2xl bg-cyan-50 border-2 border-cyan-600/50">
+            <h4 class="text-sm font-black text-cyan-950 !mt-0 mb-2">
+              ✅ Pruebas obligatorias de la Actividad 2:
+            </h4>
+            <ol class="text-xs text-slate-800 space-y-2 list-decimal pl-4 !m-0">
+              <li><strong>Flujo completo válido:</strong> Enviar datos válidos desde A y verificar en las terminales que tanto <strong>B</strong> como <strong>C</strong> reciben una solicitud.</li>
+              <li><strong>Filtro en B (Texto inválido):</strong> Enviar un texto en lugar de un número. <strong>B responde 400</strong> y la terminal de <strong>C no debe recibir ninguna solicitud</strong>.</li>
+              <li><strong>División entre cero:</strong> B la ataja y responde <strong>400</strong>.</li>
+              <li><strong>Caída de C (Error 502):</strong> Detener el servidor C (<code>Ctrl + C</code>) y enviar datos válidos desde A. <strong>B debe responder código 502</strong> (<code>"No se pudo contactar con C"</code>).</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- SECCIÓN 6: ACTIVIDAD 3 — DISTRIBUIDORA DE VINO EN CADENA            -->
+    <!-- =================================================================== -->
+    <section id="actividad-3" class="my-10">
+      <div class="border-l-[6px] border-[#881337] pl-4 mb-6">
+        <span class="inline-block bg-rose-100 text-rose-950 rounded-full px-3 py-1 font-black text-xs mb-1.5">
+          ACTIVIDAD 3 · PROCESAMIENTO EN CADENA · 7 PUNTOS
+        </span>
+        <h2 class="text-2xl sm:text-3xl font-black text-slate-900 !m-0">
+          6. Actividad 3: Distribuidora de Vino — Procesamiento en Cadena 🍇🍷
+        </h2>
+      </div>
+
+      <p>
+        Interpretamos la materia prima como <strong>kilos de uva</strong>. A partir de ellos estimamos jugo (mosto) y residuos sólidos en kilogramos, y después productos líquidos en litros y copas completas servidas.
+      </p>
+
+      <!-- Recorrido de la información -->
+      <div class="p-5 rounded-2xl border-2 border-slate-900 bg-rose-50/60 my-6 shadow-[4px_4px_0px_#0f172a]">
+        <h3 class="text-base font-black text-rose-950 !mt-0 mb-2">
+          🔄 Roles y Recorrido de la Información: <code>A → B (extracción) → C (transformación) → B (copas) → A (informe)</code>
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-3 text-xs">
+          <div class="p-3 rounded-xl bg-white border border-rose-200">
+            <strong class="block text-slate-900 mb-1">1. A (Recepción):</strong>
+            Envía los kilos de uva (<code>kg_uva</code>) a B mediante POST y muestra el informe final completo.
+          </div>
+          <div class="p-3 rounded-xl bg-white border border-rose-200">
+            <strong class="block text-amber-900 mb-1">2. B (1ª Intervención):</strong>
+            Valida el peso (<code>0 &lt; kg &lt;= 10000</code>), calcula el jugo (70%) y el residuo sólido (30%), convierte a litros y los envía a C.
+          </div>
+          <div class="p-3 rounded-xl bg-white border border-rose-200">
+            <strong class="block text-emerald-900 mb-1">3. C (Transformación):</strong>
+            Recibe <code>litros_jugo</code> y los distribuye en vino (80%), vinagre (10%) y merma líquida (10%). Devuelve ese JSON a B.
+          </div>
+          <div class="p-3 rounded-xl bg-white border border-rose-200">
+            <strong class="block text-amber-900 mb-1">4. B (2ª Intervención):</strong>
+            Con la respuesta de C, calcula las <strong>copas completas de 150 mL</strong> (<code>0.150 L</code>), el vino sobrante y responde el informe final a A.
+          </div>
+        </div>
+        <p class="!text-xs text-rose-900 !mt-3 !mb-0 font-semibold">
+          💡 Nota arquitectónica clave: <strong>B no vuelve a ser llamado por C en una ruta nueva</strong>; B simplemente recibe la respuesta HTTP de la solicitud <code>requests.post()</code> que le había enviado a C, continúa ejecutando las líneas siguientes y responde a A.
+        </p>
+      </div>
+
+      <!-- Tabla de Fórmulas y Ejemplo de 100 kg -->
+      <div class="my-8">
+        <h3>Reglas de Negocio, Fórmulas y Ejemplo con 100 kg de Uva</h3>
+        <div class="overflow-x-auto rounded-2xl border-2 border-slate-900 shadow-[4px_4px_0px_#0f172a]">
+          <table class="w-full text-left border-collapse text-sm bg-white">
+            <thead class="bg-slate-900 text-white font-black uppercase text-xs tracking-wider">
+              <tr>
+                <th class="p-3.5">Resultado</th>
+                <th class="p-3.5">Fórmula Aplicada</th>
+                <th class="p-3.5">Ejemplo (100 kg de uva)</th>
+                <th class="p-3.5">Ejemplo (50 kg de uva)</th>
+                <th class="p-3.5">Responsable</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-200 font-medium text-xs sm:text-sm">
+              <tr>
+                <td class="p-3.5 font-bold">Jugo extraído</td>
+                <td class="p-3.5 font-mono text-xs"><code>kg de uva × 0.70</code></td>
+                <td class="p-3.5 font-mono font-bold text-slate-900">70 kg</td>
+                <td class="p-3.5 font-mono text-slate-600">35 kg</td>
+                <td class="p-3.5"><span class="px-2 py-0.5 rounded bg-amber-100 text-amber-900 font-bold text-xs">Compañero B</span></td>
+              </tr>
+              <tr>
+                <td class="p-3.5 font-bold">Residuo de extracción</td>
+                <td class="p-3.5 font-mono text-xs"><code>kg de uva × 0.30</code></td>
+                <td class="p-3.5 font-mono font-bold text-slate-900">30 kg</td>
+                <td class="p-3.5 font-mono text-slate-600">15 kg</td>
+                <td class="p-3.5"><span class="px-2 py-0.5 rounded bg-amber-100 text-amber-900 font-bold text-xs">Compañero B</span></td>
+              </tr>
+              <tr>
+                <td class="p-3.5 font-bold">Jugo en litros (Densidad 1 kg/L)</td>
+                <td class="p-3.5 font-mono text-xs"><code>kg de jugo ÷ 1 kg/L</code></td>
+                <td class="p-3.5 font-mono font-bold text-slate-900">70 L</td>
+                <td class="p-3.5 font-mono text-slate-600">35 L</td>
+                <td class="p-3.5"><span class="px-2 py-0.5 rounded bg-amber-100 text-amber-900 font-bold text-xs">Compañero B</span></td>
+              </tr>
+              <tr>
+                <td class="p-3.5 font-bold text-rose-900">Vino (80%)</td>
+                <td class="p-3.5 font-mono text-xs"><code>litros de jugo × 0.80</code></td>
+                <td class="p-3.5 font-mono font-bold text-rose-800">56 L</td>
+                <td class="p-3.5 font-mono text-slate-600">28 L</td>
+                <td class="p-3.5"><span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-900 font-bold text-xs">Compañero C</span></td>
+              </tr>
+              <tr>
+                <td class="p-3.5 font-bold">Vinagre (10%)</td>
+                <td class="p-3.5 font-mono text-xs"><code>litros de jugo × 0.10</code></td>
+                <td class="p-3.5 font-mono font-bold text-slate-900">7 L</td>
+                <td class="p-3.5 font-mono text-slate-600">3.5 L</td>
+                <td class="p-3.5"><span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-900 font-bold text-xs">Compañero C</span></td>
+              </tr>
+              <tr>
+                <td class="p-3.5 font-bold">Merma líquida (10%)</td>
+                <td class="p-3.5 font-mono text-xs"><code>litros de jugo × 0.10</code></td>
+                <td class="p-3.5 font-mono font-bold text-slate-900">7 L</td>
+                <td class="p-3.5 font-mono text-slate-600">3.5 L</td>
+                <td class="p-3.5"><span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-900 font-bold text-xs">Compañero C</span></td>
+              </tr>
+              <tr>
+                <td class="p-3.5 font-bold text-emerald-900">Copas completas (150 mL = 0.150 L)</td>
+                <td class="p-3.5 font-mono text-xs"><code>parte entera de (litros de vino ÷ 0.150)</code></td>
+                <td class="p-3.5 font-mono font-bold text-emerald-800">373 copas</td>
+                <td class="p-3.5 font-mono text-slate-600">186 copas</td>
+                <td class="p-3.5"><span class="px-2 py-0.5 rounded bg-amber-100 text-amber-900 font-bold text-xs">Compañero B</span></td>
+              </tr>
+              <tr>
+                <td class="p-3.5 font-bold">Vino sobrante</td>
+                <td class="p-3.5 font-mono text-xs"><code>vino − (copas × 0.150)</code></td>
+                <td class="p-3.5 font-mono font-bold text-slate-900">0.050 L (50 mL)</td>
+                <td class="p-3.5 font-mono text-slate-600">0.100 L (100 mL)</td>
+                <td class="p-3.5"><span class="px-2 py-0.5 rounded bg-amber-100 text-amber-900 font-bold text-xs">Compañero B</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="mt-3 p-3.5 rounded-xl bg-amber-50 border-l-4 border-amber-500 text-xs text-amber-950">
+          <strong>⚠️ Atención con las unidades físicas:</strong> Los residuos de extracción se informan en <strong>kilogramos (kg)</strong> (masa sólida de hollejos, semillas y escobajos) y la merma de transformación se informa en <strong>litros (L)</strong> (volumen líquido). <strong>Nunca sumen directamente kilogramos de residuo y litros de merma.</strong>
+        </div>
+      </div>
+
+      <!-- Códigos de C, B y A en Actividad 3 -->
+      <div class="space-y-6 my-8">
+        <!-- Compañero C -->
+        <div class="rounded-2xl border-2 border-emerald-600 bg-white overflow-hidden shadow-sm">
+          <div class="p-4 bg-emerald-700 text-white font-black text-sm flex items-center justify-between">
+            <span>1. Compañero C · API de Transformación (Vino, Vinagre y Merma)</span>
+            <span class="font-mono text-xs bg-emerald-900 px-2.5 py-0.5 rounded">POST /api/transformar/</span>
+          </div>
+          <div class="p-5 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            <div class="lg:col-span-8">
+              <CodeBlock
+                lang="python"
+                title="Compañero C — api/views.py"
+                code={`from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .utiles import leer_numero
+
+
+@api_view(["POST"])
+def transformar(request):
+    try:
+        litros = leer_numero(request.data, "litros_jugo")
+        if not 0 < litros <= 7000:
+            raise ValueError("litros_jugo debe ser mayor que 0 y hasta 7000")
+    except ValueError as error:
+        return Response({"error": str(error)}, status=400)
+
+    return Response({
+        "litros_vino": litros * 0.80,
+        "litros_vinagre": litros * 0.10,
+        "litros_merma_proceso": litros * 0.10
+    })`}
+              />
+            </div>
+            <div class="lg:col-span-4">
+              <CodeBlock
+                lang="python"
+                title="Compañero C — api/urls.py"
+                code={`from django.urls import path
+from .views import transformar
+
+urlpatterns = [
+    path("transformar/", transformar)
+]`}
+              />
+              <p class="!text-xs text-slate-600 mt-3 !mb-0">
+                Como el lote máximo de uva en B es <code>10 000 kg</code> y el rendimiento de jugo es <code>70%</code>, C valida que <code>litros_jugo</code> no supere los <code>7 000 L</code>.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Compañero B -->
+        <div class="rounded-2xl border-2 border-amber-500 bg-white overflow-hidden shadow-sm">
+          <div class="p-4 bg-amber-500 text-slate-950 font-black text-sm flex items-center justify-between">
+            <span>2. Compañero B · Extracción, Llamada a C y Cálculo de Copas</span>
+            <span class="font-mono text-xs bg-slate-900 text-amber-300 px-2.5 py-0.5 rounded">POST /api/procesar-lote/</span>
+          </div>
+          <div class="p-5 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            <div class="lg:col-span-8">
+              <CodeBlock
+                lang="python"
+                title="Compañero B — api/views.py"
+                code={`import math
+import requests
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .utiles import leer_numero
+
+URL_TRANSFORMACION = "http://192.168.1.30:8000/api/transformar/"
+
+
+@api_view(["POST"])
+def procesar_lote(request):
+    try:
+        kg = leer_numero(request.data, "kg_uva")
+        if not 0 < kg <= 10000:
+            raise ValueError("kg_uva debe ser mayor que 0 y hasta 10000")
+    except ValueError as error:
+        return Response({"error": str(error)}, status=400)
+
+    kg_jugo = kg * 0.70
+    kg_residuo = kg * 0.30
+    litros_jugo = kg_jugo / 1.0
+
+    try:
+        respuesta = requests.post(
+            URL_TRANSFORMACION,
+            json={"litros_jugo": litros_jugo},
+            timeout=5
+        )
+        respuesta.raise_for_status()
+        datos = respuesta.json()
+        vino = leer_numero(datos, "litros_vino")
+        vinagre = leer_numero(datos, "litros_vinagre")
+        merma = leer_numero(datos, "litros_merma_proceso")
+        if min(vino, vinagre, merma) < 0:
+            raise ValueError("Cantidades negativas")
+        if not math.isclose(vino + vinagre + merma, litros_jugo):
+            raise ValueError("El volumen recibido no coincide")
+    except (requests.RequestException, ValueError):
+        return Response(
+            {"error": "C no respondió con un resultado válido"},
+            status=502
+        )
+
+    # Se redondea solo para corregir ruido de coma flotante.
+    copas = math.floor(round(vino / 0.150, 9))
+    sobrante = max(0.0, vino - copas * 0.150)
+
+    return Response({
+        "kg_uva": kg,
+        "kg_jugo_extraido": round(kg_jugo, 3),
+        "kg_residuo_extraccion": round(kg_residuo, 3),
+        "litros_jugo": round(litros_jugo, 3),
+        "litros_vino": round(vino, 3),
+        "litros_vinagre": round(vinagre, 3),
+        "litros_merma_proceso": round(merma, 3),
+        "ml_por_copa": 150,
+        "copas_completas": copas,
+        "litros_vino_sobrante": round(sobrante, 3)
+    })`}
+              />
+            </div>
+            <div class="lg:col-span-4 space-y-4">
+              <CodeBlock
+                lang="python"
+                title="Compañero B — api/urls.py"
+                code={`from django.urls import path
+from .views import procesar_lote
+
+urlpatterns = [
+    path("procesar-lote/", procesar_lote)
+]`}
+              />
+              <div class="p-4 rounded-xl bg-amber-50 border border-amber-300 text-xs text-slate-800 space-y-2">
+                <div><strong>🔍 Detalle sobre <code>math.isclose</code>:</strong> B verifica que <code>vino + vinagre + merma</code> coincida exactamente con <code>litros_jugo</code> antes de dar por buena la respuesta de C.</div>
+                <div><strong>🍷 Detalle sobre <code>math.floor</code>:</strong> Usamos <code>math.floor(round(vino / 0.150, 9))</code> porque solo se pueden vender o servir <strong>copas completas de 150 mL</strong>; la fracción restante queda como <code>litros_vino_sobrante</code>.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Compañero A -->
+        <div class="rounded-2xl border-2 border-slate-900 bg-white overflow-hidden shadow-sm">
+          <div class="p-4 bg-slate-900 text-white font-black text-sm flex items-center justify-between">
+            <span>3. Compañero A · Envío del Lote de Uva y Recepción del Informe</span>
+            <span class="font-mono text-xs bg-slate-800 text-emerald-300 px-2.5 py-0.5 rounded">cliente_vino.py</span>
+          </div>
+          <div class="p-5 grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+            <div>
+              <CodeBlock
+                lang="python"
+                title="Compañero A — cliente_vino.py"
+                code={`import requests
+
+URL = "http://192.168.1.20:8000/api/procesar-lote/"
+
+try:
+    respuesta = requests.post(URL, json={"kg_uva": 100}, timeout=10)
+    print("Código HTTP:", respuesta.status_code)
+    print("Informe:", respuesta.json())
+except (requests.RequestException, ValueError) as error:
+    print("No se pudo obtener el informe:", error)`}
+              />
+            </div>
+            <div>
+              <span class="text-xs font-mono font-black text-emerald-800 block mb-1">
+                Respuesta esperada para 100 kg — 200 OK:
+              </span>
+              <CodeBlock
+                lang="json"
+                title="Informe JSON recibido por A"
+                code={`{
+  "kg_uva": 100.0,
+  "kg_jugo_extraido": 70.0,
+  "kg_residuo_extraccion": 30.0,
+  "litros_jugo": 70.0,
+  "litros_vino": 56.0,
+  "litros_vinagre": 7.0,
+  "litros_merma_proceso": 7.0,
+  "ml_por_copa": 150,
+  "copas_completas": 373,
+  "litros_vino_sobrante": 0.05
+}`}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- SECCIÓN 7: ENTREGA DEL EQUIPO, PREGUNTAS DE REFLEXIÓN Y RÚBRICA     -->
+    <!-- =================================================================== -->
+    <section id="entrega-evaluacion" class="my-10">
+      <div class="rounded-3xl border-2 border-slate-900 bg-white overflow-hidden shadow-[6px_6px_0px_#0f172a]">
+        <div class="bg-[#0c4a3f] text-white p-6 border-b-2 border-slate-900 flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <span class="text-xs font-mono font-black uppercase tracking-wider text-emerald-300 block mb-1">
+              PAUTA DE ENTREGA Y EVALUACIÓN COLABORATIVA
+            </span>
+            <h2 class="!text-2xl font-black !text-white !m-0">
+              7. Entrega del Equipo, Preguntas de Reflexión y Rúbrica (20 Puntos)
+            </h2>
+          </div>
+          <span class="px-4 py-1.5 rounded-xl bg-amber-400 text-slate-950 font-black text-sm border-2 border-slate-900 shadow-[2px_2px_0px_#0f172a]">
+            Total: 20 Puntos
+          </span>
+        </div>
+
+        <div class="p-6 space-y-6">
+          <!-- Checklist de entrega -->
+          <div>
+            <h3 class="text-lg font-black text-slate-900 !mt-0 mb-3">
+              📦 Elementos que debe incluir la Entrega del Equipo
+            </h3>
+            <ol class="space-y-2 text-sm text-slate-800 list-decimal pl-5 font-medium">
+              <li><strong>Nombres y roles</strong> de los participantes en cada una de las 3 actividades.</li>
+              <li><strong>Esquema de solicitudes y respuestas</strong> indicando IP, puerto y ruta de cada servidor.</li>
+              <li><strong>Código fuente completo</strong> de los clientes y de cada API, incluyendo <code>utiles.py</code> y <code>urls.py</code>.</li>
+              <li><strong>Capturas de pantalla</strong> de los resultados correctos y de al menos un error por actividad (incluyendo las terminales de B y C para evidenciar la cadena).</li>
+              <li><strong>Tabla del caso del vino</strong> con entrada, rendimientos, productos, residuos y copas indicando claramente las unidades (<code>kg</code>, <code>L</code>, <code>mL</code>, <code>copas</code>).</li>
+              <li><strong>Explicación breve</strong> de qué sucedió al detener el tercer servidor (C) y qué compañero devolvió el error <code>502</code>.</li>
+            </ol>
+          </div>
+
+          <!-- Preguntas de reflexión con autoverificación -->
+          <div class="p-5 rounded-2xl bg-slate-50 border-2 border-slate-200 space-y-3">
+            <h3 class="text-base font-black text-slate-900 !mt-0 mb-1">
+              🧠 Preguntas de Reflexión del Informe (Haz clic para contrastar tu respuesta)
+            </h3>
+
+            <details class="rounded-xl border border-slate-300 bg-white overflow-hidden">
+              <summary class="cursor-pointer px-4 py-3 font-bold text-sm text-slate-900 hover:bg-slate-50 flex items-center justify-between">
+                <span>1. ¿Qué diferencia hay entre validar los datos y hacer el cálculo?</span>
+                <span class="text-xs font-mono text-emerald-700">Ver guía ↓</span>
+              </summary>
+              <div class="px-4 py-3 bg-emerald-50/60 border-t border-slate-200 text-xs sm:text-sm text-slate-800">
+                <strong>Validar</strong> consiste en comprobar que las entradas existan, sean del tipo correcto (números JSON finitos) y cumplan las reglas del dominio (ej. no dividir entre cero o que <code>0 &lt; kg_uva &lt;= 10000</code>) antes de gastar recursos o llamar a otros servidores. <strong>Hacer el cálculo</strong> consiste en aplicar las fórmulas matemáticas sobre datos que ya sabemos que son seguros y consistentes.
+              </div>
+            </details>
+
+            <details class="rounded-xl border border-slate-300 bg-white overflow-hidden">
+              <summary class="cursor-pointer px-4 py-3 font-bold text-sm text-slate-900 hover:bg-slate-50 flex items-center justify-between">
+                <span>2. ¿Por qué el segundo compañero (B) espera una respuesta del tercero (C) antes de responder al primero (A)?</span>
+                <span class="text-xs font-mono text-emerald-700">Ver guía ↓</span>
+              </summary>
+              <div class="px-4 py-3 bg-emerald-50/60 border-t border-slate-200 text-xs sm:text-sm text-slate-800">
+                Porque la comunicación HTTP con <code>requests.post()</code> es <strong>síncrona</strong> y B necesita los litros de vino calculados por C para poder ejecutar su segunda etapa (calcular las copas completas de 150 mL y el vino sobrante) e incluir todos los datos en un único informe JSON para A.
+              </div>
+            </details>
+
+            <details class="rounded-xl border border-slate-300 bg-white overflow-hidden">
+              <summary class="cursor-pointer px-4 py-3 font-bold text-sm text-slate-900 hover:bg-slate-50 flex items-center justify-between">
+                <span>3. ¿Por qué no se pueden sumar directamente kilogramos de residuo y litros de merma?</span>
+                <span class="text-xs font-mono text-emerald-700">Ver guía ↓</span>
+              </summary>
+              <div class="px-4 py-3 bg-emerald-50/60 border-t border-slate-200 text-xs sm:text-sm text-slate-800">
+                Porque miden magnitudes físicas distintas en etapas diferentes: el residuo de extracción se mide en <strong>kilogramos (masa sólida)</strong>, mientras que la merma del proceso de transformación se mide en <strong>litros (volumen líquido)</strong>. Cada etapa tiene su propio balance independiente.
+              </div>
+            </details>
+
+            <details class="rounded-xl border border-slate-300 bg-white overflow-hidden">
+              <summary class="cursor-pointer px-4 py-3 font-bold text-sm text-slate-900 hover:bg-slate-50 flex items-center justify-between">
+                <span>4. ¿Por qué redondeamos hacia abajo (<code>math.floor</code>) al contar copas completas?</span>
+                <span class="text-xs font-mono text-emerald-700">Ver guía ↓</span>
+              </summary>
+              <div class="px-4 py-3 bg-emerald-50/60 border-t border-slate-200 text-xs sm:text-sm text-slate-800">
+                Porque cada copa estándar requiere <strong>exactamente 150 mL (0.150 L)</strong>. Si con 56 L de vino obtenemos <code>56 / 0.150 = 373.333...</code>, ese <code>0.333</code> de copa (50 mL) no alcanza para llenar la copa número 374, por lo que se contabilizan <strong>373 copas completas</strong> y <strong>0.050 L de vino sobrante</strong>.
+              </div>
+            </details>
+          </div>
+
+          <!-- Rúbrica 20 puntos -->
+          <div>
+            <h3 class="text-base font-black text-slate-900 !mt-0 mb-3">
+              📊 Distribución de Puntaje — 20 Puntos
+            </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+              <div class="p-4 rounded-2xl border-2 border-emerald-600/60 bg-emerald-50/70">
+                <div class="font-mono font-black text-lg text-emerald-900">4 Puntos</div>
+                <div class="font-bold text-sm text-slate-900">Actividad 1</div>
+                <p class="!text-xs !text-slate-600 !mb-0 mt-1">
+                  Calculadora entre 2 compañeros funcionando con las 4 operaciones y errores 400.
+                </p>
+              </div>
+              <div class="p-4 rounded-2xl border-2 border-cyan-600/60 bg-cyan-50/70">
+                <div class="font-mono font-black text-lg text-cyan-900">5 Puntos</div>
+                <div class="font-bold text-sm text-slate-900">Actividad 2</div>
+                <p class="!text-xs !text-slate-600 !mb-0 mt-1">
+                  Cadena de 3 compañeros (A → B → C) con validación previa en B y manejo de 502.
+                </p>
+              </div>
+              <div class="p-4 rounded-2xl border-2 border-rose-700/60 bg-rose-50/70">
+                <div class="font-mono font-black text-lg text-rose-900">7 Puntos</div>
+                <div class="font-bold text-sm text-slate-900">Actividad 3</div>
+                <p class="!text-xs !text-slate-600 !mb-0 mt-1">
+                  Distribuidora de vino completa (100 kg y 50 kg), balances, copas y sobrante.
+                </p>
+              </div>
+              <div class="p-4 rounded-2xl border-2 border-amber-500/70 bg-amber-50/70">
+                <div class="font-mono font-black text-lg text-amber-900">4 Puntos</div>
+                <div class="font-bold text-sm text-slate-900">Evidencias y Flujo</div>
+                <p class="!text-xs !text-slate-600 !mb-0 mt-1">
+                  Esquema de IPs/rutas, capturas de terminales, tabla con unidades y preguntas de reflexión.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PONTE A PRUEBA -->
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>Comprueba tu comprensión del flujo de APIs en cadena, los códigos 400 vs 502 y los cálculos de la distribuidora de vino.</p>
+      <DjangoQuizModal quizKey="tarea-colaborativa-apis" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/django/consumiendo-api-rest/" class="prev">← 9. Consumiendo API REST con requests</a>
+      <a href="/course/django/drf-jwt/" class="next">11. Django REST Framework y JWT →</a>
+    </nav>
+  </article>
+</Layout>

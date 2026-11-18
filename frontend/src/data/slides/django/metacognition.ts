@@ -405,6 +405,48 @@ export function getMetaQuestionsForLesson(lessonSlug: string): MetaReflectionQue
       ];
       break;
 
+    case 'consumiendo-api-rest':
+      specific = [
+        {
+          id: 5,
+          category: 'CourseSpecific',
+          title: '5. Django como Intermediario y Limpiador de Datos',
+          questionText: '¿Qué ventajas tiene consumir APIs externas (como Clima, Rick & Morty o PokéAPI) desde una vista de Django en lugar de llamarlas directamente desde el navegador del usuario?',
+          promptHint: 'Piensa en ocultar API Keys privadas, transformar JSON complejos de 1.000 líneas en respuestas simples y evitar bloqueos de CORS.',
+          keyTakeaway: 'Usar tu backend como pasarela permite proteger credenciales, normalizar unidades y entregar al frontend únicamente los datos que necesita.'
+        },
+        {
+          id: 6,
+          category: 'CourseSpecific',
+          title: '6. Resiliencia ante Caídas de Terceros',
+          questionText: '¿Qué ocurriría con tu aplicación si la API del clima cae y tus vistas no tienen configurado timeout=5 ni try/except RequestException?',
+          promptHint: 'Imagina qué pasa con los hilos de tu servidor web si cada petición se queda esperando eternamente una respuesta externa.',
+          keyTakeaway: 'Configurar timeouts y capturar excepciones de red garantiza que una falla en un servicio externo nunca derribe tu propia plataforma.'
+        }
+      ];
+      break;
+
+    case 'tarea-colaborativa-apis':
+      specific = [
+        {
+          id: 5,
+          category: 'CourseSpecific',
+          title: '5. Separación entre Validación y Cálculo en Red',
+          questionText: '¿Por qué es una ventaja arquitectónica que el servidor B valide y filtre los datos erróneos (respondiendo 400) antes de invocar al servidor C?',
+          promptHint: 'Piensa en qué ocurriría en un sistema real si miles de peticiones con datos mal formados viajaran por toda la cadena de servidores.',
+          keyTakeaway: 'Validar en la frontera (servidor B) ahorra ancho de banda, protege a los servicios internos (C) y entrega respuestas de error inmediatas.'
+        },
+        {
+          id: 6,
+          category: 'CourseSpecific',
+          title: '6. Diagnóstico de Errores en Cadena (400 vs 502)',
+          questionText: '¿Cómo les ayudó distinguir entre el código 400 (datos inválidos) y el código 502 (servidor C inalcanzable o respuesta inválida) al probar en equipo?',
+          promptHint: 'Reflexiona sobre cómo sabe el compañero A si el problema está en los datos que él envió o en la conexión entre B y C.',
+          keyTakeaway: 'Usar códigos HTTP semánticos (400 vs 502) permite identificar en segundos cuál eslabón de la cadena falló.'
+        }
+      ];
+      break;
+
     case 'drf-jwt':
       specific = [
         {

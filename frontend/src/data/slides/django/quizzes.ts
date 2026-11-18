@@ -733,72 +733,202 @@ export const seguridadQuiz: QuizQuestion[] = [
 ];
 
 // ============================================================================
-// 8. APIS RESTFUL
+// 8. APIS RESTFUL (TAREA 1: GET Y POST EN DRF)
 // ============================================================================
 export const apisRestfulQuiz: QuizQuestion[] = [
   {
     id: 1,
     kind: 'TrueFalse',
     title: '🧪 Desafío (1/5) · TrueFalse',
-    questionText: 'En una API RESTful, las URLs deben representar recursos en sustantivo (ej: /api/vehiculos/) y la acción a ejecutar la determina el verbo HTTP (GET, POST, DELETE).',
+    questionText: 'En la Tarea 1, cuando enviamos el nombre mediante GET (por ejemplo /api/saludar/?nombre=Ana), el dato viaja como parámetro de consulta en la URL y lo leemos con request.query_params.',
     correctAnswer: true,
     labels: { trueText: 'VERDADERO', falseText: 'FALSO' },
-    explanation: '¡VERDADERO! En REST, nunca creamos URLs como /api/borrarVehiculo4. Usamos DELETE /api/vehiculos/4/.'
+    explanation: '¡VERDADERO! En una petición GET el parámetro ?nombre=Ana viaja en la dirección URL y Django REST Framework lo expone en el diccionario request.query_params.'
   },
   {
     id: 2,
     kind: 'MultipleChoice',
     title: '🧪 Desafío (2/5) · MultipleChoice',
-    questionText: '¿Qué código de estado HTTP estándar debe devolver una API tras crear exitosamente un nuevo registro en la base de datos mediante POST?',
+    questionText: '¿Dónde se envía el nombre al usar el método POST hacia http://127.0.0.1:8000/api/saludar/ y con qué atributo se lee en la vista?',
     options: [
-      '201 Created',
-      '200 OK',
-      '204 No Content',
-      '202 Accepted'
+      'Se envía en el cuerpo JSON (Body → raw → JSON) y se lee con request.data',
+      'Se envía en la barra de título del navegador y se lee con request.url',
+      'Se envía en el archivo settings.py y se lee con request.META',
+      'Se envía como parámetro ?nombre= en la URL y se lee con request.query_params'
     ],
     correctOption: 0,
-    explanation: '¡CORRECTO! 201 Created indica formalmente que la petición fue procesada y un nuevo recurso fue materializado en el servidor.'
+    explanation: '¡CORRECTO! Con POST la URL va sin parámetros y los datos viajan dentro del cuerpo JSON (por ejemplo {"nombre": "Pedro"}), que leemos en DRF mediante request.data.'
   },
   {
     id: 3,
     kind: 'FillInTheBlank',
     title: '🧪 Desafío (3/5) · FillInTheBlank',
-    questionText: 'La clase nativa de Django que devuelve respuestas con encabezado Content-Type: application/json se llama ____________.',
-    code: `return ____________({'mensaje': 'Operación exitosa'})`,
-    options: ['JsonResponse', 'HttpResponse', 'JSONView', 'RestResponse'],
+    questionText: 'Para que nuestra función saludar(request) en Django REST Framework acepte tanto solicitudes GET como POST, debemos colocar sobre ella el decorador:',
+    code: `@________(["GET", "POST"])\ndef saludar(request):`,
+    options: ['api_view', 'login_required', 'csrf_exempt', 'rest_method'],
     correctOption: 0,
-    explanation: '¡CORRECTO! JsonResponse convierte diccionarios y listas a formato JSON y fija los encabezados HTTP apropiados.'
+    explanation: '¡CORRECTO! El decorador @api_view(["GET", "POST"]) de rest_framework.decorators habilita ambos métodos HTTP y activa la interfaz de pruebas de DRF.'
   },
   {
     id: 4,
     kind: 'MatchPairs',
     title: '🧪 Desafío (4/5) · MatchPairs',
-    questionText: 'Empareja los verbos HTTP con su acción semántica:',
+    questionText: 'Empareja cada caso de prueba de la Tarea 1 con la respuesta JSON exacta que devuelve el servidor:',
     pairs: [
-      { id: 'p1', left: 'GET', right: 'Consultar o listar datos sin alterar el estado del servidor' },
-      { id: 'p2', left: 'POST', right: 'Crear un nuevo recurso en la base de datos' },
-      { id: 'p3', left: 'DELETE', right: 'Eliminar permanentemente el recurso especificado' }
+      { id: 'p1', left: 'GET /api/saludar/?nombre=Ana', right: '{"mensaje": "Hola, Ana", "metodo": "GET"}' },
+      { id: 'p2', left: 'POST /api/saludar/ con {"nombre": "Pedro"}', right: '{"mensaje": "Hola, Pedro", "metodo": "POST"}' },
+      { id: 'p3', left: 'POST /api/saludar/ con JSON vacío {}', right: '{"mensaje": "Hola, estudiante", "metodo": "POST"}' }
     ],
-    explanation: '¡EXCELENTE! El uso correcto de verbos HTTP garantiza que clientes móviles y frontend entiendan el contrato de tu API.'
+    explanation: '¡EXCELENTE! Cuando se envía "nombre" se saluda a esa persona, y cuando se omite (en GET sin parámetros o POST con {}) se utiliza el valor por defecto "estudiante".'
   },
   {
     id: 5,
     kind: 'FindTheBug',
     title: '🧪 Desafío (5/5) · FindTheBug',
-    questionText: '¿Qué práctica anti-patrón comete un desarrollador si devuelve código 200 OK cuando los datos enviados por el cliente son inválidos?',
+    questionText: 'Un estudiante intenta probar el Caso B (POST) en Postman enviando {"nombre": "Pedro"}, pero la API sigue respondiendo "Hola, estudiante". ¿Cuál es la causa más común en Postman?',
     options: [
-      'Debe devolver código 400 Bad Request para que el cliente detecte el error en sus interceptores HTTP',
-      'Debe devolver código 500 Server Error',
-      'Debe reiniciar el servidor',
-      'No hay ningún problema, 200 siempre es correcto'
+      'Olvidó seleccionar Body → raw → JSON en Postman o escribió mal la clave "nombre"',
+      'No creó un modelo en models.py',
+      'Falta crear un superusuario con createsuperuser',
+      'Django REST Framework no permite enviar nombres propios con POST'
     ],
     correctOption: 0,
-    explanation: '¡CORRECTO! Devolver 200 OK con un cuerpo {"error": "campo requerido"} confunde a librerías como Axios o Fetch. Los errores de validación de cliente deben ser 400 Bad Request.'
+    explanation: '¡CORRECTO! Si en Postman no seleccionas Body → raw → JSON (o si envías como Text o escribes otra clave), request.data no encontrará "nombre" y usará el valor por defecto "estudiante".'
   }
 ];
 
 // ============================================================================
-// 9. DRF Y JWT
+// 9. CONSUMIENDO API REST CON REQUESTS (TIEMPO, RICK & MORTY, POKÉMON)
+// ============================================================================
+export const consumiendoApiRestQuiz: QuizQuestion[] = [
+  {
+    id: 1,
+    kind: 'TrueFalse',
+    title: '🧪 Desafío (1/5) · TrueFalse',
+    questionText: 'Al consumir una API externa desde una vista de Django con requests.get(url, timeout=5), el método respuesta.json() convierte el cuerpo JSON recibido en un diccionario o lista nativa de Python.',
+    correctAnswer: true,
+    labels: { trueText: 'VERDADERO', falseText: 'FALSO' },
+    explanation: '¡VERDADERO! respuesta.json() parsea automáticamente el texto JSON de la API externa para que puedas usar .get() y recorrer sus claves en Python.'
+  },
+  {
+    id: 2,
+    kind: 'MultipleChoice',
+    title: '🧪 Desafío (2/5) · MultipleChoice',
+    questionText: '¿Por qué es una regla de oro incluir timeout=5 y un bloque try / except requests.RequestException cuando tu vista de Django consulta una API externa?',
+    options: [
+      'Para evitar que una caída o tardanza del servidor externo deje colgado a tu servidor Django o provoque un Error 500 no controlado',
+      'Porque sin timeout la librería requests no permite usar el método GET',
+      'Porque acelera la descarga de imágenes en el navegador',
+      'Porque reemplaza al archivo urls.py'
+    ],
+    correctOption: 0,
+    explanation: '¡CORRECTO! Nunca debes confiar ciegamente en que un servidor de terceros responderá rápido. Con timeout y RequestException devuelves un error controlado (ej. 503).'
+  },
+  {
+    id: 3,
+    kind: 'FillInTheBlank',
+    title: '🧪 Desafío (3/5) · FillInTheBlank',
+    questionText: 'Para enviar parámetros de consulta como latitude y longitude a la API del Tiempo (Open-Meteo) sin concatenar cadenas a mano, usamos el argumento ______ en requests.get():',
+    code: `res = requests.get(url, ______={"latitude": -33.45, "longitude": -70.66})`,
+    options: ['params', 'body', 'headers', 'context'],
+    correctOption: 0,
+    explanation: '¡CORRECTO! El argumento params recibe un diccionario y construye automáticamente la Query String (?latitude=-33.45&longitude=-70.66).'
+  },
+  {
+    id: 4,
+    kind: 'MatchPairs',
+    title: '🧪 Desafío (4/5) · MatchPairs',
+    questionText: 'Empareja cada una de las 3 APIs consumidas en este módulo con la estructura de datos que extraemos de su JSON:',
+    pairs: [
+      { id: 'p1', left: 'API del Tiempo (Open-Meteo)', right: 'current_weather -> temperature (°C) y windspeed (km/h)' },
+      { id: 'p2', left: 'Rick and Morty API', right: 'name, status, species y diccionario anidado origin.name' },
+      { id: 'p3', left: 'PokéAPI (Pokémon)', right: 'weight convertido a kg y listas de types y abilities' }
+    ],
+    explanation: '¡EXCELENTE! Has identificado con precisión cómo se estructura y transforma la respuesta de cada servicio externo.'
+  },
+  {
+    id: 5,
+    kind: 'FindTheBug',
+    title: '🧪 Desafío (5/5) · FindTheBug',
+    questionText: 'En el ejemplo de PokéAPI, ¿por qué dividimos entre 10 el valor de datos.get("weight") antes de enviarlo en nuestro Response de Django?',
+    options: [
+      'Porque PokéAPI entrega el peso en hectogramos (hg) y al dividir entre 10 lo entregamos limpio en kilogramos (kg)',
+      'Porque Python no soporta números mayores a 100',
+      'Para reducir el tamaño del archivo JSON',
+      'Porque Django exige que todos los números sean decimales'
+    ],
+    correctOption: 0,
+    explanation: '¡CORRECTO! Uno de los grandes beneficios de consumir APIs externas desde tu backend es normalizar unidades y limpiar los datos antes de entregarlos al cliente.'
+  }
+];
+
+// ============================================================================
+// 10. TAREA COLABORATIVA: APIS EN EQUIPO (CALCULADORA Y DISTRIBUIDORA DE VINO)
+// ============================================================================
+export const tareaColaborativaApisQuiz: QuizQuestion[] = [
+  {
+    id: 1,
+    kind: 'TrueFalse',
+    title: '🧪 Desafío (1/5) · TrueFalse',
+    questionText: 'En la Actividad 3 (Distribuidora de Vino), el servidor B no necesita ser llamado de vuelta por C en una ruta nueva; B simplemente recibe la respuesta HTTP del requests.post() que le envió a C, calcula las copas completas y responde a A.',
+    correctAnswer: true,
+    labels: { trueText: 'VERDADERO', falseText: 'FALSO' },
+    explanation: '¡VERDADERO! La llamada requests.post() que hace B hacia C es síncrona: B espera la respuesta de C, continúa ejecutando el cálculo de copas y devuelve el informe completo a A.'
+  },
+  {
+    id: 2,
+    kind: 'MultipleChoice',
+    title: '🧪 Desafío (2/5) · MultipleChoice',
+    questionText: 'Según los acuerdos del equipo, ¿qué código de estado HTTP debe devolver el servidor B cuando los datos enviados por A son inválidos vs cuando el servidor C no responde?',
+    options: [
+      '400 Bad Request para datos inválidos y 502 Bad Gateway cuando no puede comunicarse con el servidor C',
+      '200 OK en todos los casos',
+      '404 para datos inválidos y 302 cuando C está apagado',
+      '500 para datos inválidos y 201 cuando C no responde'
+    ],
+    correctOption: 0,
+    explanation: '¡CORRECTO! 400 indica que la solicitud del cliente tiene datos erróneos, mientras que 502 (Bad Gateway) indica que el servidor intermediario (B) no recibió una respuesta válida del servidor aguas arriba (C).'
+  },
+  {
+    id: 3,
+    kind: 'FillInTheBlank',
+    title: '🧪 Desafío (3/5) · FillInTheBlank',
+    questionText: 'Para contar únicamente las copas completas de 150 mL (0.150 L) sin redondear hacia arriba una copa incompleta, utilizamos la función matemática math.________:',
+    code: `copas = math.________(round(vino / 0.150, 9))`,
+    options: ['floor', 'ceil', 'sqrt', 'isnan'],
+    correctOption: 0,
+    explanation: '¡CORRECTO! math.floor obtiene la parte entera redondeando hacia abajo (con 56 L de vino: 56 / 0.150 = 373.333 -> 373 copas completas y 0.05 L sobrantes).'
+  },
+  {
+    id: 4,
+    kind: 'MatchPairs',
+    title: '🧪 Desafío (4/5) · MatchPairs',
+    questionText: 'Para un lote de 100 kg de uva en la Actividad 3, empareja cada etapa con el resultado exacto calculado:',
+    pairs: [
+      { id: 'p1', left: 'Extracción en B (70% jugo / 30% residuo)', right: '70 kg de jugo (70 L) y 30 kg de residuo sólido' },
+      { id: 'p2', left: 'Transformación en C (80% vino / 10% vinagre / 10% merma)', right: '56 L de vino, 7 L de vinagre y 7 L de merma líquida' },
+      { id: 'p3', left: 'Envasado en B (copas de 0.150 L)', right: '373 copas completas y 0.05 L (50 mL) de vino sobrante' }
+    ],
+    explanation: '¡EXCELENTE! Dominas el balance completo de masa (kg) y volumen (L) de toda la cadena de producción.'
+  },
+  {
+    id: 5,
+    kind: 'FindTheBug',
+    title: '🧪 Desafío (5/5) · FindTheBug',
+    questionText: 'Un equipo suma los 30 kg de residuo de extracción con los 7 L de merma líquida e informa "37 de pérdida total". ¿Por qué es incorrecto?',
+    options: [
+      'Porque no se pueden sumar directamente kilogramos (masa sólida de extracción) con litros (volumen líquido del proceso de transformación)',
+      'Porque 30 + 7 da 40',
+      'Porque la merma debe multiplicarse por 150',
+      'Porque el residuo solo existe en lotes mayores a 5 000 kg'
+    ],
+    correctOption: 0,
+    explanation: '¡CORRECTO! El residuo de extracción está medido en kilogramos (kg) y la merma de transformación en litros (L). Son magnitudes distintas en etapas separadas.'
+  }
+];
+
+// ============================================================================
+// 11. DRF Y JWT
 // ============================================================================
 export const drfJwtQuiz: QuizQuestion[] = [
   {
@@ -1257,6 +1387,12 @@ export function getQuizForLesson(lessonSlug: string): QuizQuestion[] {
 
     case 'apis-restful':
       return apisRestfulQuiz;
+
+    case 'consumiendo-api-rest':
+      return consumiendoApiRestQuiz;
+
+    case 'tarea-colaborativa-apis':
+      return tareaColaborativaApisQuiz;
 
     case 'drf-jwt':
       return drfJwtQuiz;

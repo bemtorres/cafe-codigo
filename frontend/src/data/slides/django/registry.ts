@@ -21,6 +21,8 @@ import { modeloBdLibrarySlides } from './modelo-bd-library';
 import { adminCrudSlides } from './admin-crud';
 import { seguridadSlides } from './seguridad';
 import { apisRestfulSlides } from './apis-restful';
+import { consumiendoApiRestSlides } from './consumiendo-api-rest';
+import { tareaColaborativaApisSlides } from './tarea-colaborativa-apis';
 import { drfJwtSlides } from './drf-jwt';
 import { proyectoIntegradorSlides } from './proyecto-integrador';
 
@@ -44,6 +46,8 @@ export {
   adminCrudSlides,
   seguridadSlides,
   apisRestfulSlides,
+  consumiendoApiRestSlides,
+  tareaColaborativaApisSlides,
   drfJwtSlides,
   proyectoIntegradorSlides,
 };
@@ -133,6 +137,12 @@ export function getSlidesForLesson(lessonSlug: string): Slide[] {
 
     case 'apis-restful':
       return apisRestfulSlides;
+
+    case 'consumiendo-api-rest':
+      return consumiendoApiRestSlides;
+
+    case 'tarea-colaborativa-apis':
+      return tareaColaborativaApisSlides;
 
     case 'drf-jwt':
       return drfJwtSlides;

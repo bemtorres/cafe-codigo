@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@astrojs/check": "^0.9.12",
-    "@astrojs/react": "^7.1.2",
+    "@astrojs/react": "^7.1.9",
     "@codemirror/lang-cpp": "^6.0.3",
     "@codemirror/lang-java": "^6.0.2",
     "@codemirror/lang-javascript": "^6.2.5",
@@ -37,7 +37,7 @@
     "@types/react-dom": "^19.2.3",
     "@uiw/react-codemirror": "^4.25.11",
     "@xyflow/react": "^12.11.6",
-    "astro": "^7.4.5",
+    "astro": "^7.4.12",
     "chart.js": "^4.5.1",
     "lucide-react": "^1.70.0",
     "mermaid": "^11.17.0",

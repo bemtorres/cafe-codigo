@@ -4,9 +4,9 @@ export const proyectoIntegradorSlides: Slide[] = [
   {
     id: 1,
     type: 'cover',
-    title: '10. Proyecto Integrador: De la Idea a Producción 🏆',
+    title: '12. Proyecto Integrador: De la Idea a Producción 🏆',
     subtitle: 'Arquitectura completa de producción, variables de entorno, Docker, Gunicorn y checklist de despliegue',
-    badge: 'Django · Lección 10',
+    badge: 'Django · Lección 12',
     content: 'Integra todo lo aprendido a lo largo del curso en un proyecto backend profesional listo para producción. Veremos arquitectura en capas, variables de entorno con .env, recolección de estáticos con collectstatic y servidores WSGI.',
     bulletPoints: [
       '🏗️ Arquitectura en capas para proyectos reales de gran escala',

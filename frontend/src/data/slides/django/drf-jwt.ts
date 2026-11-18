@@ -4,9 +4,9 @@ export const drfJwtSlides: Slide[] = [
   {
     id: 1,
     type: 'cover',
-    title: '9. Django REST Framework y JWT: APIs de Nivel Senior ⚡',
+    title: '11. Django REST Framework y JWT: APIs de Nivel Senior ⚡',
     subtitle: 'ModelSerializer, ViewSets, Routers y Autenticación con JSON Web Tokens (SimpleJWT)',
-    badge: 'Django · Lección 9',
+    badge: 'Django · Lección 11',
     content: 'Domina Django REST Framework (DRF), la librería estándar para construir APIs industriales en Python. Implementaremos serializadores automáticos, ViewSets con routers y autenticación segura con tokens JWT.',
     bulletPoints: [
       '📦 Serializadores de alto nivel: ModelSerializer y validaciones de campo',
@@ -154,6 +154,6 @@ urlpatterns = [
       '✅ Implementas el flujo de Access Token y Refresh Token con SimpleJWT.',
       '✅ Proteges endpoints para requerir usuarios autenticados.'
     ],
-    keyTakeaway: 'En el Módulo 10 reuniremos todo lo aprendido en el Proyecto Integrador final con checklist de despliegue.'
+    keyTakeaway: 'En el Módulo 12 reuniremos todo lo aprendido en el Proyecto Integrador final con checklist de despliegue.'
   }
 ];

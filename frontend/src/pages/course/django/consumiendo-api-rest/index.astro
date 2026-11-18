@@ -1,0 +1,681 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import CodeBlock from '../../../../components/CodeBlock.astro';
+import DjangoQuizModal from '../../../../components/quizzes/DjangoQuizModal.astro';
+import DjangoExternalApisSimulator from '../../../../components/django/DjangoExternalApisSimulator';
+---
+
+<Layout
+  title="9. Consumiendo API REST con requests en Django: Tiempo, Rick and Morty y Pokémon"
+  description="Aprende a usar la librería requests en Django para consumir APIs externas reales: API del Tiempo (Open-Meteo), Rick and Morty API y PokéAPI, transformando y entregando datos JSON."
+  courseSlug="django"
+>
+  <article class="content-section">
+    <!-- HERO -->
+    <header class="rounded-3xl bg-gradient-to-br from-[#0c4a3f] via-[#0f5e4f] to-[#062e27] text-white p-6 sm:p-10 mb-6 shadow-lg border-2 border-slate-900">
+      <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+        <span class="inline-block bg-emerald-400/20 border border-emerald-300/40 text-emerald-200 rounded-full px-3.5 py-1 font-black text-xs tracking-wider uppercase">
+          MÓDULO 9 · INTEGRACIÓN DE SERVICIOS EXTERNOS CON REQUESTS
+        </span>
+        <span class="inline-block bg-slate-950/50 text-emerald-300 rounded-xl px-3 py-1 font-mono font-bold text-xs border border-emerald-500/30">
+          CLIMA · RICK &amp; MORTY · POKÉMON
+        </span>
+      </div>
+      <h1 class="!text-3xl sm:!text-4xl font-black !text-white leading-tight !mb-3 !mt-0" style="text-shadow: none;">
+        9. Consumiendo API REST con <code>requests</code> en Django 🌍
+      </h1>
+      <p class="!text-base sm:!text-lg !text-white/95 max-w-3xl font-semibold !mb-3">
+        Un backend profesional no solo expone datos propios: también actúa como cliente HTTP consultando servicios externos. Aprende a usar la librería <code>requests</code> dentro de tus vistas para consumir la <strong>API del Tiempo (Open-Meteo)</strong>, la <strong>API de Rick and Morty</strong> y la <strong>API de Pokémon (PokéAPI)</strong>.
+      </p>
+      <div class="flex flex-wrap gap-2 text-xs font-mono font-bold">
+        <span class="bg-white/15 px-3 py-1 rounded-lg">✓ pip install requests</span>
+        <span class="bg-white/15 px-3 py-1 rounded-lg">✓ requests.get(url, params=..., timeout=5)</span>
+        <span class="bg-white/15 px-3 py-1 rounded-lg">✓ respuesta.json()</span>
+        <span class="bg-white/15 px-3 py-1 rounded-lg">✓ Manejo de errores con try / except</span>
+      </div>
+    </header>
+
+    <!-- BANNER PRESENTACIÓN DIAPOSITIVAS -->
+    <aside class="my-6 p-4 sm:p-5 rounded-2xl border-2 border-emerald-500/40 bg-gradient-to-r from-emerald-500/10 via-teal-500/5 to-transparent flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm">
+      <div class="flex items-center gap-3">
+        <span class="text-3xl sm:text-4xl p-2 rounded-xl bg-emerald-500/20 text-emerald-700 shrink-0">📊</span>
+        <div>
+          <h3 class="text-base font-black text-slate-900 mb-0.5">
+            Presentación Guiada Paso a Paso en Diapositivas
+          </h3>
+          <p class="text-xs sm:text-sm text-slate-600 !mb-0">
+            Revisa en diapositivas cómo instalar <code>requests</code>, estructurar cada una de las 3 integraciones (Tiempo, Rick &amp; Morty y Pokémon) y conectar las rutas en Django.
+          </p>
+        </div>
+      </div>
+      <a
+        href="/course-slides/django/consumiendo-api-rest/"
+        class="shrink-0 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-nunito font-black text-sm shadow-md hover:shadow-lg transition-all no-underline"
+      >
+        <span>Ver Diapositivas</span>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+        </svg>
+      </a>
+    </aside>
+
+    <!-- NAVEGACIÓN INTERNA RÁPIDA -->
+    <nav class="p-4 rounded-2xl bg-slate-100 border-2 border-slate-300 my-6" aria-label="Índice del módulo 9">
+      <div class="text-xs font-black uppercase tracking-wider text-slate-500 mb-2.5">
+        Ruta del Módulo 9:
+      </div>
+      <div class="flex flex-wrap gap-2">
+        <a href="#arquitectura-requests" class="px-3 py-1.5 rounded-xl bg-white hover:bg-emerald-50 text-slate-800 border border-slate-300 font-bold text-xs no-underline transition-colors">
+          1. ¿Cómo funciona requests en Django?
+        </a>
+        <a href="#simulador-3-apis" class="px-3 py-1.5 rounded-xl bg-emerald-700 text-white border border-slate-900 font-black text-xs no-underline shadow-[2px_2px_0px_#0f172a]">
+          2. Simulador en Vivo (3 APIs)
+        </a>
+        <a href="#ejemplo-1-tiempo" class="px-3 py-1.5 rounded-xl bg-white hover:bg-emerald-50 text-slate-800 border border-slate-300 font-bold text-xs no-underline transition-colors">
+          3. Ejemplo 1: API del Tiempo
+        </a>
+        <a href="#ejemplo-2-rick" class="px-3 py-1.5 rounded-xl bg-white hover:bg-emerald-50 text-slate-800 border border-slate-300 font-bold text-xs no-underline transition-colors">
+          4. Ejemplo 2: Rick and Morty
+        </a>
+        <a href="#ejemplo-3-pokemon" class="px-3 py-1.5 rounded-xl bg-white hover:bg-emerald-50 text-slate-800 border border-slate-300 font-bold text-xs no-underline transition-colors">
+          5. Ejemplo 3: Pokémon (PokéAPI)
+        </a>
+        <a href="#proyecto-unificado" class="px-3 py-1.5 rounded-xl bg-white hover:bg-emerald-50 text-slate-800 border border-slate-300 font-bold text-xs no-underline transition-colors">
+          6. Integración Completa en Django
+        </a>
+      </div>
+    </nav>
+
+    <!-- =================================================================== -->
+    <!-- SECCIÓN 1: FUNDAMENTOS DE REQUESTS EN DJANGO                        -->
+    <!-- =================================================================== -->
+    <section id="arquitectura-requests" class="mb-10">
+      <h2>1. ¿Cómo consume Django una API externa usando <code>requests</code>?</h2>
+      <p>
+        En el módulo anterior, nuestro cliente (navegador o Postman) le enviaba peticiones a Django. Ahora <strong>Django también actuará como cliente HTTP</strong>: cuando un usuario consulte nuestra ruta local (por ejemplo <code>/api/pokemon/?nombre=pikachu</code>), nuestra vista usará la librería <code>requests</code> para salir a internet, consultar la API oficial, filtrar solo los datos útiles y responder un JSON limpio en español.
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 my-6">
+        <div class="p-4 rounded-2xl border-2 border-sky-600/60 bg-sky-50/70 shadow-sm">
+          <span class="font-mono font-black text-xs uppercase text-sky-900 bg-sky-200/80 px-2.5 py-1 rounded inline-block mb-2">
+            1. Petición Saliente
+          </span>
+          <h3 class="text-base font-black text-slate-900 !m-0 mb-1">
+            <code>requests.get(url, timeout=5)</code>
+          </h3>
+          <p class="!text-xs !text-slate-700 !m-0 leading-relaxed">
+            Envía una solicitud HTTP <code>GET</code> al servidor externo. Usar <code>timeout=5</code> es una regla de oro en Django para que tu servidor nunca se quede colgado si la API externa tarda en responder.
+          </p>
+        </div>
+
+        <div class="p-4 rounded-2xl border-2 border-emerald-600/60 bg-emerald-50/70 shadow-sm">
+          <span class="font-mono font-black text-xs uppercase text-emerald-900 bg-emerald-200/80 px-2.5 py-1 rounded inline-block mb-2">
+            2. Verificación y Conversión
+          </span>
+          <h3 class="text-base font-black text-slate-900 !m-0 mb-1">
+            <code>respuesta.status_code</code> y <code>.json()</code>
+          </h3>
+          <p class="!text-xs !text-slate-700 !m-0 leading-relaxed">
+            Comprobamos si <code>respuesta.status_code == 200</code> (o usamos <code>respuesta.raise_for_status()</code>) y transformamos el cuerpo JSON recibido en un diccionario nativo de Python con <code>datos = respuesta.json()</code>.
+          </p>
+        </div>
+
+        <div class="p-4 rounded-2xl border-2 border-amber-500/70 bg-amber-50/70 shadow-sm">
+          <span class="font-mono font-black text-xs uppercase text-amber-900 bg-amber-200/80 px-2.5 py-1 rounded inline-block mb-2">
+            3. Limpieza y Respuesta
+          </span>
+          <h3 class="text-base font-black text-slate-900 !m-0 mb-1">
+            <code>Response(&#123; ... &#125;)</code> en DRF
+          </h3>
+          <p class="!text-xs !text-slate-700 !m-0 leading-relaxed">
+            Las APIs externas suelen devolver cientos de campos innecesarios. En nuestra vista extraemos solo lo que nos interesa con <code>datos.get(...)</code> y devolvemos un JSON limpio y estructurado.
+          </p>
+        </div>
+      </div>
+
+      <h3>Instalación de la librería <code>requests</code></h3>
+      <p>
+        Con tu entorno virtual activo (en la misma carpeta donde instalaste <code>django</code> y <code>djangorestframework</code>), ejecuta en la terminal:
+      </p>
+      <CodeBlock
+        lang="bash"
+        title="Terminal — Instalar requests"
+        code={`pip install requests`}
+      />
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- SECCIÓN 2: SIMULADOR INTERACTIVO DE LAS 3 APIS                      -->
+    <!-- =================================================================== -->
+    <section id="simulador-3-apis" class="my-10">
+      <h2>2. Laboratorio Interactivo: Prueba las 3 APIs (Tiempo, Rick &amp; Morty y Pokémon)</h2>
+      <p>
+        Selecciona cualquiera de las 3 APIs, cambia la ciudad, el personaje o el Pokémon y observa cómo Django consulta la URL externa con <code>requests.get()</code>, recibe el JSON crudo y lo transforma en una respuesta limpia (puedes incluso simular una caída de red con el interruptor superior):
+      </p>
+      <DjangoExternalApisSimulator client:load />
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- SECCIÓN 3: EJEMPLO 1 — API DEL TIEMPO (OPEN-METEO)                  -->
+    <!-- =================================================================== -->
+    <section id="ejemplo-1-tiempo" class="my-10">
+      <div class="border-l-[6px] border-sky-600 pl-4 mb-6">
+        <span class="inline-block bg-sky-100 text-sky-900 rounded-full px-3 py-1 font-black text-xs mb-1.5">
+          EJEMPLO 1 · CLIMA Y METEOROLOGÍA EN TIEMPO REAL
+        </span>
+        <h2 class="text-2xl sm:text-3xl font-black text-slate-900 !m-0">
+          3. Consumiendo la API del Tiempo (Open-Meteo) 🌦️
+        </h2>
+      </div>
+
+      <p>
+        <strong>Open-Meteo</strong> (<code>https://api.open-meteo.com/v1/forecast</code>) es una API meteorológica abierta y gratuita que no requiere API Key. Recibe coordenadas de latitud y longitud junto con el parámetro <code>current_weather=true</code> y devuelve la temperatura actual y la velocidad del viento.
+      </p>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 my-6">
+        <div class="rounded-2xl border-2 border-slate-200 bg-white p-5 shadow-sm">
+          <h3 class="text-lg font-black text-slate-900 !mt-0 mb-2">
+            Opción A · Script directo en Python para probar la API
+          </h3>
+          <p class="!text-xs text-slate-600 mb-3">
+            Observa cómo pasamos los parámetros de consulta usando el diccionario <code>params</code> en <code>requests.get()</code>:
+          </p>
+          <CodeBlock
+            lang="python"
+            title="probar_clima.py"
+            code={`import requests
+
+# Coordenadas de Santiago de Chile
+url = "https://api.open-meteo.com/v1/forecast"
+parametros = {
+    "latitude": -33.45,
+    "longitude": -70.66,
+    "current_weather": "true"
+}
+
+try:
+    respuesta = requests.get(url, params=parametros, timeout=5)
+    respuesta.raise_for_status()
+    datos = respuesta.json()
+
+    clima = datos.get("current_weather", {})
+    temperatura = clima.get("temperature")
+    viento = clima.get("windspeed")
+
+    print(f"☀️ Temperatura actual: {temperatura} °C")
+    print(f"💨 Velocidad del viento: {viento} km/h")
+
+except requests.RequestException as e:
+    print(f"❌ Error al consultar el clima: {e}")`}
+          />
+        </div>
+
+        <div class="rounded-2xl border-2 border-sky-600/60 bg-sky-50/40 p-5 shadow-sm">
+          <h3 class="text-lg font-black text-slate-900 !mt-0 mb-2">
+            Opción B · Vista en Django REST Framework (<code>/api/clima/</code>)
+          </h3>
+          <p class="!text-xs text-slate-600 mb-3">
+            El usuario envía <code>?ciudad=santiago</code> a nuestro Django, y nuestra vista consulta Open-Meteo y responde en español:
+          </p>
+          <CodeBlock
+            lang="python"
+            title="api/views.py — Endpoint del Tiempo"
+            code={`import requests
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+
+CIUDADES = {
+    "santiago": {"nombre": "Santiago", "lat": -33.45, "lon": -70.66},
+    "valdivia": {"nombre": "Valdivia", "lat": -39.81, "lon": -73.24},
+    "madrid":   {"nombre": "Madrid",   "lat": 40.41,  "lon": -3.70},
+}
+
+@api_view(["GET"])
+def consultar_clima(request):
+    clave = request.query_params.get("ciudad", "santiago").lower()
+    ciudad = CIUDADES.get(clave, CIUDADES["santiago"])
+
+    url = "https://api.open-meteo.com/v1/forecast"
+    params = {
+        "latitude": ciudad["lat"],
+        "longitude": ciudad["lon"],
+        "current_weather": "true",
+    }
+
+    try:
+        res = requests.get(url, params=params, timeout=5)
+        res.raise_for_status()
+        actual = res.json().get("current_weather", {})
+
+        return Response({
+            "ciudad": ciudad["nombre"],
+            "temperatura_c": actual.get("temperature"),
+            "viento_kmh": actual.get("windspeed"),
+            "fuente": "Open-Meteo API"
+        })
+    except requests.RequestException:
+        return Response(
+            {"error": "No se pudo conectar con el servicio del clima"},
+            status=503
+        )`}
+          />
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- SECCIÓN 4: EJEMPLO 2 — API DE RICK AND MORTY                        -->
+    <!-- =================================================================== -->
+    <section id="ejemplo-2-rick" class="my-10">
+      <div class="border-l-[6px] border-emerald-600 pl-4 mb-6">
+        <span class="inline-block bg-emerald-100 text-emerald-900 rounded-full px-3 py-1 font-black text-xs mb-1.5">
+          EJEMPLO 2 · CONSULTA DE PERSONAJES POR ID
+        </span>
+        <h2 class="text-2xl sm:text-3xl font-black text-slate-900 !m-0">
+          4. Consumiendo la API de Rick and Morty 👽
+        </h2>
+      </div>
+
+      <p>
+        La <strong>Rick and Morty API</strong> (<code>https://rickandmortyapi.com/api/character/&lt;id&gt;</code>) permite consultar más de 800 personajes de la serie indicando su número de ID en la URL. Es ideal para practicar cómo extraer diccionarios anidados (como <code>origin.name</code>) y manejar errores <code>404</code> cuando un ID no existe.
+      </p>
+
+      <!-- VIDEOS: RICK AND MORTY PRIMERO EN JS Y LUEGO EN PYTHON CON REQUESTS -->
+      <div class="my-6 rounded-3xl border-2 border-slate-900 bg-white overflow-hidden shadow-[6px_6px_0px_#0f172a]">
+        <div class="bg-[#0c4a3f] text-white px-5 py-4 border-b-2 border-slate-900 flex flex-wrap items-center justify-between gap-2">
+          <div class="flex items-center gap-2.5">
+            <span class="inline-block bg-amber-400 text-slate-950 font-mono font-black text-xs px-2.5 py-1 rounded-md border border-slate-900">
+              🎬 VIDEOTUTORIALES EN 2 PARTES
+            </span>
+            <h3 class="text-base sm:text-lg font-black !text-white !m-0">
+              Conectando la API de Rick and Morty: De JavaScript a Python con <code>requests</code>
+            </h3>
+          </div>
+          <span class="text-xs font-mono text-emerald-200">Frontend (JS) vs Backend (Python)</span>
+        </div>
+
+        <div class="p-5 sm:p-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- Video 1: Primero en JS -->
+          <div class="p-4 rounded-2xl bg-slate-50 border-2 border-slate-200 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2">
+                <span class="inline-block bg-amber-400 text-slate-950 font-mono font-black text-xs px-2.5 py-0.5 rounded border border-slate-900">
+                  PARTE 1 · PRIMERO EN JAVASCRIPT
+                </span>
+                <span class="text-xs font-mono text-slate-500">fetch() en navegador</span>
+              </div>
+              <h4 class="text-base font-black text-slate-900 !mt-0 mb-2">
+                1. Consumiendo la API de Rick and Morty en JavaScript
+              </h4>
+              <p class="!text-xs text-slate-600 mb-3">
+                Observa primero cómo se realiza la petición y lectura del JSON desde JavaScript en el navegador para comprender la estructura de datos de los personajes:
+              </p>
+              <div class="relative aspect-video overflow-hidden bg-slate-950 rounded-xl border-2 border-slate-900">
+                <iframe
+                  src="https://www.youtube-nocookie.com/embed/bG1AYDifngI"
+                  title="Conectando la API de Rick and Morty en JavaScript"
+                  loading="lazy"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowfullscreen
+                  class="absolute inset-0 w-full h-full border-0"
+                ></iframe>
+              </div>
+            </div>
+            <a
+              href="https://www.youtube.com/watch?v=bG1AYDifngI"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="mt-3 inline-flex items-center justify-center w-full py-2 px-3 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-950 font-black text-xs no-underline border border-amber-400 transition-colors"
+            >
+              ▶ Ver Parte 1 (JavaScript) en YouTube
+            </a>
+          </div>
+
+          <!-- Video 2: Luego en Python con requests -->
+          <div class="p-4 rounded-2xl bg-emerald-50/60 border-2 border-emerald-600/50 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2">
+                <span class="inline-block bg-emerald-600 text-white font-mono font-black text-xs px-2.5 py-0.5 rounded border border-slate-900">
+                  PARTE 2 · LUEGO EN PYTHON CON REQUESTS
+                </span>
+                <span class="text-xs font-mono text-emerald-900">requests.get()</span>
+              </div>
+              <h4 class="text-base font-black text-slate-900 !mt-0 mb-2">
+                2. Consumiendo la API de Rick and Morty en Python con <code>requests</code>
+              </h4>
+              <p class="!text-xs text-slate-600 mb-3">
+                Ahora lleva esa misma lógica al backend con Python utilizando la librería <code>requests</code>, convirtiendo la respuesta con <code>.json()</code> y procesando los datos en servidor:
+              </p>
+              <div class="relative aspect-video overflow-hidden bg-slate-950 rounded-xl border-2 border-slate-900">
+                <iframe
+                  src="https://www.youtube-nocookie.com/embed/1F03_sdTFJk"
+                  title="Conectando la API de Rick and Morty en Python con requests"
+                  loading="lazy"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowfullscreen
+                  class="absolute inset-0 w-full h-full border-0"
+                ></iframe>
+              </div>
+            </div>
+            <a
+              href="https://www.youtube.com/watch?v=1F03_sdTFJk"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="mt-3 inline-flex items-center justify-center w-full py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs no-underline border border-slate-900 transition-colors"
+            >
+              ▶ Ver Parte 2 (Python con requests) en YouTube
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 my-6">
+        <div class="rounded-2xl border-2 border-slate-200 bg-white p-5 shadow-sm">
+          <h3 class="text-lg font-black text-slate-900 !mt-0 mb-2">
+            Opción A · Script en Python (<code>rick_api.py</code>)
+          </h3>
+          <p class="!text-xs text-slate-600 mb-3">
+            Consultamos el personaje con ID <code>1</code> (Rick Sanchez) y extraemos sus datos principales:
+          </p>
+          <CodeBlock
+            lang="python"
+            title="rick_api.py"
+            code={`import requests
+
+personaje_id = 1
+url = f"https://rickandmortyapi.com/api/character/{personaje_id}"
+
+try:
+    respuesta = requests.get(url, timeout=5)
+    if respuesta.status_code == 200:
+        datos = respuesta.json()
+        print("Nombre:", datos.get("name"))
+        print("Estado:", datos.get("status"))
+        print("Especie:", datos.get("species"))
+        print("Origen:", datos.get("origin", {}).get("name"))
+    else:
+        print("No se encontró el personaje solicitado.")
+except requests.RequestException as e:
+    print(f"Error de red: {e}")`}
+          />
+        </div>
+
+        <div class="rounded-2xl border-2 border-emerald-600/60 bg-emerald-50/40 p-5 shadow-sm">
+          <h3 class="text-lg font-black text-slate-900 !mt-0 mb-2">
+            Opción B · Vista en Django REST Framework (<code>/api/personaje/</code>)
+          </h3>
+          <p class="!text-xs text-slate-600 mb-3">
+            Recibe <code>?id=1</code> en la URL de Django, consulta la API externa y traduce los campos al español:
+          </p>
+          <CodeBlock
+            lang="python"
+            title="api/views.py — Endpoint de Rick and Morty"
+            code={`import requests
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+
+@api_view(["GET"])
+def consultar_personaje_rick(request):
+    personaje_id = request.query_params.get("id", "1")
+    url = f"https://rickandmortyapi.com/api/character/{personaje_id}"
+
+    try:
+        res = requests.get(url, timeout=5)
+        if res.status_code == 404:
+            return Response(
+                {"error": f"No existe un personaje con el ID {personaje_id}"},
+                status=404
+            )
+        res.raise_for_status()
+        datos = res.json()
+
+        return Response({
+            "id": datos.get("id"),
+            "nombre": datos.get("name"),
+            "estado": datos.get("status"),
+            "especie": datos.get("species"),
+            "origen": datos.get("origin", {}).get("name"),
+            "imagen": datos.get("image"),
+        })
+    except requests.RequestException:
+        return Response(
+            {"error": "Error al conectar con Rick and Morty API"},
+            status=503
+        )`}
+          />
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- SECCIÓN 5: EJEMPLO 3 — API DE POKÉMON (POKÉAPI)                     -->
+    <!-- =================================================================== -->
+    <section id="ejemplo-3-pokemon" class="my-10">
+      <div class="border-l-[6px] border-amber-500 pl-4 mb-6">
+        <span class="inline-block bg-amber-100 text-amber-950 rounded-full px-3 py-1 font-black text-xs mb-1.5">
+          EJEMPLO 3 · TRANSFORMACIÓN DE LISTAS Y UNIDADES
+        </span>
+        <h2 class="text-2xl sm:text-3xl font-black text-slate-900 !m-0">
+          5. Consumiendo la API de Pokémon (PokéAPI) ⚡
+        </h2>
+      </div>
+
+      <p>
+        La <strong>PokéAPI</strong> (<code>https://pokeapi.co/api/v2/pokemon/&lt;nombre&gt;</code>) es una de las APIs REST más completas para practicar transformación de datos en el backend: entrega el peso en <em>hectogramos</em>, la altura en <em>decímetros</em> y las habilidades y tipos dentro de listas de objetos anidados que podemos simplificar con <strong>comprensión de listas</strong> en Python.
+      </p>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 my-6">
+        <div class="rounded-2xl border-2 border-slate-200 bg-white p-5 shadow-sm">
+          <h3 class="text-lg font-black text-slate-900 !mt-0 mb-2">
+            Opción A · Script en Python (<code>pokemon_api.py</code>)
+          </h3>
+          <p class="!text-xs text-slate-600 mb-3">
+            Consultamos a <code>pikachu</code>, convertimos el peso a kilogramos y extraemos sus habilidades:
+          </p>
+          <CodeBlock
+            lang="python"
+            title="pokemon_api.py"
+            code={`import requests
+
+nombre_pokemon = "pikachu"
+url = f"https://pokeapi.co/api/v2/pokemon/{nombre_pokemon}"
+
+try:
+    respuesta = requests.get(url, timeout=5)
+    if respuesta.status_code == 200:
+        datos = respuesta.json()
+        nombre = datos.get("name", "").capitalize()
+        peso_kg = datos.get("weight", 0) / 10
+        tipos = [t["type"]["name"] for t in datos.get("types", [])]
+        habilidades = [h["ability"]["name"] for h in datos.get("abilities", [])]
+
+        print(f"Pokémon: {nombre} (#{datos.get('id')})")
+        print(f"Tipos: {', '.join(tipos)}")
+        print(f"Peso: {peso_kg} kg")
+        print(f"Habilidades: {', '.join(habilidades)}")
+    else:
+        print("Pokémon no encontrado.")
+except requests.RequestException as e:
+    print(f"Error de conexión: {e}")`}
+          />
+        </div>
+
+        <div class="rounded-2xl border-2 border-amber-500/70 bg-amber-50/40 p-5 shadow-sm">
+          <h3 class="text-lg font-black text-slate-900 !mt-0 mb-2">
+            Opción B · Vista en Django REST Framework (<code>/api/pokemon/</code>)
+          </h3>
+          <p class="!text-xs text-slate-600 mb-3">
+            Recibe <code>?nombre=pikachu</code>, consulta PokéAPI y devuelve una ficha JSON limpia y lista para el frontend:
+          </p>
+          <CodeBlock
+            lang="python"
+            title="api/views.py — Endpoint de Pokémon"
+            code={`import requests
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+
+@api_view(["GET"])
+def consultar_pokemon(request):
+    nombre = request.query_params.get("nombre", "pikachu").lower().strip()
+    url = f"https://pokeapi.co/api/v2/pokemon/{nombre}"
+
+    try:
+        res = requests.get(url, timeout=5)
+        if res.status_code == 404:
+            return Response(
+                {"error": f"El Pokémon '{nombre}' no fue encontrado"},
+                status=404
+            )
+        res.raise_for_status()
+        datos = res.json()
+
+        return Response({
+            "numero_pokedex": datos.get("id"),
+            "nombre": datos.get("name", "").capitalize(),
+            "peso_kg": (datos.get("weight") or 0) / 10,
+            "altura_m": (datos.get("height") or 0) / 10,
+            "tipos": [t["type"]["name"] for t in datos.get("types", [])],
+            "habilidades": [h["ability"]["name"] for h in datos.get("abilities", [])],
+            "sprite": datos.get("sprites", {}).get("front_default"),
+        })
+    except requests.RequestException:
+        return Response(
+            {"error": "No se pudo conectar con PokéAPI"},
+            status=503
+        )`}
+          />
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- SECCIÓN 6: PROYECTO UNIFICADO EN DJANGO (URLS + PRUEBAS)            -->
+    <!-- =================================================================== -->
+    <section id="proyecto-unificado" class="my-10">
+      <div class="rounded-3xl border-2 border-slate-900 bg-white overflow-hidden shadow-[6px_6px_0px_#0f172a]">
+        <div class="bg-[#0c4a3f] text-white p-6 border-b-2 border-slate-900 flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <span class="text-xs font-mono font-black uppercase tracking-wider text-emerald-300 block mb-1">
+              INTEGRACIÓN COMPLETA EN TU PROYECTO SISTEMA
+            </span>
+            <h2 class="!text-2xl font-black !text-white !m-0">
+              6. Conectar los 3 Endpoints en <code>api/urls.py</code> y Probar en el Navegador
+            </h2>
+          </div>
+          <span class="px-3.5 py-1.5 rounded-xl bg-white/15 text-white font-mono text-xs font-bold">
+            3 Rutas Activas
+          </span>
+        </div>
+
+        <div class="p-6 space-y-6">
+          <p class="!text-sm sm:!text-base text-slate-700 !m-0">
+            Si agregas las 3 funciones (<code>consultar_clima</code>, <code>consultar_personaje_rick</code> y <code>consultar_pokemon</code>) dentro de tu archivo <code>api/views.py</code> del proyecto <code>sistema</code>, solo necesitas registrar sus rutas en <code>api/urls.py</code>:
+          </p>
+
+          <CodeBlock
+            lang="python"
+            title="api/urls.py — Registro de las 3 rutas que consumen APIs externas"
+            code={`from django.urls import path
+from .views import (
+    saludar,
+    consultar_clima,
+    consultar_personaje_rick,
+    consultar_pokemon,
+)
+
+urlpatterns = [
+    path("saludar/", saludar),
+    path("clima/", consultar_clima),
+    path("personaje/", consultar_personaje_rick),
+    path("pokemon/", consultar_pokemon),
+]`}
+          />
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="p-4 rounded-2xl border-2 border-sky-600/60 bg-sky-50/60">
+              <div class="font-mono font-black text-xs text-sky-900 uppercase mb-1">
+                1. Probar API del Tiempo
+              </div>
+              <code class="text-xs font-bold text-slate-900 break-all block mb-2">
+                http://127.0.0.1:8000/api/clima/?ciudad=valdivia
+              </code>
+              <p class="!text-xs !text-slate-600 !m-0">
+                Devuelve la temperatura y viento actual en Valdivia consultando Open-Meteo.
+              </p>
+            </div>
+
+            <div class="p-4 rounded-2xl border-2 border-emerald-600/60 bg-emerald-50/60">
+              <div class="font-mono font-black text-xs text-emerald-900 uppercase mb-1">
+                2. Probar API Rick &amp; Morty
+              </div>
+              <code class="text-xs font-bold text-slate-900 break-all block mb-2">
+                http://127.0.0.1:8000/api/personaje/?id=2
+              </code>
+              <p class="!text-xs !text-slate-600 !m-0">
+                Devuelve los datos de Morty Smith (ID 2) con su estado, especie, origen e imagen.
+              </p>
+            </div>
+
+            <div class="p-4 rounded-2xl border-2 border-amber-500/70 bg-amber-50/60">
+              <div class="font-mono font-black text-xs text-amber-900 uppercase mb-1">
+                3. Probar API de Pokémon
+              </div>
+              <code class="text-xs font-bold text-slate-900 break-all block mb-2">
+                http://127.0.0.1:8000/api/pokemon/?nombre=charizard
+              </code>
+              <p class="!text-xs !text-slate-600 !m-0">
+                Devuelve el número de Pokédex, peso en kg, altura en metros, tipos y habilidades.
+              </p>
+            </div>
+          </div>
+
+          <!-- Tabla comparativa de las 3 APIs -->
+          <div class="overflow-x-auto rounded-2xl border-2 border-slate-900">
+            <table class="w-full text-left border-collapse text-sm bg-white">
+              <thead class="bg-slate-900 text-white font-black uppercase text-xs tracking-wider">
+                <tr>
+                  <th class="p-3.5">Servicio Externo</th>
+                  <th class="p-3.5">URL Base Consumida con <code>requests.get()</code></th>
+                  <th class="p-3.5">Cómo se envían los filtros</th>
+                  <th class="p-3.5">Datos clave extraídos del JSON</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 font-medium text-xs sm:text-sm">
+                <tr>
+                  <td class="p-3.5 font-black text-sky-800">🌦️ Tiempo (Open-Meteo)</td>
+                  <td class="p-3.5 font-mono text-xs"><code>https://api.open-meteo.com/v1/forecast</code></td>
+                  <td class="p-3.5">Query Params (<code>params=&#123;"latitude": ..., "longitude": ...&#125;</code>)</td>
+                  <td class="p-3.5 font-mono text-xs"><code>current_weather.temperature</code>, <code>windspeed</code></td>
+                </tr>
+                <tr>
+                  <td class="p-3.5 font-black text-emerald-800">👽 Rick and Morty API</td>
+                  <td class="p-3.5 font-mono text-xs"><code>https://rickandmortyapi.com/api/character/&lt;id&gt;</code></td>
+                  <td class="p-3.5">Parámetro en la ruta (ID del personaje: <code>1</code> al <code>826</code>)</td>
+                  <td class="p-3.5 font-mono text-xs"><code>name</code>, <code>status</code>, <code>species</code>, <code>origin.name</code></td>
+                </tr>
+                <tr>
+                  <td class="p-3.5 font-black text-amber-800">⚡ Pokémon (PokéAPI)</td>
+                  <td class="p-3.5 font-mono text-xs"><code>https://pokeapi.co/api/v2/pokemon/&lt;nombre&gt;</code></td>
+                  <td class="p-3.5">Parámetro en la ruta (nombre o ID: <code>pikachu</code>, <code>25</code>)</td>
+                  <td class="p-3.5 font-mono text-xs"><code>id</code>, <code>name</code>, <code>weight</code>, <code>types</code>, <code>abilities</code></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PONTE A PRUEBA -->
+    <section class="mb-10">
+      <h2>Ponte a prueba</h2>
+      <p>Comprueba que dominas el consumo de APIs REST externas en Django utilizando la librería <code>requests</code>.</p>
+      <DjangoQuizModal quizKey="consumiendo-api-rest" />
+    </section>
+
+    <nav class="nav-bottom">
+      <a href="/course/django/apis-restful/" class="prev">← 8. APIs RESTful (Tarea 1: GET y POST)</a>
+      <a href="/course/django/tarea-colaborativa-apis/" class="next">10. Tarea Colaborativa: APIs en Equipo →</a>
+    </nav>
+  </article>
+</Layout>

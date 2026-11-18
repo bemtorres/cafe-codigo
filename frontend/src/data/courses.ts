@@ -219,8 +219,10 @@ export const courses: Course[] = [
       { slug: 'guia-practica/seguridad', title: '7.2 Guía Práctica: Sesiones y Permisos (07–10)', href: '/course/django/guia-practica/seguridad/', isSubItem: true, hasSlides: true },
       { slug: 'guia-practica/proyecto', title: '7.3 Guía Práctica: Desafío Integrador', href: '/course/django/guia-practica/proyecto/', isSubItem: true, hasSlides: true },
       { slug: 'apis-restful', title: '8. APIs RESTful', href: '/course/django/apis-restful/', hasSlides: true },
-      { slug: 'drf-jwt', title: '9. Django REST Framework y JWT', href: '/course/django/drf-jwt/', hasSlides: true },
-      { slug: 'proyecto-integrador', title: '10. Proyecto Integrador', href: '/course/django/proyecto-integrador/', hasSlides: true },
+      { slug: 'consumiendo-api-rest', title: '9. Consumiendo API REST', href: '/course/django/consumiendo-api-rest/', hasSlides: true },
+      { slug: 'tarea-colaborativa-apis', title: '10. Tarea Colaborativa: APIs en Equipo', href: '/course/django/tarea-colaborativa-apis/', hasSlides: true },
+      { slug: 'drf-jwt', title: '11. Django REST Framework y JWT', href: '/course/django/drf-jwt/', hasSlides: true },
+      { slug: 'proyecto-integrador', title: '12. Proyecto Integrador', href: '/course/django/proyecto-integrador/', hasSlides: true },
     ],
   },
   {

@@ -424,31 +424,128 @@ export const djangoQuizBank: Record<string, DjangoQuizDefinition> = {
   },
   'apis-restful': {
     key: 'apis-restful',
-    title: 'Quiz: APIs RESTful',
+    title: 'Quiz: APIs RESTful y Tarea 1 (GET y POST)',
     questions: [
       {
-        prompt: '¿Qué método HTTP se usa para eliminar un recurso?',
-        options: ['GET', 'POST', 'PUT', 'DELETE'],
-        correctIndex: 3,
-      },
-      {
-        prompt: '¿Qué formato es común para intercambiar datos con APIs?',
-        options: ['HTML', 'JSON', 'CSS', 'JPEG'],
+        prompt: 'En Django REST Framework, ¿qué atributo se utiliza para leer un parámetro enviado en la URL con GET (ej. ?nombre=Ana)?',
+        options: ['request.data', 'request.query_params', 'request.body', 'request.headers'],
         correctIndex: 1,
       },
       {
-        prompt: 'Un endpoint RESTable que devuelve un recurso individual normalmente usa:',
-        options: ['POST /api/recursos', 'GET /api/recursos/1', 'PUT /api/recursos', 'DELETE /api/recursos'],
+        prompt: 'Al enviar datos mediante POST en formato JSON en el cuerpo de la solicitud, ¿cómo los leemos en una vista @api_view de DRF?',
+        options: ['request.query_params', 'request.GET', 'request.data', 'request.url'],
+        correctIndex: 2,
+      },
+      {
+        prompt: '¿Qué decorador de Django REST Framework permite que una vista basada en función acepte métodos como GET y POST?',
+        options: ['@login_required', '@api_view(["GET", "POST"])', '@csrf_exempt', '@rest_endpoint'],
         correctIndex: 1,
       },
       {
-        prompt: '¿Qué código de estado indica que una creación fue exitosa?',
-        options: ['200', '201', '400', '404'],
+        prompt: 'En la vista saludar, ¿qué devuelve request.query_params.get("nombre", "estudiante") si no se envía el parámetro nombre?',
+        options: ['Un error 404 Not Found', 'None', '"estudiante"', 'Una cadena vacía ""'],
+        correctIndex: 2,
+      },
+      {
+        prompt: '¿Qué formato estándar utilizamos en Postman (Body → raw) para enviar {"nombre": "Pedro"} mediante POST a la API?',
+        options: ['HTML', 'JSON', 'CSS', 'Texto plano sin llaves'],
+        correctIndex: 1,
+      },
+    ],
+  },
+  'consumiendo-api-rest': {
+    key: 'consumiendo-api-rest',
+    title: 'Quiz: Consumiendo API REST con requests',
+    questions: [
+      {
+        prompt: '¿Qué comando de PIP instala la librería estándar para realizar peticiones HTTP salientes en Python y Django?',
+        options: ['pip install http-client', 'pip install requests', 'pip install fetch', 'pip install urllib-pro'],
         correctIndex: 1,
       },
       {
-        prompt: '¿Qué significa que una API sea stateless?',
-        options: ['No guarda estado entre peticiones', 'Solo usa cookies', 'Requiere un servidor dedicado', 'No usa autenticación'],
+        prompt: 'En requests.get(url, params=..., timeout=5), ¿qué método convierte el cuerpo JSON recibido en un diccionario de Python?',
+        options: ['respuesta.to_dict()', 'respuesta.json()', 'respuesta.parse()', 'respuesta.data'],
+        correctIndex: 1,
+      },
+      {
+        prompt: 'Al consumir la API del Tiempo (Open-Meteo), ¿para qué sirve el argumento params={"latitude": -33.45, "longitude": -70.66}?',
+        options: [
+          'Envía un formulario POST oculto',
+          'Agrega automáticamente los parámetros de consulta (?latitude=-33.45&longitude=-70.66) a la URL',
+          'Cambia la contraseña del servidor',
+          'Guarda las coordenadas en SQLite',
+        ],
+        correctIndex: 1,
+      },
+      {
+        prompt: 'En el ejemplo de la API de Rick and Morty, ¿cómo accedemos de forma segura al nombre del planeta de origen anidado dentro de "origin"?',
+        options: [
+          'datos.get("origin", {}).get("name")',
+          'datos["origin.name"]',
+          'datos.origin.name()',
+          'datos.find("origin")',
+        ],
+        correctIndex: 0,
+      },
+      {
+        prompt: '¿Por qué es importante capturar requests.RequestException y definir timeout=5 al consumir PokéAPI o cualquier API externa desde una vista de Django?',
+        options: [
+          'Para evitar que una caída o lentitud del servicio externo bloquee el servidor Django o arroje un Error 500',
+          'Porque sin timeout Python no compila',
+          'Para duplicar la velocidad del procesador',
+          'Porque PokéAPI exige un timeout exacto de 5 segundos',
+        ],
+        correctIndex: 0,
+      },
+    ],
+  },
+  'tarea-colaborativa-apis': {
+    key: 'tarea-colaborativa-apis',
+    title: 'Quiz: Tarea Colaborativa — APIs en Equipo y Distribuidora de Vino',
+    questions: [
+      {
+        prompt: 'En la función leer_numero(datos, campo) de api/utiles.py, ¿qué sucede si un cliente envía el texto "12" en lugar del número JSON 12?',
+        options: [
+          'Lo acepta automáticamente sin validar',
+          'Lanza ValueError y el servidor responde con código 400 Bad Request',
+          'Reinicia el servidor Django',
+          'Devuelve código 200 OK con resultado 0',
+        ],
+        correctIndex: 1,
+      },
+      {
+        prompt: 'En las Actividades 2 y 3, si el servidor del compañero C está detenido (apagado) y el compañero B intenta contactarlo con requests.post(), ¿qué código HTTP debe devolver B al compañero A?',
+        options: ['200 OK', '404 Not Found', '502 Bad Gateway', '301 Moved Permanently'],
+        correctIndex: 2,
+      },
+      {
+        prompt: 'En la Actividad 3 (Distribuidora de Vino), con un lote de 100 kg de uva (70% jugo -> 70 L -> 80% vino = 56 L), ¿cuántas copas completas de 150 mL (0.150 L) se obtienen y cuánto vino sobra?',
+        options: [
+          '373 copas completas y 0.05 L (50 mL) sobrantes',
+          '400 copas completas y 0 L sobrantes',
+          '374 copas completas y 0.10 L sobrantes',
+          '100 copas completas y 10 L sobrantes',
+        ],
+        correctIndex: 0,
+      },
+      {
+        prompt: '¿Por qué en la Actividad 3 NO se pueden sumar directamente el residuo de extracción (30%) y la merma de transformación (10%)?',
+        options: [
+          'Porque el residuo de extracción se mide en kilogramos (masa sólida) y la merma de transformación en litros (volumen líquido)',
+          'Porque Python no permite sumar variables con nombres distintos',
+          'Porque el residuo desaparece automáticamente',
+          'Porque ambos valores son negativos',
+        ],
+        correctIndex: 0,
+      },
+      {
+        prompt: 'En la Actividad 2 (A -> B -> C), ¿qué ocurre si A envía una división entre cero o un texto inválido al validador B?',
+        options: [
+          'B responde inmediatamente 400 Bad Request a A sin enviar ninguna solicitud al servidor C',
+          'B reenvía el error a C para que C se caiga',
+          'B devuelve 502 Bad Gateway',
+          'C llama directamente a A',
+        ],
         correctIndex: 0,
       },
     ],

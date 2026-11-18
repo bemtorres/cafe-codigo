@@ -2,63 +2,936 @@
 import Layout from '../../../../layouts/Layout.astro';
 import CodeBlock from '../../../../components/CodeBlock.astro';
 import DjangoQuizModal from '../../../../components/quizzes/DjangoQuizModal.astro';
+import DjangoGetPostSaludoSimulator from '../../../../components/django/DjangoGetPostSaludoSimulator';
 ---
 
-<Layout title="APIs RESTful" description="Aprende los conceptos fundamentales para diseñar servicios web que comunican datos entre aplicaciones." courseSlug="django">
+<Layout
+  title="8. APIs RESTful: Enviar datos con GET y POST en Django REST Framework"
+  description="Aprende qué es una API RESTful y construye paso a paso la Tarea 1 en Django REST Framework: enviar un nombre con GET (request.query_params) y POST (request.data) y recibir un saludo en JSON."
+  courseSlug="django"
+>
   <article class="content-section">
-    <h1>8. Introducción a APIs RESTful</h1>
+    <!-- HERO -->
+    <header class="rounded-3xl bg-gradient-to-br from-[#0c4a3f] via-[#0f5e4f] to-[#062e27] text-white p-6 sm:p-10 mb-6 shadow-lg border-2 border-slate-900">
+      <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+        <span class="inline-block bg-emerald-400/20 border border-emerald-300/40 text-emerald-200 rounded-full px-3.5 py-1 font-black text-xs tracking-wider uppercase">
+          MÓDULO 8 · DJANGO REST FRAMEWORK · NIVEL INICIAL
+        </span>
+        <span class="inline-block bg-slate-950/50 text-emerald-300 rounded-xl px-3 py-1 font-mono font-bold text-xs border border-emerald-500/30">
+          TAREA 1 · GET &amp; POST
+        </span>
+      </div>
+      <h1 class="!text-3xl sm:!text-4xl font-black !text-white leading-tight !mb-3 !mt-0" style="text-shadow: none;">
+        8. Introducción a APIs RESTful y Tarea 1: Enviar datos con GET y POST 🌐
+      </h1>
+      <p class="!text-base sm:!text-lg !text-white/95 max-w-3xl font-semibold !mb-3">
+        Comprende cómo se comunican las aplicaciones mediante HTTP y JSON, y construye tu primer endpoint en <strong>Django REST Framework</strong> capaz de recibir un nombre por <code>GET</code> y <code>POST</code> sin usar modelos ni serializers.
+      </p>
+      <div class="flex flex-wrap gap-2 text-xs font-mono font-bold">
+        <span class="bg-white/15 px-3 py-1 rounded-lg">✓ @api_view(["GET", "POST"])</span>
+        <span class="bg-white/15 px-3 py-1 rounded-lg">✓ request.query_params</span>
+        <span class="bg-white/15 px-3 py-1 rounded-lg">✓ request.data</span>
+        <span class="bg-white/15 px-3 py-1 rounded-lg">✓ Pruebas en Navegador y Postman</span>
+      </div>
+    </header>
 
-    <section class="mb-10">
-      <h2>¿Qué es una API?</h2>
+    <!-- BANNER PRESENTACIÓN DIAPOSITIVAS -->
+    <aside class="my-6 p-4 sm:p-5 rounded-2xl border-2 border-emerald-500/40 bg-gradient-to-r from-emerald-500/10 via-teal-500/5 to-transparent flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm">
+      <div class="flex items-center gap-3">
+        <span class="text-3xl sm:text-4xl p-2 rounded-xl bg-emerald-500/20 text-emerald-700 shrink-0">📊</span>
+        <div>
+          <h3 class="text-base font-black text-slate-900 mb-0.5">
+            Presentación Guiada Paso a Paso en Diapositivas
+          </h3>
+          <p class="text-xs sm:text-sm text-slate-600 !mb-0">
+            Avanza diapositiva por diapositiva con todos los pasos de la Tarea 1 (preparación, <code>settings.py</code>, <code>views.py</code>, <code>urls.py</code>, pruebas GET/POST y evaluación).
+          </p>
+        </div>
+      </div>
+      <a
+        href="/course-slides/django/apis-restful/"
+        class="shrink-0 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-nunito font-black text-sm shadow-md hover:shadow-lg transition-all no-underline"
+      >
+        <span>Ver Diapositivas</span>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+        </svg>
+      </a>
+    </aside>
+
+    <!-- NAVEGACIÓN INTERNA RÁPIDA -->
+    <nav class="p-4 rounded-2xl bg-slate-100 border-2 border-slate-300 my-6" aria-label="Índice de la lección">
+      <div class="text-xs font-black uppercase tracking-wider text-slate-500 mb-2.5">
+        Ruta de la lección y guía paso a paso:
+      </div>
+      <div class="flex flex-wrap gap-2">
+        <a href="#fundamentos-rest" class="px-3 py-1.5 rounded-xl bg-white hover:bg-emerald-50 text-slate-800 border border-slate-300 font-bold text-xs no-underline transition-colors">
+          1. ¿Qué es una API REST y JSON?
+        </a>
+        <a href="#red-lan-ip" class="px-3 py-1.5 rounded-xl bg-white hover:bg-emerald-50 text-slate-800 border border-slate-300 font-bold text-xs no-underline transition-colors">
+          2. IP Local y Levantar Servicio en LAN
+        </a>
+        <a href="#objetivo-tarea-1" class="px-3 py-1.5 rounded-xl bg-emerald-700 text-white border border-slate-900 font-black text-xs no-underline shadow-[2px_2px_0px_#0f172a]">
+          3. Tarea 1: Enviar datos con GET y POST
+        </a>
+        <a href="#simulador-interactivo" class="px-3 py-1.5 rounded-xl bg-white hover:bg-emerald-50 text-slate-800 border border-slate-300 font-bold text-xs no-underline transition-colors">
+          4. Simulador Postman / DRF
+        </a>
+        <a href="#casos-prueba" class="px-3 py-1.5 rounded-xl bg-white hover:bg-emerald-50 text-slate-800 border border-slate-300 font-bold text-xs no-underline transition-colors">
+          5. Casos de Prueba (GET, POST y vacío)
+        </a>
+        <a href="#actividad-entregar" class="px-3 py-1.5 rounded-xl bg-white hover:bg-emerald-50 text-slate-800 border border-slate-300 font-bold text-xs no-underline transition-colors">
+          6. Actividad para Entregar y Evaluación (10 pts)
+        </a>
+      </div>
+    </nav>
+
+    <!-- =================================================================== -->
+    <!-- SECCIÓN 1: FUNDAMENTOS DE APIs RESTFUL Y JSON                       -->
+    <!-- =================================================================== -->
+    <section id="fundamentos-rest" class="mb-10">
+      <h2>1. Fundamentos: ¿Qué es una API RESTful y cómo viajan los datos?</h2>
       <p>
-        Una API es una interfaz que permite a distintas aplicaciones comunicarse entre sí. En el backend, entregamos datos mediante endpoints que devuelven JSON.
+        Una <strong>API (Application Programming Interface)</strong> es una interfaz que permite a distintas aplicaciones comunicarse entre sí. En lugar de devolver una página HTML completa pensada para una persona, un endpoint de API entrega datos estructurados en formato <strong>JSON</strong> para que otra aplicación (un frontend en React/Astro, una app móvil o Postman) los procese.
+      </p>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 my-6">
+        <div class="p-4 rounded-2xl border-2 border-emerald-600/60 bg-emerald-50/70 shadow-sm">
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="font-mono font-black text-sm px-2.5 py-0.5 rounded bg-emerald-600 text-white">GET</span>
+            <span class="text-xs font-bold text-emerald-900">Lectura / Consulta</span>
+          </div>
+          <p class="!text-xs !text-slate-700 !mb-0 leading-relaxed">
+            Solicita información al servidor. Los parámetros adicionales suelen viajar visibles en la URL (<em>Query Params</em>: <code>?nombre=Ana</code>).
+          </p>
+        </div>
+
+        <div class="p-4 rounded-2xl border-2 border-amber-500/70 bg-amber-50/70 shadow-sm">
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="font-mono font-black text-sm px-2.5 py-0.5 rounded bg-amber-500 text-slate-950">POST</span>
+            <span class="text-xs font-bold text-amber-900">Envío / Creación</span>
+          </div>
+          <p class="!text-xs !text-slate-700 !mb-0 leading-relaxed">
+            Envía datos al servidor dentro del <strong>cuerpo de la petición (Body JSON)</strong> para procesarlos o crear un nuevo recurso.
+          </p>
+        </div>
+
+        <div class="p-4 rounded-2xl border-2 border-cyan-600/60 bg-cyan-50/70 shadow-sm">
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="font-mono font-black text-sm px-2.5 py-0.5 rounded bg-cyan-600 text-white">PUT / PATCH</span>
+            <span class="text-xs font-bold text-cyan-900">Actualización</span>
+          </div>
+          <p class="!text-xs !text-slate-700 !mb-0 leading-relaxed">
+            Modifica un recurso existente de forma completa (<code>PUT</code>) o parcial (<code>PATCH</code>) enviando los cambios en el cuerpo JSON.
+          </p>
+        </div>
+
+        <div class="p-4 rounded-2xl border-2 border-rose-600/60 bg-rose-50/70 shadow-sm">
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="font-mono font-black text-sm px-2.5 py-0.5 rounded bg-rose-600 text-white">DELETE</span>
+            <span class="text-xs font-bold text-rose-900">Eliminación</span>
+          </div>
+          <p class="!text-xs !text-slate-700 !mb-0 leading-relaxed">
+            Elimina un recurso específico identificado en la ruta (por ejemplo, <code>DELETE /api/cursos/1/</code>).
+          </p>
+        </div>
+      </div>
+
+      <!-- VIDEO TUTORIAL: INSTALACIÓN DE POSTMAN Y THUNDER CLIENT -->
+      <div class="my-8 rounded-3xl border-2 border-slate-900 bg-white overflow-hidden shadow-[6px_6px_0px_#0f172a]">
+        <div class="bg-[#0c4a3f] text-white px-5 py-4 border-b-2 border-slate-900 flex flex-wrap items-center justify-between gap-2">
+          <div class="flex items-center gap-2.5">
+            <span class="inline-block bg-amber-400 text-slate-950 font-mono font-black text-xs px-2.5 py-1 rounded-md border border-slate-900">
+              🎬 VIDEOTUTORIAL PRÁCTICO
+            </span>
+            <h3 class="text-base sm:text-lg font-black !text-white !m-0">
+              Instalación de Postman y Thunder Client (Extensión de VS Code)
+            </h3>
+          </div>
+          <span class="text-xs font-mono text-emerald-200">Herramientas de prueba HTTP</span>
+        </div>
+
+        <div class="p-5 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+          <div class="lg:col-span-5 space-y-3">
+            <p class="!text-sm text-slate-700 !m-0 leading-relaxed">
+              Para enviar peticiones <code>GET</code> y especialmente <code>POST</code> con cuerpo JSON a tu API, necesitas un <strong>cliente HTTP</strong>. En este video aprenderás a instalar y utilizar las dos herramientas más empleadas en la industria:
+            </p>
+            <ul class="text-xs sm:text-sm text-slate-800 space-y-2 list-disc pl-5 !m-0 font-medium">
+              <li>
+                <strong>Postman (Aplicación de escritorio):</strong> El estándar profesional para construir colecciones de pruebas, enviar <code>Body → raw → JSON</code> e inspeccionar códigos de estado.
+              </li>
+              <li>
+                <strong>Thunder Client (Extensión en Visual Studio Code):</strong> Una alternativa ultraligera que se instala directamente dentro de tu editor VS Code para probar tus endpoints sin cambiar de ventana.
+              </li>
+            </ul>
+            <a
+              href="https://www.youtube.com/watch?v=_U8pjrgPRF8"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 py-2.5 px-4 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-black text-xs no-underline border-2 border-slate-900 shadow-[2px_2px_0px_#0f172a] transition-colors"
+            >
+              <span>▶ Abrir video en YouTube</span>
+            </a>
+          </div>
+
+          <div class="lg:col-span-7">
+            <div class="p-2.5 rounded-2xl bg-slate-900 border-2 border-slate-900 shadow-sm">
+              <div class="relative aspect-video overflow-hidden bg-slate-950 rounded-xl">
+                <iframe
+                  src="https://www.youtube-nocookie.com/embed/_U8pjrgPRF8"
+                  title="Instalación de Postman y Thunder Client como extensión en VS Code"
+                  loading="lazy"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowfullscreen
+                  class="absolute inset-0 w-full h-full border-0"
+                ></iframe>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- SECCIÓN 2: EXPLICACIÓN PREVIA — OBTENER IP LOCAL Y LEVANTAR EN LAN  -->
+    <!-- =================================================================== -->
+    <section id="red-lan-ip" class="my-10">
+      <div class="rounded-3xl border-2 border-slate-900 bg-white overflow-hidden shadow-[6px_6px_0px_#0f172a]">
+        <div class="bg-slate-900 text-white p-5 sm:p-6 border-b-2 border-slate-900 flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <span class="inline-block bg-cyan-500/20 border border-cyan-400/40 text-cyan-300 rounded-full px-3 py-0.5 font-mono font-black text-xs uppercase mb-1.5">
+              PREPARACIÓN PREVIA DE RED · LOCALHOST VS RED LOCAL (LAN)
+            </span>
+            <h2 class="!text-2xl font-black !text-white !m-0">
+              2. Explicación Previa: Obtener tu IP Local y Levantar el Servicio en LAN 📡
+            </h2>
+          </div>
+          <span class="px-3 py-1.5 rounded-xl bg-cyan-400 text-slate-950 font-mono font-black text-xs border-2 border-slate-950">
+            0.0.0.0:8000
+          </span>
+        </div>
+
+        <div class="p-5 sm:p-6 space-y-6">
+          <p class="!text-sm sm:!text-base text-slate-700 !m-0 leading-relaxed">
+            Por defecto, cuando ejecutas <code>python manage.py runserver</code>, Django escucha únicamente en <strong><code>127.0.0.1:8000</code> (localhost)</strong>. Eso significa que <strong>solo tu propio computador</strong> puede conectarse a la API. Si quieres probar tu endpoint desde el celular, desde otro equipo del laboratorio o compartir tu API con un compañero en la misma red Wi-Fi / cableada (<strong>LAN</strong>), necesitas realizar estos 3 pasos previos:
+          </p>
+
+          <!-- Sub-paso A: Obtener IP Local -->
+          <div class="p-5 rounded-2xl bg-slate-50 border-2 border-slate-200">
+            <h3 class="text-lg font-black text-slate-900 !mt-0 mb-2">
+              Paso A · Obtener la Dirección IPv4 Local de tu Equipo
+            </h3>
+            <p class="!text-sm text-slate-700 mb-3">
+              Abre una terminal y ejecuta el comando según tu sistema operativo para descubrir tu dirección IP dentro de la red local (suele empezar por <code>192.168.x.x</code>, <code>10.x.x.x</code> o <code>172.16.x.x</code>):
+            </p>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <div>
+                <span class="text-xs font-mono font-black text-cyan-900 bg-cyan-100 px-2.5 py-1 rounded border border-cyan-300 inline-block mb-2">
+                  🪟 En Windows (CMD o PowerShell):
+                </span>
+                <CodeBlock
+                  lang="cmd"
+                  title="CMD / PowerShell — Obtener IPv4 con ipconfig"
+                  code={`ipconfig
+
+Adaptador de LAN inalámbrica Wi-Fi:
+   Dirección IPv4. . . . . . . . . . . . . . : 192.168.1.45
+   Máscara de subred . . . . . . . . . . . . : 255.255.255.0
+   Puerta de enlace predeterminada . . . . . : 192.168.1.1`}
+                />
+              </div>
+
+              <div>
+                <span class="text-xs font-mono font-black text-emerald-900 bg-emerald-100 px-2.5 py-1 rounded border border-emerald-300 inline-block mb-2">
+                  🐧🍎 En Linux / macOS (Terminal):
+                </span>
+                <CodeBlock
+                  lang="bash"
+                  title="Bash / Zsh — Obtener IP local"
+                  code={`# En Linux:
+ip a
+# o de forma resumida:
+hostname -I
+
+# En macOS (Wi-Fi):
+ipconfig getifaddr en0
+# Ejemplo de salida: 192.168.1.45`}
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Sub-paso B: ALLOWED_HOSTS -->
+          <div class="p-5 rounded-2xl bg-slate-50 border-2 border-slate-200">
+            <h3 class="text-lg font-black text-slate-900 !mt-0 mb-2">
+              Paso B · Autorizar la IP en <code>ALLOWED_HOSTS</code> (<code>settings.py</code>)
+            </h3>
+            <p class="!text-sm text-slate-700 mb-3">
+              Por seguridad, Django bloquea peticiones que lleguen a través de una IP no autorizada mostrando el error <code>DisallowedHost at /api/saludar/</code> (HTTP 400). Para permitir el acceso en red local durante el desarrollo, edita <code>sistema/settings.py</code>:
+            </p>
+            <CodeBlock
+              lang="python"
+              title="sistema/settings.py — Permitir acceso desde la red LAN"
+              code={`# Opción 1 (Rápida para laboratorio local): aceptar cualquier IP de la red local
+ALLOWED_HOSTS = ["*"]
+
+# Opción 2 (Específica): indicar localhost y tu IPv4 exacta
+# ALLOWED_HOSTS = ["127.0.0.1", "localhost", "192.168.1.45"]`}
+            />
+          </div>
+
+          <!-- Sub-paso C: Levantar en 0.0.0.0:8000 -->
+          <div class="p-5 rounded-2xl bg-slate-50 border-2 border-slate-200">
+            <h3 class="text-lg font-black text-slate-900 !mt-0 mb-2">
+              Paso C · Levantar el Servidor Escuchando en Toda la Red LAN (<code>0.0.0.0:8000</code>)
+            </h3>
+            <p class="!text-sm text-slate-700 mb-3">
+              Al iniciar el servidor, agrega <code>0.0.0.0:8000</code> (o tu IP local <code>192.168.1.45:8000</code>). El comodín <code>0.0.0.0</code> le indica a Django que escuche peticiones en <strong>todas las tarjetas de red</strong> de tu equipo:
+            </p>
+            <CodeBlock
+              lang="bash"
+              title="Terminal — Levantar Django en modo LAN"
+              code={`python manage.py runserver 0.0.0.0:8000`}
+            />
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+              <div class="p-3.5 rounded-xl bg-white border-2 border-emerald-500/60">
+                <span class="text-xs font-mono font-black text-emerald-800 block mb-1">
+                  💻 Desde tu mismo PC (Localhost):
+                </span>
+                <code class="text-xs font-bold text-slate-900">http://127.0.0.1:8000/api/saludar/?nombre=Ana</code>
+              </div>
+              <div class="p-3.5 rounded-xl bg-white border-2 border-cyan-500/70">
+                <span class="text-xs font-mono font-black text-cyan-800 block mb-1">
+                  📱 Desde otro PC o Celular en la misma red Wi-Fi/LAN:
+                </span>
+                <code class="text-xs font-bold text-slate-900">http://192.168.1.45:8000/api/saludar/?nombre=Ana</code>
+              </div>
+            </div>
+
+            <div class="mt-4 p-3.5 rounded-xl bg-amber-50 border-l-4 border-amber-500 text-xs text-amber-950">
+              <strong>🛡️ Nota sobre el Firewall:</strong> La primera vez que ejecutes <code>runserver 0.0.0.0:8000</code> en Windows, aparecerá una ventana del <strong>Firewall de Windows Defender</strong>; marca las casillas de <em>Redes privadas</em> y haz clic en <strong>Permitir acceso</strong> para que otros dispositivos de la LAN puedan entrar al puerto <code>8000</code>.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- SECCIÓN 3: TAREA 1 — ENVIAR DATOS CON GET Y POST                    -->
+    <!-- =================================================================== -->
+    <section id="objetivo-tarea-1" class="mt-10 mb-6 border-l-[6px] border-[#0c4a3f] pl-4">
+      <span class="inline-block bg-emerald-100 text-[#0c4a3f] rounded-full px-3 py-1 font-black text-xs mb-2">
+        GUÍA PRÁCTICA PASO A PASO · TAREA 1
+      </span>
+      <h2 class="text-2xl sm:text-3xl font-black text-[#0c4a3f] !mt-0 mb-2">
+        3. Tarea 1: Enviar datos con GET y POST en Django REST Framework
+      </h2>
+      <p class="text-slate-600 !mb-0">
+        Aprende a recibir datos por URL y por cuerpo JSON construyendo un endpoint funcional desde cero.
       </p>
     </section>
 
-    <section class="mb-10">
-      <h2>Métodos HTTP</h2>
-      <ul>
-        <li><strong>GET:</strong> consultar recursos.</li>
-        <li><strong>POST:</strong> crear recursos.</li>
-        <li><strong>PUT/PATCH:</strong> actualizar recursos.</li>
-        <li><strong>DELETE:</strong> eliminar recursos.</li>
-      </ul>
-      <CodeBlock
-        lang="text"
-        code={`GET /api/cursos/
-POST /api/cursos/
-PUT /api/cursos/1/
-DELETE /api/cursos/1/`}
-        title="endpoints.txt"
-      />
+    <!-- TARJETA DE OBJETIVO -->
+    <div class="p-6 rounded-2xl border-2 border-slate-900 bg-emerald-50/80 shadow-[4px_4px_0px_#0f172a] my-6">
+      <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+        <span class="text-xs font-black uppercase tracking-wider text-emerald-900 bg-emerald-200/80 px-3 py-1 rounded-full border border-emerald-400">
+          🎯 Objetivo de la Tarea 1
+        </span>
+        <span class="text-xs font-mono font-bold text-slate-600">
+          Django REST Framework · Nivel inicial
+        </span>
+      </div>
+      <p class="!text-base !text-slate-900 font-semibold !mb-0 leading-relaxed">
+        Enviar un nombre a una API mediante <code>GET</code> y <code>POST</code> y recibir un saludo en formato <strong>JSON</strong>. En esta tarea <strong>no utilizaremos modelos ni serializers y no guardaremos datos</strong> en la base de datos.
+      </p>
+    </div>
+
+    <!-- PASO 1: PREPARAR EL PROYECTO -->
+    <article class="rounded-2xl border-2 border-slate-200 overflow-hidden my-6 bg-white shadow-sm">
+      <div class="p-5 sm:p-6 bg-slate-50 border-b border-slate-200 flex flex-wrap items-center justify-between gap-2">
+        <div class="flex items-center gap-3">
+          <span class="inline-block bg-[#0c4a3f] text-white rounded-lg px-3 py-1 font-black text-xs">
+            PASO 1
+          </span>
+          <h3 class="text-xl font-black text-slate-900 !m-0">
+            Preparar el proyecto
+          </h3>
+        </div>
+        <span class="text-xs font-mono font-bold text-slate-500">Terminal / Consola</span>
+      </div>
+      <div class="p-5 sm:p-6">
+        <p class="!text-sm sm:!text-base text-slate-700">
+          Necesitas <strong>Python</strong>, un editor de código (como VS Code) y <strong>Postman</strong>. Si ya tienes el proyecto <code>sistema</code> y la aplicación <code>api</code>, continúa directamente en el <strong>Paso 2</strong>. Si comienzas desde cero, abre una terminal en tu carpeta de trabajo y ejecuta:
+        </p>
+
+        <CodeBlock
+          lang="bash"
+          title="Terminal — Creación del proyecto sistema y la app api"
+          code={`pip install django
+django-admin startproject sistema
+cd sistema
+pip install djangorestframework
+python manage.py startapp api`}
+        />
+
+        <div class="mt-4 p-4 rounded-xl bg-amber-50 border-l-4 border-amber-500 text-amber-950 text-sm">
+          <strong>💡 Recomendación de entorno:</strong> Se recomienda instalar las dependencias en un <strong>entorno virtual activo</strong> (<code>venv</code>). Desde ahora, ejecuta todos los comandos desde la carpeta que contiene el archivo <code>manage.py</code>. Si tu equipo utiliza <code>python3</code> (por ejemplo en macOS o Linux), úsalo en lugar de <code>python</code>.
+        </div>
+      </div>
+    </article>
+
+    <!-- PASO 2: REGISTRAR LAS APLICACIONES -->
+    <article class="rounded-2xl border-2 border-slate-200 overflow-hidden my-6 bg-white shadow-sm">
+      <div class="p-5 sm:p-6 bg-slate-50 border-b border-slate-200 flex flex-wrap items-center justify-between gap-2">
+        <div class="flex items-center gap-3">
+          <span class="inline-block bg-[#0c4a3f] text-white rounded-lg px-3 py-1 font-black text-xs">
+            PASO 2
+          </span>
+          <h3 class="text-xl font-black text-slate-900 !m-0">
+            Registrar las aplicaciones
+          </h3>
+        </div>
+        <span class="text-xs font-mono font-bold text-slate-500">sistema/settings.py</span>
+      </div>
+      <div class="p-5 sm:p-6">
+        <p class="!text-sm sm:!text-base text-slate-700">
+          Abre el archivo <code>sistema/settings.py</code> y busca la lista <code>INSTALLED_APPS</code>. Conserva todas las entradas existentes de Django y agrega estas dos al final de la lista:
+        </p>
+
+        <CodeBlock
+          lang="python"
+          title="sistema/settings.py"
+          code={`INSTALLED_APPS = [
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    # Agrega estas dos aplicaciones:
+    "rest_framework",
+    "api",
+]`}
+        />
+      </div>
+    </article>
+
+    <!-- PASO 3: CREAR LA VISTA DEL SALUDO -->
+    <article class="rounded-2xl border-2 border-slate-200 overflow-hidden my-6 bg-white shadow-sm">
+      <div class="p-5 sm:p-6 bg-slate-50 border-b border-slate-200 flex flex-wrap items-center justify-between gap-2">
+        <div class="flex items-center gap-3">
+          <span class="inline-block bg-[#0c4a3f] text-white rounded-lg px-3 py-1 font-black text-xs">
+            PASO 3
+          </span>
+          <h3 class="text-xl font-black text-slate-900 !m-0">
+            Crear la vista del saludo
+          </h3>
+        </div>
+        <span class="text-xs font-mono font-bold text-slate-500">api/views.py</span>
+      </div>
+      <div class="p-5 sm:p-6">
+        <p class="!text-sm sm:!text-base text-slate-700">
+          En el archivo <code>api/views.py</code> coloca el siguiente código:
+        </p>
+
+        <CodeBlock
+          lang="python"
+          title="api/views.py"
+          code={`from rest_framework.decorators import api_view
+from rest_framework.response import Response
+
+
+@api_view(["GET", "POST"])
+def saludar(request):
+    if request.method == "GET":
+        nombre = request.query_params.get("nombre", "estudiante")
+    else:
+        nombre = request.data.get("nombre", "estudiante")
+
+    return Response({
+        "mensaje": f"Hola, {nombre}",
+        "metodo": request.method
+    })`}
+        />
+
+        <h4 class="text-base font-black text-slate-900 mt-6 mb-3">
+          🔍 ¿Cómo funciona este código línea por línea?
+        </h4>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+          <div class="p-3.5 rounded-xl border border-slate-200 bg-slate-50">
+            <code class="text-xs font-black text-emerald-800 block mb-1">@api_view(["GET", "POST"])</code>
+            <p class="!text-xs !text-slate-700 !m-0">
+              Permite que la vista de Django REST Framework acepte solicitudes tanto de tipo <code>GET</code> como <code>POST</code> (y rechace otros métodos con <code>405 Method Not Allowed</code>).
+            </p>
+          </div>
+          <div class="p-3.5 rounded-xl border border-slate-200 bg-slate-50">
+            <code class="text-xs font-black text-emerald-800 block mb-1">request.method</code>
+            <p class="!text-xs !text-slate-700 !m-0">
+              Indica como cadena de texto qué método HTTP se recibió en la petición actual (<code>"GET"</code> o <code>"POST"</code>).
+            </p>
+          </div>
+          <div class="p-3.5 rounded-xl border border-slate-200 bg-slate-50">
+            <code class="text-xs font-black text-emerald-800 block mb-1">request.query_params</code>
+            <p class="!text-xs !text-slate-700 !m-0">
+              Obtiene los parámetros enviados en la dirección URL mediante <code>GET</code> (por ejemplo, <code>?nombre=Ana</code>).
+            </p>
+          </div>
+          <div class="p-3.5 rounded-xl border border-slate-200 bg-slate-50">
+            <code class="text-xs font-black text-amber-800 block mb-1">request.data</code>
+            <p class="!text-xs !text-slate-700 !m-0">
+              Analiza y obtiene los datos enviados dentro del cuerpo (Body JSON) de la petición mediante <code>POST</code>.
+            </p>
+          </div>
+          <div class="p-3.5 rounded-xl border border-slate-200 bg-slate-50">
+            <code class="text-xs font-black text-cyan-800 block mb-1">.get("nombre", "estudiante")</code>
+            <p class="!text-xs !text-slate-700 !m-0">
+              Busca la clave <code>"nombre"</code>. Si el cliente no la envió, usa automáticamente el valor por defecto <code>"estudiante"</code> sin lanzar error.
+            </p>
+          </div>
+          <div class="p-3.5 rounded-xl border border-slate-200 bg-slate-50">
+            <code class="text-xs font-black text-violet-800 block mb-1">Response(&#123; ... &#125;)</code>
+            <p class="!text-xs !text-slate-700 !m-0">
+              Convierte el diccionario de Python a JSON y devuelve el mensaje junto con el método utilizado.
+            </p>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- PASO 4: CONECTAR LAS RUTAS -->
+    <article class="rounded-2xl border-2 border-slate-200 overflow-hidden my-6 bg-white shadow-sm">
+      <div class="p-5 sm:p-6 bg-slate-50 border-b border-slate-200 flex flex-wrap items-center justify-between gap-2">
+        <div class="flex items-center gap-3">
+          <span class="inline-block bg-[#0c4a3f] text-white rounded-lg px-3 py-1 font-black text-xs">
+            PASO 4
+          </span>
+          <h3 class="text-xl font-black text-slate-900 !m-0">
+            Conectar las rutas (URLs)
+          </h3>
+        </div>
+        <span class="text-xs font-mono font-bold text-slate-500">api/urls.py &amp; sistema/urls.py</span>
+      </div>
+      <div class="p-5 sm:p-6">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div>
+            <p class="!text-sm font-bold text-slate-800 mb-2">
+              4.1 Crea o actualiza el archivo <code>api/urls.py</code> con:
+            </p>
+            <CodeBlock
+              lang="python"
+              title="api/urls.py"
+              code={`from django.urls import path
+from .views import saludar
+
+urlpatterns = [
+    path("saludar/", saludar),
+]`}
+            />
+          </div>
+
+          <div>
+            <p class="!text-sm font-bold text-slate-800 mb-2">
+              4.2 En el enrutador principal <code>sistema/urls.py</code> coloca:
+            </p>
+            <CodeBlock
+              lang="python"
+              title="sistema/urls.py"
+              code={`from django.contrib import admin
+from django.urls import include, path
+
+urlpatterns = [
+    path("admin/", admin.site.urls),
+    path("api/", include("api.urls")),
+]`}
+            />
+          </div>
+        </div>
+        <div class="mt-4 p-3.5 rounded-xl bg-slate-100 border border-slate-300 text-xs text-slate-700 font-mono">
+          🔗 <strong>Ruta final combinada:</strong> <code>/api/</code> + <code>saludar/</code> = <strong><code>http://127.0.0.1:8000/api/saludar/</code></strong> (observa que termina en barra <code>/</code>).
+        </div>
+      </div>
+    </article>
+
+    <!-- PASO 5: INICIAR EL SERVIDOR -->
+    <article class="rounded-2xl border-2 border-slate-200 overflow-hidden my-6 bg-white shadow-sm">
+      <div class="p-5 sm:p-6 bg-slate-50 border-b border-slate-200 flex flex-wrap items-center justify-between gap-2">
+        <div class="flex items-center gap-3">
+          <span class="inline-block bg-[#0c4a3f] text-white rounded-lg px-3 py-1 font-black text-xs">
+            PASO 5
+          </span>
+          <h3 class="text-xl font-black text-slate-900 !m-0">
+            Iniciar el servidor de desarrollo
+          </h3>
+        </div>
+        <span class="text-xs font-mono font-bold text-slate-500">manage.py</span>
+      </div>
+      <div class="p-5 sm:p-6">
+        <p class="!text-sm sm:!text-base text-slate-700">
+          Ejecuta desde la carpeta que contiene <code>manage.py</code> (en modo local o agregando <code>0.0.0.0:8000</code> si deseas exponerlo en la red LAN):
+        </p>
+        <CodeBlock
+          lang="bash"
+          title="Terminal — Migración inicial y encendido del servidor (Local o LAN)"
+          code={`python manage.py migrate
+
+# Opción A: Solo en tu equipo (127.0.0.1:8000)
+python manage.py runserver
+
+# Opción B: Disponible en toda la red local LAN (usando tu IPv4 local)
+python manage.py runserver 0.0.0.0:8000`}
+        />
+        <p class="!text-xs sm:!text-sm text-slate-600 mt-3 !mb-0">
+          <code>migrate</code> prepara las tablas iniciales internas de Django (para quitar las advertencias rojas de la consola), aunque nuestro endpoint de saludo no utiliza esas tablas. <strong>Mantén la terminal abierta</strong> mientras realizas las pruebas.
+        </p>
+      </div>
+    </article>
+
+    <!-- =================================================================== -->
+    <!-- SECCIÓN 3: SIMULADOR INTERACTIVO EN VIVO                            -->
+    <!-- =================================================================== -->
+    <section id="simulador-interactivo" class="my-10">
+      <h2>3. Laboratorio Interactivo: Simulador de GET y POST en <code>/api/saludar/</code></h2>
+      <p>
+        Antes o durante tus pruebas en Postman, experimenta aquí mismo cómo responde la vista <code>saludar(request)</code> ante cada caso de la tarea y qué línea de Python se ejecuta en cada petición:
+      </p>
+      <DjangoGetPostSaludoSimulator client:load />
     </section>
 
-    <section class="mb-10">
-      <h2>JSON como lenguaje de datos</h2>
-      <p>
-        JSON es el formato más común para intercambiar información entre cliente y servidor porque es legible y compatible con casi todos los lenguajes.
-      </p>
-      <CodeBlock
-        lang="json"
-        code={`{
-  "id": 1,
-  "nombre": "Fundamentos Django",
-  "duracion": 35,
-  "publicado": true
+    <!-- =================================================================== -->
+    <!-- SECCIÓN 4: CASOS DE PRUEBA (CASO A, CASO B Y PASO 6)                -->
+    <!-- =================================================================== -->
+    <section id="casos-prueba" class="my-10">
+      <h2>4. Ejecución de los Casos de Prueba (Navegador y Postman)</h2>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 my-6">
+        <!-- CASO A: GET -->
+        <div class="rounded-2xl border-2 border-emerald-600 bg-white overflow-hidden shadow-sm flex flex-col justify-between">
+          <div class="p-5 bg-emerald-50 border-b-2 border-emerald-600/30">
+            <span class="inline-block bg-emerald-600 text-white font-mono font-black text-xs px-2.5 py-1 rounded-md mb-2">
+              CASO A · MÉTODO GET
+            </span>
+            <h3 class="text-xl font-black text-slate-900 !m-0">
+              Enviar el nombre mediante GET
+            </h3>
+          </div>
+          <div class="p-5 space-y-4 flex-1">
+            <p class="!text-sm text-slate-700 !m-0">
+              Abre directamente esta dirección en tu navegador o en Postman seleccionando <strong>GET</strong>:
+            </p>
+            <CodeBlock
+              lang="text"
+              title="URL con parámetro de consulta (Query Param)"
+              code={`http://127.0.0.1:8000/api/saludar/?nombre=Ana`}
+            />
+            <p class="!text-xs text-slate-600 !m-0">
+              El fragmento <code>?nombre=Ana</code> es un <strong>parámetro de consulta</strong>. En este caso, el nombre viaja visible en la URL.
+            </p>
+            <div>
+              <span class="text-xs font-mono font-black text-emerald-800 block mb-1">
+                Respuesta esperada — 200 OK:
+              </span>
+              <CodeBlock
+                lang="json"
+                title="Respuesta JSON (GET)"
+                code={`{
+  "mensaje": "Hola, Ana",
+  "metodo": "GET"
 }`}
-        title="curso.json"
-      />
+              />
+            </div>
+            <div class="p-3 rounded-xl bg-slate-100 text-xs text-slate-700">
+              <strong>Nota sobre Postman y el Navegador:</strong> En Postman puedes agregar el encabezado <code>Accept: application/json</code> para ver JSON puro. En el navegador, Django REST Framework muestra los datos dentro de su interfaz interactiva de pruebas (<em>Browsable API</em>).
+            </div>
+          </div>
+        </div>
+
+        <!-- CASO B: POST -->
+        <div class="rounded-2xl border-2 border-amber-500 bg-white overflow-hidden shadow-sm flex flex-col justify-between">
+          <div class="p-5 bg-amber-50 border-b-2 border-amber-500/40">
+            <span class="inline-block bg-amber-500 text-slate-950 font-mono font-black text-xs px-2.5 py-1 rounded-md mb-2">
+              CASO B · MÉTODO POST
+            </span>
+            <h3 class="text-xl font-black text-slate-900 !m-0">
+              Enviar el nombre mediante POST
+            </h3>
+          </div>
+          <div class="p-5 space-y-4 flex-1">
+            <p class="!text-sm text-slate-700 !m-0">
+              En <strong>Postman</strong> selecciona el método <strong>POST</strong> y escribe esta URL, <strong>sin parámetros</strong>:
+            </p>
+            <CodeBlock
+              lang="text"
+              title="URL limpia en Postman (POST)"
+              code={`http://127.0.0.1:8000/api/saludar/`}
+            />
+            <p class="!text-xs text-slate-700 !m-0">
+              Ve a la pestaña <strong>Body → raw → JSON</strong>. Escribe este contenido y presiona <strong>Send</strong>:
+            </p>
+            <CodeBlock
+              lang="json"
+              title="Body → raw → JSON"
+              code={`{
+  "nombre": "Pedro"
+}`}
+            />
+            <div>
+              <span class="text-xs font-mono font-black text-amber-900 block mb-1">
+                Respuesta esperada — 200 OK:
+              </span>
+              <CodeBlock
+                lang="json"
+                title="Respuesta JSON (POST)"
+                code={`{
+  "mensaje": "Hola, Pedro",
+  "metodo": "POST"
+}`}
+              />
+            </div>
+            <div class="p-3 rounded-xl bg-amber-50/90 border border-amber-200 text-xs text-amber-950">
+              <strong>¿Por qué responde 200 OK y no 201?</strong> En esta prueba el nombre viaja en el cuerpo JSON, pero el endpoint solo devuelve un saludo calculado y no crea ningún registro en base de datos; por eso devuelve <code>200 OK</code>.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PASO 6: PROBAR CUANDO NO SE ENVÍA EL NOMBRE -->
+      <article class="rounded-2xl border-2 border-slate-900 bg-slate-50 p-5 sm:p-6 my-6 shadow-[4px_4px_0px_#0f172a]">
+        <div class="flex items-center gap-2.5 mb-3">
+          <span class="inline-block bg-slate-900 text-white rounded-lg px-3 py-1 font-black text-xs">
+            PASO 6
+          </span>
+          <h3 class="text-xl font-black text-slate-900 !m-0">
+            Probar cuando no se envía el nombre (Valor por defecto)
+          </h3>
+        </div>
+        <p class="!text-sm text-slate-700">
+          Comprueba qué ocurre cuando omitimos el campo <code>nombre</code> en ambos métodos:
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-4">
+          <div class="p-4 rounded-xl bg-white border border-slate-300">
+            <strong class="text-xs font-mono uppercase text-emerald-800 block mb-1.5">
+              1. Con GET (Dirección sin parámetros):
+            </strong>
+            <CodeBlock
+              lang="text"
+              title="GET sin ?nombre="
+              code={`http://127.0.0.1:8000/api/saludar/`}
+            />
+            <CodeBlock
+              lang="json"
+              title="Respuesta obtenida"
+              code={`{
+  "mensaje": "Hola, estudiante",
+  "metodo": "GET"
+}`}
+            />
+          </div>
+
+          <div class="p-4 rounded-xl bg-white border border-slate-300">
+            <strong class="text-xs font-mono uppercase text-amber-900 block mb-1.5">
+              2. Con POST (Objeto JSON vacío):
+            </strong>
+            <CodeBlock
+              lang="json"
+              title="Body → raw → JSON vacío"
+              code={`{}`}
+            />
+            <CodeBlock
+              lang="json"
+              title="Respuesta obtenida"
+              code={`{
+  "mensaje": "Hola, estudiante",
+  "metodo": "POST"
+}`}
+            />
+          </div>
+        </div>
+
+        <p class="!text-xs text-slate-600 !mb-0">
+          En ambos casos el mensaje es <code>"Hola, estudiante"</code> y el campo <code>metodo</code> indica <code>"GET"</code> o <code>"POST"</code> según tu solicitud. Esta versión inicial solo usa un valor por defecto cuando falta la clave <code>nombre</code>; no valida cadenas vacías (<code>""</code>) ni otros tipos de datos.
+        </p>
+      </article>
+
+      <!-- TABLA DE RESUMEN -->
+      <div class="my-8">
+        <h3>Tabla de Resumen: GET vs POST en Django REST Framework</h3>
+        <div class="overflow-x-auto rounded-2xl border-2 border-slate-900 shadow-[4px_4px_0px_#0f172a]">
+          <table class="w-full text-left border-collapse text-sm bg-white">
+            <thead class="bg-slate-900 text-white font-black uppercase text-xs tracking-wider">
+              <tr>
+                <th class="p-3.5 border-b border-slate-700">Método</th>
+                <th class="p-3.5 border-b border-slate-700">¿Dónde enviamos el nombre?</th>
+                <th class="p-3.5 border-b border-slate-700">¿Cómo lo leemos en DRF?</th>
+                <th class="p-3.5 border-b border-slate-700">Ejemplo de envío</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-200 font-medium">
+              <tr>
+                <td class="p-3.5 font-mono font-black text-emerald-700">GET</td>
+                <td class="p-3.5">Parámetro de la URL (<em>Query String</em>)</td>
+                <td class="p-3.5 font-mono text-xs"><code>request.query_params</code></td>
+                <td class="p-3.5 font-mono text-xs text-slate-600"><code>/api/saludar/?nombre=Ana</code></td>
+              </tr>
+              <tr>
+                <td class="p-3.5 font-mono font-black text-amber-700">POST</td>
+                <td class="p-3.5">Cuerpo JSON (<em>Request Body</em>)</td>
+                <td class="p-3.5 font-mono text-xs"><code>request.data</code></td>
+                <td class="p-3.5 font-mono text-xs text-slate-600"><code>&#123;"nombre": "Pedro"&#125;</code></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </section>
 
+    <!-- =================================================================== -->
+    <!-- SECCIÓN 5: ACTIVIDAD PARA ENTREGAR, PREGUNTAS Y RÚBRICA (10 PTS)    -->
+    <!-- =================================================================== -->
+    <section id="actividad-entregar" class="my-10">
+      <div class="rounded-3xl border-2 border-slate-900 bg-white overflow-hidden shadow-[6px_6px_0px_#0f172a]">
+        <div class="bg-[#0c4a3f] text-white p-6 border-b-2 border-slate-900 flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <span class="text-xs font-mono font-black uppercase tracking-wider text-emerald-300 block mb-1">
+              ENTREGABLE DE LABORATORIO
+            </span>
+            <h2 class="!text-2xl font-black !text-white !m-0">
+              5. Actividad para Entregar y Pauta de Evaluación
+            </h2>
+          </div>
+          <span class="px-4 py-1.5 rounded-xl bg-amber-400 text-slate-950 font-black text-sm border-2 border-slate-900 shadow-[2px_2px_0px_#0f172a]">
+            Puntaje Total: 10 Puntos
+          </span>
+        </div>
+
+        <div class="p-6 space-y-6">
+          <!-- Lista de pasos a entregar -->
+          <div>
+            <h3 class="text-lg font-black text-slate-900 !mt-0 mb-3">
+              📋 Checklist de Evidencias Requeridas
+            </h3>
+            <ol class="space-y-2.5 text-sm text-slate-800 list-decimal pl-5 font-medium">
+              <li>
+                <strong>Prueba con GET:</strong> Envía tu propio nombre mediante <code>GET</code> y captura la URL completa junto con la respuesta JSON obtenida.
+              </li>
+              <li>
+                <strong>Prueba con POST:</strong> Envía tu propio nombre mediante <code>POST</code> en Postman y captura el método seleccionado, la URL, el cuerpo JSON (<code>Body → raw → JSON</code>) y la respuesta.
+              </li>
+              <li>
+                <strong>Pruebas por defecto (sin nombre):</strong> Prueba <code>GET</code> sin parámetros en la URL y <code>POST</code> enviando <code>&#123;&#125;</code>. Incluye ambas capturas de respuesta mostrando <code>"Hola, estudiante"</code>.
+              </li>
+              <li>
+                <strong>Código fuente:</strong> Entrega el código utilizado en <code>api/views.py</code>, <code>api/urls.py</code> y <code>sistema/urls.py</code>.
+              </li>
+              <li>
+                <strong>Cuestionario técnico:</strong> Responde las 3 preguntas conceptuales que aparecen a continuación.
+              </li>
+            </ol>
+          </div>
+
+          <!-- Preguntas de la guía con autoverificación desplegable -->
+          <div class="p-5 rounded-2xl bg-slate-50 border-2 border-slate-200 space-y-3">
+            <h3 class="text-base font-black text-slate-900 !mt-0 mb-1">
+              ❓ Preguntas de la Actividad (Intenta responderlas antes de ver la guía)
+            </h3>
+            <p class="!text-xs text-slate-500 !mb-3">
+              Haz clic en cada pregunta para contrastar tu respuesta antes de entregar tu informe:
+            </p>
+
+            <details class="group rounded-xl border border-slate-300 bg-white overflow-hidden">
+              <summary class="cursor-pointer px-4 py-3 font-bold text-sm text-slate-900 bg-white hover:bg-slate-50 flex items-center justify-between">
+                <span>1. ¿Dónde se envía el nombre al usar GET?</span>
+                <span class="text-xs font-mono text-emerald-700">Ver respuesta esperada ↓</span>
+              </summary>
+              <div class="px-4 py-3 bg-emerald-50/60 border-t border-slate-200 text-xs sm:text-sm text-slate-800">
+                Se envía en la propia dirección <strong>URL como un parámetro de consulta (Query Parameter)</strong> después del signo de interrogación, por ejemplo: <code>/api/saludar/?nombre=Ana</code>, y se lee con <code>request.query_params</code>.
+              </div>
+            </details>
+
+            <details class="group rounded-xl border border-slate-300 bg-white overflow-hidden">
+              <summary class="cursor-pointer px-4 py-3 font-bold text-sm text-slate-900 bg-white hover:bg-slate-50 flex items-center justify-between">
+                <span>2. ¿Dónde se envía el nombre al usar POST?</span>
+                <span class="text-xs font-mono text-emerald-700">Ver respuesta esperada ↓</span>
+              </summary>
+              <div class="px-4 py-3 bg-emerald-50/60 border-t border-slate-200 text-xs sm:text-sm text-slate-800">
+                Se envía dentro del <strong>cuerpo de la solicitud (Request Body) en formato JSON</strong> (por ejemplo <code>&#123;"nombre": "Pedro"&#125;</code>), manteniendo la URL limpia, y se lee en la vista mediante <code>request.data</code>.
+              </div>
+            </details>
+
+            <details class="group rounded-xl border border-slate-300 bg-white overflow-hidden">
+              <summary class="cursor-pointer px-4 py-3 font-bold text-sm text-slate-900 bg-white hover:bg-slate-50 flex items-center justify-between">
+                <span>3. ¿Qué sucede si no envías el campo <code>nombre</code>?</span>
+                <span class="text-xs font-mono text-emerald-700">Ver respuesta esperada ↓</span>
+              </summary>
+              <div class="px-4 py-3 bg-emerald-50/60 border-t border-slate-200 text-xs sm:text-sm text-slate-800">
+                El método <code>.get("nombre", "estudiante")</code> utiliza el segundo argumento como valor por defecto, por lo que la API responde con estado <code>200 OK</code> y el mensaje <code>"Hola, estudiante"</code> junto con el método utilizado (<code>GET</code> o <code>POST</code>).
+              </div>
+            </details>
+          </div>
+
+          <!-- Rúbrica de evaluación 10 puntos -->
+          <div>
+            <h3 class="text-base font-black text-slate-900 !mt-0 mb-3">
+              📊 Rúbrica de Evaluación — 10 Puntos
+            </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+              <div class="p-4 rounded-2xl border-2 border-emerald-600/60 bg-emerald-50/70">
+                <div class="font-mono font-black text-lg text-emerald-900">3 Puntos</div>
+                <div class="font-bold text-sm text-slate-900">GET funcionando</div>
+                <p class="!text-xs !text-slate-600 !mb-0 mt-1">
+                  Captura de URL con <code>?nombre=...</code> y respuesta JSON correcta.
+                </p>
+              </div>
+              <div class="p-4 rounded-2xl border-2 border-amber-500/70 bg-amber-50/70">
+                <div class="font-mono font-black text-lg text-amber-900">3 Puntos</div>
+                <div class="font-bold text-sm text-slate-900">POST funcionando</div>
+                <p class="!text-xs !text-slate-600 !mb-0 mt-1">
+                  Captura en Postman con método POST, Body JSON y respuesta <code>200 OK</code>.
+                </p>
+              </div>
+              <div class="p-4 rounded-2xl border-2 border-cyan-600/60 bg-cyan-50/70">
+                <div class="font-mono font-black text-lg text-cyan-900">2 Puntos</div>
+                <div class="font-bold text-sm text-slate-900">Pruebas sin nombre</div>
+                <p class="!text-xs !text-slate-600 !mb-0 mt-1">
+                  Evidencia de GET sin parámetros y POST con <code>&#123;&#125;</code> devolviendo <code>"Hola, estudiante"</code>.
+                </p>
+              </div>
+              <div class="p-4 rounded-2xl border-2 border-violet-600/60 bg-violet-50/70">
+                <div class="font-mono font-black text-lg text-violet-900">2 Puntos</div>
+                <div class="font-bold text-sm text-slate-900">Código y respuestas</div>
+                <p class="!text-xs !text-slate-600 !mb-0 mt-1">
+                  Archivos <code>views.py</code> y <code>urls.py</code> completos y las 3 preguntas bien respondidas.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Solución de problemas -->
+          <div class="p-4 rounded-2xl bg-rose-50 border-l-4 border-rose-600 text-rose-950 text-xs sm:text-sm">
+            <strong class="font-black block mb-1">🛠️ ¿No funciona? Lista de verificación rápida:</strong>
+            <ul class="list-disc pl-5 space-y-1 !m-0">
+              <li>Verifica que la terminal con <code>python manage.py runserver</code> siga encendida y sin errores de sintaxis.</li>
+              <li>Asegúrate de que la URL en Postman termine con barra diagonal: <code>http://127.0.0.1:8000/api/saludar/</code> (si omites el <code>/</code> final en una petición POST, Django no puede redirigir el cuerpo de la petición).</li>
+              <li>En Postman, comprueba que hayas seleccionado <strong>Body → raw → JSON</strong> y que las llaves y comillas dobles <code>"nombre"</code> sean válidas.</li>
+              <li>Guarda todos los archivos (<code>Ctrl + S</code>) antes de volver a probar.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PONTE A PRUEBA -->
     <section class="mb-10">
       <h2>Ponte a prueba</h2>
-      <p>Revisa si comprendes los principios básicos de una API RESTful.</p>
+      <p>Comprueba tu dominio de los principios de una API RESTful y el manejo de peticiones GET y POST en Django REST Framework.</p>
       <DjangoQuizModal quizKey="apis-restful" />
     </section>
 
     <nav class="nav-bottom">
       <a href="/course/django/guia-practica/proyecto/" class="prev">← 7.3 Guía Práctica: Desafío Integrador</a>
-      <a href="/course/django/drf-jwt/" class="next">Django REST Framework y JWT →</a>
+      <a href="/course/django/consumiendo-api-rest/" class="next">9. Consumiendo API REST con requests →</a>
     </nav>
   </article>
 </Layout>
